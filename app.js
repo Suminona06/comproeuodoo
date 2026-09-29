@@ -10,6 +10,8 @@ import { APP_CONFIG } from './config/constants.js';
 import publicRoutes from './routes/publicRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
+import { csrfProtection } from './middleware/csrfMiddleware.js';
+import { optionalAuth } from './middleware/authMiddleware.js';
 import logger from './utils/logger.js';
 
 dotenv.config();
@@ -57,14 +59,19 @@ app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0
 }));
 
+// CSRF Protection & Global Auth Context
+app.use(csrfProtection);
+app.use(optionalAuth);
+
 // Global Template Locals Middleware
 app.use((req, res, next) => {
-  const currentLang = req.cookies[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
+  const currentLang = req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
   res.locals.appName = APP_CONFIG.NAME;
   res.locals.currentYear = new Date().getFullYear();
   res.locals.currentLang = currentLang;
   res.locals.path = req.path;
   res.locals.user = req.user || null;
+  res.locals.csrfToken = res.locals.csrfToken || '';
   next();
 });
 

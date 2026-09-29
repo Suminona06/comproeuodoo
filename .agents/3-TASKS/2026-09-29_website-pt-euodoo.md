@@ -86,7 +86,7 @@
 - **Deskripsi:** Mengonfigurasi `config/database.js` menggunakan `mysql2/promise` dengan pooling (`connectionLimit: 10`), serta membuat runner migrasi mandiri `database/migrate.js` yang mengeksekusi berkas-berkas SQL secara berurutan dan idempotent.
 - **Modul:** Modul 1: Arsitektur Database & Migrasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-01, T-02
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam
@@ -99,7 +99,7 @@
 - **Deskripsi:** Membuat file migrasi SQL skema 8 tabel lengkap dengan tipe data, charset `utf8mb4`, constraint foreign key, dan indeks performa (`users`, `banners`, `categories`, `products`, `capabilities`, `posts`, `leads`, `settings`).
 - **Modul:** Modul 1: Arsitektur Database & Migrasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-04
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
@@ -111,7 +111,7 @@
 - **Deskripsi:** Membuat skrip seeder `database/seeds/initial_seed.js` untuk membuat akun admin default dengan password ter-hash bcrypt, kategori awal produk plastik manufaktur, pengaturan identitas perusahaan di tabel `settings` (termasuk `whatsapp_number`, `company_email`, `company_phone`), serta contoh banner hero awal.
 - **Modul:** Modul 1: Arsitektur Database & Migrasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-05
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam
@@ -128,7 +128,7 @@
 - **Deskripsi:** Mengembangkan `models/userModel.js` untuk query kredensial dan `controllers/admin/authController.js` untuk verifikasi email, perbandingan hash password menggunakan `bcryptjs`, penerbitan sesi JWT berdurasi 24 jam ke dalam HTTP-Only Secure Cookie, dan pembersihan sesi saat logout.
 - **Modul:** Modul 2: Autentikasi Admin & Keamanan
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-05, T-06
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
@@ -142,7 +142,7 @@
 - **Deskripsi:** Membuat `middleware/authMiddleware.js` untuk validasi JWT cookie pada rute admin, `middleware/rateLimiter.js` yang membatasi 5 kali gagal berturut-turut lalu mengunci akun selama 15 menit, serta `middleware/csrfMiddleware.js` untuk melindungi formulir POST admin dan publik.
 - **Modul:** Modul 2: Autentikasi Admin & Keamanan
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-07
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2.5 jam
@@ -157,7 +157,7 @@
 - **Deskripsi:** Membangun antarmuka `views/admin/login.ejs` dan `views/admin/change-password.ejs` dengan gaya Modern Corporate sesuai token `Design/DESIGN.md`, dilengkapi validasi form di sisi browser, tampilan flash alert notifikasi error, dan token anti-CSRF tersembunyi.
 - **Modul:** Modul 2: Autentikasi Admin & Keamanan
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-03, T-07, T-08
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam

@@ -20,6 +20,7 @@
             <div class="card-body">
               <h2 style="font-size: 1.5rem; margin-bottom: var(--space-md);">Formulir RFQ / Kontak</h2>
               <form action="/leads" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <div class="form-group">
                   <label for="name" class="form-label form-label-required">Nama Lengkap</label>
                   <input type="text" id="name" name="name" class="form-control" placeholder="Contoh: Budi Santoso" required>

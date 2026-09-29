@@ -1,0 +1,96 @@
+/**
+ * Admin Panel & CMS Styles
+ * PT Euodoo - Website Company Profile & CMS
+ */
+
+.admin-header {
+  background-color: var(--color-navy-deep);
+  color: #ffffff;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-nav {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-level-0);
+}
+
+.admin-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  height: 52px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.admin-nav-link {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  padding: var(--space-xs) 0;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.admin-nav-link:hover {
+  color: var(--color-primary);
+}
+
+.admin-nav-link.active {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  border-bottom-color: var(--color-primary);
+}
+
+.admin-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xl);
+}
+
+@media (min-width: 768px) {
+  .admin-page-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.admin-page-title {
+  font-size: 1.5rem;
+  color: var(--color-secondary-navy);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.admin-page-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-muted);
+}
+
+/* Data Table Wrapper */
+.admin-table-card {
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-level-0);
+}
+
+.admin-table-header {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+}
+
+/* Admin Form Container */
+.admin-form-container {
+  max-width: 720px;
+  margin: 0 auto;
+}

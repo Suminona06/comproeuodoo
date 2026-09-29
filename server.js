@@ -1,14 +1,16 @@
 import app from './app.js';
 import logger from './utils/logger.js';
+import { testConnection } from './config/database.js';
 
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   logger.info(`PT Euodoo Web Server running on port ${PORT} [Mode: ${NODE_ENV}]`);
   if (NODE_ENV !== 'production') {
     logger.info(`Local URL: http://localhost:${PORT}`);
   }
+  await testConnection();
 });
 
 // Graceful Shutdown Handlers for Phusion Passenger / Process Managers

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/layout.css">
   <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--color-workspace-bg); padding: var(--space-md);">
   <div style="width: 100%; max-width: 420px;">
@@ -26,12 +27,14 @@
         <h2 style="font-size: 1.25rem; margin-bottom: var(--space-md); color: var(--color-text-navy);">Masuk ke Portal Admin</h2>
 
         <% if (typeof error !== 'undefined' && error) { %>
-          <div class="alert alert-error">
+          <div class="alert alert-error" role="alert">
             <%= error %>
           </div>
         <% } %>
 
         <form action="/admin/login" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
           <div class="form-group">
             <label for="email" class="form-label form-label-required">Alamat Email</label>
             <input type="email" id="email" name="email" class="form-control" placeholder="admin@euodoo.com" required autocomplete="email" autofocus>
