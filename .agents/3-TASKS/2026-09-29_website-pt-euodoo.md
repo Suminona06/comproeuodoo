@@ -38,7 +38,7 @@
 - **Deskripsi:** Membuat file `package.json` dengan `type: "module"`, menginstal dependensi inti (`express`, `ejs`, `mysql2`, `dotenv`, `helmet`, `bcryptjs`, `jsonwebtoken`, `cookie-parser`, `compression`, `express-rate-limit`, `multer`, `sharp`, `nodemailer`) serta nodemon untuk development.
 - **Modul:** Modul 0: Inisialisasi & Fondasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** None
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 1 jam
@@ -52,7 +52,7 @@
 - **Deskripsi:** Membuat skeleton direktori (`config/`, `controllers/`, `models/`, `routes/`, `views/`, `public/`, `middleware/`, `utils/`), konfigurasi `app.js` (middleware parser, cookie, helmet, compression, static files), dan `server.js` yang kompatibel dengan Phusion Passenger cPanel.
 - **Modul:** Modul 0: Inisialisasi & Fondasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-01
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam
@@ -67,7 +67,7 @@
 - **Deskripsi:** Mengimplementasikan token CSS sesuai panduan `Design/DESIGN.md`: warna korporat primer (`#0055B8`), navy (`#0A192F`), font Plus Jakarta Sans, radius token (4px-8px, status pill 9999px), elevasi Level 0-3, serta layout grid responsif 12 kolom desktop, 8 kolom tablet, dan 4 kolom mobile.
 - **Modul:** Modul 0: Inisialisasi & Fondasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-02
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam

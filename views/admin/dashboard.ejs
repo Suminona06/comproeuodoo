@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Dashboard Admin - PT Euodoo' %></title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body style="background-color: var(--color-workspace-bg); min-height: 100vh; display: flex; flex-direction: column;">
+  <!-- Admin Top Bar -->
+  <header style="background-color: var(--color-navy-deep); color: #ffffff; padding: var(--space-sm) 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+    <div class="container flex items-center justify-between">
+      <div class="flex items-center gap-md">
+        <span style="font-weight: 700; letter-spacing: -0.02em;">PT EUODOO CMS</span>
+        <span class="badge badge-info" style="font-size: 11px;">Admin Panel</span>
+      </div>
+      <div class="flex items-center gap-md">
+        <a href="/" target="_blank" style="color: #cbd5e1; font-size: var(--font-size-body-sm);">Lihat Website &nearr;</a>
+        <a href="/admin/login" style="color: #fca5a5; font-size: var(--font-size-body-sm);">Keluar</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Sub Navigation -->
+  <nav style="background-color: #ffffff; border-bottom: 1px solid var(--color-border); padding: 0;">
+    <div class="container flex items-center gap-lg" style="height: 52px; overflow-x: auto;">
+      <a href="/admin/dashboard" class="nav-link <%= activeNav === 'dashboard' ? 'active' : '' %>" style="font-weight: 600;">Dashboard</a>
+      <a href="/admin/banners" class="nav-link" style="color: var(--color-text-muted);">Banners</a>
+      <a href="/admin/products" class="nav-link" style="color: var(--color-text-muted);">Produk</a>
+      <a href="/admin/posts" class="nav-link" style="color: var(--color-text-muted);">Berita</a>
+      <a href="/admin/leads" class="nav-link" style="color: var(--color-text-muted);">Leads Masuk</a>
+      <a href="/admin/settings" class="nav-link" style="color: var(--color-text-muted);">Pengaturan</a>
+    </div>
+  </nav>
+
+  <!-- Admin Content -->
+  <main class="section-sm" style="flex: 1;">
+    <div class="container">
+      <div style="margin-bottom: var(--space-xl);">
+        <h1 style="font-size: 1.75rem; color: var(--color-secondary-navy);">Ringkasan Operasional CMS</h1>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm);">
+          Selamat datang di panel pengelolaan konten resmi PT Euodoo.
+        </p>
+      </div>
+
+      <!-- Overview Metric Cards -->
+      <div class="grid grid-cols-3" style="margin-bottom: var(--space-xl);">
+        <div class="card-metric">
+          <div class="metric-val" style="color: var(--color-primary);">0</div>
+          <div class="metric-label">Permintaan RFQ Baru (Pending)</div>
+        </div>
+
+        <div class="card-metric">
+          <div class="metric-val" style="color: var(--color-secondary-navy);">0</div>
+          <div class="metric-label">Produk Terdaftar</div>
+        </div>
+
+        <div class="card-metric">
+          <div class="metric-val" style="color: var(--color-success);">0</div>
+          <div class="metric-label">Artikel Terpublikasi</div>
+        </div>
+      </div>
+
+      <!-- Recent Leads Table -->
+      <div class="card">
+        <div class="card-header flex items-center justify-between">
+          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Permintaan Penawaran (RFQ) Terbaru</h2>
+          <span class="badge badge-neutral">Sistem Siap</span>
+        </div>
+        <div class="table-responsive" style="border: none; border-radius: 0;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="th-neutral">Tanggal</th>
+                <th class="th-neutral">Nama / Perusahaan</th>
+                <th class="th-neutral">Kontak</th>
+                <th class="th-neutral">Tipe Permintaan</th>
+                <th class="th-neutral">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="5" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
+                  Belum ada pesan RFQ masuk. Database akan diinisialisasi pada Modul 1.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="background-color: #ffffff; border-top: 1px solid var(--color-border); padding: var(--space-md) 0; font-size: var(--font-size-body-sm); color: var(--color-text-muted); text-align: center;">
+    <div class="container">
+      PT Euodoo CMS v1.0 &copy; <%= currentYear %>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="container flex items-center justify-between">
+    <div class="flex items-center gap-md">
+      <span>Presisi Manufaktur Plastik Berkualitas Tinggi</span>
+    </div>
+    <div class="flex items-center gap-md">
+      <span>Email: info@euodoo.com</span>
+      <span>|</span>
+      <div class="lang-switch flex items-center gap-xs">
+        <a href="/lang/id" class="<%= currentLang === 'id' ? 'font-bold text-white' : '' %>">ID</a>
+        <span>/</span>
+        <a href="/lang/en" class="<%= currentLang === 'en' ? 'font-bold text-white' : '' %>">EN</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Navigation -->
+<header class="site-header">
+  <div class="container">
+    <nav class="navbar" aria-label="Navigasi Utama">
+      <a href="/" class="brand-logo" aria-label="Beranda PT Euodoo">
+        <span class="brand-name">PT EUODOO</span>
+        <span class="brand-badge">MANUFACTURING</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li>
+          <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">Beranda</a>
+        </li>
+        <li>
+          <a href="/products" class="nav-link <%= path === '/products' ? 'active' : '' %>">Produk</a>
+        </li>
+        <li>
+          <a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>">Kapabilitas</a>
+        </li>
+        <li>
+          <a href="/news" class="nav-link <%= path === '/news' ? 'active' : '' %>">Berita</a>
+        </li>
+        <li>
+          <a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>">Kontak</a>
+        </li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/contact" class="btn btn-primary btn-sm">Minta Penawaran</a>
+        <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="mobileDrawer">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="mobile-drawer" id="mobileDrawer" aria-label="Menu Mobile" aria-hidden="true">
+  <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl);">
+    <span class="brand-name" style="font-size: 1.25rem; font-weight: 700; color: var(--color-secondary-navy);">PT EUODOO</span>
+    <button type="button" class="btn btn-ghost btn-sm" id="closeDrawerBtn" aria-label="Tutup menu">✕</button>
+  </div>
+  <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-xl);">
+    <li><a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">Beranda</a></li>
+    <li><a href="/products" class="nav-link <%= path === '/products' ? 'active' : '' %>">Produk</a></li>
+    <li><a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>">Kapabilitas</a></li>
+    <li><a href="/news" class="nav-link <%= path === '/news' ? 'active' : '' %>">Berita</a></li>
+    <li><a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>">Kontak</a></li>
+  </ul>
+  <div>
+    <a href="/contact" class="btn btn-primary btn-block">Minta Penawaran</a>
+  </div>
+</aside>

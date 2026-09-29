@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Login Admin - PT Euodoo' %></title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--color-workspace-bg); padding: var(--space-md);">
+  <div style="width: 100%; max-width: 420px;">
+    <div style="text-align: center; margin-bottom: var(--space-xl);">
+      <h1 style="font-size: 1.75rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">PT EUODOO</h1>
+      <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">Content Management System (CMS)</p>
+    </div>
+
+    <div class="card" style="box-shadow: var(--shadow-level-2);">
+      <div class="card-body">
+        <h2 style="font-size: 1.25rem; margin-bottom: var(--space-md); color: var(--color-text-navy);">Masuk ke Portal Admin</h2>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-error">
+            <%= error %>
+          </div>
+        <% } %>
+
+        <form action="/admin/login" method="POST">
+          <div class="form-group">
+            <label for="email" class="form-label form-label-required">Alamat Email</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="admin@euodoo.com" required autocomplete="email" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label form-label-required">Kata Sandi</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-md btn-block" style="margin-top: var(--space-lg);">
+            Masuk ke Sistem
+          </button>
+        </form>
+      </div>
+      <div class="card-footer text-center" style="font-size: var(--font-size-label-sm); color: var(--color-text-muted);">
+        Akses khusus staf internal berwenang PT Euodoo
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top: var(--space-lg);">
+      <a href="/" style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">&larr; Kembali ke Website Publik</a>
+    </div>
+  </div>
+</body>
+</html>

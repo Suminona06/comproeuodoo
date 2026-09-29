@@ -33,3 +33,10 @@ Thumbs.db
 *.tmp
 *.temp
 .cache/
+
+# User Uploads
+public/uploads/*
+!public/uploads/**/.gitkeep
+
+
+.agents/

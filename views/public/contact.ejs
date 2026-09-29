@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main id="main-content">
+  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+    <div class="container">
+      <span class="section-kicker">Hubungi Kami</span>
+      <h1 style="color: #ffffff; margin-bottom: var(--space-sm);">Permintaan Penawaran & Kemitraan</h1>
+      <p style="color: #cbd5e1; max-width: 680px;">
+        Sampaikan kebutuhan proyek cetakan dan komponen plastik industri Anda. Tim teknis dan sales kami akan segera merespons.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-bg-workspace">
+    <div class="container">
+      <div class="grid" style="grid-template-columns: 1fr; gap: var(--space-xl);">
+        <div style="max-width: 800px; margin: 0 auto; width: 100%;">
+          <div class="card" style="box-shadow: var(--shadow-level-1);">
+            <div class="card-body">
+              <h2 style="font-size: 1.5rem; margin-bottom: var(--space-md);">Formulir RFQ / Kontak</h2>
+              <form action="/leads" method="POST">
+                <div class="form-group">
+                  <label for="name" class="form-label form-label-required">Nama Lengkap</label>
+                  <input type="text" id="name" name="name" class="form-control" placeholder="Contoh: Budi Santoso" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="company" class="form-label form-label-required">Nama Perusahaan / Institusi</label>
+                  <input type="text" id="company" name="company" class="form-control" placeholder="Contoh: PT Manufaktur Sejahtera" required>
+                </div>
+
+                <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label for="email" class="form-label form-label-required">Alamat Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="nama@perusahaan.com" required>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label for="phone" class="form-label form-label-required">Nomor Telepon / WhatsApp</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="081234567890" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="inquiry_type" class="form-label form-label-required">Jenis Permintaan</label>
+                  <select id="inquiry_type" name="inquiry_type" class="form-select" required>
+                    <option value="rfq">Permintaan Penawaran Harga (RFQ)</option>
+                    <option value="partnership">Kemitraan Jangka Panjang / Tooling</option>
+                    <option value="general">Pertanyaan Umum</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="message" class="form-label form-label-required">Rincian Kebutuhan & Spesifikasi</label>
+                  <textarea id="message" name="message" class="form-textarea" placeholder="Jelaskan kebutuhan volume produksi, jenis polimer (PP/PE/PET/ABS), dimensi produk, atau estimasi jadwal..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                  Kirim Permintaan Penawaran
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

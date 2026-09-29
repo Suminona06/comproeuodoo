@@ -1,0 +1,414 @@
+/**
+ * UI Components & Design System Primitives
+ * Acuan: Design/DESIGN.md & Antislop Guidance
+ * PT Euodoo - Website Company Profile & CMS
+ */
+
+/* ========================================================
+   Buttons
+   ======================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-height: 44px; /* Touch target minimum (R-03) */
+  padding: 0 var(--space-lg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-blue-active);
+  border-color: var(--color-blue-active);
+  color: #ffffff;
+  box-shadow: var(--shadow-level-1);
+}
+
+.btn-primary:active {
+  background-color: var(--color-primary-dark);
+}
+
+/* Secondary Button (Corporate Navy Outline) */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-secondary-navy);
+  border: 1.5px solid var(--color-secondary-navy);
+}
+
+.btn-secondary:hover {
+  background-color: #f1f5f9;
+  color: var(--color-navy-deep);
+}
+
+/* Tertiary / Ghost Button */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background-color: var(--color-surface-container);
+  color: var(--color-blue-active);
+}
+
+/* White Buttons (for dark navy sections) */
+.btn-white {
+  background-color: #ffffff;
+  color: var(--color-secondary-navy);
+  border-color: #ffffff;
+}
+
+.btn-white:hover {
+  background-color: #f8fafc;
+  color: var(--color-navy-deep);
+  box-shadow: var(--shadow-level-1);
+}
+
+.btn-outline-white {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1.5px solid #ffffff;
+}
+
+.btn-outline-white:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* Button Sizes */
+.btn-sm {
+  min-height: 36px;
+  padding: 0 var(--space-md);
+  font-size: var(--font-size-label-md);
+}
+
+.btn-lg {
+  min-height: 52px;
+  padding: 0 var(--space-xl);
+  font-size: var(--font-size-body-md);
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+/* ========================================================
+   Cards & Industrial Containers
+   ======================================================== */
+.card {
+  background-color: var(--color-surface-container-lowest);
+  border: var(--border-level-0);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.card-body {
+  padding: var(--space-lg);
+}
+
+.card-header {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  background-color: #ffffff;
+}
+
+.card-footer {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  background-color: #f8fafc;
+}
+
+/* Interactive Card */
+.card-interactive:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-level-1);
+  transform: translateY(-2px);
+}
+
+/* Metric / Stat Card */
+.card-metric {
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.card-metric .metric-val {
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary-navy);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.1;
+  margin-bottom: var(--space-xs);
+}
+
+.card-metric .metric-label {
+  font-size: var(--font-size-label-lg);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ========================================================
+   Form Inputs & Select Controls (44px height)
+   ======================================================== */
+.form-group {
+  margin-bottom: var(--space-md);
+}
+
+.form-label {
+  display: block;
+  font-size: var(--font-size-label-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-navy);
+  margin-bottom: var(--space-xs);
+}
+
+.form-label-required::after {
+  content: ' *';
+  color: var(--color-error);
+}
+
+.form-control,
+.form-select,
+.form-textarea {
+  width: 100%;
+  min-height: 44px; /* Accessible tap target */
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-main);
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-control::placeholder,
+.form-textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.15);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid,
+.form-textarea.is-invalid {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.15);
+}
+
+.form-hint {
+  font-size: var(--font-size-label-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-xs);
+}
+
+.form-error {
+  font-size: var(--font-size-label-sm);
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+  margin-top: var(--space-xs);
+}
+
+/* ========================================================
+   Chips & Operational Badges (Real Semantics)
+   ======================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: var(--font-size-label-md);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.badge-warning {
+  background-color: var(--color-warning-bg);
+  color: #b45309;
+}
+
+.badge-info {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.badge-error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.badge-neutral {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.badge-primary {
+  background-color: var(--color-surface-container);
+  color: var(--color-primary);
+}
+
+/* ========================================================
+   Tables & Industrial Data Grids
+   ======================================================== */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: #ffffff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--font-size-body-sm);
+}
+
+.table th {
+  padding: 12px 16px;
+  background-color: var(--color-secondary-navy);
+  color: #ffffff;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-label-md);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.table th.th-neutral {
+  background-color: #f1f5f9;
+  color: var(--color-text-navy);
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  vertical-align: middle;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.table-dense th,
+.table-dense td {
+  padding: 8px 12px;
+}
+
+/* ========================================================
+   Alerts & Notifications
+   ======================================================== */
+.alert {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-body-sm);
+  margin-bottom: var(--space-md);
+  border: 1px solid transparent;
+}
+
+.alert-success {
+  background-color: var(--color-success-bg);
+  color: #14532d;
+  border-color: #bbf7d0;
+}
+
+.alert-error {
+  background-color: var(--color-error-bg);
+  color: #7f1d1d;
+  border-color: #fecaca;
+}
+
+.alert-info {
+  background-color: var(--color-info-bg);
+  color: #0c4a6e;
+  border-color: #bae6fd;
+}
+
+/* ========================================================
+   Floating WhatsApp Button
+   ======================================================== */
+.wa-float-btn {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  width: 52px;
+  height: 52px;
+  background-color: #25d366;
+  color: #ffffff;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+  z-index: 990;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.wa-float-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
+  color: #ffffff;
+}
+
+.wa-float-btn svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
