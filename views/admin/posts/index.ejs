@@ -1,0 +1,144 @@
+<%- include('../../partials/admin-header') %>
+
+<main class="section-sm" style="flex: 1;">
+  <div class="container">
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title">Publikasi & Berita Industri</h1>
+        <p class="admin-page-subtitle">Kelola artikel wawasan industri, siaran pers, dan dokumentasi operasional pabrik.</p>
+      </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 1fr; gap: var(--space-xl);">
+      <!-- Form Tambah Berita -->
+      <div class="card" style="box-shadow: var(--shadow-level-0);">
+        <div class="card-header">
+          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Tulis Artikel / Berita Baru</h2>
+        </div>
+        <div class="card-body">
+          <form action="/admin/posts?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="title_id" class="form-label form-label-required">Judul Artikel (Indonesia)</label>
+                <input type="text" id="title_id" name="title_id" class="form-control" placeholder="Inovasi Cetakan Presisi Ramah Lingkungan" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="title_en" class="form-label">Judul Artikel (English)</label>
+                <input type="text" id="title_en" name="title_en" class="form-control" placeholder="Eco-Friendly Precision Molding Innovation">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="excerpt_id" class="form-label">Ringkasan / Cuplikan (Indonesia)</label>
+                <textarea id="excerpt_id" name="excerpt_id" class="form-textarea" style="min-height: 80px;" placeholder="Cuplikan singkat untuk ditampilkan di kartu artikel beranda..."></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="excerpt_en" class="form-label">Ringkasan / Cuplikan (English)</label>
+                <textarea id="excerpt_en" name="excerpt_en" class="form-textarea" style="min-height: 80px;" placeholder="Short summary for article cards..."></textarea>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="content_id" class="form-label">Konten Lengkap Artikel (Indonesia)</label>
+              <textarea id="content_id" name="content_id" class="form-textarea" style="min-height: 180px;" placeholder="Tulis isi artikel secara mendalam..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="cover_file" class="form-label">Foto Sampul Artikel</label>
+                <input type="file" id="cover_file" name="cover_file" class="form-control" accept="image/*" data-preview="coverPreview">
+                <div class="form-hint">Maks. 5MB. Otomatis dikonversi ke WebP.</div>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="status" class="form-label">Status Publikasi</label>
+                <select id="status" name="status" class="form-select">
+                  <option value="draft">Simpan sebagai Draf</option>
+                  <option value="published">Publikasikan Sekarang</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: var(--space-lg);">
+              <img id="coverPreview" src="" alt="Pratinjau Sampul" style="max-height: 140px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-md">
+              Simpan Artikel
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Daftar Berita -->
+      <div class="admin-table-card">
+        <div class="admin-table-header">
+          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Daftar Artikel</h2>
+          <span class="badge badge-neutral"><%= posts.length %> Artikel</span>
+        </div>
+        <div class="table-responsive" style="border: none; border-radius: 0;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="th-neutral" style="width: 80px;">Sampul</th>
+                <th class="th-neutral">Judul Artikel</th>
+                <th class="th-neutral">Status</th>
+                <th class="th-neutral">Tanggal Publikasi</th>
+                <th class="th-neutral text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (posts && posts.length > 0) { %>
+                <% posts.forEach(function(post) { %>
+                  <tr>
+                    <td>
+                      <% if (post.cover_image) { %>
+                        <img src="<%= post.cover_image %>" alt="<%= post.title_id %>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);">
+                      <% } else { %>
+                        <div style="width: 60px; height: 60px; background: #e2e8f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b;">
+                          Tanpa Foto
+                        </div>
+                      <% } %>
+                    </td>
+                    <td>
+                      <strong><%= post.title_id %></strong><br>
+                      <small style="color: var(--color-text-muted);"><%= post.title_en || '-' %></small>
+                    </td>
+                    <td>
+                      <% if (post.status === 'published') { %>
+                        <span class="badge badge-success">Terpublikasi</span>
+                      <% } else { %>
+                        <span class="badge badge-neutral">Draf</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <%= post.published_at ? new Date(post.published_at).toLocaleDateString('id-ID') : '-' %>
+                    </td>
+                    <td class="text-right">
+                      <form action="/admin/posts/<%= post.id %>/delete" method="POST" class="form-delete" data-confirm="Hapus artikel ini?" style="display: inline;">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--color-error);">
+                          Hapus
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="5" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
+                    Belum ada artikel berita yang ditambahkan.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/admin-footer') %>

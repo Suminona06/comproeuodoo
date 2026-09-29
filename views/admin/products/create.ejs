@@ -1,0 +1,104 @@
+<%- include('../../partials/admin-header') %>
+
+<main class="section-sm" style="flex: 1;">
+  <div class="container admin-form-container">
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title">Tambah Produk Baru</h1>
+        <p class="admin-page-subtitle">Isi spesifikasi lengkap komponen manufaktur plastik.</p>
+      </div>
+      <div>
+        <a href="/admin/products" class="btn btn-secondary btn-sm">&larr; Kembali ke Daftar</a>
+      </div>
+    </div>
+
+    <div class="card" style="box-shadow: var(--shadow-level-0);">
+      <div class="card-body">
+        <form action="/admin/products?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="form-group">
+            <label for="category_id" class="form-label form-label-required">Kategori Produk</label>
+            <select id="category_id" name="category_id" class="form-select" required>
+              <option value="">Pilih Kategori...</option>
+              <% if (categories && categories.length > 0) { %>
+                <% categories.forEach(function(cat) { %>
+                  <option value="<%= cat.id %>"><%= cat.name_id %></option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="name_id" class="form-label form-label-required">Nama Produk (Indonesia)</label>
+              <input type="text" id="name_id" name="name_id" class="form-control" placeholder="Jerigen Kimia HDPE 20L" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="name_en" class="form-label">Nama Produk (English)</label>
+              <input type="text" id="name_en" name="name_en" class="form-control" placeholder="20L HDPE Chemical Jerrycan">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="description_id" class="form-label">Deskripsi Ringkas (Indonesia)</label>
+              <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Wadah jerigen berdaya tahan tinggi terhadap senyawa asam dan pelarut industri..."></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="description_en" class="form-label">Deskripsi Ringkas (English)</label>
+              <textarea id="description_en" name="description_en" class="form-textarea" placeholder="High-durability container resistant to industrial acids and solvents..."></textarea>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="material_specs" class="form-label">Spesifikasi Material</label>
+              <textarea id="material_specs" name="material_specs" class="form-textarea" placeholder="Contoh: Virgin High-Density Polyethylene (HDPE) Food Grade, Tahan UV"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="technical_specs" class="form-label">Spesifikasi Teknis / Dimensi</label>
+              <textarea id="technical_specs" name="technical_specs" class="form-textarea" placeholder="Contoh: Berat 950g, Tinggi 380mm, Diameter Tutup 55mm"></textarea>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="image_file" class="form-label">Foto Utama Produk</label>
+              <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*" data-preview="prodPreview">
+              <div class="form-hint">Maks. 5MB. Otomatis dikonversi ke WebP.</div>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="sort_order" class="form-label">Urutan Tampil (Sort Order)</label>
+              <input type="number" id="sort_order" name="sort_order" class="form-control" value="0">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Status Produk</label>
+              <div class="flex items-center gap-md" style="height: 44px;">
+                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
+                  <input type="checkbox" name="is_active" value="1" checked> Aktif Tayang
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
+                  <input type="checkbox" name="is_featured" value="1"> Unggulan
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: var(--space-lg);">
+            <img id="prodPreview" src="" alt="Pratinjau Foto Produk" style="max-height: 160px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
+          </div>
+
+          <div class="flex gap-md">
+            <button type="submit" class="btn btn-primary btn-md">
+              Simpan Produk Baru
+            </button>
+            <a href="/admin/products" class="btn btn-secondary btn-md">Batal</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/admin-footer') %>

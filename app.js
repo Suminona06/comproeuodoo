@@ -12,6 +12,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import { csrfProtection } from './middleware/csrfMiddleware.js';
 import { optionalAuth } from './middleware/authMiddleware.js';
+import settingModel from './models/settingModel.js';
 import logger from './utils/logger.js';
 
 dotenv.config();
@@ -63,8 +64,12 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.use(csrfProtection);
 app.use(optionalAuth);
 
-// Global Template Locals Middleware
-app.use((req, res, next) => {
+// Global Template Locals Middleware with cached settings
+let cachedSettings = null;
+let lastSettingsFetch = 0;
+const SETTINGS_CACHE_TTL = 30000; // 30 seconds
+
+app.use(async (req, res, next) => {
   const currentLang = req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
   res.locals.appName = APP_CONFIG.NAME;
   res.locals.currentYear = new Date().getFullYear();
@@ -72,6 +77,18 @@ app.use((req, res, next) => {
   res.locals.path = req.path;
   res.locals.user = req.user || null;
   res.locals.csrfToken = res.locals.csrfToken || '';
+
+  try {
+    const now = Date.now();
+    if (!cachedSettings || (now - lastSettingsFetch) > SETTINGS_CACHE_TTL) {
+      cachedSettings = await settingModel.getAll();
+      lastSettingsFetch = now;
+    }
+    res.locals.settings = cachedSettings || {};
+  } catch (err) {
+    res.locals.settings = cachedSettings || {};
+  }
+
   next();
 });
 

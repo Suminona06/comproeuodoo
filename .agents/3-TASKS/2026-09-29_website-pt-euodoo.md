@@ -175,7 +175,7 @@
 - **Deskripsi:** Membuat layout `views/layouts/admin.ejs` (sidebar navigasi, topbar profil, status flash message) dan controller `dashboardController.js` untuk menampilkan ringkasan metrik (jumlah lead baru, jumlah produk aktif, jumlah banner tayang).
 - **Modul:** Modul 3: Content Management System (CMS)
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-07, T-09
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2.5 jam
@@ -189,7 +189,7 @@
 - **Deskripsi:** Mengimplementasikan `models/bannerModel.js`, `middleware/uploadMiddleware.js` (Multer + Sharp konversi WebP maks 5MB, MP4 maks 30MB), dan `controllers/admin/bannerController.js`. Fitur meliputi tambah media, atur urutan `sort_order`, toggle aktif/nonaktif, dan validasi minimal 1 banner aktif.
 - **Modul:** Modul 3: Content Management System (CMS)
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-10
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3.5 jam
@@ -204,7 +204,7 @@
 - **Deskripsi:** Mengembangkan `models/productModel.js`, controller `productController.js`, dan antarmuka form tambah/edit produk. Menyediakan input dwibahasa (nama & deskripsi ID/EN), kategori, spesifikasi material, upload gambar utama & galeri WebP, serta toggle status aktif.
 - **Modul:** Modul 3: Content Management System (CMS)
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-10, T-11
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 4 jam
@@ -220,7 +220,7 @@
 - **Deskripsi:** Membuat model dan controller untuk mengelola data mesin manufaktur (`models/capabilityModel.js`) serta modul artikel publikasi (`models/postModel.js`, `controllers/admin/postController.js`) yang mendukung draf/publikasi dan upload gambar sampul.
 - **Modul:** Modul 3: Content Management System (CMS)
 - **Prioritas:** Mid
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-10
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
@@ -235,7 +235,7 @@
 - **Deskripsi:** Mengembangkan `models/leadModel.js` dan `controllers/admin/leadController.js` untuk melihat data penawaran harga & kemitraan, filter tipe/status, update status lead (`baru`, `diproses`, `selesai`, `ditolak`), menambah `admin_notes`, serta fungsi unduh data ke format CSV untuk tim sales.
 - **Modul:** Modul 3: Content Management System (CMS)
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-10
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
@@ -249,7 +249,7 @@
 - **Deskripsi:** Mengembangkan `models/settingModel.js` dan `controllers/admin/settingController.js` untuk memperbarui kontak resmi perusahaan, alamat fisik, jam kerja, tautan sosial media, dan nomor WhatsApp beserta pesan awal otomatis tanpa deploy ulang.
 - **Modul:** Modul 3: Content Management System (CMS)
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-10
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam

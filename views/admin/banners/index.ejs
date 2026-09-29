@@ -1,0 +1,157 @@
+<%- include('../../partials/admin-header') %>
+
+<main class="section-sm" style="flex: 1;">
+  <div class="container">
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title">Manajemen Banner Hero</h1>
+        <p class="admin-page-subtitle">
+          Kelola media gambar atau video yang tampil pada bagian hero beranda utama.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 1fr; gap: var(--space-xl);">
+      <!-- Form Tambah Banner Baru -->
+      <div class="card" style="box-shadow: var(--shadow-level-0);">
+        <div class="card-header">
+          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Tambah Banner Hero Baru</h2>
+        </div>
+        <div class="card-body">
+          <form action="/admin/banners?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="title_id" class="form-label form-label-required">Judul Banner (Indonesia)</label>
+                <input type="text" id="title_id" name="title_id" class="form-control" placeholder="Presisi Manufaktur Plastik Industri" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="title_en" class="form-label">Judul Banner (English)</label>
+                <input type="text" id="title_en" name="title_en" class="form-control" placeholder="Precision Industrial Plastic Manufacturing">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="subtitle_id" class="form-label">Subjudul (Indonesia)</label>
+                <input type="text" id="subtitle_id" name="subtitle_id" class="form-control" placeholder="Solusi komponen cetakan berteknologi tinggi...">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="subtitle_en" class="form-label">Subjudul (English)</label>
+                <input type="text" id="subtitle_en" name="subtitle_en" class="form-control" placeholder="High-technology molded component solutions...">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3" style="margin-bottom: var(--space-md);">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="media_file" class="form-label form-label-required">Berkas Media (Gambar / Video)</label>
+                <input type="file" id="media_file" name="media_file" class="form-control" accept="image/*,video/mp4,video/webm" required data-preview="bannerPreview">
+                <div class="form-hint">Maks. gambar 5MB (otomatis WebP), video MP4 maks. 30MB.</div>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="link_url" class="form-label">Tautan Tombol CTA (Opsional)</label>
+                <input type="text" id="link_url" name="link_url" class="form-control" placeholder="/contact atau /products">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="sort_order" class="form-label">Urutan Tampil (Sort Order)</label>
+                <input type="number" id="sort_order" name="sort_order" class="form-control" value="0" min="0">
+              </div>
+            </div>
+
+            <!-- Image Preview Box -->
+            <div style="margin-bottom: var(--space-md);">
+              <img id="bannerPreview" src="" alt="Pratinjau Banner" style="max-height: 180px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-md">
+              Unggah & Simpan Banner
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Daftar Banner yang Ada -->
+      <div class="admin-table-card">
+        <div class="admin-table-header">
+          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Daftar Banner Hero Aktif & Draf</h2>
+          <span class="badge badge-neutral"><%= banners.length %> Banner</span>
+        </div>
+        <div class="table-responsive" style="border: none; border-radius: 0;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="th-neutral" style="width: 140px;">Pratinjau</th>
+                <th class="th-neutral">Judul & Keterangan</th>
+                <th class="th-neutral">Tipe</th>
+                <th class="th-neutral">Urutan</th>
+                <th class="th-neutral">Status</th>
+                <th class="th-neutral text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (banners && banners.length > 0) { %>
+                <% banners.forEach(function(banner) { %>
+                  <tr>
+                    <td>
+                      <% if (banner.media_type === 'video') { %>
+                        <div style="background: #0f172a; color: #fff; padding: 12px; border-radius: 4px; font-size: 11px; text-align: center;">
+                          VIDEO MP4
+                        </div>
+                      <% } else { %>
+                        <img src="<%= banner.file_url %>" alt="<%= banner.title_id %>" style="width: 120px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);">
+                      <% } %>
+                    </td>
+                    <td>
+                      <strong><%= banner.title_id %></strong><br>
+                      <small style="color: var(--color-text-muted);"><%= banner.title_en || '-' %></small>
+                      <% if (banner.link_url) { %>
+                        <br><small style="color: var(--color-primary);">Tautan: <%= banner.link_url %></small>
+                      <% } %>
+                    </td>
+                    <td>
+                      <span class="badge badge-neutral"><%= banner.media_type.toUpperCase() %></span>
+                    </td>
+                    <td><%= banner.sort_order %></td>
+                    <td>
+                      <% if (banner.is_active) { %>
+                        <span class="badge badge-success">Aktif</span>
+                      <% } else { %>
+                        <span class="badge badge-neutral">Nonaktif</span>
+                      <% } %>
+                    </td>
+                    <td class="text-right">
+                      <div class="flex gap-xs justify-end">
+                        <form action="/admin/banners/<%= banner.id %>/status" method="POST" style="display: inline;">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <button type="submit" class="btn btn-secondary btn-sm" title="Ubah status tayang">
+                            <%= banner.is_active ? 'Nonaktifkan' : 'Aktifkan' %>
+                          </button>
+                        </form>
+
+                        <form action="/admin/banners/<%= banner.id %>/delete" method="POST" class="form-delete" data-confirm="Hapus banner ini secara permanen?" style="display: inline;">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                          <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--color-error);">
+                            Hapus
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
+                    Belum ada banner hero yang ditambahkan.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/admin-footer') %>

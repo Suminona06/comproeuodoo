@@ -1,108 +1,209 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= typeof title !== 'undefined' ? title : 'Dashboard Admin - PT Euodoo' %></title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
-</head>
-<body style="background-color: var(--color-workspace-bg); min-height: 100vh; display: flex; flex-direction: column;">
-  <!-- Admin Top Bar -->
-  <header style="background-color: var(--color-navy-deep); color: #ffffff; padding: var(--space-sm) 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-    <div class="container flex items-center justify-between">
-      <div class="flex items-center gap-md">
-        <span style="font-weight: 700; letter-spacing: -0.02em;">PT EUODOO CMS</span>
-        <span class="badge badge-info" style="font-size: 11px;">Admin Panel</span>
+<%- include('../partials/admin-header') %>
+
+<main style="flex: 1;">
+  <div class="admin-page-header">
+    <div>
+      <h1 class="admin-page-title">Ringkasan Operasional CMS</h1>
+      <p class="admin-page-subtitle">
+        Pantau metrik operasional harian, kelola inquiry leads RFQ masuk, dan akses pintasan katalog.
+      </p>
+    </div>
+    <div class="flex items-center gap-sm">
+      <a href="/admin/products/create" class="btn btn-primary btn-sm">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>+ Tambah Produk</span>
+      </a>
+      <a href="/admin/leads/export" class="btn btn-secondary btn-sm" title="Unduh arsip CSV seluruh leads">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>Ekspor CSV</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Interactive Metric Cards Grid -->
+  <div class="grid grid-cols-4" style="margin-bottom: var(--space-xl); gap: var(--space-md);">
+    <!-- Card 1: Pending Leads -->
+    <a href="/admin/leads?status=baru" class="metric-card-interactive">
+      <div class="metric-top">
+        <span class="metric-number" style="color: var(--color-primary);">
+          <%= typeof stats !== 'undefined' ? stats.pendingLeads : 0 %>
+        </span>
+        <div class="metric-icon-wrap" style="background-color: rgba(0, 85, 184, 0.1); color: var(--color-primary);">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
       </div>
+      <div class="metric-footer">
+        <span class="metric-caption">Inquiry RFQ Baru (Pending)</span>
+        <span class="metric-action-arrow">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- Card 2: Active Products -->
+    <a href="/admin/products" class="metric-card-interactive">
+      <div class="metric-top">
+        <span class="metric-number" style="color: var(--color-secondary-navy);">
+          <%= typeof stats !== 'undefined' ? stats.activeProducts : 0 %>
+        </span>
+        <div class="metric-icon-wrap" style="background-color: rgba(12, 25, 44, 0.08); color: var(--color-secondary-navy);">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline></svg>
+        </div>
+      </div>
+      <div class="metric-footer">
+        <span class="metric-caption">Produk Aktif Terdaftar</span>
+        <span class="metric-action-arrow">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- Card 3: Published Posts -->
+    <a href="/admin/posts" class="metric-card-interactive">
+      <div class="metric-top">
+        <span class="metric-number" style="color: var(--color-success);">
+          <%= typeof stats !== 'undefined' ? stats.publishedPosts : 0 %>
+        </span>
+        <div class="metric-icon-wrap" style="background-color: rgba(16, 185, 129, 0.1); color: var(--color-success);">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1"></path><polyline points="15 3 21 3 21 9"></polyline></svg>
+        </div>
+      </div>
+      <div class="metric-footer">
+        <span class="metric-caption">Artikel Terpublikasi</span>
+        <span class="metric-action-arrow">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- Card 4: Active Banners -->
+    <a href="/admin/banners" class="metric-card-interactive">
+      <div class="metric-top">
+        <span class="metric-number" style="color: var(--color-accent-teal);">
+          <%= typeof stats !== 'undefined' ? stats.activeBanners : 0 %>
+        </span>
+        <div class="metric-icon-wrap" style="background-color: rgba(0, 168, 150, 0.1); color: var(--color-accent-teal);">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+        </div>
+      </div>
+      <div class="metric-footer">
+        <span class="metric-caption">Banner Hero Aktif</span>
+        <span class="metric-action-arrow">&rarr;</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Quick Action Strip -->
+  <div class="dashboard-actions-strip">
+    <div class="dashboard-actions-title">
+      Pintasan Tindakan Cepat (Quick Actions)
+    </div>
+    <div class="dashboard-actions-btns">
+      <a href="/admin/products/create" class="btn btn-secondary btn-sm">+ Produk Baru</a>
+      <a href="/admin/banners" class="btn btn-secondary btn-sm">+ Upload Banner</a>
+      <a href="/admin/capabilities" class="btn btn-secondary btn-sm">+ Tambah Mesin</a>
+      <a href="/admin/posts" class="btn btn-secondary btn-sm">+ Tulis Artikel</a>
+      <a href="/admin/settings" class="btn btn-secondary btn-sm">Pengaturan WA</a>
+    </div>
+  </div>
+
+  <!-- Interactive Leads Table Card -->
+  <div class="admin-table-card">
+    <div class="admin-table-header">
       <div class="flex items-center gap-md">
-        <a href="/" target="_blank" style="color: #cbd5e1; font-size: var(--font-size-body-sm);">Lihat Website &nearr;</a>
-        <a href="/admin/login" style="color: #fca5a5; font-size: var(--font-size-body-sm);">Keluar</a>
+        <h2 style="font-size: 1.05rem; font-weight: 600; color: var(--color-secondary-navy); margin: 0;">
+          5 Permintaan Penawaran (RFQ) Terbaru
+        </h2>
+        <div class="filter-pills-bar">
+          <button type="button" class="filter-pill active" data-filter="all">Semua</button>
+          <button type="button" class="filter-pill" data-filter="baru">Baru</button>
+          <button type="button" class="filter-pill" data-filter="diproses">Diproses</button>
+          <button type="button" class="filter-pill" data-filter="selesai">Selesai</button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-sm">
+        <div class="table-live-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="tableLiveSearchInput" placeholder="Cari nama, perusahaan..." aria-label="Cari data leads">
+        </div>
+        <a href="/admin/leads" class="btn btn-secondary btn-sm">
+          Semua Leads &rarr;
+        </a>
       </div>
     </div>
-  </header>
 
-  <!-- Admin Sub Navigation -->
-  <nav style="background-color: #ffffff; border-bottom: 1px solid var(--color-border); padding: 0;">
-    <div class="container flex items-center gap-lg" style="height: 52px; overflow-x: auto;">
-      <a href="/admin/dashboard" class="nav-link <%= activeNav === 'dashboard' ? 'active' : '' %>" style="font-weight: 600;">Dashboard</a>
-      <a href="/admin/banners" class="nav-link" style="color: var(--color-text-muted);">Banners</a>
-      <a href="/admin/products" class="nav-link" style="color: var(--color-text-muted);">Produk</a>
-      <a href="/admin/posts" class="nav-link" style="color: var(--color-text-muted);">Berita</a>
-      <a href="/admin/leads" class="nav-link" style="color: var(--color-text-muted);">Leads Masuk</a>
-      <a href="/admin/settings" class="nav-link" style="color: var(--color-text-muted);">Pengaturan</a>
-    </div>
-  </nav>
-
-  <!-- Admin Content -->
-  <main class="section-sm" style="flex: 1;">
-    <div class="container">
-      <div style="margin-bottom: var(--space-xl);">
-        <h1 style="font-size: 1.75rem; color: var(--color-secondary-navy);">Ringkasan Operasional CMS</h1>
-        <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm);">
-          Selamat datang di panel pengelolaan konten resmi PT Euodoo.
-        </p>
-      </div>
-
-      <!-- Overview Metric Cards -->
-      <div class="grid grid-cols-3" style="margin-bottom: var(--space-xl);">
-        <div class="card-metric">
-          <div class="metric-val" style="color: var(--color-primary);">0</div>
-          <div class="metric-label">Permintaan RFQ Baru (Pending)</div>
-        </div>
-
-        <div class="card-metric">
-          <div class="metric-val" style="color: var(--color-secondary-navy);">0</div>
-          <div class="metric-label">Produk Terdaftar</div>
-        </div>
-
-        <div class="card-metric">
-          <div class="metric-val" style="color: var(--color-success);">0</div>
-          <div class="metric-label">Artikel Terpublikasi</div>
-        </div>
-      </div>
-
-      <!-- Recent Leads Table -->
-      <div class="card">
-        <div class="card-header flex items-center justify-between">
-          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Permintaan Penawaran (RFQ) Terbaru</h2>
-          <span class="badge badge-neutral">Sistem Siap</span>
-        </div>
-        <div class="table-responsive" style="border: none; border-radius: 0;">
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="th-neutral">Tanggal</th>
-                <th class="th-neutral">Nama / Perusahaan</th>
-                <th class="th-neutral">Kontak</th>
-                <th class="th-neutral">Tipe Permintaan</th>
-                <th class="th-neutral">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="5" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
-                  Belum ada pesan RFQ masuk. Database akan diinisialisasi pada Modul 1.
+    <div class="table-responsive" style="border: none; border-radius: 0;">
+      <table class="table interactive-table">
+        <thead>
+          <tr>
+            <th class="th-neutral" style="width: 110px;">Tanggal</th>
+            <th class="th-neutral">Nama / Perusahaan</th>
+            <th class="th-neutral">Kontak Cepat</th>
+            <th class="th-neutral">Jenis Kebutuhan</th>
+            <th class="th-neutral" style="width: 120px;">Status</th>
+            <th class="th-neutral text-right" style="width: 130px;">Tindakan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof recentLeads !== 'undefined' && recentLeads.length > 0) { %>
+            <% recentLeads.forEach(function(lead) { %>
+              <tr data-status="<%= lead.status %>">
+                <td>
+                  <span style="font-size: 12px; color: var(--color-text-muted);">
+                    <%= new Date(lead.created_at).toLocaleDateString('id-ID') %>
+                  </span>
+                </td>
+                <td>
+                  <strong><%= lead.name %></strong><br>
+                  <small style="color: var(--color-text-muted);"><%= lead.company || 'Perorangan' %></small>
+                </td>
+                <td>
+                  <a href="mailto:<%= lead.email %>" style="color: var(--color-primary); font-size: 13px;">
+                    <%= lead.email %>
+                  </a>
+                  <% if (lead.phone) { %>
+                    <br>
+                    <a href="https://wa.me/<%= lead.phone.replace(/[^0-9]/g, '') %>" target="_blank" rel="noopener noreferrer" style="color: #16a34a; font-size: 12px; font-weight: 500;">
+                      WA: <%= lead.phone %> &nearr;
+                    </a>
+                  <% } %>
+                </td>
+                <td>
+                  <span class="badge badge-primary" style="font-size: 11px; margin-bottom: 2px;"><%= lead.type %></span>
+                  <div style="font-size: 12px; color: var(--color-text-muted); max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    <%= lead.message %>
+                  </div>
+                </td>
+                <td>
+                  <% if (lead.status === 'baru') { %>
+                    <span class="badge badge-warning">Baru</span>
+                  <% } else if (lead.status === 'diproses') { %>
+                    <span class="badge badge-info">Diproses</span>
+                  <% } else if (lead.status === 'selesai') { %>
+                    <span class="badge badge-success">Selesai</span>
+                  <% } else { %>
+                    <span class="badge badge-error">Ditolak</span>
+                  <% } %>
+                </td>
+                <td class="text-right">
+                  <a href="/admin/leads" class="btn btn-ghost btn-sm" title="Buka kelola status">
+                    Kelola &rarr;
+                  </a>
                 </td>
               </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center" style="padding: var(--space-2xl); color: var(--color-text-muted);">
+                Belum ada pesan RFQ masuk dari formulir website.
+              </td>
+            </tr>
+          <% } %>
+          <tr id="tableFilterEmptyRow" style="display: none;">
+            <td colspan="6" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
+              Tidak ada data leads yang cocok dengan kata kunci pencarian atau filter status.
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </main>
+  </div>
+</main>
 
-  <footer style="background-color: #ffffff; border-top: 1px solid var(--color-border); padding: var(--space-md) 0; font-size: var(--font-size-body-sm); color: var(--color-text-muted); text-align: center;">
-    <div class="container">
-      PT Euodoo CMS v1.0 &copy; <%= currentYear %>
-    </div>
-  </footer>
-</body>
-</html>
+<%- include('../partials/admin-footer') %>
+

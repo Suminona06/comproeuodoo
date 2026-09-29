@@ -1,0 +1,120 @@
+<%- include('../../partials/admin-header') %>
+
+<main class="section-sm" style="flex: 1;">
+  <div class="container admin-form-container">
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title">Edit Produk #<%= product.id %></h1>
+        <p class="admin-page-subtitle">Perbarui data produk <%= product.name_id %>.</p>
+      </div>
+      <div>
+        <a href="/admin/products" class="btn btn-secondary btn-sm">&larr; Kembali ke Daftar</a>
+      </div>
+    </div>
+
+    <div class="card" style="box-shadow: var(--shadow-level-0);">
+      <div class="card-body">
+        <form action="/admin/products/<%= product.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="form-group">
+            <label for="category_id" class="form-label form-label-required">Kategori Produk</label>
+            <select id="category_id" name="category_id" class="form-select" required>
+              <% if (categories && categories.length > 0) { %>
+                <% categories.forEach(function(cat) { %>
+                  <option value="<%= cat.id %>" <%= product.category_id === cat.id ? 'selected' : '' %>>
+                    <%= cat.name_id %>
+                  </option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="name_id" class="form-label form-label-required">Nama Produk (Indonesia)</label>
+              <input type="text" id="name_id" name="name_id" class="form-control" value="<%= product.name_id %>" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="name_en" class="form-label">Nama Produk (English)</label>
+              <input type="text" id="name_en" name="name_en" class="form-control" value="<%= product.name_en || '' %>">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="description_id" class="form-label">Deskripsi Ringkas (Indonesia)</label>
+              <textarea id="description_id" name="description_id" class="form-textarea"><%= product.description_id || '' %></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="description_en" class="form-label">Deskripsi Ringkas (English)</label>
+              <textarea id="description_en" name="description_en" class="form-textarea"><%= product.description_en || '' %></textarea>
+            </div>
+          </div>
+
+          <% 
+            let matRaw = '';
+            if (product.material_specs) {
+              matRaw = typeof product.material_specs === 'object' ? (product.material_specs.raw || JSON.stringify(product.material_specs)) : product.material_specs;
+            }
+            let techRaw = '';
+            if (product.technical_specs) {
+              techRaw = typeof product.technical_specs === 'object' ? (product.technical_specs.raw || JSON.stringify(product.technical_specs)) : product.technical_specs;
+            }
+          %>
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="material_specs" class="form-label">Spesifikasi Material</label>
+              <textarea id="material_specs" name="material_specs" class="form-textarea"><%= matRaw %></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="technical_specs" class="form-label">Spesifikasi Teknis / Dimensi</label>
+              <textarea id="technical_specs" name="technical_specs" class="form-textarea"><%= techRaw %></textarea>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="image_file" class="form-label">Ganti Foto Utama</label>
+              <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*" data-preview="prodEditPreview">
+              <div class="form-hint">Biarkan kosong jika tidak ingin mengubah foto.</div>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="sort_order" class="form-label">Urutan Tampil (Sort Order)</label>
+              <input type="number" id="sort_order" name="sort_order" class="form-control" value="<%= product.sort_order || 0 %>">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Status Produk</label>
+              <div class="flex items-center gap-md" style="height: 44px;">
+                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
+                  <input type="checkbox" name="is_active" value="1" <%= product.is_active ? 'checked' : '' %>> Aktif Tayang
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
+                  <input type="checkbox" name="is_featured" value="1" <%= product.is_featured ? 'checked' : '' %>> Unggulan
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: var(--space-lg);">
+            <% if (product.main_image) { %>
+              <div style="margin-bottom: var(--space-xs); font-size: var(--font-size-label-sm); color: var(--color-text-muted);">Foto Saat Ini:</div>
+              <img id="prodEditPreview" src="<%= product.main_image %>" alt="<%= product.name_id %>" style="max-height: 160px; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+            <% } else { %>
+              <img id="prodEditPreview" src="" alt="Pratinjau" style="max-height: 160px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
+            <% } %>
+          </div>
+
+          <div class="flex gap-md">
+            <button type="submit" class="btn btn-primary btn-md">
+              Simpan Perubahan
+            </button>
+            <a href="/admin/products" class="btn btn-secondary btn-md">Batal</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/admin-footer') %>

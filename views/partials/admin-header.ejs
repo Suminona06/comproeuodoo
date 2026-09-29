@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'PT Euodoo CMS' %></title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="admin-backdrop" id="adminBackdrop" aria-hidden="true"></div>
+
+  <div class="admin-app-layout">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Navigasi Menu Utama">
+      <div class="sidebar-header">
+        <a href="/admin/dashboard" class="sidebar-brand">
+          <div class="sidebar-brand-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+          </div>
+          <div class="sidebar-brand-text">
+            <span class="brand-title">EUODOO</span>
+            <span class="brand-sub">CMS ADMIN</span>
+          </div>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Tutup navigasi">
+          &times;
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Menu CMS">
+        <div class="nav-group-title">IKHTISAR UTAMA</div>
+        
+        <a href="/admin/dashboard" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'dashboard' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          <span class="nav-text">Dashboard</span>
+        </a>
+
+        <a href="/admin/leads" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'leads' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <span class="nav-text">Leads & RFQ</span>
+          <span class="nav-pill" id="leadsNavPill">Inquiry</span>
+        </a>
+
+        <div class="nav-group-title">KATALOG & KONTEN</div>
+
+        <a href="/admin/banners" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'banners' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span class="nav-text">Banner Hero</span>
+        </a>
+
+        <a href="/admin/products" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'products' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span class="nav-text">Produk Manufaktur</span>
+        </a>
+
+        <a href="/admin/capabilities" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'capabilities' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="nav-text">Kapabilitas Mesin</span>
+        </a>
+
+        <a href="/admin/posts" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'posts' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+          </svg>
+          <span class="nav-text">Berita & Artikel</span>
+        </a>
+
+        <div class="nav-group-title">PENGATURAN</div>
+
+        <a href="/admin/settings" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'settings' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="nav-text">Profil & WhatsApp</span>
+        </a>
+
+        <a href="/admin/change-password" class="sidebar-link <%= typeof activeNav !== 'undefined' && activeNav === 'password' ? 'active' : '' %>">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span class="nav-text">Ganti Sandi</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer User Profile -->
+      <div class="sidebar-footer">
+        <div class="sidebar-user-block">
+          <div class="sidebar-avatar">
+            <%= (typeof user !== 'undefined' && user && user.name ? user.name.charAt(0) : 'A').toUpperCase() %>
+          </div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name"><%= typeof user !== 'undefined' && user && user.name ? user.name : 'Administrator' %></div>
+            <div class="sidebar-user-role"><%= typeof user !== 'undefined' && user && user.role ? user.role : 'super_admin' %></div>
+          </div>
+        </div>
+        <div class="sidebar-actions">
+          <a href="/" target="_blank" class="sidebar-footer-btn" title="Buka website publik">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Web</span>
+          </a>
+          <a href="/admin/logout" class="sidebar-footer-btn btn-logout" title="Keluar dari sesi admin">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span>Keluar</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <div class="admin-main-wrapper">
+      <!-- Topbar Header -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Buka Navigasi Sidebar">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="topbar-breadcrumb">
+            <span class="breadcrumb-item breadcrumb-dim">Admin</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item breadcrumb-active">
+              <%= typeof activeNav !== 'undefined' ? (
+                activeNav === 'dashboard' ? 'Ringkasan Dashboard' :
+                activeNav === 'leads' ? 'Permintaan RFQ & Leads' :
+                activeNav === 'banners' ? 'Manajemen Banner Hero' :
+                activeNav === 'products' ? 'Katalog Produk' :
+                activeNav === 'capabilities' ? 'Kapabilitas Mesin' :
+                activeNav === 'posts' ? 'Publikasi & Berita' :
+                activeNav === 'settings' ? 'Pengaturan Profil & WA' :
+                activeNav === 'password' ? 'Keamanan Kata Sandi' : 'Manajemen'
+              ) : 'Dashboard' %>
+            </span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="topbar-status">
+            <span class="status-pulse-dot"></span>
+            <span class="status-text">MySQL Terhubung</span>
+          </div>
+          <a href="/" target="_blank" class="btn btn-secondary btn-sm topbar-preview-btn">
+            Lihat Web &nearr;
+          </a>
+        </div>
+      </header>
+
+      <!-- Flash Notification Container -->
+      <div class="admin-alerts-container">
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-error" role="alert">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span><%= error %></span>
+          </div>
+        <% } %>
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="alert alert-success" role="alert">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span><%= success %></span>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Main Page Content Begins -->
+      <div class="admin-page-content">

@@ -37,6 +37,7 @@ export const csrfProtection = (req, res, next) => {
   // Validate incoming token on state-changing requests (POST, PUT, DELETE, PATCH)
   const incomingToken =
     req.body?._csrf ||
+    req.query?._csrf ||
     req.headers['x-csrf-token'] ||
     req.headers['csrf-token'];
 

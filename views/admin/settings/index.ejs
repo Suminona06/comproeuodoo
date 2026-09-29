@@ -1,0 +1,97 @@
+<%- include('../../partials/admin-header') %>
+
+<main class="section-sm" style="flex: 1;">
+  <div class="container admin-form-container">
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title">Pengaturan Profil Perusahaan & Kontak</h1>
+        <p class="admin-page-subtitle">Kelola informasi identitas PT Euodoo, nomor telepon, alamat, dan tombol WhatsApp.</p>
+      </div>
+    </div>
+
+    <div class="card" style="box-shadow: var(--shadow-level-0);">
+      <div class="card-body">
+        <form action="/admin/settings" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <h3 style="font-size: 1.125rem; color: var(--color-text-navy); margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs);">
+            Identitas Utama Perusahaan
+          </h3>
+
+          <div class="form-group">
+            <label for="company_name" class="form-label form-label-required">Nama Resmi Perusahaan</label>
+            <input type="text" id="company_name" name="company_name" class="form-control" value="<%= settings.company_name || 'PT Euodoo' %>" required>
+          </div>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="company_tagline_id" class="form-label">Tagline (Indonesia)</label>
+              <input type="text" id="company_tagline_id" name="company_tagline_id" class="form-control" value="<%= settings.company_tagline_id || '' %>">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="company_tagline_en" class="form-label">Tagline (English)</label>
+              <input type="text" id="company_tagline_en" name="company_tagline_en" class="form-control" value="<%= settings.company_tagline_en || '' %>">
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.125rem; color: var(--color-text-navy); margin-top: var(--space-xl); margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs);">
+            Kontak & Alamat Pabrik
+          </h3>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="company_phone" class="form-label">Nomor Telepon Kantor</label>
+              <input type="text" id="company_phone" name="company_phone" class="form-control" value="<%= settings.company_phone || '' %>">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="company_email" class="form-label">Alamat Email Resmi</label>
+              <input type="email" id="company_email" name="company_email" class="form-control" value="<%= settings.company_email || '' %>">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="company_address" class="form-label">Alamat Kantor & Fasilitas Pabrik</label>
+            <textarea id="company_address" name="company_address" class="form-textarea" style="min-height: 80px;"><%= settings.company_address || '' %></textarea>
+          </div>
+
+          <h3 style="font-size: 1.125rem; color: var(--color-text-navy); margin-top: var(--space-xl); margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs);">
+            Integrasi Tombol WhatsApp Mengambang (Floating Button)
+          </h3>
+
+          <div class="form-group">
+            <label for="whatsapp_number" class="form-label">Nomor WhatsApp Resmi (Customer Service / Sales)</label>
+            <input type="text" id="whatsapp_number" name="whatsapp_number" class="form-control" value="<%= settings.whatsapp_number || '' %>" placeholder="6281234567890">
+            <div class="form-hint">Format internasional tanpa simbol plus (+) atau spasi. Contoh: 6281234567890.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="whatsapp_default_message" class="form-label">Pesan Otomatis WhatsApp (Default Message)</label>
+            <textarea id="whatsapp_default_message" name="whatsapp_default_message" class="form-textarea" style="min-height: 80px;"><%= settings.whatsapp_default_message || '' %></textarea>
+            <div class="form-hint">Teks ini akan otomatis muncul pada kolom obrolan WhatsApp saat pengunjung mengklik tombol WhatsApp.</div>
+          </div>
+
+          <h3 style="font-size: 1.125rem; color: var(--color-text-navy); margin-top: var(--space-xl); margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs);">
+            SEO Meta Description
+          </h3>
+
+          <div class="grid grid-cols-2" style="margin-bottom: var(--space-lg);">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="meta_description_id" class="form-label">Meta Description (Indonesia)</label>
+              <textarea id="meta_description_id" name="meta_description_id" class="form-textarea"><%= settings.meta_description_id || '' %></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="meta_description_en" class="form-label">Meta Description (English)</label>
+              <textarea id="meta_description_en" name="meta_description_en" class="form-textarea"><%= settings.meta_description_en || '' %></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-md">
+            Simpan Seluruh Pengaturan
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../../partials/admin-footer') %>

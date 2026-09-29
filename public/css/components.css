@@ -382,33 +382,70 @@
 }
 
 /* ========================================================
-   Floating WhatsApp Button
+   Floating WhatsApp Button (R-03, R-32 Compliant)
    ======================================================== */
-.wa-float-btn {
+.wa-float-container {
   position: fixed;
-  bottom: var(--space-lg);
-  right: var(--space-lg);
-  width: 52px;
-  height: 52px;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  z-index: 999;
+}
+
+.wa-float-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 52px;
+  padding: 0 var(--space-lg) 0 var(--space-md);
   background-color: #25d366;
   color: #ffffff;
+  text-decoration: none;
   border-radius: var(--radius-pill);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
-  z-index: 990;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  cursor: pointer;
 }
 
 .wa-float-btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
+  transform: translateY(-2px);
+  background-color: #20ba59;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
   color: #ffffff;
 }
 
+.wa-float-btn:focus-visible {
+  outline: 3px solid #128c7e;
+  outline-offset: 3px;
+}
+
 .wa-float-btn svg {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   fill: currentColor;
+  flex-shrink: 0;
+}
+
+.wa-float-text {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .wa-float-container {
+    bottom: var(--space-md);
+    right: var(--space-md);
+  }
+
+  .wa-float-btn {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .wa-float-text {
+    display: none;
+  }
 }
