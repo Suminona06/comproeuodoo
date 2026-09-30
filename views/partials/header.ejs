@@ -5,10 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <title><%= typeof title !== 'undefined' ? title : 'PT Euodoo - Presisi Manufaktur Plastik Berkualitas Tinggi' %></title>
-  <meta name="description" content="PT Euodoo adalah mitra manufaktur presisi komponen dan produk plastik industri berkualitas tinggi dengan standar keunggulan operasional.">
+  <title><%= typeof title !== 'undefined' ? title : 'PT Euodoo Presisi Manufaktur Plastik Berkualitas Tinggi' %></title>
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : (currentLang === 'en' ? 'PT Euodoo is a trusted precision plastic injection and blow molding manufacturer for industrial supply chains.' : 'PT Euodoo adalah mitra manufaktur presisi komponen plastik industri dan blow molding berkualitas tinggi.') %>">
   <meta name="keywords" content="manufaktur plastik, injection molding, presisi plastik, blow molding, kemasan industri, PT Euodoo">
   <meta name="author" content="PT Euodoo">
+
+  <!-- Alternate Language Links & Canonical -->
+  <link rel="canonical" href="<%= (typeof path !== 'undefined' ? path : '/') %>">
+  <link rel="alternate" hreflang="id" href="<%= (typeof path !== 'undefined' ? path : '/') %>?lang=id">
+  <link rel="alternate" hreflang="en" href="<%= (typeof path !== 'undefined' ? path : '/') %>?lang=en">
+  <link rel="alternate" hreflang="x-default" href="<%= (typeof path !== 'undefined' ? path : '/') %>">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="<%= typeof ogType !== 'undefined' ? ogType : 'website' %>">
+  <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'PT Euodoo Presisi Indonesia' %>">
+  <meta property="og:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Manufaktur Presisi Komponen dan Wadah Plastik Industri Berkualitas Tinggi.' %>">
+  <meta property="og:url" content="<%= (typeof path !== 'undefined' ? path : '/') %>">
+  <meta property="og:site_name" content="PT Euodoo Presisi Indonesia">
+  <% if (typeof ogImage !== 'undefined' && ogImage) { %>
+    <meta property="og:image" content="<%= ogImage %>">
+  <% } %>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= typeof title !== 'undefined' ? title : 'PT Euodoo Presisi Indonesia' %>">
+  <meta name="twitter:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Manufaktur Presisi Komponen dan Wadah Plastik Industri Berkualitas Tinggi.' %>">
   
   <!-- Preconnect to Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

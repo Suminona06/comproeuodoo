@@ -7,49 +7,50 @@
           <span class="brand-badge" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff;">MANUFACTURING</span>
         </div>
         <p>
-          Perusahaan manufaktur presisi spesialis injection molding dan blow molding produk plastik industri dengan standar kendali mutu berstandar tinggi.
+          <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id) ? (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id) : t('footer.company_desc') %>
         </p>
       </div>
 
       <div class="footer-col">
-        <h4>Navigasi</h4>
+        <h4><%= t('footer.nav_heading') %></h4>
         <ul class="footer-links">
-          <li><a href="/">Beranda</a></li>
-          <li><a href="/products">Katalog Produk</a></li>
-          <li><a href="/capabilities">Kapabilitas Mesin</a></li>
-          <li><a href="/news">Publikasi & Berita</a></li>
-          <li><a href="/contact">Kontak Resmi</a></li>
+          <li><a href="/"><%= t('nav.home') %></a></li>
+          <li><a href="/products"><%= t('nav.products') %></a></li>
+          <li><a href="/capabilities"><%= t('nav.capabilities') %></a></li>
+          <li><a href="/about"><%= t('nav.about') %></a></li>
+          <li><a href="/news"><%= t('nav.news') %></a></li>
+          <li><a href="/contact"><%= t('nav.contact') %></a></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h4>Layanan Manufaktur</h4>
+        <h4><%= t('footer.services_heading') %></h4>
         <ul class="footer-links">
           <li><a href="/capabilities">Precision Injection Molding</a></li>
           <li><a href="/capabilities">Custom Blow Molding</a></li>
           <li><a href="/capabilities">Tooling & Mold Design</a></li>
-          <li><a href="/capabilities">Kontrol Kualitas ISO</a></li>
+          <li><a href="/about">Standar Kontrol Kualitas</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h4>Kontak Perusahaan</h4>
+        <h4><%= t('footer.contact_heading') %></h4>
         <p style="margin-bottom: var(--space-xs);">
-          <strong>Kantor & Pabrik:</strong><br>
-          Kawasan Industri Terpadu, Indonesia
+          <strong><%= t('contact.office_address_heading') %>:</strong><br>
+          <%= typeof settings !== 'undefined' && settings && settings.company_address ? settings.company_address : 'Kawasan Industri Terpadu, Indonesia' %>
         </p>
         <p style="margin-bottom: var(--space-xs);">
-          <strong>Telepon:</strong> (021) 555-0199
+          <strong><%= t('contact.office_phone_heading') %>:</strong> <%= typeof settings !== 'undefined' && settings && settings.company_phone ? settings.company_phone : '(021) 555-0199' %>
         </p>
         <p>
-          <strong>Email:</strong> info@euodoo.com
+          <strong><%= t('contact.office_email_heading') %>:</strong> <%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %>
         </p>
       </div>
     </div>
 
     <div class="footer-bottom">
       <div>
-        &copy; <%= currentYear %> PT Euodoo. Hak Cipta Dilindungi Undang-Undang.
+        &copy; <%= currentYear %> <%= typeof settings !== 'undefined' && settings && settings.company_name ? settings.company_name : 'PT Euodoo' %>. <%= t('footer.copyright') %>
       </div>
       <div>
         Standar Manufaktur Presisi & Kualitas Industri

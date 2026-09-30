@@ -1,4 +1,10 @@
 import { Router } from 'express';
+import homeController from '../controllers/public/homeController.js';
+import productController from '../controllers/public/productController.js';
+import pageController from '../controllers/public/pageController.js';
+import postController from '../controllers/public/postController.js';
+import contactController from '../controllers/public/contactController.js';
+import seoController from '../controllers/public/seoController.js';
 
 const router = Router();
 
@@ -19,44 +25,30 @@ router.get('/lang/:code', (req, res) => {
   res.redirect(returnTo);
 });
 
+// SEO & Search Engine Discovery
+router.get('/robots.txt', seoController.robots);
+router.get('/sitemap.xml', seoController.sitemap);
+
 // Home Page
-router.get('/', (req, res) => {
-  res.render('public/index', {
-    title: 'PT Euodoo - Presisi Manufaktur Plastik Berkualitas Tinggi',
-    path: '/'
-  });
-});
+router.get('/', homeController.index);
 
-// Products Catalog
-router.get('/products', (req, res) => {
-  res.render('public/products', {
-    title: 'Katalog Produk - PT Euodoo',
-    path: '/products'
-  });
-});
+// Products Catalog & Detail
+router.get('/products', productController.index);
+router.get('/products/:slug', productController.detail);
 
-// Capabilities
-router.get('/capabilities', (req, res) => {
-  res.render('public/capabilities', {
-    title: 'Kapabilitas Manufaktur & Fasilitas - PT Euodoo',
-    path: '/capabilities'
-  });
-});
+// About Us & Company Profile
+router.get('/about', pageController.about);
+
+// Machine Capabilities & Facilities
+router.get('/capabilities', pageController.capabilities);
 
 // News & Insights
-router.get('/news', (req, res) => {
-  res.render('public/news', {
-    title: 'Publikasi & Berita Industri - PT Euodoo',
-    path: '/news'
-  });
-});
+router.get('/news', postController.index);
+router.get('/news/:slug', postController.detail);
 
-// Contact Us & RFQ
-router.get('/contact', (req, res) => {
-  res.render('public/contact', {
-    title: 'Hubungi Kami & Permintaan Penawaran - PT Euodoo',
-    path: '/contact'
-  });
-});
+// Contact Us & RFQ Form
+router.get('/contact', contactController.index);
+router.post('/contact', contactController.submit);
+router.post('/leads', contactController.submit);
 
 export default router;

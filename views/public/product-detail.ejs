@@ -1,0 +1,221 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<%
+  const currentLangCode = currentLang || 'id';
+  const prodName = currentLangCode === 'en' ? (product.name_en || product.name_id) : product.name_id;
+  const prodDesc = currentLangCode === 'en' ? (product.description_en || product.description_id) : product.description_id;
+  const catName = currentLangCode === 'en' ? (product.category_name_en || product.category_name_id || 'Industrial') : (product.category_name_id || 'Industri');
+%>
+
+<main id="main-content">
+  <!-- Breadcrumb Navigation -->
+  <nav aria-label="Breadcrumb" style="background-color: var(--color-bg-base); border-bottom: 1px solid var(--color-border-subtle); padding: var(--space-md) 0;">
+    <div class="container">
+      <ol class="flex items-center gap-xs" style="list-style: none; margin: 0; padding: 0; font-size: var(--font-size-label-sm); color: var(--color-text-muted);">
+        <li><a href="/" style="color: var(--color-text-muted); text-decoration: none;"><%= t('nav.home') %></a></li>
+        <li aria-hidden="true" style="user-select: none;">/</li>
+        <li><a href="/products" style="color: var(--color-text-muted); text-decoration: none;"><%= t('nav.products') %></a></li>
+        <li aria-hidden="true" style="user-select: none;">/</li>
+        <li aria-current="page" style="color: var(--color-secondary-navy); font-weight: 600;"><%= prodName %></li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Product Detail Showcase -->
+  <section class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
+    <div class="container">
+      <div class="grid grid-cols-2 gap-xl items-start">
+        <!-- Media Gallery Column -->
+        <div>
+          <div class="card" style="overflow: hidden; padding: 0; background-color: #ffffff; border: 1px solid var(--color-border-subtle);">
+            <div id="main-image-wrapper" style="height: 400px; display: flex; align-items: center; justify-content: center; background-color: var(--color-bg-base); position: relative;">
+              <% if (product.main_image) { %>
+                <img id="main-product-img"
+                     src="<%= product.main_image %>"
+                     alt="<%= prodName %>"
+                     style="width: 100%; height: 100%; object-fit: contain; max-height: 400px;"
+                     loading="eager">
+              <% } else { %>
+                <div class="flex flex-col items-center justify-center text-center p-xl" style="color: var(--color-text-muted);">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; margin-bottom: var(--space-sm);">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <span style="font-weight: 500;">PT Euodoo Precision</span>
+                </div>
+              <% } %>
+              <span class="badge badge-primary" style="position: absolute; top: var(--space-md); left: var(--space-md);">
+                <%= catName %>
+              </span>
+            </div>
+
+            <!-- Thumbnail Carousel / Selector -->
+            <% if (galleryImages && galleryImages.length > 0) { %>
+              <div class="flex gap-xs p-md" style="overflow-x: auto; border-top: 1px solid var(--color-border-subtle); background-color: #ffffff;">
+                <% if (product.main_image) { %>
+                  <button type="button"
+                          class="thumb-btn"
+                          onclick="document.getElementById('main-product-img').src='<%= product.main_image %>'"
+                          style="width: 64px; height: 64px; border: 2px solid var(--color-primary-blue); border-radius: var(--radius-sm); overflow: hidden; padding: 0; background: none; cursor: pointer; flex-shrink: 0;"
+                          aria-label="Foto Utama">
+                    <img src="<%= product.main_image %>" alt="Thumbnail Utama" style="width: 100%; height: 100%; object-fit: cover;">
+                  </button>
+                <% } %>
+                <% galleryImages.forEach((img, idx) => { %>
+                  <button type="button"
+                          class="thumb-btn"
+                          onclick="document.getElementById('main-product-img').src='<%= img %>'"
+                          style="width: 64px; height: 64px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-sm); overflow: hidden; padding: 0; background: none; cursor: pointer; flex-shrink: 0;"
+                          aria-label="Foto <%= idx + 1 %>">
+                    <img src="<%= img %>" alt="Thumbnail <%= idx + 1 %>" style="width: 100%; height: 100%; object-fit: cover;">
+                  </button>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Specifications & Action Column -->
+        <div>
+          <span class="section-kicker" style="color: var(--color-accent-teal);"><%= catName %></span>
+          <h1 style="font-size: clamp(1.75rem, 3vw, 2.25rem); color: var(--color-secondary-navy); margin-bottom: var(--space-sm); line-height: 1.25;">
+            <%= prodName %>
+          </h1>
+
+          <div class="flex items-center gap-sm" style="margin-bottom: var(--space-md);">
+            <span class="badge badge-success"><%= t('common.status_active') %></span>
+            <span style="font-size: var(--font-size-label-sm); color: var(--color-text-muted);">
+              Kode: <%= product.slug %>
+            </span>
+          </div>
+
+          <div style="font-size: var(--font-size-body-md); color: var(--color-text-body); line-height: 1.7; margin-bottom: var(--space-xl);">
+            <p><%= prodDesc %></p>
+          </div>
+
+          <!-- Specs Table -->
+          <div class="card" style="margin-bottom: var(--space-xl); padding: var(--space-lg); background-color: #ffffff;">
+            <h3 style="font-size: 1.1rem; color: var(--color-secondary-navy); margin-bottom: var(--space-md); border-bottom: 2px solid var(--color-bg-base); padding-bottom: var(--space-xs);">
+              <%= t('products.specs_heading') %>
+            </h3>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-body-sm);">
+              <tbody>
+                <tr style="border-bottom: 1px solid var(--color-border-subtle);">
+                  <td style="padding: var(--space-sm) 0; color: var(--color-text-muted); width: 40%; font-weight: 500;">
+                    <%= t('products.filter_label') %>
+                  </td>
+                  <td style="padding: var(--space-sm) 0; color: var(--color-secondary-navy); font-weight: 600;">
+                    <%= catName %>
+                  </td>
+                </tr>
+
+                <% if (materialSpecs && typeof materialSpecs === 'object') { %>
+                  <% Object.entries(materialSpecs).forEach(([key, val]) => { %>
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle);">
+                      <td style="padding: var(--space-sm) 0; color: var(--color-text-muted); font-weight: 500; text-transform: capitalize;">
+                        <%= key.replace(/_/g, ' ') %>
+                      </td>
+                      <td style="padding: var(--space-sm) 0; color: var(--color-text-body);">
+                        <%= typeof val === 'object' ? JSON.stringify(val) : val %>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } %>
+
+                <% if (technicalSpecs && typeof technicalSpecs === 'object') { %>
+                  <% Object.entries(technicalSpecs).forEach(([key, val]) => { %>
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle);">
+                      <td style="padding: var(--space-sm) 0; color: var(--color-text-muted); font-weight: 500; text-transform: capitalize;">
+                        <%= key.replace(/_/g, ' ') %>
+                      </td>
+                      <td style="padding: var(--space-sm) 0; color: var(--color-text-body);">
+                        <%= typeof val === 'object' ? JSON.stringify(val) : val %>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- CTAs -->
+          <div class="flex flex-wrap gap-md items-center">
+            <a href="/contact?product=<%= product.id %>"
+               class="btn btn-primary btn-md"
+               style="min-height: 48px; padding: 0 var(--space-xl); display: inline-flex; align-items: center; justify-content: center;">
+              <%= t('products.ask_quote_for_product') %> &rarr;
+            </a>
+
+            <% if (settings && settings.whatsapp_number) { %>
+              <%
+                const waClean = settings.whatsapp_number.replace(/\D/g, '');
+                const waText = encodeURIComponent('Halo PT Euodoo, saya ingin konsultasi mengenai produk: ' + prodName);
+              %>
+              <a href="https://wa.me/<%= waClean %>?text Bryan=<%= waText %>"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="btn btn-secondary btn-md"
+                 style="min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                </svg>
+                <%= t('common.whatsapp_consult') %>
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Products Section -->
+      <% if (relatedProducts && relatedProducts.length > 0) { %>
+        <div style="margin-top: var(--space-3xl); border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-2xl);">
+          <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl);">
+            <div>
+              <span class="section-kicker" style="color: var(--color-accent-teal);"><%= catName %></span>
+              <h2 style="font-size: 1.5rem; color: var(--color-secondary-navy);">Produk Terkait Lainnya</h2>
+            </div>
+            <a href="/products?category=<%= product.category_slug || '' %>" class="btn btn-secondary btn-sm" style="min-height: 44px;">
+              <%= t('common.view_more') %> &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-3">
+            <% relatedProducts.forEach(rel => { %>
+              <div class="card card-interactive flex flex-col justify-between" style="overflow: hidden;">
+                <div style="height: 180px; background-color: var(--color-bg-base); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                  <% if (rel.main_image) { %>
+                    <img src="<%= rel.main_image %>"
+                         alt="<%= currentLangCode === 'en' ? (rel.name_en || rel.name_id) : rel.name_id %>"
+                         style="width: 100%; height: 100%; object-fit: cover;"
+                         loading="lazy">
+                  <% } else { %>
+                    <div style="color: var(--color-text-muted); font-size: var(--font-size-label-sm); font-weight: 500;">PT Euodoo Precision</div>
+                  <% } %>
+                </div>
+
+                <div class="card-body flex flex-col justify-between" style="flex: 1; padding: var(--space-md);">
+                  <div>
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: var(--space-xs); color: var(--color-secondary-navy);">
+                      <%= currentLangCode === 'en' ? (rel.name_en || rel.name_id) : rel.name_id %>
+                    </h3>
+                  </div>
+
+                  <div style="margin-top: var(--space-md); border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-sm);">
+                    <a href="/products/<%= rel.slug %>" class="btn btn-secondary btn-sm" style="width: 100%; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;">
+                      <%= t('products.details_btn') %> &rarr;
+                    </a>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

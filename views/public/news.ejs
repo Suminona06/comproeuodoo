@@ -1,40 +1,102 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
+<% const currentLangCode = currentLang || 'id'; %>
+
 <main id="main-content">
-  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+  <!-- Page Header -->
+  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
     <div class="container">
-      <span class="section-kicker">Wawasan & Informasi</span>
-      <h1 style="color: #ffffff; margin-bottom: var(--space-sm);">Publikasi & Berita Industri</h1>
-      <p style="color: #cbd5e1; max-width: 680px;">
-        Kabar terbaru seputar inovasi manufaktur polimer, perkembangan operasional, dan kegiatan perusahaan.
+      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('news.page_title') %></span>
+      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
+        <%= t('news.page_title') %>
+      </h1>
+      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
+        <%= t('news.page_subtitle') %>
       </p>
     </div>
   </section>
 
-  <section class="section section-bg-workspace">
+  <!-- News Articles Listing -->
+  <section class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div class="grid grid-cols-2">
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-info" style="margin-bottom: var(--space-sm);">Operasional</span>
-            <h3>Peningkatan Efisiensi Energi Melalui Mesin Servo Injection Generasi Baru</h3>
-            <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-top: var(--space-xs);">
-              Komitmen kami dalam mengadopsi teknologi manufaktur ramah lingkungan dengan penghematan konsumsi daya listrik operasional.
-            </p>
-          </div>
-        </div>
+      <% if (posts && posts.length > 0) { %>
+        <div class="grid grid-cols-3 gap-xl">
+          <% posts.forEach(post => { %>
+            <%
+              const postTitle = currentLangCode === 'en' ? (post.title_en || post.title_id) : post.title_id;
+              const postExcerpt = currentLangCode === 'en' ? (post.excerpt_en || post.excerpt_id) : post.excerpt_id;
+              const pubDate = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+            %>
+            <article class="card card-interactive flex flex-col justify-between" style="overflow: hidden; height: 100%;">
+              <!-- Cover Image -->
+              <div style="height: 200px; background-color: var(--color-bg-base); overflow: hidden; position: relative;">
+                <% if (post.cover_image) { %>
+                  <img src="<%= post.cover_image %>"
+                       alt="<%= postTitle %>"
+                       style="width: 100%; height: 100%; object-fit: cover;"
+                       loading="lazy">
+                <% } else { %>
+                  <div class="flex flex-col items-center justify-center text-center p-md" style="height: 100%; color: var(--color-text-muted);">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; margin-bottom: var(--space-xs);">
+                      <path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                    </svg>
+                    <span style="font-size: var(--font-size-label-sm); font-weight: 500;">PT Euodoo Warta</span>
+                  </div>
+                <% } %>
+                <span class="badge badge-info" style="position: absolute; top: var(--space-sm); left: var(--space-sm);">
+                  Publikasi
+                </span>
+              </div>
 
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-success" style="margin-bottom: var(--space-sm);">Mutu & Kualitas</span>
-            <h3>Penerapan Pengawasan Dimensi Optik Otomatis pada Lini Produksi</h3>
-            <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-top: var(--space-xs);">
-              Memastikan kepatuhan toleransi mikro untuk produk komponen otomotif secara real-time di pabrik.
-            </p>
+              <!-- Content Body -->
+              <div class="card-body flex flex-col justify-between" style="flex: 1; padding: var(--space-lg);">
+                <div>
+                  <% if (pubDate) { %>
+                    <time datetime="<%= post.published_at %>" style="font-size: var(--font-size-label-sm); color: var(--color-text-muted); display: block; margin-bottom: var(--space-xs);">
+                      <%= pubDate %>
+                    </time>
+                  <% } %>
+
+                  <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--color-secondary-navy); margin-bottom: var(--space-xs); line-height: 1.35;">
+                    <a href="/news/<%= post.slug %>" style="color: inherit; text-decoration: none;">
+                      <%= postTitle %>
+                    </a>
+                  </h2>
+
+                  <% if (postExcerpt) { %>
+                    <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6; margin-bottom: var(--space-md);">
+                      <%= postExcerpt %>
+                    </p>
+                  <% } %>
+                </div>
+
+                <div style="margin-top: auto; padding-top: var(--space-sm); border-top: 1px solid var(--color-border-subtle);">
+                  <a href="/news/<%= post.slug %>" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg); display: inline-flex; align-items: center; min-height: 44px;">
+                    <%= t('common.read_more') %> &rarr;
+                  </a>
+                </div>
+              </div>
+            </article>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <!-- Empty State -->
+        <div class="card text-center" style="padding: var(--space-3xl) var(--space-xl); max-width: 600px; margin: 0 auto;">
+          <div style="font-size: 3rem; margin-bottom: var(--space-sm); color: var(--color-text-muted); opacity: 0.6;">📰</div>
+          <h3 style="color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+            <%= t('news.empty_posts') %>
+          </h3>
+          <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-bottom: var(--space-lg);">
+            Nantikan berita terbaru mengenai inovasi cetak plastik dan perkembangan fasilitas kami segera.
+          </p>
+          <div>
+            <a href="/" class="btn btn-primary btn-md" style="min-height: 44px;">
+              <%= t('common.back_to_home') %>
+            </a>
           </div>
         </div>
-      </div>
+      <% } %>
     </div>
   </section>
 </main>

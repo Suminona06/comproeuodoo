@@ -12,6 +12,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import { csrfProtection } from './middleware/csrfMiddleware.js';
 import { optionalAuth } from './middleware/authMiddleware.js';
+import { i18nMiddleware } from './middleware/i18nMiddleware.js';
 import settingModel from './models/settingModel.js';
 import logger from './utils/logger.js';
 
@@ -47,22 +48,45 @@ app.use(
   })
 );
 
-// Compression
-app.use(compression());
+// HTTP Compression (gzip / deflate)
+app.use(
+  compression({
+    threshold: 1024, // Only compress responses larger than 1KB
+    level: 6, // Balanced CPU usage vs compression ratio
+    filter: (req, res) => {
+      if (req.headers['x-no-compression']) return false;
+      return compression.filter(req, res);
+    }
+  })
+);
 
 // Body Parsers & Cookie Parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'euodoo_cookie_secret_dev'));
 
-// Static Files
-app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0
-}));
+// Static Files & Asset Caching
+app.use(
+  express.static(path.join(__dirname, 'public'), {
+    maxAge: process.env.NODE_ENV === 'production' ? '7d' : '1h',
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+      // Long-lived cache for media, images, and fonts (30 days)
+      if (/\.(webp|jpg|jpeg|png|svg|ico|woff2|woff|mp4|webm)$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
+      } else if (/\.(css|js)$/i.test(filePath)) {
+        // Shorter cache for stylesheets and client scripts (1 day)
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+      }
+    }
+  })
+);
 
-// CSRF Protection & Global Auth Context
+// CSRF Protection & Global Auth Context & i18n
 app.use(csrfProtection);
 app.use(optionalAuth);
+app.use(i18nMiddleware);
 
 // Global Template Locals Middleware with cached settings
 let cachedSettings = null;

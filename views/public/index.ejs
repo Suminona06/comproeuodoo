@@ -3,35 +3,60 @@
 
 <main id="main-content">
   <!-- Hero Section -->
-  <section class="section section-bg-navy" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
-    <div class="container">
+  <% const primaryBanner = (typeof banners !== 'undefined' && banners.length > 0) ? banners[0] : null; %>
+  <section class="hero-section <%= primaryBanner ? 'has-media-banner' : 'section-bg-navy' %>" style="position: relative; overflow: hidden;">
+    <% if (primaryBanner && primaryBanner.media_type === 'video') { %>
+      <div class="hero-video-bg" style="position: absolute; inset: 0; z-index: 1; overflow: hidden;">
+        <video autoplay muted loop playsinline preload="metadata" style="width: 100%; height: 100%; object-fit: cover;">
+          <source src="<%= primaryBanner.file_url %>" type="video/mp4">
+        </video>
+        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0, 33, 71, 0.92) 0%, rgba(12, 25, 44, 0.82) 100%);"></div>
+      </div>
+    <% } else if (primaryBanner && primaryBanner.file_url) { %>
+      <div class="hero-image-bg" style="position: absolute; inset: 0; z-index: 1; background-image: url('<%= primaryBanner.file_url %>'); background-size: cover; background-position: center;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0, 33, 71, 0.92) 0%, rgba(12, 25, 44, 0.82) 100%);"></div>
+      </div>
+    <% } %>
+
+    <div class="container" style="position: relative; z-index: 2; padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
       <div class="grid" style="align-items: center;">
-        <div class="col-span-full" style="max-width: 840px;">
-          <span class="section-kicker">Manufaktur Plastik Presisi Tinggi</span>
-          <h1 style="margin-bottom: var(--space-md); color: #ffffff;">
-            Solusi Rekayasa Komponen dan Kemasan Plastik Industri Berstandar Internasional
+        <div class="col-span-full" style="max-width: 860px;">
+          <span class="section-kicker" style="color: var(--color-accent-teal);">
+            <%= typeof settings !== 'undefined' && settings?.company_name ? settings.company_name : 'PT EUODOO' %> &bull; <%= currentLang === 'en' ? 'PRECISION MANUFACTURING' : 'MANUFAKTUR PRESISI' %>
+          </span>
+          <h1 style="margin-bottom: var(--space-md); color: #ffffff; line-height: 1.15; font-size: clamp(2rem, 4vw, 3rem);">
+            <% if (primaryBanner) { %>
+              <%= currentLang === 'en' ? (primaryBanner.title_en || primaryBanner.title_id) : primaryBanner.title_id %>
+            <% } else { %>
+              <%= t('home.hero_title') %>
+            <% } %>
           </h1>
-          <p style="font-size: var(--font-size-body-lg); line-height: 1.6; margin-bottom: var(--space-xl); color: #cbd5e1;">
-            PT Euodoo memproduksi komponen presisi dengan teknologi injection molding dan blow molding modern untuk kebutuhan sektor otomotif, kemasan industri, kosmetik, dan barang konsumen.
+          <p style="font-size: var(--font-size-body-lg); line-height: 1.6; margin-bottom: var(--space-xl); color: #e2e8f0; max-width: 720px;">
+            <% if (primaryBanner && (primaryBanner.subtitle_id || primaryBanner.subtitle_en)) { %>
+              <%= currentLang === 'en' ? (primaryBanner.subtitle_en || primaryBanner.subtitle_id) : primaryBanner.subtitle_id %>
+            <% } else { %>
+              <%= t('home.hero_subtitle') %>
+            <% } %>
           </p>
           <div class="flex flex-wrap gap-md">
-            <a href="/contact" class="btn btn-primary btn-lg">Konsultasikan Kebutuhan</a>
-            <a href="/products" class="btn btn-outline-white btn-lg">Lihat Katalog Produk</a>
+            <a href="/contact" class="btn btn-primary btn-lg">
+              <%= t('home.cta_quote') %> &rarr;
+            </a>
+            <a href="/products" class="btn btn-outline-white btn-lg">
+              <%= t('home.cta_catalog') %>
+            </a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Industrial Pillars / Capabilities Preview -->
+  <!-- Industrial Highlights / Pillars -->
   <section class="section section-bg-workspace">
     <div class="container">
       <div class="section-header text-center">
-        <span class="section-kicker">Fondasi Kualitas</span>
-        <h2>Keunggulan Rekayasa & Keandalan Produksi</h2>
-        <p>
-          Dedikasi kami berfokus pada toleransi dimensi yang ketat, ketahanan material, serta efisiensi rantai pasok industri.
-        </p>
+        <span class="section-kicker"><%= t('home.highlights_title') %></span>
+        <h2><%= t('home.highlights_subtitle') %></h2>
       </div>
 
       <div class="grid grid-cols-3">
@@ -39,12 +64,16 @@
         <div class="card card-interactive">
           <div class="card-body">
             <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Pilar 01</span>
-            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm);">Presisi Cetakan Mikro</h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">
-              Dukungan fasilitas tooling dan mesin injection multi-cavity memastikan akurasi dimensi komponen hingga satuan milimeter terkecil.
+            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm); color: var(--color-secondary-navy);">
+              <%= t('home.feat_1_title') %>
+            </h3>
+            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
+              <%= t('home.feat_1_desc') %>
             </p>
             <div style="margin-top: var(--space-md);">
-              <a href="/capabilities" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">Pelajari Kapabilitas Mesin &rarr;</a>
+              <a href="/capabilities" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">
+                <%= t('nav.capabilities') %> &rarr;
+              </a>
             </div>
           </div>
         </div>
@@ -53,12 +82,16 @@
         <div class="card card-interactive">
           <div class="card-body">
             <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Pilar 02</span>
-            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm);">Material Polimer Unggul</h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">
-              Pemilihan biji plastik murni kualitas tinggi (PP, PE, HDPE, PET, ABS) yang ramah lingkungan dan memenuhi standar sertifikasi industri.
+            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm); color: var(--color-secondary-navy);">
+              <%= t('home.feat_2_title') %>
+            </h3>
+            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
+              <%= t('home.feat_2_desc') %>
             </p>
             <div style="margin-top: var(--space-md);">
-              <a href="/products" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">Eksplorasi Varian Material &rarr;</a>
+              <a href="/products" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">
+                <%= t('nav.products') %> &rarr;
+              </a>
             </div>
           </div>
         </div>
@@ -67,12 +100,16 @@
         <div class="card card-interactive">
           <div class="card-body">
             <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Pilar 03</span>
-            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm);">Kapasitas Skala Masal</h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">
-              Operasional lini produksi terstruktur 24/7 dengan manajemen logistik terintegrasi untuk menjamin pengiriman tepat waktu bagi mitra B2B.
+            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm); color: var(--color-secondary-navy);">
+              <%= t('home.feat_3_title') %>
+            </h3>
+            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
+              <%= t('home.feat_3_desc') %>
             </p>
             <div style="margin-top: var(--space-md);">
-              <a href="/contact" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">Minta Jadwal Produksi &rarr;</a>
+              <a href="/contact" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">
+                <%= t('home.cta_quote') %> &rarr;
+              </a>
             </div>
           </div>
         </div>
@@ -80,18 +117,111 @@
     </div>
   </section>
 
+  <!-- Featured Products Section -->
+  <% if (typeof featuredProducts !== 'undefined' && featuredProducts.length > 0) { %>
+    <section class="section section-bg-white">
+      <div class="container">
+        <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <span class="section-kicker"><%= t('home.featured_products_title') %></span>
+            <h2 style="margin: 0; color: var(--color-secondary-navy);"><%= t('home.featured_products_subtitle') %></h2>
+          </div>
+          <div>
+            <a href="/products" class="btn btn-secondary btn-sm"><%= t('common.view_more') %> &rarr;</a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3" style="gap: var(--space-lg);">
+          <% featuredProducts.forEach(function(product) { %>
+            <div class="card card-interactive" style="display: flex; flex-direction: column;">
+              <div style="height: 200px; background-color: #f1f5f9; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                <% if (product.main_image) { %>
+                  <img src="<%= product.main_image %>" alt="<%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>" style="width: 100%; height: 100%; object-fit: cover;">
+                <% } else { %>
+                  <div style="color: var(--color-text-muted); font-size: 13px; font-weight: 500;">PT Euodoo Spec</div>
+                <% } %>
+                <span class="badge badge-primary" style="position: absolute; top: var(--space-sm); left: var(--space-sm); font-size: 11px;">
+                  <%= currentLang === 'en' ? (product.category_name_en || product.category_name_id) : product.category_name_id %>
+                </span>
+              </div>
+              <div class="card-body" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <h3 style="font-size: 1.125rem; margin-bottom: var(--space-xs); color: var(--color-secondary-navy);">
+                    <%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>
+                  </h3>
+                  <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-md);">
+                    <%= currentLang === 'en' ? (product.description_en || product.description_id) : product.description_id %>
+                  </p>
+                </div>
+                <div class="flex items-center justify-between" style="border-top: 1px solid var(--color-border); padding-top: var(--space-sm);">
+                  <a href="/products/<%= product.slug %>" class="font-semibold text-primary" style="font-size: var(--font-size-body-sm);">
+                    <%= t('products.details_btn') %> &rarr;
+                  </a>
+                  <a href="/contact?product=<%= product.id %>" class="btn btn-ghost btn-sm" style="font-size: 12px;">
+                    <%= t('common.request_quote') %>
+                  </a>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- Machine Capabilities Preview -->
+  <% if (typeof capabilities !== 'undefined' && capabilities.length > 0) { %>
+    <section class="section section-bg-workspace">
+      <div class="container">
+        <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <span class="section-kicker"><%= t('home.capabilities_preview_title') %></span>
+            <h2 style="margin: 0; color: var(--color-secondary-navy);"><%= t('home.capabilities_preview_subtitle') %></h2>
+          </div>
+          <div>
+            <a href="/capabilities" class="btn btn-secondary btn-sm"><%= t('common.view_more') %> &rarr;</a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3" style="gap: var(--space-lg);">
+          <% capabilities.forEach(function(cap) { %>
+            <div class="card" style="box-shadow: var(--shadow-level-0);">
+              <div class="card-body">
+                <span class="badge badge-info" style="margin-bottom: var(--space-xs);"><%= cap.machine_type %></span>
+                <h3 style="font-size: 1.15rem; margin-bottom: var(--space-xs); color: var(--color-secondary-navy);">
+                  <%= currentLang === 'en' ? (cap.title_en || cap.title_id) : cap.title_id %>
+                </h3>
+                <% if (cap.capacity) { %>
+                  <div style="font-size: 13px; font-weight: 600; color: var(--color-primary); margin-bottom: var(--space-sm);">
+                    Output: <%= cap.capacity %>
+                  </div>
+                <% } %>
+                <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.5;">
+                  <%= currentLang === 'en' ? (cap.description_en || cap.description_id) : cap.description_id %>
+                </p>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
   <!-- Call to Action Banner -->
-  <section class="section section-bg-white">
+  <section class="section section-bg-navy" style="color: #ffffff;">
     <div class="container">
       <div class="flex flex-col items-center text-center" style="max-width: 760px; margin: 0 auto;">
-        <span class="section-kicker">Kemitraan Industri</span>
-        <h2 style="margin-bottom: var(--space-sm);">Mulai Konsultasi Teknis & Penawaran Kebutuhan Anda</h2>
-        <p style="margin-bottom: var(--space-lg);">
-          Tim ahli cetakan plastik kami siap membantu mengevaluasi desain cetakan, spesifikasi material, serta perkiraan efisiensi biaya proyek Anda.
-        </p>
-        <div class="flex flex-wrap gap-md justify-center">
-          <a href="/contact" class="btn btn-primary btn-md">Kirimkan Permintaan Penawaran (RFQ)</a>
-          <a href="/products" class="btn btn-secondary btn-md">Lihat Semua Kategori Produk</a>
+        <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('home.consultation_banner_title') %></span>
+        <h2 style="margin-bottom: var(--space-sm); color: #ffffff;">
+          <%= t('home.consultation_banner_subtitle') %>
+        </h2>
+        <div class="flex flex-wrap gap-md justify-center" style="margin-top: var(--space-lg);">
+          <a href="/contact" class="btn btn-primary btn-md">
+            <%= t('home.cta_quote') %> &rarr;
+          </a>
+          <a href="/products" class="btn btn-outline-white btn-md">
+            <%= t('common.view_more') %>
+          </a>
         </div>
       </div>
     </div>

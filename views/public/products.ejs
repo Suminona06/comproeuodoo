@@ -2,58 +2,166 @@
 <%- include('../partials/navbar') %>
 
 <main id="main-content">
-  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+  <!-- Page Header -->
+  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
     <div class="container">
-      <span class="section-kicker">Katalog Produk</span>
-      <h1 style="color: #ffffff; margin-bottom: var(--space-sm);">Produk & Komponen Plastik Presisi</h1>
-      <p style="color: #cbd5e1; max-width: 680px;">
-        Solusi cetakan plastik berkualitas tinggi untuk beragam sektor industri dengan standar material terverifikasi.
+      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('products.page_title') %></span>
+      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
+        <%= t('products.page_title') %>
+      </h1>
+      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
+        <%= t('products.page_subtitle') %>
       </p>
     </div>
   </section>
 
-  <section class="section section-bg-workspace">
+  <!-- Filter & Catalog Section -->
+  <section class="section section-bg-workspace" style="padding-top: var(--space-xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div class="grid grid-cols-3">
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-sm);">Injection</span>
-            <h3>Komponen Presisi Otomotif</h3>
-            <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-top: var(--space-xs);">
-              Komponen interior dan kompartemen mesin dengan ketahanan panas dan benturan tinggi.
-            </p>
-            <div style="margin-top: var(--space-md);">
-              <a href="/contact" class="btn btn-secondary btn-sm">Minta Spesifikasi</a>
-            </div>
+      <!-- Filter Bar & Search -->
+      <div class="card" style="margin-bottom: var(--space-xl); padding: var(--space-md);">
+        <div class="flex flex-wrap items-center justify-between gap-md">
+          <!-- Category Tabs -->
+          <div class="flex flex-wrap gap-xs items-center" role="tablist" aria-label="<%= t('products.filter_label') %>">
+            <a href="/products<%= search ? '?search=' + encodeURIComponent(search) : '' %>"
+               class="btn btn-sm <%= !selectedCategory ? 'btn-primary' : 'btn-secondary' %>"
+               style="min-height: 44px; display: inline-flex; align-items: center; border-radius: var(--radius-full); padding: 0 var(--space-md);">
+              <%= t('common.all') %>
+            </a>
+            <% if (categories && categories.length > 0) { %>
+              <% categories.forEach(cat => { %>
+                <% const isActiveCat = selectedCategory && selectedCategory.id === cat.id; %>
+                <a href="/products?category=<%= cat.slug %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+                   class="btn btn-sm <%= isActiveCat ? 'btn-primary' : 'btn-secondary' %>"
+                   style="min-height: 44px; display: inline-flex; align-items: center; border-radius: var(--radius-full); padding: 0 var(--space-md);">
+                  <%= currentLang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %>
+                </a>
+              <% }); %>
+            <% } %>
           </div>
-        </div>
 
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-sm);">Blow Molding</span>
-            <h3>Kemasan Cairan Industri</h3>
-            <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-top: var(--space-xs);">
-              Wadah jerigen dan botol HDPE tahan bahan kimia dengan penutup bersegel presisi.
-            </p>
-            <div style="margin-top: var(--space-md);">
-              <a href="/contact" class="btn btn-secondary btn-sm">Minta Spesifikasi</a>
+          <!-- Search Form -->
+          <form method="GET" action="/products" class="flex gap-xs items-center" style="flex: 1; max-width: 360px; min-width: 240px;">
+            <% if (selectedCategory) { %>
+              <input type="hidden" name="category" value="<%= selectedCategory.slug %>">
+            <% } %>
+            <div style="position: relative; width: 100%;">
+              <input type="text"
+                     name="search"
+                     value="<%= search || '' %>"
+                     class="form-control"
+                     placeholder="<%= t('common.search') %>..."
+                     style="height: 44px; padding-right: 2.5rem; font-size: var(--font-size-body-sm);"
+                     aria-label="<%= t('common.search') %>">
+              <% if (search) { %>
+                <a href="/products<%= selectedCategory ? '?category=' + selectedCategory.slug : '' %>"
+                   style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); font-size: 1.1rem; text-decoration: none;"
+                   title="Reset search">&times;</a>
+              <% } %>
             </div>
-          </div>
-        </div>
-
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-sm);">Custom Tooling</span>
-            <h3>Barang Konsumen & Wadah</h3>
-            <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-top: var(--space-xs);">
-              Cetakan fleksibel untuk produk FMCG dan perkakas rumah tangga berstandar food-grade.
-            </p>
-            <div style="margin-top: var(--space-md);">
-              <a href="/contact" class="btn btn-secondary btn-sm">Minta Spesifikasi</a>
-            </div>
-          </div>
+            <button type="submit" class="btn btn-secondary btn-sm" style="min-height: 44px; min-width: 44px; padding: 0 var(--space-md);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </form>
         </div>
       </div>
+
+      <!-- Active Filter Badge Indicator -->
+      <% if (selectedCategory || search) { %>
+        <div class="flex items-center gap-sm" style="margin-bottom: var(--space-lg);">
+          <span style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">Hasil filter:</span>
+          <% if (selectedCategory) { %>
+            <span class="badge badge-primary">
+              Kategori: <%= currentLang === 'en' ? (selectedCategory.name_en || selectedCategory.name_id) : selectedCategory.name_id %>
+            </span>
+          <% } %>
+          <% if (search) { %>
+            <span class="badge badge-neutral">
+              Pencarian: "<%= search %>"
+            </span>
+          <% } %>
+          <a href="/products" style="font-size: var(--font-size-label-sm); color: var(--color-primary-blue); text-decoration: underline; margin-left: var(--space-xs);">
+            Reset Filter
+          </a>
+        </div>
+      <% } %>
+
+      <!-- Products Grid -->
+      <% if (products && products.length > 0) { %>
+        <div class="grid grid-cols-3">
+          <% products.forEach(prod => { %>
+            <div class="card card-interactive flex flex-col justify-between" style="overflow: hidden; height: 100%;">
+              <!-- Image Container -->
+              <div style="height: 220px; background-color: var(--color-bg-base); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                <% if (prod.main_image) { %>
+                  <img src="<%= prod.main_image %>"
+                       alt="<%= currentLang === 'en' ? (prod.name_en || prod.name_id) : prod.name_id %>"
+                       style="width: 100%; height: 100%; object-fit: cover;"
+                       loading="lazy">
+                <% } else { %>
+                  <div class="flex flex-col items-center justify-center text-center p-md" style="color: var(--color-text-muted);">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; margin-bottom: var(--space-xs);">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <span style="font-size: var(--font-size-label-sm); font-weight: 500;">PT Euodoo Precision</span>
+                  </div>
+                <% } %>
+                <!-- Category Badge -->
+                <span class="badge badge-primary" style="position: absolute; top: var(--space-sm); left: var(--space-sm); box-shadow: var(--shadow-sm);">
+                  <%= currentLang === 'en' ? (prod.category_name_en || prod.category_name_id || 'Industrial') : (prod.category_name_id || 'Industri') %>
+                </span>
+              </div>
+
+              <!-- Product Content -->
+              <div class="card-body flex flex-col justify-between" style="flex: 1; padding: var(--space-lg);">
+                <div>
+                  <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: var(--space-xs); color: var(--color-secondary-navy); line-height: 1.3;">
+                    <%= currentLang === 'en' ? (prod.name_en || prod.name_id) : prod.name_id %>
+                  </h2>
+                  <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6; margin-bottom: var(--space-md); display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    <%= currentLang === 'en' ? (prod.description_en || prod.description_id) : prod.description_id %>
+                  </p>
+                </div>
+
+                <div class="flex items-center justify-between gap-sm pt-sm" style="border-top: 1px solid var(--color-border-subtle); margin-top: auto;">
+                  <a href="/products/<%= prod.slug %>"
+                     class="btn btn-secondary btn-sm"
+                     style="min-height: 44px; display: inline-flex; align-items: center; justify-content: center; flex: 1;">
+                    <%= t('products.details_btn') %>
+                  </a>
+                  <a href="/contact?product=<%= prod.id %>"
+                     class="btn btn-primary btn-sm"
+                     style="min-height: 44px; display: inline-flex; align-items: center; justify-content: center; flex: 1;"
+                     title="<%= t('products.ask_quote_for_product') %>">
+                    <%= t('common.request_quote') %>
+                  </a>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <!-- Empty State -->
+        <div class="card text-center" style="padding: var(--space-3xl) var(--space-xl); max-width: 600px; margin: 0 auto;">
+          <div style="font-size: 3rem; margin-bottom: var(--space-sm); color: var(--color-text-muted); opacity: 0.6;">📦</div>
+          <h3 style="color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+            <%= t('products.empty_products') %>
+          </h3>
+          <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-bottom: var(--space-lg);">
+            Silakan coba kata kunci pencarian lain atau pilih kategori produk yang berbeda.
+          </p>
+          <div>
+            <a href="/products" class="btn btn-primary btn-md" style="min-height: 44px;">
+              <%= t('common.filter_all') %>
+            </a>
+          </div>
+        </div>
+      <% } %>
     </div>
   </section>
 </main>

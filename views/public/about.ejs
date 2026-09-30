@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main id="main-content">
+  <!-- Page Header -->
+  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
+    <div class="container">
+      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('about.page_title') %></span>
+      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
+        <%= t('about.page_title') %>
+      </h1>
+      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
+        <%= t('about.page_subtitle') %>
+      </p>
+    </div>
+  </section>
+
+  <!-- Vision & Mission Section -->
+  <section class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+    <div class="container">
+      <div class="grid grid-cols-2 gap-xl items-stretch">
+        <!-- Vision -->
+        <div class="card card-interactive" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="card-body">
+            <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Visi Korporat</span>
+            <h2 style="font-size: 1.5rem; color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">
+              <%= t('about.vision_title') %>
+            </h2>
+            <p style="font-size: var(--font-size-body-md); color: var(--color-text-body); line-height: 1.7;">
+              <%= t('about.vision_desc') %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Mission -->
+        <div class="card card-interactive" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="card-body">
+            <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Misi Strategis</span>
+            <h2 style="font-size: 1.5rem; color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">
+              <%= t('about.mission_title') %>
+            </h2>
+            <ul style="padding-left: var(--space-lg); margin-top: var(--space-xs); color: var(--color-text-body); font-size: var(--font-size-body-sm); line-height: 1.8;">
+              <li style="margin-bottom: var(--space-xs);"><%= t('about.mission_1') %></li>
+              <li style="margin-bottom: var(--space-xs);"><%= t('about.mission_2') %></li>
+              <li><%= t('about.mission_3') %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quality Assurance & Standards Section -->
+  <section class="section section-bg-base" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+    <div class="container">
+      <div class="flex flex-col items-center text-center" style="max-width: 720px; margin: 0 auto var(--space-2xl) auto;">
+        <span class="section-kicker"><%= t('about.standards_title') %></span>
+        <h2 style="color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">
+          <%= t('about.standards_title') %>
+        </h2>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-body-md); line-height: 1.6;">
+          <%= t('about.standards_desc') %>
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-lg">
+        <div class="card">
+          <div class="card-body">
+            <div style="font-size: 2rem; color: var(--color-primary-blue); margin-bottom: var(--space-sm); font-weight: 700;">01</div>
+            <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">Verifikasi Bahan Baku</h3>
+            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
+              Uji indeks alir lelehan (MFI) dan densitas resin murni bersertifikasi CoA dari produsen petrokimia terpercaya.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div style="font-size: 2rem; color: var(--color-primary-blue); margin-bottom: var(--space-sm); font-weight: 700;">02</div>
+            <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">Inspeksi Siklus Cetak</h3>
+            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
+              Pemeriksaan dimensi berkala menggunakan jangka sorong digital mikro dan proyektor profil optik presisi tinggi.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div style="font-size: 2rem; color: var(--color-primary-blue); margin-bottom: var(--space-sm); font-weight: 700;">03</div>
+            <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">Uji Ketahanan & Beban</h3>
+            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
+              Uji jatuh (drop test) dan uji ketahanan tekanan tumpukan (stacking stress test) sebelum kemasan dilepas ke gudang.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="section section-bg-navy" style="color: #ffffff;">
+    <div class="container">
+      <div class="flex flex-col items-center text-center" style="max-width: 760px; margin: 0 auto;">
+        <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('home.consultation_banner_title') %></span>
+        <h2 style="margin-bottom: var(--space-sm); color: #ffffff;">
+          <%= t('home.consultation_banner_subtitle') %>
+        </h2>
+        <div class="flex flex-wrap gap-md justify-center" style="margin-top: var(--space-lg);">
+          <a href="/contact" class="btn btn-primary btn-md">
+            <%= t('home.cta_quote') %> &rarr;
+          </a>
+          <a href="/capabilities" class="btn btn-outline-white btn-md">
+            <%= t('nav.capabilities') %>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

@@ -267,7 +267,7 @@
 - **Deskripsi:** Membuat kamus bahasa `locales/id.json` dan `locales/en.json`, middleware `middleware/i18nMiddleware.js` (membaca cookie `lang`, default Indonesia, fallback teks bila versi EN kosong), dan rute handler `/lang/:lang` yang menyimpan pilihan bahasa pengunjung ke cookie 1 tahun.
 - **Modul:** Modul 4: Halaman Publik SSR & Lokalisasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-02
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam
@@ -282,7 +282,7 @@
 - **Deskripsi:** Membangun `views/layouts/main.ejs` beserta partials (`navbar.ejs`, `footer.ejs`, `whatsapp-btn.ejs`). Navbar mendukung drawer menu mobile (<44px target sentuh), tombol ganti bahasa, tautan navigasi valid, dan tombol WhatsApp mengambang di kanan bawah yang membaca nomor dari tabel `settings`.
 - **Modul:** Modul 4: Halaman Publik SSR & Lokalisasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-03, T-15, T-16
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3.5 jam
@@ -299,7 +299,7 @@
 - **Deskripsi:** Mengembangkan `controllers/public/homeController.js` dan `views/public/index.ejs`. Hero section merender banner aktif (video dengan poster image WebP fallback atau gambar beresolusi tinggi), ringkasan lini produk unggulan, statistik fasilitas manufaktur, dan tombol CTA spesifik penawaran B2B.
 - **Modul:** Modul 4: Halaman Publik SSR & Lokalisasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-11, T-12, T-17
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
@@ -312,7 +312,7 @@
 - **Deskripsi:** Membuat `controllers/public/productController.js`, `views/public/products.ejs` (grid produk responsif, filter kategori, badge status ketersediaan), dan `views/public/product-detail.ejs` (tabel data teknis material, galeri foto, tombol pre-fill "Minta Penawaran").
 - **Modul:** Modul 4: Halaman Publik SSR & Lokalisasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-12, T-17
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3.5 jam
@@ -326,7 +326,7 @@
 - **Deskripsi:** Membuat controller dan views untuk halaman kapabilitas fasilitas produksi (`views/public/capabilities.ejs`), profil perusahaan dan sertifikasi mutu (`views/public/about.ejs`), serta artikel publikasi (`views/public/news.ejs` dan `views/public/news-detail.ejs`).
 - **Modul:** Modul 4: Halaman Publik SSR & Lokalisasi
 - **Prioritas:** Mid
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-13, T-17
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
@@ -340,16 +340,15 @@
 
 #### T-21: Halaman Kontak & Integrasi Form Penawaran dengan Notifikasi Email
 - **Judul:** Formulir permintaan penawaran harga, kemitraan, dan notifikasi SMTP
-- **Deskripsi:** Mengembangkan `views/public/contact.ejs` dan `controllers/public/leadController.js`. Form dilengkapi honeypot spam guard, validasi CSRF, verifikasi email, penyimpanan ke tabel `leads`, dan pengiriman notifikasi otomatis ke email tim sales menggunakan Nodemailer (`config/mailer.js`).
+- **Deskripsi:** Mengembangkan `views/public/contact.ejs` dan `controllers/public/contactController.js`. Form dilengkapi honeypot spam guard, validasi CSRF, verifikasi email, penyimpanan ke tabel `leads`, dan pengiriman notifikasi otomatis ke email tim sales menggunakan Nodemailer (`config/mailer.js`).
 - **Modul:** Modul 4: Halaman Publik SSR & Lokalisasi
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-14, T-17
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
 - **File yang diubah:**
   - `controllers/public/contactController.js`
-  - `controllers/public/leadController.js`
   - `config/mailer.js`
   - `views/public/contact.ejs`
 
@@ -362,7 +361,7 @@
 - **Deskripsi:** Memastikan kompresi HTTP gzip via `compression`, header `Cache-Control` pada aset statis, validasi loading video hero dengan `preload="metadata"` dan poster image WebP, memastikan FCP < 1.2 detik dan waktu muat total di bawah 2 detik.
 - **Modul:** Modul 5: Optimasi, Audit & Deployment
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-18, T-19
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam
@@ -375,7 +374,7 @@
 - **Deskripsi:** Menambahkan dynamic meta tag, OpenGraph, title tag tunggal H1 per halaman, rute dinamis `/robots.txt` dan `/sitemap.xml` yang mengindeks seluruh halaman statis serta entitas produk dan berita yang berstatus aktif.
 - **Modul:** Modul 5: Optimasi, Audit & Deployment
 - **Prioritas:** Mid
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-18, T-19, T-20
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam
@@ -389,7 +388,7 @@
 - **Deskripsi:** Menjalankan verifikasi penuh terhadap 38 aturan antislop: memastikan tidak ada karakter em dash, tidak ada tombol atau tautan yang mati (R-26), kontras warna memenuhi standar WCAG AA (R-25), navigasi keyboard Tab/Escape berfungsi lancar (R-32), dan layout responsif tanpa horizontal overflow pada breakpoint desktop (12 kolom), tablet (8 kolom), dan mobile (4 kolom).
 - **Modul:** Modul 5: Optimasi, Audit & Deployment
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-17 s/d T-21
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 3 jam
@@ -403,7 +402,7 @@
 - **Deskripsi:** Menyiapkan file `.htaccess` yang mengarahkan request ke CloudLinux Node.js Selector via Phusion Passenger, memastikan `server.js` mengenali port dan socket server cPanel, serta menyiapkan checklist environment variable untuk deployment di Jagoanhosting.
 - **Modul:** Modul 5: Optimasi, Audit & Deployment
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Dependensi:** T-02, T-22
 - **Tanggal:** 2026-09-29
 - **Estimasi:** 2 jam

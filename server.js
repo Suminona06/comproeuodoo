@@ -5,21 +5,36 @@ import { testConnection } from './config/database.js';
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-const server = app.listen(PORT, async () => {
-  logger.info(`PT Euodoo Web Server running on port ${PORT} [Mode: ${NODE_ENV}]`);
-  if (NODE_ENV !== 'production') {
-    logger.info(`Local URL: http://localhost:${PORT}`);
-  }
-  await testConnection();
-});
+let server;
+
+if (typeof PhusionPassenger !== 'undefined') {
+  // CloudLinux cPanel Passenger runtime
+  server = app.listen('passenger', async () => {
+    logger.info('PT Euodoo Web Server running under Phusion Passenger on cPanel');
+    await testConnection();
+  });
+} else {
+  // Standard standalone / local development runtime
+  server = app.listen(PORT, async () => {
+    logger.info(`PT Euodoo Web Server running on port ${PORT} [Mode: ${NODE_ENV}]`);
+    if (NODE_ENV !== 'production') {
+      logger.info(`Local URL: http://localhost:${PORT}`);
+    }
+    await testConnection();
+  });
+}
 
 // Graceful Shutdown Handlers for Phusion Passenger / Process Managers
 const shutdown = (signal) => {
   logger.info(`Received ${signal}. Shutting down HTTP server gracefully...`);
-  server.close(() => {
-    logger.info('HTTP server closed.');
+  if (server) {
+    server.close(() => {
+      logger.info('HTTP server closed.');
+      process.exit(0);
+    });
+  } else {
     process.exit(0);
-  });
+  }
 
   // Force close after 10 seconds timeout
   setTimeout(() => {

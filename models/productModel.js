@@ -192,6 +192,11 @@ export const productModel = {
   async findCategoryById(id) {
     const rows = await query('SELECT * FROM categories WHERE id = ? LIMIT 1', [id]);
     return rows.length > 0 ? rows[0] : null;
+  },
+
+  async findCategoryBySlug(slug) {
+    const rows = await query('SELECT * FROM categories WHERE slug = ? LIMIT 1', [slug]);
+    return rows.length > 0 ? rows[0] : null;
   }
 };
 

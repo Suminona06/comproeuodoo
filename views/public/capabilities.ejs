@@ -1,35 +1,126 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
+<% const currentLangCode = currentLang || 'id'; %>
+
 <main id="main-content">
-  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+  <!-- Page Header -->
+  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
     <div class="container">
-      <span class="section-kicker">Fasilitas & Kapabilitas</span>
-      <h1 style="color: #ffffff; margin-bottom: var(--space-sm);">Infrastruktur & Mesin Manufaktur</h1>
-      <p style="color: #cbd5e1; max-width: 680px;">
-        Teknologi injection molding dan blow molding modern dengan kontrol toleransi ketat dan pemeliharaan berkala.
+      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('capabilities.page_title') %></span>
+      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
+        <%= t('capabilities.page_title') %>
+      </h1>
+      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
+        <%= t('capabilities.page_subtitle') %>
       </p>
     </div>
   </section>
 
-  <section class="section section-bg-workspace">
+  <!-- Machines & Facilities Fleet Grid -->
+  <section class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div class="grid grid-cols-2">
-        <div class="card">
-          <div class="card-body">
-            <h3>Mesin Injection Molding</h3>
-            <p style="color: var(--color-text-muted); margin-top: var(--space-xs);">
-              Lini mesin hidrolik dan servo elektrik mulai dari 80 Ton hingga 850 Ton untuk pencetakan berkecepatan tinggi dengan kestabilan dimensi konsisten.
-            </p>
+      <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl);">
+        <div>
+          <span class="section-kicker"><%= t('capabilities.section_specs') %></span>
+          <h2 style="color: var(--color-secondary-navy);"><%= t('capabilities.section_specs') %></h2>
+        </div>
+      </div>
+
+      <% if (capabilities && capabilities.length > 0) { %>
+        <div class="grid grid-cols-2 gap-xl">
+          <% capabilities.forEach(cap => { %>
+            <%
+              const capTitle = currentLangCode === 'en' ? (cap.title_en || cap.title_id) : cap.title_id;
+              const capDesc = currentLangCode === 'en' ? (cap.description_en || cap.description_id) : cap.description_id;
+            %>
+            <div class="card card-interactive flex flex-col justify-between" style="overflow: hidden;">
+              <!-- Image (if available) -->
+              <% if (cap.image_url) { %>
+                <div style="height: 220px; background-color: var(--color-bg-base); overflow: hidden;">
+                  <img src="<%= cap.image_url %>"
+                       alt="<%= capTitle %>"
+                       style="width: 100%; height: 100%; object-fit: cover;"
+                       loading="lazy">
+                </div>
+              <% } %>
+
+              <div class="card-body flex flex-col justify-between" style="flex: 1; padding: var(--space-lg);">
+                <div>
+                  <div class="flex items-center justify-between gap-sm" style="margin-bottom: var(--space-sm);">
+                    <span class="badge badge-primary"><%= cap.machine_type || 'Industrial Line' %></span>
+                    <% if (cap.capacity) { %>
+                      <span class="badge badge-neutral" style="font-weight: 600;">
+                        <%= cap.capacity %>
+                      </span>
+                    <% } %>
+                  </div>
+
+                  <h3 style="font-size: 1.3rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs); line-height: 1.3;">
+                    <%= capTitle %>
+                  </h3>
+
+                  <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6; margin-bottom: var(--space-md);">
+                    <%= capDesc %>
+                  </p>
+                </div>
+
+                <div class="flex items-center justify-between pt-sm" style="border-top: 1px solid var(--color-border-subtle); margin-top: auto;">
+                  <span style="font-size: var(--font-size-label-sm); color: var(--color-text-muted);">
+                    Status: <strong style="color: var(--color-accent-teal);"><%= t('common.status_active') %></strong>
+                  </span>
+                  <a href="/contact" class="btn btn-secondary btn-sm" style="min-height: 44px; display: inline-flex; align-items: center;">
+                    <%= t('home.cta_quote') %> &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <!-- Default State -->
+        <div class="grid grid-cols-2 gap-xl">
+          <div class="card">
+            <div class="card-body">
+              <span class="badge badge-primary" style="margin-bottom: var(--space-sm);">Injection Molding</span>
+              <h3 style="font-size: 1.25rem; color: var(--color-secondary-navy);">Lini Mesin Injeksi Presisi (80 - 850 Ton)</h3>
+              <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6; margin-top: var(--space-xs);">
+                Lini mesin injeksi hidrolik dan servo elektrik canggih dengan akurasi penguncian mold tinggi untuk komponen teknik, otomotif, dan peranti elektronik.
+              </p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <span class="badge badge-primary" style="margin-bottom: var(--space-sm);">Blow Molding</span>
+              <h3 style="font-size: 1.25rem; color: var(--color-secondary-navy);">Lini Extrusion Blow Molding Otomatis</h3>
+              <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6; margin-top: var(--space-xs);">
+                Pencetakan wadah kimia, jerigen industri, dan botol HDPE bersegel dengan kontrol parison ketebalan otomatis dan sensor uji kebocoran in-line.
+              </p>
+            </div>
           </div>
         </div>
+      <% } %>
+    </div>
+  </section>
 
-        <div class="card">
-          <div class="card-body">
-            <h3>Mesin Extrusion Blow Molding</h3>
-            <p style="color: var(--color-text-muted); margin-top: var(--space-xs);">
-              Fasilitas produksi botol, wadah jerigen, dan drum kimia dengan distribusi ketebalan dinding yang presisi serta uji kebocoran otomatis.
+  <!-- Quality Assurance Callout -->
+  <section class="section section-bg-base" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+    <div class="container">
+      <div class="card" style="padding: var(--space-xl); background-color: #ffffff; border-left: 4px solid var(--color-primary-blue);">
+        <div class="flex flex-col md:flex-row items-start justify-between gap-lg">
+          <div style="flex: 1;">
+            <span class="section-kicker"><%= t('capabilities.quality_assurance_title') %></span>
+            <h3 style="color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">
+              <%= t('capabilities.quality_assurance_title') %>
+            </h3>
+            <p style="color: var(--color-text-body); font-size: var(--font-size-body-sm); line-height: 1.7;">
+              <%= t('capabilities.quality_assurance_desc') %>
             </p>
+          </div>
+          <div style="flex-shrink: 0; align-self: center;">
+            <a href="/contact" class="btn btn-primary btn-md" style="min-height: 44px;">
+              <%= t('home.consultation_banner_btn') %> &rarr;
+            </a>
           </div>
         </div>
       </div>

@@ -2,15 +2,17 @@
 <div class="top-bar">
   <div class="container flex items-center justify-between">
     <div class="flex items-center gap-md">
-      <span>Presisi Manufaktur Plastik Berkualitas Tinggi</span>
+      <span class="top-bar-tagline">
+        <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) ? (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) : t('home.hero_title') %>
+      </span>
     </div>
     <div class="flex items-center gap-md">
-      <span>Email: info@euodoo.com</span>
+      <span>Email: <%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %></span>
       <span>|</span>
       <div class="lang-switch flex items-center gap-xs">
-        <a href="/lang/id" class="<%= currentLang === 'id' ? 'font-bold text-white' : '' %>">ID</a>
+        <a href="/lang/id" class="<%= currentLang === 'id' ? 'active font-bold text-white' : '' %>" aria-label="Bahasa Indonesia">ID</a>
         <span>/</span>
-        <a href="/lang/en" class="<%= currentLang === 'en' ? 'font-bold text-white' : '' %>">EN</a>
+        <a href="/lang/en" class="<%= currentLang === 'en' ? 'active font-bold text-white' : '' %>" aria-label="English">EN</a>
       </div>
     </div>
   </div>
@@ -27,24 +29,27 @@
 
       <ul class="nav-menu">
         <li>
-          <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">Beranda</a>
+          <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>"><%= t('nav.home') %></a>
         </li>
         <li>
-          <a href="/products" class="nav-link <%= path === '/products' ? 'active' : '' %>">Produk</a>
+          <a href="/products" class="nav-link <%= path === '/products' || path.startsWith('/products/') ? 'active' : '' %>"><%= t('nav.products') %></a>
         </li>
         <li>
-          <a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>">Kapabilitas</a>
+          <a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>"><%= t('nav.capabilities') %></a>
         </li>
         <li>
-          <a href="/news" class="nav-link <%= path === '/news' ? 'active' : '' %>">Berita</a>
+          <a href="/about" class="nav-link <%= path === '/about' ? 'active' : '' %>"><%= t('nav.about') %></a>
         </li>
         <li>
-          <a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>">Kontak</a>
+          <a href="/news" class="nav-link <%= path === '/news' || path.startsWith('/news/') ? 'active' : '' %>"><%= t('nav.news') %></a>
+        </li>
+        <li>
+          <a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>"><%= t('nav.contact') %></a>
         </li>
       </ul>
 
       <div class="nav-actions">
-        <a href="/contact" class="btn btn-primary btn-sm">Minta Penawaran</a>
+        <a href="/contact" class="btn btn-primary btn-sm"><%= t('nav.request_quote_btn') %></a>
         <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="mobileDrawer">
           <span></span>
           <span></span>
@@ -63,13 +68,20 @@
     <button type="button" class="btn btn-ghost btn-sm" id="closeDrawerBtn" aria-label="Tutup menu">✕</button>
   </div>
   <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-xl);">
-    <li><a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">Beranda</a></li>
-    <li><a href="/products" class="nav-link <%= path === '/products' ? 'active' : '' %>">Produk</a></li>
-    <li><a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>">Kapabilitas</a></li>
-    <li><a href="/news" class="nav-link <%= path === '/news' ? 'active' : '' %>">Berita</a></li>
-    <li><a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>">Kontak</a></li>
+    <li><a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>"><%= t('nav.home') %></a></li>
+    <li><a href="/products" class="nav-link <%= path === '/products' || path.startsWith('/products/') ? 'active' : '' %>"><%= t('nav.products') %></a></li>
+    <li><a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>"><%= t('nav.capabilities') %></a></li>
+    <li><a href="/about" class="nav-link <%= path === '/about' ? 'active' : '' %>"><%= t('nav.about') %></a></li>
+    <li><a href="/news" class="nav-link <%= path === '/news' || path.startsWith('/news/') ? 'active' : '' %>"><%= t('nav.news') %></a></li>
+    <li><a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>"><%= t('nav.contact') %></a></li>
   </ul>
-  <div>
-    <a href="/contact" class="btn btn-primary btn-block">Minta Penawaran</a>
+  <div class="flex flex-col gap-sm">
+    <a href="/contact" class="btn btn-primary btn-block"><%= t('nav.request_quote_btn') %></a>
+    <div class="flex items-center justify-center gap-xs" style="padding: var(--space-xs); font-size: var(--font-size-body-sm);">
+      <span style="color: var(--color-text-muted);">Pilih Bahasa:</span>
+      <a href="/lang/id" class="<%= currentLang === 'id' ? 'font-bold' : '' %>" style="color: var(--color-primary);">ID</a>
+      <span>/</span>
+      <a href="/lang/en" class="<%= currentLang === 'en' ? 'font-bold' : '' %>" style="color: var(--color-primary);">EN</a>
+    </div>
   </div>
 </aside>
