@@ -34,18 +34,30 @@ export const leadController = {
   async updateStatus(req, res) {
     const { id } = req.params;
     const { status, admin_notes } = req.body;
+    const isAjax = req.xhr || req.headers.accept?.includes('application/json') || req.is('json');
 
     try {
       const validStatuses = ['baru', 'diproses', 'selesai', 'ditolak'];
       if (!validStatuses.includes(status)) {
+        if (isAjax) {
+          return res.status(400).json({ success: false, message: 'Status tidak valid.' });
+        }
         return res.redirect('/admin/leads?error=Status+tidak+valid.');
       }
 
       await leadModel.updateStatus(id, status, admin_notes || null);
       logger.info(`Lead #${id} status updated to: ${status}`);
+
+      if (isAjax) {
+        return res.json({ success: true, message: 'Status lead berhasil diperbarui.', status, id });
+      }
+
       return res.redirect('/admin/leads?success=Status+lead+berhasil+diperbarui.');
     } catch (err) {
       logger.error('Lead updateStatus error:', { message: err.message });
+      if (isAjax) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
       return res.redirect(`/admin/leads?error=${encodeURIComponent(err.message)}`);
     }
   },

@@ -1,3 +1,4 @@
+import aboutModel from '../../models/aboutModel.js';
 import capabilityModel from '../../models/capabilityModel.js';
 import logger from '../../utils/logger.js';
 
@@ -7,16 +8,21 @@ export const pageController = {
    */
   async about(req, res) {
     try {
-      const title = res.locals.t('about.page_title') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const about = await aboutModel.getAboutData();
+      const lang = res.locals.currentLang || 'id';
+      const title = (lang === 'en' ? 'About Us' : 'Tentang Kami') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
       res.render('public/about', {
         title,
-        path: '/about'
+        path: '/about',
+        about
       });
     } catch (err) {
       logger.error('Public pageController.about error:', { message: err.message, stack: err.stack });
+      const fallbackAbout = aboutModel.getDefaults();
       res.status(500).render('public/about', {
         title: 'Tentang Kami | PT Euodoo',
-        path: '/about'
+        path: '/about',
+        about: fallbackAbout
       });
     }
   },

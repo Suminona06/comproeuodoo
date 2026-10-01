@@ -135,7 +135,7 @@ body.sidebar-open .admin-backdrop {
 .nav-group-title {
   font-size: 10px;
   font-weight: 700;
-  color: #64748b;
+  color: #94a3b8;
   letter-spacing: 0.08em;
   padding: var(--space-md) var(--space-sm) var(--space-xs);
   text-transform: uppercase;
@@ -431,7 +431,90 @@ body.sidebar-open .admin-backdrop {
   color: var(--color-text-muted);
 }
 
-/* Clickable Metric Card */
+/* Asymmetric Metrics Layout Grid */
+.dashboard-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+@media (min-width: 768px) {
+  .dashboard-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .dashboard-metrics-grid {
+    grid-template-columns: 1.55fr 1fr 1fr 1fr;
+  }
+}
+
+/* Hero Metric Card: Priority 1 Operational Focus (RFQ Leads) */
+.metric-card-hero {
+  background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+  border: 1.5px solid #bfdbfe;
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 136px;
+  position: relative;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(0, 85, 184, 0.07);
+}
+
+.metric-card-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 85, 184, 0.14);
+  border-color: var(--color-primary);
+}
+
+.metric-hero-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.metric-urgent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #1e40af;
+  background-color: #dbeafe;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.metric-urgent-badge.is-urgent {
+  color: #991b1b;
+  background-color: #fee2e2;
+}
+
+.metric-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  display: inline-block;
+}
+
+.metric-hero-subtext {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+  margin-top: 4px;
+}
+
+/* Clickable Metric Card (Standard) */
 .metric-card-interactive {
   background-color: #ffffff;
   border: 1px solid var(--color-border);
@@ -441,7 +524,7 @@ body.sidebar-open .admin-backdrop {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 124px;
+  min-height: 136px;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
   box-shadow: var(--shadow-level-0);
 }
@@ -618,6 +701,120 @@ body.sidebar-open .admin-backdrop {
 .admin-form-container {
   max-width: 760px;
   margin: var(--space-lg) auto 0;
+}
+
+/* Inline Status Selector in Data Tables */
+.inline-status-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.status-select-inline {
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 22px 4px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23475569'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.status-select-inline:focus-visible {
+  box-shadow: 0 0 0 2px rgba(0, 85, 184, 0.25);
+}
+
+.status-select-inline.status-select-baru {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.status-select-inline.status-select-diproses {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+.status-select-inline.status-select-selesai {
+  background-color: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.status-select-inline.status-select-ditolak {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.status-select-inline:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spinner for async status update */
+.inline-status-spinner {
+  display: none;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(0, 85, 184, 0.2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  position: absolute;
+  right: -18px;
+}
+
+.inline-status-wrapper.is-loading .inline-status-spinner {
+  display: block;
+}
+
+.inline-status-wrapper.is-success::after {
+  content: '✓';
+  position: absolute;
+  right: -16px;
+  color: #16a34a;
+  font-weight: 700;
+  font-size: 13px;
+  animation: fadeOutCheck 1.5s forwards ease-in-out;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeOutCheck {
+  0% { opacity: 0; transform: scale(0.7); }
+  25% { opacity: 1; transform: scale(1.1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Table Footer */
+.admin-table-footer {
+  padding: var(--space-md) var(--space-lg);
+  background-color: #fafbfc;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.table-footer-info {
+  font-size: 12px;
+  color: var(--color-text-muted);
 }
 
 /* ========================================================

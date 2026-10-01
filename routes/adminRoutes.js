@@ -7,6 +7,7 @@ import capabilityController from '../controllers/admin/capabilityController.js';
 import postController from '../controllers/admin/postController.js';
 import leadController from '../controllers/admin/leadController.js';
 import settingController from '../controllers/admin/settingController.js';
+import aboutController from '../controllers/admin/aboutController.js';
 import { requireAuth, optionalAuth } from '../middleware/authMiddleware.js';
 import { loginLimiter } from '../middleware/rateLimiter.js';
 import { uploadMedia } from '../middleware/uploadMiddleware.js';
@@ -59,6 +60,10 @@ router.post('/leads/:id/status', requireAuth, leadController.updateStatus);
 // Settings Management
 router.get('/settings', requireAuth, settingController.index);
 router.post('/settings', requireAuth, settingController.update);
+
+// About Us Content Management
+router.get('/about', requireAuth, aboutController.index);
+router.post('/about', requireAuth, uploadMedia.single('about_image'), aboutController.update);
 
 export default router;
 

@@ -82,8 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (filterPills.length > 0) {
     filterPills.forEach((pill) => {
       pill.addEventListener('click', () => {
-        filterPills.forEach((p) => p.classList.remove('active'));
+        filterPills.forEach((p) => {
+          p.classList.remove('active');
+          p.setAttribute('aria-pressed', 'false');
+        });
         pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
         activeStatus = pill.getAttribute('data-filter') || 'all';
         applyTableFilters();
       });
@@ -122,5 +126,68 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // 5. Asynchronous Inline Lead Status Update
+  const statusSelects = document.querySelectorAll('.status-select-inline');
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+  statusSelects.forEach((select) => {
+    let previousValue = select.value;
+
+    select.addEventListener('change', async (e) => {
+      const newStatus = e.target.value;
+      const leadId = select.getAttribute('data-lead-id');
+      const wrapper = select.closest('.inline-status-wrapper');
+
+      if (!leadId) return;
+
+      // Update styling class immediately for instant responsive feedback
+      select.className = `status-select-inline status-select-${newStatus}`;
+      select.disabled = true;
+      if (wrapper) {
+        wrapper.classList.remove('is-success');
+        wrapper.classList.add('is-loading');
+      }
+
+      try {
+        const response = await fetch(`/admin/leads/${leadId}/status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-Token': csrfToken
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          previousValue = newStatus;
+          // Update data-status on the row so client-side filter pills stay in sync
+          const row = select.closest('tr[data-status]');
+          if (row) row.setAttribute('data-status', newStatus);
+
+          if (wrapper) {
+            wrapper.classList.remove('is-loading');
+            wrapper.classList.add('is-success');
+            setTimeout(() => wrapper.classList.remove('is-success'), 1500);
+          }
+        } else {
+          throw new Error(data.message || 'Gagal memperbarui status');
+        }
+      } catch (err) {
+        console.error('Update status error:', err);
+        // Rollback on error
+        select.value = previousValue;
+        select.className = `status-select-inline status-select-${previousValue}`;
+        alert(`Gagal memperbarui status: ${err.message}`);
+        if (wrapper) wrapper.classList.remove('is-loading');
+      } finally {
+        select.disabled = false;
+      }
+    });
+  });
 });
+
 

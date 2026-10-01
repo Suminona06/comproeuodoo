@@ -2,184 +2,284 @@
 <%- include('../partials/navbar') %>
 
 <main id="main-content">
-  <!-- Hero Section -->
+  <!-- HERO: Full-bleed factory photo background, left-aligned headline, pill CTA (Home1) -->
   <% const primaryBanner = (typeof banners !== 'undefined' && banners.length > 0) ? banners[0] : null; %>
-  <section class="hero-section <%= primaryBanner ? 'has-media-banner' : 'section-bg-navy' %>" style="position: relative; overflow: hidden;">
+  <section style="position: relative; overflow: hidden; min-height: 92vh; display: flex; align-items: center;">
     <% if (primaryBanner && primaryBanner.media_type === 'video') { %>
-      <div class="hero-video-bg" style="position: absolute; inset: 0; z-index: 1; overflow: hidden;">
+      <div style="position: absolute; inset: 0; z-index: 1; overflow: hidden;">
         <video autoplay muted loop playsinline preload="metadata" style="width: 100%; height: 100%; object-fit: cover;">
           <source src="<%= primaryBanner.file_url %>" type="video/mp4">
         </video>
-        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0, 33, 71, 0.92) 0%, rgba(12, 25, 44, 0.82) 100%);"></div>
+        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10, 22, 40, 0.82) 0%, rgba(13, 32, 64, 0.65) 100%);"></div>
       </div>
     <% } else if (primaryBanner && primaryBanner.file_url) { %>
-      <div class="hero-image-bg" style="position: absolute; inset: 0; z-index: 1; background-image: url('<%= primaryBanner.file_url %>'); background-size: cover; background-position: center;">
-        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0, 33, 71, 0.92) 0%, rgba(12, 25, 44, 0.82) 100%);"></div>
+      <div style="position: absolute; inset: 0; z-index: 1; background-image: url('<%= primaryBanner.file_url %>'); background-size: cover; background-position: center;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10, 22, 40, 0.82) 0%, rgba(13, 32, 64, 0.65) 100%);"></div>
+      </div>
+    <% } else { %>
+      <div style="position: absolute; inset: 0; z-index: 1; background-image: url('/images/hero-factory.jpg'); background-size: cover; background-position: center;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10, 22, 40, 0.82) 0%, rgba(13, 32, 64, 0.65) 100%);"></div>
       </div>
     <% } %>
 
     <div class="container" style="position: relative; z-index: 2; padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
-      <div class="grid" style="align-items: center;">
-        <div class="col-span-full" style="max-width: 860px;">
-          <span class="section-kicker" style="color: var(--color-accent-teal);">
-            <%= typeof settings !== 'undefined' && settings?.company_name ? settings.company_name : 'PT EUODOO' %> &bull; <%= currentLang === 'en' ? 'PRECISION MANUFACTURING' : 'MANUFAKTUR PRESISI' %>
-          </span>
-          <h1 style="margin-bottom: var(--space-md); color: #ffffff; line-height: 1.15; font-size: clamp(2rem, 4vw, 3rem);">
-            <% if (primaryBanner) { %>
-              <%= currentLang === 'en' ? (primaryBanner.title_en || primaryBanner.title_id) : primaryBanner.title_id %>
-            <% } else { %>
-              <%= t('home.hero_title') %>
-            <% } %>
-          </h1>
-          <p style="font-size: var(--font-size-body-lg); line-height: 1.6; margin-bottom: var(--space-xl); color: #e2e8f0; max-width: 720px;">
-            <% if (primaryBanner && (primaryBanner.subtitle_id || primaryBanner.subtitle_en)) { %>
-              <%= currentLang === 'en' ? (primaryBanner.subtitle_en || primaryBanner.subtitle_id) : primaryBanner.subtitle_id %>
-            <% } else { %>
-              <%= t('home.hero_subtitle') %>
-            <% } %>
-          </p>
-          <div class="flex flex-wrap gap-md">
-            <a href="/contact" class="btn btn-primary btn-lg">
-              <%= t('home.cta_quote') %> &rarr;
-            </a>
-            <a href="/products" class="btn btn-outline-white btn-lg">
-              <%= t('home.cta_catalog') %>
-            </a>
-          </div>
+      <div style="max-width: 720px;">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); margin-bottom: var(--space-sm);">
+          <%= currentLang === 'en' ? 'WELCOME TO PT. EUODOO' : 'SELAMAT DATANG DI PT. EUODOO' %>
+        </div>
+        <h1 style="font-size: clamp(2.25rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.12; color: #ffffff; margin-bottom: var(--space-lg);">
+          <% if (primaryBanner) { %>
+            <%= currentLang === 'en' ? (primaryBanner.title_en || primaryBanner.title_id) : primaryBanner.title_id %>
+          <% } else { %>
+            <%= t('home.hero_title') %>
+          <% } %>
+        </h1>
+        <p style="font-size: var(--font-size-body-lg); line-height: 1.65; color: #cbd5e1; max-width: 600px; margin-bottom: var(--space-xl);">
+          <% if (primaryBanner && (primaryBanner.subtitle_id || primaryBanner.subtitle_en)) { %>
+            <%= currentLang === 'en' ? (primaryBanner.subtitle_en || primaryBanner.subtitle_id) : primaryBanner.subtitle_id %>
+          <% } else { %>
+            <%= t('home.hero_subtitle') %>
+          <% } %>
+        </p>
+        <div class="flex flex-wrap gap-md">
+          <a href="/contact" class="btn-pill-solid-white">
+            <%= t('home.cta_quote') %>
+          </a>
+          <a href="/about" class="btn-pill-white">
+            <%= currentLang === 'en' ? 'Learn More' : 'Lihat Detail' %>
+          </a>
         </div>
       </div>
     </div>
+
+    <div class="hero-explore-indicator">
+      <span class="hero-explore-text">EXPLORE MORE</span>
+      <span class="hero-explore-line"></span>
+    </div>
   </section>
 
-  <!-- Industrial Highlights / Pillars -->
-  <section class="section section-bg-workspace">
+  <!-- SECTION 2: Company Intro + 4 Showcase Cards (Home2) -->
+  <section class="section section-bg-base" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div class="section-header text-center">
-        <span class="section-kicker"><%= t('home.highlights_title') %></span>
-        <h2><%= t('home.highlights_subtitle') %></h2>
+      <div class="grid grid-cols-2" style="gap: var(--space-2xl); align-items: start; margin-bottom: var(--space-2xl);">
+        <div>
+          <h2 style="font-size: clamp(2rem, 3vw, 2.75rem); font-weight: 700; color: var(--color-text-main); line-height: 1.15;">
+            <%= currentLang === 'en'
+              ? 'Passion To Build A Better Quality of Life'
+              : 'Semangat Membangun Kualitas Hidup yang Lebih Baik' %>
+          </h2>
+        </div>
+        <div>
+          <p style="font-size: var(--font-size-body-md); color: var(--color-text-muted); line-height: 1.7;">
+            <%= currentLang === 'en'
+              ? 'PT. EUODOO is an HDPE and LLDPE plastic bag manufacturing and trading company. Our production plant is located in Cigondewah, Bandung, West Java. Founded in 1990, formerly known as PT. Sahabat Baru and PT. Pelita Baru, we started by serving traditional market demand and have since expanded to serve modern retail, industrial sectors, and environmental sustainability commitments.'
+              : 'PT. EUODOO adalah perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE. Pabrik produksi kami terletak di Cigondewah, Bandung, Jawa Barat. Didirikan tahun 1990, yang akrab dikenal sebagai PT. Sahabat Baru dan PT. Pelita Baru, kami memulai dari melayani pasar tradisional dan kini berkembang melayani retail modern, sektor industri, serta berkomitmen pada kelestarian lingkungan.' %>
+          </p>
+        </div>
       </div>
 
-      <div class="grid grid-cols-3">
-        <!-- Pillar 1 -->
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Pilar 01</span>
-            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm); color: var(--color-secondary-navy);">
-              <%= t('home.feat_1_title') %>
-            </h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
-              <%= t('home.feat_1_desc') %>
-            </p>
-            <div style="margin-top: var(--space-md);">
-              <a href="/capabilities" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">
-                <%= t('nav.capabilities') %> &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-main); margin-bottom: var(--space-lg);">
+        <%= currentLang === 'en' ? 'Explore Our Latest Developments' : 'Telusuri Perkembangan Terkini' %>
+      </div>
 
-        <!-- Pillar 2 -->
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Pilar 02</span>
-            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm); color: var(--color-secondary-navy);">
-              <%= t('home.feat_2_title') %>
-            </h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
-              <%= t('home.feat_2_desc') %>
-            </p>
-            <div style="margin-top: var(--space-md);">
-              <a href="/products" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">
-                <%= t('nav.products') %> &rarr;
-              </a>
+      <div class="grid grid-cols-4" style="gap: var(--space-lg);">
+        <!-- Card 1: Retail -->
+        <a href="/products?category=retailers" class="showcase-card">
+          <img src="/images/segment-retail.jpg" alt="<%= currentLang === 'en' ? 'Retail Shopping Bags' : 'Tas Belanja Retail' %>" class="showcase-card-bg" loading="lazy">
+          <div class="showcase-card-overlay"></div>
+          <div class="showcase-card-content">
+            <div class="showcase-card-title">
+              <%= currentLang === 'en' ? 'Retail Solutions' : 'Solusi Retail' %>
             </div>
+            <div class="showcase-card-desc">
+              <%= currentLang === 'en'
+                ? 'Custom shopping bags for supermarkets, boutiques, cafes, and restaurants with soft loop and patch handle options.'
+                : 'Tas belanja kustom untuk supermarket, butik, kafe, dan restoran dengan pilihan soft loop dan patch handle.' %>
+            </div>
+            <span class="showcase-card-action">
+              <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
+            </span>
           </div>
-        </div>
+        </a>
 
-        <!-- Pillar 3 -->
-        <div class="card card-interactive">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Pilar 03</span>
-            <h3 style="font-size: 1.25rem; margin-bottom: var(--space-sm); color: var(--color-secondary-navy);">
-              <%= t('home.feat_3_title') %>
-            </h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
-              <%= t('home.feat_3_desc') %>
-            </p>
-            <div style="margin-top: var(--space-md);">
-              <a href="/contact" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg);">
-                <%= t('home.cta_quote') %> &rarr;
-              </a>
+        <!-- Card 2: Industrial -->
+        <a href="/products?category=industrials" class="showcase-card">
+          <img src="/images/segment-industrial.jpg" alt="<%= currentLang === 'en' ? 'Industrial Packaging' : 'Kemasan Industri' %>" class="showcase-card-bg" loading="lazy">
+          <div class="showcase-card-overlay"></div>
+          <div class="showcase-card-content">
+            <div class="showcase-card-title">
+              <%= currentLang === 'en' ? 'Industrial Packaging' : 'Kemasan Industri' %>
             </div>
+            <div class="showcase-card-desc">
+              <%= currentLang === 'en'
+                ? 'Anti-static electronic packaging, auto seat covers, and food grade solutions with strict quality standards.'
+                : 'Kemasan anti-statis elektronik, cover jok otomotif, dan solusi food grade dengan standar mutu ketat.' %>
+            </div>
+            <span class="showcase-card-action">
+              <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
+            </span>
           </div>
-        </div>
+        </a>
+
+        <!-- Card 3: Sustainability -->
+        <a href="/about#certifications" class="showcase-card">
+          <img src="/images/segment-sustainability.jpg" alt="<%= currentLang === 'en' ? 'Eco Sustainability' : 'Kelestarian Lingkungan' %>" class="showcase-card-bg" loading="lazy">
+          <div class="showcase-card-overlay"></div>
+          <span class="showcase-floating-badge">100% Degradable</span>
+          <div class="showcase-card-content">
+            <div class="showcase-card-title">
+              <%= currentLang === 'en' ? 'Sustainability' : 'Kelestarian Lingkungan' %>
+            </div>
+            <div class="showcase-card-desc">
+              <%= currentLang === 'en'
+                ? 'Let\'s save our earth! We supply 100% degradable plastic bags certified by SNI, OXIUM, and InSWA Green Label.'
+                : 'Mari selamatkan bumi kita! Kami menyuplai kantong plastik 100% degradable bersertifikasi SNI, OXIUM, dan InSWA Green Label.' %>
+            </div>
+            <span class="showcase-card-action">
+              <%= currentLang === 'en' ? 'View Certifications' : 'Lihat Sertifikasi' %>
+            </span>
+          </div>
+        </a>
+
+        <!-- Card 4: Traditional Market -->
+        <a href="/products?category=traditional-market" class="showcase-card">
+          <img src="/images/segment-traditional.jpg" alt="<%= currentLang === 'en' ? 'Traditional Market' : 'Pasar Tradisional' %>" class="showcase-card-bg" loading="lazy">
+          <div class="showcase-card-overlay"></div>
+          <div class="showcase-card-content">
+            <div class="showcase-card-title">
+              <%= currentLang === 'en' ? 'Traditional Market' : 'Pasar Tradisional' %>
+            </div>
+            <div class="showcase-card-desc">
+              <%= currentLang === 'en'
+                ? 'Garbage bags, recycled t-shirt bags, and HDPE/LDPE bags under trusted brands PB and Berkah.'
+                : 'Kantong sampah, recycle bag, dan kantong HDPE/LDPE dengan merek terpercaya PB dan Berkah.' %>
+            </div>
+            <span class="showcase-card-action">
+              <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
+            </span>
+          </div>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Featured Products Section -->
+  <!-- SECTION 3: Business Segments with Photos (Home3) -->
   <% if (typeof featuredProducts !== 'undefined' && featuredProducts.length > 0) { %>
-    <section class="section section-bg-white">
+    <section class="section section-bg-workspace" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
       <div class="container">
-        <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
+        <div class="grid grid-cols-2" style="gap: var(--space-2xl); align-items: start; margin-bottom: var(--space-2xl);">
           <div>
-            <span class="section-kicker"><%= t('home.featured_products_title') %></span>
-            <h2 style="margin: 0; color: var(--color-secondary-navy);"><%= t('home.featured_products_subtitle') %></h2>
+            <h2 style="font-size: clamp(1.75rem, 2.8vw, 2.5rem); font-weight: 700; color: var(--color-text-main); line-height: 1.15;">
+              <%= currentLang === 'en'
+                ? 'Driving Growth as a Leading Plastic Bag Manufacturer in Indonesia'
+                : 'Mendorong Pertumbuhan sebagai Produsen Kantong Plastik Terdepan di Indonesia' %>
+            </h2>
           </div>
           <div>
-            <a href="/products" class="btn btn-secondary btn-sm"><%= t('common.view_more') %> &rarr;</a>
+            <p style="font-size: var(--font-size-body-md); color: var(--color-text-muted); line-height: 1.7;">
+              <%= currentLang === 'en'
+                ? 'PT. EUODOO is dedicated to achieving sustainable growth through transformative initiatives and eco-friendly products that improve community welfare while meeting diverse industrial demands.'
+                : 'PT. EUODOO berdedikasi mencapai pertumbuhan berkelanjutan melalui inisiatif transformatif dan produk ramah lingkungan yang meningkatkan kesejahteraan masyarakat serta memenuhi permintaan industri yang beragam.' %>
+            </p>
           </div>
         </div>
 
         <div class="grid grid-cols-3" style="gap: var(--space-lg);">
-          <% featuredProducts.forEach(function(product) { %>
-            <div class="card card-interactive" style="display: flex; flex-direction: column;">
-              <div style="height: 200px; background-color: #f1f5f9; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                <% if (product.main_image) { %>
-                  <img src="<%= product.main_image %>" alt="<%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>" style="width: 100%; height: 100%; object-fit: cover;">
-                <% } else { %>
-                  <div style="color: var(--color-text-muted); font-size: 13px; font-weight: 500;">PT Euodoo Spec</div>
-                <% } %>
-                <span class="badge badge-primary" style="position: absolute; top: var(--space-sm); left: var(--space-sm); font-size: 11px;">
-                  <%= currentLang === 'en' ? (product.category_name_en || product.category_name_id) : product.category_name_id %>
+          <% featuredProducts.slice(0, 3).forEach(function(product) { %>
+            <a href="/products/<%= product.slug %>" class="showcase-card" style="height: 380px;">
+              <% if (product.main_image) { %>
+                <img src="<%= product.main_image %>" alt="<%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>" class="showcase-card-bg" loading="lazy">
+              <% } %>
+              <div class="showcase-card-overlay"></div>
+              <div class="showcase-card-content">
+                <div class="showcase-card-title">
+                  <%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>
+                </div>
+                <span class="showcase-card-action">
+                  <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
                 </span>
               </div>
-              <div class="card-body" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                  <h3 style="font-size: 1.125rem; margin-bottom: var(--space-xs); color: var(--color-secondary-navy);">
-                    <%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>
-                  </h3>
-                  <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.5; margin-bottom: var(--space-md);">
-                    <%= currentLang === 'en' ? (product.description_en || product.description_id) : product.description_id %>
-                  </p>
-                </div>
-                <div class="flex items-center justify-between" style="border-top: 1px solid var(--color-border); padding-top: var(--space-sm);">
-                  <a href="/products/<%= product.slug %>" class="font-semibold text-primary" style="font-size: var(--font-size-body-sm);">
-                    <%= t('products.details_btn') %> &rarr;
-                  </a>
-                  <a href="/contact?product=<%= product.id %>" class="btn btn-ghost btn-sm" style="font-size: 12px;">
-                    <%= t('common.request_quote') %>
-                  </a>
-                </div>
-              </div>
-            </div>
+            </a>
           <% }); %>
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-xl);">
+          <a href="/products" class="btn btn-secondary btn-sm"><%= t('common.view_more') %></a>
         </div>
       </div>
     </section>
   <% } %>
 
-  <!-- Machine Capabilities Preview -->
+  <!-- SECTION 4: Journey Stats - Dark Navy (Home4) -->
+  <section class="section-journey">
+    <div class="container">
+      <div class="grid grid-cols-2" style="gap: var(--space-3xl); align-items: center;">
+        <div>
+          <h2 style="font-size: clamp(2rem, 3vw, 2.75rem); font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: var(--space-lg);">
+            <%= currentLang === 'en'
+              ? 'A Journey of Sustainable Growth'
+              : 'Perjalanan Pertumbuhan Berkelanjutan' %>
+          </h2>
+          <p style="font-size: var(--font-size-body-md); color: #94a3b8; line-height: 1.7; margin-bottom: var(--space-xl);">
+            <%= currentLang === 'en'
+              ? 'At PT. EUODOO, partnerships are key to driving development and innovation. Growing demand for eco-friendly plastic bags domestically and regionally opens new opportunities through asset optimization, organic expansion, and sustainable manufacturing practices since 1990.'
+              : 'Di PT. EUODOO, kemitraan sangat krusial karena mendorong pengembangan dan inovasi. Pertumbuhan permintaan kantong plastik ramah lingkungan di dalam negeri maupun regional membuka peluang baru lewat optimalisasi aset, ekspansi organik, dan praktik manufaktur berkelanjutan sejak 1990.' %>
+          </p>
+          <div class="flex flex-wrap gap-md">
+            <a href="/about" class="btn-pill-sky">
+              <%= currentLang === 'en' ? 'About Us' : 'Tentang Kami' %>
+            </a>
+            <a href="/about#certifications" class="btn-pill-sky">
+              <%= currentLang === 'en' ? 'Certifications' : 'Sertifikasi' %>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <div class="grid grid-cols-2" style="gap: var(--space-xl);">
+            <div class="metric-stat-box">
+              <div class="metric-stat-value">34+</div>
+              <div class="metric-stat-label">
+                <%= currentLang === 'en' ? 'Years of manufacturing experience' : 'Tahun pengalaman manufaktur' %>
+              </div>
+            </div>
+            <div class="metric-stat-box">
+              <div class="metric-stat-value">3</div>
+              <div class="metric-stat-label">
+                <%= currentLang === 'en' ? 'Core market segments served' : 'Segmen pasar utama dilayani' %>
+              </div>
+            </div>
+            <div class="metric-stat-box">
+              <div class="metric-stat-value">4</div>
+              <div class="metric-stat-label">
+                <%= currentLang === 'en' ? 'Official eco certifications (SNI, OXIUM, InSWA, Ekolabel)' : 'Sertifikasi resmi ramah lingkungan (SNI, OXIUM, InSWA, Ekolabel)' %>
+              </div>
+            </div>
+            <div class="metric-stat-box">
+              <div class="metric-stat-value">100%</div>
+              <div class="metric-stat-label">
+                <%= currentLang === 'en' ? 'Degradable plastic bag commitment' : 'Komitmen kantong plastik degradable' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: Machine Capabilities Preview -->
   <% if (typeof capabilities !== 'undefined' && capabilities.length > 0) { %>
-    <section class="section section-bg-workspace">
+    <section class="section section-bg-workspace" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
       <div class="container">
         <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
           <div>
-            <span class="section-kicker"><%= t('home.capabilities_preview_title') %></span>
-            <h2 style="margin: 0; color: var(--color-secondary-navy);"><%= t('home.capabilities_preview_subtitle') %></h2>
+            <span class="section-kicker" style="color: var(--color-primary);"><%= t('home.capabilities_preview_title') %></span>
+            <h2 style="margin: 0; color: var(--color-secondary-navy); font-size: clamp(1.75rem, 2.5vw, 2.25rem);">
+              <%= t('home.capabilities_preview_subtitle') %>
+            </h2>
           </div>
           <div>
-            <a href="/capabilities" class="btn btn-secondary btn-sm"><%= t('common.view_more') %> &rarr;</a>
+            <a href="/capabilities" class="btn btn-secondary btn-sm"><%= t('common.view_more') %></a>
           </div>
         </div>
 
@@ -207,19 +307,104 @@
     </section>
   <% } %>
 
-  <!-- Call to Action Banner -->
-  <section class="section section-bg-navy" style="color: #ffffff;">
+  <!-- SECTION 6: News Asymmetric (Home5) -->
+  <% if (typeof latestPosts !== 'undefined' && latestPosts.length > 0) { %>
+    <section class="section section-bg-base" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+      <div class="container">
+        <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-xs);">
+              <%= currentLang === 'en' ? 'NEWS' : 'BERITA' %>
+            </div>
+            <h2 style="margin: 0; font-size: clamp(1.75rem, 2.5vw, 2.25rem); color: var(--color-text-main);">
+              <%= currentLang === 'en' ? 'Stay informed about our industry' : 'Temukan informasi terbaru dari industri kami' %>
+            </h2>
+          </div>
+          <div>
+            <a href="/news" class="btn btn-secondary btn-sm">
+              <%= currentLang === 'en' ? 'View All' : 'Lihat Semua' %>
+            </a>
+          </div>
+        </div>
+
+        <div class="news-asymmetric-grid">
+          <% const firstPost = latestPosts[0]; %>
+          <a href="/news/<%= firstPost.slug %>" class="news-card-tall">
+            <% if (firstPost.cover_image) { %>
+              <img src="<%= firstPost.cover_image %>" alt="<%= currentLang === 'en' ? (firstPost.title_en || firstPost.title_id) : firstPost.title_id %>" class="showcase-card-bg" loading="lazy">
+            <% } else { %>
+              <img src="/images/post-eco-community.jpg" alt="<%= currentLang === 'en' ? (firstPost.title_en || firstPost.title_id) : firstPost.title_id %>" class="showcase-card-bg" loading="lazy">
+            <% } %>
+            <div class="showcase-card-overlay"></div>
+            <div class="showcase-card-content">
+              <% if (firstPost.published_at) { %>
+                <div class="news-tag-date">
+                  <%= new Date(firstPost.published_at).toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase() %>
+                </div>
+              <% } %>
+              <div class="news-title-overlay">
+                <%= currentLang === 'en' ? (firstPost.title_en || firstPost.title_id) : firstPost.title_id %>
+              </div>
+            </div>
+          </a>
+
+          <div>
+            <% if (latestPosts.length > 1) { %>
+              <% const secondPost = latestPosts[1]; %>
+              <a href="/news/<%= secondPost.slug %>" class="news-card-horizontal">
+                <% if (secondPost.cover_image) { %>
+                  <img src="<%= secondPost.cover_image %>" alt="<%= currentLang === 'en' ? (secondPost.title_en || secondPost.title_id) : secondPost.title_id %>" class="showcase-card-bg" loading="lazy">
+                <% } else { %>
+                  <img src="/images/post-school-recycling.jpg" alt="<%= currentLang === 'en' ? (secondPost.title_en || secondPost.title_id) : secondPost.title_id %>" class="showcase-card-bg" loading="lazy">
+                <% } %>
+                <div class="showcase-card-overlay"></div>
+                <div class="showcase-card-content">
+                  <% if (secondPost.published_at) { %>
+                    <div class="news-tag-date">
+                      <%= new Date(secondPost.published_at).toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase() %>
+                    </div>
+                  <% } %>
+                  <div class="news-title-overlay">
+                    <%= currentLang === 'en' ? (secondPost.title_en || secondPost.title_id) : secondPost.title_id %>
+                  </div>
+                </div>
+              </a>
+            <% } %>
+
+            <div style="margin-top: var(--space-md);">
+              <div style="font-size: 14px; font-weight: 600; color: var(--color-text-main); margin-bottom: var(--space-sm);">
+                <%= currentLang === 'en' ? 'Browse topics' : 'Cari topik pilihan lainnya' %>
+              </div>
+              <div class="topic-chips-group">
+                <a href="/news" class="topic-chip"><%= currentLang === 'en' ? 'Company News' : 'Berita Perusahaan' %></a>
+                <a href="/about" class="topic-chip"><%= currentLang === 'en' ? 'Sustainability' : 'Kelestarian' %></a>
+                <a href="/products" class="topic-chip"><%= currentLang === 'en' ? 'Products' : 'Produk' %></a>
+                <a href="/about#certifications" class="topic-chip"><%= currentLang === 'en' ? 'Certifications' : 'Sertifikasi' %></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- SECTION 7: CTA Band -->
+  <section class="section section-bg-navy" style="color: #ffffff; padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
     <div class="container">
       <div class="flex flex-col items-center text-center" style="max-width: 760px; margin: 0 auto;">
-        <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('home.consultation_banner_title') %></span>
-        <h2 style="margin-bottom: var(--space-sm); color: #ffffff;">
+        <h2 style="margin-bottom: var(--space-sm); color: #ffffff; font-size: clamp(1.75rem, 2.5vw, 2.25rem);">
           <%= t('home.consultation_banner_subtitle') %>
         </h2>
-        <div class="flex flex-wrap gap-md justify-center" style="margin-top: var(--space-lg);">
-          <a href="/contact" class="btn btn-primary btn-md">
-            <%= t('home.cta_quote') %> &rarr;
+        <p style="color: #94a3b8; font-size: var(--font-size-body-md); margin-bottom: var(--space-lg);">
+          <%= currentLang === 'en'
+            ? 'Contact our marketing and technical teams for custom size specifications, degradable material consultations, and partnership quotations.'
+            : 'Hubungi tim pemasaran dan teknis kami untuk konsultasi spesifikasi ukuran khusus, material degradable, dan penawaran harga kemitraan.' %>
+        </p>
+        <div class="flex flex-wrap gap-md justify-center">
+          <a href="/contact" class="btn-pill-solid-white">
+            <%= t('home.cta_quote') %>
           </a>
-          <a href="/products" class="btn btn-outline-white btn-md">
+          <a href="/products" class="btn-pill-white">
             <%= t('common.view_more') %>
           </a>
         </div>

@@ -12,13 +12,15 @@ export const dashboardController = {
         activeProductsCount,
         publishedPostsCount,
         activeBannersCount,
+        totalLeadsCount,
         recentLeads
       ] = await Promise.all([
         leadModel.countAll({ status: 'baru' }),
         productModel.countAll({ isActive: true }),
         postModel.countAll({ status: 'published' }),
         bannerModel.countActive(),
-        leadModel.findAll({ limit: 5 })
+        leadModel.countAll(),
+        leadModel.findAll({ limit: 10 })
       ]);
 
       res.render('admin/dashboard', {
@@ -28,16 +30,18 @@ export const dashboardController = {
           pendingLeads: pendingLeadsCount,
           activeProducts: activeProductsCount,
           publishedPosts: publishedPostsCount,
-          activeBanners: activeBannersCount
+          activeBanners: activeBannersCount,
+          totalLeads: totalLeadsCount
         },
-        recentLeads
+        recentLeads,
+        csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
       logger.error('Dashboard index error:', { message: err.message });
       res.status(500).render('admin/dashboard', {
         title: 'Dashboard Administrasi - PT Euodoo CMS',
         activeNav: 'dashboard',
-        stats: { pendingLeads: 0, activeProducts: 0, publishedPosts: 0, activeBanners: 0 },
+        stats: { pendingLeads: 0, activeProducts: 0, publishedPosts: 0, activeBanners: 0, totalLeads: 0 },
         recentLeads: [],
         error: 'Gagal memuat beberapa data dashboard.'
       });

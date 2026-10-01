@@ -175,7 +175,7 @@
               <button type="submit"
                       class="btn btn-primary btn-lg"
                       style="min-height: 48px; width: 100%; display: flex; align-items: center; justify-content: center;">
-                <%= t('contact.submit_btn') %> &rarr;
+                <%= t('contact.submit_btn') %>
               </button>
             </form>
           </div>
@@ -185,37 +185,43 @@
         <div>
           <div class="card" style="padding: var(--space-xl); background-color: #ffffff; margin-bottom: var(--space-lg);">
             <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-lg); border-bottom: 2px solid var(--color-bg-base); padding-bottom: var(--space-xs);">
-              Informasi Fasilitas
+              Lokasi & Kontak Resmi
             </h3>
 
-            <!-- Address -->
+            <!-- Address Bandung -->
             <div style="margin-bottom: var(--space-lg);">
-              <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-xs); letter-spacing: 0.05em;">
-                <%= t('contact.office_address_heading') %>
+              <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-accent-teal); margin-bottom: var(--space-xs); letter-spacing: 0.05em; font-weight: 700;">
+                Pabrik Produksi & Pemasaran (Bandung)
               </h4>
-              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin: 0;">
-                <%= (settings && settings.company_address) || 'Kawasan Industri Manufaktur Terpadu, Karawang / Cikarang, Jawa Barat, Indonesia' %>
+              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin-bottom: var(--space-xs);">
+                <%= (settings && settings.company_address) || 'Jl. Paralon II No. 21 Cijerah Bandung 40214 - Indonesia' %>
+              </p>
+              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); margin: 0;">
+                Telepon: <strong><%= (settings && settings.company_phone) || '+6222-6012519' %></strong> | Fax: +6222-6074730
               </p>
             </div>
 
-            <!-- Phone -->
-            <div style="margin-bottom: var(--space-lg);">
-              <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-xs); letter-spacing: 0.05em;">
-                <%= t('contact.office_phone_heading') %>
+            <!-- Address Jakarta -->
+            <div style="margin-bottom: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
+              <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-primary-blue); margin-bottom: var(--space-xs); letter-spacing: 0.05em; font-weight: 700;">
+                Kantor Pusat (Jakarta)
               </h4>
-              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin: 0;">
-                <%= (settings && settings.company_phone) || '+62 21 8900 1234' %>
+              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin-bottom: var(--space-xs);">
+                Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270
+              </p>
+              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); margin: 0;">
+                Telepon: <strong>+6221-53668626</strong> | Fax: +6221-53668648
               </p>
             </div>
 
             <!-- Email -->
-            <div style="margin-bottom: var(--space-lg);">
+            <div style="margin-bottom: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
               <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-xs); letter-spacing: 0.05em;">
                 <%= t('contact.office_email_heading') %>
               </h4>
               <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin: 0;">
-                <a href="mailto:<%= (settings && settings.company_email) || 'sales@euodoo.com' %>" style="color: var(--color-primary-blue); text-decoration: none;">
-                  <%= (settings && settings.company_email) || 'sales@euodoo.com' %>
+                <a href="mailto:<%= (settings && settings.company_email) || 'info@euodoo.com' %>" style="color: var(--color-primary-blue); text-decoration: none;">
+                  <%= (settings && settings.company_email) || 'info@euodoo.com' %>
                 </a>
               </p>
             </div>
@@ -224,7 +230,7 @@
             <% if (settings && settings.whatsapp_number) { %>
               <%
                 const waNumber = settings.whatsapp_number.replace(/\D/g, '');
-                const waMessage = encodeURIComponent('Halo Tim Sales PT Euodoo, saya ingin menanyakan penawaran manufaktur cetak komponen.');
+                const waMessage = encodeURIComponent('Halo Tim Sales PT EUODOO, saya ingin menanyakan penawaran kantong plastik ramah lingkungan (100% degradable).');
               %>
               <div style="margin-top: var(--space-xl); border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-md);">
                 <a href="https://wa.me/<%= waNumber %>?text=<%= waMessage %>"

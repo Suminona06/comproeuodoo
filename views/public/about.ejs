@@ -1,48 +1,143 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
+<% const lang = typeof currentLang !== 'undefined' ? currentLang : 'id'; %>
+<% const data = typeof about !== 'undefined' && about ? about : {}; %>
+
 <main id="main-content">
-  <!-- Page Header -->
-  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
+  <!-- Page Hero Header -->
+  <section class="section section-bg-navy" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl); color: #ffffff;">
     <div class="container">
-      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('about.page_title') %></span>
-      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
-        <%= t('about.page_title') %>
-      </h1>
-      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
-        <%= t('about.page_subtitle') %>
-      </p>
+      <div style="max-width: 820px;">
+        <span class="section-kicker" style="color: var(--color-accent-teal);">
+          <%= lang === 'en' ? 'ABOUT PT EUODOO' : 'TENTANG PT EUODOO' %>
+        </span>
+        <h1 style="color: #ffffff; margin-bottom: var(--space-md); font-size: clamp(2.2rem, 4vw, 3.25rem); line-height: 1.15; font-weight: 700;">
+          <%= lang === 'en' ? (data.slogan_en || 'Passion to Build a Better Quality of Life') : (data.slogan_id || 'Semangat Membangun Kualitas Hidup yang Lebih Baik') %>
+        </h1>
+        <p style="color: #cbd5e1; font-size: var(--font-size-body-lg); line-height: 1.65; max-width: 720px; margin-bottom: 0;">
+          <%= lang === 'en'
+            ? 'Manufacturer and trader of HDPE and LLDPE plastic bags based in Bandung since 1990, dedicated to 100% degradable environmental solutions.'
+            : 'Produsen dan perdagangan kantong plastik HDPE dan LLDPE berbasis di Bandung sejak tahun 1990, berdedikasi pada penyediaan solusi kemasan ramah lingkungan yang 100% degradable.' %>
+        </p>
+      </div>
     </div>
   </section>
 
-  <!-- Vision & Mission Section -->
-  <section class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+  <!-- Sejarah & Latar Belakang Perusahaan -->
+  <section class="section section-bg-base" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div class="grid grid-cols-2 gap-xl items-stretch">
-        <!-- Vision -->
-        <div class="card card-interactive" style="display: flex; flex-direction: column; justify-content: space-between;">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Visi Korporat</span>
-            <h2 style="font-size: 1.5rem; color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">
-              <%= t('about.vision_title') %>
-            </h2>
-            <p style="font-size: var(--font-size-body-md); color: var(--color-text-body); line-height: 1.7;">
-              <%= t('about.vision_desc') %>
+      <div class="grid grid-cols-2 items-center" style="gap: var(--space-2xl);">
+        <div>
+          <span class="section-kicker" style="color: var(--color-primary-blue);">
+            <%= lang === 'en' ? 'OUR HERITAGE' : 'JEJAK LANGKAH' %>
+          </span>
+          <h2 style="font-size: clamp(1.75rem, 2.5vw, 2.25rem); color: var(--color-secondary-navy); margin-bottom: var(--space-md); line-height: 1.25;">
+            <%= lang === 'en' ? (data.history_title_en || 'Company Background & History') : (data.history_title_id || 'Latar Belakang & Sejarah Perusahaan') %>
+          </h2>
+          <div style="font-size: var(--font-size-body-md); color: var(--color-text-body); line-height: 1.8; margin-bottom: var(--space-lg);">
+            <p style="margin-bottom: var(--space-md);">
+              <%= lang === 'en' ? data.history_en : data.history_id %>
+            </p>
+          </div>
+
+          <div style="border-left: 3px solid var(--color-accent-teal); padding-left: var(--space-md); margin-top: var(--space-md);">
+            <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 600;">
+              <%= lang === 'en' ? 'ESTABLISHED' : 'TAHUN PENDIRIAN' %>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-secondary-navy);">
+              <%= data.founded_year || '1990' %>
+              <span style="font-size: var(--font-size-body-sm); font-weight: 400; color: var(--color-text-muted); margin-left: var(--space-xs);">
+                (<%= data.former_names || 'PT. Sahabat Baru & PT. Pelita Baru' %>)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- Highlight Box: Komitmen Ramah Lingkungan -->
+          <div class="card" style="background: linear-gradient(145deg, #0A192F 0%, #112240 100%); color: #ffffff; padding: var(--space-xl); border: none; border-radius: var(--radius-lg);">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: var(--radius-md); background: rgba(13, 148, 136, 0.2); color: var(--color-accent-teal); margin-bottom: var(--space-md);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <h3 style="color: #ffffff; font-size: 1.35rem; margin-bottom: var(--space-xs);">
+              LET'S SAVE OUR EARTH!
+            </h3>
+            <p style="color: #94a3b8; font-size: var(--font-size-body-sm); line-height: 1.7; margin-bottom: var(--space-lg);">
+              <%= lang === 'en' ? data.eco_statement_en : data.eco_statement_id %>
+            </p>
+            <div style="padding-top: var(--space-md); border-top: 1px solid rgba(255, 255, 255, 0.12);">
+              <div style="font-size: 12px; color: var(--color-accent-teal); font-weight: 600; text-transform: uppercase; margin-bottom: var(--space-xs);">
+                <%= lang === 'en' ? 'Core Goal' : 'Target Kemaksimalan' %>
+              </div>
+              <p style="color: #e2e8f0; font-size: var(--font-size-body-sm); margin: 0; line-height: 1.6; font-style: italic;">
+                "<%= lang === 'en' ? data.goal_en : data.goal_id %>"
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visi & Misi Section -->
+  <section class="section section-bg-workspace" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+    <div class="container">
+      <div style="text-align: center; max-width: 720px; margin: 0 auto var(--space-2xl) auto;">
+        <span class="section-kicker" style="color: var(--color-primary-blue);">
+          <%= lang === 'en' ? 'VISION & MISSION' : 'ARAHAN STRATEGIS' %>
+        </span>
+        <h2 style="font-size: clamp(1.75rem, 2.5vw, 2.25rem); color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+          <%= lang === 'en' ? 'Our Guiding Principles' : 'Visi, Misi & Falsafah Kerja' %>
+        </h2>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-body-md);">
+          <%= lang === 'en'
+            ? 'Foundations that drive our manufacturing excellence and community impact.'
+            : 'Pondasi yang menggerakkan kualitas manufaktur serta dampak nyata bagi masyarakat.' %>
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2" style="gap: var(--space-xl); align-items: stretch;">
+        <!-- Visi Card -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="card-body" style="padding: var(--space-xl);">
+            <div style="color: var(--color-primary-blue); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm);">
+              <%= lang === 'en' ? 'CORPORATE VISION' : 'VISI PERUSAHAAN' %>
+            </div>
+            <h3 style="font-size: 1.35rem; color: var(--color-secondary-navy); margin-bottom: var(--space-md); line-height: 1.35;">
+              <%= lang === 'en' ? data.vision_en : data.vision_id %>
+            </h3>
+            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6; margin: 0;">
+              <%= lang === 'en'
+                ? 'We continuously aim to improve the quality of life within and outside the company, ensuring environmental preservation alongside commercial excellence.'
+                : 'Kami berupaya terus-menerus meningkatkan kualitas kehidupan di dalam dan luar perusahaan, mengutamakan kelestarian alam dan pendidikan karyawan.' %>
             </p>
           </div>
         </div>
 
-        <!-- Mission -->
-        <div class="card card-interactive" style="display: flex; flex-direction: column; justify-content: space-between;">
-          <div class="card-body">
-            <span class="badge badge-primary" style="margin-bottom: var(--space-md);">Misi Strategis</span>
-            <h2 style="font-size: 1.5rem; color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">
-              <%= t('about.mission_title') %>
-            </h2>
-            <ul style="padding-left: var(--space-lg); margin-top: var(--space-xs); color: var(--color-text-body); font-size: var(--font-size-body-sm); line-height: 1.8;">
-              <li style="margin-bottom: var(--space-xs);"><%= t('about.mission_1') %></li>
-              <li style="margin-bottom: var(--space-xs);"><%= t('about.mission_2') %></li>
-              <li><%= t('about.mission_3') %></li>
+        <!-- Misi Card -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="card-body" style="padding: var(--space-xl);">
+            <div style="color: var(--color-accent-teal); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-sm);">
+              <%= lang === 'en' ? 'STRATEGIC MISSION' : 'MISI PERUSAHAAN' %>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <% 
+                const rawMission = lang === 'en' ? (data.mission_en || '') : (data.mission_id || '');
+                const missionPoints = rawMission.split('\n').filter(p => p.trim().length > 0);
+              %>
+              <% missionPoints.forEach(function(point, idx) { %>
+                <li style="display: flex; align-items: flex-start; gap: var(--space-sm); margin-bottom: var(--space-md);">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: var(--radius-full); background: var(--color-bg-base); color: var(--color-primary-blue); font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;">
+                    <%= idx + 1 %>
+                  </span>
+                  <span style="font-size: var(--font-size-body-md); color: var(--color-secondary-navy); font-weight: 500; line-height: 1.5;">
+                    <%= point.trim() %>
+                  </span>
+                </li>
+              <% }); %>
             </ul>
           </div>
         </div>
@@ -50,67 +145,160 @@
     </div>
   </section>
 
-  <!-- Quality Assurance & Standards Section -->
-  <section class="section section-bg-base" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl);">
+  <!-- Nilai-Nilai Budaya T - I - C - K - E - T -->
+  <section class="section section-bg-base" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div class="flex flex-col items-center text-center" style="max-width: 720px; margin: 0 auto var(--space-2xl) auto;">
-        <span class="section-kicker"><%= t('about.standards_title') %></span>
-        <h2 style="color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">
-          <%= t('about.standards_title') %>
+      <div style="text-align: center; max-width: 760px; margin: 0 auto var(--space-2xl) auto;">
+        <span class="section-kicker" style="color: var(--color-accent-teal);">
+          <%= lang === 'en' ? 'CORE VALUES' : 'NILAI INTI PERUSAHAAN' %>
+        </span>
+        <h2 style="font-size: clamp(1.75rem, 2.5vw, 2.25rem); color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+          Budaya Kerja T - I - C - K - E - T
         </h2>
-        <p style="color: var(--color-text-muted); font-size: var(--font-size-body-md); line-height: 1.6;">
-          <%= t('about.standards_desc') %>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-body-md);">
+          <%= lang === 'en'
+            ? 'The six foundational pillars guiding moral integrity, human potential, and professional dedication.'
+            : 'Enam pilar utama yang membina karakter positif, potensi insan, dan profesionalisme di setiap lini produksi.' %>
         </p>
       </div>
 
-      <div class="grid grid-cols-3 gap-lg">
-        <div class="card">
-          <div class="card-body">
-            <div style="font-size: 2rem; color: var(--color-primary-blue); margin-bottom: var(--space-sm); font-weight: 700;">01</div>
-            <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">Verifikasi Bahan Baku</h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
-              Uji indeks alir lelehan (MFI) dan densitas resin murni bersertifikasi CoA dari produsen petrokimia terpercaya.
+      <div class="grid grid-cols-3" style="gap: var(--space-lg);">
+        <% (data.values || []).forEach(function(val) { %>
+          <div class="card" style="border: 1px solid var(--color-border); box-shadow: var(--shadow-level-0);">
+            <div class="card-body" style="padding: var(--space-lg);">
+              <div style="display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-sm);">
+                <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: rgba(0, 85, 184, 0.08); color: var(--color-primary-blue); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700;">
+                  <%= val.letter %>
+                </div>
+                <h3 style="font-size: 1.15rem; color: var(--color-secondary-navy); margin: 0;">
+                  <%= lang === 'en' ? val.title_en : val.title_id %>
+                </h3>
+              </div>
+              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6; margin: 0;">
+                <%= lang === 'en' ? val.desc_en : val.desc_id %>
+              </p>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sertifikasi & Standar Mutu Ramah Lingkungan -->
+  <section class="section section-bg-workspace" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+    <div class="container">
+      <div style="text-align: center; max-width: 720px; margin: 0 auto var(--space-2xl) auto;">
+        <span class="section-kicker" style="color: var(--color-primary-blue);">
+          <%= lang === 'en' ? 'QUALITY & CERTIFICATION' : 'STANDAR & SERTIFIKASI' %>
+        </span>
+        <h2 style="font-size: clamp(1.75rem, 2.5vw, 2.25rem); color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+          <%= lang === 'en' ? 'Verified Environmental Standards' : 'Sertifikasi Resmi Kantong Ramah Lingkungan' %>
+        </h2>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-body-md);">
+          <%= lang === 'en'
+            ? 'Our degradable plastic products adhere strictly to national and international ecological metrics.'
+            : 'Produk kantong plastik kami melalui pengujian dan tersertifikasi resmi sesuai standar kelestarian lingkungan hidup.' %>
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3" style="gap: var(--space-lg);">
+        <% (data.certifications || []).forEach(function(cert) { %>
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card-body" style="padding: var(--space-lg);">
+              <span class="badge badge-primary" style="margin-bottom: var(--space-sm);">
+                <%= cert.badge %>
+              </span>
+              <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+                <%= cert.name %>
+              </h3>
+              <div style="font-size: 12px; color: var(--color-primary-blue); font-weight: 600; margin-bottom: var(--space-sm);">
+                <%= cert.issuer %>
+              </div>
+              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6; margin: 0;">
+                <%= lang === 'en' ? cert.desc_en : cert.desc_id %>
+              </p>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lokasi Resmi: Pabrik & Kantor -->
+  <section class="section section-bg-base" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+    <div class="container">
+      <div style="text-align: center; max-width: 720px; margin: 0 auto var(--space-2xl) auto;">
+        <span class="section-kicker" style="color: var(--color-accent-teal);">
+          <%= lang === 'en' ? 'OPERATIONAL FACILITIES' : 'LOKASI OPERASIONAL' %>
+        </span>
+        <h2 style="font-size: clamp(1.75rem, 2.5vw, 2.25rem); color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+          <%= lang === 'en' ? 'Factory & Corporate Offices' : 'Fasilitas Pabrik Produksi & Kantor Pusat' %>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-2" style="gap: var(--space-xl); align-items: stretch;">
+        <!-- Pabrik Bandung -->
+        <div class="card" style="box-shadow: var(--shadow-level-0); border: 1px solid var(--color-border);">
+          <div class="card-body" style="padding: var(--space-xl);">
+            <div style="font-size: 12px; color: var(--color-accent-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-xs);">
+              <%= lang === 'en' ? 'PRODUCTION PLANT & MARKETING' : 'PABRIK PRODUKSI & PEMASARAN' %>
+            </div>
+            <h3 style="font-size: 1.25rem; color: var(--color-secondary-navy); margin-bottom: var(--space-md);">
+              Bandung, Jawa Barat
+            </h3>
+            <p style="font-size: var(--font-size-body-md); color: var(--color-text-body); line-height: 1.6; margin-bottom: var(--space-md);">
+              <%= data.factory_address || 'Jl. Paralon II No. 21 Cijerah Bandung 40214 - Indonesia' %>
             </p>
+            <div style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.8;">
+              <div>Telepon: <strong><%= data.factory_phone || '+6222-6012519' %></strong></div>
+              <div>Fax: <%= data.factory_fax || '+6222-6074730' %></div>
+            </div>
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-body">
-            <div style="font-size: 2rem; color: var(--color-primary-blue); margin-bottom: var(--space-sm); font-weight: 700;">02</div>
-            <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">Inspeksi Siklus Cetak</h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
-              Pemeriksaan dimensi berkala menggunakan jangka sorong digital mikro dan proyektor profil optik presisi tinggi.
+        <!-- Kantor Jakarta -->
+        <div class="card" style="box-shadow: var(--shadow-level-0); border: 1px solid var(--color-border);">
+          <div class="card-body" style="padding: var(--space-xl);">
+            <div style="font-size: 12px; color: var(--color-primary-blue); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-xs);">
+              <%= lang === 'en' ? 'CORPORATE OFFICE' : 'KANTOR PUSAT' %>
+            </div>
+            <h3 style="font-size: 1.25rem; color: var(--color-secondary-navy); margin-bottom: var(--space-md);">
+              Jakarta Pusat
+            </h3>
+            <p style="font-size: var(--font-size-body-md); color: var(--color-text-body); line-height: 1.6; margin-bottom: var(--space-md);">
+              <%= data.office_address || 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270' %>
             </p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-body">
-            <div style="font-size: 2rem; color: var(--color-primary-blue); margin-bottom: var(--space-sm); font-weight: 700;">03</div>
-            <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">Uji Ketahanan & Beban</h3>
-            <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.6;">
-              Uji jatuh (drop test) dan uji ketahanan tekanan tumpukan (stacking stress test) sebelum kemasan dilepas ke gudang.
-            </p>
+            <div style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.8;">
+              <div>Telepon: <strong><%= data.office_phone || '+6221-53668626' %></strong></div>
+              <div>Fax: <%= data.office_fax || '+6221-53668648' %></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Banner -->
-  <section class="section section-bg-navy" style="color: #ffffff;">
+  <!-- CTA Banner Kerjasama -->
+  <section class="section section-bg-navy" style="color: #ffffff; padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div class="flex flex-col items-center text-center" style="max-width: 760px; margin: 0 auto;">
-        <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('home.consultation_banner_title') %></span>
-        <h2 style="margin-bottom: var(--space-sm); color: #ffffff;">
-          <%= t('home.consultation_banner_subtitle') %>
+      <div style="max-width: 760px; margin: 0 auto; text-align: center;">
+        <span class="section-kicker" style="color: var(--color-accent-teal);">
+          <%= lang === 'en' ? 'PARTNERSHIP' : 'KEMITRAAN PRODUKSI' %>
+        </span>
+        <h2 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(1.75rem, 2.5vw, 2.25rem);">
+          <%= lang === 'en' ? 'Ready to Consult Your Packaging Needs?' : 'Siap Berkonsultasi Kebutuhan Kemasan Ramah Lingkungan?' %>
         </h2>
-        <div class="flex flex-wrap gap-md justify-center" style="margin-top: var(--space-lg);">
+        <p style="color: #cbd5e1; font-size: var(--font-size-body-md); line-height: 1.6; margin-bottom: var(--space-xl);">
+          <%= lang === 'en'
+            ? 'Contact our sales and engineering team for custom sizes, specifications, and volume pricing.'
+            : 'Hubungi tim pemasaran dan teknis kami untuk konsultasi spesifikasi ukuran khusus, material degradable, dan penawaran harga kemitraan.' %>
+        </p>
+        <div class="flex flex-wrap gap-md justify-center">
           <a href="/contact" class="btn btn-primary btn-md">
-            <%= t('home.cta_quote') %> &rarr;
+            <%= lang === 'en' ? 'Request Consultation' : 'Minta Penawaran Kemitraan' %>
           </a>
-          <a href="/capabilities" class="btn btn-outline-white btn-md">
-            <%= t('nav.capabilities') %>
+          <a href="/products" class="btn btn-outline-white btn-md">
+            <%= lang === 'en' ? 'Explore Product Catalog' : 'Lihat Katalog Produk' %>
           </a>
         </div>
       </div>

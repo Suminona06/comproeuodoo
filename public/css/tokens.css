@@ -50,6 +50,12 @@
   --color-sky-tint: #38bdf8;
   --color-sky-hover: #0284c7;
 
+  /* Eco-Friendly / Sustainability Accents */
+  --color-accent-teal: #0d9488;
+  --color-accent-teal-dark: #0f766e;
+  --color-eco-green: #16a34a;
+  --color-eco-green-light: #dcfce7;
+
   /* Borders & Dividers */
   --color-border: #e2e8f0;
   --color-outline: #737784;
