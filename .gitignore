@@ -32,11 +32,24 @@ Thumbs.db
 # Temporary & cache files
 *.tmp
 *.temp
+*.bak
 .cache/
 
 # User Uploads
 public/uploads/*
 !public/uploads/**/.gitkeep
 
-
+# AI & Agent configuration (Skills, .agents, .impeccable)
 .agents/
+.agent/
+.impeccable/
+skills/
+.skills/
+skills-lock.json
+
+# Design & Prototype files
+[Dd]esign/
+[Dd]esigns/
+*prototype*
+*.prototype.*
+public/*prototype*
