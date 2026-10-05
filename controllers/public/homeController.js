@@ -1,37 +1,47 @@
 import bannerModel from '../../models/bannerModel.js';
 import productModel from '../../models/productModel.js';
-import capabilityModel from '../../models/capabilityModel.js';
+import brandModel from '../../models/brandModel.js';
 import postModel from '../../models/postModel.js';
 import logger from '../../utils/logger.js';
 
 export const homeController = {
   async index(req, res) {
     try {
-      const [banners, featuredProducts, capabilities, latestPosts] = await Promise.all([
+      const [banners, featuredProducts, brands, latestPosts] = await Promise.all([
         bannerModel.findAll(true),
-        productModel.findAll({ isFeatured: true, isActive: true, limit: 6 }),
-        capabilityModel.findAll(true),
+        productModel.findAll({ isFeatured: true, status: 'published', limit: 4 }),
+        brandModel.findAll({ activeOnly: true }),
         postModel.findAll({ status: 'published', limit: 3 })
       ]);
 
-      const title = res.locals.t('home.hero_title') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      // Fallback if featured products are less than 4
+      let products = featuredProducts;
+      if (!products || products.length < 4) {
+        const published = await productModel.findAll({ status: 'published', limit: 4 });
+        products = published;
+      }
+
+      const title = (res.locals.settings?.company_name || 'PT. EUODOO') + ' | ' +
+        (res.locals.currentLang === 'en'
+          ? 'Eco-Friendly HDPE & LLDPE Plastic Bag Manufacturer Bandung'
+          : 'Produsen Kantong Plastik HDPE & LLDPE Bandung');
 
       res.render('public/index', {
         title,
         path: '/',
-        banners,
-        featuredProducts,
-        capabilities: capabilities.slice(0, 3),
-        latestPosts
+        banners: banners || [],
+        featuredProducts: products || [],
+        brands: brands || [],
+        latestPosts: latestPosts || []
       });
     } catch (err) {
       logger.error('Public homeController error:', { message: err.message, stack: err.stack });
       res.status(500).render('public/index', {
-        title: 'PT Euodoo Presisi Indonesia',
+        title: 'PT. EUODOO | Produsen Kantong Plastik Bandung',
         path: '/',
         banners: [],
         featuredProducts: [],
-        capabilities: [],
+        brands: [],
         latestPosts: []
       });
     }

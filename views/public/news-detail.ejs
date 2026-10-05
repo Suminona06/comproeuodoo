@@ -5,19 +5,51 @@
   const currentLangCode = currentLang || 'id';
   const postTitle = currentLangCode === 'en' ? (post.title_en || post.title_id) : post.title_id;
   const postContent = currentLangCode === 'en' ? (post.content_en || post.content_id) : post.content_id;
+  const postExcerpt = currentLangCode === 'en' ? (post.excerpt_en || post.excerpt_id) : post.excerpt_id;
   const pubDate = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const coverImg = post.cover_image || '/images/hero-factory-precision.webp';
+  const catLabel = currentLangCode === 'en' ? (post.category_name_en || post.category_name_id) : post.category_name_id;
+  const readTime = Math.max(2, Math.round(((post.content_id || '').length) / 450)) + ' min baca';
+  const typeLabel = post.type === 'pers' ? 'Siaran Pers Resmi' : (post.type === 'blog' ? 'Artikel & Wawasan' : 'Berita Perusahaan');
+  const canonicalUrl = post.canonical_url || `https://euodoo.com/news/${post.slug}`;
 %>
+
+<!-- Schema.org Article Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "<%= (postTitle || '').replace(/"/g, '\\"') %>",
+  "image": ["<%= coverImg.startsWith('http') ? coverImg : 'https://euodoo.com' + coverImg %>"],
+  "datePublished": "<%= post.published_at ? new Date(post.published_at).toISOString() : '' %>",
+  "dateModified": "<%= post.updated_at ? new Date(post.updated_at).toISOString() : (post.published_at ? new Date(post.published_at).toISOString() : '') %>",
+  "author": {
+    "@type": "Organization",
+    "name": "PT Euodoo",
+    "url": "https://euodoo.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PT Euodoo",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://euodoo.com/images/logo.png"
+    }
+  },
+  "description": "<%= (postExcerpt || '').replace(/"/g, '\\"') %>"
+}
+</script>
 
 <main id="main-content">
   <!-- Breadcrumb Navigation -->
-  <nav aria-label="Breadcrumb" style="background-color: var(--color-bg-base); border-bottom: 1px solid var(--color-border-subtle); padding: var(--space-md) 0;">
+  <nav aria-label="Breadcrumb" style="background-color: #ffffff; border-bottom: 1px solid var(--border, #e2e8f0); padding: 14px 0;">
     <div class="container">
-      <ol class="flex items-center gap-xs" style="list-style: none; margin: 0; padding: 0; font-size: var(--font-size-label-sm); color: var(--color-text-muted);">
-        <li><a href="/" style="color: var(--color-text-muted); text-decoration: none;"><%= t('nav.home') %></a></li>
-        <li aria-hidden="true" style="user-select: none;">/</li>
-        <li><a href="/news" style="color: var(--color-text-muted); text-decoration: none;"><%= t('nav.news') %></a></li>
-        <li aria-hidden="true" style="user-select: none;">/</li>
-        <li aria-current="page" style="color: var(--color-secondary-navy); font-weight: 600;"><%= postTitle %></li>
+      <ol class="breadcrumbs" style="margin: 0;">
+        <li><a href="/"><%= t('nav.home') %></a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/news"><%= t('nav.news') %></a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" style="color: var(--navy, #0a192f); font-weight: 600; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= postTitle %></li>
       </ol>
     </div>
   </nav>
@@ -25,85 +57,151 @@
   <!-- Article Container -->
   <article class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
     <div class="container">
-      <div style="max-width: 820px; margin: 0 auto;">
+      <div style="max-width: 840px; margin: 0 auto;">
+
         <!-- Header -->
-        <header style="margin-bottom: var(--space-xl);">
-          <div class="flex items-center gap-sm" style="margin-bottom: var(--space-sm);">
-            <span class="badge badge-info">Publikasi</span>
+        <header style="margin-bottom: 28px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+            <span class="badge <%= post.type === 'pers' ? 'badge-primary' : 'badge-info' %>" style="font-size: 12px; padding: 4px 12px;">
+              <%= typeLabel %>
+            </span>
+            <% if (catLabel) { %>
+              <span class="badge" style="background: var(--surface-container, #eaedff); color: var(--primary, #0055b8); font-size: 12px; font-weight: 600; padding: 4px 12px;">
+                <%= catLabel %>
+              </span>
+            <% } %>
             <% if (pubDate) { %>
-              <time datetime="<%= post.published_at %>" style="font-size: var(--font-size-label-sm); color: var(--color-text-muted);">
+              <time datetime="<%= post.published_at %>" style="font-size: 13px; color: var(--color-text-muted);">
                 <%= pubDate %>
               </time>
+              <span style="font-size: 12px; color: var(--color-text-muted);">•</span>
             <% } %>
+            <span style="font-size: 13px; color: var(--color-text-muted);"><%= readTime %></span>
           </div>
 
-          <h1 style="font-size: clamp(2rem, 3.5vw, 2.75rem); color: var(--color-secondary-navy); line-height: 1.25; margin-bottom: var(--space-lg);">
+          <h1 style="font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 800; color: var(--navy, #0a192f); line-height: 1.25; margin-bottom: 16px;">
             <%= postTitle %>
           </h1>
+
+          <% if (postExcerpt) { %>
+            <p style="font-size: 1.15rem; color: var(--text-variant, #424753); line-height: 1.6; margin-bottom: 20px; font-weight: 500;">
+              <%= postExcerpt %>
+            </p>
+          <% } %>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border, #e2e8f0); flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary, #0055b8); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">
+                EU
+              </div>
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--navy, #0a192f);">Redaksi PT Euodoo</div>
+                <div style="font-size: 11.5px; color: var(--color-text-muted);">Divisi Komunikasi Korporat</div>
+              </div>
+            </div>
+
+            <!-- Share Buttons -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--color-text-muted); margin-right: 4px;">Bagikan:</span>
+              <button type="button"
+                      class="share-btn-pill"
+                      id="copyLinkBtn"
+                      onclick="navigator.clipboard.writeText(window.location.href); alert('Tautan artikel berhasil disalin!');"
+                      aria-label="Salin tautan artikel">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Salin</span>
+              </button>
+              <a href="https://wa.me/?text=<%= encodeURIComponent(postTitle + ' - ' + canonicalUrl) %>"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="share-btn-pill"
+                 aria-label="Bagikan via WhatsApp">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="#25D366">
+                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
+                </svg>
+                <span>WhatsApp</span>
+              </a>
+            </div>
+          </div>
         </header>
 
         <!-- Cover Image -->
-        <% if (post.cover_image) { %>
-          <div class="card" style="overflow: hidden; margin-bottom: var(--space-2xl); padding: 0;">
-            <img src="<%= post.cover_image %>"
-                 alt="<%= postTitle %>"
-                 style="width: 100%; max-height: 480px; object-fit: cover;"
-                 loading="eager">
-          </div>
-        <% } %>
+        <div style="border-radius: 20px; overflow: hidden; margin-bottom: 32px; background: #0a192f; border: 1px solid var(--border, #e2e8f0); box-shadow: 0 10px 30px -5px rgba(10, 25, 47, 0.1);">
+          <img src="<%= coverImg %>"
+               alt="<%= postTitle %>"
+               style="width: 100%; max-height: 480px; object-fit: cover; display: block;"
+               loading="eager">
+        </div>
 
         <!-- Content Body -->
-        <div class="card" style="padding: var(--space-2xl); background-color: #ffffff; line-height: 1.8; font-size: var(--font-size-body-md); color: var(--color-text-body);">
+        <div style="background-color: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: 20px; padding: 40px; box-shadow: 0 4px 16px -2px rgba(10, 25, 47, 0.05); margin-bottom: 40px;">
           <% if (postContent) { %>
-            <div class="prose" style="white-space: pre-line;">
+            <div class="article-prose">
               <%- postContent %>
             </div>
           <% } else { %>
-            <p style="color: var(--color-text-muted); font-style: italic;">
-              Konten lengkap artikel ini sedang dalam proses pembaruan oleh redaksi.
+            <p style="color: var(--color-text-muted); font-style: italic; font-size: 15px;">
+              Konten lengkap artikel ini sedang dalam proses pembaruan oleh redaksi PT Euodoo.
             </p>
           <% } %>
         </div>
 
-        <!-- Back Link & Footer Actions -->
-        <div class="flex items-center justify-between" style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--color-border-subtle);">
-          <a href="/news" class="btn btn-secondary btn-md" style="min-height: 44px; display: inline-flex; align-items: center;">
-            <%= t('news.back_to_news') %>
+        <!-- Back Link & CTA Actions -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border, #e2e8f0); flex-wrap: wrap; gap: 16px;">
+          <a href="/news" class="btn btn-secondary btn-md" style="min-height: 44px; display: inline-flex; align-items: center; gap: 8px;">
+            <span aria-hidden="true">←</span>
+            <span><%= t('news.back_to_news') %></span>
           </a>
-          <a href="/contact" class="btn btn-primary btn-md" style="min-height: 44px; display: inline-flex; align-items: center;">
-            <%= t('home.cta_quote') %>
+          <a href="/contact" class="btn btn-primary btn-md" style="min-height: 44px; display: inline-flex; align-items: center; gap: 8px;">
+            <span>Konsultasi Kemitraan</span>
+            <span aria-hidden="true">→</span>
           </a>
         </div>
+
       </div>
 
-      <!-- Recent Articles Recommendation -->
+      <!-- Related Articles Recommendation -->
       <% if (recentPosts && recentPosts.length > 0) { %>
-        <div style="margin-top: var(--space-3xl); max-width: 820px; margin-left: auto; margin-right: auto; padding-top: var(--space-2xl); border-top: 1px solid var(--color-border-subtle);">
-          <h2 style="font-size: 1.35rem; color: var(--color-secondary-navy); margin-bottom: var(--space-lg);">
-            Publikasi Terkait Lainnya
-          </h2>
+        <div style="margin-top: 64px; max-width: 840px; margin-left: auto; margin-right: auto; padding-top: 40px; border-top: 1px solid var(--border, #e2e8f0);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--navy, #0a192f); margin: 0;">
+              Publikasi Terkait Lainnya
+            </h2>
+            <a href="/news" style="font-size: 13.5px; font-weight: 600; color: var(--primary, #0055b8); text-decoration: none;">
+              Lihat Semua →
+            </a>
+          </div>
 
-          <div class="grid grid-cols-2 gap-lg">
+          <div class="grid grid-cols-3 gap-lg">
             <% recentPosts.forEach(rec => { %>
               <%
                 const recTitle = currentLangCode === 'en' ? (rec.title_en || rec.title_id) : rec.title_id;
+                const recExcerpt = currentLangCode === 'en' ? (rec.excerpt_en || rec.excerpt_id) : rec.excerpt_id;
                 const recDate = rec.published_at ? new Date(rec.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+                const recImg = rec.cover_image || '/images/hero-factory-precision.webp';
               %>
-              <div class="card card-interactive">
-                <div class="card-body">
+              <div class="news-card-v2" style="background: #ffffff;">
+                <div class="news-card-v2-img" style="height: 150px;">
+                  <img src="<%= recImg %>" alt="<%= recTitle %>" loading="lazy">
+                </div>
+                <div class="news-card-v2-body" style="padding: 16px;">
                   <% if (recDate) { %>
-                    <span style="font-size: var(--font-size-label-sm); color: var(--color-text-muted); display: block; margin-bottom: var(--space-xs);">
+                    <span style="font-size: 11.5px; color: var(--color-text-muted); display: block; margin-bottom: 6px;">
                       <%= recDate %>
                     </span>
                   <% } %>
-                  <h3 style="font-size: 1.1rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs); line-height: 1.35;">
+                  <h3 style="font-size: 14.5px; font-weight: 700; color: var(--navy, #0a192f); margin-bottom: 10px; line-height: 1.35;">
                     <a href="/news/<%= rec.slug %>" style="color: inherit; text-decoration: none;">
                       <%= recTitle %>
                     </a>
                   </h3>
-                  <div style="margin-top: var(--space-sm);">
-                    <a href="/news/<%= rec.slug %>" class="font-semibold text-primary" style="font-size: var(--font-size-label-sm); min-height: 44px; display: inline-flex; align-items: center;">
-                      <%= t('common.read_more') %>
+                  <div style="margin-top: auto;">
+                    <a href="/news/<%= rec.slug %>" style="font-size: 12.5px; font-weight: 700; color: var(--primary, #0055b8); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; min-height: 44px;">
+                      <span>Baca</span>
+                      <span aria-hidden="true">→</span>
                     </a>
                   </div>
                 </div>
@@ -112,6 +210,7 @@
           </div>
         </div>
       <% } %>
+
     </div>
   </article>
 </main>

@@ -1,87 +1,75 @@
-<!-- Top Bar -->
-<div class="top-bar">
-  <div class="container flex items-center justify-between">
-    <div class="flex items-center gap-md">
-      <span class="top-bar-tagline">
-        <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) ? (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) : t('home.hero_title') %>
-      </span>
-    </div>
-    <div class="flex items-center gap-md">
-      <span>Email: <%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %></span>
-      <span>|</span>
-      <div class="lang-switch flex items-center gap-xs">
-        <a href="/lang/id" class="<%= currentLang === 'id' ? 'active font-bold text-white' : '' %>" aria-label="Bahasa Indonesia">ID</a>
-        <span>/</span>
-        <a href="/lang/en" class="<%= currentLang === 'en' ? 'active font-bold text-white' : '' %>" aria-label="English">EN</a>
+<div class="header-wrap" id="headerWrap">
+  <div class="top-bar-wrap">
+    <div class="top-bar">
+      <div class="container top-bar-inner">
+        <span class="top-tagline">
+          <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) ? (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) : 'Passion To Build A Better Quality of Life' %>
+        </span>
+        <div class="top-right">
+          <span>Email: <a href="mailto:<%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %>" style="color: inherit; text-decoration: none;"><%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %></a></span>
+          <span style="opacity:.4">|</span>
+          <div class="lang-sw">
+            <a href="/lang/id" class="<%= currentLang === 'id' ? 'active' : '' %>" aria-label="Bahasa Indonesia">ID</a>
+            <span style="opacity:.4">/</span>
+            <a href="/lang/en" class="<%= currentLang === 'en' ? 'active' : '' %>" aria-label="English">EN</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container">
+      <nav class="navbar" aria-label="Navigasi Utama">
+        <a href="/" class="brand" aria-label="Beranda PT Euodoo">
+          <span class="brand-name">PT EUODOO</span>
+          <span class="brand-badge">MANUFACTURING</span>
+        </a>
+
+        <ul class="nav-menu" id="navMenu">
+          <li>
+            <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">
+              <%= currentLang === 'en' ? 'Home' : 'Beranda' %>
+            </a>
+          </li>
+          <li>
+            <a href="/products" class="nav-link <%= path === '/products' || path.startsWith('/products/') ? 'active' : '' %>">
+              <%= currentLang === 'en' ? 'Products' : 'Produk' %>
+            </a>
+          </li>
+          <li>
+            <a href="/about" class="nav-link <%= path === '/about' ? 'active' : '' %>">
+              <%= currentLang === 'en' ? 'About Us' : 'Tentang' %>
+            </a>
+          </li>
+          <li>
+            <a href="/news" class="nav-link <%= path === '/news' || path.startsWith('/news/') ? 'active' : '' %>">
+              <%= currentLang === 'en' ? 'News' : 'Berita' %>
+            </a>
+          </li>
+          <li>
+            <a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>">
+              <%= currentLang === 'en' ? 'Contact' : 'Kontak' %>
+            </a>
+          </li>
+          <li class="nav-menu-cta">
+            <a href="/contact" class="btn-primary btn-nav-mobile">
+              <%= currentLang === 'en' ? 'Request a Quote' : 'Minta Penawaran' %>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="/contact" class="btn-primary">
+            <%= currentLang === 'en' ? 'Request a Quote' : 'Minta Penawaran' %>
+          </a>
+          <button type="button" class="mobile-toggle" id="mobileToggle" aria-label="Buka menu navigasi"
+                  aria-expanded="false" aria-controls="navMenu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
 </div>
-
-<!-- Main Navigation -->
-<header class="site-header">
-  <div class="container">
-    <nav class="navbar" aria-label="Navigasi Utama">
-      <a href="/" class="brand-logo" aria-label="Beranda PT Euodoo">
-        <span class="brand-name">PT EUODOO</span>
-        <span class="brand-badge">MANUFACTURING</span>
-      </a>
-
-      <ul class="nav-menu">
-        <li>
-          <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>"><%= t('nav.home') %></a>
-        </li>
-        <li>
-          <a href="/products" class="nav-link <%= path === '/products' || path.startsWith('/products/') ? 'active' : '' %>"><%= t('nav.products') %></a>
-        </li>
-        <li>
-          <a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>"><%= t('nav.capabilities') %></a>
-        </li>
-        <li>
-          <a href="/about" class="nav-link <%= path === '/about' ? 'active' : '' %>"><%= t('nav.about') %></a>
-        </li>
-        <li>
-          <a href="/news" class="nav-link <%= path === '/news' || path.startsWith('/news/') ? 'active' : '' %>"><%= t('nav.news') %></a>
-        </li>
-        <li>
-          <a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>"><%= t('nav.contact') %></a>
-        </li>
-      </ul>
-
-      <div class="nav-actions">
-        <a href="/contact" class="btn btn-primary btn-sm"><%= t('nav.request_quote_btn') %></a>
-        <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="mobileDrawer">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </nav>
-  </div>
-</header>
-
-<!-- Mobile Navigation Drawer -->
-<div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
-<aside class="mobile-drawer" id="mobileDrawer" aria-label="Menu Mobile" aria-hidden="true">
-  <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl);">
-    <span class="brand-name" style="font-size: 1.25rem; font-weight: 700; color: var(--color-secondary-navy);">PT EUODOO</span>
-    <button type="button" class="btn btn-ghost btn-sm" id="closeDrawerBtn" aria-label="Tutup menu">✕</button>
-  </div>
-  <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-xl);">
-    <li><a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>"><%= t('nav.home') %></a></li>
-    <li><a href="/products" class="nav-link <%= path === '/products' || path.startsWith('/products/') ? 'active' : '' %>"><%= t('nav.products') %></a></li>
-    <li><a href="/capabilities" class="nav-link <%= path === '/capabilities' ? 'active' : '' %>"><%= t('nav.capabilities') %></a></li>
-    <li><a href="/about" class="nav-link <%= path === '/about' ? 'active' : '' %>"><%= t('nav.about') %></a></li>
-    <li><a href="/news" class="nav-link <%= path === '/news' || path.startsWith('/news/') ? 'active' : '' %>"><%= t('nav.news') %></a></li>
-    <li><a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>"><%= t('nav.contact') %></a></li>
-  </ul>
-  <div class="flex flex-col gap-sm">
-    <a href="/contact" class="btn btn-primary btn-block"><%= t('nav.request_quote_btn') %></a>
-    <div class="flex items-center justify-center gap-xs" style="padding: var(--space-xs); font-size: var(--font-size-body-sm);">
-      <span style="color: var(--color-text-muted);">Pilih Bahasa:</span>
-      <a href="/lang/id" class="<%= currentLang === 'id' ? 'font-bold' : '' %>" style="color: var(--color-primary);">ID</a>
-      <span>/</span>
-      <a href="/lang/en" class="<%= currentLang === 'en' ? 'font-bold' : '' %>" style="color: var(--color-primary);">EN</a>
-    </div>
-  </div>
-</aside>
+<div class="menu-backdrop" id="menuBackdrop"></div>

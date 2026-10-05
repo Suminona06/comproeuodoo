@@ -1,137 +1,124 @@
 import productModel from '../../models/productModel.js';
+import productCategoryModel from '../../models/productCategoryModel.js';
 import logger from '../../utils/logger.js';
 
 export const productController = {
   /**
-   * Display product catalog with category filter and search
+   * Display product catalog with category filter, search, and SSR pagination
    */
   async index(req, res) {
     try {
-      const { category, search } = req.query;
-      const categories = await productModel.findAllCategories();
+      const { category, search, page: rawPage } = req.query;
+      const page = Math.max(1, parseInt(rawPage || '1', 10));
+      const limit = 12;
+      const offset = (page - 1) * limit;
+
+      const categories = await productCategoryModel.findAll();
 
       let selectedCategory = null;
       let categoryId = undefined;
 
       if (category) {
         if (/^\d+$/.test(category)) {
-          selectedCategory = await productModel.findCategoryById(parseInt(category, 10));
+          selectedCategory = await productCategoryModel.findById(parseInt(category, 10));
         } else {
-          selectedCategory = await productModel.findCategoryBySlug(category);
+          selectedCategory = await productCategoryModel.findBySlug(category);
         }
         if (selectedCategory) {
           categoryId = selectedCategory.id;
         }
       }
 
-      const products = await productModel.findAll({
-        isActive: true,
+      const filterOptions = {
         categoryId,
-        search: search ? search.trim() : undefined
-      });
+        status: 'published',
+        search: search ? search.trim() : undefined,
+        limit,
+        offset
+      };
 
-      const title = res.locals.t('products.page_title') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const [products, totalCount] = await Promise.all([
+        productModel.findAll(filterOptions),
+        productModel.countAll(filterOptions)
+      ]);
+
+      const totalPages = Math.ceil(totalCount / limit) || 1;
+
+      const lang = res.locals.currentLang || 'id';
+      const pageTitle = (lang === 'en' ? 'Product Catalog' : 'Katalog Produk') + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
 
       res.render('public/products', {
-        title,
+        title: pageTitle,
         path: '/products',
-        categories,
+        categories: categories || [],
         selectedCategory,
-        products,
-        search: search ? search.trim() : ''
+        products: products || [],
+        search: search ? search.trim() : '',
+        page,
+        totalPages,
+        totalProducts: totalCount
       });
     } catch (err) {
       logger.error('Public productController.index error:', { message: err.message, stack: err.stack });
       res.status(500).render('public/products', {
-        title: 'Katalog Produk | PT Euodoo',
+        title: 'Katalog Produk | PT. EUODOO',
         path: '/products',
         categories: [],
         selectedCategory: null,
         products: [],
-        search: ''
+        search: '',
+        page: 1,
+        totalPages: 1,
+        totalProducts: 0
       });
     }
   },
 
   /**
-   * Display single product detail by slug
+   * Display single product detail
    */
   async detail(req, res) {
     try {
       const { slug } = req.params;
-      const product = await productModel.findBySlug(slug);
+      let product = null;
 
-      if (!product || !product.is_active) {
+      if (/^\d+$/.test(slug)) {
+        product = await productModel.findById(parseInt(slug, 10));
+      } else {
+        product = await productModel.findBySlug(slug);
+      }
+
+      if (!product || product.status !== 'published') {
         return res.status(404).render('public/404', {
-          title: 'Produk Tidak Ditemukan | PT Euodoo',
-          path: '/products'
+          title: 'Produk Tidak Ditemukan | PT. EUODOO',
+          path: '/products',
+          message: 'Produk yang Anda cari tidak tersedia atau sedang diperbarui.'
         });
-      }
-
-      // Safe JSON parse for specs and galleries
-      let materialSpecs = null;
-      if (product.material_specs) {
-        try {
-          materialSpecs = typeof product.material_specs === 'string'
-            ? JSON.parse(product.material_specs)
-            : product.material_specs;
-        } catch {
-          materialSpecs = { info: product.material_specs };
-        }
-      }
-
-      let technicalSpecs = null;
-      if (product.technical_specs) {
-        try {
-          technicalSpecs = typeof product.technical_specs === 'string'
-            ? JSON.parse(product.technical_specs)
-            : product.technical_specs;
-        } catch {
-          technicalSpecs = { info: product.technical_specs };
-        }
-      }
-
-      let galleryImages = [];
-      if (product.gallery_images) {
-        try {
-          galleryImages = typeof product.gallery_images === 'string'
-            ? JSON.parse(product.gallery_images)
-            : product.gallery_images;
-          if (!Array.isArray(galleryImages)) galleryImages = [];
-        } catch {
-          galleryImages = [];
-        }
       }
 
       // Fetch related products in the same category
-      let relatedProducts = [];
-      if (product.category_id) {
-        const related = await productModel.findAll({
-          categoryId: product.category_id,
-          isActive: true,
-          limit: 4
-        });
-        relatedProducts = related.filter(p => p.id !== product.id).slice(0, 3);
-      }
+      const relatedProducts = await productModel.findAll({
+        categoryId: product.category_id,
+        status: 'published',
+        limit: 4
+      });
 
-      const currentLang = res.locals.currentLang || 'id';
-      const productName = currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id;
-      const title = productName + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const lang = res.locals.currentLang || 'id';
+      const prodName = lang === 'en' ? (product.name_en || product.name_id) : product.name_id;
+      const title = prodName + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
 
       res.render('public/product-detail', {
         title,
         path: '/products',
         product,
-        materialSpecs,
-        technicalSpecs,
-        galleryImages,
-        relatedProducts
+        relatedProducts: (relatedProducts || []).filter(p => p.id !== product.id).slice(0, 3)
       });
     } catch (err) {
       logger.error('Public productController.detail error:', { message: err.message, stack: err.stack });
       res.status(500).render('public/404', {
-        title: 'Error | PT Euodoo',
-        path: '/products'
+        title: 'Error | PT. EUODOO',
+        path: '/products',
+        message: 'Gagal memuat rincian produk.'
       });
     }
   }

@@ -24,12 +24,17 @@ export const loginLimiter = rateLimit({
  */
 export const leadLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 5,
+  max: 3, // Per T-58: maksimal 3 submit per IP per 10 menit
   standardHeaders: true,
   legacyHeaders: false,
-  message: {
-    success: false,
-    error: 'Terlalu banyak permintaan terkirim. Mohon tunggu beberapa saat sebelum mengirim kembali.'
+  handler: (req, res) => {
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+      return res.status(429).json({
+        success: false,
+        error: 'Terlalu banyak permintaan terkirim. Mohon tunggu 10 menit sebelum mengirim kembali.'
+      });
+    }
+    res.redirect('/contact?error=rate_limited');
   }
 });
 

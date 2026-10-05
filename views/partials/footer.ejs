@@ -1,114 +1,112 @@
-<footer class="site-footer" style="background-color: var(--color-navy-deep); color: #ffffff; padding-top: var(--space-3xl); padding-bottom: var(--space-2xl); border-top: 1px solid rgba(255, 255, 255, 0.08);">
+<footer class="site-footer">
   <div class="container">
-    <!-- Top Row: Brand & CTA (Home6) -->
-    <div class="footer-corp-header">
-      <div class="brand-logo">
-        <span class="brand-name" style="color: #ffffff; font-size: 1.5rem; font-weight: 700;">PT EUODOO</span>
-        <span class="brand-badge" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff;">MANUFACTURING</span>
-      </div>
-      <div>
-        <a href="/contact" class="btn-pill-solid-white">
-          <%= currentLang === 'en' ? 'Contact Us' : 'Hubungi Kami' %>
-        </a>
-      </div>
+    <div class="ft-top">
+      <a href="/" class="brand" aria-label="Beranda PT Euodoo">
+        <span class="brand-name" style="color:#ffffff;font-size:1.5rem;">PT EUODOO</span>
+        <span class="ft-brand-badge">MANUFACTURING</span>
+      </a>
+      <a href="/contact" class="btn-pill-solid-white" style="padding:0 28px;font-size:14px;">
+        <%= currentLang === 'en' ? 'Contact Us' : 'Hubungi Kami' %>
+      </a>
     </div>
 
-    <!-- Middle Row: Company Contacts & Clean Links (Home6) -->
-    <div class="footer-corp-main">
+    <div class="ft-main">
       <div>
-        <div style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: var(--space-sm);">
-          <%= typeof settings !== 'undefined' && settings?.company_name ? settings.company_name : 'PT. EUODOO' %>
-        </div>
-        <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: var(--space-md); max-width: 520px;">
-          <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id) ? (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id) : t('footer.desc') %>
+        <p class="ft-desc">
+          <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id)
+              ? (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id)
+              : (currentLang === 'en'
+                  ? 'PT. EUODOO is a manufacturing and trading enterprise of eco-certified HDPE and LLDPE plastic bags. Established in 1990, we supply modern retail chains, industrial sectors, and traditional wholesale markets from our production plant in Bandung, West Java.'
+                  : 'PT. EUODOO adalah perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE bersertifikasi ramah lingkungan. Didirikan tahun 1990, kami melayani retail modern, sektor industri, dan pasar tradisional dari fasilitas produksi di Bandung, Jawa Barat.') %>
         </p>
-        
-        <div class="grid grid-cols-2" style="gap: var(--space-lg); margin-top: var(--space-md);">
-          <div>
-            <div style="font-size: 12px; font-weight: 700; color: var(--color-sky-tint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+
+        <div class="ft-offices">
+          <div class="ft-office-card">
+            <div class="ft-office-label">
+              <span class="ft-office-dot"></span>
               <%= currentLang === 'en' ? 'Head Office (Jakarta)' : 'Kantor Pusat Jakarta' %>
             </div>
-            <div style="font-size: 13px; color: #94a3b8; line-height: 1.5;">
-              Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270<br>
-              <span style="color: #e2e8f0;">Telp:</span> (021) 53668626 &bull; <span style="color: #e2e8f0;">Fax:</span> (021) 53668648
+            <div class="ft-office-addr">
+              <%= typeof settings !== 'undefined' && settings?.office_address ? settings.office_address : 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02-07, Jakarta Pusat 10270' %><br>
+              <span class="ft-phone-label"><%= currentLang === 'en' ? 'Phone:' : 'Telp:' %></span>
+              <a href="tel:<%= (typeof settings !== 'undefined' && settings?.company_phone ? settings.company_phone : '02153668626').replace(/[^0-9]/g, '') %>" class="ft-phone-val">
+                <%= typeof settings !== 'undefined' && settings?.company_phone ? settings.company_phone : '(021) 53668626' %>
+              </a>
             </div>
           </div>
-          <div>
-            <div style="font-size: 12px; font-weight: 700; color: var(--color-sky-tint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">
+
+          <div class="ft-office-card">
+            <div class="ft-office-label">
+              <span class="ft-office-dot"></span>
               <%= currentLang === 'en' ? 'Production Plant (Bandung)' : 'Pabrik Produksi Bandung' %>
             </div>
-            <div style="font-size: 13px; color: #94a3b8; line-height: 1.5;">
-              Jl. Paralon II No. 21 Cijerah Bandung 40214 - Indonesia<br>
-              <span style="color: #e2e8f0;">Telp:</span> (022) 6012519 &bull; <span style="color: #e2e8f0;">Fax:</span> (022) 6074730
+            <div class="ft-office-addr">
+              <%= typeof settings !== 'undefined' && settings?.factory_address ? settings.factory_address : 'Jl. Paralon II No. 21 Cijerah Bandung 40214' %><br>
+              <span class="ft-phone-label"><%= currentLang === 'en' ? 'Phone:' : 'Telp:' %></span>
+              <a href="tel:0226012519" class="ft-phone-val">(022) 6012519</a>
             </div>
           </div>
         </div>
       </div>
 
-      <div style="display: flex; flex-direction: column; justify-content: center;">
-        <a href="/products?category=retailers" class="footer-corp-nav-link">
-          <span><%= currentLang === 'en' ? 'For Retail & Industrial Customers' : 'Untuk Pelanggan Retail & Industri' %></span>
-          <span style="font-size: 1.1rem; color: var(--color-sky-tint);">&rarr;</span>
+      <div class="ft-nav">
+        <a href="/products" class="ft-nav-link">
+          <span><%= currentLang === 'en' ? 'Retail & Industrial Products' : 'Produk Retail & Industri' %></span>
+          <span class="ft-nav-arrow">&#8594;</span>
         </a>
-        <a href="/about" class="footer-corp-nav-link">
-          <span><%= currentLang === 'en' ? 'Who We Are & Culture T-I-C-K-E-T' : 'Siapa Kami & Budaya T-I-C-K-E-T' %></span>
-          <span style="font-size: 1.1rem; color: var(--color-sky-tint);">&rarr;</span>
+        <a href="/about" class="ft-nav-link">
+          <span><%= currentLang === 'en' ? 'About PT. EUODOO' : 'Tentang PT. EUODOO' %></span>
+          <span class="ft-nav-arrow">&#8594;</span>
         </a>
-        <a href="/about#certifications" class="footer-corp-nav-link">
-          <span><%= currentLang === 'en' ? 'Sustainability & Eco Certifications' : 'Sertifikasi SNI & OXIUM Degradable' %></span>
-          <span style="font-size: 1.1rem; color: var(--color-sky-tint);">&rarr;</span>
+        <a href="/about#sertifikasi" class="ft-nav-link">
+          <span><%= currentLang === 'en' ? 'Environmental Certifications' : 'Sertifikasi Lingkungan' %></span>
+          <span class="ft-nav-arrow">&#8594;</span>
         </a>
-        <a href="/products?category=traditional-market" class="footer-corp-nav-link">
-          <span><%= currentLang === 'en' ? 'Traditional Market & PB/Berkah Brands' : 'Pasar Tradisional & Merk PB / Berkah' %></span>
-          <span style="font-size: 1.1rem; color: var(--color-sky-tint);">&rarr;</span>
+        <a href="/products" class="ft-nav-link">
+          <span><%= currentLang === 'en' ? 'Brands PB & Berkah' : 'Merk PB & Berkah' %></span>
+          <span class="ft-nav-arrow">&#8594;</span>
         </a>
       </div>
     </div>
 
-    <!-- Bottom Row: Copyright, Socials & Legal (Home6) -->
-    <div class="footer-corp-bottom">
-      <div>
-        &copy; <%= currentYear %> <%= typeof settings !== 'undefined' && settings?.company_name ? settings.company_name : 'PT. EUODOO' %>. <%= t('footer.all_rights_reserved') %>
+    <div class="ft-bottom">
+      <span>&copy; <%= typeof currentYear !== 'undefined' ? currentYear : new Date().getFullYear() %> PT. EUODOO. <%= currentLang === 'en' ? 'All rights reserved.' : 'Hak cipta dilindungi undang-undang.' %></span>
+      
+      <div class="social-row" aria-label="Media Sosial Resmi">
+        <a href="<%= typeof settings !== 'undefined' && settings?.social_linkedin ? settings.social_linkedin : 'https://linkedin.com' %>"
+           class="social-btn" aria-label="LinkedIn PT Euodoo" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.27a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z" />
+          </svg>
+        </a>
+        <a href="<%= typeof settings !== 'undefined' && settings?.social_instagram ? settings.social_instagram : 'https://instagram.com' %>"
+           class="social-btn" aria-label="Instagram PT Euodoo" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+          </svg>
+        </a>
+        <a href="<%= typeof settings !== 'undefined' && settings?.social_facebook ? settings.social_facebook : 'https://facebook.com' %>"
+           class="social-btn" aria-label="Facebook PT Euodoo" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+          </svg>
+        </a>
       </div>
 
-      <div class="social-icons-row" aria-label="Media Sosial Resmi">
-        <a href="https://linkedin.com" class="social-icon-btn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.27a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z"/></svg>
-        </a>
-        <a href="https://instagram.com" class="social-icon-btn" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
-        </a>
-        <a href="https://facebook.com" class="social-icon-btn" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        </a>
-      </div>
-
-      <div style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
-        <a href="/about" style="color: #94a3b8;"><%= currentLang === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan' %></a>
-        <a href="/about" style="color: #94a3b8;"><%= currentLang === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi' %></a>
-        <a href="/sitemap.xml" style="color: #94a3b8;"><%= currentLang === 'en' ? 'Sitemap' : 'Peta Situs' %></a>
+      <div class="ft-legal-links">
+        <a href="/about" class="ft-legal-link"><%= currentLang === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan' %></a>
+        <a href="/about" class="ft-legal-link"><%= currentLang === 'en' ? 'Privacy Policy' : 'Kebijakan Privasi' %></a>
+        <a href="/sitemap.xml" class="ft-legal-link"><%= currentLang === 'en' ? 'Sitemap' : 'Peta Situs' %></a>
       </div>
     </div>
   </div>
 </footer>
 
-<!-- Floating WhatsApp Button -->
-<% if (typeof settings !== 'undefined' && settings && settings.whatsapp_number) { %>
-  <aside class="wa-float-container" aria-label="Layanan WhatsApp PT Euodoo">
-    <a href="https://wa.me/<%= settings.whatsapp_number.replace(/[^0-9]/g, '') %>?text=<%= encodeURIComponent(settings.whatsapp_default_message || 'Halo PT Euodoo, saya ingin berkonsultasi mengenai permintaan penawaran manufaktur produk plastik.') %>"
-       class="wa-float-btn"
-       target="_blank"
-       rel="noopener noreferrer"
-       aria-label="Hubungi Customer Support via WhatsApp">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true">
-        <path d="M12.031 2C6.512 2 2.02 6.492 2.02 12.012c0 1.986.58 3.844 1.583 5.422L2 22l4.727-1.541a9.96 9.96 0 005.304 1.554c5.52 0 10.012-4.492 10.012-10.012S17.551 2 12.031 2zm0 18.272a8.23 8.23 0 01-4.278-1.196l-.307-.184-2.8 1.05.932-2.905-.201-.321a8.214 8.214 0 01-1.39-4.704c0-4.557 3.708-8.265 8.265-8.265 4.557 0 8.265 3.708 8.265 8.265 0 4.557-3.708 8.272-8.486 8.272zm4.53-6.175c-.248-.124-1.468-.724-1.696-.807-.227-.083-.393-.124-.559.124-.165.248-.641.807-.786.973-.145.165-.29.186-.538.062-.248-.124-1.047-.386-1.995-1.232-.738-.658-1.237-1.472-1.382-1.72-.145-.248-.016-.382.108-.505.111-.11.248-.29.373-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.435-.062-.124-.559-1.348-.766-1.846-.201-.485-.406-.419-.559-.427l-.476-.008c-.165 0-.435.062-.662.31-.227.248-.869.849-.869 2.071 0 1.222.89 2.403 1.014 2.569.124.165 1.751 2.674 4.242 3.75.592.256 1.055.409 1.416.524.595.19 1.136.163 1.564.099.477-.071 1.468-.6 1.675-1.179.207-.579.207-1.076.145-1.179-.062-.103-.227-.165-.476-.29z"/>
-      </svg>
-      <span class="wa-float-text">Chat WhatsApp</span>
-    </a>
-  </aside>
-<% } %>
+<!-- Dynamic Floating WhatsApp Button -->
+<%- include('./whatsapp-btn') %>
 
 <!-- Core Client JS -->
 <script src="/js/main.js"></script>
+<script src="/js/whatsapp.js"></script>
 </body>
 </html>

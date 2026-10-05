@@ -5,6 +5,7 @@ import pageController from '../controllers/public/pageController.js';
 import postController from '../controllers/public/postController.js';
 import contactController from '../controllers/public/contactController.js';
 import seoController from '../controllers/public/seoController.js';
+import { leadLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
@@ -48,7 +49,7 @@ router.get('/news/:slug', postController.detail);
 
 // Contact Us & RFQ Form
 router.get('/contact', contactController.index);
-router.post('/contact', contactController.submit);
-router.post('/leads', contactController.submit);
+router.post('/contact', leadLimiter, contactController.submit);
+router.post('/leads', leadLimiter, contactController.submit);
 
 export default router;

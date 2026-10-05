@@ -2,48 +2,44 @@
 <%- include('../partials/navbar') %>
 
 <main id="main-content">
-  <!-- HERO: Full-bleed factory photo background, left-aligned headline, pill CTA (Home1) -->
-  <% const primaryBanner = (typeof banners !== 'undefined' && banners.length > 0) ? banners[0] : null; %>
-  <section style="position: relative; overflow: hidden; min-height: 92vh; display: flex; align-items: center;">
-    <% if (primaryBanner && primaryBanner.media_type === 'video') { %>
-      <div style="position: absolute; inset: 0; z-index: 1; overflow: hidden;">
-        <video autoplay muted loop playsinline preload="metadata" style="width: 100%; height: 100%; object-fit: cover;">
-          <source src="<%= primaryBanner.file_url %>" type="video/mp4">
+  <!-- 1. SECTION HERO 90vh (Exact Prototype v2 Architecture) -->
+  <% 
+    const primaryBanner = (typeof banners !== 'undefined' && banners.length > 0) ? banners[0] : null; 
+    const heroTitle = primaryBanner 
+      ? (currentLang === 'en' ? (primaryBanner.title_en || primaryBanner.title_id) : primaryBanner.title_id)
+      : (currentLang === 'en' ? 'Leading Eco-Friendly HDPE & LLDPE Plastic Bag Manufacturer' : 'Solusi Manufaktur Kantong Plastik HDPE & LLDPE Ramah Lingkungan');
+    const heroCaption = primaryBanner
+      ? (currentLang === 'en' ? (primaryBanner.caption_en || primaryBanner.caption_id) : primaryBanner.caption_id)
+      : (currentLang === 'en' ? 'Serving national modern retail networks, industrial partners, and wholesale markets with certified 100% oxo-biodegradable formulation since 1990.' : 'Melayani jaringan ritel modern, mitra industri, dan pasar grosir nasional dengan formulasi 100% degradable berstandar SNI sejak 1990.');
+    const heroCtaText = primaryBanner && (primaryBanner.cta_text_id || primaryBanner.cta_text_en)
+      ? (currentLang === 'en' ? (primaryBanner.cta_text_en || primaryBanner.cta_text_id) : primaryBanner.cta_text_id)
+      : (currentLang === 'en' ? 'Request a Quote' : 'Minta Penawaran');
+    const heroCtaUrl = primaryBanner && primaryBanner.cta_url ? primaryBanner.cta_url : '/contact';
+    const heroMediaUrl = primaryBanner && (primaryBanner.image_url || primaryBanner.file_url) ? (primaryBanner.image_url || primaryBanner.file_url) : '/images/hero-factory.jpg';
+    const isVideoBanner = primaryBanner && primaryBanner.media_type === 'video' && primaryBanner.video_url;
+  %>
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <% if (isVideoBanner) { %>
+        <video autoplay muted loop playsinline preload="metadata" poster="<%= primaryBanner.poster_url || '/images/hero-factory.jpg' %>">
+          <source src="<%= primaryBanner.video_url %>" type="video/mp4">
         </video>
-        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10, 22, 40, 0.82) 0%, rgba(13, 32, 64, 0.65) 100%);"></div>
-      </div>
-    <% } else if (primaryBanner && primaryBanner.file_url) { %>
-      <div style="position: absolute; inset: 0; z-index: 1; background-image: url('<%= primaryBanner.file_url %>'); background-size: cover; background-position: center;">
-        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10, 22, 40, 0.82) 0%, rgba(13, 32, 64, 0.65) 100%);"></div>
-      </div>
-    <% } else { %>
-      <div style="position: absolute; inset: 0; z-index: 1; background-image: url('/images/hero-factory.jpg'); background-size: cover; background-position: center;">
-        <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10, 22, 40, 0.82) 0%, rgba(13, 32, 64, 0.65) 100%);"></div>
-      </div>
-    <% } %>
+      <% } else { %>
+        <img src="<%= heroMediaUrl %>" alt="Pabrik Manufaktur PT. EUODOO Bandung" fetchpriority="high">
+      <% } %>
+      <div class="hero-grad"></div>
+    </div>
 
-    <div class="container" style="position: relative; z-index: 2; padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
-      <div style="max-width: 720px;">
-        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); margin-bottom: var(--space-sm);">
+    <div class="hero-content">
+      <div class="hero-inner">
+        <div class="hero-welcome">
           <%= currentLang === 'en' ? 'WELCOME TO PT. EUODOO' : 'SELAMAT DATANG DI PT. EUODOO' %>
         </div>
-        <h1 style="font-size: clamp(2.25rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.12; color: #ffffff; margin-bottom: var(--space-lg);">
-          <% if (primaryBanner) { %>
-            <%= currentLang === 'en' ? (primaryBanner.title_en || primaryBanner.title_id) : primaryBanner.title_id %>
-          <% } else { %>
-            <%= t('home.hero_title') %>
-          <% } %>
-        </h1>
-        <p style="font-size: var(--font-size-body-lg); line-height: 1.65; color: #cbd5e1; max-width: 600px; margin-bottom: var(--space-xl);">
-          <% if (primaryBanner && (primaryBanner.subtitle_id || primaryBanner.subtitle_en)) { %>
-            <%= currentLang === 'en' ? (primaryBanner.subtitle_en || primaryBanner.subtitle_id) : primaryBanner.subtitle_id %>
-          <% } else { %>
-            <%= t('home.hero_subtitle') %>
-          <% } %>
-        </p>
-        <div class="flex flex-wrap gap-md">
-          <a href="/contact" class="btn-pill-solid-white">
-            <%= t('home.cta_quote') %>
+        <h1><%= heroTitle %></h1>
+        <p class="hero-body"><%= heroCaption %></p>
+        <div class="hero-actions">
+          <a href="<%= heroCtaUrl %>" class="btn-pill-solid-white">
+            <%= heroCtaText %>
           </a>
           <a href="/about" class="btn-pill-white">
             <%= currentLang === 'en' ? 'Learn More' : 'Lihat Detail' %>
@@ -52,360 +48,446 @@
       </div>
     </div>
 
-    <div class="hero-explore-indicator">
+    <div class="hero-explore-indicator" aria-hidden="true">
       <span class="hero-explore-text">EXPLORE MORE</span>
       <span class="hero-explore-line"></span>
     </div>
   </section>
 
-  <!-- SECTION 2: Company Intro + 4 Showcase Cards (Home2) -->
-  <section class="section section-bg-base" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+  <!-- 2. SECTION COMPANY INTRO -->
+  <section class="sec-intro" id="intro">
     <div class="container">
-      <div class="grid grid-cols-2" style="gap: var(--space-2xl); align-items: start; margin-bottom: var(--space-2xl);">
+      <div class="intro-layout reveal">
+        <h2>
+          <%= currentLang === 'en' ? 'Over Three Decades of Plastic Film Manufacturing Excellence' : 'Dedikasi Manufaktur Plastik Berkualitas Sejak 1990' %>
+        </h2>
         <div>
-          <h2 style="font-size: clamp(2rem, 3vw, 2.75rem); font-weight: 700; color: var(--color-text-main); line-height: 1.15;">
-            <%= currentLang === 'en'
-              ? 'Passion To Build A Better Quality of Life'
-              : 'Semangat Membangun Kualitas Hidup yang Lebih Baik' %>
-          </h2>
-        </div>
-        <div>
-          <p style="font-size: var(--font-size-body-md); color: var(--color-text-muted); line-height: 1.7;">
-            <%= currentLang === 'en'
-              ? 'PT. EUODOO is an HDPE and LLDPE plastic bag manufacturing and trading company. Our production plant is located in Cigondewah, Bandung, West Java. Founded in 1990, formerly known as PT. Sahabat Baru and PT. Pelita Baru, we started by serving traditional market demand and have since expanded to serve modern retail, industrial sectors, and environmental sustainability commitments.'
-              : 'PT. EUODOO adalah perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE. Pabrik produksi kami terletak di Cigondewah, Bandung, Jawa Barat. Didirikan tahun 1990, yang akrab dikenal sebagai PT. Sahabat Baru dan PT. Pelita Baru, kami memulai dari melayani pasar tradisional dan kini berkembang melayani retail modern, sektor industri, serta berkomitmen pada kelestarian lingkungan.' %>
+          <p style="margin-bottom: 16px;">
+            <%= currentLang === 'en' 
+                ? 'Since our founding in 1990 in Bandung, West Java (originating from PT Sahabat Baru and PT Pelita Baru), PT EUODOO has been producing high-grade HDPE and LLDPE plastic bags for modern retail chains, traditional wholesale hubs, and industrial sectors.'
+                : 'Sejak berdiri pada tahun 1990 di Bandung, Jawa Barat (bermula dari PT Sahabat Baru dan PT Pelita Baru), PT EUODOO telah memproduksi kantong plastik HDPE dan LLDPE berkualitas tinggi untuk jaringan ritel modern, pasar grosir tradisional, dan sektor industri nasional.' %>
           </p>
-        </div>
-      </div>
-
-      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-main); margin-bottom: var(--space-lg);">
-        <%= currentLang === 'en' ? 'Explore Our Latest Developments' : 'Telusuri Perkembangan Terkini' %>
-      </div>
-
-      <div class="grid grid-cols-4" style="gap: var(--space-lg);">
-        <!-- Card 1: Retail -->
-        <a href="/products?category=retailers" class="showcase-card">
-          <img src="/images/segment-retail.jpg" alt="<%= currentLang === 'en' ? 'Retail Shopping Bags' : 'Tas Belanja Retail' %>" class="showcase-card-bg" loading="lazy">
-          <div class="showcase-card-overlay"></div>
-          <div class="showcase-card-content">
-            <div class="showcase-card-title">
-              <%= currentLang === 'en' ? 'Retail Solutions' : 'Solusi Retail' %>
-            </div>
-            <div class="showcase-card-desc">
-              <%= currentLang === 'en'
-                ? 'Custom shopping bags for supermarkets, boutiques, cafes, and restaurants with soft loop and patch handle options.'
-                : 'Tas belanja kustom untuk supermarket, butik, kafe, dan restoran dengan pilihan soft loop dan patch handle.' %>
-            </div>
-            <span class="showcase-card-action">
-              <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
-            </span>
-          </div>
-        </a>
-
-        <!-- Card 2: Industrial -->
-        <a href="/products?category=industrials" class="showcase-card">
-          <img src="/images/segment-industrial.jpg" alt="<%= currentLang === 'en' ? 'Industrial Packaging' : 'Kemasan Industri' %>" class="showcase-card-bg" loading="lazy">
-          <div class="showcase-card-overlay"></div>
-          <div class="showcase-card-content">
-            <div class="showcase-card-title">
-              <%= currentLang === 'en' ? 'Industrial Packaging' : 'Kemasan Industri' %>
-            </div>
-            <div class="showcase-card-desc">
-              <%= currentLang === 'en'
-                ? 'Anti-static electronic packaging, auto seat covers, and food grade solutions with strict quality standards.'
-                : 'Kemasan anti-statis elektronik, cover jok otomotif, dan solusi food grade dengan standar mutu ketat.' %>
-            </div>
-            <span class="showcase-card-action">
-              <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
-            </span>
-          </div>
-        </a>
-
-        <!-- Card 3: Sustainability -->
-        <a href="/about#certifications" class="showcase-card">
-          <img src="/images/segment-sustainability.jpg" alt="<%= currentLang === 'en' ? 'Eco Sustainability' : 'Kelestarian Lingkungan' %>" class="showcase-card-bg" loading="lazy">
-          <div class="showcase-card-overlay"></div>
-          <span class="showcase-floating-badge">100% Degradable</span>
-          <div class="showcase-card-content">
-            <div class="showcase-card-title">
-              <%= currentLang === 'en' ? 'Sustainability' : 'Kelestarian Lingkungan' %>
-            </div>
-            <div class="showcase-card-desc">
-              <%= currentLang === 'en'
-                ? 'Let\'s save our earth! We supply 100% degradable plastic bags certified by SNI, OXIUM, and InSWA Green Label.'
-                : 'Mari selamatkan bumi kita! Kami menyuplai kantong plastik 100% degradable bersertifikasi SNI, OXIUM, dan InSWA Green Label.' %>
-            </div>
-            <span class="showcase-card-action">
-              <%= currentLang === 'en' ? 'View Certifications' : 'Lihat Sertifikasi' %>
-            </span>
-          </div>
-        </a>
-
-        <!-- Card 4: Traditional Market -->
-        <a href="/products?category=traditional-market" class="showcase-card">
-          <img src="/images/segment-traditional.jpg" alt="<%= currentLang === 'en' ? 'Traditional Market' : 'Pasar Tradisional' %>" class="showcase-card-bg" loading="lazy">
-          <div class="showcase-card-overlay"></div>
-          <div class="showcase-card-content">
-            <div class="showcase-card-title">
-              <%= currentLang === 'en' ? 'Traditional Market' : 'Pasar Tradisional' %>
-            </div>
-            <div class="showcase-card-desc">
-              <%= currentLang === 'en'
-                ? 'Garbage bags, recycled t-shirt bags, and HDPE/LDPE bags under trusted brands PB and Berkah.'
-                : 'Kantong sampah, recycle bag, dan kantong HDPE/LDPE dengan merek terpercaya PB dan Berkah.' %>
-            </div>
-            <span class="showcase-card-action">
-              <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
-            </span>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 3: Business Segments with Photos (Home3) -->
-  <% if (typeof featuredProducts !== 'undefined' && featuredProducts.length > 0) { %>
-    <section class="section section-bg-workspace" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
-      <div class="container">
-        <div class="grid grid-cols-2" style="gap: var(--space-2xl); align-items: start; margin-bottom: var(--space-2xl);">
-          <div>
-            <h2 style="font-size: clamp(1.75rem, 2.8vw, 2.5rem); font-weight: 700; color: var(--color-text-main); line-height: 1.15;">
-              <%= currentLang === 'en'
-                ? 'Driving Growth as a Leading Plastic Bag Manufacturer in Indonesia'
-                : 'Mendorong Pertumbuhan sebagai Produsen Kantong Plastik Terdepan di Indonesia' %>
-            </h2>
-          </div>
-          <div>
-            <p style="font-size: var(--font-size-body-md); color: var(--color-text-muted); line-height: 1.7;">
-              <%= currentLang === 'en'
-                ? 'PT. EUODOO is dedicated to achieving sustainable growth through transformative initiatives and eco-friendly products that improve community welfare while meeting diverse industrial demands.'
-                : 'PT. EUODOO berdedikasi mencapai pertumbuhan berkelanjutan melalui inisiatif transformatif dan produk ramah lingkungan yang meningkatkan kesejahteraan masyarakat serta memenuhi permintaan industri yang beragam.' %>
-            </p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-3" style="gap: var(--space-lg);">
-          <% featuredProducts.slice(0, 3).forEach(function(product) { %>
-            <a href="/products/<%= product.slug %>" class="showcase-card" style="height: 380px;">
-              <% if (product.main_image) { %>
-                <img src="<%= product.main_image %>" alt="<%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>" class="showcase-card-bg" loading="lazy">
-              <% } %>
-              <div class="showcase-card-overlay"></div>
-              <div class="showcase-card-content">
-                <div class="showcase-card-title">
-                  <%= currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id %>
-                </div>
-                <span class="showcase-card-action">
-                  <%= currentLang === 'en' ? 'View Details' : 'Lihat Detail' %>
-                </span>
-              </div>
-            </a>
-          <% }); %>
-        </div>
-
-        <div style="text-align: center; margin-top: var(--space-xl);">
-          <a href="/products" class="btn btn-secondary btn-sm"><%= t('common.view_more') %></a>
-        </div>
-      </div>
-    </section>
-  <% } %>
-
-  <!-- SECTION 4: Journey Stats - Dark Navy (Home4) -->
-  <section class="section-journey">
-    <div class="container">
-      <div class="grid grid-cols-2" style="gap: var(--space-3xl); align-items: center;">
-        <div>
-          <h2 style="font-size: clamp(2rem, 3vw, 2.75rem); font-weight: 700; color: #ffffff; line-height: 1.15; margin-bottom: var(--space-lg);">
+          <p>
             <%= currentLang === 'en'
-              ? 'A Journey of Sustainable Growth'
-              : 'Perjalanan Pertumbuhan Berkelanjutan' %>
-          </h2>
-          <p style="font-size: var(--font-size-body-md); color: #94a3b8; line-height: 1.7; margin-bottom: var(--space-xl);">
-            <%= currentLang === 'en'
-              ? 'At PT. EUODOO, partnerships are key to driving development and innovation. Growing demand for eco-friendly plastic bags domestically and regionally opens new opportunities through asset optimization, organic expansion, and sustainable manufacturing practices since 1990.'
-              : 'Di PT. EUODOO, kemitraan sangat krusial karena mendorong pengembangan dan inovasi. Pertumbuhan permintaan kantong plastik ramah lingkungan di dalam negeri maupun regional membuka peluang baru lewat optimalisasi aset, ekspansi organik, dan praktik manufaktur berkelanjutan sejak 1990.' %>
+                ? 'With high-capacity production facilities in Cigondewah and corporate offices in Palmerah Jakarta, we integrate advanced blown film extrusion lines, certified 100% degradable formulations under SNI standards, and strict quality control for partners across Indonesia.'
+                : 'Dengan fasilitas produksi berkapasitas tinggi di Cigondewah dan kantor manajemen di Palmerah Jakarta, kami menggabungkan teknologi ekstrusi film mutakhir, formula ramah lingkungan 100% degradable berstandar SNI, serta ketelitian presisi demi kepuasan mitra usaha di seluruh Indonesia.' %>
           </p>
-          <div class="flex flex-wrap gap-md">
-            <a href="/about" class="btn-pill-sky">
-              <%= currentLang === 'en' ? 'About Us' : 'Tentang Kami' %>
-            </a>
-            <a href="/about#certifications" class="btn-pill-sky">
-              <%= currentLang === 'en' ? 'Certifications' : 'Sertifikasi' %>
-            </a>
-          </div>
-        </div>
-
-        <div>
-          <div class="grid grid-cols-2" style="gap: var(--space-xl);">
-            <div class="metric-stat-box">
-              <div class="metric-stat-value">34+</div>
-              <div class="metric-stat-label">
-                <%= currentLang === 'en' ? 'Years of manufacturing experience' : 'Tahun pengalaman manufaktur' %>
-              </div>
-            </div>
-            <div class="metric-stat-box">
-              <div class="metric-stat-value">3</div>
-              <div class="metric-stat-label">
-                <%= currentLang === 'en' ? 'Core market segments served' : 'Segmen pasar utama dilayani' %>
-              </div>
-            </div>
-            <div class="metric-stat-box">
-              <div class="metric-stat-value">4</div>
-              <div class="metric-stat-label">
-                <%= currentLang === 'en' ? 'Official eco certifications (SNI, OXIUM, InSWA, Ekolabel)' : 'Sertifikasi resmi ramah lingkungan (SNI, OXIUM, InSWA, Ekolabel)' %>
-              </div>
-            </div>
-            <div class="metric-stat-box">
-              <div class="metric-stat-value">100%</div>
-              <div class="metric-stat-label">
-                <%= currentLang === 'en' ? 'Degradable plastic bag commitment' : 'Komitmen kantong plastik degradable' %>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 5: Machine Capabilities Preview -->
-  <% if (typeof capabilities !== 'undefined' && capabilities.length > 0) { %>
-    <section class="section section-bg-workspace" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
-      <div class="container">
-        <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
-          <div>
-            <span class="section-kicker" style="color: var(--color-primary);"><%= t('home.capabilities_preview_title') %></span>
-            <h2 style="margin: 0; color: var(--color-secondary-navy); font-size: clamp(1.75rem, 2.5vw, 2.25rem);">
-              <%= t('home.capabilities_preview_subtitle') %>
-            </h2>
-          </div>
-          <div>
-            <a href="/capabilities" class="btn btn-secondary btn-sm"><%= t('common.view_more') %></a>
-          </div>
+  <!-- 3. SECTION PRODUK UNGGULAN (Symmetrical Bento Grid) -->
+  <section class="sec-products" id="produk">
+    <div class="container">
+      <div class="prod-header reveal">
+        <div>
+          <h2 class="prod-title"><%= currentLang === 'en' ? 'Featured Manufacturing Products' : 'Produk Unggulan Manufaktur' %></h2>
+          <p class="prod-subtitle">
+            <%= currentLang === 'en' 
+                ? 'High-grade HDPE, LLDPE, and woven PP plastic bags manufactured to exact customer specifications.'
+                : 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail, industri, dan pasar komersial.' %>
+          </p>
         </div>
-
-        <div class="grid grid-cols-3" style="gap: var(--space-lg);">
-          <% capabilities.forEach(function(cap) { %>
-            <div class="card" style="box-shadow: var(--shadow-level-0);">
-              <div class="card-body">
-                <span class="badge badge-info" style="margin-bottom: var(--space-xs);"><%= cap.machine_type %></span>
-                <h3 style="font-size: 1.15rem; margin-bottom: var(--space-xs); color: var(--color-secondary-navy);">
-                  <%= currentLang === 'en' ? (cap.title_en || cap.title_id) : cap.title_id %>
-                </h3>
-                <% if (cap.capacity) { %>
-                  <div style="font-size: 13px; font-weight: 600; color: var(--color-primary); margin-bottom: var(--space-sm);">
-                    Output: <%= cap.capacity %>
-                  </div>
-                <% } %>
-                <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); line-height: 1.5;">
-                  <%= currentLang === 'en' ? (cap.description_en || cap.description_id) : cap.description_id %>
-                </p>
-              </div>
-            </div>
-          <% }); %>
-        </div>
+        <a href="/products" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+          <span><%= currentLang === 'en' ? 'View All Catalog' : 'Lihat Seluruh Katalog' %></span>
+          <span>&rarr;</span>
+        </a>
       </div>
-    </section>
-  <% } %>
 
-  <!-- SECTION 6: News Asymmetric (Home5) -->
-  <% if (typeof latestPosts !== 'undefined' && latestPosts.length > 0) { %>
-    <section class="section section-bg-base" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
-      <div class="container">
-        <div class="flex items-center justify-between" style="margin-bottom: var(--space-xl); flex-wrap: wrap; gap: var(--space-md);">
-          <div>
-            <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-xs);">
-              <%= currentLang === 'en' ? 'NEWS' : 'BERITA' %>
-            </div>
-            <h2 style="margin: 0; font-size: clamp(1.75rem, 2.5vw, 2.25rem); color: var(--color-text-main);">
-              <%= currentLang === 'en' ? 'Stay informed about our industry' : 'Temukan informasi terbaru dari industri kami' %>
-            </h2>
-          </div>
-          <div>
-            <a href="/news" class="btn btn-secondary btn-sm">
-              <%= currentLang === 'en' ? 'View All' : 'Lihat Semua' %>
-            </a>
-          </div>
-        </div>
-
-        <div class="news-asymmetric-grid">
-          <% const firstPost = latestPosts[0]; %>
-          <a href="/news/<%= firstPost.slug %>" class="news-card-tall">
-            <% if (firstPost.cover_image) { %>
-              <img src="<%= firstPost.cover_image %>" alt="<%= currentLang === 'en' ? (firstPost.title_en || firstPost.title_id) : firstPost.title_id %>" class="showcase-card-bg" loading="lazy">
-            <% } else { %>
-              <img src="/images/post-eco-community.jpg" alt="<%= currentLang === 'en' ? (firstPost.title_en || firstPost.title_id) : firstPost.title_id %>" class="showcase-card-bg" loading="lazy">
-            <% } %>
-            <div class="showcase-card-overlay"></div>
-            <div class="showcase-card-content">
-              <% if (firstPost.published_at) { %>
-                <div class="news-tag-date">
-                  <%= new Date(firstPost.published_at).toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase() %>
-                </div>
-              <% } %>
-              <div class="news-title-overlay">
-                <%= currentLang === 'en' ? (firstPost.title_en || firstPost.title_id) : firstPost.title_id %>
-              </div>
-            </div>
-          </a>
-
-          <div>
-            <% if (latestPosts.length > 1) { %>
-              <% const secondPost = latestPosts[1]; %>
-              <a href="/news/<%= secondPost.slug %>" class="news-card-horizontal">
-                <% if (secondPost.cover_image) { %>
-                  <img src="<%= secondPost.cover_image %>" alt="<%= currentLang === 'en' ? (secondPost.title_en || secondPost.title_id) : secondPost.title_id %>" class="showcase-card-bg" loading="lazy">
-                <% } else { %>
-                  <img src="/images/post-school-recycling.jpg" alt="<%= currentLang === 'en' ? (secondPost.title_en || secondPost.title_id) : secondPost.title_id %>" class="showcase-card-bg" loading="lazy">
-                <% } %>
-                <div class="showcase-card-overlay"></div>
-                <div class="showcase-card-content">
-                  <% if (secondPost.published_at) { %>
-                    <div class="news-tag-date">
-                      <%= new Date(secondPost.published_at).toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase() %>
+      <div class="bento-grid">
+        <% if (featuredProducts && featuredProducts.length > 0) { %>
+          <% featuredProducts.slice(0, 4).forEach((product, idx) => { 
+            const prodName = currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id;
+            const prodDesc = currentLang === 'en' ? (product.description_en || product.description_id) : product.description_id;
+            const prodImg = product.image_url || `/images/products/prod-${(idx % 4) + 1}.webp`;
+            const badgeClass = idx === 0 ? 'bento-badge-blue' : (idx === 1 ? 'bento-badge-navy' : (idx === 2 ? 'bento-badge-green' : 'bento-badge-blue'));
+            const cardThemeClass = idx === 0 ? 'bento-card-featured' : (idx === 1 ? 'bento-card-tech' : (idx === 2 ? 'bento-card-eco' : 'bento-card-pb'));
+            const overlayText = idx === 2 ? '100% ECO' : (idx === 1 ? 'HEAVY DUTY' : 'RETAIL READY');
+          %>
+            <article class="bento-col-6 reveal">
+              <a href="/products/<%= product.slug || product.id %>" class="bento-card <%= cardThemeClass %>" aria-label="Lihat detail <%= prodName %>">
+                <div class="bento-split">
+                  <div class="bento-split-content">
+                    <div>
+                      <div class="bento-badge <%= badgeClass %>">
+                        <% if (idx === 2) { %><span class="dot-green"></span><% } %>
+                        <%= product.category_name_id || (idx === 2 ? 'OXIUM DEGRADABLE' : 'RETAIL MODERN') %>
+                      </div>
+                      <h3 class="bento-card-title"><%= prodName %></h3>
+                      <p class="bento-card-desc">
+                        <%= prodDesc ? (prodDesc.length > 120 ? prodDesc.substring(0, 120) + '...' : prodDesc) : 'Diproduksi dengan bahan baku murni virgin grade dan ketahanan beban optimal.' %>
+                      </p>
+                      
+                      <div class="bento-specs">
+                        <span class="bento-spec-tag">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          Virgin HDPE / LLDPE
+                        </span>
+                        <span class="bento-spec-tag">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          Drop-Test Teruji
+                        </span>
+                        <span class="bento-spec-tag">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          Custom Printing
+                        </span>
+                      </div>
                     </div>
-                  <% } %>
-                  <div class="news-title-overlay">
-                    <%= currentLang === 'en' ? (secondPost.title_en || secondPost.title_id) : secondPost.title_id %>
+
+                    <div class="bento-card-footer">
+                      <span class="bento-card-link">
+                        <%= currentLang === 'en' ? 'Product Specifications' : 'Lihat Detail Produk' %>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </span>
+                      <span class="bento-meta-badge <%= idx === 2 ? 'eco' : '' %>">
+                        <%= idx === 2 ? 'SNI 7188.7:2011' : 'B2B Custom' %>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="bento-split-media">
+                    <img src="<%= prodImg %>" alt="<%= prodName %>" loading="lazy">
+                    <span class="media-overlay-pill <%= idx === 2 ? 'eco' : '' %>"><%= overlayText %></span>
                   </div>
                 </div>
               </a>
-            <% } %>
+            </article>
+          <% }); %>
+        <% } %>
+      </div>
 
-            <div style="margin-top: var(--space-md);">
-              <div style="font-size: 14px; font-weight: 600; color: var(--color-text-main); margin-bottom: var(--space-sm);">
-                <%= currentLang === 'en' ? 'Browse topics' : 'Cari topik pilihan lainnya' %>
-              </div>
-              <div class="topic-chips-group">
-                <a href="/news" class="topic-chip"><%= currentLang === 'en' ? 'Company News' : 'Berita Perusahaan' %></a>
-                <a href="/about" class="topic-chip"><%= currentLang === 'en' ? 'Sustainability' : 'Kelestarian' %></a>
-                <a href="/products" class="topic-chip"><%= currentLang === 'en' ? 'Products' : 'Produk' %></a>
-                <a href="/about#certifications" class="topic-chip"><%= currentLang === 'en' ? 'Certifications' : 'Sertifikasi' %></a>
-              </div>
+      <div class="prod-more-wrap reveal">
+        <a href="/products" class="btn-see-more">
+          <span><%= currentLang === 'en' ? 'Explore Complete Product Catalog' : 'Jelajahi Seluruh Katalog Produk' %></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. SECTION 3 PILAR KEUNGGULAN -->
+  <section class="sec-pillars" id="pilar">
+    <div class="container">
+      <div class="pillars-header reveal">
+        <h2><%= currentLang === 'en' ? 'Three Pillars of Manufacturing Excellence' : 'Tiga Pilar Keunggulan Kami' %></h2>
+        <p>
+          <%= currentLang === 'en' 
+              ? 'Our unwavering commitment to precision, production capacity, and environmental sustainability.'
+              : 'Komitmen menyeluruh dalam menghadirkan standar mutu plastik terdepan bagi mitra B2B.' %>
+        </p>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card reveal">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3 class="pillar-title">
+            <%= currentLang === 'en' ? 'High-Volume Production Capacity' : 'Teknologi & Kapasitas Produksi' %>
+          </h3>
+          <p class="pillar-desc">
+            <%= currentLang === 'en'
+                ? 'Equipped with multi-layer blown film extruders, automated precision bag-making lines, and multi-color flexographic printing machines.'
+                : 'Didukung deretan mesin ekstrusi multi-layer modern dan converting line berkecepatan tinggi di Cigondewah untuk menjamin ketepatan jadwal pasokan skala besar.' %>
+          </p>
+        </div>
+
+        <div class="pillar-card reveal">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="pillar-title">
+            <%= currentLang === 'en' ? 'Consistent Quality & Precision' : 'Standar Mutu & Presisi Konsisten' %>
+          </h3>
+          <p class="pillar-desc">
+            <%= currentLang === 'en'
+                ? 'Rigorous quality control protocols verifying tensile elongation, drop-impact resistance, seal integrity, and micron uniformity.'
+                : 'Penerapan kontrol kualitas berkala meliputi uji ketahanan jatuh (drop-test), segel anti-bocor star-seal, dan ketebalan mikron yang konsisten di setiap batch.' %>
+          </p>
+        </div>
+
+        <div class="pillar-card reveal">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            </svg>
+          </div>
+          <h3 class="pillar-title">
+            <%= currentLang === 'en' ? 'Sustainable OXIUM® Degradable' : 'Solusi Ramah Lingkungan OXIUM' %>
+          </h3>
+          <p class="pillar-desc">
+            <%= currentLang === 'en'
+                ? 'Certified 100% degradable technology tested under US ASTM D6954 standards and Indonesian Green Label SNI 7188.7:2011.'
+                : 'Pionir penerapan aditif OXIUM teruji 100% terdegradasi menjadi biomassa dan air tanpa menyisakan mikroplastik berbahaya, berstandar resmi SNI.' %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SECTION SERTIFIKASI & BUKTI MUTU -->
+  <section class="sec-evidence" id="sertifikasi">
+    <div class="container">
+      <div class="ev-layout">
+        <div class="reveal">
+          <h2><%= currentLang === 'en' ? 'Verified Quality & Eco-Certifications' : 'Sertifikasi Mutu & Komitmen Lingkungan' %></h2>
+          <p class="ev-body">
+            <%= currentLang === 'en'
+                ? 'Our manufacturing processes strictly comply with national standards and certified laboratory testing, ensuring packaging safety, durability, and full regulatory compliance.'
+                : 'Standar produksi kami didukung sertifikasi resmi nasional dan pengujian laboratorium terakreditasi, memastikan setiap produk aman digunakan, kuat, dan memenuhi regulasi ramah lingkungan.' %>
+          </p>
+          <a href="/about#sertifikasi" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+            <span><%= currentLang === 'en' ? 'Learn More About Certifications' : 'Pelajari Detail Sertifikasi' %></span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+
+        <div class="cert-grid reveal">
+          <div class="cert-item">
+            <span class="cert-chk">&#10003;</span>
+            <div>
+              <div class="cert-name">SNI 7188.7:2011</div>
+              <div class="cert-desc"><%= currentLang === 'en' ? 'Indonesian National Standard for degradable shopping bags' : 'Standar Nasional Indonesia untuk kantong belanja mudah terurai' %></div>
+            </div>
+          </div>
+
+          <div class="cert-item">
+            <span class="cert-chk">&#10003;</span>
+            <div>
+              <div class="cert-name">OXIUM&reg; Technology</div>
+              <div class="cert-desc"><%= currentLang === 'en' ? 'US ASTM D6954 certified oxo-biodegradable formulation' : 'Formula degradasi alami berstandar internasional ASTM D6954' %></div>
+            </div>
+          </div>
+
+          <div class="cert-item">
+            <span class="cert-chk">&#10003;</span>
+            <div>
+              <div class="cert-name">InSWA Eco Label</div>
+              <div class="cert-desc"><%= currentLang === 'en' ? 'Endorsed by Indonesia Solid Waste Association' : 'Sertifikasi Resmi Asosiasi Pengelolaan Sampah Indonesia' %></div>
+            </div>
+          </div>
+
+          <div class="cert-item">
+            <span class="cert-chk">&#10003;</span>
+            <div>
+              <div class="cert-name">Virgin Food-Grade Contact</div>
+              <div class="cert-desc"><%= currentLang === 'en' ? 'Pure non-recycled polymers safe for food contact' : 'Bahan baku murni higienis aman untuk produk pangan dan retail' %></div>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  <% } %>
+    </div>
+  </section>
 
-  <!-- SECTION 7: CTA Band -->
-  <section class="section section-bg-navy" style="color: #ffffff; padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+  <!-- 6. SECTION OUR BRANDS (Horizontal Marquee Slider) -->
+  <section class="sec-brands" id="merek">
     <div class="container">
-      <div class="flex flex-col items-center text-center" style="max-width: 760px; margin: 0 auto;">
-        <h2 style="margin-bottom: var(--space-sm); color: #ffffff; font-size: clamp(1.75rem, 2.5vw, 2.25rem);">
-          <%= t('home.consultation_banner_subtitle') %>
-        </h2>
-        <p style="color: #94a3b8; font-size: var(--font-size-body-md); margin-bottom: var(--space-lg);">
+      <div class="brands-header reveal">
+        <span class="brands-kicker"><%= currentLang === 'en' ? 'Registered Trademarks' : 'Merek Paten & Terdaftar' %></span>
+        <h2 class="brands-title"><%= currentLang === 'en' ? 'Official Brand Portfolio of PT. EUODOO' : 'Portofolio Merek Resmi PT. EUODOO' %></h2>
+        <p class="brands-desc">
           <%= currentLang === 'en'
-            ? 'Contact our marketing and technical teams for custom size specifications, degradable material consultations, and partnership quotations.'
-            : 'Hubungi tim pemasaran dan teknis kami untuk konsultasi spesifikasi ukuran khusus, material degradable, dan penawaran harga kemitraan.' %>
+              ? 'For more than three decades, our registered trademark brands have been the trusted choice for modern hypermarkets, wholesale traditional markets, and industrial supply chains across Indonesia.'
+              : 'Selama lebih dari tiga dekade, kami memproduksi kantong plastik berkualitas di bawah merek-merek paten terdaftar yang menjadi pilihan utama jaringan ritel modern, pasar grosir tradisional, dan sektor industri nasional.' %>
         </p>
-        <div class="flex flex-wrap gap-md justify-center">
-          <a href="/contact" class="btn-pill-solid-white">
-            <%= t('home.cta_quote') %>
+      </div>
+    </div>
+
+    <div class="marquee-wrapper reveal" aria-label="Slider Merek Resmi PT Euodoo">
+      <div class="marquee-track">
+        <!-- Group 1 -->
+        <div class="marquee-group">
+          <% if (brands && brands.length > 0) { %>
+            <% brands.forEach(brand => { %>
+              <div class="brand-card">
+                <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
+                  <%= brand.name.substring(0, 2).toUpperCase() %>
+                </div>
+                <div class="brand-info">
+                  <div class="brand-card-header">
+                    <span class="brand-name-lg"><%= brand.name.toUpperCase() %></span>
+                    <span class="brand-reg-tag <%= brand.name.toLowerCase().includes('eco') ? 'brand-tag-eco' : '' %>">
+                      <%= brand.name.toLowerCase().includes('eco') ? 'PATEN DEGRADABLE' : 'DAFTAR RESMI' %>
+                    </span>
+                  </div>
+                  <p class="brand-role"><%= currentLang === 'en' ? (brand.description_en || 'Registered Brand Portfolio') : (brand.description_id || 'Merek Terdaftar PT Euodoo') %></p>
+                  <span class="brand-detail">Standar mutu presisi manufaktur sejak 1990</span>
+                </div>
+              </div>
+            <% }); %>
+          <% } %>
+          <!-- Additional anchor brands from prototype -->
+          <div class="brand-card">
+            <div class="brand-badge-icon brand-badge-pb">PB</div>
+            <div class="brand-info">
+              <div class="brand-card-header">
+                <span class="brand-name-lg">MEREK PB</span>
+                <span class="brand-reg-tag">DAFTAR RESMI</span>
+              </div>
+              <p class="brand-role">Kantong Sampah &amp; Heavy Duty</p>
+              <span class="brand-detail">Segel bintang star-seal anti-bocor dipercaya sejak 1990</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-badge-icon brand-badge-berkah">BK</div>
+            <div class="brand-info">
+              <div class="brand-card-header">
+                <span class="brand-name-lg">MEREK BERKAH</span>
+                <span class="brand-reg-tag">MEREK TERDAFTAR</span>
+              </div>
+              <p class="brand-role">Kantong Kresek Bening Higienis</p>
+              <span class="brand-detail">HDPE murni tanpa bau untuk pasar grosir &amp; toko roti</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-badge-icon brand-badge-oxium">OX</div>
+            <div class="brand-info">
+              <div class="brand-card-header">
+                <span class="brand-name-lg">OXIUM&reg;</span>
+                <span class="brand-reg-tag brand-tag-eco">PATEN DEGRADABLE</span>
+              </div>
+              <p class="brand-role">100% Eco-Degradable Technology</p>
+              <span class="brand-detail">Bersertifikasi SNI 7188.7:2011 &amp; InSWA Green Label</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 2 (Duplicate for seamless CSS Marquee Loop) -->
+        <div class="marquee-group" aria-hidden="true">
+          <% if (brands && brands.length > 0) { %>
+            <% brands.forEach(brand => { %>
+              <div class="brand-card">
+                <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
+                  <%= brand.name.substring(0, 2).toUpperCase() %>
+                </div>
+                <div class="brand-info">
+                  <div class="brand-card-header">
+                    <span class="brand-name-lg"><%= brand.name.toUpperCase() %></span>
+                    <span class="brand-reg-tag <%= brand.name.toLowerCase().includes('eco') ? 'brand-tag-eco' : '' %>">
+                      <%= brand.name.toLowerCase().includes('eco') ? 'PATEN DEGRADABLE' : 'DAFTAR RESMI' %>
+                    </span>
+                  </div>
+                  <p class="brand-role"><%= currentLang === 'en' ? (brand.description_en || 'Registered Brand Portfolio') : (brand.description_id || 'Merek Terdaftar PT Euodoo') %></p>
+                  <span class="brand-detail">Standar mutu presisi manufaktur sejak 1990</span>
+                </div>
+              </div>
+            <% }); %>
+          <% } %>
+          <div class="brand-card">
+            <div class="brand-badge-icon brand-badge-pb">PB</div>
+            <div class="brand-info">
+              <div class="brand-card-header">
+                <span class="brand-name-lg">MEREK PB</span>
+                <span class="brand-reg-tag">DAFTAR RESMI</span>
+              </div>
+              <p class="brand-role">Kantong Sampah &amp; Heavy Duty</p>
+              <span class="brand-detail">Segel bintang star-seal anti-bocor dipercaya sejak 1990</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-badge-icon brand-badge-berkah">BK</div>
+            <div class="brand-info">
+              <div class="brand-card-header">
+                <span class="brand-name-lg">MEREK BERKAH</span>
+                <span class="brand-reg-tag">MEREK TERDAFTAR</span>
+              </div>
+              <p class="brand-role">Kantong Kresek Bening Higienis</p>
+              <span class="brand-detail">HDPE murni tanpa bau untuk pasar grosir &amp; toko roti</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-badge-icon brand-badge-oxium">OX</div>
+            <div class="brand-info">
+              <div class="brand-card-header">
+                <span class="brand-name-lg">OXIUM&reg;</span>
+                <span class="brand-reg-tag brand-tag-eco">PATEN DEGRADABLE</span>
+              </div>
+              <p class="brand-role">100% Eco-Degradable Technology</p>
+              <span class="brand-detail">Bersertifikasi SNI 7188.7:2011 &amp; InSWA Green Label</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. SECTION BERITA & ARTIKEL TERBARU -->
+  <section class="sec-news" id="berita">
+    <div class="container">
+      <div class="news-header reveal">
+        <div>
+          <h2><%= currentLang === 'en' ? 'Industry Insights & Company Updates' : 'Wawasan & Berita Industri' %></h2>
+          <p style="color: var(--text-variant); margin-top: 6px;">
+            <%= currentLang === 'en' ? 'Latest publications on plastic film technology and sustainable packaging.' : 'Publikasi terkini seputar inovasi manufaktur plastik ramah lingkungan dan regulasi industri.' %>
+          </p>
+        </div>
+        <a href="/news" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+          <span><%= currentLang === 'en' ? 'View All News' : 'Lihat Semua Berita' %></span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+
+      <div class="news-grid">
+        <% if (latestPosts && latestPosts.length > 0) { %>
+          <% latestPosts.forEach((post, i) => { 
+            const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
+            const postImg = post.display_image || post.cover_image || `/images/news/news-${i + 1}.webp`;
+            const dateStr = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLang === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '2026';
+          %>
+            <article class="news-card reveal">
+              <a href="/news/<%= post.slug || post.id %>" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; height: 100%; justify-content: flex-end;">
+                <div class="bg">
+                  <img src="<%= postImg %>" alt="<%= postTitle %>" loading="lazy">
+                </div>
+                <div class="ov"></div>
+                <div class="ct">
+                  <div class="news-date"><%= dateStr %> &bull; <%= post.category_name_id || (post.type === 'pers' ? 'Siaran Pers' : 'Berita') %></div>
+                  <h3 class="news-title"><%= postTitle %></h3>
+                </div>
+              </a>
+            </article>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. SECTION CTA KEMITRAAN -->
+  <section class="sec-cta" id="kontak">
+    <div class="container">
+      <div class="cta-layout reveal">
+        <div>
+          <h2><%= currentLang === 'en' ? 'Start Your Manufacturing Partnership with PT. EUODOO' : 'Mulai Kemitraan Manufaktur Bersama PT. EUODOO' %></h2>
+          <p>
+            <%= currentLang === 'en'
+                ? 'Consult with our experienced production and engineering team to develop custom plastic bag packaging tailored to your brand, strength parameters, and delivery schedules.'
+                : 'Konsultasikan kebutuhan spesifikasi kantong plastik, ukuran kustom, dan volume pesanan bisnis Anda bersama tim teknis dan pemasaran kami.' %>
+          </p>
+        </div>
+
+        <div class="cta-actions">
+          <a href="/contact" class="cta-card">
+            <div>
+              <div class="cta-card-title"><%= currentLang === 'en' ? 'Contact Sales & Engineering' : 'Hubungi Tim Pemasaran' %></div>
+              <div class="cta-card-sub"><%= currentLang === 'en' ? 'Submit RFQ form and technical inquiries' : 'Formulir penawaran harga dan konsultasi' %></div>
+            </div>
+            <span class="cta-card-arrow">&#8594;</span>
           </a>
-          <a href="/products" class="btn-pill-white">
-            <%= t('common.view_more') %>
+
+          <% const waLink = (typeof settings !== 'undefined' && settings?.whatsapp_url) ? settings.whatsapp_url : 'https://wa.me/628123456789'; %>
+          <a href="<%= waLink %>" class="cta-card" target="_blank" rel="noopener noreferrer">
+            <div>
+              <div class="cta-card-title"><%= currentLang === 'en' ? 'Direct WhatsApp Consultation' : 'Kirim Pesan WhatsApp' %></div>
+              <div class="cta-card-sub"><%= currentLang === 'en' ? 'Fast response from our customer support' : 'Respon cepat dari tim sales kami' %></div>
+            </div>
+            <span class="cta-card-arrow">&#8594;</span>
           </a>
         </div>
       </div>

@@ -2,6 +2,7 @@ import postModel from '../../models/postModel.js';
 import postCategoryModel from '../../models/postCategoryModel.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
+import { invalidateSitemapCache } from '../../utils/sitemapGenerator.js';
 import logger from '../../utils/logger.js';
 
 const createSlug = (text) => {
@@ -126,6 +127,7 @@ export const postController = {
         meta_desc_en: meta_desc_en || null
       });
 
+      invalidateSitemapCache();
       res.redirect('/admin/posts?success=' + encodeURIComponent('Artikel berhasil disimpan.'));
     } catch (err) {
       logger.error('Post store error:', { message: err.message });
@@ -197,6 +199,7 @@ export const postController = {
       }
 
       await postModel.update(id, updateData);
+      invalidateSitemapCache();
       res.redirect('/admin/posts?success=' + encodeURIComponent('Artikel berhasil diperbarui.'));
     } catch (err) {
       logger.error('Post update error:', err);
@@ -212,6 +215,7 @@ export const postController = {
         await storage.delete(post.display_image);
       }
       await postModel.delete(id);
+      invalidateSitemapCache();
       res.redirect('/admin/posts?success=' + encodeURIComponent('Artikel berhasil dihapus.'));
     } catch (err) {
       logger.error('Post destroy error:', err);

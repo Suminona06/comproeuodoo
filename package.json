@@ -11,10 +11,12 @@
     "seed": "node database/seeds/v2_seed.js",
     "seed:v1": "node database/seeds/initial_seed.js",
     "seed:v2": "node database/seeds/v2_seed.js",
-    "test": "node tests/test-storage-driver.js && node tests/test-modul10-security.js && node tests/test-modul11-cms.js",
+    "test": "node tests/test-storage-driver.js && node tests/test-modul10-security.js && node tests/test-modul11-cms.js && node tests/test-modul12-public.js && node tests/test-modul13-seo-audit.js",
     "test:storage": "node tests/test-storage-driver.js",
     "test:security": "node tests/test-modul10-security.js",
     "test:cms": "node tests/test-modul11-cms.js",
+    "test:public": "node tests/test-modul12-public.js",
+    "test:audit": "node tests/test-modul13-seo-audit.js",
     "test:admin-http": "node tests/test-admin-http.js"
   },
   "keywords": [

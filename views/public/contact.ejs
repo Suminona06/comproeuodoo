@@ -1,255 +1,340 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
-<% const currentLangCode = currentLang || 'id'; %>
+<%
+  const currentLangCode = currentLang || 'id';
+  const companyPhone = (settings && settings.company_phone) || '+6222-6012519';
+  const companyEmail = (settings && settings.company_email) || 'sales@euodoo.com';
+  const waNum = (settings && settings.whatsapp_number) ? settings.whatsapp_number.replace(/\D/g, '') : '628112345678';
+%>
 
 <main id="main-content">
-  <!-- Page Header -->
-  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
+  <!-- Page Hero Header -->
+  <section class="page-hero">
     <div class="container">
-      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('contact.page_title') %></span>
-      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/"><%= t('nav.home') %></a>
+        <span aria-hidden="true">/</span>
+        <span style="color: #ffffff; font-weight: 600;"><%= t('nav.contact') %></span>
+      </nav>
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky, #38bdf8); margin-bottom: 10px;">
+        SALES & ENTERPRISE PROCUREMENT
+      </div>
+      <h1 class="page-hero-title">
         <%= t('contact.page_title') %>
       </h1>
-      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
+      <p class="page-hero-desc">
         <%= t('contact.page_subtitle') %>
       </p>
     </div>
   </section>
 
-  <!-- Contact Form & Info Section -->
+  <!-- Split Form & Information Section -->
   <section class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
     <div class="container">
+
       <!-- Status Alerts -->
-      <% if (typeof success !== 'undefined' && success) { %>
-        <div id="form-status" class="alert alert-success" style="margin-bottom: var(--space-xl); padding: var(--space-lg); border-radius: var(--radius-md); background-color: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46;">
-          <h3 style="font-size: 1.15rem; margin-bottom: var(--space-xs); color: #065f46; font-weight: 600;">
-            <%= t('contact.success_title') %>
-          </h3>
-          <p style="font-size: var(--font-size-body-sm); margin: 0; line-height: 1.6;">
-            <%= t('contact.success_message') %>
-          </p>
-        </div>
-      <% } %>
-
-      <% if (typeof error !== 'undefined' && error) { %>
-        <div id="form-status" class="alert alert-error" style="margin-bottom: var(--space-xl); padding: var(--space-lg); border-radius: var(--radius-md); background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
-          <h3 style="font-size: 1.15rem; margin-bottom: var(--space-xs); color: #991b1b; font-weight: 600;">
-            Perhatian
-          </h3>
-          <p style="font-size: var(--font-size-body-sm); margin: 0; line-height: 1.6;">
-            <%= t('contact.error_message') %>
-          </p>
-        </div>
-      <% } %>
-
-      <div class="grid grid-cols-3 gap-xl items-start">
-        <!-- RFQ Form Column (Spans 2 cols on desktop) -->
-        <div style="grid-column: span 2;">
-          <div class="card" style="padding: var(--space-2xl); background-color: #ffffff;">
-            <div style="margin-bottom: var(--space-xl);">
-              <h2 style="font-size: 1.5rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
-                <%= t('contact.form_heading') %>
-              </h2>
-              <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6;">
-                <%= t('contact.form_subheading') %>
+      <div id="form-status">
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="alert alert-success" style="margin-bottom: 32px; padding: 20px 24px; border-radius: 12px; background-color: #ecfdf5; border: 1.5px solid #a7f3d0; color: #065f46; display: flex; align-items: flex-start; gap: 14px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <div>
+              <h3 style="font-size: 1.1rem; margin: 0 0 4px 0; color: #065f46; font-weight: 700;">
+                Permintaan Penawaran Berhasil Dikirim!
+              </h3>
+              <p style="font-size: 14px; margin: 0; line-height: 1.5; color: #047857;">
+                <%= t('contact.success_alert') %>
               </p>
             </div>
-
-            <form action="/contact" method="POST">
-              <!-- CSRF Token -->
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-              <!-- Honeypot anti-spam field (hidden from real users) -->
-              <div style="display: none !important;" aria-hidden="true">
-                <label for="hp_website">Do not fill this</label>
-                <input type="text" id="hp_website" name="hp_website" tabindex="-1" autocomplete="off">
-              </div>
-
-              <!-- Name & Company Row -->
-              <div class="grid grid-cols-2 gap-md" style="margin-bottom: var(--space-md);">
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="name" class="form-label form-label-required">
-                    <%= t('contact.name_label') %>
-                  </label>
-                  <input type="text"
-                         id="name"
-                         name="name"
-                         class="form-control"
-                         placeholder="<%= t('contact.name_placeholder') %>"
-                         required
-                         style="height: 44px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="company" class="form-label">
-                    <%= t('contact.company_label') %>
-                  </label>
-                  <input type="text"
-                         id="company"
-                         name="company"
-                         class="form-control"
-                         placeholder="<%= t('contact.company_placeholder') %>"
-                         style="height: 44px;">
-                </div>
-              </div>
-
-              <!-- Email & Phone Row -->
-              <div class="grid grid-cols-2 gap-md" style="margin-bottom: var(--space-md);">
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="email" class="form-label form-label-required">
-                    <%= t('contact.email_label') %>
-                  </label>
-                  <input type="email"
-                         id="email"
-                         name="email"
-                         class="form-control"
-                         placeholder="<%= t('contact.email_placeholder') %>"
-                         required
-                         style="height: 44px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="phone" class="form-label form-label-required">
-                    <%= t('contact.phone_label') %>
-                  </label>
-                  <input type="tel"
-                         id="phone"
-                         name="phone"
-                         class="form-control"
-                         placeholder="<%= t('contact.phone_placeholder') %>"
-                         required
-                         style="height: 44px;">
-                </div>
-              </div>
-
-              <!-- Related Product & Quantity Row -->
-              <div class="grid grid-cols-2 gap-md" style="margin-bottom: var(--space-md);">
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="product_id" class="form-label">
-                    <%= t('contact.product_label') %>
-                  </label>
-                  <select id="product_id" name="product_id" class="form-select" style="height: 44px;">
-                    <option value=""><%= t('contact.product_select_default') %></option>
-                    <% if (products && products.length > 0) { %>
-                      <% products.forEach(prod => { %>
-                        <%
-                          const isSel = selectedProduct && (selectedProduct.id === prod.id || selectedProduct.slug === prod.slug);
-                          const pName = currentLangCode === 'en' ? (prod.name_en || prod.name_id) : prod.name_id;
-                        %>
-                        <option value="<%= prod.id %>" <%= isSel ? 'selected' : '' %>>
-                          <%= pName %> (<%= currentLangCode === 'en' ? (prod.category_name_en || prod.category_name_id) : prod.category_name_id %>)
-                        </option>
-                      <% }); %>
-                    <% } %>
-                  </select>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="quantity" class="form-label">
-                    <%= t('contact.quantity_label') %>
-                  </label>
-                  <input type="text"
-                         id="quantity"
-                         name="quantity"
-                         class="form-control"
-                         placeholder="<%= t('contact.quantity_placeholder') %>"
-                         style="height: 44px;">
-                </div>
-              </div>
-
-              <!-- Message / Specifications -->
-              <div class="form-group" style="margin-bottom: var(--space-xl);">
-                <label for="message" class="form-label form-label-required">
-                  <%= t('contact.message_label') %>
-                </label>
-                <textarea id="message"
-                          name="message"
-                          class="form-textarea"
-                          rows="5"
-                          placeholder="<%= t('contact.message_placeholder') %>"
-                          required
-                          style="min-height: 120px;"></textarea>
-              </div>
-
-              <button type="submit"
-                      class="btn btn-primary btn-lg"
-                      style="min-height: 48px; width: 100%; display: flex; align-items: center; justify-content: center;">
-                <%= t('contact.submit_btn') %>
-              </button>
-            </form>
           </div>
-        </div>
+        <% } %>
 
-        <!-- Plant & Office Information Card (1 col on desktop) -->
-        <div>
-          <div class="card" style="padding: var(--space-xl); background-color: #ffffff; margin-bottom: var(--space-lg);">
-            <h3 style="font-size: 1.2rem; color: var(--color-secondary-navy); margin-bottom: var(--space-lg); border-bottom: 2px solid var(--color-bg-base); padding-bottom: var(--space-xs);">
-              Lokasi & Kontak Resmi
-            </h3>
-
-            <!-- Address Bandung -->
-            <div style="margin-bottom: var(--space-lg);">
-              <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-accent-teal); margin-bottom: var(--space-xs); letter-spacing: 0.05em; font-weight: 700;">
-                Pabrik Produksi & Pemasaran (Bandung)
-              </h4>
-              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin-bottom: var(--space-xs);">
-                <%= (settings && settings.company_address) || 'Jl. Paralon II No. 21 Cijerah Bandung 40214 - Indonesia' %>
-              </p>
-              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); margin: 0;">
-                Telepon: <strong><%= (settings && settings.company_phone) || '+6222-6012519' %></strong> | Fax: +6222-6074730
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-error" style="margin-bottom: 32px; padding: 20px 24px; border-radius: 12px; background-color: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; display: flex; align-items: flex-start; gap: 14px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+              <h3 style="font-size: 1.1rem; margin: 0 0 4px 0; color: #991b1b; font-weight: 700;">
+                Perhatian
+              </h3>
+              <p style="font-size: 14px; margin: 0; line-height: 1.5; color: #b91c1c;">
+                <%= typeof errorMsg !== 'undefined' && errorMsg ? errorMsg : t('contact.error_alert') %>
               </p>
             </div>
-
-            <!-- Address Jakarta -->
-            <div style="margin-bottom: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
-              <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-primary-blue); margin-bottom: var(--space-xs); letter-spacing: 0.05em; font-weight: 700;">
-                Kantor Pusat (Jakarta)
-              </h4>
-              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin-bottom: var(--space-xs);">
-                Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270
-              </p>
-              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); margin: 0;">
-                Telepon: <strong>+6221-53668626</strong> | Fax: +6221-53668648
-              </p>
-            </div>
-
-            <!-- Email -->
-            <div style="margin-bottom: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
-              <h4 style="font-size: var(--font-size-label-sm); text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-xs); letter-spacing: 0.05em;">
-                <%= t('contact.office_email_heading') %>
-              </h4>
-              <p style="font-size: var(--font-size-body-sm); color: var(--color-text-body); line-height: 1.6; margin: 0;">
-                <a href="mailto:<%= (settings && settings.company_email) || 'info@euodoo.com' %>" style="color: var(--color-primary-blue); text-decoration: none;">
-                  <%= (settings && settings.company_email) || 'info@euodoo.com' %>
-                </a>
-              </p>
-            </div>
-
-            <!-- WhatsApp Direct Button -->
-            <% if (settings && settings.whatsapp_number) { %>
-              <%
-                const waNumber = settings.whatsapp_number.replace(/\D/g, '');
-                const waMessage = encodeURIComponent('Halo Tim Sales PT EUODOO, saya ingin menanyakan penawaran kantong plastik ramah lingkungan (100% degradable).');
-              %>
-              <div style="margin-top: var(--space-xl); border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-md);">
-                <a href="https://wa.me/<%= waNumber %>?text=<%= waMessage %>"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="btn btn-secondary btn-md"
-                   style="width: 100%; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-                  </svg>
-                  <%= t('common.whatsapp_consult') %>
-                </a>
-              </div>
-            <% } %>
           </div>
-        </div>
+        <% } %>
       </div>
+
+      <div class="contact-split-grid">
+
+        <!-- Column 1: RFQ Form -->
+        <div class="contact-card-box">
+          <div style="margin-bottom: 28px;">
+            <div style="display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary, #0055b8); margin-bottom: 6px;">
+              FORMULIR RFQ B2B
+            </div>
+            <h2 style="font-size: 1.65rem; color: var(--navy, #0a192f); font-weight: 800; margin: 0 0 8px 0; line-height: 1.3;">
+              <%= t('contact.form_heading') %>
+            </h2>
+            <p style="color: var(--text-variant, #424753); font-size: 14.5px; line-height: 1.6; margin: 0;">
+              <%= t('contact.form_subheading') %>
+            </p>
+          </div>
+
+          <form id="rfqForm" action="/contact" method="POST">
+            <!-- CSRF Protection -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <!-- Honeypot anti-spam (hidden from users) -->
+            <div style="display: none !important;" aria-hidden="true">
+              <label for="hp_website">Do not fill this field</label>
+              <input type="text" id="hp_website" name="hp_website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <!-- Name & Company Row -->
+            <div class="grid grid-cols-2 gap-md" style="margin-bottom: 16px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="name" class="form-label form-label-required">
+                  <%= t('contact.name_label') %>
+                </label>
+                <input type="text"
+                       id="name"
+                       name="name"
+                       class="form-control"
+                       placeholder="<%= t('contact.name_placeholder') %>"
+                       required
+                       style="height: 44px; border-radius: 8px;">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="company" class="form-label">
+                  <%= t('contact.company_label') %>
+                </label>
+                <input type="text"
+                       id="company"
+                       name="company"
+                       class="form-control"
+                       placeholder="<%= t('contact.company_placeholder') %>"
+                       style="height: 44px; border-radius: 8px;">
+              </div>
+            </div>
+
+            <!-- Email & Phone Row -->
+            <div class="grid grid-cols-2 gap-md" style="margin-bottom: 16px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="email" class="form-label form-label-required">
+                  <%= t('contact.email_label') %>
+                </label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="form-control"
+                       placeholder="<%= t('contact.email_placeholder') %>"
+                       required
+                       style="height: 44px; border-radius: 8px;">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="phone" class="form-label form-label-required">
+                  <%= t('contact.phone_label') %>
+                </label>
+                <input type="tel"
+                       id="phone"
+                       name="phone"
+                       class="form-control"
+                       placeholder="<%= t('contact.phone_placeholder') %>"
+                       required
+                       style="height: 44px; border-radius: 8px;">
+              </div>
+            </div>
+
+            <!-- Product Selection & Quantity Row -->
+            <div class="grid grid-cols-2 gap-md" style="margin-bottom: 16px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="product_id" class="form-label">
+                  <%= t('contact.product_label') || 'Produk yang Diminati' %>
+                </label>
+                <select id="product_id" name="product_id" class="form-select" style="height: 44px; border-radius: 8px;">
+                  <option value=""><%= t('contact.product_select_default') || '-- Pilih Produk (Opsional) --' %></option>
+                  <% if (products && products.length > 0) { %>
+                    <% products.forEach(prod => { %>
+                      <%
+                        const isSel = selectedProduct && (selectedProduct.id === prod.id || selectedProduct.slug === prod.slug);
+                        const pName = currentLangCode === 'en' ? (prod.name_en || prod.name_id) : prod.name_id;
+                        const pCat = currentLangCode === 'en' ? (prod.category_name_en || prod.category_name_id) : prod.category_name_id;
+                      %>
+                      <option value="<%= prod.id %>" <%= isSel ? 'selected' : '' %>>
+                        <%= pName %> <%= pCat ? '(' + pCat + ')' : '' %>
+                      </option>
+                    <% }); %>
+                  <% } %>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="quantity" class="form-label">
+                  <%= t('contact.quantity_label') %>
+                </label>
+                <input type="text"
+                       id="quantity"
+                       name="quantity"
+                       class="form-control"
+                       placeholder="<%= t('contact.quantity_placeholder') %>"
+                       style="height: 44px; border-radius: 8px;">
+              </div>
+            </div>
+
+            <!-- Inquiry Type Selector -->
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label for="inquiry_type" class="form-label">
+                Tipe Permintaan
+              </label>
+              <select id="inquiry_type" name="type" class="form-select" style="height: 44px; border-radius: 8px;">
+                <option value="inquiry" selected>Permintaan Penawaran Harga (RFQ)</option>
+                <option value="partnership">Kemitraan Distributor / Reseller</option>
+                <option value="general">Pertanyaan Umum & Konsultasi Spesifikasi</option>
+              </select>
+            </div>
+
+            <!-- Message / Technical Specs -->
+            <div class="form-group" style="margin-bottom: 24px;">
+              <label for="message" class="form-label form-label-required">
+                <%= t('contact.message_label') %>
+              </label>
+              <textarea id="message"
+                        name="message"
+                        class="form-textarea"
+                        rows="5"
+                        placeholder="<%= t('contact.message_placeholder') %>"
+                        required
+                        style="min-height: 120px; border-radius: 8px;"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit"
+                    id="submitBtn"
+                    class="btn btn-primary btn-lg"
+                    style="min-height: 50px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; border-radius: var(--r-pill, 9999px);">
+              <span><%= t('contact.submit_btn') %></span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Column 2: Dual Office Locations & Google Maps -->
+        <div>
+          <!-- Jakarta Palmerah Head Office Card -->
+          <div class="office-info-card">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <div style="width: 38px; height: 38px; border-radius: 8px; background: rgba(0, 85, 184, 0.1); color: var(--primary, #0055b8); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </div>
+              <div>
+                <span class="badge badge-primary" style="font-size: 10px; text-transform: uppercase;">Kantor Pusat & Sales</span>
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--navy, #0a192f); margin: 2px 0 0 0;">Jakarta Pusat</h3>
+              </div>
+            </div>
+            <p style="font-size: 13.5px; color: var(--text-variant, #424753); line-height: 1.6; margin-bottom: 10px;">
+              Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270 - Indonesia
+            </p>
+            <div style="font-size: 13px; color: var(--navy, #0a192f); line-height: 1.6;">
+              <div><strong>Telepon:</strong> +6221-53668626</div>
+              <div><strong>Fax:</strong> +6221-53668648</div>
+              <div><strong>Email:</strong> <a href="mailto:<%= companyEmail %>" style="color: var(--primary, #0055b8);"><%= companyEmail %></a></div>
+            </div>
+          </div>
+
+          <!-- Bandung Cigondewah Factory Card -->
+          <div class="office-info-card">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <div style="width: 38px; height: 38px; border-radius: 8px; background: rgba(16, 185, 129, 0.1); color: #059669; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+              </div>
+              <div>
+                <span class="badge badge-success" style="font-size: 10px; text-transform: uppercase;">Pabrik Manufaktur & Gudang</span>
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--navy, #0a192f); margin: 2px 0 0 0;">Bandung, Jawa Barat</h3>
+              </div>
+            </div>
+            <p style="font-size: 13.5px; color: var(--text-variant, #424753); line-height: 1.6; margin-bottom: 10px;">
+              Jl. Paralon II No. 21 Cijerah - Cigondewah, Bandung 40214, Jawa Barat - Indonesia
+            </p>
+            <div style="font-size: 13px; color: var(--navy, #0a192f); line-height: 1.6;">
+              <div><strong>Telepon:</strong> <%= companyPhone %></div>
+              <div><strong>Fax:</strong> +6222-6074730</div>
+              <div><strong>Operasional:</strong> Senin – Jumat: 08:00 – 17:00 WIB</div>
+            </div>
+          </div>
+
+          <!-- Direct WhatsApp Consultation Card -->
+          <div class="office-info-card" style="background: linear-gradient(135deg, #0a192f 0%, #0d2040 100%); color: #ffffff; border-color: rgba(56, 189, 248, 0.2);">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <span class="wa-pulse-indicator">
+                <span class="wa-pulse-ring"></span>
+                <span class="wa-pulse-dot"></span>
+              </span>
+              <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sky, #38bdf8);">
+                RESPONS CEPAT SALES
+              </span>
+            </div>
+            <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 6px; font-weight: 700;">
+              Konsultasi WhatsApp Langsung
+            </h3>
+            <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 16px; line-height: 1.5;">
+              Butuh penawaran mendesak atau konsultasi spesifikasi teknis cetak kantong plastik segera? Hubungi representatif sales kami.
+            </p>
+            <a href="https://wa.me/<%= waNum %>?text=Halo%20Tim%20Sales%20PT%20EUODOO,%20saya%20ingin%20berkonsultasi%20mengenai%20kantong%20plastik%20ramah%20lingkungan."
+               target="_blank"
+               rel="noopener noreferrer"
+               class="btn btn-primary"
+               style="width: 100%; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--r-pill, 9999px); background: #25D366; border-color: #20ba5a; color: #ffffff;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
+              </svg>
+              <span>Chat WhatsApp Sales</span>
+            </a>
+          </div>
+
+          <!-- Google Maps Responsive Embed -->
+          <div style="border-radius: 16px; overflow: hidden; border: 1px solid var(--border, #e2e8f0); height: 260px; box-shadow: 0 4px 14px -2px rgba(10, 25, 47, 0.05); background: #e2e8f0;">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.7712304895697!2d107.5619142!3d-6.9179576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e5ff43198083%3A0xb304b509f6b98687!2sJl.%20Paralon%20II%20No.21%2C%20Cigondewah%20Kaler%2C%20Kec.%20Bandung%20Kulon%2C%20Kota%20Bandung%2C%20Jawa%20Barat%2040214!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+              width="100%"
+              height="100%"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Peta Lokasi Pabrik PT Euodoo Bandung">
+            </iframe>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </section>
 </main>
+
+<script>
+  // Progressive enhancement for RFQ form submission
+  document.getElementById('rfqForm')?.addEventListener('submit', async function(e) {
+    const btn = document.getElementById('submitBtn');
+    if (!btn) return;
+    btn.disabled = true;
+    btn.innerHTML = '<span>Mengirimkan Permintaan...</span>';
+  });
+</script>
 
 <%- include('../partials/footer') %>

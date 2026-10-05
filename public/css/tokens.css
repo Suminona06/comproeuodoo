@@ -179,4 +179,58 @@
   /* Accessibility Focus Ring */
   --focus-ring: 0 0 0 3px rgba(0, 85, 184, 0.25);
   --focus-ring-outline: 2px solid var(--color-sky-tint);
+
+  /* ========================================================
+     Prototype v2 Direct Aliases (Compatibility Layer)
+     ======================================================== */
+  --primary: #0055b8;
+  --primary-dark: #003f8b;
+  --primary-hover: #1d4ed8;
+  --navy: #0a192f;
+  --navy-surface: #0d2040;
+  --navy-footer: #182147;
+  --sky: #38bdf8;
+  --sky-hover: #0284c7;
+  --surface: #faf8ff;
+  --surface-white: #ffffff;
+  --workspace: #f8fafc;
+  --surface-container: #eaedff;
+  --container-light: #f1f5f9;
+  --text-main: #0f172a;
+  --text-navy: #131b2e;
+  --text-variant: #424753;
+  --text-muted: #64748b;
+  --text-subtle: #737784;
+  --text-on-dark: #cbd5e1;
+  --text-inverse: #ffffff;
+  --border: #e2e8f0;
+  --border-light: #e2e8f0;
+  --outline: #737784;
+  --outline-variant: #c2c6d5;
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --warning: #f59e0b;
+  --warning-bg: #fef3c7;
+  --error: #ba1a1a;
+  --error-bg: #ffdad6;
+  --info: #0284c7;
+  --info-bg: #e0f2fe;
+  --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --r-xs: 2px;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --r-xl: 12px;
+  --r-pill: 9999px;
+  --shadow-1: 0 1px 3px rgba(10, 25, 47, 0.06), 0 1px 2px rgba(10, 25, 47, 0.04);
+  --shadow-2: 0 10px 15px -3px rgba(10, 25, 47, 0.08), 0 4px 6px -2px rgba(10, 25, 47, 0.04);
+  --shadow-3: 0 20px 25px -5px rgba(10, 25, 47, 0.12), 0 10px 10px -5px rgba(10, 25, 47, 0.04);
+  --ease-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --z-header: 1000;
+  --z-dropdown: 1010;
+  --z-modal-backdrop: 1020;
+  --z-modal: 1030;
+  --z-toast: 1040;
 }

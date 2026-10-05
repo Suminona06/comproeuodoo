@@ -3,6 +3,7 @@ import productCategoryModel from '../../models/productCategoryModel.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import { sendCsvResponse } from '../../utils/csvExporter.js';
+import { invalidateSitemapCache } from '../../utils/sitemapGenerator.js';
 import logger from '../../utils/logger.js';
 
 const createSlug = (text) => {
@@ -193,6 +194,7 @@ export const productController = {
         meta_desc_en: meta_desc_en || null
       });
 
+      invalidateSitemapCache();
       res.redirect('/admin/products?success=' + encodeURIComponent('Produk baru berhasil ditambahkan.'));
     } catch (err) {
       logger.error('Product store error:', { message: err.message });
@@ -270,6 +272,7 @@ export const productController = {
       }
 
       await productModel.update(id, updateData);
+      invalidateSitemapCache();
       res.redirect('/admin/products?success=' + encodeURIComponent('Produk berhasil diperbarui.'));
     } catch (err) {
       logger.error('Product update error:', { message: err.message });
@@ -285,6 +288,7 @@ export const productController = {
         await storage.delete(product.image_url);
       }
       await productModel.delete(id);
+      invalidateSitemapCache();
       res.redirect('/admin/products?success=' + encodeURIComponent('Produk berhasil dihapus.'));
     } catch (err) {
       logger.error('Product destroy error:', { message: err.message });

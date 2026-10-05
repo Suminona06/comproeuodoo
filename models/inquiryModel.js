@@ -73,20 +73,24 @@ export const inquiryModel = {
   async create(data) {
     const validSources = ['contact_form', 'wa_product'];
     const validStatuses = ['baru', 'dibaca', 'ditindaklanjuti'];
+    const validTypes = ['inquiry', 'partnership', 'general'];
 
     const source = validSources.includes(data.source) ? data.source : 'contact_form';
     const status = validStatuses.includes(data.status) ? data.status : 'baru';
+    const type = validTypes.includes(data.type) ? data.type : 'inquiry';
 
     const sql = `
-      INSERT INTO inquiries (name, company, email, phone, product_id, message, source, status, admin_notes, ip_address)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO inquiries (type, name, company, email, phone, product_id, quantity, message, source, status, admin_notes, ip_address)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [
+      type,
       data.name,
       data.company || null,
       data.email,
       data.phone,
       data.product_id || null,
+      data.quantity || null,
       data.message || null,
       source,
       status,

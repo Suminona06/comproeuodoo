@@ -1,102 +1,311 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
-<% const currentLangCode = currentLang || 'id'; %>
+<%
+  const currentLangCode = currentLang || 'id';
+  const buildQuery = (overridePage, overrideType, overrideCategory) => {
+    const params = new URLSearchParams();
+    const t = overrideType !== undefined ? overrideType : activeType;
+    if (t && t !== 'all') params.set('type', t);
+    const c = overrideCategory !== undefined ? overrideCategory : activeCategory;
+    if (c) params.set('category', c);
+    if (search) params.set('search', search);
+    const p = overridePage !== undefined ? overridePage : currentPage;
+    if (p && p > 1) params.set('page', p);
+    const q = params.toString();
+    return q ? '/news?' + q : '/news';
+  };
+%>
 
 <main id="main-content">
-  <!-- Page Header -->
-  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
+  <!-- Page Hero Header -->
+  <section class="page-hero">
     <div class="container">
-      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('news.page_title') %></span>
-      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/"><%= t('nav.home') %></a>
+        <span aria-hidden="true">/</span>
+        <span style="color: #ffffff; font-weight: 600;"><%= t('nav.news') %></span>
+      </nav>
+      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky, #38bdf8); margin-bottom: 10px;">
+        PUSAT INFORMASI & WARTA INDUSTRI
+      </div>
+      <h1 class="page-hero-title">
         <%= t('news.page_title') %>
       </h1>
-      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
+      <p class="page-hero-desc">
         <%= t('news.page_subtitle') %>
       </p>
     </div>
   </section>
 
-  <!-- News Articles Listing -->
+  <!-- News Content Section -->
   <section class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
     <div class="container">
+
+      <!-- Headline Hero Banner (Page 1 Only) -->
+      <% if (headlinePost && currentPage === 1 && !search && !activeCategory) { %>
+        <%
+          const hTitle = currentLangCode === 'en' ? (headlinePost.title_en || headlinePost.title_id) : headlinePost.title_id;
+          const hExcerpt = currentLangCode === 'en' ? (headlinePost.excerpt_en || headlinePost.excerpt_id) : headlinePost.excerpt_id;
+          const hDate = headlinePost.published_at ? new Date(headlinePost.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+          const hImage = headlinePost.cover_image || '/images/hero-factory-precision.webp';
+          const hCategory = currentLangCode === 'en' ? (headlinePost.category_name_en || headlinePost.category_name_id) : headlinePost.category_name_id;
+          const hReadTime = Math.max(2, Math.round(((headlinePost.content_id || '').length) / 450)) + ' min baca';
+        %>
+        <div class="news-headline-card">
+          <div class="news-headline-media">
+            <span class="news-headline-badge">★ Headline Terkini</span>
+            <img src="<%= hImage %>" alt="<%= hTitle %>" loading="eager">
+          </div>
+          <div class="news-headline-body">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <% if (hCategory) { %>
+                <span class="badge badge-info" style="font-size: 11px;"><%= hCategory %></span>
+              <% } %>
+              <% if (hDate) { %>
+                <time datetime="<%= headlinePost.published_at %>" style="font-size: 12px; color: var(--color-text-muted);">
+                  <%= hDate %>
+                </time>
+              <% } %>
+              <span style="font-size: 12px; color: var(--color-text-muted);">•</span>
+              <span style="font-size: 12px; color: var(--color-text-muted);"><%= hReadTime %></span>
+            </div>
+
+            <h2 style="font-size: clamp(1.35rem, 2.2vw, 1.85rem); font-weight: 700; color: var(--navy, #0a192f); line-height: 1.3; margin-bottom: 14px;">
+              <a href="/news/<%= headlinePost.slug %>" style="color: inherit; text-decoration: none;">
+                <%= hTitle %>
+              </a>
+            </h2>
+
+            <% if (hExcerpt) { %>
+              <p style="font-size: 14.5px; color: var(--text-variant, #424753); line-height: 1.65; margin-bottom: 24px;">
+                <%= hExcerpt %>
+              </p>
+            <% } %>
+
+            <div>
+              <a href="/news/<%= headlinePost.slug %>" class="btn btn-primary btn-md" style="min-height: 44px; display: inline-flex; align-items: center; gap: 8px;">
+                <span><%= t('common.read_more') %></span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Filter Tabs & Search Controls -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px;">
+        <!-- 3 Tab Filter -->
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;" role="tablist" aria-label="Tipe Publikasi">
+          <a href="<%= buildQuery(1, 'all', null) %>"
+             class="pill-filter <%= activeType === 'all' ? 'active' : '' %>"
+             role="tab"
+             aria-selected="<%= activeType === 'all' %>">
+            Semua Publikasi
+          </a>
+          <a href="<%= buildQuery(1, 'berita', null) %>"
+             class="pill-filter <%= activeType === 'berita' ? 'active' : '' %>"
+             role="tab"
+             aria-selected="<%= activeType === 'berita' %>">
+            Berita Perusahaan
+          </a>
+          <a href="<%= buildQuery(1, 'pers', null) %>"
+             class="pill-filter <%= activeType === 'pers' ? 'active' : '' %>"
+             role="tab"
+             aria-selected="<%= activeType === 'pers' %>">
+            Siaran Pers
+          </a>
+          <a href="<%= buildQuery(1, 'blog', null) %>"
+             class="pill-filter <%= activeType === 'blog' ? 'active' : '' %>"
+             role="tab"
+             aria-selected="<%= activeType === 'blog' %>">
+            Artikel & Blog
+          </a>
+        </div>
+
+        <!-- Search Bar Form -->
+        <form action="/news" method="GET" style="display: flex; align-items: center; gap: 8px; flex: 1; max-width: 360px; min-width: 240px;">
+          <% if (activeType !== 'all') { %>
+            <input type="hidden" name="type" value="<%= activeType %>">
+          <% } %>
+          <% if (activeCategory) { %>
+            <input type="hidden" name="category" value="<%= activeCategory %>">
+          <% } %>
+          <div style="position: relative; width: 100%;">
+            <input type="search"
+                   name="search"
+                   value="<%= search || '' %>"
+                   placeholder="Cari artikel warta..."
+                   aria-label="Cari artikel publikasi"
+                   style="width: 100%; height: 44px; padding: 0 40px 0 16px; border: 1px solid var(--border, #e2e8f0); border-radius: var(--r-pill, 9999px); font-size: 13.5px; background: #ffffff; color: var(--navy, #0a192f);">
+            <button type="submit"
+                    aria-label="Kirim pencarian"
+                    style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--color-text-muted); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </div>
+          <% if (search) { %>
+            <a href="<%= buildQuery(1, activeType, activeCategory).replace(/[?&]search=[^&]*/, '') %>"
+               class="btn btn-secondary btn-sm"
+               style="min-height: 44px; display: inline-flex; align-items: center;"
+               title="Hapus pencarian">
+              Reset
+            </a>
+          <% } %>
+        </form>
+      </div>
+
+      <!-- Category Filter Pills (if categories available for active tab) -->
+      <% if (categories && categories.length > 0) { %>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; align-items: center; padding-top: 8px; border-top: 1px dashed var(--border, #e2e8f0);">
+          <span style="font-size: 12px; font-weight: 700; color: var(--color-text-muted); margin-right: 4px;">Topik:</span>
+          <a href="<%= buildQuery(1, activeType, null) %>"
+             class="pill-filter <%= !activeCategory ? 'active' : '' %>"
+             style="font-size: 12px; padding: 6px 14px;">
+            Semua Topik
+          </a>
+          <% categories.forEach(cat => { %>
+            <% const catName = currentLangCode === 'en' ? (cat.name_en || cat.name_id) : cat.name_id; %>
+            <a href="<%= buildQuery(1, activeType, cat.slug) %>"
+               class="pill-filter <%= activeCategory === cat.slug ? 'active' : '' %>"
+               style="font-size: 12px; padding: 6px 14px;">
+              <%= catName %>
+              <% if (cat.post_count > 0) { %>
+                <span style="font-size: 10px; opacity: 0.8; margin-left: 4px;">(<%= cat.post_count %>)</span>
+              <% } %>
+            </a>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <!-- Articles Grid -->
       <% if (posts && posts.length > 0) { %>
         <div class="grid grid-cols-3 gap-xl">
           <% posts.forEach(post => { %>
             <%
               const postTitle = currentLangCode === 'en' ? (post.title_en || post.title_id) : post.title_id;
               const postExcerpt = currentLangCode === 'en' ? (post.excerpt_en || post.excerpt_id) : post.excerpt_id;
-              const pubDate = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+              const pubDate = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+              const coverImg = post.cover_image || '/images/hero-factory-precision.webp';
+              const catLabel = currentLangCode === 'en' ? (post.category_name_en || post.category_name_id) : post.category_name_id;
+              const readTime = Math.max(2, Math.round(((post.content_id || '').length) / 450)) + ' min baca';
+              const typeLabel = post.type === 'pers' ? 'Siaran Pers' : (post.type === 'blog' ? 'Artikel Blog' : 'Berita');
             %>
-            <article class="card card-interactive flex flex-col justify-between" style="overflow: hidden; height: 100%;">
-              <!-- Cover Image -->
-              <div style="height: 200px; background-color: var(--color-bg-base); overflow: hidden; position: relative;">
-                <% if (post.cover_image) { %>
-                  <img src="<%= post.cover_image %>"
-                       alt="<%= postTitle %>"
-                       style="width: 100%; height: 100%; object-fit: cover;"
-                       loading="lazy">
-                <% } else { %>
-                  <div class="flex flex-col items-center justify-center text-center p-md" style="height: 100%; color: var(--color-text-muted);">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4; margin-bottom: var(--space-xs);">
-                      <path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                    </svg>
-                    <span style="font-size: var(--font-size-label-sm); font-weight: 500;">PT Euodoo Warta</span>
-                  </div>
-                <% } %>
-                <span class="badge badge-info" style="position: absolute; top: var(--space-sm); left: var(--space-sm);">
-                  Publikasi
+            <article class="news-card-v2">
+              <div class="news-card-v2-img">
+                <img src="<%= coverImg %>"
+                     alt="<%= postTitle %>"
+                     loading="lazy">
+                <span class="badge <%= post.type === 'pers' ? 'badge-primary' : 'badge-info' %>"
+                      style="position: absolute; top: 12px; left: 12px; font-size: 11px;">
+                  <%= typeLabel %>
                 </span>
+                <% if (post.is_headline) { %>
+                  <span class="badge" style="position: absolute; top: 12px; right: 12px; background: #eab308; color: #713f12; font-weight: 700; font-size: 10px;">
+                    ★ Pilihan
+                  </span>
+                <% } %>
               </div>
 
-              <!-- Content Body -->
-              <div class="card-body flex flex-col justify-between" style="flex: 1; padding: var(--space-lg);">
-                <div>
+              <div class="news-card-v2-body">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                  <% if (catLabel) { %>
+                    <span style="font-size: 11.5px; font-weight: 700; color: var(--primary, #0055b8);"><%= catLabel %></span>
+                    <span style="font-size: 11px; color: var(--color-text-muted);">•</span>
+                  <% } %>
                   <% if (pubDate) { %>
-                    <time datetime="<%= post.published_at %>" style="font-size: var(--font-size-label-sm); color: var(--color-text-muted); display: block; margin-bottom: var(--space-xs);">
+                    <time datetime="<%= post.published_at %>" style="font-size: 11.5px; color: var(--color-text-muted);">
                       <%= pubDate %>
                     </time>
                   <% } %>
-
-                  <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--color-secondary-navy); margin-bottom: var(--space-xs); line-height: 1.35;">
-                    <a href="/news/<%= post.slug %>" style="color: inherit; text-decoration: none;">
-                      <%= postTitle %>
-                    </a>
-                  </h2>
-
-                  <% if (postExcerpt) { %>
-                    <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6; margin-bottom: var(--space-md);">
-                      <%= postExcerpt %>
-                    </p>
-                  <% } %>
+                  <span style="font-size: 11px; color: var(--color-text-muted);">•</span>
+                  <span style="font-size: 11.5px; color: var(--color-text-muted);"><%= readTime %></span>
                 </div>
 
-                <div style="margin-top: auto; padding-top: var(--space-sm); border-top: 1px solid var(--color-border-subtle);">
-                  <a href="/news/<%= post.slug %>" class="font-semibold text-primary" style="font-size: var(--font-size-label-lg); display: inline-flex; align-items: center; min-height: 44px;">
-                    <%= t('common.read_more') %>
+                <h2 class="news-card-v2-title">
+                  <a href="/news/<%= post.slug %>">
+                    <%= postTitle %>
+                  </a>
+                </h2>
+
+                <% if (postExcerpt) { %>
+                  <p class="news-card-v2-excerpt">
+                    <%= postExcerpt %>
+                  </p>
+                <% } %>
+
+                <div style="margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border, #e2e8f0);">
+                  <a href="/news/<%= post.slug %>"
+                     style="font-size: 13.5px; font-weight: 700; color: var(--primary, #0055b8); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px;">
+                    <span><%= t('common.read_more') %></span>
+                    <span aria-hidden="true">→</span>
                   </a>
                 </div>
               </div>
             </article>
           <% }); %>
         </div>
+
+        <!-- SSR Pagination Controls -->
+        <% if (totalPages > 1) { %>
+          <nav class="pagination-bar" aria-label="Navigasi Halaman Berita">
+            <% if (currentPage > 1) { %>
+              <a href="<%= buildQuery(currentPage - 1) %>"
+                 class="pagination-item"
+                 aria-label="Halaman Sebelumnya">
+                ← <%= t('common.previous') %>
+              </a>
+            <% } else { %>
+              <span class="pagination-item disabled" aria-disabled="true">
+                ← <%= t('common.previous') %>
+              </span>
+            <% } %>
+
+            <% for (let p = 1; p <= totalPages; p++) { %>
+              <% if (p === currentPage) { %>
+                <span class="pagination-item active" aria-current="page"><%= p %></span>
+              <% } else if (p === 1 || p === totalPages || (p >= currentPage - 2 && p <= currentPage + 2)) { %>
+                <a href="<%= buildQuery(p) %>" class="pagination-item"><%= p %></a>
+              <% } else if (p === currentPage - 3 || p === currentPage + 3) { %>
+                <span class="pagination-item disabled">...</span>
+              <% } %>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+              <a href="<%= buildQuery(currentPage + 1) %>"
+                 class="pagination-item"
+                 aria-label="Halaman Berikutnya">
+                <%= t('common.next') %> →
+              </a>
+            <% } else { %>
+              <span class="pagination-item disabled" aria-disabled="true">
+                <%= t('common.next') %> →
+              </span>
+            <% } %>
+          </nav>
+        <% } %>
+
       <% } else { %>
         <!-- Empty State -->
-        <div class="card text-center" style="padding: var(--space-3xl) var(--space-xl); max-width: 600px; margin: 0 auto;">
+        <div class="card text-center" style="padding: var(--space-3xl) var(--space-xl); max-width: 600px; margin: 40px auto; background: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: 16px;">
           <div style="font-size: 3rem; margin-bottom: var(--space-sm); color: var(--color-text-muted); opacity: 0.6;">📰</div>
-          <h3 style="color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
+          <h3 style="color: var(--navy, #0a192f); margin-bottom: 8px; font-size: 1.25rem; font-weight: 700;">
             <%= t('news.empty_posts') %>
           </h3>
-          <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-bottom: var(--space-lg);">
-            Nantikan berita terbaru mengenai inovasi cetak plastik dan perkembangan fasilitas kami segera.
+          <p style="color: var(--text-variant, #424753); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">
+            Tidak ditemukan artikel atau publikasi yang cocok dengan kriteria filter yang Anda pilih.
           </p>
           <div>
-            <a href="/" class="btn btn-primary btn-md" style="min-height: 44px;">
-              <%= t('common.back_to_home') %>
+            <a href="/news" class="btn btn-primary btn-md" style="min-height: 44px; display: inline-flex; align-items: center;">
+              Lihat Semua Publikasi
             </a>
           </div>
         </div>
       <% } %>
+
     </div>
   </section>
 </main>

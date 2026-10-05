@@ -1,47 +1,59 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
+<% const lang = typeof currentLang !== 'undefined' ? currentLang : 'id'; %>
+
 <main id="main-content">
-  <!-- Page Header -->
-  <section class="section section-bg-navy" style="padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); color: #ffffff;">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
     <div class="container">
-      <span class="section-kicker" style="color: var(--color-accent-teal);"><%= t('products.page_title') %></span>
-      <h1 style="color: #ffffff; margin-bottom: var(--space-sm); font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.2;">
-        <%= t('products.page_title') %>
-      </h1>
-      <p style="color: #cbd5e1; max-width: 720px; font-size: var(--font-size-body-lg); line-height: 1.6;">
-        <%= t('products.page_subtitle') %>
-      </p>
+      <div class="breadcrumbs">
+        <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
+        <span>&rsaquo;</span>
+        <span style="color: var(--sky, #38bdf8);"><%= lang === 'en' ? 'Products' : 'Produk' %></span>
+      </div>
+
+      <div style="max-width: 840px;">
+        <span class="brands-kicker" style="color: var(--sky, #38bdf8); margin-bottom: 8px;">
+          <%= lang === 'en' ? 'MANUFACTURING CATALOG' : 'KATALOG PRODUK MANUFAKTUR' %>
+        </span>
+        <h1 class="page-hero-title">
+          <%= lang === 'en' ? 'Eco-Friendly & Industrial Plastic Bags' : 'Katalog Kantong Plastik HDPE & LLDPE' %>
+        </h1>
+        <p class="page-hero-desc">
+          <%= lang === 'en'
+            ? 'Discover our complete range of certified degradable shopping bags, heavy-duty industrial liners, and commercial wholesale packaging produced in Bandung, West Java.'
+            : 'Jelajahi lini produk kantong belanja ramah lingkungan 100% degradable, kantong sampah heavy-duty, dan kemasan industri berkualitas tinggi bersertifikasi resmi SNI.' %>
+        </p>
+      </div>
     </div>
   </section>
 
-  <!-- Filter & Catalog Section -->
-  <section class="section section-bg-workspace" style="padding-top: var(--space-xl); padding-bottom: var(--space-3xl);">
+  <!-- CATALOG & FILTER SECTION -->
+  <section class="sec-products" style="background: var(--workspace, #f8fafc); padding: 56px 0 96px;">
     <div class="container">
-      <!-- Filter Bar & Search -->
-      <div class="card" style="margin-bottom: var(--space-xl); padding: var(--space-md);">
-        <div class="flex flex-wrap items-center justify-between gap-md">
+      <!-- Filter Bar & Search Controls -->
+      <div style="background: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: var(--r-xl, 12px); padding: 24px; margin-bottom: 40px; box-shadow: var(--shadow-1);">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
           <!-- Category Tabs -->
-          <div class="flex flex-wrap gap-xs items-center" role="tablist" aria-label="<%= t('products.filter_label') %>">
+          <div class="filter-bar" style="margin-bottom: 0;">
             <a href="/products<%= search ? '?search=' + encodeURIComponent(search) : '' %>"
-               class="btn btn-sm <%= !selectedCategory ? 'btn-primary' : 'btn-secondary' %>"
-               style="min-height: 44px; display: inline-flex; align-items: center; border-radius: var(--radius-full); padding: 0 var(--space-md);">
-              <%= t('common.all') %>
+               class="pill-filter <%= !selectedCategory ? 'active' : '' %>">
+              <%= lang === 'en' ? 'All Products' : 'Semua Produk' %>
             </a>
             <% if (categories && categories.length > 0) { %>
               <% categories.forEach(cat => { %>
                 <% const isActiveCat = selectedCategory && selectedCategory.id === cat.id; %>
                 <a href="/products?category=<%= cat.slug %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
-                   class="btn btn-sm <%= isActiveCat ? 'btn-primary' : 'btn-secondary' %>"
-                   style="min-height: 44px; display: inline-flex; align-items: center; border-radius: var(--radius-full); padding: 0 var(--space-md);">
-                  <%= currentLang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %>
+                   class="pill-filter <%= isActiveCat ? 'active' : '' %>">
+                  <%= lang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %>
                 </a>
               <% }); %>
             <% } %>
           </div>
 
           <!-- Search Form -->
-          <form method="GET" action="/products" class="flex gap-xs items-center" style="flex: 1; max-width: 360px; min-width: 240px;">
+          <form method="GET" action="/products" style="display: flex; gap: 8px; flex: 1; max-width: 380px; min-width: 260px;">
             <% if (selectedCategory) { %>
               <input type="hidden" name="category" value="<%= selectedCategory.slug %>">
             <% } %>
@@ -49,117 +61,149 @@
               <input type="text"
                      name="search"
                      value="<%= search || '' %>"
-                     class="form-control"
-                     placeholder="<%= t('common.search') %>..."
-                     style="height: 44px; padding-right: 2.5rem; font-size: var(--font-size-body-sm);"
-                     aria-label="<%= t('common.search') %>">
+                     placeholder="<%= lang === 'en' ? 'Search by name or material...' : 'Cari nama produk atau material...' %>"
+                     style="width: 100%; height: 44px; padding: 0 36px 0 16px; border: 1.5px solid var(--border, #e2e8f0); border-radius: var(--r-md, 6px); font-size: 14px; font-family: var(--font); color: var(--text-main);"
+                     aria-label="Cari produk">
               <% if (search) { %>
                 <a href="/products<%= selectedCategory ? '?category=' + selectedCategory.slug : '' %>"
-                   style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); font-size: 1.1rem; text-decoration: none;"
-                   title="Reset search">&times;</a>
+                   style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; text-decoration: none;"
+                   title="Reset">&times;</a>
               <% } %>
             </div>
-            <button type="submit" class="btn btn-secondary btn-sm" style="min-height: 44px; min-width: 44px; padding: 0 var(--space-md);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button type="submit" class="btn-primary" style="padding: 0 18px; min-height: 44px;" aria-label="Cari">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
           </form>
         </div>
-      </div>
 
-      <!-- Active Filter Badge Indicator -->
-      <% if (selectedCategory || search) { %>
-        <div class="flex items-center gap-sm" style="margin-bottom: var(--space-lg);">
-          <span style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">Hasil filter:</span>
-          <% if (selectedCategory) { %>
-            <span class="badge badge-primary">
-              Kategori: <%= currentLang === 'en' ? (selectedCategory.name_en || selectedCategory.name_id) : selectedCategory.name_id %>
-            </span>
-          <% } %>
-          <% if (search) { %>
-            <span class="badge badge-neutral">
-              Pencarian: "<%= search %>"
-            </span>
-          <% } %>
-          <a href="/products" style="font-size: var(--font-size-label-sm); color: var(--color-primary-blue); text-decoration: underline; margin-left: var(--space-xs);">
-            Reset Filter
-          </a>
-        </div>
-      <% } %>
-
-      <!-- Products Grid -->
-      <% if (products && products.length > 0) { %>
-        <div class="grid grid-cols-3">
-          <% products.forEach(prod => { %>
-            <div class="card card-interactive flex flex-col justify-between" style="overflow: hidden; height: 100%;">
-              <!-- Image Container -->
-              <div style="height: 220px; background-color: var(--color-bg-base); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                <% if (prod.main_image) { %>
-                  <img src="<%= prod.main_image %>"
-                       alt="<%= currentLang === 'en' ? (prod.name_en || prod.name_id) : prod.name_id %>"
-                       style="width: 100%; height: 100%; object-fit: cover;"
-                       loading="lazy">
-                <% } else { %>
-                  <div class="flex flex-col items-center justify-center text-center p-md" style="color: var(--color-text-muted);">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; margin-bottom: var(--space-xs);">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                      <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                    <span style="font-size: var(--font-size-label-sm); font-weight: 500;">PT Euodoo Precision</span>
-                  </div>
-                <% } %>
-                <!-- Category Badge -->
-                <span class="badge badge-primary" style="position: absolute; top: var(--space-sm); left: var(--space-sm); box-shadow: var(--shadow-sm);">
-                  <%= currentLang === 'en' ? (prod.category_name_en || prod.category_name_id || 'Industrial') : (prod.category_name_id || 'Industri') %>
-                </span>
-              </div>
-
-              <!-- Product Content -->
-              <div class="card-body flex flex-col justify-between" style="flex: 1; padding: var(--space-lg);">
-                <div>
-                  <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: var(--space-xs); color: var(--color-secondary-navy); line-height: 1.3;">
-                    <%= currentLang === 'en' ? (prod.name_en || prod.name_id) : prod.name_id %>
-                  </h2>
-                  <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); line-height: 1.6; margin-bottom: var(--space-md); display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    <%= currentLang === 'en' ? (prod.description_en || prod.description_id) : prod.description_id %>
-                  </p>
-                </div>
-
-                <div class="flex items-center justify-between gap-sm pt-sm" style="border-top: 1px solid var(--color-border-subtle); margin-top: auto;">
-                  <a href="/products/<%= prod.slug %>"
-                     class="btn btn-secondary btn-sm"
-                     style="min-height: 44px; display: inline-flex; align-items: center; justify-content: center; flex: 1;">
-                    <%= t('products.details_btn') %>
-                  </a>
-                  <a href="/contact?product=<%= prod.id %>"
-                     class="btn btn-primary btn-sm"
-                     style="min-height: 44px; display: inline-flex; align-items: center; justify-content: center; flex: 1;"
-                     title="<%= t('products.ask_quote_for_product') %>">
-                    <%= t('common.request_quote') %>
-                  </a>
-                </div>
-              </div>
-            </div>
-          <% }); %>
-        </div>
-      <% } else { %>
-        <!-- Empty State -->
-        <div class="card text-center" style="padding: var(--space-3xl) var(--space-xl); max-width: 600px; margin: 0 auto;">
-          <div style="font-size: 3rem; margin-bottom: var(--space-sm); color: var(--color-text-muted); opacity: 0.6;">📦</div>
-          <h3 style="color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">
-            <%= t('products.empty_products') %>
-          </h3>
-          <p style="color: var(--color-text-muted); font-size: var(--font-size-body-sm); margin-bottom: var(--space-lg);">
-            Silakan coba kata kunci pencarian lain atau pilih kategori produk yang berbeda.
-          </p>
-          <div>
-            <a href="/products" class="btn btn-primary btn-md" style="min-height: 44px;">
-              <%= t('common.filter_all') %>
+        <% if (selectedCategory || search) { %>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border, #e2e8f0); font-size: 13px;">
+            <span style="color: var(--text-muted);"><%= lang === 'en' ? 'Active filter:' : 'Filter aktif:' %></span>
+            <% if (selectedCategory) { %>
+              <span class="brand-reg-tag" style="font-size: 12px;">
+                <%= lang === 'en' ? (selectedCategory.name_en || selectedCategory.name_id) : selectedCategory.name_id %>
+              </span>
+            <% } %>
+            <% if (search) { %>
+              <span class="brand-reg-tag" style="font-size: 12px; background: var(--container-light); color: var(--text-main);">
+                "<%= search %>"
+              </span>
+            <% } %>
+            <a href="/products" style="color: var(--primary); text-decoration: underline; margin-left: 8px;">
+              <%= lang === 'en' ? 'Clear Filters' : 'Reset Filter' %>
             </a>
           </div>
+        <% } %>
+      </div>
+
+      <!-- Products Grid (Symmetrical Bento Cards) -->
+      <% if (products && products.length > 0) { %>
+        <div class="bento-grid">
+          <% products.forEach((prod, idx) => { 
+            const prodName = lang === 'en' ? (prod.name_en || prod.name_id) : prod.name_id;
+            const prodDesc = lang === 'en' ? (prod.description_en || prod.description_id) : prod.description_id;
+            const prodImg = prod.image_url || prod.main_image || `/images/products/prod-${(idx % 4) + 1}.webp`;
+            const isEco = (prodName + ' ' + (prodDesc || '')).toLowerCase().includes('oxium') || (prodName + ' ' + (prodDesc || '')).toLowerCase().includes('ramah lingkungan');
+          %>
+            <article class="bento-col-6 reveal">
+              <a href="/products/<%= prod.slug || prod.id %>" class="bento-card <%= isEco ? 'bento-card-eco' : '' %>" aria-label="Lihat rincian <%= prodName %>">
+                <div class="bento-split">
+                  <div class="bento-split-content">
+                    <div>
+                      <div class="bento-badge <%= isEco ? 'bento-badge-green' : 'bento-badge-blue' %>">
+                        <% if (isEco) { %><span class="dot-green"></span><% } %>
+                        <%= prod.category_name_id || (isEco ? 'OXIUM DEGRADABLE' : 'PRODUK INDUSTRI') %>
+                      </div>
+                      <h2 class="bento-card-title"><%= prodName %></h2>
+                      <p class="bento-card-desc">
+                        <%= prodDesc ? (prodDesc.length > 120 ? prodDesc.substring(0, 120) + '...' : prodDesc) : 'Diproduksi dengan bahan baku berkualitas prima dan presisi ekstrusi tinggi.' %>
+                      </p>
+
+                      <div class="bento-specs">
+                        <span class="bento-spec-tag">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          HDPE / LLDPE
+                        </span>
+                        <span class="bento-spec-tag">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          Beban Teruji
+                        </span>
+                        <span class="bento-spec-tag">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          Custom Size
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="bento-card-footer">
+                      <span class="bento-card-link">
+                        <%= lang === 'en' ? 'Product Specifications' : 'Lihat Detail Produk' %>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </span>
+                      <span class="bento-meta-badge <%= isEco ? 'eco' : '' %>">
+                        <%= isEco ? 'SNI 7188.7:2011' : 'B2B Custom' %>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="bento-split-media">
+                    <img src="<%= prodImg %>" alt="<%= prodName %>" loading="lazy">
+                    <span class="media-overlay-pill <%= isEco ? 'eco' : '' %>">
+                      <%= isEco ? '100% ECO' : 'MANUFACTURING' %>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          <% }); %>
+        </div>
+
+        <!-- Pagination Controls -->
+        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+          <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 56px;">
+            <% if (page > 1) { %>
+              <a href="/products?page=<%= page - 1 %><%= selectedCategory ? '&category=' + selectedCategory.slug : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+                 class="btn-secondary" style="padding: 8px 16px; min-height: 40px; font-size: 13px;">
+                &larr; <%= lang === 'en' ? 'Prev' : 'Sebelumnya' %>
+              </a>
+            <% } %>
+
+            <% for (let p = 1; p <= totalPages; p++) { %>
+              <a href="/products?page=<%= p %><%= selectedCategory ? '&category=' + selectedCategory.slug : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+                 class="pill-filter <%= page === p ? 'active' : '' %>" style="min-width: 40px; justify-content: center;">
+                <%= p %>
+              </a>
+            <% } %>
+
+            <% if (page < totalPages) { %>
+              <a href="/products?page=<%= page + 1 %><%= selectedCategory ? '&category=' + selectedCategory.slug : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
+                 class="btn-secondary" style="padding: 8px 16px; min-height: 40px; font-size: 13px;">
+                <%= lang === 'en' ? 'Next' : 'Berikutnya' %> &rarr;
+              </a>
+            <% } %>
+          </div>
+        <% } %>
+
+      <% } else { %>
+        <!-- Empty State -->
+        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--r-xl); padding: 64px 24px; text-align: center; max-width: 580px; margin: 0 auto; box-shadow: var(--shadow-1);">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--surface-container); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <h2 style="font-size: 1.35rem; color: var(--navy); margin-bottom: 8px; font-weight: 700;">
+            <%= lang === 'en' ? 'No Products Found' : 'Produk Tidak Ditemukan' %>
+          </h2>
+          <p style="font-size: 14px; color: var(--text-variant); line-height: 1.6; margin-bottom: 24px;">
+            <%= lang === 'en'
+              ? 'Try adjusting your search query or selecting a different product category.'
+              : 'Silakan sesuaikan kata kunci pencarian atau pilih kategori produk lain.' %>
+          </p>
+          <a href="/products" class="btn-primary" style="display: inline-flex;">
+            <%= lang === 'en' ? 'Reset All Filters' : 'Tampilkan Seluruh Produk' %>
+          </a>
         </div>
       <% } %>
     </div>
