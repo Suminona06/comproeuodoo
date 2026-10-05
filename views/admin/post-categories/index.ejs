@@ -1,0 +1,85 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Kategori Berita &amp; Artikel</h1>
+    <p>Kelola klasifikasi untuk Berita Perusahaan, Siaran Pers, dan Artikel Blog Industri.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/posts" class="btn btn-secondary">Berita &amp; Artikel &rarr;</a>
+    <a href="/admin/post-categories/create" class="btn btn-primary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tambah Kategori</span>
+    </a>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <div class="filter-tabs-wrap">
+      <a href="/admin/post-categories" class="tab-btn <%= !currentType ? 'active' : '' %>">Semua</a>
+      <a href="/admin/post-categories?type=berita" class="tab-btn <%= currentType === 'berita' ? 'active' : '' %>">Berita Perusahaan</a>
+      <a href="/admin/post-categories?type=blog" class="tab-btn <%= currentType === 'blog' ? 'active' : '' %>">Blog Industri</a>
+    </div>
+  </div>
+
+  <div class="table-scroll-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nama Kategori (ID)</th>
+          <th>Nama Kategori (EN)</th>
+          <th>Tipe Konten</th>
+          <th>Slug</th>
+          <th style="width: 100px; text-align: center;">Jumlah Artikel</th>
+          <th style="width: 80px; text-align: center;">Urutan</th>
+          <th style="text-align: right; width: 120px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (categories && categories.length > 0) { %>
+          <% categories.forEach(function(cat) { %>
+            <tr>
+              <td>
+                <div class="td-client-title"><%= cat.name_id %></div>
+              </td>
+              <td>
+                <div class="td-muted-text"><%= cat.name_en || '-' %></div>
+              </td>
+              <td>
+                <span class="badge-role <%= cat.type === 'berita' ? 'admin' : 'editor' %>" style="font-size: 11px;">
+                  <%= cat.type.toUpperCase() %>
+                </span>
+              </td>
+              <td>
+                <code><%= cat.slug %></code>
+              </td>
+              <td style="text-align: center; font-weight: 600;">
+                <%= cat.post_count || 0 %>
+              </td>
+              <td style="text-align: center; font-weight: 600;">
+                <%= cat.sort_order %>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 6px;">
+                  <a href="/admin/post-categories/<%= cat.id %>/edit" class="btn-action-view">Edit</a>
+                  <form action="/admin/post-categories/<%= cat.id %>/delete" method="POST" onsubmit="return confirm('Hapus kategori <%= cat.name_id %>?');" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Hapus</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              Belum ada kategori berita.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../../partials/admin-footer') %>

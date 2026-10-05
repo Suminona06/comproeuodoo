@@ -1,48 +1,53 @@
-import leadModel from '../../models/leadModel.js';
+import inquiryModel from '../../models/inquiryModel.js';
 import productModel from '../../models/productModel.js';
 import postModel from '../../models/postModel.js';
 import bannerModel from '../../models/bannerModel.js';
+import brandModel from '../../models/brandModel.js';
 import logger from '../../utils/logger.js';
 
 export const dashboardController = {
   async index(req, res) {
     try {
       const [
-        pendingLeadsCount,
+        pendingInquiriesCount,
         activeProductsCount,
         publishedPostsCount,
         activeBannersCount,
-        totalLeadsCount,
-        recentLeads
+        activeBrands,
+        recentInquiries
       ] = await Promise.all([
-        leadModel.countAll({ status: 'baru' }),
-        productModel.countAll({ isActive: true }),
+        inquiryModel.countAll({ status: 'baru' }),
+        productModel.countAll({ status: 'published' }),
         postModel.countAll({ status: 'published' }),
         bannerModel.countActive(),
-        leadModel.countAll(),
-        leadModel.findAll({ limit: 10 })
+        brandModel.findAll({ activeOnly: true }),
+        inquiryModel.findAll({ limit: 15 })
       ]);
 
       res.render('admin/dashboard', {
-        title: 'Dashboard Administrasi - PT Euodoo CMS',
+        title: 'Ringkasan Operasional CMS',
+        pageTitle: 'Ringkasan Dashboard',
         activeNav: 'dashboard',
+        pendingInquiriesCount,
         stats: {
-          pendingLeads: pendingLeadsCount,
+          pendingLeads: pendingInquiriesCount,
           activeProducts: activeProductsCount,
           publishedPosts: publishedPostsCount,
           activeBanners: activeBannersCount,
-          totalLeads: totalLeadsCount
+          activeBrandsCount: activeBrands.length
         },
-        recentLeads,
+        recentInquiries,
         csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
       logger.error('Dashboard index error:', { message: err.message });
       res.status(500).render('admin/dashboard', {
-        title: 'Dashboard Administrasi - PT Euodoo CMS',
+        title: 'Dashboard Administrasi',
+        pageTitle: 'Dashboard',
         activeNav: 'dashboard',
-        stats: { pendingLeads: 0, activeProducts: 0, publishedPosts: 0, activeBanners: 0, totalLeads: 0 },
-        recentLeads: [],
+        pendingInquiriesCount: 0,
+        stats: { pendingLeads: 0, activeProducts: 0, publishedPosts: 0, activeBanners: 0, activeBrandsCount: 0 },
+        recentInquiries: [],
         error: 'Gagal memuat beberapa data dashboard.'
       });
     }

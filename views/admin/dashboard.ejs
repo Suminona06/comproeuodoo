@@ -1,264 +1,260 @@
 <%- include('../partials/admin-header') %>
 
-<main style="flex: 1;">
-  <div class="admin-page-header">
-    <div>
-      <h1 class="admin-page-title">Ringkasan Operasional CMS</h1>
-      <p class="admin-page-subtitle">
-        Pantau metrik operasional harian, kelola inquiry leads RFQ masuk, dan akses pintasan katalog.
-      </p>
-    </div>
-    <div class="flex items-center gap-sm">
-      <a href="/admin/products/create" class="btn btn-primary btn-sm">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>+ Tambah Produk</span>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Ringkasan Operasional CMS</h1>
+    <p>Pantau metrik harian, kelola antrean inquiry RFQ, dan tinjau status portal perusahaan.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/inquiries/export" class="btn btn-secondary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Ekspor CSV</span>
+    </a>
+    <% if (typeof user !== 'undefined' && user && ['superadmin', 'admin'].includes(user.role)) { %>
+      <a href="/admin/products/create" class="btn btn-primary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Tambah Produk</span>
       </a>
-      <a href="/admin/leads/export" class="btn btn-secondary btn-sm" title="Unduh arsip CSV seluruh leads">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        <span>Ekspor CSV Leads</span>
-      </a>
+    <% } %>
+  </div>
+</div>
+
+<!-- 1. Key Metrics Cards -->
+<section class="metrics-row" aria-label="Metrik Utama">
+  <div class="metric-box">
+    <span class="metric-label-txt">Inquiry RFQ Baru</span>
+    <span class="metric-num-txt" id="heroPendingCount"><%= stats.pendingLeads %></span>
+    <% if (stats.pendingLeads > 0) { %>
+      <span class="metric-meta-txt highlight"><%= stats.pendingLeads %> permintaan butuh respon</span>
+    <% } else { %>
+      <span class="metric-meta-txt">Semua telah ditindaklanjuti</span>
+    <% } %>
+  </div>
+
+  <div class="metric-box">
+    <span class="metric-label-txt">Katalog Produk Aktif</span>
+    <span class="metric-num-txt"><%= stats.activeProducts %></span>
+    <span class="metric-meta-txt"><%= stats.activeBrandsCount %> merek terdaftar aktif</span>
+  </div>
+
+  <div class="metric-box">
+    <span class="metric-label-txt">Publikasi Konten</span>
+    <span class="metric-num-txt"><%= stats.publishedPosts %></span>
+    <span class="metric-meta-txt">Artikel berita &amp; blog aktif</span>
+  </div>
+
+  <div class="metric-box">
+    <span class="metric-label-txt">Banner Hero Aktif</span>
+    <span class="metric-num-txt"><%= stats.activeBanners %></span>
+    <span class="metric-meta-txt">Slider beranda publik</span>
+  </div>
+</section>
+
+<!-- 2. RFQ / Inquiry Table -->
+<section class="table-card" id="tableSection">
+  <div class="table-toolbar">
+    <h2 class="toolbar-title">Permintaan Penawaran Terkini (RFQ)</h2>
+
+    <div class="toolbar-right-tools">
+      <div class="filter-tabs-wrap" role="group" aria-label="Filter status">
+        <button type="button" class="tab-btn active" data-filter="all">Semua</button>
+        <button type="button" class="tab-btn" data-filter="baru">Baru</button>
+        <button type="button" class="tab-btn" data-filter="dibaca">Dibaca</button>
+        <button type="button" class="tab-btn" data-filter="ditindaklanjuti">Selesai</button>
+      </div>
+
+      <div class="search-input-wrap">
+        <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="liveSearchInput" placeholder="Cari nama, perusahaan..." aria-label="Cari data">
+      </div>
     </div>
   </div>
 
-  <!-- Asymmetric Metric Cards Grid: RFQ Leads as Primary Hero Metric -->
-  <div class="dashboard-metrics-grid">
-    <!-- Card 1: Pending RFQ Leads (Hero Operational Focus) -->
-    <a href="/admin/leads?status=baru" class="metric-card-hero" aria-label="Permintaan Penawaran RFQ Baru, <%= typeof stats !== 'undefined' ? stats.pendingLeads : 0 %> pending">
-      <div>
-        <div class="metric-hero-badge-row">
-          <div class="metric-icon-wrap" style="background-color: rgba(0, 85, 184, 0.12); color: var(--color-primary);">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          </div>
-          <% if (typeof stats !== 'undefined' && stats.pendingLeads > 0) { %>
-            <span class="metric-urgent-badge is-urgent">
-              <span class="metric-pulse-dot"></span>
-              Perlu Tindakan
-            </span>
-          <% } else { %>
-            <span class="metric-urgent-badge">
-              Semua Ditanggapi
-            </span>
-          <% } %>
-        </div>
-        <div style="margin-top: var(--space-xs);">
-          <span class="metric-number" style="color: var(--color-primary);">
-            <%= typeof stats !== 'undefined' ? stats.pendingLeads : 0 %>
-          </span>
-          <div style="font-weight: 600; font-size: 14px; color: var(--color-secondary-navy); margin-top: 2px;">
-            Inquiry RFQ Baru
-          </div>
-          <p class="metric-hero-subtext">
-            Permintaan penawaran harga masuk yang menunggu respon tim penjualan.
-          </p>
-        </div>
-      </div>
-      <div class="metric-footer" style="border-top: 1px solid rgba(0, 85, 184, 0.1); padding-top: var(--space-xs); margin-top: var(--space-sm);">
-        <span class="metric-caption" style="color: var(--color-primary); font-weight: 600;">Buka Antrean Leads Baru</span>
-        <span class="metric-action-arrow">&rarr;</span>
-      </div>
-    </a>
-
-    <!-- Card 2: Active Products -->
-    <a href="/admin/products" class="metric-card-interactive">
-      <div class="metric-top">
-        <span class="metric-number" style="color: var(--color-secondary-navy);">
-          <%= typeof stats !== 'undefined' ? stats.activeProducts : 0 %>
-        </span>
-        <div class="metric-icon-wrap" style="background-color: rgba(12, 25, 44, 0.08); color: var(--color-secondary-navy);">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline></svg>
-        </div>
-      </div>
-      <div class="metric-footer">
-        <span class="metric-caption">Produk Aktif Terdaftar</span>
-        <span class="metric-action-arrow">&rarr;</span>
-      </div>
-    </a>
-
-    <!-- Card 3: Published Posts -->
-    <a href="/admin/posts" class="metric-card-interactive">
-      <div class="metric-top">
-        <span class="metric-number" style="color: var(--color-success);">
-          <%= typeof stats !== 'undefined' ? stats.publishedPosts : 0 %>
-        </span>
-        <div class="metric-icon-wrap" style="background-color: rgba(16, 185, 129, 0.1); color: var(--color-success);">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1"></path><polyline points="15 3 21 3 21 9"></polyline></svg>
-        </div>
-      </div>
-      <div class="metric-footer">
-        <span class="metric-caption">Artikel Terpublikasi</span>
-        <span class="metric-action-arrow">&rarr;</span>
-      </div>
-    </a>
-
-    <!-- Card 4: Active Banners -->
-    <a href="/admin/banners" class="metric-card-interactive">
-      <div class="metric-top">
-        <span class="metric-number" style="color: var(--color-accent-teal);">
-          <%= typeof stats !== 'undefined' ? stats.activeBanners : 0 %>
-        </span>
-        <div class="metric-icon-wrap" style="background-color: rgba(0, 168, 150, 0.1); color: var(--color-accent-teal);">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        </div>
-      </div>
-      <div class="metric-footer">
-        <span class="metric-caption">Banner Hero Aktif</span>
-        <span class="metric-action-arrow">&rarr;</span>
-      </div>
-    </a>
-  </div>
-
-  <!-- Quick Action Strip (Non-redundant, Curated) -->
-  <div class="dashboard-actions-strip">
-    <div class="dashboard-actions-title">
-      Pintasan Operasional & Konten
-    </div>
-    <div class="dashboard-actions-btns">
-      <a href="/admin/banners" class="btn btn-secondary btn-sm" title="Kelola dan unggah banner hero">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-        <span>Upload Banner Hero</span>
-      </a>
-      <a href="/admin/capabilities" class="btn btn-secondary btn-sm" title="Kelola spesifikasi mesin pabrik">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        <span>Kelola Mesin</span>
-      </a>
-      <a href="/admin/posts" class="btn btn-secondary btn-sm" title="Tulis dan publikasikan berita">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1"></path><polyline points="15 3 21 3 21 9"></polyline></svg>
-        <span>Tulis Artikel</span>
-      </a>
-      <a href="/admin/settings" class="btn btn-secondary btn-sm" title="Atur profil perusahaan dan nomor WhatsApp">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-        <span>Pengaturan WhatsApp</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- Interactive Leads Table Card -->
-  <div class="admin-table-card">
-    <div class="admin-table-header">
-      <div class="flex items-center gap-md">
-        <div>
-          <h2 style="font-size: 1.05rem; font-weight: 600; color: var(--color-secondary-navy); margin: 0;">
-            Permintaan Penawaran (RFQ) Terbaru
-          </h2>
-          <span style="font-size: 11px; color: var(--color-text-muted);">
-            Menampilkan <%= recentLeads.length %> aktivitas penawaran terbaru<% if (typeof stats !== 'undefined' && stats.totalLeads) { %> dari total <%= stats.totalLeads %> inquiry<% } %>
-          </span>
-        </div>
-        <div class="filter-pills-bar" role="group" aria-label="Filter status RFQ">
-          <button type="button" class="filter-pill active" data-filter="all" aria-pressed="true">Semua</button>
-          <button type="button" class="filter-pill" data-filter="baru" aria-pressed="false">Baru</button>
-          <button type="button" class="filter-pill" data-filter="diproses" aria-pressed="false">Diproses</button>
-          <button type="button" class="filter-pill" data-filter="selesai" aria-pressed="false">Selesai</button>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-sm">
-        <div class="table-live-search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="tableLiveSearchInput" placeholder="Cari di daftar RFQ ini..." aria-label="Cari data leads">
-        </div>
-        <a href="/admin/leads" class="btn btn-secondary btn-sm">
-          Semua Leads &rarr;
-        </a>
-      </div>
-    </div>
-
-    <div class="table-responsive" style="border: none; border-radius: 0;">
-      <table class="table interactive-table">
-        <thead>
-          <tr>
-            <th class="th-neutral" style="width: 110px;">Tanggal</th>
-            <th class="th-neutral">Nama / Perusahaan</th>
-            <th class="th-neutral">Kontak Cepat</th>
-            <th class="th-neutral">Jenis Kebutuhan</th>
-            <th class="th-neutral" style="width: 140px;">Status Triage</th>
-            <th class="th-neutral text-right" style="width: 110px;">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (typeof recentLeads !== 'undefined' && recentLeads.length > 0) { %>
-            <% recentLeads.forEach(function(lead) { %>
-              <tr data-status="<%= lead.status %>">
-                <td>
-                  <span style="font-size: 12px; color: var(--color-text-muted);">
-                    <%= new Date(lead.created_at).toLocaleDateString('id-ID') %>
-                  </span>
-                </td>
-                <td>
-                  <strong><%= lead.name %></strong><br>
-                  <small style="color: var(--color-text-muted);"><%= lead.company || 'Perorangan' %></small>
-                </td>
-                <td>
-                  <a href="mailto:<%= lead.email %>" style="color: var(--color-primary); font-size: 13px;">
-                    <%= lead.email %>
-                  </a>
-                  <% if (lead.phone) { %>
-                    <% const rawPhone = lead.phone.replace(/[^0-9]/g, ''); %>
-                    <% const waPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : (rawPhone.startsWith('62') ? rawPhone : '62' + rawPhone); %>
-                    <br>
-                    <a href="https://wa.me/<%= waPhone %>" target="_blank" rel="noopener noreferrer" style="color: #16a34a; font-size: 12px; font-weight: 500;">
-                      WA: <%= lead.phone %> &nearr;
-                    </a>
+  <div class="table-scroll-wrapper">
+    <table class="data-table" id="rfqDataTable">
+      <thead>
+        <tr>
+          <th style="width: 100px;">Waktu</th>
+          <th>Klien / Perusahaan</th>
+          <th>Kontak</th>
+          <th>Kebutuhan / Produk</th>
+          <th style="width: 140px;">Status</th>
+          <th style="width: 80px; text-align: right;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (typeof recentInquiries !== 'undefined' && recentInquiries.length > 0) { %>
+          <% recentInquiries.forEach(function(item) { %>
+            <tr data-status="<%= item.status %>" id="row-<%= item.id %>">
+              <td>
+                <span style="font-weight: 600; color: var(--text-main);">
+                  <%= new Date(item.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %>
+                </span>
+                <div style="font-size: 11px; color: var(--text-tertiary);">
+                  <%= new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) %>
+                </div>
+              </td>
+              <td>
+                <div class="td-client-title"><%= item.company || '-' %></div>
+                <div class="td-client-sub"><%= item.name %></div>
+              </td>
+              <td>
+                <div style="font-size: 12px; color: var(--text-main);"><%= item.phone %></div>
+                <div class="td-muted-text"><%= item.email %></div>
+              </td>
+              <td>
+                <div class="td-req-text" title="<%= item.message || '' %>">
+                  <% if (item.product_name_id) { %>
+                    <strong><%= item.product_name_id %></strong> &bull;
                   <% } %>
-                </td>
-                <td>
-                  <span class="badge badge-primary" style="font-size: 11px; margin-bottom: 2px;"><%= lead.type %></span>
-                  <div style="font-size: 12px; color: var(--color-text-muted); max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    <%= lead.message %>
-                  </div>
-                </td>
-                <td>
-                  <div class="inline-status-wrapper">
-                    <select 
-                      class="status-select-inline status-select-<%= lead.status %>" 
-                      data-lead-id="<%= lead.id %>" 
-                      aria-label="Ubah status untuk <%= lead.name %>"
-                    >
-                      <option value="baru" <%= lead.status === 'baru' ? 'selected' : '' %>>Baru</option>
-                      <option value="diproses" <%= lead.status === 'diproses' ? 'selected' : '' %>>Diproses</option>
-                      <option value="selesai" <%= lead.status === 'selesai' ? 'selected' : '' %>>Selesai</option>
-                      <option value="ditolak" <%= lead.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
-                    </select>
-                    <span class="inline-status-spinner" aria-hidden="true"></span>
-                  </div>
-                </td>
-                <td class="text-right">
-                  <a href="/admin/leads?id=<%= lead.id %>#lead-<%= lead.id %>" class="btn btn-secondary btn-sm" title="Buka detail lengkap <%= lead.name %>">
-                    Detail &rarr;
-                  </a>
-                </td>
-              </tr>
-            <% }); %>
-          <% } else { %>
-            <tr>
-              <td colspan="6" class="text-center" style="padding: var(--space-2xl); color: var(--color-text-muted);">
-                Belum ada pesan RFQ masuk dari formulir website.
+                  <%= item.message ? item.message.substring(0, 60) + '...' : 'Tidak ada rincian' %>
+                </div>
+              </td>
+              <td>
+                <select class="status-select st-<%= item.status === 'ditindaklanjuti' ? 'selesai' : (item.status === 'dibaca' ? 'diproses' : item.status) %>"
+                        onchange="updateInquiryStatus(<%= item.id %>, this.value)" aria-label="Ubah status">
+                  <option value="baru" <%= item.status === 'baru' ? 'selected' : '' %>>Baru</option>
+                  <option value="dibaca" <%= item.status === 'dibaca' ? 'selected' : '' %>>Dibaca</option>
+                  <option value="ditindaklanjuti" <%= item.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai</option>
+                  <option value="ditolak" <%= item.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
+                </select>
+              </td>
+              <td style="text-align: right;">
+                <button type="button" class="btn-action-view" onclick="viewInquiryDetail(<%= JSON.stringify(item).replace(/"/g, '&quot;') %>)">
+                  Tinjau
+                </button>
               </td>
             </tr>
-          <% } %>
-          <tr id="tableFilterEmptyRow" style="display: none;">
-            <td colspan="6" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
-              Tidak ada data yang cocok pada daftar RFQ ini.
-              <a href="/admin/leads" style="color: var(--color-primary); font-weight: 600; text-decoration: underline; margin-left: 6px;">
-                Cari di seluruh database leads &rarr;
-              </a>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              Belum ada permintaan penawaran masuk saat ini.
             </td>
           </tr>
-        </tbody>
-      </table>
-    </div>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-footer">
+    <span>Menampilkan <%= recentInquiries.length %> data inquiry terkini</span>
+    <a href="/admin/inquiries" style="font-weight: 600; color: var(--primary);">Lihat Seluruh Inquiry &rarr;</a>
+  </div>
+</section>
 
-    <!-- Table Footer with Summary & Full Access Link -->
-    <div class="admin-table-footer">
-      <span class="table-footer-info">
-        Pilih status untuk update instan tanpa reload, atau klik Detail untuk riwayat lengkap.
-      </span>
-      <a href="/admin/leads" class="btn btn-secondary btn-sm">
-        Buka Seluruh Arsip Leads (<%= typeof stats !== 'undefined' && stats.totalLeads ? stats.totalLeads : recentLeads.length %>) &rarr;
-      </a>
+<!-- Detail Slide-Over Modal / Card -->
+<div class="admin-modal-backdrop" id="inquiryDetailModal">
+  <div class="admin-modal-card">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title">
+        <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span>Detail Permintaan Penawaran RFQ</span>
+      </div>
+      <button type="button" class="admin-modal-close" onclick="closeAdminModal('inquiryDetailModal')">&times;</button>
+    </div>
+    <div class="admin-modal-body">
+      <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 1rem;">
+        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Informasi Klien</div>
+        <div id="modalClientCompany" style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">-</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12.5px;">
+          <div><span style="color: var(--text-muted);">PIC:</span> <strong id="modalClientName">-</strong></div>
+          <div><span style="color: var(--text-muted);">Telepon:</span> <strong id="modalClientPhone">-</strong></div>
+          <div><span style="color: var(--text-muted);">Email:</span> <span id="modalClientEmail">-</span></div>
+          <div><span style="color: var(--text-muted);">Produk:</span> <span id="modalClientProduct">-</span></div>
+        </div>
+      </div>
+
+      <div>
+        <label class="form-label">Rincian Kebutuhan / Pesan Konsultasi:</label>
+        <div id="modalClientMessage" style="background: var(--bg-surface); border: 1px solid var(--border-main); border-left: 3px solid var(--primary); border-radius: var(--r-sm); padding: 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); max-height: 140px; overflow-y: auto;">
+          -
+        </div>
+      </div>
+
+      <form id="modalNotesForm" onsubmit="saveInquiryNotes(event)">
+        <input type="hidden" id="modalInquiryId" name="inquiryId">
+        <div class="form-group">
+          <label class="form-label" for="modalAdminNotes">Catatan Internal Sales / Admin:</label>
+          <textarea id="modalAdminNotes" class="form-textarea" placeholder="Tuliskan catatan tindak lanjut, kesepakatan harga, atau jadwal meeting dengan klien..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeAdminModal('inquiryDetailModal')">Tutup</button>
+          <button type="submit" class="btn btn-primary btn-sm">Simpan Catatan</button>
+        </div>
+      </form>
     </div>
   </div>
-</main>
+</div>
+
+<script>
+  function viewInquiryDetail(item) {
+    document.getElementById('modalInquiryId').value = item.id;
+    document.getElementById('modalClientCompany').textContent = item.company || 'Pribadi / Retail';
+    document.getElementById('modalClientName').textContent = item.name;
+    document.getElementById('modalClientPhone').textContent = item.phone;
+    document.getElementById('modalClientEmail').textContent = item.email;
+    document.getElementById('modalClientProduct').textContent = item.product_name_id || 'Umum (Katalog)';
+    document.getElementById('modalClientMessage').textContent = item.message || 'Tidak ada pesan tertulis.';
+    document.getElementById('modalAdminNotes').value = item.admin_notes || '';
+    openAdminModal('inquiryDetailModal');
+  }
+
+  async function updateInquiryStatus(id, newStatus) {
+    try {
+      const res = await fetch('/admin/inquiries/' + id + '/status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Status inquiry #' + id + ' berhasil diperbarui ke: ' + newStatus);
+        const row = document.getElementById('row-' + id);
+        if (row) {
+          row.setAttribute('data-status', newStatus);
+          const sel = row.querySelector('.status-select');
+          if (sel) {
+            sel.className = 'status-select st-' + (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
+          }
+        }
+      } else {
+        alert(data.message || 'Gagal mengubah status.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Terjadi kesalahan jaringan.');
+    }
+  }
+
+  async function saveInquiryNotes(e) {
+    e.preventDefault();
+    const id = document.getElementById('modalInquiryId').value;
+    const notes = document.getElementById('modalAdminNotes').value;
+
+    try {
+      const res = await fetch('/admin/inquiries/' + id + '/status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ admin_notes: notes })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Catatan admin berhasil disimpan!');
+        closeAdminModal('inquiryDetailModal');
+      } else {
+        alert(data.message || 'Gagal menyimpan catatan.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menyimpan catatan.');
+    }
+  }
+</script>
 
 <%- include('../partials/admin-footer') %>
-

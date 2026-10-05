@@ -1,0 +1,275 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Permintaan Penawaran &amp; Inquiry (RFQ)</h1>
+    <p>Kelola antrean prospek penjualan, tindak lanjut penawaran harga, dan ekspor data audit sales.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/inquiries/export?status=<%= currentStatus %>" class="btn btn-secondary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Ekspor CSV</span>
+    </a>
+  </div>
+</div>
+
+<!-- Metrics Quick Summary -->
+<div class="metrics-row">
+  <div class="metric-box">
+    <span class="metric-label-txt">Inquiry Baru</span>
+    <span class="metric-num-txt"><%= stats.baru %></span>
+    <% if (stats.baru > 0) { %>
+      <span class="metric-meta-txt highlight"><%= stats.baru %> butuh respon tim sales</span>
+    <% } else { %>
+      <span class="metric-meta-txt">Semua telah ditinjau</span>
+    <% } %>
+  </div>
+  <div class="metric-box">
+    <span class="metric-label-txt">Sedang Ditindaklanjuti</span>
+    <span class="metric-num-txt"><%= stats.dibaca %></span>
+    <span class="metric-meta-txt">Tahap diskusi &amp; penawaran</span>
+  </div>
+  <div class="metric-box">
+    <span class="metric-label-txt">Selesai Ditangani</span>
+    <span class="metric-num-txt"><%= stats.ditindaklanjuti %></span>
+    <span class="metric-meta-txt">Telah diterbitkan PO / Closing</span>
+  </div>
+  <div class="metric-box">
+    <span class="metric-label-txt">Total Permintaan</span>
+    <span class="metric-num-txt"><%= stats.total %></span>
+    <span class="metric-meta-txt">Akumulasi leads masuk</span>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <div class="filter-tabs-wrap">
+      <a href="/admin/inquiries?status=all" class="tab-btn <%= currentStatus === 'all' ? 'active' : '' %>">
+        Semua (<%= stats.total %>)
+      </a>
+      <a href="/admin/inquiries?status=baru" class="tab-btn <%= currentStatus === 'baru' ? 'active' : '' %>">
+        Baru (<%= stats.baru %>)
+      </a>
+      <a href="/admin/inquiries?status=dibaca" class="tab-btn <%= currentStatus === 'dibaca' ? 'active' : '' %>">
+        Dibaca (<%= stats.dibaca %>)
+      </a>
+      <a href="/admin/inquiries?status=ditindaklanjuti" class="tab-btn <%= currentStatus === 'ditindaklanjuti' ? 'active' : '' %>">
+        Selesai (<%= stats.ditindaklanjuti %>)
+      </a>
+      <a href="/admin/inquiries?status=ditolak" class="tab-btn <%= currentStatus === 'ditolak' ? 'active' : '' %>">
+        Ditolak (<%= stats.ditolak %>)
+      </a>
+    </div>
+
+    <form action="/admin/inquiries" method="GET" class="search-input-wrap">
+      <input type="hidden" name="status" value="<%= currentStatus %>">
+      <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" name="search" placeholder="Cari nama, PT, telepon..." value="<%= searchQuery %>" aria-label="Cari inquiry">
+    </form>
+  </div>
+
+  <div class="table-scroll-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 100px;">Waktu</th>
+          <th>Klien / Perusahaan</th>
+          <th>Kontak</th>
+          <th>Kebutuhan Produk</th>
+          <th style="width: 140px;">Status</th>
+          <th style="text-align: right; width: 110px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (inquiries && inquiries.length > 0) { %>
+          <% inquiries.forEach(function(item) { %>
+            <tr data-status="<%= item.status %>" id="inq-row-<%= item.id %>">
+              <td>
+                <span style="font-weight: 600; color: var(--text-main);">
+                  <%= new Date(item.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %>
+                </span>
+                <div style="font-size: 11px; color: var(--text-tertiary);">
+                  <%= new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                </div>
+              </td>
+              <td>
+                <div class="td-client-title"><%= item.company || '-' %></div>
+                <div class="td-client-sub"><%= item.name %></div>
+              </td>
+              <td>
+                <div style="font-size: 12px; color: var(--text-main);">
+                  <a href="https://wa.me/<%= item.phone ? item.phone.replace(/[^0-9]/g, '') : '' %>" target="_blank" style="color: var(--primary); text-decoration: underline;">
+                    <%= item.phone %>
+                  </a>
+                </div>
+                <div class="td-muted-text"><%= item.email %></div>
+              </td>
+              <td>
+                <div class="td-req-text" title="<%= item.message || '' %>">
+                  <% if (item.product_name_id) { %>
+                    <strong><%= item.product_name_id %></strong> &bull;
+                  <% } %>
+                  <%= item.message ? item.message.substring(0, 70) + '...' : 'Tidak ada rincian.' %>
+                </div>
+              </td>
+              <td>
+                <select class="status-select st-<%= item.status === 'ditindaklanjuti' ? 'selesai' : (item.status === 'dibaca' ? 'diproses' : item.status) %>"
+                        onchange="quickChangeInquiryStatus(<%= item.id %>, this.value)" aria-label="Ubah status">
+                  <option value="baru" <%= item.status === 'baru' ? 'selected' : '' %>>Baru</option>
+                  <option value="dibaca" <%= item.status === 'dibaca' ? 'selected' : '' %>>Dibaca</option>
+                  <option value="ditindaklanjuti" <%= item.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai</option>
+                  <option value="ditolak" <%= item.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
+                </select>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 4px;">
+                  <button type="button" class="btn-action-view" onclick="openInquiryById(<%= item.id %>)">
+                    Tinjau
+                  </button>
+                  <a href="/admin/inquiries/<%= item.id %>" class="btn btn-secondary btn-sm" title="Rincian Penuh">
+                    &rarr;
+                  </a>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+              Tidak ada data permintaan penawaran pada filter ini.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (totalPages > 1) { %>
+    <div style="display: flex; justify-content: center; gap: 6px; padding: 1rem; border-top: 1px solid var(--border-main);">
+      <% for (let p = 1; p <= totalPages; p++) { %>
+        <a href="/admin/inquiries?status=<%= currentStatus %>&search=<%= searchQuery %>&page=<%= p %>"
+           class="btn btn-sm <%= p === currentPage ? 'btn-primary' : 'btn-secondary' %>">
+          <%= p %>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Modal Quick Review -->
+<div class="admin-modal-backdrop" id="inquiryDetailModal">
+  <div class="admin-modal-card">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title">
+        <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span>Tinjauan Permintaan Penawaran (RFQ)</span>
+      </div>
+      <button type="button" class="admin-modal-close" onclick="closeAdminModal('inquiryDetailModal')">&times;</button>
+    </div>
+    <div class="admin-modal-body">
+      <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 1rem;">
+        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Informasi Klien</div>
+        <div id="mClientCompany" style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">-</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12.5px;">
+          <div><span style="color: var(--text-muted);">PIC:</span> <strong id="mClientName">-</strong></div>
+          <div><span style="color: var(--text-muted);">Telepon:</span> <strong id="mClientPhone">-</strong></div>
+          <div><span style="color: var(--text-muted);">Email:</span> <span id="mClientEmail">-</span></div>
+          <div><span style="color: var(--text-muted);">Produk Terkait:</span> <span id="mClientProduct">-</span></div>
+        </div>
+      </div>
+
+      <div>
+        <label class="form-label">Rincian Kebutuhan / Pesan Masuk:</label>
+        <div id="mClientMessage" style="background: var(--bg-surface); border: 1px solid var(--border-main); border-left: 3px solid var(--primary); border-radius: var(--r-sm); padding: 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); max-height: 140px; overflow-y: auto;">
+          -
+        </div>
+      </div>
+
+      <form id="mNotesForm" onsubmit="submitInquiryNotes(event)">
+        <input type="hidden" id="mInquiryId" name="inquiryId">
+        <div class="form-group">
+          <label class="form-label" for="mAdminNotes">Catatan Internal Sales / Admin:</label>
+          <textarea id="mAdminNotes" class="form-textarea" placeholder="Tuliskan catatan tindak lanjut, estimasi kebutuhan, atau kontak follow-up..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeAdminModal('inquiryDetailModal')">Tutup</button>
+          <button type="submit" class="btn btn-primary btn-sm">Simpan Catatan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const inquiriesData = <%- JSON.stringify(inquiries || []) %>;
+
+  function openInquiryById(id) {
+    const item = inquiriesData.find(i => i.id == id);
+    if (item) openInquiryModal(item);
+  }
+
+  function openInquiryModal(item) {
+    document.getElementById('mInquiryId').value = item.id;
+    document.getElementById('mClientCompany').textContent = item.company || 'Retail / Personal';
+    document.getElementById('mClientName').textContent = item.name;
+    document.getElementById('mClientPhone').textContent = item.phone;
+    document.getElementById('mClientEmail').textContent = item.email;
+    document.getElementById('mClientProduct').textContent = item.product_name_id || 'Umum (Katalog)';
+    document.getElementById('mClientMessage').textContent = item.message || 'Tidak ada catatan tertulis.';
+    document.getElementById('mAdminNotes').value = item.admin_notes || '';
+    openAdminModal('inquiryDetailModal');
+  }
+
+  async function quickChangeInquiryStatus(id, newStatus) {
+    try {
+      const res = await fetch('/admin/inquiries/' + id + '/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Status inquiry #' + id + ' berhasil diubah ke: ' + newStatus);
+        const row = document.getElementById('inq-row-' + id);
+        if (row) {
+          row.setAttribute('data-status', newStatus);
+          const sel = row.querySelector('.status-select');
+          if (sel) {
+            sel.className = 'status-select st-' + (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
+          }
+        }
+      } else {
+        alert(data.message || 'Gagal mengubah status.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mengubah status.');
+    }
+  }
+
+  async function submitInquiryNotes(e) {
+    e.preventDefault();
+    const id = document.getElementById('mInquiryId').value;
+    const notes = document.getElementById('mAdminNotes').value;
+
+    try {
+      const res = await fetch('/admin/inquiries/' + id + '/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ admin_notes: notes })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Catatan berhasil diperbarui!');
+        closeAdminModal('inquiryDetailModal');
+      } else {
+        alert(data.message || 'Gagal menyimpan catatan.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menyimpan catatan.');
+    }
+  }
+</script>
+
+<%- include('../../partials/admin-footer') %>

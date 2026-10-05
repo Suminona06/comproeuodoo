@@ -16,19 +16,13 @@ export const brandModel = {
     return rows.length > 0 ? rows[0] : null;
   },
 
-  async findBySlug(slug) {
-    const rows = await query('SELECT * FROM brands WHERE slug = ? LIMIT 1', [slug]);
-    return rows.length > 0 ? rows[0] : null;
-  },
-
   async create(data) {
     const sql = `
-      INSERT INTO brands (name, slug, logo_url, description_id, description_en, sort_order, is_active)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO brands (name, logo_url, description_id, description_en, sort_order, is_active)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
     const params = [
       data.name,
-      data.slug,
       data.logo_url || null,
       data.description_id || null,
       data.description_en || null,
@@ -43,7 +37,7 @@ export const brandModel = {
     const fields = [];
     const params = [];
 
-    const allowed = ['name', 'slug', 'logo_url', 'description_id', 'description_en', 'sort_order', 'is_active'];
+    const allowed = ['name', 'logo_url', 'description_id', 'description_en', 'sort_order', 'is_active'];
     for (const key of allowed) {
       if (data[key] !== undefined) {
         fields.push(`${key} = ?`);

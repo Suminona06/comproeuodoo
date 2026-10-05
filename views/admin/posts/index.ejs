@@ -1,144 +1,116 @@
 <%- include('../../partials/admin-header') %>
 
-<main class="section-sm" style="flex: 1;">
-  <div class="container">
-    <div class="admin-page-header">
-      <div>
-        <h1 class="admin-page-title">Publikasi & Berita Industri</h1>
-        <p class="admin-page-subtitle">Kelola artikel wawasan industri, siaran pers, dan dokumentasi operasional pabrik.</p>
-      </div>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Manajemen Berita, Siaran Pers &amp; Blog</h1>
+    <p>Kelola publikasi korporasi, berita CSR, siaran pers resmi, dan artikel blog edukasi kemasan.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/post-categories" class="btn btn-secondary">Kategori Artikel &rarr;</a>
+    <a href="/admin/posts/create" class="btn btn-primary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tulis Artikel Baru</span>
+    </a>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <div class="filter-tabs-wrap">
+      <a href="/admin/posts" class="tab-btn <%= !currentType ? 'active' : '' %>">Semua Tipe</a>
+      <a href="/admin/posts?type=berita" class="tab-btn <%= currentType === 'berita' ? 'active' : '' %>">Berita Perusahaan</a>
+      <a href="/admin/posts?type=pers" class="tab-btn <%= currentType === 'pers' ? 'active' : '' %>">Siaran Pers</a>
+      <a href="/admin/posts?type=blog" class="tab-btn <%= currentType === 'blog' ? 'active' : '' %>">Blog Industri</a>
     </div>
 
-    <div class="grid" style="grid-template-columns: 1fr; gap: var(--space-xl);">
-      <!-- Form Tambah Berita -->
-      <div class="card" style="box-shadow: var(--shadow-level-0);">
-        <div class="card-header">
-          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Tulis Artikel / Berita Baru</h2>
-        </div>
-        <div class="card-body">
-          <form action="/admin/posts?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="title_id" class="form-label form-label-required">Judul Artikel (Indonesia)</label>
-                <input type="text" id="title_id" name="title_id" class="form-control" placeholder="Inovasi Cetakan Presisi Ramah Lingkungan" required>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="title_en" class="form-label">Judul Artikel (English)</label>
-                <input type="text" id="title_en" name="title_en" class="form-control" placeholder="Eco-Friendly Precision Molding Innovation">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="excerpt_id" class="form-label">Ringkasan / Cuplikan (Indonesia)</label>
-                <textarea id="excerpt_id" name="excerpt_id" class="form-textarea" style="min-height: 80px;" placeholder="Cuplikan singkat untuk ditampilkan di kartu artikel beranda..."></textarea>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="excerpt_en" class="form-label">Ringkasan / Cuplikan (English)</label>
-                <textarea id="excerpt_en" name="excerpt_en" class="form-textarea" style="min-height: 80px;" placeholder="Short summary for article cards..."></textarea>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="content_id" class="form-label">Konten Lengkap Artikel (Indonesia)</label>
-              <textarea id="content_id" name="content_id" class="form-textarea" style="min-height: 180px;" placeholder="Tulis isi artikel secara mendalam..."></textarea>
-            </div>
-
-            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="cover_file" class="form-label">Foto Sampul Artikel</label>
-                <input type="file" id="cover_file" name="cover_file" class="form-control" accept="image/*" data-preview="coverPreview">
-                <div class="form-hint">Maks. 5MB. Otomatis dikonversi ke WebP.</div>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="status" class="form-label">Status Publikasi</label>
-                <select id="status" name="status" class="form-select">
-                  <option value="draft">Simpan sebagai Draf</option>
-                  <option value="published">Publikasikan Sekarang</option>
-                </select>
-              </div>
-            </div>
-
-            <div style="margin-bottom: var(--space-lg);">
-              <img id="coverPreview" src="" alt="Pratinjau Sampul" style="max-height: 140px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-md">
-              Simpan Artikel
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Daftar Berita -->
-      <div class="admin-table-card">
-        <div class="admin-table-header">
-          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Daftar Artikel</h2>
-          <span class="badge badge-neutral"><%= posts.length %> Artikel</span>
-        </div>
-        <div class="table-responsive" style="border: none; border-radius: 0;">
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="th-neutral" style="width: 80px;">Sampul</th>
-                <th class="th-neutral">Judul Artikel</th>
-                <th class="th-neutral">Status</th>
-                <th class="th-neutral">Tanggal Publikasi</th>
-                <th class="th-neutral text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (posts && posts.length > 0) { %>
-                <% posts.forEach(function(post) { %>
-                  <tr>
-                    <td>
-                      <% if (post.cover_image) { %>
-                        <img src="<%= post.cover_image %>" alt="<%= post.title_id %>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);">
-                      <% } else { %>
-                        <div style="width: 60px; height: 60px; background: #e2e8f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b;">
-                          Tanpa Foto
-                        </div>
-                      <% } %>
-                    </td>
-                    <td>
-                      <strong><%= post.title_id %></strong><br>
-                      <small style="color: var(--color-text-muted);"><%= post.title_en || '-' %></small>
-                    </td>
-                    <td>
-                      <% if (post.status === 'published') { %>
-                        <span class="badge badge-success">Terpublikasi</span>
-                      <% } else { %>
-                        <span class="badge badge-neutral">Draf</span>
-                      <% } %>
-                    </td>
-                    <td>
-                      <%= post.published_at ? new Date(post.published_at).toLocaleDateString('id-ID') : '-' %>
-                    </td>
-                    <td class="text-right">
-                      <form action="/admin/posts/<%= post.id %>/delete" method="POST" class="form-delete" data-confirm="Hapus artikel ini?" style="display: inline;">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--color-error);">
-                          Hapus
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                <% }); %>
-              <% } else { %>
-                <tr>
-                  <td colspan="5" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
-                    Belum ada artikel berita yang ditambahkan.
-                  </td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="search-input-wrap">
+      <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="liveSearchInput" placeholder="Cari judul artikel..." aria-label="Cari artikel">
     </div>
   </div>
-</main>
+
+  <div class="table-scroll-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 70px;">Cover</th>
+          <th>Judul Artikel</th>
+          <th>Tipe &amp; Kategori</th>
+          <th style="width: 90px; text-align: center;">Headline</th>
+          <th>Waktu Publikasi</th>
+          <th style="width: 100px;">Status</th>
+          <th style="text-align: right; width: 120px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (posts && posts.length > 0) { %>
+          <% posts.forEach(function(post) { %>
+            <tr>
+              <td>
+                <div style="width: 54px; height: 38px; background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-sm); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                  <% if (post.display_image) { %>
+                    <img src="<%= post.display_image %>" alt="<%= post.title_id %>" style="width: 100%; height: 100%; object-fit: cover;">
+                  <% } else { %>
+                    <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 700;">NO PIC</span>
+                  <% } %>
+                </div>
+              </td>
+              <td>
+                <div class="td-client-title"><%= post.title_id %></div>
+                <div class="td-client-sub"><%= post.title_en || '-' %> &bull; <code><%= post.slug %></code></div>
+              </td>
+              <td>
+                <span class="badge-role <%= post.type === 'berita' ? 'admin' : (post.type === 'pers' ? 'superadmin' : 'editor') %>" style="font-size: 11px;">
+                  <%= (post.type || 'berita').toUpperCase() %>
+                </span>
+                <% if (post.category_name_id) { %>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                    <%= post.category_name_id %>
+                  </div>
+                <% } %>
+              </td>
+              <td style="text-align: center;">
+                <% if (post.is_headline) { %>
+                  <span class="badge-status st-baru" style="font-size: 10.5px; padding: 2px 6px; border-radius: 4px;">Top Slider</span>
+                <% } else { %>
+                  <span style="color: var(--text-tertiary); font-size: 12px;">-</span>
+                <% } %>
+              </td>
+              <td>
+                <div style="font-size: 12px; color: var(--text-main);">
+                  <%= new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                </div>
+                <% if (post.status === 'scheduled' && post.scheduled_at) { %>
+                  <div style="font-size: 10.5px; color: #b45309; font-weight: 600;">
+                    Jadwal: <%= new Date(post.scheduled_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) %>
+                  </div>
+                <% } %>
+              </td>
+              <td>
+                <span class="badge-status <%= post.status === 'published' ? 'st-selesai' : (post.status === 'scheduled' ? 'st-diproses' : 'st-baru') %>" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                  <%= post.status %>
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 6px;">
+                  <a href="/admin/posts/<%= post.id %>/edit" class="btn-action-view">Edit</a>
+                  <form action="/admin/posts/<%= post.id %>/delete" method="POST" onsubmit="return confirm('Hapus artikel ini secara permanen?');" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Hapus</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+              Tidak ada artikel yang sesuai dengan filter.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <%- include('../../partials/admin-footer') %>

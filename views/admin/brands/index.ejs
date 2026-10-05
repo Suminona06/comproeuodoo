@@ -1,0 +1,91 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Manajemen Merek Terdaftar (Our Brands)</h1>
+    <p>Kelola lini merek produk bersertifikat mutu milik PT Euodoo untuk ditampilkan pada beranda dan katalog.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/brands/create" class="btn btn-primary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tambah Merek</span>
+    </a>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <h2 class="toolbar-title">Daftar Merek Perusahaan</h2>
+    <div class="search-input-wrap">
+      <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="liveSearchInput" placeholder="Cari nama merek..." aria-label="Cari data">
+    </div>
+  </div>
+
+  <div class="table-scroll-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 80px;">Logo</th>
+          <th>Nama Merek</th>
+          <th>Deskripsi (ID / EN)</th>
+          <th style="width: 80px; text-align: center;">Urutan</th>
+          <th style="width: 100px;">Status</th>
+          <th style="text-align: right; width: 120px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (brands && brands.length > 0) { %>
+          <% brands.forEach(function(brand) { %>
+            <tr>
+              <td>
+                <div style="width: 54px; height: 38px; background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                  <% if (brand.logo_url) { %>
+                    <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                  <% } else { %>
+                    <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 700;">NO LOGO</span>
+                  <% } %>
+                </div>
+              </td>
+              <td>
+                <div class="td-client-title"><%= brand.name %></div>
+                <div class="td-client-sub">slug: <%= brand.slug %></div>
+              </td>
+              <td>
+                <div class="td-req-text" title="<%= brand.description_id || '' %>">
+                  <%= brand.description_id || '-' %>
+                </div>
+              </td>
+              <td style="text-align: center; font-weight: 600;">
+                <%= brand.sort_order %>
+              </td>
+              <td>
+                <form action="/admin/brands/<%= brand.id %>/toggle" method="POST" style="display: inline;">
+                  <button type="submit" class="btn btn-sm <%= brand.is_active ? 'btn-secondary' : 'btn-danger' %>" style="padding: 2px 7px; font-size: 11px;">
+                    <%= brand.is_active ? 'Aktif' : 'Nonaktif' %>
+                  </button>
+                </form>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 6px;">
+                  <a href="/admin/brands/<%= brand.id %>/edit" class="btn-action-view">Edit</a>
+                  <form action="/admin/brands/<%= brand.id %>/delete" method="POST" onsubmit="return confirm('Hapus merek <%= brand.name %>?');" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Hapus</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              Belum ada merek yang terdaftar.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../../partials/admin-footer') %>

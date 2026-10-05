@@ -1,104 +1,211 @@
 <%- include('../../partials/admin-header') %>
 
-<main class="section-sm" style="flex: 1;">
-  <div class="container admin-form-container">
-    <div class="admin-page-header">
-      <div>
-        <h1 class="admin-page-title">Tambah Produk Baru</h1>
-        <p class="admin-page-subtitle">Isi spesifikasi lengkap komponen manufaktur plastik.</p>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Tambah Produk Baru</h1>
+    <p>Daftarkan produk kemasan manufaktur lengkap dengan spesifikasi teknis dan varian.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/products" class="btn btn-secondary">&larr; Kembali ke Katalog</a>
+  </div>
+</div>
+
+<form action="/admin/products" method="POST" enctype="multipart/form-data">
+  <!-- Card 1: Informasi Utama -->
+  <div class="form-card">
+    <div class="form-card-title">1. Informasi Pokok Produk</div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="name_id">Nama Produk (Bahasa Indonesia) *</label>
+        <input type="text" id="name_id" name="name_id" class="form-input" required placeholder="Contoh: Kantong Kresek HDPE Super Tebal">
       </div>
-      <div>
-        <a href="/admin/products" class="btn btn-secondary btn-sm">&larr; Kembali ke Daftar</a>
+      <div class="form-group">
+        <label class="form-label" for="name_en">Nama Produk (English)</label>
+        <input type="text" id="name_en" name="name_en" class="form-input" placeholder="Example: Heavy Duty HDPE Shopping Bag">
       </div>
     </div>
 
-    <div class="card" style="box-shadow: var(--shadow-level-0);">
-      <div class="card-body">
-        <form action="/admin/products?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="form-row-3">
+      <div class="form-group">
+        <label class="form-label" for="category_id">Kategori Produk *</label>
+        <select id="category_id" name="category_id" class="form-select">
+          <option value="">Pilih Kategori...</option>
+          <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.id %>"><%= cat.name_id %></option>
+          <% }); %>
+        </select>
+      </div>
 
-          <div class="form-group">
-            <label for="category_id" class="form-label form-label-required">Kategori Produk</label>
-            <select id="category_id" name="category_id" class="form-select" required>
-              <option value="">Pilih Kategori...</option>
-              <% if (categories && categories.length > 0) { %>
-                <% categories.forEach(function(cat) { %>
-                  <option value="<%= cat.id %>"><%= cat.name_id %></option>
-                <% }); %>
-              <% } %>
-            </select>
-          </div>
+      <div class="form-group">
+        <label class="form-label" for="status">Status Publikasi</label>
+        <select id="status" name="status" class="form-select">
+          <option value="published" selected>Published (Tayang Publik)</option>
+          <option value="draft">Draft (Disimpan Sementara)</option>
+          <option value="archived">Archived (Diarsipkan)</option>
+        </select>
+      </div>
 
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="name_id" class="form-label form-label-required">Nama Produk (Indonesia)</label>
-              <input type="text" id="name_id" name="name_id" class="form-control" placeholder="Jerigen Kimia HDPE 20L" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="name_en" class="form-label">Nama Produk (English)</label>
-              <input type="text" id="name_en" name="name_en" class="form-control" placeholder="20L HDPE Chemical Jerrycan">
-            </div>
-          </div>
+      <div class="form-group">
+        <label class="form-label" for="sort_order">Nomor Urutan Tampil</label>
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="0" min="0">
+      </div>
+    </div>
 
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="description_id" class="form-label">Deskripsi Ringkas (Indonesia)</label>
-              <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Wadah jerigen berdaya tahan tinggi terhadap senyawa asam dan pelarut industri..."></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="description_en" class="form-label">Deskripsi Ringkas (English)</label>
-              <textarea id="description_en" name="description_en" class="form-textarea" placeholder="High-durability container resistant to industrial acids and solvents..."></textarea>
-            </div>
-          </div>
+    <div class="form-group">
+      <label class="form-label" for="material_specs">Ringkasan Karakteristik Material</label>
+      <input type="text" id="material_specs" name="material_specs" class="form-input" placeholder="Contoh: 100% Virgin HDPE Resins &bull; Food Contact Grade &bull; Ekolabel Ramah Lingkungan">
+    </div>
 
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="material_specs" class="form-label">Spesifikasi Material</label>
-              <textarea id="material_specs" name="material_specs" class="form-textarea" placeholder="Contoh: Virgin High-Density Polyethylene (HDPE) Food Grade, Tahan UV"></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="technical_specs" class="form-label">Spesifikasi Teknis / Dimensi</label>
-              <textarea id="technical_specs" name="technical_specs" class="form-textarea" placeholder="Contoh: Berat 950g, Tinggi 380mm, Diameter Tutup 55mm"></textarea>
-            </div>
-          </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="description_id">Deskripsi Lengkap (Bahasa Indonesia)</label>
+        <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Jelaskan aplikasi penggunaan, ketahanan beban, dan keunggulan produk..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="description_en">Deskripsi Lengkap (English)</label>
+        <textarea id="description_en" name="description_en" class="form-textarea" placeholder="Explain product applications, tensile strength, and key features..."></textarea>
+      </div>
+    </div>
 
-          <div class="grid grid-cols-3" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="image_file" class="form-label">Foto Utama Produk</label>
-              <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*" data-preview="prodPreview">
-              <div class="form-hint">Maks. 5MB. Otomatis dikonversi ke WebP.</div>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="sort_order" class="form-label">Urutan Tampil (Sort Order)</label>
-              <input type="number" id="sort_order" name="sort_order" class="form-control" value="0">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Status Produk</label>
-              <div class="flex items-center gap-md" style="height: 44px;">
-                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
-                  <input type="checkbox" name="is_active" value="1" checked> Aktif Tayang
-                </label>
-                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
-                  <input type="checkbox" name="is_featured" value="1"> Unggulan
-                </label>
-              </div>
-            </div>
-          </div>
+    <div class="form-group">
+      <label class="form-check">
+        <input type="checkbox" name="featured" value="1">
+        <span>Tampilkan sebagai Produk Unggulan (Featured Product) di Beranda</span>
+      </label>
+    </div>
+  </div>
 
-          <div style="margin-bottom: var(--space-lg);">
-            <img id="prodPreview" src="" alt="Pratinjau Foto Produk" style="max-height: 160px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
-          </div>
+  <!-- Card 2: Foto Produk -->
+  <div class="form-card">
+    <div class="form-card-title">2. Foto Utama Produk</div>
+    <div class="form-group">
+      <label class="form-label" for="image_file">Unggah Foto Utama</label>
+      <input type="file" id="image_file" name="image_file" class="form-input" accept="image/*">
+      <div class="form-hint">Otomatis dikonversi dan dikompresi ke WebP 800x800px untuk kecepatan akses maksimal.</div>
+    </div>
+  </div>
 
-          <div class="flex gap-md">
-            <button type="submit" class="btn btn-primary btn-md">
-              Simpan Produk Baru
-            </button>
-            <a href="/admin/products" class="btn btn-secondary btn-md">Batal</a>
-          </div>
-        </form>
+  <!-- Card 3: Spesifikasi Teknis Dinamis -->
+  <div class="form-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">3. Tabel Spesifikasi Teknis (Parameter &amp; Nilai)</div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addSpecRow()">+ Tambah Baris Parameter</button>
+    </div>
+
+    <div id="specsContainer">
+      <div class="form-row-2" style="margin-bottom: 8px;">
+        <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Bahan Baku)" value="Bahan Baku">
+        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: High Density Polyethylene)" value="High Density Polyethylene (HDPE)">
+      </div>
+      <div class="form-row-2" style="margin-bottom: 8px;">
+        <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="Standar Mutu">
+        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="SNI &amp; ISO 9001:2015">
+      </div>
+      <div class="form-row-2" style="margin-bottom: 8px;">
+        <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="Sifat Biodegradable">
+        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="Tersedia varian 100% degradable (Oxo/Bio)">
       </div>
     </div>
   </div>
-</main>
+
+  <!-- Card 4: Varian Produk Dinamis -->
+  <div class="form-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">4. Varian Ukuran &amp; Spesifikasi Produk</div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addVariantRow()">+ Tambah Baris Varian</button>
+    </div>
+
+    <div class="table-scroll-wrapper">
+      <table class="data-table" id="variantsTable">
+        <thead>
+          <tr>
+            <th>Ukuran / Dimensi (cm/inch)</th>
+            <th>Ketebalan (Micron)</th>
+            <th>Pilihan Warna</th>
+            <th>Bahan / Tipe</th>
+            <th style="width: 50px;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="variantsBody">
+          <tr>
+            <td><input type="text" name="var_size[]" class="form-input" placeholder="24 x 40 cm" value="24 x 40 cm"></td>
+            <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.035 mm" value="0.035 mm"></td>
+            <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam, Merah" value="Putih, Merah"></td>
+            <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Standard" value="HDPE Virgin"></td>
+            <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+          </tr>
+          <tr>
+            <td><input type="text" name="var_size[]" class="form-input" placeholder="28 x 48 cm" value="28 x 48 cm"></td>
+            <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.040 mm" value="0.040 mm"></td>
+            <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam" value="Putih, Hitam"></td>
+            <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Standard" value="HDPE Virgin"></td>
+            <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Card 5: Optimasi SEO -->
+  <div class="form-card">
+    <div class="form-card-title">5. Pengaturan Meta SEO (Mesin Pencari Google)</div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="meta_title_id">Meta Title (ID)</label>
+        <input type="text" id="meta_title_id" name="meta_title_id" class="form-input" placeholder="Judul pada tab browser &amp; Google">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="meta_title_en">Meta Title (EN)</label>
+        <input type="text" id="meta_title_en" name="meta_title_en" class="form-input" placeholder="Browser title for English visitors">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="meta_desc_id">Meta Description (ID)</label>
+        <textarea id="meta_desc_id" name="meta_desc_id" class="form-textarea" placeholder="Ringkasan 1-2 kalimat untuk snippet Google pencarian Indonesia..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="meta_desc_en">Meta Description (EN)</label>
+        <textarea id="meta_desc_en" name="meta_desc_en" class="form-textarea" placeholder="1-2 sentences summary for Google English snippets..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions-bar" style="margin-bottom: 2rem;">
+    <a href="/admin/products" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px;">Simpan Produk Baru</button>
+  </div>
+</form>
+
+<script>
+  function addSpecRow() {
+    const container = document.getElementById('specsContainer');
+    const div = document.createElement('div');
+    div.className = 'form-row-2';
+    div.style.marginBottom = '8px';
+    div.innerHTML = `
+      <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter">
+      <div style="display: flex; gap: 6px;">
+        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai">
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.form-row-2').remove()">&times;</button>
+      </div>
+    `;
+    container.appendChild(div);
+  }
+
+  function addVariantRow() {
+    const tbody = document.getElementById('variantsBody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" name="var_size[]" class="form-input" placeholder="Ukuran"></td>
+      <td><input type="text" name="var_thickness[]" class="form-input" placeholder="Tebal"></td>
+      <td><input type="text" name="var_color[]" class="form-input" placeholder="Warna"></td>
+      <td><input type="text" name="var_material[]" class="form-input" placeholder="Bahan"></td>
+      <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
+</script>
 
 <%- include('../../partials/admin-footer') %>

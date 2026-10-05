@@ -15,6 +15,13 @@ export const settingModel = {
   },
 
   /**
+   * Alias for getAll()
+   */
+  async getAllAsMap() {
+    return await this.getAll();
+  },
+
+  /**
    * Get single setting value by key
    * @param {string} key
    * @param {any} defaultValue

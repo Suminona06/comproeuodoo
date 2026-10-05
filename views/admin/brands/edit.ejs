@@ -1,0 +1,66 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Edit Merek: <%= brand.name %></h1>
+    <p>Perbarui rincian merek, urutan, atau ganti logo.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/brands" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+  <div class="form-card-title">Perbarui Informasi Merek</div>
+
+  <form action="/admin/brands/<%= brand.id %>" method="POST" enctype="multipart/form-data">
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="name">Nama Merek *</label>
+        <input type="text" id="name" name="name" class="form-input" required value="<%= brand.name %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="sort_order">Nomor Urutan Tampil</label>
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="<%= brand.sort_order %>" min="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="logo_file">Logo Merek</label>
+      <% if (brand.logo_url) { %>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <div style="width: 70px; height: 50px; background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <img src="<%= brand.logo_url %>" alt="Current Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+          </div>
+          <span style="font-size: 11.5px; color: var(--text-muted);">Logo saat ini aktif. Unggah file baru di bawah ini jika ingin mengganti.</span>
+        </div>
+      <% } %>
+      <input type="file" id="logo_file" name="logo_file" class="form-input" accept="image/*">
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="description_id">Deskripsi Singkat (Bahasa Indonesia)</label>
+        <textarea id="description_id" name="description_id" class="form-textarea"><%= brand.description_id || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="description_en">Deskripsi Singkat (English)</label>
+        <textarea id="description_en" name="description_en" class="form-textarea"><%= brand.description_en || '' %></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-check">
+        <input type="checkbox" name="is_active" value="1" <%= brand.is_active ? 'checked' : '' %>>
+        <span>Aktifkan dan tampilkan merek ini pada halaman publik</span>
+      </label>
+    </div>
+
+    <div class="form-actions-bar">
+      <a href="/admin/brands" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/admin-footer') %>

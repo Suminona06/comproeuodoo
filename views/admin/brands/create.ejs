@@ -1,0 +1,59 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Tambah Merek Baru</h1>
+    <p>Daftarkan merek terdaftar PT Euodoo dengan logo teroptimasi WebP.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/brands" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+  <div class="form-card-title">Informasi Merek</div>
+
+  <form action="/admin/brands" method="POST" enctype="multipart/form-data">
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="name">Nama Merek *</label>
+        <input type="text" id="name" name="name" class="form-input" required placeholder="Contoh: Plastik Bawang (PB)" value="<%= typeof formData !== 'undefined' && formData.name ? formData.name : '' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="sort_order">Nomor Urutan Tampil</label>
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="0" min="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="logo_file">Logo Merek (Gambar PNG, JPG, atau WebP)</label>
+      <input type="file" id="logo_file" name="logo_file" class="form-input" accept="image/*">
+      <div class="form-hint">Otomatis dikonversi dan dikompresi ke format WebP (maks 400x400px).</div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="description_id">Deskripsi Singkat (Bahasa Indonesia)</label>
+        <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Merek kantong kresek HD legendaris..."><%= typeof formData !== 'undefined' && formData.description_id ? formData.description_id : '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="description_en">Deskripsi Singkat (English)</label>
+        <textarea id="description_en" name="description_en" class="form-textarea" placeholder="Legendary high density plastic bag brand..."><%= typeof formData !== 'undefined' && formData.description_en ? formData.description_en : '' %></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-check">
+        <input type="checkbox" name="is_active" value="1" checked>
+        <span>Aktifkan dan tampilkan merek ini pada halaman publik</span>
+      </label>
+    </div>
+
+    <div class="form-actions-bar">
+      <a href="/admin/brands" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-primary">Simpan Merek Baru</button>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/admin-footer') %>

@@ -1,0 +1,52 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Edit Pengguna: <%= targetUser.name %></h1>
+    <p>Perbarui profil, ganti role hak akses, atau atur ulang kata sandi pengguna.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/users" class="btn btn-secondary">
+      &larr; Kembali ke Daftar
+    </a>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+  <div class="form-card-title">Perbarui Data Akun</div>
+
+  <form action="/admin/users/<%= targetUser.id %>" method="POST">
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="name">Nama Lengkap *</label>
+        <input type="text" id="name" name="name" class="form-input" required value="<%= targetUser.name %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Alamat Email *</label>
+        <input type="email" id="email" name="email" class="form-input" required value="<%= targetUser.email %>">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="role">Hak Akses (Role) *</label>
+        <select id="role" name="role" class="form-select" required>
+          <option value="editor" <%= targetUser.role === 'editor' ? 'selected' : '' %>>Editor (Kelola Artikel &amp; Media)</option>
+          <option value="admin" <%= targetUser.role === 'admin' ? 'selected' : '' %>>Admin (Kelola Katalog, Banners &amp; Inquiry)</option>
+          <option value="superadmin" <%= targetUser.role === 'superadmin' ? 'selected' : '' %>>Superadmin (Akses Penuh Seluruh Sistem)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="new_password">Kata Sandi Baru (Opsional)</label>
+        <input type="password" id="new_password" name="new_password" class="form-input" minlength="6" placeholder="Biarkan kosong jika tidak diganti">
+      </div>
+    </div>
+
+    <div class="form-actions-bar">
+      <a href="/admin/users" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/admin-footer') %>

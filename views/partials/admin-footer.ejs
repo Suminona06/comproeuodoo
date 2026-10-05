@@ -1,13 +1,13 @@
-      </div> <!-- End .admin-page-content -->
-      
+      </div> <!-- End .app-content -->
+
       <footer class="admin-footer-bar">
-        <div class="admin-footer-inner">
-          <span>PT Euodoo Presisi Indonesia &copy; <%= currentYear %></span>
-          <span>CMS Panel v1.0 &bull; Standar Manufaktur Presisi</span>
-        </div>
+        <span>PT Euodoo Presisi Indonesia &copy; <%= typeof currentYear !== 'undefined' ? currentYear : new Date().getFullYear() %></span>
+        <span>CMS Admin v2.0 &bull; Standard Operasional Modern</span>
       </footer>
-    </div> <!-- End .admin-main-wrapper -->
-  </div> <!-- End .admin-app-layout -->
+    </main> <!-- End .app-main -->
+  </div> <!-- End .app-layout -->
+
+  <div id="adminToast" class="admin-toast"></div>
 
   <script src="/js/admin.js"></script>
 </body>

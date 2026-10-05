@@ -1,128 +1,125 @@
 <%- include('../../partials/admin-header') %>
 
-<main class="section-sm" style="flex: 1;">
-  <div class="container">
-    <div class="admin-page-header">
-      <div>
-        <h1 class="admin-page-title">Katalog Produk & Komponen</h1>
-        <p class="admin-page-subtitle">
-          Kelola daftar produk cetakan plastik presisi, spesifikasi material, dan galeri teknis.
-        </p>
-      </div>
-      <div>
-        <a href="/admin/products/create" class="btn btn-primary btn-sm">+ Tambah Produk Baru</a>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Katalog Produk Manufaktur</h1>
+    <p>Kelola spesifikasi teknis, varian ukuran, dan status publikasi katalog kemasan plastik PT Euodoo.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/products/export" class="btn btn-secondary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Ekspor CSV</span>
+    </a>
+    <a href="/admin/products/create" class="btn btn-primary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tambah Produk</span>
+    </a>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+      <h2 class="toolbar-title" style="margin-right: 6px;">Daftar Produk</h2>
+      
+      <!-- Category Filter Dropdown -->
+      <form action="/admin/products" method="GET" style="display: flex; gap: 6px; align-items: center;">
+        <select name="category" class="form-select" style="font-size: 11.5px; padding: 4px 8px; height: 30px; width: auto;" onchange="this.form.submit()">
+          <option value="">Semua Kategori</option>
+          <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.id %>" <%= selectedCategory === cat.id ? 'selected' : '' %>>
+              <%= cat.name_id %>
+            </option>
+          <% }); %>
+        </select>
+        <% if (selectedStatus) { %><input type="hidden" name="status" value="<%= selectedStatus %>"><% } %>
+      </form>
+
+      <div class="filter-tabs-wrap">
+        <a href="/admin/products<%= selectedCategory ? '?category=' + selectedCategory : '' %>" class="tab-btn <%= !selectedStatus ? 'active' : '' %>">Semua</a>
+        <a href="/admin/products?status=published<%= selectedCategory ? '&category=' + selectedCategory : '' %>" class="tab-btn <%= selectedStatus === 'published' ? 'active' : '' %>">Published</a>
+        <a href="/admin/products?status=draft<%= selectedCategory ? '&category=' + selectedCategory : '' %>" class="tab-btn <%= selectedStatus === 'draft' ? 'active' : '' %>">Draft</a>
       </div>
     </div>
 
-    <!-- Filter & Search Bar -->
-    <div class="card" style="margin-bottom: var(--space-lg); box-shadow: var(--shadow-level-0);">
-      <div class="card-body" style="padding: var(--space-md) var(--space-lg);">
-        <form action="/admin/products" method="GET" class="flex flex-wrap items-center gap-md">
-          <div style="flex: 1; min-width: 200px;">
-            <input type="text" name="search" class="form-control" placeholder="Cari nama produk atau slug..." value="<%= searchQuery || '' %>">
-          </div>
-          <div style="min-width: 220px;">
-            <select name="category" class="form-select">
-              <option value="">Semua Kategori</option>
-              <% if (categories && categories.length > 0) { %>
-                <% categories.forEach(function(cat) { %>
-                  <option value="<%= cat.id %>" <%= selectedCategory === cat.id ? 'selected' : '' %>>
-                    <%= cat.name_id %>
-                  </option>
-                <% }); %>
-              <% } %>
-            </select>
-          </div>
-          <div>
-            <button type="submit" class="btn btn-secondary btn-md">Filter</button>
-            <% if (selectedCategory || searchQuery) { %>
-              <a href="/admin/products" class="btn btn-ghost btn-md">Reset</a>
-            <% } %>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Table of Products -->
-    <div class="admin-table-card">
-      <div class="admin-table-header">
-        <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Daftar Produk</h2>
-        <span class="badge badge-neutral"><%= products.length %> Produk Ditemukan</span>
-      </div>
-      <div class="table-responsive" style="border: none; border-radius: 0;">
-        <table class="table">
-          <thead>
-            <tr>
-              <th class="th-neutral" style="width: 80px;">Foto</th>
-              <th class="th-neutral">Nama Produk</th>
-              <th class="th-neutral">Kategori</th>
-              <th class="th-neutral">Unggulan</th>
-              <th class="th-neutral">Status</th>
-              <th class="th-neutral text-right">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% if (products && products.length > 0) { %>
-              <% products.forEach(function(product) { %>
-                <tr>
-                  <td>
-                    <% if (product.main_image) { %>
-                      <img src="<%= product.main_image %>" alt="<%= product.name_id %>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);">
-                    <% } else { %>
-                      <div style="width: 60px; height: 60px; background: #e2e8f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b;">
-                        Tanpa Foto
-                      </div>
-                    <% } %>
-                  </td>
-                  <td>
-                    <strong><%= product.name_id %></strong><br>
-                    <small style="color: var(--color-text-muted);"><%= product.name_en || '-' %></small>
-                    <br><small style="color: var(--color-primary);">Slug: /products/<%= product.slug %></small>
-                  </td>
-                  <td>
-                    <span class="badge badge-primary"><%= product.category_name_id || 'Umum' %></span>
-                  </td>
-                  <td>
-                    <% if (product.is_featured) { %>
-                      <span class="badge badge-warning">Unggulan</span>
-                    <% } else { %>
-                      <span style="color: var(--color-text-muted); font-size: 12px;">Biasa</span>
-                    <% } %>
-                  </td>
-                  <td>
-                    <% if (product.is_active) { %>
-                      <span class="badge badge-success">Aktif</span>
-                    <% } else { %>
-                      <span class="badge badge-neutral">Draf</span>
-                    <% } %>
-                  </td>
-                  <td class="text-right">
-                    <div class="flex gap-xs justify-end">
-                      <a href="/admin/products/<%= product.id %>/edit" class="btn btn-secondary btn-sm">
-                        Edit
-                      </a>
-                      <form action="/admin/products/<%= product.id %>/delete" method="POST" class="form-delete" data-confirm="Hapus produk '<%= product.name_id %>' secara permanen?" style="display: inline;">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--color-error);">
-                          Hapus
-                        </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              <% }); %>
-            <% } else { %>
-              <tr>
-                <td colspan="6" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
-                  Belum ada produk yang cocok dengan pencarian / filter.
-                </td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
+    <div class="search-input-wrap">
+      <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="liveSearchInput" placeholder="Cari nama produk..." aria-label="Cari produk">
     </div>
   </div>
-</main>
+
+  <div class="table-scroll-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 70px;">Foto</th>
+          <th>Nama Produk</th>
+          <th>Kategori</th>
+          <th>Spesifikasi Material</th>
+          <th style="width: 90px; text-align: center;">Unggulan</th>
+          <th style="width: 100px;">Status</th>
+          <th style="text-align: right; width: 120px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (products && products.length > 0) { %>
+          <% products.forEach(function(p) { %>
+            <tr>
+              <td>
+                <div style="width: 52px; height: 52px; background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                  <% if (p.image_url) { %>
+                    <img src="<%= p.image_url %>" alt="<%= p.name_id %>" style="width: 100%; height: 100%; object-fit: cover;">
+                  <% } else { %>
+                    <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 700;">NO PIC</span>
+                  <% } %>
+                </div>
+              </td>
+              <td>
+                <div class="td-client-title"><%= p.name_id %></div>
+                <div class="td-client-sub"><%= p.name_en || '-' %> &bull; <code><%= p.slug %></code></div>
+              </td>
+              <td>
+                <span class="badge-role editor" style="font-size: 11px;">
+                  <%= p.category_name_id || 'Umum' %>
+                </span>
+              </td>
+              <td>
+                <div class="td-req-text" title="<%= p.material_specs || '' %>">
+                  <%= p.material_specs || '-' %>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <% if (p.featured || p.is_featured) { %>
+                  <span class="badge-status st-baru" style="font-size: 10.5px; padding: 2px 6px; border-radius: 4px;">Featured</span>
+                <% } else { %>
+                  <span style="color: var(--text-tertiary); font-size: 12px;">-</span>
+                <% } %>
+              </td>
+              <td>
+                <span class="badge-status <%= p.status === 'published' ? 'st-selesai' : (p.status === 'draft' ? 'st-baru' : 'st-ditolak') %>" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                  <%= p.status || 'published' %>
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 6px;">
+                  <a href="/admin/products/<%= p.id %>/edit" class="btn-action-view">Edit</a>
+                  <form action="/admin/products/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Hapus produk <%= p.name_id %> secara permanen?');" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Hapus</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+              Tidak ada produk yang sesuai dengan filter.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <%- include('../../partials/admin-footer') %>

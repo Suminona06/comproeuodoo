@@ -1,0 +1,47 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Edit Kategori: <%= category.name_id %></h1>
+    <p>Perbarui klasifikasi tipe dan penamaan dwibahasa.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/post-categories" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 600px; margin: 0 auto;">
+  <div class="form-card-title">Perbarui Kategori</div>
+
+  <form action="/admin/post-categories/<%= category.id %>" method="POST">
+    <div class="form-group">
+      <label class="form-label" for="type">Tipe Artikel *</label>
+      <select id="type" name="type" class="form-select" required>
+        <option value="berita" <%= category.type === 'berita' ? 'selected' : '' %>>Berita Perusahaan &amp; CSR</option>
+        <option value="blog" <%= category.type === 'blog' ? 'selected' : '' %>>Blog &amp; Edukasi Industri</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="name_id">Nama Kategori (Bahasa Indonesia) *</label>
+      <input type="text" id="name_id" name="name_id" class="form-input" required value="<%= category.name_id %>">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="name_en">Nama Kategori (English)</label>
+      <input type="text" id="name_en" name="name_en" class="form-input" value="<%= category.name_en || '' %>">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="sort_order">Nomor Urutan Tampil</label>
+      <input type="number" id="sort_order" name="sort_order" class="form-input" value="<%= category.sort_order %>" min="0">
+    </div>
+
+    <div class="form-actions-bar">
+      <a href="/admin/post-categories" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/admin-footer') %>

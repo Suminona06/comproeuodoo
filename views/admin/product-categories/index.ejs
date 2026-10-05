@@ -1,0 +1,83 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Kategori Produk Manufaktur</h1>
+    <p>Kelola klasifikasi kategori produk (HDPE, LDPE, PP, Karung Plastik, dll.) untuk filter katalog.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/products" class="btn btn-secondary">Katalog Produk &rarr;</a>
+    <a href="/admin/product-categories/create" class="btn btn-primary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tambah Kategori</span>
+    </a>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <h2 class="toolbar-title">Daftar Kategori Produk</h2>
+  </div>
+
+  <div class="table-scroll-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nama Kategori (ID)</th>
+          <th>Nama Kategori (EN)</th>
+          <th>Slug URL</th>
+          <th style="width: 110px; text-align: center;">Jumlah Produk</th>
+          <th style="width: 80px; text-align: center;">Urutan</th>
+          <th style="width: 90px;">Status</th>
+          <th style="text-align: right; width: 120px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (categories && categories.length > 0) { %>
+          <% categories.forEach(function(cat) { %>
+            <tr>
+              <td>
+                <div class="td-client-title"><%= cat.name_id %></div>
+              </td>
+              <td>
+                <div class="td-muted-text"><%= cat.name_en || '-' %></div>
+              </td>
+              <td>
+                <code><%= cat.slug %></code>
+              </td>
+              <td style="text-align: center; font-weight: 600;">
+                <span class="badge-role editor" style="font-size: 11px;">
+                  <%= cat.product_count || 0 %> produk
+                </span>
+              </td>
+              <td style="text-align: center; font-weight: 600;">
+                <%= cat.sort_order %>
+              </td>
+              <td>
+                <span class="badge-status <%= cat.is_active ? 'st-selesai' : 'st-ditolak' %>" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                  <%= cat.is_active ? 'Aktif' : 'Nonaktif' %>
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 6px;">
+                  <a href="/admin/product-categories/<%= cat.id %>/edit" class="btn-action-view">Edit</a>
+                  <form action="/admin/product-categories/<%= cat.id %>/delete" method="POST" onsubmit="return confirm('Hapus kategori <%= cat.name_id %>? Produk dalam kategori ini akan diubah menjadi tidak berkategori.');" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Hapus</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              Belum ada kategori produk.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../../partials/admin-footer') %>

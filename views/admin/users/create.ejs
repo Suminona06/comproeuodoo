@@ -1,0 +1,61 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Tambah Pengguna Baru</h1>
+    <p>Buat akun login baru dengan penetapan role hak akses sistem.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/users" class="btn btn-secondary">
+      &larr; Kembali ke Daftar
+    </a>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+  <div class="form-card-title">Formulir Pendaftaran Pengguna</div>
+
+  <form action="/admin/users" method="POST">
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="name">Nama Lengkap *</label>
+        <input type="text" id="name" name="name" class="form-input" required placeholder="Contoh: Budi Santoso" value="<%= typeof formData !== 'undefined' && formData.name ? formData.name : '' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Alamat Email *</label>
+        <input type="email" id="email" name="email" class="form-input" required placeholder="nama@euodoo.com" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="password">Kata Sandi Awal *</label>
+        <input type="password" id="password" name="password" class="form-input" required minlength="6" placeholder="Minimal 6 karakter">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="role">Hak Akses (Role) *</label>
+        <select id="role" name="role" class="form-select" required>
+          <option value="editor" <%= typeof formData !== 'undefined' && formData.role === 'editor' ? 'selected' : '' %>>Editor (Kelola Artikel &amp; Media)</option>
+          <option value="admin" <%= typeof formData !== 'undefined' && formData.role === 'admin' ? 'selected' : '' %>>Admin (Kelola Katalog, Banners &amp; Inquiry)</option>
+          <option value="superadmin" <%= typeof formData !== 'undefined' && formData.role === 'superadmin' ? 'selected' : '' %>>Superadmin (Akses Penuh Seluruh Sistem)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 10px 12px; margin-top: 10px; font-size: 11.5px; color: var(--text-secondary);">
+      <strong>Catatan Hak Akses:</strong>
+      <ul style="margin-left: 18px; margin-top: 4px; line-height: 1.6;">
+        <li><strong>Superadmin:</strong> Mengakses seluruh menu, pengaturan situs, dan manajemen pengguna.</li>
+        <li><strong>Admin:</strong> Mengelola produk, banner, inquiry, export CSV, berita, dan media library.</li>
+        <li><strong>Editor:</strong> Dibatasi hanya untuk mengelola berita, artikel, dan media library.</li>
+      </ul>
+    </div>
+
+    <div class="form-actions-bar">
+      <a href="/admin/users" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-primary">Simpan Pengguna Baru</button>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/admin-footer') %>

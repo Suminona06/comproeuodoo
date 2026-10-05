@@ -1,0 +1,88 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Tambah Banner Hero</h1>
+    <p>Unggah media visual beranda (video MP4 atau gambar WebP) dengan caption kiri dan tombol CTA.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/banners" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+  <div class="form-card-title">Pengaturan Banner Hero</div>
+
+  <form action="/admin/banners" method="POST" enctype="multipart/form-data">
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="title_id">Judul Headline (Bahasa Indonesia) *</label>
+        <input type="text" id="title_id" name="title_id" class="form-input" required placeholder="Contoh: Manufaktur Kantong Plastik Terpercaya">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="title_en">Judul Headline (English)</label>
+        <input type="text" id="title_en" name="title_en" class="form-input" placeholder="Example: Trusted Plastic Bags Manufacturer">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="caption_id">Sub-headline / Caption (Bahasa Indonesia)</label>
+        <textarea id="caption_id" name="caption_id" class="form-textarea" placeholder="Menghasilkan lebih dari 150 ton produk kemasan berkualitas per bulan..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="caption_en">Sub-headline / Caption (English)</label>
+        <textarea id="caption_en" name="caption_en" class="form-textarea" placeholder="Producing over 150 tons of premium plastic packaging per month..."></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="media_type">Tipe Media Latar Belakang *</label>
+      <select id="media_type" name="media_type" class="form-select">
+        <option value="image" selected>Gambar Beresolusi Tinggi (WebP 1920x1080)</option>
+        <option value="video">Video Background (MP4 / WebM)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="media_file">Unggah Berkas Media *</label>
+      <input type="file" id="media_file" name="media_file" class="form-input" required accept="image/*,video/mp4,video/webm">
+      <div class="form-hint">Gambar otomatis dikonversi ke WebP 80%. Video otomatis disimpan dengan format MP4/WebM.</div>
+    </div>
+
+    <div class="form-row-3">
+      <div class="form-group">
+        <label class="form-label" for="cta_text_id">Teks Tombol CTA (ID)</label>
+        <input type="text" id="cta_text_id" name="cta_text_id" class="form-input" placeholder="Contoh: Konsultasi Sekarang">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cta_text_en">Teks Tombol CTA (EN)</label>
+        <input type="text" id="cta_text_en" name="cta_text_en" class="form-input" placeholder="Example: Inquire Now">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cta_url">URL Tujuan Tombol CTA</label>
+        <input type="text" id="cta_url" name="cta_url" class="form-input" placeholder="#inquiry atau /produk">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="sort_order">Nomor Urutan Tampil (Slide)</label>
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="0" min="0">
+      </div>
+      <div class="form-group" style="justify-content: flex-end;">
+        <label class="form-check" style="margin-bottom: 8px;">
+          <input type="checkbox" name="is_active" value="1" checked>
+          <span>Aktifkan banner ini dalam slider</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-actions-bar">
+      <a href="/admin/banners" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-primary">Simpan Banner Hero</button>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/admin-footer') %>

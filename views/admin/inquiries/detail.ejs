@@ -1,0 +1,103 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Permintaan RFQ: <%= inquiry.name %></h1>
+    <p><%= inquiry.company ? inquiry.company + ' &bull; ' : '' %>Masuk pada <%= new Date(inquiry.created_at).toLocaleString('id-ID') %></p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/inquiries" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+  <div>
+    <!-- Card Detail Pesan -->
+    <div class="form-card">
+      <div class="form-card-title">Rincian Kebutuhan &amp; Konsultasi Klien</div>
+      
+      <div style="background: var(--bg-subtle); border-left: 3px solid var(--primary); padding: 1rem; border-radius: var(--r-sm); font-size: 13.5px; line-height: 1.7; color: var(--text-main); margin-bottom: 1.25rem;">
+        <%= inquiry.message || 'Tidak ada pesan tertulis dari pengirim.' %>
+      </div>
+
+      <div class="form-card-title" style="margin-top: 1.5rem;">Catatan Tindak Lanjut Tim Penjualan / Internal</div>
+      <form action="/admin/inquiries/<%= inquiry.id %>/status" method="POST">
+        <div class="form-group">
+          <label class="form-label" for="admin_notes">Catatan &amp; Riwayat Interaksi</label>
+          <textarea id="admin_notes" name="admin_notes" class="form-textarea" style="min-height: 120px;" placeholder="Tuliskan hasil pembicaraan telepon, negosiasi harga, kuantiti yang disepakati, dll..."><%= inquiry.admin_notes || '' %></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+          <button type="submit" class="btn btn-primary">Simpan Catatan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div>
+    <!-- Card Info Pengirim & Status -->
+    <div class="form-card">
+      <div class="form-card-title">Status Penanganan</div>
+
+      <form action="/admin/inquiries/<%= inquiry.id %>/status" method="POST" style="margin-bottom: 1.25rem;">
+        <div class="form-group">
+          <label class="form-label" for="status">Ubah Status</label>
+          <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+            <option value="baru" <%= inquiry.status === 'baru' ? 'selected' : '' %>>Baru</option>
+            <option value="dibaca" <%= inquiry.status === 'dibaca' ? 'selected' : '' %>>Dibaca / Diproses</option>
+            <option value="ditindaklanjuti" <%= inquiry.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai / Ditindaklanjuti</option>
+            <option value="ditolak" <%= inquiry.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
+          </select>
+        </div>
+      </form>
+
+      <div class="form-card-title" style="margin-top: 1.5rem;">Kontak &amp; Identitas Klien</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px;">
+        <div>
+          <div style="color: var(--text-muted); font-size: 11px;">NAMA PIC</div>
+          <div style="font-weight: 600;"><%= inquiry.name %></div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 11px;">PERUSAHAAN / LEMBAGA</div>
+          <div style="font-weight: 600;"><%= inquiry.company || 'Personal / Tidak disebutkan' %></div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 11px;">WHATSAPP / TELEPON</div>
+          <div>
+            <a href="https://wa.me/<%= inquiry.phone ? inquiry.phone.replace(/[^0-9]/g, '') : '' %>" target="_blank" class="btn btn-secondary btn-sm" style="display: inline-flex; margin-top: 4px;">
+              Hubungi via WhatsApp &rarr;
+            </a>
+          </div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 11px;">EMAIL</div>
+          <div><a href="mailto:<%= inquiry.email %>" style="color: var(--primary);"><%= inquiry.email %></a></div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 11px;">PRODUK TERKAIT</div>
+          <div><%= inquiry.product_name_id || 'Umum (Katalog)' %></div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 11px;">SUMBER INQUIRY</div>
+          <div><%= inquiry.source || 'Website' %></div>
+        </div>
+        <% if (inquiry.ip_address) { %>
+          <div>
+            <div style="color: var(--text-muted); font-size: 11px;">ALAMAT IP PENGIRIM</div>
+            <code><%= inquiry.ip_address %></code>
+          </div>
+        <% } %>
+      </div>
+
+      <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-main);">
+        <form action="/admin/inquiries/<%= inquiry.id %>/delete" method="POST" onsubmit="return confirm('Hapus permanen inquiry ini?');">
+          <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">
+            Hapus Inquiry Ini
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/admin-footer') %>

@@ -1,15 +1,13 @@
 /**
- * Admin Panel Client Script
- * PT Euodoo CMS
- * Interactivity: Sidebar Drawer, Live Filters & Modals
+ * Admin Panel Client Script - PT Euodoo CMS v2.0
+ * Acuan: public/prototype-admin.html
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Sidebar Toggle & Mobile Drawer Control
-  const sidebar = document.getElementById('adminSidebar');
-  const toggleBtn = document.getElementById('sidebarToggleBtn');
-  const closeBtn = document.getElementById('sidebarCloseBtn');
-  const backdrop = document.getElementById('adminBackdrop');
+  // Mobile drawer controls
+  const sidebar = document.querySelector('.app-sidebar');
+  const toggleBtn = document.querySelector('.mobile-menu-toggle');
+  const backdrop = document.querySelector('.admin-backdrop');
 
   function openSidebar() {
     document.body.classList.add('sidebar-open');
@@ -32,162 +30,121 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeSidebar);
-  }
-
   if (backdrop) {
     backdrop.addEventListener('click', closeSidebar);
   }
 
-  // Keyboard accessibility: Escape closes mobile drawer (R-32)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.body.classList.contains('sidebar-open')) {
-      closeSidebar();
+    if (e.key === 'Escape') {
+      if (document.body.classList.contains('sidebar-open')) closeSidebar();
+      closeAllModals();
     }
   });
 
-  // 2. Interactive Real-time Table Filtering & Search
-  const tableRows = document.querySelectorAll('.interactive-table tbody tr[data-status]');
-  const filterPills = document.querySelectorAll('.filter-pill[data-filter]');
-  const searchInput = document.getElementById('tableLiveSearchInput');
-  const emptyFilterRow = document.getElementById('tableFilterEmptyRow');
+  // Table status tabs and live search
+  const tabButtons = document.querySelectorAll('.filter-tabs-wrap .tab-btn');
+  const liveSearch = document.getElementById('liveSearchInput');
+  const tableRows = document.querySelectorAll('.data-table tbody tr[data-status], .admin-table tbody tr[data-status]');
 
-  let activeStatus = 'all';
+  let currentFilter = 'all';
   let searchQuery = '';
 
-  function applyTableFilters() {
-    let visibleCount = 0;
-
-    tableRows.forEach((row) => {
+  function filterRows() {
+    tableRows.forEach(row => {
       const rowStatus = row.getAttribute('data-status') || '';
-      const rowText = row.textContent.toLowerCase();
+      const text = row.textContent.toLowerCase();
+      const matchFilter = (currentFilter === 'all' || rowStatus === currentFilter);
+      const matchSearch = (!searchQuery || text.includes(searchQuery));
 
-      const matchesStatus = (activeStatus === 'all' || rowStatus === activeStatus);
-      const matchesSearch = (!searchQuery || rowText.includes(searchQuery));
-
-      if (matchesStatus && matchesSearch) {
+      if (matchFilter && matchSearch) {
         row.style.display = '';
-        visibleCount++;
       } else {
         row.style.display = 'none';
       }
     });
-
-    if (emptyFilterRow) {
-      emptyFilterRow.style.display = visibleCount === 0 ? '' : 'none';
-    }
   }
 
-  if (filterPills.length > 0) {
-    filterPills.forEach((pill) => {
-      pill.addEventListener('click', () => {
-        filterPills.forEach((p) => {
-          p.classList.remove('active');
-          p.setAttribute('aria-pressed', 'false');
-        });
-        pill.classList.add('active');
-        pill.setAttribute('aria-pressed', 'true');
-        activeStatus = pill.getAttribute('data-filter') || 'all';
-        applyTableFilters();
+  if (tabButtons.length > 0) {
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter') || 'all';
+        filterRows();
       });
     });
   }
 
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
+  if (liveSearch) {
+    liveSearch.addEventListener('input', (e) => {
       searchQuery = e.target.value.toLowerCase().trim();
-      applyTableFilters();
+      filterRows();
     });
   }
 
-  // 3. Confirmation on Delete Actions
-  document.querySelectorAll('form.form-delete').forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      const confirmMsg = form.getAttribute('data-confirm') || 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.';
-      if (!window.confirm(confirmMsg)) {
-        e.preventDefault();
-      }
-    });
-  });
-
-  // 4. Image Preview Before Upload
-  document.querySelectorAll('input[type="file"][data-preview]').forEach((input) => {
-    input.addEventListener('change', () => {
-      const previewId = input.getAttribute('data-preview');
-      const previewImg = document.getElementById(previewId);
-      if (previewImg && input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          previewImg.src = e.target.result;
-          previewImg.style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    });
-  });
-
-  // 5. Asynchronous Inline Lead Status Update
-  const statusSelects = document.querySelectorAll('.status-select-inline');
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-
-  statusSelects.forEach((select) => {
-    let previousValue = select.value;
-
-    select.addEventListener('change', async (e) => {
-      const newStatus = e.target.value;
-      const leadId = select.getAttribute('data-lead-id');
-      const wrapper = select.closest('.inline-status-wrapper');
-
-      if (!leadId) return;
-
-      // Update styling class immediately for instant responsive feedback
-      select.className = `status-select-inline status-select-${newStatus}`;
-      select.disabled = true;
-      if (wrapper) {
-        wrapper.classList.remove('is-success');
-        wrapper.classList.add('is-loading');
-      }
-
-      try {
-        const response = await fetch(`/admin/leads/${leadId}/status`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-Token': csrfToken
-          },
-          body: JSON.stringify({ status: newStatus })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          previousValue = newStatus;
-          // Update data-status on the row so client-side filter pills stay in sync
-          const row = select.closest('tr[data-status]');
-          if (row) row.setAttribute('data-status', newStatus);
-
-          if (wrapper) {
-            wrapper.classList.remove('is-loading');
-            wrapper.classList.add('is-success');
-            setTimeout(() => wrapper.classList.remove('is-success'), 1500);
-          }
-        } else {
-          throw new Error(data.message || 'Gagal memperbarui status');
-        }
-      } catch (err) {
-        console.error('Update status error:', err);
-        // Rollback on error
-        select.value = previousValue;
-        select.className = `status-select-inline status-select-${previousValue}`;
-        alert(`Gagal memperbarui status: ${err.message}`);
-        if (wrapper) wrapper.classList.remove('is-loading');
-      } finally {
-        select.disabled = false;
+  // Modal backdrop click close
+  document.querySelectorAll('.admin-modal-backdrop').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('open');
       }
     });
   });
 });
 
+// Toast notification helper
+export function showAdminToast(message, duration = 3000) {
+  let toast = document.getElementById('adminToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'adminToast';
+    toast.className = 'admin-toast';
+    document.body.appendChild(toast);
+  }
 
+  toast.innerHTML = `
+    <svg width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span>${message}</span>
+  `;
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, duration);
+}
+
+// Modal open/close helpers
+window.openAdminModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.classList.add('open');
+};
+
+window.closeAdminModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.classList.remove('open');
+};
+
+window.closeAllModals = function() {
+  document.querySelectorAll('.admin-modal-backdrop').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.slide-drawer').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('.drawer-backdrop').forEach(b => b.classList.remove('open'));
+};
+
+window.showToast = showAdminToast;
+
+// Copy text helper
+window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke clipboard!') {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showAdminToast(successMsg);
+    });
+  } else {
+    const input = document.createElement('input');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    showAdminToast(successMsg);
+  }
+};

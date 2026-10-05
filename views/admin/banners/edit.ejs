@@ -1,0 +1,97 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Edit Banner Hero: <%= banner.title_id %></h1>
+    <p>Perbarui judul headline, caption, tautan CTA, atau ganti file media.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/banners" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+  </div>
+</div>
+
+<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+  <div class="form-card-title">Perbarui Banner Hero</div>
+
+  <form action="/admin/banners/<%= banner.id %>" method="POST" enctype="multipart/form-data">
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="title_id">Judul Headline (Bahasa Indonesia) *</label>
+        <input type="text" id="title_id" name="title_id" class="form-input" required value="<%= banner.title_id %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="title_en">Judul Headline (English)</label>
+        <input type="text" id="title_en" name="title_en" class="form-input" value="<%= banner.title_en || '' %>">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="caption_id">Sub-headline / Caption (Bahasa Indonesia)</label>
+        <textarea id="caption_id" name="caption_id" class="form-textarea"><%= banner.caption_id || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="caption_en">Sub-headline / Caption (English)</label>
+        <textarea id="caption_en" name="caption_en" class="form-textarea"><%= banner.caption_en || '' %></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="media_type">Tipe Media *</label>
+      <select id="media_type" name="media_type" class="form-select">
+        <option value="image" <%= banner.media_type === 'image' ? 'selected' : '' %>>Gambar Beresolusi Tinggi (WebP)</option>
+        <option value="video" <%= banner.media_type === 'video' ? 'selected' : '' %>>Video Background (MP4 / WebM)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="media_file">Ganti Berkas Media (Opsional)</label>
+      <div style="margin-bottom: 8px; font-size: 11.5px; color: var(--text-muted);">
+        Media saat ini:
+        <% if (banner.media_type === 'video' && banner.video_url) { %>
+          <a href="<%= banner.video_url %>" target="_blank" style="color: var(--primary); text-decoration: underline;">Lihat Video Aktif</a>
+        <% } else if (banner.image_url) { %>
+          <a href="<%= banner.image_url %>" target="_blank" style="color: var(--primary); text-decoration: underline;">Lihat Gambar Aktif</a>
+        <% } else { %>
+          <span>-</span>
+        <% } %>
+      </div>
+      <input type="file" id="media_file" name="media_file" class="form-input" accept="image/*,video/mp4,video/webm">
+    </div>
+
+    <div class="form-row-3">
+      <div class="form-group">
+        <label class="form-label" for="cta_text_id">Teks Tombol CTA (ID)</label>
+        <input type="text" id="cta_text_id" name="cta_text_id" class="form-input" value="<%= banner.cta_text_id || '' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cta_text_en">Teks Tombol CTA (EN)</label>
+        <input type="text" id="cta_text_en" name="cta_text_en" class="form-input" value="<%= banner.cta_text_en || '' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cta_url">URL Tujuan Tombol CTA</label>
+        <input type="text" id="cta_url" name="cta_url" class="form-input" value="<%= banner.cta_url || '' %>">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="sort_order">Nomor Urutan Tampil (Slide)</label>
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="<%= banner.sort_order %>" min="0">
+      </div>
+      <div class="form-group" style="justify-content: flex-end;">
+        <label class="form-check" style="margin-bottom: 8px;">
+          <input type="checkbox" name="is_active" value="1" <%= banner.is_active ? 'checked' : '' %>>
+          <span>Aktifkan banner ini dalam slider</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-actions-bar">
+      <a href="/admin/banners" class="btn btn-secondary">Batal</a>
+      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/admin-footer') %>

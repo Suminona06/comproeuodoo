@@ -1,15 +1,14 @@
 import settingModel from '../../models/settingModel.js';
+import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
 import logger from '../../utils/logger.js';
 
 export const settingController = {
-  /**
-   * Render Settings Form
-   */
   async index(req, res) {
     try {
-      const settings = await settingModel.getAll();
+      const settings = await settingModel.getAllAsMap();
       res.render('admin/settings/index', {
-        title: 'Pengaturan Profil Perusahaan & Kontak - PT Euodoo CMS',
+        title: 'Pengaturan Situs & Kontak',
+        pageTitle: 'Pengaturan Situs & Kontak',
         activeNav: 'settings',
         settings,
         error: req.query.error || null,
@@ -17,47 +16,43 @@ export const settingController = {
         csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
-      logger.error('Setting index error:', { message: err.message });
-      res.redirect('/admin/dashboard?error=Gagal+memuat+halaman+pengaturan.');
+      logger.error('Setting index error:', err);
+      res.redirect('/admin/dashboard?error=' + encodeURIComponent('Gagal memuat pengaturan.'));
     }
   },
 
-  /**
-   * Save Settings
-   */
   async update(req, res) {
     try {
-      const {
-        company_name,
-        company_tagline_id,
-        company_tagline_en,
-        company_phone,
-        company_email,
-        company_address,
-        whatsapp_number,
-        whatsapp_default_message,
-        meta_description_id,
-        meta_description_en
-      } = req.body;
+      const allowedKeys = [
+        'company_name', 'company_tagline_id', 'company_tagline_en',
+        'company_phone', 'company_email',
+        'office_address', 'office_city',
+        'factory_address', 'factory_city',
+        'google_maps_embed',
+        'whatsapp_number', 'whatsapp_default_message',
+        'whatsapp_button_theme', 'whatsapp_floating_enabled',
+        'facebook_url', 'instagram_url', 'linkedin_url', 'youtube_url'
+      ];
 
-      await settingModel.updateMany({
-        company_name: company_name ? company_name.trim() : undefined,
-        company_tagline_id: company_tagline_id ? company_tagline_id.trim() : undefined,
-        company_tagline_en: company_tagline_en ? company_tagline_en.trim() : undefined,
-        company_phone: company_phone ? company_phone.trim() : undefined,
-        company_email: company_email ? company_email.trim() : undefined,
-        company_address: company_address ? company_address.trim() : undefined,
-        whatsapp_number: whatsapp_number ? whatsapp_number.replace(/[^0-9]/g, '') : undefined,
-        whatsapp_default_message: whatsapp_default_message ? whatsapp_default_message.trim() : undefined,
-        meta_description_id: meta_description_id ? meta_description_id.trim() : undefined,
-        meta_description_en: meta_description_en ? meta_description_en.trim() : undefined
-      });
+      const updates = {};
+      for (const key of allowedKeys) {
+        if (req.body[key] !== undefined) {
+          if (key === 'whatsapp_number') {
+            updates[key] = req.body[key].replace(/[^0-9]/g, '');
+          } else {
+            updates[key] = req.body[key].trim();
+          }
+        }
+      }
 
-      logger.info('Company profile settings updated successfully.');
-      return res.redirect('/admin/settings?success=Pengaturan+profil+perusahaan+berhasil+disimpan.');
+      await settingModel.updateMany(updates);
+      clearSettingsCache();
+
+      logger.info('Settings updated successfully by ' + (req.user?.email || 'admin'));
+      res.redirect('/admin/settings?success=' + encodeURIComponent('Pengaturan situs berhasil diperbarui.'));
     } catch (err) {
-      logger.error('Setting update error:', { message: err.message });
-      return res.redirect(`/admin/settings?error=${encodeURIComponent(err.message)}`);
+      logger.error('Setting update error:', err);
+      res.redirect('/admin/settings?error=' + encodeURIComponent('Gagal memperbarui pengaturan: ' + err.message));
     }
   }
 };

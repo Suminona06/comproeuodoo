@@ -1,120 +1,234 @@
 <%- include('../../partials/admin-header') %>
 
-<main class="section-sm" style="flex: 1;">
-  <div class="container admin-form-container">
-    <div class="admin-page-header">
-      <div>
-        <h1 class="admin-page-title">Edit Produk #<%= product.id %></h1>
-        <p class="admin-page-subtitle">Perbarui data produk <%= product.name_id %>.</p>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Edit Produk: <%= product.name_id %></h1>
+    <p>Perbarui rincian spesifikasi material, varian ukuran, atau gambar produk.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/products" class="btn btn-secondary">&larr; Kembali ke Katalog</a>
+  </div>
+</div>
+
+<form action="/admin/products/<%= product.id %>" method="POST" enctype="multipart/form-data">
+  <!-- Card 1: Informasi Pokok -->
+  <div class="form-card">
+    <div class="form-card-title">1. Informasi Pokok Produk</div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="name_id">Nama Produk (Bahasa Indonesia) *</label>
+        <input type="text" id="name_id" name="name_id" class="form-input" required value="<%= product.name_id %>">
       </div>
-      <div>
-        <a href="/admin/products" class="btn btn-secondary btn-sm">&larr; Kembali ke Daftar</a>
+      <div class="form-group">
+        <label class="form-label" for="name_en">Nama Produk (English)</label>
+        <input type="text" id="name_en" name="name_en" class="form-input" value="<%= product.name_en || '' %>">
       </div>
     </div>
 
-    <div class="card" style="box-shadow: var(--shadow-level-0);">
-      <div class="card-body">
-        <form action="/admin/products/<%= product.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="form-row-3">
+      <div class="form-group">
+        <label class="form-label" for="category_id">Kategori Produk</label>
+        <select id="category_id" name="category_id" class="form-select">
+          <option value="">Pilih Kategori...</option>
+          <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.id %>" <%= product.category_id === cat.id ? 'selected' : '' %>>
+              <%= cat.name_id %>
+            </option>
+          <% }); %>
+        </select>
+      </div>
 
-          <div class="form-group">
-            <label for="category_id" class="form-label form-label-required">Kategori Produk</label>
-            <select id="category_id" name="category_id" class="form-select" required>
-              <% if (categories && categories.length > 0) { %>
-                <% categories.forEach(function(cat) { %>
-                  <option value="<%= cat.id %>" <%= product.category_id === cat.id ? 'selected' : '' %>>
-                    <%= cat.name_id %>
-                  </option>
-                <% }); %>
-              <% } %>
-            </select>
-          </div>
+      <div class="form-group">
+        <label class="form-label" for="status">Status Publikasi</label>
+        <select id="status" name="status" class="form-select">
+          <option value="published" <%= product.status === 'published' ? 'selected' : '' %>>Published (Tayang)</option>
+          <option value="draft" <%= product.status === 'draft' ? 'selected' : '' %>>Draft (Sementara)</option>
+          <option value="archived" <%= product.status === 'archived' ? 'selected' : '' %>>Archived (Arsip)</option>
+        </select>
+      </div>
 
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="name_id" class="form-label form-label-required">Nama Produk (Indonesia)</label>
-              <input type="text" id="name_id" name="name_id" class="form-control" value="<%= product.name_id %>" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="name_en" class="form-label">Nama Produk (English)</label>
-              <input type="text" id="name_en" name="name_en" class="form-control" value="<%= product.name_en || '' %>">
-            </div>
-          </div>
+      <div class="form-group">
+        <label class="form-label" for="sort_order">Nomor Urutan Tampil</label>
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="<%= product.sort_order || 0 %>" min="0">
+      </div>
+    </div>
 
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="description_id" class="form-label">Deskripsi Ringkas (Indonesia)</label>
-              <textarea id="description_id" name="description_id" class="form-textarea"><%= product.description_id || '' %></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="description_en" class="form-label">Deskripsi Ringkas (English)</label>
-              <textarea id="description_en" name="description_en" class="form-textarea"><%= product.description_en || '' %></textarea>
-            </div>
-          </div>
+    <div class="form-group">
+      <label class="form-label" for="material_specs">Ringkasan Karakteristik Material</label>
+      <input type="text" id="material_specs" name="material_specs" class="form-input" value="<%= product.material_specs || '' %>">
+    </div>
 
-          <% 
-            let matRaw = '';
-            if (product.material_specs) {
-              matRaw = typeof product.material_specs === 'object' ? (product.material_specs.raw || JSON.stringify(product.material_specs)) : product.material_specs;
-            }
-            let techRaw = '';
-            if (product.technical_specs) {
-              techRaw = typeof product.technical_specs === 'object' ? (product.technical_specs.raw || JSON.stringify(product.technical_specs)) : product.technical_specs;
-            }
-          %>
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="material_specs" class="form-label">Spesifikasi Material</label>
-              <textarea id="material_specs" name="material_specs" class="form-textarea"><%= matRaw %></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="technical_specs" class="form-label">Spesifikasi Teknis / Dimensi</label>
-              <textarea id="technical_specs" name="technical_specs" class="form-textarea"><%= techRaw %></textarea>
-            </div>
-          </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="description_id">Deskripsi Lengkap (Bahasa Indonesia)</label>
+        <textarea id="description_id" name="description_id" class="form-textarea"><%= product.description_id || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="description_en">Deskripsi Lengkap (English)</label>
+        <textarea id="description_en" name="description_en" class="form-textarea"><%= product.description_en || '' %></textarea>
+      </div>
+    </div>
 
-          <div class="grid grid-cols-3" style="margin-bottom: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="image_file" class="form-label">Ganti Foto Utama</label>
-              <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*" data-preview="prodEditPreview">
-              <div class="form-hint">Biarkan kosong jika tidak ingin mengubah foto.</div>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="sort_order" class="form-label">Urutan Tampil (Sort Order)</label>
-              <input type="number" id="sort_order" name="sort_order" class="form-control" value="<%= product.sort_order || 0 %>">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Status Produk</label>
-              <div class="flex items-center gap-md" style="height: 44px;">
-                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
-                  <input type="checkbox" name="is_active" value="1" <%= product.is_active ? 'checked' : '' %>> Aktif Tayang
-                </label>
-                <label style="display: flex; align-items: center; gap: 6px; font-size: var(--font-size-body-sm); cursor: pointer;">
-                  <input type="checkbox" name="is_featured" value="1" <%= product.is_featured ? 'checked' : '' %>> Unggulan
-                </label>
-              </div>
-            </div>
-          </div>
+    <div class="form-group">
+      <label class="form-check">
+        <input type="checkbox" name="featured" value="1" <%= (product.featured || product.is_featured) ? 'checked' : '' %>>
+        <span>Tampilkan sebagai Produk Unggulan (Featured Product) di Beranda</span>
+      </label>
+    </div>
+  </div>
 
-          <div style="margin-bottom: var(--space-lg);">
-            <% if (product.main_image) { %>
-              <div style="margin-bottom: var(--space-xs); font-size: var(--font-size-label-sm); color: var(--color-text-muted);">Foto Saat Ini:</div>
-              <img id="prodEditPreview" src="<%= product.main_image %>" alt="<%= product.name_id %>" style="max-height: 160px; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
-            <% } else { %>
-              <img id="prodEditPreview" src="" alt="Pratinjau" style="max-height: 160px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
-            <% } %>
-          </div>
+  <!-- Card 2: Foto Produk -->
+  <div class="form-card">
+    <div class="form-card-title">2. Foto Utama Produk</div>
+    <% if (product.image_url) { %>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div style="width: 80px; height: 80px; background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-sm); overflow: hidden;">
+          <img src="<%= product.image_url %>" alt="Current Photo" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <span style="font-size: 11.5px; color: var(--text-muted);">Foto aktif saat ini. Unggah file baru untuk menggantinya.</span>
+      </div>
+    <% } %>
+    <div class="form-group">
+      <label class="form-label" for="image_file">Ganti Foto Utama (WebP otomatis)</label>
+      <input type="file" id="image_file" name="image_file" class="form-input" accept="image/*">
+    </div>
+  </div>
 
-          <div class="flex gap-md">
-            <button type="submit" class="btn btn-primary btn-md">
-              Simpan Perubahan
-            </button>
-            <a href="/admin/products" class="btn btn-secondary btn-md">Batal</a>
+  <!-- Card 3: Spesifikasi Teknis Dinamis -->
+  <div class="form-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">3. Tabel Spesifikasi Teknis</div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addSpecRow()">+ Tambah Baris Parameter</button>
+    </div>
+
+    <div id="specsContainer">
+      <% const specs = product.technical_specs || {}; %>
+      <% const specKeys = Object.keys(specs); %>
+      <% if (specKeys.length > 0) { %>
+        <% specKeys.forEach(function(k) { %>
+          <div class="form-row-2" style="margin-bottom: 8px;">
+            <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="<%= k %>">
+            <div style="display: flex; gap: 6px;">
+              <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="<%= specs[k] %>">
+              <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.form-row-2').remove()">&times;</button>
+            </div>
           </div>
-        </form>
+        <% }); %>
+      <% } else { %>
+        <div class="form-row-2" style="margin-bottom: 8px;">
+          <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Bahan Baku)" value="Bahan Baku">
+          <div style="display: flex; gap: 6px;">
+            <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="Polyethylene Resins">
+            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.form-row-2').remove()">&times;</button>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Card 4: Varian Produk Dinamis -->
+  <div class="form-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">4. Varian Ukuran &amp; Spesifikasi Produk</div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="addVariantRow()">+ Tambah Baris Varian</button>
+    </div>
+
+    <div class="table-scroll-wrapper">
+      <table class="data-table" id="variantsTable">
+        <thead>
+          <tr>
+            <th>Ukuran / Dimensi</th>
+            <th>Ketebalan</th>
+            <th>Pilihan Warna</th>
+            <th>Bahan / Tipe</th>
+            <th style="width: 50px;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="variantsBody">
+          <% if (product.variants && product.variants.length > 0) { %>
+            <% product.variants.forEach(function(v) { %>
+              <tr>
+                <td><input type="text" name="var_size[]" class="form-input" value="<%= v.size_label || '' %>"></td>
+                <td><input type="text" name="var_thickness[]" class="form-input" value="<%= v.thickness || '' %>"></td>
+                <td><input type="text" name="var_color[]" class="form-input" value="<%= v.color || '' %>"></td>
+                <td><input type="text" name="var_material[]" class="form-input" value="<%= v.material_type || '' %>"></td>
+                <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td><input type="text" name="var_size[]" class="form-input" placeholder="Contoh: 24 x 40 cm"></td>
+              <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.035 mm"></td>
+              <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam"></td>
+              <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Virgin"></td>
+              <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Card 5: Meta SEO -->
+  <div class="form-card">
+    <div class="form-card-title">5. Pengaturan Meta SEO (Google)</div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="meta_title_id">Meta Title (ID)</label>
+        <input type="text" id="meta_title_id" name="meta_title_id" class="form-input" value="<%= product.meta_title_id || '' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="meta_title_en">Meta Title (EN)</label>
+        <input type="text" id="meta_title_en" name="meta_title_en" class="form-input" value="<%= product.meta_title_en || '' %>">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="meta_desc_id">Meta Description (ID)</label>
+        <textarea id="meta_desc_id" name="meta_desc_id" class="form-textarea"><%= product.meta_desc_id || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="meta_desc_en">Meta Description (EN)</label>
+        <textarea id="meta_desc_en" name="meta_desc_en" class="form-textarea"><%= product.meta_desc_en || '' %></textarea>
       </div>
     </div>
   </div>
-</main>
+
+  <div class="form-actions-bar" style="margin-bottom: 2rem;">
+    <a href="/admin/products" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px;">Simpan Perubahan</button>
+  </div>
+</form>
+
+<script>
+  function addSpecRow() {
+    const container = document.getElementById('specsContainer');
+    const div = document.createElement('div');
+    div.className = 'form-row-2';
+    div.style.marginBottom = '8px';
+    div.innerHTML = `
+      <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter">
+      <div style="display: flex; gap: 6px;">
+        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai">
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.form-row-2').remove()">&times;</button>
+      </div>
+    `;
+    container.appendChild(div);
+  }
+
+  function addVariantRow() {
+    const tbody = document.getElementById('variantsBody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" name="var_size[]" class="form-input" placeholder="Ukuran"></td>
+      <td><input type="text" name="var_thickness[]" class="form-input" placeholder="Tebal"></td>
+      <td><input type="text" name="var_color[]" class="form-input" placeholder="Warna"></td>
+      <td><input type="text" name="var_material[]" class="form-input" placeholder="Bahan"></td>
+      <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
+</script>
 
 <%- include('../../partials/admin-footer') %>

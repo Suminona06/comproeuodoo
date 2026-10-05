@@ -1,0 +1,137 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Tulis Artikel Baru</h1>
+    <p>Publikasikan berita resmi perusahaan, siaran pers, atau artikel blog edukasi kemasan.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/posts" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+  </div>
+</div>
+
+<form action="/admin/posts" method="POST" enctype="multipart/form-data">
+  <!-- Card 1: Pengaturan Artikel -->
+  <div class="form-card">
+    <div class="form-card-title">1. Kategori &amp; Jadwal Publikasi</div>
+
+    <div class="form-row-3">
+      <div class="form-group">
+        <label class="form-label" for="type">Tipe Konten *</label>
+        <select id="type" name="type" class="form-select" required>
+          <option value="berita" selected>Berita Perusahaan &amp; CSR</option>
+          <option value="pers">Siaran Pers Resmi</option>
+          <option value="blog">Blog &amp; Edukasi Industri</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="category_id">Kategori Artikel</label>
+        <select id="category_id" name="category_id" class="form-select">
+          <option value="">Pilih Kategori...</option>
+          <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.id %>"><%= cat.name_id %> (<%= cat.type %>)</option>
+          <% }); %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="status">Status</label>
+        <select id="status" name="status" class="form-select" onchange="toggleScheduled(this.value)">
+          <option value="published" selected>Published (Tayang Langsung)</option>
+          <option value="draft">Draft (Draf Penulisan)</option>
+          <option value="scheduled">Scheduled (Terjadwal)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row-2" id="scheduledRow" style="display: none;">
+      <div class="form-group">
+        <label class="form-label" for="scheduled_at">Tanggal &amp; Waktu Terjadwal *</label>
+        <input type="datetime-local" id="scheduled_at" name="scheduled_at" class="form-input">
+        <div class="form-hint">Artikel akan otomatis tayang saat waktu telah jatuh tempo.</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-check">
+        <input type="checkbox" name="is_headline" value="1">
+        <span>Tampilkan sebagai Berita Utama (Top Headline Slider)</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Card 2: Judul & Konten Dwibahasa -->
+  <div class="form-card">
+    <div class="form-card-title">2. Judul &amp; Isi Artikel</div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="title_id">Judul Artikel (Bahasa Indonesia) *</label>
+        <input type="text" id="title_id" name="title_id" class="form-input" required placeholder="Judul artikel utama...">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="title_en">Judul Artikel (English)</label>
+        <input type="text" id="title_en" name="title_en" class="form-input" placeholder="English headline title...">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="cover_file">Foto Sampul Utama (WebP 1200x800px)</label>
+      <input type="file" id="cover_file" name="cover_file" class="form-input" accept="image/*">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="content_id">Isi Artikel (Bahasa Indonesia) *</label>
+      <textarea id="content_id" name="content_id" class="form-textarea" style="min-height: 200px;" placeholder="Tuliskan isi artikel lengkap..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="content_en">Isi Artikel (English)</label>
+      <textarea id="content_en" name="content_en" class="form-textarea" style="min-height: 150px;" placeholder="Write English article content..."></textarea>
+    </div>
+  </div>
+
+  <!-- Card 3: SEO Meta Tags -->
+  <div class="form-card">
+    <div class="form-card-title">3. Pengaturan SEO &amp; Open Graph</div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="meta_title_id">Meta Title (ID)</label>
+        <input type="text" id="meta_title_id" name="meta_title_id" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="meta_title_en">Meta Title (EN)</label>
+        <input type="text" id="meta_title_en" name="meta_title_en" class="form-input">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="meta_desc_id">Meta Description (ID)</label>
+        <textarea id="meta_desc_id" name="meta_desc_id" class="form-textarea" placeholder="Ringkasan 1-2 kalimat untuk snippet Google..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="meta_desc_en">Meta Description (EN)</label>
+        <textarea id="meta_desc_en" name="meta_desc_en" class="form-textarea" placeholder="1-2 sentences English summary..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions-bar" style="margin-bottom: 2rem;">
+    <a href="/admin/posts" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px;">Simpan &amp; Publikasikan</button>
+  </div>
+</form>
+
+<script>
+  function toggleScheduled(val) {
+    const row = document.getElementById('scheduledRow');
+    if (val === 'scheduled') {
+      row.style.display = 'grid';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+</script>
+
+<%- include('../../partials/admin-footer') %>

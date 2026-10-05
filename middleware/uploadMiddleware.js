@@ -154,6 +154,15 @@ export const saveDocumentFile = async (buffer, originalName = '', subFolder = 'm
   return saved;
 };
 
+export const processAndSaveVideo = async (buffer, originalName = '', mimeType = 'video/mp4', subFolder = 'media') => {
+  const url = await saveVideoFile(buffer, originalName, subFolder);
+  return { url };
+};
+
+export const processAndSaveDocument = async (buffer, originalName = '', mimeType = 'application/pdf', subFolder = 'media') => {
+  return await saveDocumentFile(buffer, originalName, subFolder);
+};
+
 /**
  * Delete uploaded file by URL or path
  * @param {string} fileUrl

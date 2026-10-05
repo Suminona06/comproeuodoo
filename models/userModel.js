@@ -12,13 +12,58 @@ export const userModel = {
   },
 
   /**
+   * Find all users (excluding password_hash)
+   */
+  async findAll() {
+    return await query(
+      'SELECT id, email, full_name, full_name as name, role, failed_attempts, locked_until, created_at, updated_at FROM users ORDER BY id ASC'
+    );
+  },
+
+  /**
+   * Create new user
+   */
+  async create({ email, password_hash, password, full_name, name, role = 'admin' }) {
+    const hash = password_hash || password;
+    const fullName = full_name || name;
+    const sql = 'INSERT INTO users (email, password_hash, full_name, role) VALUES (?, ?, ?, ?)';
+    const result = await execute(sql, [email, hash, fullName, role]);
+    return result.insertId;
+  },
+
+  /**
+   * Update existing user
+   */
+  async update(id, { email, full_name, name, role, password_hash, password }) {
+    const fields = [];
+    const params = [];
+    if (email !== undefined) { fields.push('email = ?'); params.push(email); }
+    if (full_name !== undefined || name !== undefined) { fields.push('full_name = ?'); params.push(full_name || name); }
+    if (role !== undefined) { fields.push('role = ?'); params.push(role); }
+    const hash = password_hash || password;
+    if (hash !== undefined && hash) { fields.push('password_hash = ?'); params.push(hash); }
+    if (fields.length === 0) return false;
+    params.push(id);
+    const result = await execute(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, params);
+    return result.affectedRows > 0;
+  },
+
+  /**
+   * Delete user by ID
+   */
+  async delete(id) {
+    const result = await execute('DELETE FROM users WHERE id = ?', [id]);
+    return result.affectedRows > 0;
+  },
+
+  /**
    * Find user by ID (excludes password_hash for security)
    * @param {number} id
    * @returns {Promise<Object|null>}
    */
   async findById(id) {
     const rows = await query(
-      'SELECT id, email, full_name, role, failed_attempts, locked_until, created_at, updated_at FROM users WHERE id = ? LIMIT 1',
+      'SELECT id, email, full_name, full_name as name, role, failed_attempts, locked_until, created_at, updated_at FROM users WHERE id = ? LIMIT 1',
       [id]
     );
     return rows.length > 0 ? rows[0] : null;
