@@ -18,12 +18,94 @@ const dbConfig = {
   database: process.env.DB_NAME || 'euodoo_db'
 };
 
+const IDEMPOTENT_ERROR_CODES = new Set([
+  1050, // ER_TABLE_EXISTS_ERROR
+  1060, // ER_DUP_FIELDNAME
+  1061, // ER_DUP_KEYNAME
+  1091, // ER_CANT_DROP_FIELD_OR_KEY
+  1826  // ER_FK_DUP_NAME
+]);
+
+function splitSqlStatements(sql) {
+  const statements = [];
+  let current = '';
+  let inString = false;
+  let quoteChar = '';
+  let inLineComment = false;
+  let inBlockComment = false;
+
+  for (let i = 0; i < sql.length; i++) {
+    const char = sql[i];
+    const nextChar = sql[i + 1];
+
+    if (inLineComment) {
+      if (char === '\n') inLineComment = false;
+      continue;
+    }
+
+    if (inBlockComment) {
+      if (char === '*' && nextChar === '/') {
+        inBlockComment = false;
+        i++;
+      }
+      continue;
+    }
+
+    if (inString) {
+      current += char;
+      if (char === '\\') {
+        i++;
+        if (i < sql.length) current += sql[i];
+      } else if (char === quoteChar) {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (char === '-' && nextChar === '-') {
+      inLineComment = true;
+      i++;
+      continue;
+    }
+
+    if (char === '/' && nextChar === '*') {
+      inBlockComment = true;
+      i++;
+      continue;
+    }
+
+    if (char === "'" || char === '"' || char === '`') {
+      inString = true;
+      quoteChar = char;
+      current += char;
+      continue;
+    }
+
+    if (char === ';') {
+      const trimmed = current.trim();
+      if (trimmed.length > 0) {
+        statements.push(trimmed);
+      }
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  const trimmed = current.trim();
+  if (trimmed.length > 0) {
+    statements.push(trimmed);
+  }
+
+  return statements;
+}
+
 async function runMigrations() {
   logger.info('Starting database migration process...');
 
   let initialConnection;
   try {
-    // 1. Initial connection without database to ensure target database exists
     initialConnection = await mysql.createConnection({
       host: dbConfig.host,
       port: dbConfig.port,
@@ -36,13 +118,11 @@ async function runMigrations() {
     );
     logger.info(`Verified database '${dbConfig.database}' exists.`);
   } catch (err) {
-    logger.error(`Could not connect to MySQL server: ${err.message}`);
-    process.exit(1);
+    logger.warn(`Initial database verification skipped (${err.message}). Connecting directly to target database.`);
   } finally {
     if (initialConnection) await initialConnection.end();
   }
 
-  // 2. Connect to the target database with multipleStatements enabled
   let dbConnection;
   try {
     dbConnection = await mysql.createConnection({
@@ -54,7 +134,6 @@ async function runMigrations() {
       multipleStatements: true
     });
 
-    // 3. Ensure migrations table exists
     await dbConnection.query(`
       CREATE TABLE IF NOT EXISTS migrations (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -63,11 +142,9 @@ async function runMigrations() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
-    // 4. Retrieve list of already executed migrations
     const [rows] = await dbConnection.query('SELECT migration_name FROM migrations');
     const executedMigrations = new Set(rows.map(r => r.migration_name));
 
-    // 5. Read migration SQL files
     const migrationsDir = path.join(__dirname, 'migrations');
     if (!fs.existsSync(migrationsDir)) {
       fs.mkdirSync(migrationsDir, { recursive: true });
@@ -100,15 +177,23 @@ async function runMigrations() {
         continue;
       }
 
-      await dbConnection.beginTransaction();
+      const statements = splitSqlStatements(sqlContent);
       try {
-        await dbConnection.query(sqlContent);
+        for (const stmt of statements) {
+          try {
+            await dbConnection.query(stmt);
+          } catch (stmtError) {
+            if (IDEMPOTENT_ERROR_CODES.has(stmtError.errno)) {
+              logger.debug(`[IDEMPOTENT NOTICE] Skipped (${stmtError.errno}): ${stmtError.message}`);
+            } else {
+              throw stmtError;
+            }
+          }
+        }
         await dbConnection.query('INSERT INTO migrations (migration_name) VALUES (?)', [file]);
-        await dbConnection.commit();
-        logger.info(`[SUCCESS] Migration applied: ${file}`);
+        logger.info(`[SUCCESS] Migration applied: ${file} (${statements.length} statements)`);
         appliedCount++;
       } catch (migrationError) {
-        await dbConnection.rollback();
         logger.error(`Migration ${file} failed: ${migrationError.message}`);
         throw migrationError;
       }

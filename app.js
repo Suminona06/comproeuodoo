@@ -13,7 +13,8 @@ import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import { csrfProtection } from './middleware/csrfMiddleware.js';
 import { optionalAuth } from './middleware/authMiddleware.js';
 import { i18nMiddleware } from './middleware/i18nMiddleware.js';
-import settingModel from './models/settingModel.js';
+import { settingsMiddleware } from './middleware/settingsMiddleware.js';
+import { seoMiddleware } from './middleware/seoMiddleware.js';
 import logger from './utils/logger.js';
 
 dotenv.config();
@@ -41,7 +42,8 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
         mediaSrc: ["'self'", 'data:', 'blob:', 'https:'],
-        connectSrc: ["'self'"]
+        connectSrc: ["'self'"],
+        frameSrc: ["'self'", 'https://www.google.com', 'https://www.youtube.com']
       }
     },
     crossOriginEmbedderPolicy: false
@@ -51,8 +53,8 @@ app.use(
 // HTTP Compression (gzip / deflate)
 app.use(
   compression({
-    threshold: 1024, // Only compress responses larger than 1KB
-    level: 6, // Balanced CPU usage vs compression ratio
+    threshold: 1024,
+    level: 6,
     filter: (req, res) => {
       if (req.headers['x-no-compression']) return false;
       return compression.filter(req, res);
@@ -72,11 +74,9 @@ app.use(
     etag: true,
     lastModified: true,
     setHeaders: (res, filePath) => {
-      // Long-lived cache for media, images, and fonts (30 days)
       if (/\.(webp|jpg|jpeg|png|svg|ico|woff2|woff|mp4|webm)$/i.test(filePath)) {
         res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
       } else if (/\.(css|js)$/i.test(filePath)) {
-        // Shorter cache for stylesheets and client scripts (1 day)
         res.setHeader('Cache-Control', 'public, max-age=86400');
       }
     }
@@ -88,12 +88,14 @@ app.use(csrfProtection);
 app.use(optionalAuth);
 app.use(i18nMiddleware);
 
-// Global Template Locals Middleware with cached settings
-let cachedSettings = null;
-let lastSettingsFetch = 0;
-const SETTINGS_CACHE_TTL = 30000; // 30 seconds
+// Global Settings & Normalized WhatsApp Floating Data Injector
+app.use(settingsMiddleware);
 
-app.use(async (req, res, next) => {
+// Dynamic SEO Engine & Structured Data (JSON-LD) Injector
+app.use(seoMiddleware);
+
+// Global Template Locals
+app.use((req, res, next) => {
   const currentLang = req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
   res.locals.appName = APP_CONFIG.NAME;
   res.locals.currentYear = new Date().getFullYear();
@@ -101,18 +103,6 @@ app.use(async (req, res, next) => {
   res.locals.path = req.path;
   res.locals.user = req.user || null;
   res.locals.csrfToken = res.locals.csrfToken || '';
-
-  try {
-    const now = Date.now();
-    if (!cachedSettings || (now - lastSettingsFetch) > SETTINGS_CACHE_TTL) {
-      cachedSettings = await settingModel.getAll();
-      lastSettingsFetch = now;
-    }
-    res.locals.settings = cachedSettings || {};
-  } catch (err) {
-    res.locals.settings = cachedSettings || {};
-  }
-
   next();
 });
 

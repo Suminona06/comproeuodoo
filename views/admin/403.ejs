@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : '403 Akses Ditolak - PT Euodoo CMS' %></title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body style="background-color: var(--color-workspace-bg); min-height: 100vh; display: flex; flex-direction: column;">
+  <!-- Admin Top Bar -->
+  <header style="background-color: var(--color-navy-deep); color: #ffffff; padding: var(--space-sm) 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+    <div class="container flex items-center justify-between">
+      <div class="flex items-center gap-md">
+        <span style="font-weight: 700; letter-spacing: -0.02em;">PT EUODOO CMS</span>
+        <span class="badge badge-info" style="font-size: 11px;">Admin Panel</span>
+      </div>
+      <div class="flex items-center gap-md">
+        <span style="font-size: var(--font-size-body-sm); color: #cbd5e1;"><%= user ? (user.name || user.email) : 'User' %> (<%= user ? user.role : 'Guest' %>)</span>
+        <a href="/admin/logout" style="color: #fca5a5; font-size: var(--font-size-body-sm);">Keluar</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: var(--space-2xl) var(--space-md);">
+    <div style="background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-2xl); max-width: 520px; width: 100%; text-align: center; box-shadow: var(--shadow-level-1);">
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; margin: 0 auto var(--space-md);">
+        !
+      </div>
+      <h1 style="font-size: var(--font-size-h3); color: var(--color-text-main); margin-bottom: var(--space-xs);">403 - Akses Ditolak</h1>
+      <p style="color: var(--color-text-muted); font-size: var(--font-size-body-md); margin-bottom: var(--space-lg); line-height: 1.6;">
+        <%= typeof message !== 'undefined' ? message : 'Role akun Anda tidak memiliki hak akses untuk membuka halaman ini.' %>
+      </p>
+      <div style="display: flex; gap: var(--space-sm); justify-content: center;">
+        <a href="/admin/dashboard" class="btn btn-primary" style="padding: 10px 24px;">Kembali ke Dashboard</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

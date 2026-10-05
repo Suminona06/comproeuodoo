@@ -91,15 +91,15 @@ export const authController = {
 
       const jwtSecret = process.env.JWT_SECRET || 'euodoo_jwt_secret_dev';
       const token = jwt.sign(tokenPayload, jwtSecret, {
-        expiresIn: process.env.JWT_EXPIRES_IN || '24h'
+        expiresIn: process.env.JWT_EXPIRES_IN || '1h'
       });
 
-      // Set HTTP-Only Secure Cookie
+      // Set HTTP-Only Secure Cookie with 1 hour expiration
       res.cookie(APP_CONFIG.SESSION_COOKIE_NAME, token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 60 * 60 * 1000 // 1 hour
       });
 
       logger.info(`Admin successfully authenticated: ${user.email} (${user.role})`);

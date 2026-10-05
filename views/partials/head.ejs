@@ -1,0 +1,72 @@
+<%
+  const currentLanguage = typeof currentLang !== 'undefined' ? currentLang : 'id';
+  const seoObj = typeof seo !== 'undefined' ? seo : {};
+  const settingsObj = typeof settings !== 'undefined' ? settings : {};
+
+  // Resolve title
+  const resolvedTitle = seoObj.title || (typeof title !== 'undefined' ? title : '') || 
+    (currentLanguage === 'en' ? settingsObj.meta_title_en : settingsObj.meta_title_id) || 
+    'PT Euodoo - Manufaktur Kantong Plastik Ramah Lingkungan 100% Degradable';
+
+  // Resolve description
+  const resolvedDescription = seoObj.description || (typeof metaDescription !== 'undefined' ? metaDescription : '') || 
+    (currentLanguage === 'en' ? settingsObj.meta_description_en : settingsObj.meta_description_id) || 
+    'PT. EUODOO memproduksi kantong plastik HDPE dan LLDPE 100% degradable ramah lingkungan sejak 1990 untuk retail modern, supermarket, dan sektor industri.';
+
+  // Resolve canonical & alternates
+  const canonicalUrl = seoObj.canonicalUrl || (typeof path !== 'undefined' ? path : '/');
+  const alternateId = seoObj.alternateUrls ? seoObj.alternateUrls.id : `${canonicalUrl}?lang=id`;
+  const alternateEn = seoObj.alternateUrls ? seoObj.alternateUrls.en : `${canonicalUrl}?lang=en`;
+  const alternateDefault = seoObj.alternateUrls ? seoObj.alternateUrls.xDefault : canonicalUrl;
+
+  // Resolve Open Graph & Social
+  const ogTitle = seoObj.ogTitle || resolvedTitle;
+  const ogDesc = seoObj.ogDescription || resolvedDescription;
+  const ogImg = seoObj.ogImage || (typeof ogImage !== 'undefined' && ogImage ? ogImage : '/images/hero-factory-precision.webp');
+  const ogTypeResolved = seoObj.ogType || (typeof ogType !== 'undefined' ? ogType : 'website');
+%>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<title><%= resolvedTitle %></title>
+<meta name="description" content="<%= resolvedDescription %>">
+<meta name="keywords" content="<%= seoObj.keywords || 'kantong plastik ramah lingkungan, oxium, hdpe, lldpe, karung plastik, pt euodoo' %>">
+<meta name="author" content="PT Euodoo">
+<meta name="robots" content="<%= seoObj.robots || 'index, follow' %>">
+
+<!-- Alternate Language Links & Canonical -->
+<link rel="canonical" href="<%= canonicalUrl %>">
+<link rel="alternate" hreflang="id" href="<%= alternateId %>">
+<link rel="alternate" hreflang="en" href="<%= alternateEn %>">
+<link rel="alternate" hreflang="x-default" href="<%= alternateDefault %>">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="<%= ogTypeResolved %>">
+<meta property="og:title" content="<%= ogTitle %>">
+<meta property="og:description" content="<%= ogDesc %>">
+<meta property="og:url" content="<%= canonicalUrl %>">
+<meta property="og:site_name" content="PT Euodoo">
+<meta property="og:image" content="<%= ogImg %>">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<%= ogTitle %>">
+<meta name="twitter:description" content="<%= ogDesc %>">
+<meta name="twitter:image" content="<%= ogImg %>">
+
+<!-- Preconnect to Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+<!-- Design System CSS Tokens & Core Styles -->
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+
+<!-- Structured Data (JSON-LD) -->
+<% if (typeof seoObj.renderJsonLd === 'function') { %>
+  <%- seoObj.renderJsonLd() %>
+<% } %>

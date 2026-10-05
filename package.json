@@ -8,8 +8,12 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "migrate": "node database/migrate.js",
-    "seed": "node database/seeds/initial_seed.js",
-    "test": "echo \"No test specified\" && exit 0"
+    "seed": "node database/seeds/v2_seed.js",
+    "seed:v1": "node database/seeds/initial_seed.js",
+    "seed:v2": "node database/seeds/v2_seed.js",
+    "test": "node tests/test-storage-driver.js && node tests/test-modul10-security.js",
+    "test:storage": "node tests/test-storage-driver.js",
+    "test:security": "node tests/test-modul10-security.js"
   },
   "keywords": [
     "express",

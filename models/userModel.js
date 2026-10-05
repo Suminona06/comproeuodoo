@@ -84,6 +84,60 @@ export const userModel = {
       'UPDATE users SET password_hash = ?, failed_attempts = 0, locked_until = NULL WHERE id = ?',
       [newPasswordHash, userId]
     );
+  },
+
+  /**
+   * Count total active superadmin accounts
+   * @returns {Promise<number>}
+   */
+  async countSuperAdmins() {
+    const rows = await query("SELECT COUNT(*) as total FROM users WHERE role = 'superadmin'");
+    return rows[0] ? parseInt(rows[0].total, 10) : 0;
+  },
+
+  /**
+   * Check if a user can be safely deleted without removing the last superadmin
+   * @param {number} userId
+   * @returns {Promise<{ canDelete: boolean, message?: string }>}
+   */
+  async canDeleteUser(userId) {
+    const user = await this.findById(userId);
+    if (!user) {
+      return { canDelete: false, message: 'Pengguna tidak ditemukan.' };
+    }
+    if (user.role === 'superadmin') {
+      const superadminCount = await this.countSuperAdmins();
+      if (superadminCount <= 1) {
+        return {
+          canDelete: false,
+          message: 'Tidak dapat menghapus Superadmin terakhir dalam sistem.'
+        };
+      }
+    }
+    return { canDelete: true };
+  },
+
+  /**
+   * Check if a user can be demoted from superadmin
+   * @param {number} userId
+   * @param {string} targetRole
+   * @returns {Promise<{ canDemote: boolean, message?: string }>}
+   */
+  async canDemoteUser(userId, targetRole) {
+    const user = await this.findById(userId);
+    if (!user) {
+      return { canDemote: false, message: 'Pengguna tidak ditemukan.' };
+    }
+    if (user.role === 'superadmin' && targetRole !== 'superadmin') {
+      const superadminCount = await this.countSuperAdmins();
+      if (superadminCount <= 1) {
+        return {
+          canDemote: false,
+          message: 'Tidak dapat menurunkan role Superadmin terakhir dalam sistem.'
+        };
+      }
+    }
+    return { canDemote: true };
   }
 };
 
