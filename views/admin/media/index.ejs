@@ -138,11 +138,32 @@
     </div>
     <form action="/admin/media/upload?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
       <div class="admin-modal-body">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 0;">
           <label class="form-label" for="file">Pilih Berkas *</label>
-          <input type="file" id="file" name="file" class="form-input" required accept="image/*,video/mp4,video/webm,application/pdf">
-          <div class="form-hint">
-            Format didukung: Gambar (JPG, PNG, WebP, SVG - dikonversi otomatis ke WebP), Video (MP4, WebM maks 30MB), Dokumen (PDF).
+          <div class="custom-file-upload">
+            <input type="file" id="file" name="file" required accept="image/*,video/mp4,video/webm,application/pdf">
+            <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret berkas">
+              <div class="file-upload-preview">
+                <img src="" alt="Pratinjau" style="display: none;">
+                <div class="preview-placeholder-icon">
+                  <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+              </div>
+              <div class="file-upload-content">
+                <div class="file-upload-header">
+                  <span class="file-upload-btn-pill">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <span>Pilih Berkas</span>
+                  </span>
+                  <span class="file-upload-label">atau seret ke sini</span>
+                </div>
+                <div class="file-upload-filename">Belum ada berkas dipilih</div>
+                <div class="file-upload-meta">Gambar (JPG, PNG, WebP), Video (MP4, WebM maks 30MB), PDF.</div>
+              </div>
+              <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>

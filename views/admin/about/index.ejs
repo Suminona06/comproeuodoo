@@ -81,13 +81,31 @@
 
       <div class="form-group" style="margin-bottom: 0;">
         <label for="about_image" class="form-label">Unggah Foto Dokumentasi Pabrik / Fasilitas (Opsional)</label>
-        <input type="file" id="about_image" name="about_image" class="form-input" accept="image/jpeg,image/png,image/webp">
-        <% if (about.image_url) { %>
-          <div style="margin-top: 8px; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
-            <span>Foto aktif saat ini:</span>
-            <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11.5px;"><%= about.image_url %></code>
+        <div class="custom-file-upload" data-initial-preview="<%= about.image_url || '' %>">
+          <input type="file" id="about_image" name="about_image" accept="image/jpeg,image/png,image/webp">
+          <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret foto dokumentasi">
+            <div class="file-upload-preview">
+              <img src="<%= about.image_url || '' %>" alt="Pratinjau" style="display: none;">
+              <div class="preview-placeholder-icon">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              </div>
+            </div>
+            <div class="file-upload-content">
+              <div class="file-upload-header">
+                <span class="file-upload-btn-pill">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  <span>Pilih Berkas</span>
+                </span>
+                <span class="file-upload-label">atau seret ke sini</span>
+              </div>
+              <div class="file-upload-filename"><%= about.image_url ? 'Foto fasilitas aktif tersimpan' : 'Belum ada berkas dipilih' %></div>
+              <div class="file-upload-meta">JPG, PNG, WebP. Maks 5MB.</div>
+            </div>
+            <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
           </div>
-        <% } %>
+        </div>
       </div>
     </div>
 

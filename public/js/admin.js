@@ -172,6 +172,150 @@ document.addEventListener('DOMContentLoaded', () => {
       switchAboutTab(initialTab);
     }
   }
+
+  // Custom File Upload Component Controller
+  function initCustomFileUploads() {
+    document.querySelectorAll('.custom-file-upload').forEach(wrapper => {
+      if (wrapper.dataset.initialized === 'true') return;
+      wrapper.dataset.initialized = 'true';
+
+      const input = wrapper.querySelector('input[type="file"]');
+      const dropzone = wrapper.querySelector('.file-upload-dropzone');
+      const filenameEl = wrapper.querySelector('.file-upload-filename');
+      const previewImg = wrapper.querySelector('.file-upload-preview img');
+      const placeholderIcon = wrapper.querySelector('.preview-placeholder-icon');
+      const clearBtn = wrapper.querySelector('.file-upload-clear-btn');
+      const initialPreview = wrapper.getAttribute('data-initial-preview') || '';
+      const initialFilename = wrapper.getAttribute('data-initial-filename') || (initialPreview ? initialPreview.split('/').pop() : 'Belum ada berkas dipilih');
+
+      // Click dropzone triggers file picker
+      if (dropzone && input) {
+        dropzone.addEventListener('click', (e) => {
+          if (e.target.closest('.file-upload-clear-btn')) return;
+          input.click();
+        });
+
+        // Keyboard navigation (Enter / Space)
+        dropzone.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            input.click();
+          }
+        });
+
+        // Drag & Drop
+        ['dragenter', 'dragover'].forEach(eventName => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('dragover');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('dragover');
+          });
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            input.files = e.dataTransfer.files;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+      }
+
+      function formatBytes(bytes) {
+        if (!bytes) return '';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      }
+
+      function updatePreviewState() {
+        if (!input) return;
+        const file = input.files && input.files[0];
+
+        if (file) {
+          // File selected
+          if (filenameEl) {
+            filenameEl.textContent = `${file.name} (${formatBytes(file.size)})`;
+            filenameEl.title = file.name;
+          }
+          if (clearBtn) clearBtn.style.display = 'inline-flex';
+
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              if (previewImg) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+              }
+              if (placeholderIcon) placeholderIcon.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+          } else {
+            // Non-image (video / doc)
+            if (previewImg) previewImg.style.display = 'none';
+            if (placeholderIcon) {
+              placeholderIcon.style.display = 'flex';
+              placeholderIcon.innerHTML = `<span style="font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase;">${file.name.split('.').pop() || 'FILE'}</span>`;
+            }
+          }
+        } else if (initialPreview) {
+          // Revert to initial preview
+          if (filenameEl) {
+            filenameEl.textContent = initialFilename;
+            filenameEl.title = initialPreview;
+          }
+          if (previewImg) {
+            previewImg.src = initialPreview;
+            previewImg.style.display = 'block';
+          }
+          if (placeholderIcon) placeholderIcon.style.display = 'none';
+          if (clearBtn) clearBtn.style.display = 'none';
+        } else {
+          // Empty state
+          if (filenameEl) {
+            filenameEl.textContent = 'Belum ada berkas dipilih';
+            filenameEl.title = '';
+          }
+          if (previewImg) {
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+          }
+          if (placeholderIcon) {
+            placeholderIcon.style.display = 'flex';
+            placeholderIcon.innerHTML = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>`;
+          }
+          if (clearBtn) clearBtn.style.display = 'none';
+        }
+      }
+
+      if (input) {
+        input.addEventListener('change', updatePreviewState);
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (input) {
+            input.value = '';
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+      }
+
+      // Initialize initial state
+      updatePreviewState();
+    });
+  }
+
+  initCustomFileUploads();
+  window.initCustomFileUploads = initCustomFileUploads;
 });
 
 // Toast notification helper

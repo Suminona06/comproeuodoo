@@ -46,17 +46,37 @@
 
     <div class="form-group">
       <label class="form-label" for="media_file">Ganti Berkas Media (Opsional)</label>
-      <div style="margin-bottom: 8px; font-size: 11.5px; color: var(--text-muted);">
-        Media saat ini:
-        <% if (banner.media_type === 'video' && banner.video_url) { %>
-          <a href="<%= banner.video_url %>" target="_blank" style="color: var(--primary); text-decoration: underline;">Lihat Video Aktif</a>
-        <% } else if (banner.image_url) { %>
-          <a href="<%= banner.image_url %>" target="_blank" style="color: var(--primary); text-decoration: underline;">Lihat Gambar Aktif</a>
-        <% } else { %>
-          <span>-</span>
-        <% } %>
+      <div class="custom-file-upload" data-initial-preview="<%= (banner.media_type !== 'video' && banner.image_url) ? banner.image_url : '' %>">
+        <input type="file" id="media_file" name="media_file" accept="image/*,video/mp4,video/webm">
+        <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret berkas media">
+          <div class="file-upload-preview">
+            <img src="<%= (banner.media_type !== 'video' && banner.image_url) ? banner.image_url : '' %>" alt="Pratinjau" style="display: none;">
+            <div class="preview-placeholder-icon">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+          </div>
+          <div class="file-upload-content">
+            <div class="file-upload-header">
+              <span class="file-upload-btn-pill">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Pilih Berkas</span>
+              </span>
+              <span class="file-upload-label">atau seret dan lepas ke sini</span>
+            </div>
+            <div class="file-upload-filename"><%= (banner.image_url || banner.video_url) ? 'Media aktif tersimpan' : 'Belum ada berkas dipilih' %></div>
+            <div class="file-upload-meta">
+              <% if (banner.media_type === 'video' && banner.video_url) { %>
+                Format aktif: Video MP4. Unggah file baru untuk menggantinya.
+              <% } else { %>
+                Gambar (JPG, PNG, WebP) atau Video (MP4, WebM). Maks 25MB.
+              <% } %>
+            </div>
+          </div>
+          <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
       </div>
-      <input type="file" id="media_file" name="media_file" class="form-input" accept="image/*,video/mp4,video/webm">
     </div>
 
     <div class="form-row-3">

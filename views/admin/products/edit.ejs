@@ -81,25 +81,44 @@
   <!-- Card 2: Foto Produk -->
   <div class="form-card">
     <div class="form-card-title">2. Foto Utama Produk</div>
-    <% if (product.image_url) { %>
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-        <div style="width: 80px; height: 80px; background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-sm); overflow: hidden;">
-          <img src="<%= product.image_url %>" alt="Current Photo" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <span style="font-size: 11.5px; color: var(--text-muted);">Foto aktif saat ini. Unggah file baru untuk menggantinya.</span>
-      </div>
-    <% } %>
-    <div class="form-group">
+    <div class="form-group" style="margin-bottom: 0;">
       <label class="form-label" for="image_file">Ganti Foto Utama (WebP otomatis)</label>
-      <input type="file" id="image_file" name="image_file" class="form-input" accept="image/*">
+      <div class="custom-file-upload" data-initial-preview="<%= product.image_url || '' %>">
+        <input type="file" id="image_file" name="image_file" accept="image/*">
+        <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret foto produk">
+          <div class="file-upload-preview">
+            <img src="<%= product.image_url || '' %>" alt="Pratinjau Foto" style="display: none;">
+            <div class="preview-placeholder-icon">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+          </div>
+          <div class="file-upload-content">
+            <div class="file-upload-header">
+              <span class="file-upload-btn-pill">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Pilih Berkas</span>
+              </span>
+              <span class="file-upload-label">atau seret dan lepas ke sini</span>
+            </div>
+            <div class="file-upload-filename">Belum ada berkas dipilih</div>
+            <div class="file-upload-meta">PNG, JPG, WebP. Maks 5MB (otomatis dikompresi ke WebP 800px).</div>
+          </div>
+          <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Card 3: Spesifikasi Teknis Dinamis -->
   <div class="form-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">3. Tabel Spesifikasi Teknis</div>
-      <button type="button" id="btnAddSpecRow" class="btn btn-secondary btn-sm" onclick="addSpecRow()">+ Tambah Baris Parameter</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
+      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">3. Tabel Spesifikasi Teknis (Parameter &amp; Nilai)</div>
+      <button type="button" id="btnAddSpecRow" class="btn-add-row" onclick="addSpecRow()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Tambah Baris Parameter</span>
+      </button>
     </div>
 
     <div id="specsContainer">
@@ -107,20 +126,32 @@
       <% const specKeys = Object.keys(specs); %>
       <% if (specKeys.length > 0) { %>
         <% specKeys.forEach(function(k) { %>
-          <div class="form-row-2" style="margin-bottom: 8px;">
-            <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="<%= k %>">
-            <div style="display: flex; gap: 6px;">
+          <div class="spec-item-row">
+            <div class="spec-col-key">
+              <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="<%= k %>">
+            </div>
+            <div class="spec-col-val">
               <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="<%= specs[k] %>">
-              <button type="button" class="btn btn-danger btn-sm btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris">&times;</button>
+            </div>
+            <div class="spec-col-action">
+              <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              </button>
             </div>
           </div>
         <% }); %>
       <% } else { %>
-        <div class="form-row-2" style="margin-bottom: 8px;">
-          <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Bahan Baku)" value="Bahan Baku">
-          <div style="display: flex; gap: 6px;">
+        <div class="spec-item-row">
+          <div class="spec-col-key">
+            <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Bahan Baku)" value="Bahan Baku">
+          </div>
+          <div class="spec-col-val">
             <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="Polyethylene Resins">
-            <button type="button" class="btn btn-danger btn-sm btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris">&times;</button>
+          </div>
+          <div class="spec-col-action">
+            <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </button>
           </div>
         </div>
       <% } %>
@@ -129,9 +160,12 @@
 
   <!-- Card 4: Varian Produk Dinamis -->
   <div class="form-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
       <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">4. Varian Ukuran &amp; Spesifikasi Produk</div>
-      <button type="button" id="btnAddVariantRow" class="btn btn-secondary btn-sm" onclick="addVariantRow()">+ Tambah Baris Varian</button>
+      <button type="button" id="btnAddVariantRow" class="btn-add-row" onclick="addVariantRow()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Tambah Baris Varian</span>
+      </button>
     </div>
 
     <div class="table-scroll-wrapper">
@@ -142,7 +176,7 @@
             <th>Ketebalan</th>
             <th>Pilihan Warna</th>
             <th>Bahan / Tipe</th>
-            <th style="width: 50px;">Aksi</th>
+            <th style="width: 54px; text-align: center;">Aksi</th>
           </tr>
         </thead>
         <tbody id="variantsBody">
@@ -153,7 +187,11 @@
                 <td><input type="text" name="var_thickness[]" class="form-input" value="<%= v.thickness || '' %>"></td>
                 <td><input type="text" name="var_color[]" class="form-input" value="<%= v.color || '' %>"></td>
                 <td><input type="text" name="var_material[]" class="form-input" value="<%= v.material_type || '' %>"></td>
-                <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian">&times;</button></td>
+                <td style="text-align: center; vertical-align: middle;">
+                  <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                </td>
               </tr>
             <% }); %>
           <% } else { %>
@@ -162,7 +200,11 @@
               <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.035 mm"></td>
               <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam"></td>
               <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Virgin"></td>
-              <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian">&times;</button></td>
+              <td style="text-align: center; vertical-align: middle;">
+                <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+              </td>
             </tr>
           <% } %>
         </tbody>
@@ -205,13 +247,18 @@
   function addSpecRow() {
     const container = document.getElementById('specsContainer');
     const div = document.createElement('div');
-    div.className = 'form-row-2';
-    div.style.marginBottom = '8px';
+    div.className = 'spec-item-row';
     div.innerHTML = `
-      <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Warna)">
-      <div style="display: flex; gap: 6px;">
+      <div class="spec-col-key">
+        <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Warna)">
+      </div>
+      <div class="spec-col-val">
         <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: Transparan / Custom)">
-        <button type="button" class="btn btn-danger btn-sm btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris">&times;</button>
+      </div>
+      <div class="spec-col-action">
+        <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        </button>
       </div>
     `;
     container.appendChild(div);
@@ -221,7 +268,7 @@
 
   function removeSpecRow(btn) {
     const container = document.getElementById('specsContainer');
-    const rows = container.querySelectorAll('.form-row-2');
+    const rows = container.querySelectorAll('.spec-item-row, .form-row-2');
     if (rows.length <= 1) {
       if (typeof showToast === 'function') {
         showToast('Minimal 1 baris spesifikasi teknis harus tersedia.');
@@ -230,7 +277,7 @@
       }
       return;
     }
-    const row = btn.closest('.form-row-2');
+    const row = btn.closest('.spec-item-row, .form-row-2');
     if (row) row.remove();
   }
   window.removeSpecRow = removeSpecRow;
@@ -243,7 +290,11 @@
       <td><input type="text" name="var_thickness[]" class="form-input" placeholder="Contoh: 0.045 mm"></td>
       <td><input type="text" name="var_color[]" class="form-input" placeholder="Contoh: Custom Pantone"></td>
       <td><input type="text" name="var_material[]" class="form-input" placeholder="Contoh: Biodegradable"></td>
-      <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian">&times;</button></td>
+      <td style="text-align: center; vertical-align: middle;">
+        <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        </button>
+      </td>
     `;
     tbody.appendChild(tr);
     tr.querySelector('input').focus();
