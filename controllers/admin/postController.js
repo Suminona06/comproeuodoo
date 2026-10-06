@@ -4,6 +4,7 @@ import slugRedirectModel from '../../models/slugRedirectModel.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import { invalidateSitemapCache } from '../../utils/sitemapGenerator.js';
+import { sanitizeArticleHtml } from '../../utils/sanitizer.js';
 import logger from '../../utils/logger.js';
 
 const formatSlug = (text) => {
@@ -135,14 +136,17 @@ export const postController = {
         scheduleDate = new Date(scheduled_at);
       }
 
+      const cleanContentId = content_id ? sanitizeArticleHtml(content_id) : null;
+      const cleanContentEn = content_en ? sanitizeArticleHtml(content_en) : null;
+
       await postModel.create({
         title_id: title_id.trim(),
         title_en: title_en ? title_en.trim() : title_id.trim(),
         slug: cleanSlug,
         type: type || 'berita',
         category_id: category_id ? parseInt(category_id, 10) : null,
-        content_id: content_id || null,
-        content_en: content_en || null,
+        content_id: cleanContentId,
+        content_en: cleanContentEn,
         image_url: imageUrl,
         status: postStatus,
         scheduled_at: scheduleDate,
@@ -230,13 +234,16 @@ export const postController = {
         });
       }
 
+      const cleanContentId = content_id !== undefined ? (content_id ? sanitizeArticleHtml(content_id) : null) : post.content_id;
+      const cleanContentEn = content_en !== undefined ? (content_en ? sanitizeArticleHtml(content_en) : null) : post.content_en;
+
       const updateData = {
         title_id: title_id ? title_id.trim() : post.title_id,
         title_en: title_en ? title_en.trim() : post.title_en,
         type: type || post.type,
         category_id: category_id ? parseInt(category_id, 10) : null,
-        content_id: content_id !== undefined ? content_id : post.content_id,
-        content_en: content_en !== undefined ? content_en : post.content_en,
+        content_id: cleanContentId,
+        content_en: cleanContentEn,
         status: status || post.status,
         scheduled_at: status === 'scheduled' && scheduled_at ? new Date(scheduled_at) : null,
         is_headline: is_headline === 'on' || is_headline === '1' || is_headline === true,

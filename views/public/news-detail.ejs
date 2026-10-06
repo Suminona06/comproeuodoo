@@ -140,7 +140,16 @@
         <div style="background-color: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: 20px; padding: 40px; box-shadow: 0 4px 16px -2px rgba(10, 25, 47, 0.05); margin-bottom: 40px;">
           <% if (postContent) { %>
             <div class="article-prose">
-              <%- postContent %>
+              <%
+                let renderedArticleHtml = postContent;
+                if (renderedArticleHtml && !/<[a-z][\s\S]*>/i.test(renderedArticleHtml)) {
+                  renderedArticleHtml = renderedArticleHtml
+                    .split(/\n\s*\n/)
+                    .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+                    .join('');
+                }
+              %>
+              <%- renderedArticleHtml %>
             </div>
           <% } else { %>
             <p style="color: var(--color-text-muted); font-style: italic; font-size: 15px;">
