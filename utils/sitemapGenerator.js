@@ -33,7 +33,7 @@ export async function generateSitemap(baseUrl, options = {}) {
   ];
 
   const [products, posts] = await Promise.all([
-    productModel.findAll({ isActive: true }),
+    productModel.findAll({ status: 'published' }),
     postModel.findAll({ status: 'published' })
   ]);
 

@@ -16,13 +16,13 @@
       : (currentLang === 'en' ? 'Request a Quote' : 'Minta Penawaran');
     const heroCtaUrl = primaryBanner && primaryBanner.cta_url ? primaryBanner.cta_url : '/contact';
     const heroMediaUrl = primaryBanner && (primaryBanner.image_url || primaryBanner.file_url) ? (primaryBanner.image_url || primaryBanner.file_url) : '/images/hero-factory.jpg';
-    const isVideoBanner = primaryBanner && primaryBanner.media_type === 'video' && primaryBanner.video_url;
+    const isVideoBanner = primaryBanner && primaryBanner.media_type === 'video' && (primaryBanner.video_url || primaryBanner.file_url);
   %>
   <section class="hero" id="hero">
     <div class="hero-bg">
       <% if (isVideoBanner) { %>
         <video autoplay muted loop playsinline preload="metadata" poster="<%= primaryBanner.poster_url || '/images/hero-factory.jpg' %>">
-          <source src="<%= primaryBanner.video_url %>" type="video/mp4">
+          <source src="<%= primaryBanner.video_url || primaryBanner.file_url %>" type="video/mp4">
         </video>
       <% } else { %>
         <img src="<%= heroMediaUrl %>" alt="Pabrik Manufaktur PT. EUODOO Bandung" fetchpriority="high">

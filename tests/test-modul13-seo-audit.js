@@ -102,7 +102,16 @@ async function runModul13Tests() {
   console.log('\n[TEST 7] Testing Native Lazy-Loading & Media Best Practices in Views...');
   const homeHtml = await (await fetch(`${BASE_URL}/`)).text();
   assert.ok(homeHtml.includes('loading="lazy"'), 'Homepage must contain native loading="lazy" for below-fold images');
-  assert.ok(homeHtml.includes('preload="metadata"'), 'Video banners must use preload="metadata" for bandwidth efficiency');
+
+  // Verify video banner specification: template must enforce preload="metadata" and poster image fallback
+  const fs = await import('fs');
+  const indexTemplate = fs.readFileSync(new URL('../views/public/index.ejs', import.meta.url), 'utf8');
+  assert.ok(indexTemplate.includes('preload="metadata"'), 'Video banners in template must use preload="metadata" for bandwidth efficiency');
+  assert.ok(indexTemplate.includes('poster='), 'Video banners in template must provide a poster image');
+  if (homeHtml.includes('<video')) {
+    assert.ok(homeHtml.includes('preload="metadata"'), 'Rendered video must include preload="metadata"');
+    assert.ok(homeHtml.includes('poster='), 'Rendered video must include poster attribute');
+  }
 
   const newsHtml = await (await fetch(`${BASE_URL}/news`)).text();
   assert.ok(newsHtml.includes('loading="lazy"'), 'News listing must apply loading="lazy" on cards');
@@ -113,8 +122,8 @@ async function runModul13Tests() {
   // ==========================================
   console.log('\n[TEST 8] Testing Schema.org Structured Data (JSON-LD)...');
   // 8a: Organization Schema on Homepage
-  assert.ok(homeHtml.includes('"@type":"Organization"'), 'Homepage must inject Organization schema');
-  assert.ok(homeHtml.includes('"name":"PT Euodoo"'), 'Organization schema must declare company name');
+  assert.ok(homeHtml.includes('"@type": "Organization"') || homeHtml.includes('"@type":"Organization"'), 'Homepage must inject Organization schema');
+  assert.ok(homeHtml.includes('"name": "PT Euodoo"') || homeHtml.includes('"name":"PT Euodoo"'), 'Organization schema must declare company name');
 
   // 8b: Article Schema on News Detail
   const newsDetailHtml = await (await fetch(`${BASE_URL}/news/mengenal-teknologi-oxium-plastik-biodegradable`)).text();
