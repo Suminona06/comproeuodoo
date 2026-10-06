@@ -58,7 +58,8 @@ async function runKelompokCTests() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Cookie': initialCookie
+      'Cookie': initialCookie,
+      'x-test-bypass-rate-limit': 'true'
     },
     body: new URLSearchParams({
       email: 'admin@euodoo.com',
@@ -155,6 +156,7 @@ async function runKelompokCTests() {
   console.log('\n========================================================================');
   console.log('ALL KELOMPOK C TASKS (T-75) PASSED SUCCESSFULLY!');
   console.log('========================================================================\n');
+  process.exit(0);
 }
 
 runKelompokCTests().catch((err) => {

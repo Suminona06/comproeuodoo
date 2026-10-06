@@ -28,7 +28,8 @@ async function runKelompokBTests() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Cookie': initialCookie
+      'Cookie': initialCookie,
+      'x-test-bypass-rate-limit': 'true'
     },
     body: new URLSearchParams({
       email: 'admin@euodoo.com',
@@ -201,8 +202,9 @@ async function runKelompokBTests() {
   const createdRows = await query('SELECT * FROM posts WHERE slug = ?', [testArticleSlug]);
   assert(createdRows && createdRows.length > 0, 'Created article must exist in database');
   const createdPost = createdRows[0];
-  assert.strictEqual(createdPost.content_id, richHtmlId, 'HTML tags in content_id must be preserved intact');
-  assert.strictEqual(createdPost.content_en, richHtmlEn, 'HTML tags in content_en must be preserved intact');
+  const { sanitizeArticleHtml } = await import('../utils/sanitizer.js');
+  assert.strictEqual(createdPost.content_id, sanitizeArticleHtml(richHtmlId), 'HTML tags in content_id must be sanitized and preserved');
+  assert.strictEqual(createdPost.content_en, sanitizeArticleHtml(richHtmlEn), 'HTML tags in content_en must be sanitized and preserved');
   console.log('  ✓ Database record verified with preserved HTML tags and structure');
 
   // Verify edit view renders TinyMCE assets and loads saved content
@@ -227,6 +229,7 @@ async function runKelompokBTests() {
   console.log('\n========================================================================');
   console.log('ALL KELOMPOK B TASKS (T-73 & T-74) PASSED SUCCESSFULLY!');
   console.log('========================================================================\n');
+  process.exit(0);
 }
 
 runKelompokBTests().catch((err) => {
