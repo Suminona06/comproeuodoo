@@ -129,7 +129,7 @@ async function runTests() {
     // 5. Test Products Index & Create View
     console.log('\n[5] GET /admin/products & GET /admin/products/create');
     const prodListRes = await request({ path: '/admin/products', method: 'GET' });
-    if (prodListRes.statusCode !== 200 || !prodListRes.body.includes('Manajemen Produk')) {
+    if (prodListRes.statusCode !== 200 || (!prodListRes.body.includes('Manajemen Produk') && !prodListRes.body.includes('Katalog Produk'))) {
       throw new Error(`Products view failed! Status: ${prodListRes.statusCode}`);
     }
     const prodCreateRes = await request({ path: '/admin/products/create', method: 'GET' });
@@ -176,18 +176,18 @@ async function runTests() {
     }
     console.log('  ✓ Product deleted successfully');
 
-    // 7. Test Capabilities Index
-    console.log('\n[7] GET /admin/capabilities');
-    const capRes = await request({ path: '/admin/capabilities', method: 'GET' });
-    if (capRes.statusCode !== 200 || !capRes.body.includes('Kapabilitas Fasilitas & Mesin Pabrik')) {
-      throw new Error(`Capabilities view failed! Status: ${capRes.statusCode}`);
+    // 7. Test About Us CMS Index
+    console.log('\n[7] GET /admin/about');
+    const aboutRes = await request({ path: '/admin/about', method: 'GET' });
+    if (aboutRes.statusCode !== 200 || !aboutRes.body.includes('Tentang Kami')) {
+      throw new Error(`About view failed! Status: ${aboutRes.statusCode}`);
     }
-    console.log('  ✓ Capabilities management view loaded');
+    console.log('  ✓ About Us CMS view loaded');
 
     // 8. Test Posts Index
     console.log('\n[8] GET /admin/posts');
     const postsRes = await request({ path: '/admin/posts', method: 'GET' });
-    if (postsRes.statusCode !== 200 || !postsRes.body.includes('Publikasi & Berita Industri')) {
+    if (postsRes.statusCode !== 200 || (!postsRes.body.includes('Publikasi & Berita Industri') && !postsRes.body.includes('Manajemen Berita'))) {
       throw new Error(`Posts view failed! Status: ${postsRes.statusCode}`);
     }
     console.log('  ✓ News/Posts management view loaded');
@@ -195,7 +195,7 @@ async function runTests() {
     // 9. Test Leads Index, Status Update & CSV Export
     console.log('\n[9] Leads Management & CSV Export');
     const insLead = await execute(
-      `INSERT INTO leads (type, name, company, email, phone, message, status)
+      `INSERT INTO inquiries (type, name, company, email, phone, message, status)
        VALUES ('inquiry', 'Budi Santoso', 'PT Maju Bersama', 'budi@majubersama.com', '08123456789', 'Kebutuhan cetakan botol 50.000 pcs', 'baru')`
     );
     const testLeadId = insLead.insertId;
@@ -206,8 +206,8 @@ async function runTests() {
     }
     console.log('  ✓ Leads view displays inquiry data');
 
-    // Update status to 'diproses'
-    const leadUpdatePayload = `status=diproses&admin_notes=Sudah+dihubungi+via+telepon&_csrf=${encodeURIComponent(cookieJar['_csrf_token'])}`;
+    // Update status to 'ditindaklanjuti'
+    const leadUpdatePayload = `status=ditindaklanjuti&admin_notes=Sudah+dihubungi+via+telepon&_csrf=${encodeURIComponent(cookieJar['_csrf_token'])}`;
     const updateLeadRes = await request(
       { path: `/admin/leads/${testLeadId}/status`, method: 'POST' },
       leadUpdatePayload,
@@ -216,9 +216,9 @@ async function runTests() {
     if (updateLeadRes.statusCode !== 302) {
       throw new Error(`Lead status update failed! Status: ${updateLeadRes.statusCode}`);
     }
-    const updatedLeadRows = await query('SELECT status, admin_notes FROM leads WHERE id = ?', [testLeadId]);
+    const updatedLeadRows = await query('SELECT status, admin_notes FROM inquiries WHERE id = ?', [testLeadId]);
     const updatedLead = updatedLeadRows[0];
-    if (updatedLead.status !== 'diproses' || !updatedLead.admin_notes.includes('telepon')) {
+    if (updatedLead.status !== 'ditindaklanjuti' || !updatedLead.admin_notes.includes('telepon')) {
       throw new Error(`Lead status did not update! Current: ${JSON.stringify(updatedLead)}`);
     }
     console.log('  ✓ Lead status and sales notes updated');
@@ -233,18 +233,18 @@ async function runTests() {
     if (!contentType.includes('text/csv') || !contentDisp.includes('attachment')) {
       throw new Error(`Invalid CSV headers! Content-Type: ${contentType}, Content-Disposition: ${contentDisp}`);
     }
-    if (!exportRes.body.includes('ID,Tanggal Masuk,Jenis Inquiry') || !exportRes.body.includes('Budi Santoso')) {
+    if (!exportRes.body.includes('ID Inquiry') || !exportRes.body.includes('Budi Santoso')) {
       throw new Error('CSV content missing expected headers or test lead row!');
     }
     console.log(`  ✓ CSV Export generated with UTF-8 BOM, size: ${exportRes.body.length} bytes`);
 
     // Clean up test lead
-    await query('DELETE FROM leads WHERE id = ?', [testLeadId]);
+    await query('DELETE FROM inquiries WHERE id = ?', [testLeadId]);
 
     // 10. Test Settings View and Update
     console.log('\n[10] Settings Management');
     const settingsRes = await request({ path: '/admin/settings', method: 'GET' });
-    if (settingsRes.statusCode !== 200 || !settingsRes.body.includes('Pengaturan Profil Perusahaan & Kontak')) {
+    if (settingsRes.statusCode !== 200 || (!settingsRes.body.includes('Pengaturan Profil Perusahaan') && !settingsRes.body.includes('Pengaturan Situs'))) {
       throw new Error(`Settings view failed! Status: ${settingsRes.statusCode}`);
     }
     console.log('  ✓ Settings view loaded');

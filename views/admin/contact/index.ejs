@@ -1,0 +1,134 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>CMS Konten Halaman Kontak &amp; Inquiry</h1>
+    <p>Kelola alamat kantor/pabrik dwibahasa, jam kerja, kontak korespondensi, peta Google Maps, dan teks formulir penawaran.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/contact" target="_blank" class="btn btn-secondary" title="Buka Halaman Kontak Publik">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      <span>Lihat Halaman Publik</span>
+    </a>
+  </div>
+</div>
+
+<% if (typeof success !== 'undefined' && success) { %>
+  <div class="alert alert-success" style="margin-bottom: 1.5rem; background-color: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 12px 16px; border-radius: 8px;">
+    <%= success %>
+  </div>
+<% } %>
+
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="alert alert-danger" style="margin-bottom: 1.5rem; background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 12px 16px; border-radius: 8px;">
+    <%= error %>
+  </div>
+<% } %>
+
+<form action="/admin/contact?_csrf=<%= csrfToken %>" method="POST">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <!-- Card 1: Alamat Fisik Kantor & Pabrik Bilingual -->
+  <div class="form-card">
+    <div class="form-card-title">1. Alamat Fisik Resmi Perusahaan (Bilingual)</div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="contact_address_id">Alamat Kantor/Pabrik (Bahasa Indonesia) *</label>
+        <textarea id="contact_address_id" name="contact_address_id" class="form-textarea" rows="3" required placeholder="Contoh: Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214"><%= settings.contact_address_id || '' %></textarea>
+        <div class="form-hint">Ditampilkan pada halaman kontak versi Bahasa Indonesia.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contact_address_en">Alamat Kantor/Pabrik (English) *</label>
+        <textarea id="contact_address_en" name="contact_address_en" class="form-textarea" rows="3" required placeholder="Example: Cigondewah Industrial Estate, Jl. Cigondewah Kaler No. 88, Bandung City, West Java 40214"><%= settings.contact_address_en || '' %></textarea>
+        <div class="form-hint">Ditampilkan pada halaman kontak versi English (?lang=en).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Saluran Komunikasi & Kontak -->
+  <div class="form-card">
+    <div class="form-card-title">2. Saluran Komunikasi &amp; Hotline</div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="contact_email">Email Korespondensi Resmi *</label>
+        <input type="email" id="contact_email" name="contact_email" class="form-input" required value="<%= settings.contact_email || 'info@euodoo.com' %>" placeholder="info@euodoo.com">
+        <div class="form-hint">Email utama penampung pertanyaan dan korespondensi.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contact_phone">Nomor Telepon / Hotline *</label>
+        <input type="text" id="contact_phone" name="contact_phone" class="form-input" required value="<%= settings.contact_phone || '(021) 5366-0000' %>" placeholder="(021) 5366-0000">
+        <div class="form-hint">Nomor telepon kantor pusat atau perwakilan customer care.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Jam Operasional Kerja -->
+  <div class="form-card">
+    <div class="form-card-title">3. Jam Operasional Kerja (Bilingual)</div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="contact_working_hours_id">Jam Operasional (Bahasa Indonesia) *</label>
+        <input type="text" id="contact_working_hours_id" name="contact_working_hours_id" class="form-input" required value="<%= settings.contact_working_hours_id || 'Senin - Jumat: 08.00 - 17.00 WIB | Sabtu: 08.00 - 13.00 WIB' %>" placeholder="Senin - Jumat: 08.00 - 17.00 WIB">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contact_working_hours_en">Jam Operasional (English) *</label>
+        <input type="text" id="contact_working_hours_en" name="contact_working_hours_en" class="form-input" required value="<%= settings.contact_working_hours_en || 'Monday - Friday: 08:00 - 17:00 WIB | Saturday: 08:00 - 13:00 WIB' %>" placeholder="Monday - Friday: 08:00 - 17:00 WIB">
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Google Maps Embed URL -->
+  <div class="form-card">
+    <div class="form-card-title">4. Lokasi Pabrik / Kantor (Google Maps)</div>
+
+    <div class="form-group">
+      <label class="form-label" for="contact_maps_embed_url">URL Embed Iframe Google Maps</label>
+      <input type="text" id="contact_maps_embed_url" name="contact_maps_embed_url" class="form-input" value="<%= settings.contact_maps_embed_url || '' %>" placeholder="https://www.google.com/maps/embed?pb=...">
+      <div class="form-hint">Salin URL dari atribut 'src' iframe sematan Google Maps resmi (hanya URL-nya saja).</div>
+    </div>
+
+    <% if (settings.contact_maps_embed_url) { %>
+      <div style="margin-top: 12px; border-radius: 8px; overflow: hidden; height: 200px; border: 1px solid #e2e8f0;">
+        <iframe src="<%= settings.contact_maps_embed_url %>" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Card 5: Teks Seksi Formulir Inquiry -->
+  <div class="form-card">
+    <div class="form-card-title">5. Teks Seksi Formulir Inquiry &amp; Penawaran (Bilingual)</div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="contact_form_title_id">Judul Form (Bahasa Indonesia) *</label>
+        <input type="text" id="contact_form_title_id" name="contact_form_title_id" class="form-input" required value="<%= settings.contact_form_title_id || 'Konsultasi & Permintaan Penawaran' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contact_form_title_en">Judul Form (English) *</label>
+        <input type="text" id="contact_form_title_en" name="contact_form_title_en" class="form-input" required value="<%= settings.contact_form_title_en || 'Consultation & Request for Quotation' %>">
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="contact_form_subtitle_id">Subjudul / Deskripsi Pengantar (Bahasa Indonesia)</label>
+        <textarea id="contact_form_subtitle_id" name="contact_form_subtitle_id" class="form-textarea" rows="2"><%= settings.contact_form_subtitle_id || 'Kirimkan rincian kebutuhan kantong plastik, ukuran kustom, dan volume pesanan bisnis Anda.' %></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contact_form_subtitle_en">Subjudul / Deskripsi Pengantar (English)</label>
+        <textarea id="contact_form_subtitle_en" name="contact_form_subtitle_en" class="form-textarea" rows="2"><%= settings.contact_form_subtitle_en || 'Submit your plastic bag requirements, custom specifications, and corporate order volume.' %></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions-bar" style="margin-bottom: 2rem;">
+    <button type="submit" class="btn btn-primary" style="padding: 10px 28px; font-size: 14px;">
+      Simpan Konten Halaman Kontak
+    </button>
+  </div>
+</form>
+
+<%- include('../../partials/admin-footer') %>

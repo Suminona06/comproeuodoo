@@ -13,7 +13,7 @@
 <div class="form-card" style="max-width: 680px; margin: 0 auto;">
   <div class="form-card-title">Informasi Merek</div>
 
-  <form action="/admin/brands" method="POST" enctype="multipart/form-data">
+  <form action="/admin/brands?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="name">Nama Merek *</label>

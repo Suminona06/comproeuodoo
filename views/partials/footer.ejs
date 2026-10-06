@@ -2,8 +2,12 @@
   <div class="container">
     <div class="ft-top">
       <a href="/" class="brand" aria-label="Beranda PT Euodoo">
-        <span class="brand-name" style="color:#ffffff;font-size:1.5rem;">PT EUODOO</span>
-        <span class="ft-brand-badge">MANUFACTURING</span>
+        <% if (typeof settings !== 'undefined' && settings && settings.site_logo_footer) { %>
+          <img src="<%= settings.site_logo_footer %>" alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" class="ft-brand-logo" style="max-height: 40px; width: auto; object-fit: contain; display: block;">
+        <% } else { %>
+          <span class="brand-name" style="color:#ffffff;font-size:1.5rem;">PT EUODOO</span>
+          <span class="ft-brand-badge">MANUFACTURING</span>
+        <% } %>
       </a>
       <a href="/contact" class="btn-pill-solid-white" style="padding:0 28px;font-size:14px;">
         <%= currentLang === 'en' ? 'Contact Us' : 'Hubungi Kami' %>

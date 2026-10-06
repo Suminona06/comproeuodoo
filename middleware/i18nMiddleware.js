@@ -41,8 +41,16 @@ const getNestedValue = (obj, keyPath) => {
  * i18n Localization Middleware
  */
 export const i18nMiddleware = (req, res, next) => {
+  const queryLang = typeof req.query?.lang === 'string' ? req.query.lang.toLowerCase() : null;
   const cookieLang = req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME];
-  const lang = APP_CONFIG.SUPPORTED_LANGS.includes(cookieLang) ? cookieLang : APP_CONFIG.DEFAULT_LANG;
+  
+  let lang = APP_CONFIG.DEFAULT_LANG;
+  if (queryLang && APP_CONFIG.SUPPORTED_LANGS.includes(queryLang)) {
+    lang = queryLang;
+    res.cookie(APP_CONFIG.LANG_COOKIE_NAME, lang, { maxAge: 30 * 24 * 3600 * 1000, httpOnly: false, sameSite: 'lax' });
+  } else if (cookieLang && APP_CONFIG.SUPPORTED_LANGS.includes(cookieLang)) {
+    lang = cookieLang;
+  }
 
   const t = (key, params = {}) => {
     // 1. Try current language

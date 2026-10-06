@@ -11,6 +11,7 @@ import postController from '../controllers/admin/postController.js';
 import inquiryController from '../controllers/admin/inquiryController.js';
 import settingController from '../controllers/admin/settingController.js';
 import aboutController from '../controllers/admin/aboutController.js';
+import contactCmsController from '../controllers/admin/contactCmsController.js';
 import { requireAuth, optionalAuth } from '../middleware/authMiddleware.js';
 import { roleMiddleware } from '../middleware/roleMiddleware.js';
 import { loginLimiter } from '../middleware/rateLimiter.js';
@@ -94,9 +95,19 @@ router.get(['/inquiries/:id', '/leads/:id'], requireAuth, roleMiddleware(['super
 router.post(['/inquiries/:id/status', '/leads/:id/status'], requireAuth, roleMiddleware(['superadmin', 'admin']), inquiryController.updateStatus);
 router.post(['/inquiries/:id/delete', '/leads/:id/delete'], requireAuth, roleMiddleware(['superadmin', 'admin']), inquiryController.destroy);
 
-// T-49: Settings (Superadmin Only)
+// T-49, T-64, T-65: Settings (Superadmin Only)
 router.get('/settings', requireAuth, roleMiddleware(['superadmin']), settingController.index);
-router.post('/settings', requireAuth, roleMiddleware(['superadmin']), settingController.update);
+router.post(
+  '/settings',
+  requireAuth,
+  roleMiddleware(['superadmin']),
+  uploadMedia.fields([
+    { name: 'favicon_file', maxCount: 1 },
+    { name: 'logo_header_file', maxCount: 1 },
+    { name: 'logo_footer_file', maxCount: 1 }
+  ]),
+  settingController.update
+);
 
 // T-50: Banners Management (Superadmin & Admin)
 router.get('/banners', requireAuth, roleMiddleware(['superadmin', 'admin']), bannerController.index);
@@ -110,5 +121,9 @@ router.post('/banners/:id/delete', requireAuth, roleMiddleware(['superadmin', 'a
 // About Us Content Management (Superadmin & Admin)
 router.get('/about', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.index);
 router.post('/about', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('about_image'), aboutController.update);
+
+// T-63: CMS Halaman Kontak (Superadmin & Admin)
+router.get('/contact', requireAuth, roleMiddleware(['superadmin', 'admin']), contactCmsController.index);
+router.post('/contact', requireAuth, roleMiddleware(['superadmin', 'admin']), contactCmsController.update);
 
 export default router;

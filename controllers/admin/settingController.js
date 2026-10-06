@@ -1,5 +1,6 @@
 import settingModel from '../../models/settingModel.js';
 import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
+import { saveSettingUpload } from '../../middleware/uploadMiddleware.js';
 import logger from '../../utils/logger.js';
 
 export const settingController = {
@@ -31,12 +32,13 @@ export const settingController = {
         'google_maps_embed',
         'whatsapp_number', 'whatsapp_default_message',
         'whatsapp_button_theme', 'whatsapp_floating_enabled',
-        'facebook_url', 'instagram_url', 'linkedin_url', 'youtube_url'
+        'facebook_url', 'instagram_url', 'linkedin_url', 'youtube_url',
+        'site_favicon', 'site_logo_header', 'site_logo_footer'
       ];
 
       const updates = {};
       for (const key of allowedKeys) {
-        if (req.body[key] !== undefined) {
+        if (req.body && req.body[key] !== undefined) {
           if (key === 'whatsapp_number') {
             updates[key] = req.body[key].replace(/[^0-9]/g, '');
           } else {
@@ -45,8 +47,34 @@ export const settingController = {
         }
       }
 
-      await settingModel.updateMany(updates);
-      clearSettingsCache();
+      // Handle upload favicon file (T-64)
+      if (req.files && req.files.favicon_file && req.files.favicon_file[0]) {
+        const faviconUrl = await saveSettingUpload(req.files.favicon_file[0], 'favicon');
+        if (faviconUrl) {
+          updates['site_favicon'] = faviconUrl;
+        }
+      }
+
+      // Handle upload logo header file (T-65)
+      if (req.files && req.files.logo_header_file && req.files.logo_header_file[0]) {
+        const logoHeaderUrl = await saveSettingUpload(req.files.logo_header_file[0], 'logo-header');
+        if (logoHeaderUrl) {
+          updates['site_logo_header'] = logoHeaderUrl;
+        }
+      }
+
+      // Handle upload logo footer file (T-65)
+      if (req.files && req.files.logo_footer_file && req.files.logo_footer_file[0]) {
+        const logoFooterUrl = await saveSettingUpload(req.files.logo_footer_file[0], 'logo-footer');
+        if (logoFooterUrl) {
+          updates['site_logo_footer'] = logoFooterUrl;
+        }
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await settingModel.updateMany(updates);
+        clearSettingsCache();
+      }
 
       logger.info('Settings updated successfully by ' + (req.user?.email || 'admin'));
       res.redirect('/admin/settings?success=' + encodeURIComponent('Pengaturan situs berhasil diperbarui.'));

@@ -7,10 +7,75 @@
   </div>
 </div>
 
-<form action="/admin/settings" method="POST">
+<form action="/admin/settings?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <!-- Card 0: Identitas Visual (Favicon & Dual Logo) -->
+  <div class="form-card">
+    <div class="form-card-title">1. Identitas Visual &amp; Media (Favicon &amp; Dual Logo)</div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+      <!-- Favicon -->
+      <div class="form-group" style="padding: 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px;">
+        <label class="form-label" for="favicon_file" style="font-weight: 600;">Favicon Situs (.ico / .png / .svg)</label>
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+          <div style="width: 44px; height: 44px; border: 1px solid var(--border-color, #cbd5e1); border-radius: 6px; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <img src="<%= settings.site_favicon || '/favicon.ico' %>" alt="Favicon Aktif" style="width: 28px; height: 28px; object-fit: contain;">
+          </div>
+          <div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-color, #1e293b);">Favicon Aktif Saat Ini</div>
+            <div style="font-size: 11px; color: var(--text-muted, #64748b); word-break: break-all;"><%= settings.site_favicon || '/favicon.ico' %></div>
+          </div>
+        </div>
+        <input type="file" id="favicon_file" name="favicon_file" class="form-input" accept=".ico,image/png,image/svg+xml">
+        <div class="form-hint" style="font-size: 11px; margin-top: 6px;">Format yang didukung: .ico, .png, .svg. Ukuran optimal 32x32 atau 64x64 px.</div>
+      </div>
+
+      <!-- Logo Header -->
+      <div class="form-group" style="padding: 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px;">
+        <label class="form-label" for="logo_header_file" style="font-weight: 600;">Logo Header (Navbar)</label>
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+          <div style="height: 44px; min-width: 100px; padding: 4px 10px; border: 1px solid var(--border-color, #cbd5e1); border-radius: 6px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <% if (settings.site_logo_header) { %>
+              <img src="<%= settings.site_logo_header %>" alt="Logo Header" style="max-height: 32px; max-width: 110px; object-fit: contain;">
+            <% } else { %>
+              <span style="font-size: 11px; font-weight: 700; color: #0a192f; letter-spacing: -0.02em;">EUODOO</span>
+            <% } %>
+          </div>
+          <div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-color, #1e293b);">Logo Navbar (Latar Terang)</div>
+            <div style="font-size: 11px; color: var(--text-muted, #64748b); word-break: break-all;"><%= settings.site_logo_header || 'Default Teks / SVG' %></div>
+          </div>
+        </div>
+        <input type="file" id="logo_header_file" name="logo_header_file" class="form-input" accept="image/png,image/webp,image/svg+xml">
+        <div class="form-hint" style="font-size: 11px; margin-top: 6px;">Format: PNG transparan, WebP, atau SVG. Tampil di bilah navbar atas.</div>
+      </div>
+
+      <!-- Logo Footer -->
+      <div class="form-group" style="padding: 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px;">
+        <label class="form-label" for="logo_footer_file" style="font-weight: 600;">Logo Footer (Latar Gelap)</label>
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+          <div style="height: 44px; min-width: 100px; padding: 4px 10px; border: 1px solid #1e293b; border-radius: 6px; background: #0a192f; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+            <% if (settings.site_logo_footer) { %>
+              <img src="<%= settings.site_logo_footer %>" alt="Logo Footer" style="max-height: 32px; max-width: 110px; object-fit: contain;">
+            <% } else { %>
+              <span style="font-size: 11px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em;">EUODOO</span>
+            <% } %>
+          </div>
+          <div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-color, #1e293b);">Logo Footer (Latar Gelap)</div>
+            <div style="font-size: 11px; color: var(--text-muted, #64748b); word-break: break-all;"><%= settings.site_logo_footer || 'Default Teks Putih' %></div>
+          </div>
+        </div>
+        <input type="file" id="logo_footer_file" name="logo_footer_file" class="form-input" accept="image/png,image/webp,image/svg+xml">
+        <div class="form-hint" style="font-size: 11px; margin-top: 6px;">Format: PNG transparan, WebP, atau SVG (warna putih/terang).</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Card 1: Identitas Korporat -->
   <div class="form-card">
-    <div class="form-card-title">1. Identitas &amp; Kontak Resmi Korporat</div>
+    <div class="form-card-title">2. Identitas &amp; Kontak Resmi Korporat</div>
 
     <div class="form-row-2">
       <div class="form-group">
@@ -37,7 +102,7 @@
 
   <!-- Card 2: Alamat Ganda & Embed Peta -->
   <div class="form-card">
-    <div class="form-card-title">2. Alamat Kantor Jakarta &amp; Pabrik Manufaktur Bandung</div>
+    <div class="form-card-title">3. Alamat Kantor Jakarta &amp; Pabrik Manufaktur Bandung</div>
 
     <div class="form-row-2">
       <div class="form-group">
@@ -59,7 +124,7 @@
 
   <!-- Card 3: WhatsApp & Floating Button -->
   <div class="form-card">
-    <div class="form-card-title">3. Layanan WhatsApp &amp; Tombol Melayang (Floating CTA)</div>
+    <div class="form-card-title">4. Layanan WhatsApp &amp; Tombol Melayang (Floating CTA)</div>
 
     <div class="form-row-2">
       <div class="form-group">
@@ -86,7 +151,7 @@
 
   <!-- Card 4: Media Sosial -->
   <div class="form-card">
-    <div class="form-card-title">4. Akun Media Sosial Resmi Perusahaan</div>
+    <div class="form-card-title">5. Akun Media Sosial Resmi Perusahaan</div>
 
     <div class="form-row-2">
       <div class="form-group">

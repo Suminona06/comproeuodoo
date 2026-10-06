@@ -96,7 +96,7 @@ app.use(seoMiddleware);
 
 // Global Template Locals
 app.use((req, res, next) => {
-  const currentLang = req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
+  const currentLang = req.lang || res.locals.currentLang || req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
   res.locals.appName = APP_CONFIG.NAME;
   res.locals.currentYear = new Date().getFullYear();
   res.locals.currentLang = currentLang;

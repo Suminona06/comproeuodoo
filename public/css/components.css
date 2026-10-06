@@ -943,7 +943,7 @@
   transform: translateX(4px);
 }
 
-/* ═══ HERO SECTION ═══ */
+/* ═══ HERO SECTION & SLIDER CAROUSEL ═══ */
 .hero {
   position: relative;
   overflow: hidden;
@@ -953,6 +953,70 @@
   justify-content: flex-start;
   background-color: var(--navy, #0a192f);
   padding: calc(34px + 64px) 16px 0;
+}
+
+.hero-slider {
+  min-height: 92vh;
+  display: block;
+  padding: 0;
+}
+
+.hero-slides-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 92vh;
+  height: 100%;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 92vh;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s ease;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding: calc(34px + 64px) 16px 64px;
+  box-sizing: border-box;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.hero-slide.is-active .hero-welcome {
+  animation: heroFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.hero-slide.is-active h1 {
+  animation: heroFadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+.hero-slide.is-active .hero-body {
+  animation: heroFadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.hero-slide.is-active .hero-actions {
+  animation: heroFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
+@keyframes heroFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero-bg {
@@ -1016,6 +1080,116 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+}
+
+/* Nav Arrows */
+.hero-slider-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(10, 25, 47, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.hero-slider-prev {
+  left: clamp(16px, 3vw, 40px);
+}
+
+.hero-slider-next {
+  right: clamp(16px, 3vw, 40px);
+}
+
+.hero-slider-nav:hover {
+  background: rgba(0, 63, 139, 0.85);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 24px rgba(0, 63, 139, 0.4);
+}
+
+.hero-slider-nav:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Controls (Dots & Counter) */
+.hero-slider-controls {
+  position: absolute;
+  bottom: 36px;
+  left: clamp(1.5rem, 5vw, 5rem);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(10, 25, 47, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.hero-slider-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.hero-dot.is-active {
+  width: 28px;
+  background: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+.hero-slide-counter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-counter-current {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.hero-counter-sep {
+  opacity: 0.5;
+}
+
+.hero-counter-total {
+  opacity: 0.7;
 }
 
 .hero-explore-indicator {
@@ -2181,9 +2355,26 @@
     min-height: 84vh;
     padding-top: 100px;
   }
+  .hero-slider, .hero-slides-wrapper, .hero-slide {
+    min-height: 84vh;
+  }
+  .hero-slide {
+    padding-top: 90px;
+    padding-bottom: 72px;
+  }
+  .hero-slider-nav {
+    display: none;
+  }
+  .hero-slider-controls {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 14px;
+    gap: 14px;
+  }
   .hero-content {
-    padding-top: 48px;
-    padding-bottom: 64px;
+    padding-top: 36px;
+    padding-bottom: 48px;
     margin-left: 0;
   }
   .hero-explore-indicator {

@@ -148,3 +148,72 @@ window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke
     showAdminToast(successMsg);
   }
 };
+
+// CSRF Protection Auto-Injector for Multipart Forms & Ajax
+(function initCsrfAutoHandler() {
+  function getCsrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta && meta.content) return meta.content;
+    const input = document.querySelector('input[name="_csrf"]');
+    return input ? input.value : '';
+  }
+
+  // Intercept standard form submits (especially multipart forms)
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    if (!form || form.tagName !== 'FORM') return;
+    const method = (form.getAttribute('method') || 'GET').toUpperCase();
+    if (method === 'GET') return;
+
+    const token = getCsrfToken();
+    if (!token) return;
+
+    // Ensure hidden _csrf input exists
+    let hiddenInput = form.querySelector('input[name="_csrf"]');
+    if (!hiddenInput) {
+      hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = '_csrf';
+      hiddenInput.value = token;
+      form.appendChild(hiddenInput);
+    } else if (!hiddenInput.value) {
+      hiddenInput.value = token;
+    }
+
+    // For multipart forms, query param is required because multer parses body after CSRF middleware
+    const encType = form.getAttribute('enctype') || '';
+    if (encType.toLowerCase().includes('multipart/form-data')) {
+      const action = form.getAttribute('action') || window.location.pathname;
+      if (!action.includes('_csrf=')) {
+        const separator = action.includes('?') ? '&' : '?';
+        form.setAttribute('action', `${action}${separator}_csrf=${encodeURIComponent(token)}`);
+      }
+    }
+  }, true);
+
+  // Wrap window.fetch to automatically include X-CSRF-Token on mutative requests
+  const originalFetch = window.fetch;
+  window.fetch = function(url, options = {}) {
+    const method = (options.method || 'GET').toUpperCase();
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+      const token = getCsrfToken();
+      if (token) {
+        options.headers = options.headers || {};
+        if (options.headers instanceof Headers) {
+          if (!options.headers.has('X-CSRF-Token')) {
+            options.headers.set('X-CSRF-Token', token);
+          }
+        } else if (Array.isArray(options.headers)) {
+          if (!options.headers.some(([k]) => k.toLowerCase() === 'x-csrf-token')) {
+            options.headers.push(['X-CSRF-Token', token]);
+          }
+        } else {
+          if (!options.headers['X-CSRF-Token'] && !options.headers['x-csrf-token']) {
+            options.headers['X-CSRF-Token'] = token;
+          }
+        }
+      }
+    }
+    return originalFetch.call(this, url, options);
+  };
+})();

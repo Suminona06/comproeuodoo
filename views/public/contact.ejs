@@ -3,9 +3,23 @@
 
 <%
   const currentLangCode = currentLang || 'id';
-  const companyPhone = (settings && settings.company_phone) || '+6222-6012519';
-  const companyEmail = (settings && settings.company_email) || 'sales@euodoo.com';
-  const waNum = (settings && settings.whatsapp_number) ? settings.whatsapp_number.replace(/\D/g, '') : '628112345678';
+  const isEn = currentLangCode === 'en';
+  const companyPhone = (settings && (settings.contact_phone || settings.company_phone)) || '(021) 5366-0000';
+  const companyEmail = (settings && (settings.contact_email || settings.company_email)) || 'info@euodoo.com';
+  const waNum = (settings && settings.whatsapp_number) ? settings.whatsapp_number.replace(/\D/g, '') : '6281234567890';
+  const contactAddress = isEn 
+    ? (settings && (settings.contact_address_en || settings.factory_address) || 'Cigondewah Industrial Estate, Jl. Cigondewah Kaler No. 88, Bandung City, West Java 40214')
+    : (settings && (settings.contact_address_id || settings.factory_address) || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214');
+  const workingHours = isEn
+    ? (settings && settings.contact_working_hours_en || 'Monday - Friday: 08:00 - 17:00 WIB | Saturday: 08:00 - 13:00 WIB')
+    : (settings && settings.contact_working_hours_id || 'Senin - Jumat: 08.00 - 17.00 WIB | Sabtu: 08.00 - 13.00 WIB');
+  const mapsEmbed = (settings && (settings.contact_maps_embed_url || settings.google_maps_embed)) || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.56347862248!2d107.5731168!3d-6.9034443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e215ac!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid';
+  const formHeading = isEn
+    ? ((settings && settings.contact_form_title_en) || t('contact.form_heading'))
+    : ((settings && settings.contact_form_title_id) || t('contact.form_heading'));
+  const formSubheading = isEn
+    ? ((settings && settings.contact_form_subtitle_en) || t('contact.form_subheading'))
+    : ((settings && settings.contact_form_subtitle_id) || t('contact.form_subheading'));
 %>
 
 <main id="main-content">
@@ -80,10 +94,10 @@
               FORMULIR RFQ B2B
             </div>
             <h2 style="font-size: 1.65rem; color: var(--navy, #0a192f); font-weight: 800; margin: 0 0 8px 0; line-height: 1.3;">
-              <%= t('contact.form_heading') %>
+              <%= formHeading %>
             </h2>
             <p style="color: var(--text-variant, #424753); font-size: 14.5px; line-height: 1.6; margin: 0;">
-              <%= t('contact.form_subheading') %>
+              <%= formSubheading %>
             </p>
           </div>
 
@@ -268,12 +282,12 @@
               </div>
             </div>
             <p style="font-size: 13.5px; color: var(--text-variant, #424753); line-height: 1.6; margin-bottom: 10px;">
-              Jl. Paralon II No. 21 Cijerah - Cigondewah, Bandung 40214, Jawa Barat - Indonesia
+              <%= contactAddress %>
             </p>
             <div style="font-size: 13px; color: var(--navy, #0a192f); line-height: 1.6;">
-              <div><strong>Telepon:</strong> <%= companyPhone %></div>
-              <div><strong>Fax:</strong> +6222-6074730</div>
-              <div><strong>Operasional:</strong> Senin – Jumat: 08:00 – 17:00 WIB</div>
+              <div><strong>Telepon / Hotline:</strong> <%= companyPhone %></div>
+              <div><strong>Email:</strong> <a href="mailto:<%= companyEmail %>" style="color: var(--primary, #0055b8);"><%= companyEmail %></a></div>
+              <div><strong>Operasional:</strong> <%= workingHours %></div>
             </div>
           </div>
 
@@ -309,7 +323,7 @@
           <!-- Google Maps Responsive Embed -->
           <div style="border-radius: 16px; overflow: hidden; border: 1px solid var(--border, #e2e8f0); height: 260px; box-shadow: 0 4px 14px -2px rgba(10, 25, 47, 0.05); background: #e2e8f0;">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.7712304895697!2d107.5619142!3d-6.9179576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e5ff43198083%3A0xb304b509f6b98687!2sJl.%20Paralon%20II%20No.21%2C%20Cigondewah%20Kaler%2C%20Kec.%20Bandung%20Kulon%2C%20Kota%20Bandung%2C%20Jawa%20Barat%2040214!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+              src="<%= mapsEmbed %>"
               width="100%"
               height="100%"
               style="border:0;"

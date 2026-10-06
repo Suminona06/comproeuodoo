@@ -2,51 +2,99 @@
 <%- include('../partials/navbar') %>
 
 <main id="main-content">
-  <!-- 1. SECTION HERO 90vh (Exact Prototype v2 Architecture) -->
+  <!-- 1. SECTION HERO SLIDER 90vh (Multi-Slide Carousel) -->
   <% 
-    const primaryBanner = (typeof banners !== 'undefined' && banners.length > 0) ? banners[0] : null; 
-    const heroTitle = primaryBanner 
-      ? (currentLang === 'en' ? (primaryBanner.title_en || primaryBanner.title_id) : primaryBanner.title_id)
-      : (currentLang === 'en' ? 'Leading Eco-Friendly HDPE & LLDPE Plastic Bag Manufacturer' : 'Solusi Manufaktur Kantong Plastik HDPE & LLDPE Ramah Lingkungan');
-    const heroCaption = primaryBanner
-      ? (currentLang === 'en' ? (primaryBanner.caption_en || primaryBanner.caption_id) : primaryBanner.caption_id)
-      : (currentLang === 'en' ? 'Serving national modern retail networks, industrial partners, and wholesale markets with certified 100% oxo-biodegradable formulation since 1990.' : 'Melayani jaringan ritel modern, mitra industri, dan pasar grosir nasional dengan formulasi 100% degradable berstandar SNI sejak 1990.');
-    const heroCtaText = primaryBanner && (primaryBanner.cta_text_id || primaryBanner.cta_text_en)
-      ? (currentLang === 'en' ? (primaryBanner.cta_text_en || primaryBanner.cta_text_id) : primaryBanner.cta_text_id)
-      : (currentLang === 'en' ? 'Request a Quote' : 'Minta Penawaran');
-    const heroCtaUrl = primaryBanner && primaryBanner.cta_url ? primaryBanner.cta_url : '/contact';
-    const heroMediaUrl = primaryBanner && (primaryBanner.image_url || primaryBanner.file_url) ? (primaryBanner.image_url || primaryBanner.file_url) : '/images/hero-factory.jpg';
-    const isVideoBanner = primaryBanner && primaryBanner.media_type === 'video' && (primaryBanner.video_url || primaryBanner.file_url);
+    const activeBanners = (typeof banners !== 'undefined' && Array.isArray(banners) && banners.length > 0)
+      ? banners.filter(b => b.is_active === 1 || b.is_active === true)
+      : [];
+    
+    // Fallback banner jika database kosong
+    const displayBanners = activeBanners.length > 0 ? activeBanners : [{
+      title_id: 'Solusi Manufaktur Kantong Plastik HDPE & LLDPE Ramah Lingkungan',
+      title_en: 'Leading Eco-Friendly HDPE & LLDPE Plastic Bag Manufacturer',
+      caption_id: 'Melayani jaringan ritel modern, mitra industri, dan pasar grosir nasional dengan formulasi 100% degradable berstandar SNI sejak 1990.',
+      caption_en: 'Serving national modern retail networks, industrial partners, and wholesale markets with certified 100% oxo-biodegradable formulation since 1990.',
+      cta_text_id: 'Minta Penawaran',
+      cta_text_en: 'Request a Quote',
+      cta_url: '/contact',
+      file_url: '/images/hero-factory.jpg',
+      media_type: 'image'
+    }];
   %>
-  <section class="hero" id="hero">
-    <div class="hero-bg">
-      <% if (isVideoBanner) { %>
-        <video autoplay muted loop playsinline preload="metadata" poster="<%= primaryBanner.poster_url || '/images/hero-factory.jpg' %>">
-          <source src="<%= primaryBanner.video_url || primaryBanner.file_url %>" type="video/mp4">
-        </video>
-      <% } else { %>
-        <img src="<%= heroMediaUrl %>" alt="Pabrik Manufaktur PT. EUODOO Bandung" fetchpriority="high">
-      <% } %>
-      <div class="hero-grad"></div>
-    </div>
-
-    <div class="hero-content">
-      <div class="hero-inner">
-        <div class="hero-welcome">
-          <%= currentLang === 'en' ? 'WELCOME TO PT. EUODOO' : 'SELAMAT DATANG DI PT. EUODOO' %>
+  <section class="hero hero-slider" id="heroSlider" aria-roledescription="carousel" aria-label="Hero Banners" tabindex="0">
+    <div class="hero-slides-wrapper" id="heroSlidesTrack">
+      <% displayBanners.forEach((banner, index) => { 
+        const bannerTitle = currentLang === 'en' ? (banner.title_en || banner.title_id) : banner.title_id;
+        const bannerCaption = currentLang === 'en' ? (banner.caption_en || banner.caption_id) : banner.caption_id;
+        const bannerCtaText = banner && (banner.cta_text_id || banner.cta_text_en)
+          ? (currentLang === 'en' ? (banner.cta_text_en || banner.cta_text_id) : banner.cta_text_id)
+          : (currentLang === 'en' ? 'Request a Quote' : 'Minta Penawaran');
+        const bannerCtaUrl = banner.cta_url || banner.link_url || '/contact';
+        const bannerMediaUrl = banner.file_url || banner.image_url || '/images/hero-factory.jpg';
+        const isVideo = banner.media_type === 'video';
+      %>
+      <div class="hero-slide <%= index === 0 ? 'is-active' : '' %>" data-slide-index="<%= index %>" role="group" aria-roledescription="slide" aria-label="Slide <%= index + 1 %> dari <%= displayBanners.length %>">
+        <div class="hero-bg">
+          <% if (isVideo) { %>
+            <video <%= index === 0 ? 'autoplay' : '' %> muted loop playsinline preload="metadata" poster="<%= banner.poster_url || '/images/hero-factory.jpg' %>">
+              <source src="<%= bannerMediaUrl %>" type="video/mp4">
+            </video>
+          <% } else { %>
+            <img src="<%= bannerMediaUrl %>" alt="<%= bannerTitle %>" <%= index === 0 ? 'fetchpriority="high"' : 'loading="lazy"' %>>
+          <% } %>
+          <div class="hero-grad"></div>
         </div>
-        <h1><%= heroTitle %></h1>
-        <p class="hero-body"><%= heroCaption %></p>
-        <div class="hero-actions">
-          <a href="<%= heroCtaUrl %>" class="btn-pill-solid-white">
-            <%= heroCtaText %>
-          </a>
-          <a href="/about" class="btn-pill-white">
-            <%= currentLang === 'en' ? 'Learn More' : 'Lihat Detail' %>
-          </a>
+
+        <div class="hero-content">
+          <div class="hero-inner">
+            <div class="hero-welcome">
+              <%= currentLang === 'en' ? 'WELCOME TO PT. EUODOO' : 'SELAMAT DATANG DI PT. EUODOO' %>
+            </div>
+            <h1><%= bannerTitle %></h1>
+            <% if (bannerCaption) { %>
+              <p class="hero-body"><%= bannerCaption %></p>
+            <% } %>
+            <div class="hero-actions">
+              <a href="<%= bannerCtaUrl %>" class="btn-pill-solid-white">
+                <%= bannerCtaText %>
+              </a>
+              <a href="/about" class="btn-pill-white">
+                <%= currentLang === 'en' ? 'Learn More' : 'Lihat Detail' %>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
+      <% }) %>
     </div>
+
+    <% if (displayBanners.length > 1) { %>
+      <!-- Navigation Arrows -->
+      <button type="button" class="hero-slider-nav hero-slider-prev" id="heroPrevBtn" aria-label="Slide Sebelumnya">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button type="button" class="hero-slider-nav hero-slider-next" id="heroNextBtn" aria-label="Slide Berikutnya">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Pagination Dots & Status -->
+      <div class="hero-slider-controls">
+        <div class="hero-slider-dots" id="heroDots" role="tablist" aria-label="Pilih Slide">
+          <% displayBanners.forEach((_, idx) => { %>
+            <button type="button" class="hero-dot <%= idx === 0 ? 'is-active' : '' %>" data-slide-target="<%= idx %>" role="tab" aria-selected="<%= idx === 0 ? 'true' : 'false' %>" aria-label="Pergi ke slide <%= idx + 1 %>"></button>
+          <% }) %>
+        </div>
+        <div class="hero-slide-counter" id="heroCounter" aria-live="polite">
+          <span class="hero-counter-current" id="heroCurrentNum">01</span>
+          <span class="hero-counter-sep">/</span>
+          <span class="hero-counter-total"><%= String(displayBanners.length).padStart(2, '0') %></span>
+        </div>
+      </div>
+    <% } %>
 
     <div class="hero-explore-indicator" aria-hidden="true">
       <span class="hero-explore-text">EXPLORE MORE</span>

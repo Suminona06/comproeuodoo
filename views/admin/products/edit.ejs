@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<form action="/admin/products/<%= product.id %>" method="POST" enctype="multipart/form-data">
+<form action="/admin/products/<%= product.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
   <!-- Card 1: Informasi Pokok -->
   <div class="form-card">
     <div class="form-card-title">1. Informasi Pokok Produk</div>

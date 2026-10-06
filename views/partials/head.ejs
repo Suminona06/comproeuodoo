@@ -35,6 +35,9 @@
 <meta name="author" content="PT Euodoo">
 <meta name="robots" content="<%= seoObj.robots || 'index, follow' %>">
 
+<!-- Favicon -->
+<link rel="icon" href="<%= (typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/favicon.ico' %>">
+
 <!-- Alternate Language Links & Canonical -->
 <link rel="canonical" href="<%= canonicalUrl %>">
 <link rel="alternate" hreflang="id" href="<%= alternateId %>">

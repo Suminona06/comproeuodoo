@@ -128,7 +128,7 @@
       </div>
       <button type="button" class="admin-modal-close" onclick="closeAdminModal('uploadModal')">&times;</button>
     </div>
-    <form action="/admin/media/upload" method="POST" enctype="multipart/form-data">
+    <form action="/admin/media/upload?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
       <div class="admin-modal-body">
         <div class="form-group">
           <label class="form-label" for="file">Pilih Berkas *</label>

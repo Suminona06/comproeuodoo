@@ -20,17 +20,17 @@ export const bannerModel = {
   },
 
   async create(data) {
-    const imgUrl = data.image_url || data.file_url || null;
+    const fileUrl = data.file_url || data.image_url || data.video_url || null;
     const ctaUrl = data.cta_url || data.link_url || null;
     const captionId = data.caption_id || data.subtitle_id || null;
     const captionEn = data.caption_en || data.subtitle_en || null;
 
     const sql = `
       INSERT INTO banners (
-        title_id, title_en, caption_id, caption_en, image_url,
-        media_type, video_url, poster_url, cta_text_id, cta_text_en,
+        title_id, title_en, caption_id, caption_en, file_url,
+        media_type, poster_url, cta_text_id, cta_text_en,
         cta_url, sort_order, is_active
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const params = [
@@ -38,9 +38,8 @@ export const bannerModel = {
       data.title_en || data.title_id,
       captionId,
       captionEn,
-      imgUrl,
+      fileUrl,
       data.media_type || 'image',
-      data.video_url || null,
       data.poster_url || null,
       data.cta_text_id || null,
       data.cta_text_en || null,
@@ -57,14 +56,15 @@ export const bannerModel = {
     const fields = [];
     const values = [];
 
+    const fileUrl = data.file_url !== undefined ? data.file_url : (data.image_url || data.video_url);
+
     const fieldMap = {
       title_id: data.title_id,
       title_en: data.title_en,
       caption_id: data.caption_id !== undefined ? data.caption_id : data.subtitle_id,
       caption_en: data.caption_en !== undefined ? data.caption_en : data.subtitle_en,
-      image_url: data.image_url !== undefined ? data.image_url : data.file_url,
+      file_url: fileUrl,
       media_type: data.media_type,
-      video_url: data.video_url,
       poster_url: data.poster_url,
       cta_text_id: data.cta_text_id,
       cta_text_en: data.cta_text_en,

@@ -13,7 +13,9 @@ const ALLOWED_IMAGE_TYPES = [
   'image/png',
   'image/webp',
   'image/gif',
-  'image/svg+xml'
+  'image/svg+xml',
+  'image/x-icon',
+  'image/vnd.microsoft.icon'
 ];
 
 const ALLOWED_VIDEO_TYPES = [
@@ -27,7 +29,9 @@ const ALLOWED_DOCUMENT_TYPES = [
 
 // File filter validator
 const mediaFilter = (req, file, cb) => {
-  const isImage = ALLOWED_IMAGE_TYPES.includes(file.mimetype);
+  const ext = path.extname(file.originalname).toLowerCase();
+  const isIco = ext === '.ico';
+  const isImage = ALLOWED_IMAGE_TYPES.includes(file.mimetype) || isIco;
   const isVideo = ALLOWED_VIDEO_TYPES.includes(file.mimetype);
   const isDoc = ALLOWED_DOCUMENT_TYPES.includes(file.mimetype);
 
@@ -36,7 +40,7 @@ const mediaFilter = (req, file, cb) => {
   } else {
     cb(
       new Error(
-        'Format berkas tidak didukung. Harap unggah gambar (JPG, PNG, WebP, SVG), video (MP4, WebM), atau PDF.'
+        'Format berkas tidak didukung. Harap unggah gambar (JPG, PNG, WebP, SVG, ICO), video (MP4, WebM), atau PDF.'
       ),
       false
     );
@@ -56,7 +60,8 @@ const DIMENSION_PRESETS = {
   brands: { maxWidth: 400, maxHeight: 400, quality: 80 },
   posts: { maxWidth: 1200, maxHeight: 800, quality: 80 },
   pages: { maxWidth: 1920, maxHeight: 1080, quality: 80 },
-  media: { maxWidth: 1600, maxHeight: 1600, quality: 80 }
+  media: { maxWidth: 1600, maxHeight: 1600, quality: 80 },
+  settings: { maxWidth: 800, maxHeight: 800, quality: 90 }
 };
 
 /**
@@ -172,10 +177,44 @@ export const deleteUploadedFile = async (fileUrl) => {
   return await storage.delete(fileUrl);
 };
 
+/**
+ * Save settings media (favicon, logo header, logo footer)
+ * Preserves transparency and supports ICO, SVG, PNG, WebP
+ */
+export const saveSettingUpload = async (file, prefix = 'setting') => {
+  if (!file || !file.buffer) return null;
+  const ext = path.extname(file.originalname).toLowerCase();
+  const subFolder = 'settings';
+
+  if (ext === '.ico' || file.mimetype === 'image/x-icon' || file.mimetype === 'image/vnd.microsoft.icon') {
+    const filename = `${prefix}-${Date.now()}.ico`;
+    const saved = await storage.save(file.buffer, filename, 'image/x-icon', subFolder);
+    return saved.url;
+  }
+
+  if (ext === '.svg' || file.mimetype === 'image/svg+xml') {
+    const filename = `${prefix}-${Date.now()}.svg`;
+    const saved = await storage.save(file.buffer, filename, 'image/svg+xml', subFolder);
+    return saved.url;
+  }
+
+  // PNG or WebP or JPG
+  if (ext === '.png' || file.mimetype === 'image/png') {
+    // Preserve transparent PNG format for crisp vector/raster corporate logos
+    const filename = `${prefix}-${Date.now()}.png`;
+    const saved = await storage.save(file.buffer, filename, 'image/png', subFolder);
+    return saved.url;
+  }
+
+  // Default to optimized WebP
+  return await processAndSaveWebP(file.buffer, 'settings', { maxWidth: 800, maxHeight: 800, quality: 90 });
+};
+
 export default {
   uploadMedia,
   processAndSaveWebP,
   processAndSaveImage,
+  saveSettingUpload,
   saveVideoFile,
   saveDocumentFile,
   deleteUploadedFile

@@ -13,7 +13,7 @@
 <div class="form-card" style="max-width: 680px; margin: 0 auto;">
   <div class="form-card-title">Pengaturan Banner Hero</div>
 
-  <form action="/admin/banners" method="POST" enctype="multipart/form-data">
+  <form action="/admin/banners?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="title_id">Judul Headline (Bahasa Indonesia) *</label>
