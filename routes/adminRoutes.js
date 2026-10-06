@@ -85,6 +85,7 @@ router.post('/post-categories/:id/delete', requireAuth, roleMiddleware(['superad
 
 router.get('/posts', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.index);
 router.get('/posts/create', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.createView);
+router.post('/posts/upload-image', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('file'), postController.uploadEditorImage);
 router.post('/posts', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('cover_file'), postController.store);
 router.get('/posts/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.editView);
 router.post('/posts/:id', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('cover_file'), postController.update);

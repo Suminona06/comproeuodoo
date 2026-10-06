@@ -284,6 +284,33 @@ export const postController = {
       logger.error('Post destroy error:', err);
       res.redirect('/admin/posts?error=' + encodeURIComponent('Gagal menghapus artikel.'));
     }
+  },
+
+  async uploadEditorImage(req, res) {
+    try {
+      if (!req.file || !req.file.buffer) {
+        return res.status(400).json({ error: 'Tidak ada berkas gambar yang diunggah.' });
+      }
+
+      const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowedMimes.includes(req.file.mimetype)) {
+        return res.status(400).json({
+          error: 'Format berkas tidak didukung. Harap unggah gambar JPG, PNG, WebP, atau GIF.'
+        });
+      }
+
+      // Convert and optimize image to WebP with 1600px max width and 82 quality
+      const imageUrl = await processAndSaveWebP(req.file.buffer, 'posts', {
+        maxWidth: 1600,
+        maxHeight: 1600,
+        quality: 82
+      });
+
+      return res.status(200).json({ location: imageUrl });
+    } catch (err) {
+      logger.error('TinyMCE uploadEditorImage error:', { message: err.message });
+      return res.status(500).json({ error: 'Gagal memproses gambar: ' + err.message });
+    }
   }
 };
 

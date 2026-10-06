@@ -84,6 +84,15 @@ app.use(
   })
 );
 
+// Self-Hosted TinyMCE Assets (Community Edition LGPL v2.1)
+app.use(
+  '/tinymce',
+  express.static(path.join(__dirname, 'node_modules/tinymce'), {
+    maxAge: process.env.NODE_ENV === 'production' ? '30d' : '1h',
+    etag: true
+  })
+);
+
 // CSRF Protection & Global Auth Context & i18n
 app.use(csrfProtection);
 app.use(optionalAuth);
