@@ -18,6 +18,7 @@ import { loginLimiter } from '../middleware/rateLimiter.js';
 import { uploadMedia } from '../middleware/uploadMiddleware.js';
 import bannerController from '../controllers/admin/bannerController.js';
 import pageHeroBannerController from '../controllers/admin/pageHeroBannerController.js';
+import capabilityController from '../controllers/admin/capabilityController.js';
 
 const router = Router();
 
@@ -130,5 +131,11 @@ router.post('/contact', requireAuth, roleMiddleware(['superadmin', 'admin']), co
 // T-66: CMS Hero Banner Per Halaman (Superadmin & Admin)
 router.get('/hero-banners', requireAuth, roleMiddleware(['superadmin', 'admin']), pageHeroBannerController.index);
 router.post('/hero-banners/:pageKey', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), pageHeroBannerController.update);
+
+// Capabilities Mesin Manufaktur (Superadmin & Admin)
+router.get('/capabilities', requireAuth, roleMiddleware(['superadmin', 'admin']), capabilityController.index);
+router.post('/capabilities', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), capabilityController.store);
+router.post('/capabilities/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), capabilityController.update);
+router.post('/capabilities/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), capabilityController.destroy);
 
 export default router;

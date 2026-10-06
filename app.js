@@ -77,7 +77,7 @@ app.use(
       if (/\.(webp|jpg|jpeg|png|svg|ico|woff2|woff|mp4|webm)$/i.test(filePath)) {
         res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
       } else if (/\.(css|js)$/i.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.setHeader('Cache-Control', process.env.NODE_ENV === 'production' ? 'public, max-age=86400' : 'no-cache');
       }
     }
   })

@@ -630,6 +630,46 @@ async function runTests() {
     assert.strictEqual(checkPost.length, 0, 'Post must be permanently deleted from database');
     console.log('  ✓ Delete article/post executed successfully without 403');
 
+    // 22e. Uji Hapus dengan query-only CSRF (multi-source resolution)
+    const dummyPostId2 = await postModel.create({
+      slug: 'artikel-uji-query-csrf',
+      title_id: 'Artikel Uji Query CSRF',
+      title_en: 'Test Delete Article Query',
+      excerpt_id: 'Ex',
+      excerpt_en: 'Ex',
+      content_id: 'Cont',
+      content_en: 'Cont',
+      status: 'draft'
+    });
+    const deleteQueryOnlyRes = await request(`/admin/posts/${dummyPostId2}/delete?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST'
+    });
+    assert.strictEqual(deleteQueryOnlyRes.status, 302, 'Delete with query-only CSRF must succeed with 302');
+    const checkPost2 = await query('SELECT * FROM posts WHERE id = ?', [dummyPostId2]);
+    assert.strictEqual(checkPost2.length, 0, 'Post deleted via query-only CSRF must be gone');
+    console.log('  ✓ Delete with query-only CSRF executed successfully without 403');
+
+    // 22f. Uji Hapus dengan body-only CSRF (standard form post resolution)
+    const dummyPostId3 = await postModel.create({
+      slug: 'artikel-uji-body-csrf',
+      title_id: 'Artikel Uji Body CSRF',
+      title_en: 'Test Delete Article Body',
+      excerpt_id: 'Ex',
+      excerpt_en: 'Ex',
+      content_id: 'Cont',
+      content_en: 'Cont',
+      status: 'draft'
+    });
+    const deleteBodyOnlyRes = await request(`/admin/posts/${dummyPostId3}/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ _csrf: csrfToken }).toString()
+    });
+    assert.strictEqual(deleteBodyOnlyRes.status, 302, 'Delete with body-only CSRF must succeed with 302');
+    const checkPost3 = await query('SELECT * FROM posts WHERE id = ?', [dummyPostId3]);
+    assert.strictEqual(checkPost3.length, 0, 'Post deleted via body-only CSRF must be gone');
+    console.log('  ✓ Delete with body-only CSRF executed successfully without 403');
+
     // [23] Verifikasi UI Polish (C1 - C7)
     console.log('\n[23] Verification UI Polish C1 - C7: Collapsible Sidebar, CRUD Buttons, Close Buttons, RFQ Footer, Change Password, Tentang Kami Tabs');
 

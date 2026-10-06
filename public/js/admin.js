@@ -248,7 +248,7 @@ window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke
     const token = getCsrfToken();
     if (!token) return;
 
-    // 1. Pastikan input hidden _csrf tersedia
+    // 1. Pastikan input hidden _csrf tersedia dan selalu tersinkronisasi
     let hiddenInput = form.querySelector('input[name="_csrf"]');
     if (!hiddenInput) {
       hiddenInput = document.createElement('input');
@@ -256,16 +256,22 @@ window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke
       hiddenInput.name = '_csrf';
       hiddenInput.value = token;
       form.appendChild(hiddenInput);
-    } else if (!hiddenInput.value) {
+    } else {
       hiddenInput.value = token;
     }
 
-    // 2. Tambahkan token ke action URL sebagai query param (?_csrf=...)
+    // 2. Sinkronkan token ke action URL sebagai query param (?_csrf=...)
     // Ini mengamankan form multipart (multer parse sesudah middleware) dan form delete
-    const action = form.getAttribute('action') || window.location.pathname;
-    if (!action.includes('_csrf=')) {
-      const separator = action.includes('?') ? '&' : '?';
-      form.setAttribute('action', `${action}${separator}_csrf=${encodeURIComponent(token)}`);
+    let action = form.getAttribute('action') || window.location.pathname;
+    try {
+      const url = new URL(action, window.location.origin);
+      url.searchParams.set('_csrf', token);
+      form.setAttribute('action', url.pathname + url.search);
+    } catch (e) {
+      if (!action.includes('_csrf=')) {
+        const separator = action.includes('?') ? '&' : '?';
+        form.setAttribute('action', `${action}${separator}_csrf=${encodeURIComponent(token)}`);
+      }
     }
   }
 
