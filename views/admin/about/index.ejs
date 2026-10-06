@@ -1,303 +1,356 @@
 <%- include('../../partials/admin-header') %>
 
-<main class="section-sm" style="flex: 1;">
-  <div class="container admin-form-container" style="max-width: 1040px;">
-    <!-- Page Header -->
-    <div class="admin-page-header">
-      <div>
-        <h1 class="admin-page-title">Manajemen Halaman Tentang Kami</h1>
-        <p class="admin-page-subtitle">Kelola narasi profil perusahaan, sejarah 1990, visi, misi, nilai T-I-C-K-E-T, dan sertifikasi ramah lingkungan berdasarkan acuan Company Profile.</p>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Manajemen Halaman Tentang Kami</h1>
+    <p>Kelola narasi profil perusahaan, sejarah pendirian 1990, visi misi, nilai budaya T-I-C-K-E-T, dan sertifikasi ramah lingkungan.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/about" target="_blank" class="btn btn-secondary" title="Lihat Halaman Publik">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      <span>Pratinjau Publik</span>
+    </a>
+  </div>
+</div>
+
+<% if (typeof success !== 'undefined' && success) { %>
+  <div class="alert alert-success" style="margin-bottom: 1.25rem;">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span><%= success %></span>
+  </div>
+<% } %>
+
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="alert alert-error" style="margin-bottom: 1.25rem;">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span><%= error %></span>
+  </div>
+<% } %>
+
+<form action="/admin/about?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <!-- Interactive Segmented Navigation -->
+  <div class="about-tabs-nav" role="tablist">
+    <button type="button" class="about-tab-btn active" data-tab="tab-sejarah" role="tab" aria-selected="true">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span>1. Sejarah &amp; Lokasi</span>
+    </button>
+    <button type="button" class="about-tab-btn" data-tab="tab-visi-misi" role="tab" aria-selected="false">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      <span>2. Visi, Misi &amp; Slogan</span>
+    </button>
+    <button type="button" class="about-tab-btn" data-tab="tab-ticket" role="tab" aria-selected="false">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+      <span>3. Nilai Budaya T-I-C-K-E-T</span>
+    </button>
+    <button type="button" class="about-tab-btn" data-tab="tab-sertifikasi" role="tab" aria-selected="false">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <span>4. Sertifikasi &amp; Lingkungan</span>
+    </button>
+  </div>
+
+  <!-- TAB PANE 1: SEJARAH & LOKASI -->
+  <div class="about-tab-pane active" id="tab-sejarah" role="tabpanel">
+    <!-- Card 1: Latar Belakang & Sejarah Pabrik -->
+    <div class="about-glass-card">
+      <div class="form-card-title" style="display: flex; align-items: center; justify-content: space-between;">
+        <span>Latar Belakang &amp; Sejarah Pabrik</span>
+        <span class="badge badge-info" style="font-size: 11px;">Jejak Langkah 1990</span>
       </div>
-      <div>
-        <a href="/about" target="_blank" class="btn btn-outline-primary btn-sm" title="Lihat Halaman Publik">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          Pratinjau Publik
-        </a>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="founded_year" class="form-label">Tahun Berdiri *</label>
+          <input type="text" id="founded_year" name="founded_year" class="form-input" value="<%= about.founded_year || '1990' %>" required placeholder="1990">
+          <div class="form-hint">Sesuai Company Profile: Didirikan pada tahun 1990.</div>
+        </div>
+        <div class="form-group">
+          <label for="former_names" class="form-label">Nama Terdahulu / Dikenal Sebagai</label>
+          <input type="text" id="former_names" name="former_names" class="form-input" value="<%= about.former_names || 'PT. Sahabat Baru & PT. Pelita Baru' %>" placeholder="PT. Sahabat Baru & PT. Pelita Baru">
+          <div class="form-hint">Entitas awal perintisan bisnis pabrik kantong plastik.</div>
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="history_title_id" class="form-label">Judul Bagian Sejarah (Indonesia)</label>
+          <input type="text" id="history_title_id" name="history_title_id" class="form-input" value="<%= about.history_title_id || '' %>" placeholder="Latar Belakang & Sejarah Perusahaan">
+        </div>
+        <div class="form-group">
+          <label for="history_title_en" class="form-label">Judul Bagian Sejarah (English)</label>
+          <input type="text" id="history_title_en" name="history_title_en" class="form-input" value="<%= about.history_title_en || '' %>" placeholder="Company Background & History">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="history_id" class="form-label">Narasi Latar Belakang (Bahasa Indonesia) *</label>
+        <textarea id="history_id" name="history_id" class="form-textarea" style="min-height: 120px;" required placeholder="Tuliskan narasi sejarah lengkap dalam Bahasa Indonesia..."><%= about.history_id || '' %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="history_en" class="form-label">Narasi Latar Belakang (English)</label>
+        <textarea id="history_en" name="history_en" class="form-textarea" style="min-height: 120px;" placeholder="Write corporate history narration in English..."><%= about.history_en || '' %></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="about_image" class="form-label">Unggah Foto Dokumentasi Pabrik / Fasilitas (Opsional)</label>
+        <input type="file" id="about_image" name="about_image" class="form-input" accept="image/jpeg,image/png,image/webp">
+        <% if (about.image_url) { %>
+          <div style="margin-top: 8px; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+            <span>Foto aktif saat ini:</span>
+            <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11.5px;"><%= about.image_url %></code>
+          </div>
+        <% } %>
       </div>
     </div>
 
-    <!-- Flash Alerts -->
-    <% if (typeof success !== 'undefined' && success) { %>
-      <div class="alert alert-success" style="margin-bottom: var(--space-lg);">
-        <%= success %>
-      </div>
-    <% } %>
-    <% if (typeof error !== 'undefined' && error) { %>
-      <div class="alert alert-danger" style="margin-bottom: var(--space-lg);">
-        <%= error %>
-      </div>
-    <% } %>
+    <!-- Card 2: Alamat Resmi Pabrik & Kantor -->
+    <div class="about-glass-card">
+      <div class="form-card-title">Lokasi Operasional Resmi Perusahaan</div>
 
-    <form action="/admin/about?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-      <!-- 1. SEJARAH & LATAR BELAKANG -->
-      <div class="card" style="margin-bottom: var(--space-xl); box-shadow: var(--shadow-level-0);">
-        <div class="card-header" style="background-color: var(--color-bg-workspace); border-bottom: 1px solid var(--color-border); padding: var(--space-md) var(--space-lg);">
-          <h2 style="font-size: 1.15rem; color: var(--color-secondary-navy); margin: 0;">1. Latar Belakang & Sejarah Pabrik</h2>
-        </div>
-        <div class="card-body" style="padding: var(--space-lg);">
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md); gap: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="founded_year" class="form-label form-label-required">Tahun Berdiri</label>
-              <input type="text" id="founded_year" name="founded_year" class="form-control" value="<%= about.founded_year || '1990' %>" required>
-              <div class="form-hint">Sesuai Company Profile: Didirikan tahun 1990.</div>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="former_names" class="form-label">Nama Terdahulu / Dikenal Sebagai</label>
-              <input type="text" id="former_names" name="former_names" class="form-control" value="<%= about.former_names || 'PT. Sahabat Baru & PT. Pelita Baru' %>">
-              <div class="form-hint">Contoh: PT. Sahabat Baru & PT. Pelita Baru.</div>
-            </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <!-- Pabrik Bandung -->
+        <div style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: var(--r-lg); padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;">
+            <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <strong style="color: var(--secondary); font-size: 14px;">Pabrik Produksi &amp; Pemasaran (Bandung)</strong>
           </div>
-
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md); gap: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="history_title_id" class="form-label">Judul Bagian Sejarah (Indonesia)</label>
-              <input type="text" id="history_title_id" name="history_title_id" class="form-control" value="<%= about.history_title_id || '' %>">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="history_title_en" class="form-label">Judul Bagian Sejarah (English)</label>
-              <input type="text" id="history_title_en" name="history_title_en" class="form-control" value="<%= about.history_title_en || '' %>">
-            </div>
-          </div>
-
           <div class="form-group">
-            <label for="history_id" class="form-label form-label-required">Narasi Latar Belakang (Bahasa Indonesia)</label>
-            <textarea id="history_id" name="history_id" class="form-textarea" style="min-height: 120px;" required><%= about.history_id || '' %></textarea>
+            <label for="factory_address" class="form-label">Alamat Pabrik</label>
+            <textarea id="factory_address" name="factory_address" class="form-textarea" style="min-height: 70px;"><%= about.factory_address || '' %></textarea>
           </div>
+          <div class="form-row-2">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="factory_phone" class="form-label">Telepon</label>
+              <input type="text" id="factory_phone" name="factory_phone" class="form-input" value="<%= about.factory_phone || '' %>">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="factory_fax" class="form-label">Fax</label>
+              <input type="text" id="factory_fax" name="factory_fax" class="form-input" value="<%= about.factory_fax || '' %>">
+            </div>
+          </div>
+        </div>
 
+        <!-- Kantor Jakarta -->
+        <div style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: var(--r-lg); padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;">
+            <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="22.01"></line><line x1="15" y1="22" x2="15" y2="22.01"></line></svg>
+            <strong style="color: var(--secondary); font-size: 14px;">Kantor Pusat (Jakarta)</strong>
+          </div>
           <div class="form-group">
-            <label for="history_en" class="form-label">Narasi Latar Belakang (English)</label>
-            <textarea id="history_en" name="history_en" class="form-textarea" style="min-height: 120px;"><%= about.history_en || '' %></textarea>
+            <label for="office_address" class="form-label">Alamat Kantor</label>
+            <textarea id="office_address" name="office_address" class="form-textarea" style="min-height: 70px;"><%= about.office_address || '' %></textarea>
           </div>
-
-          <div class="form-group" style="margin-bottom: 0;">
-            <label for="about_image" class="form-label">Unggah Foto Dokumentasi Pabrik / Fasilitas (Opsional)</label>
-            <input type="file" id="about_image" name="about_image" class="form-control" accept="image/jpeg,image/png,image/webp">
-            <% if (about.image_url) { %>
-              <div style="margin-top: var(--space-xs); font-size: 13px; color: var(--color-text-muted);">
-                Foto aktif saat ini: <code><%= about.image_url %></code>
-              </div>
-            <% } %>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. VISI, MISI, SLOGAN & GOAL -->
-      <div class="card" style="margin-bottom: var(--space-xl); box-shadow: var(--shadow-level-0);">
-        <div class="card-header" style="background-color: var(--color-bg-workspace); border-bottom: 1px solid var(--color-border); padding: var(--space-md) var(--space-lg);">
-          <h2 style="font-size: 1.15rem; color: var(--color-secondary-navy); margin: 0;">2. Visi, Misi, Slogan & Motto</h2>
-        </div>
-        <div class="card-body" style="padding: var(--space-lg);">
-          <!-- Visi -->
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md); gap: var(--space-md);">
+          <div class="form-row-2">
             <div class="form-group" style="margin-bottom: 0;">
-              <label for="vision_id" class="form-label form-label-required">Visi Perusahaan (Indonesia)</label>
-              <textarea id="vision_id" name="vision_id" class="form-textarea" style="min-height: 75px;" required><%= about.vision_id || '' %></textarea>
+              <label for="office_phone" class="form-label">Telepon</label>
+              <input type="text" id="office_phone" name="office_phone" class="form-input" value="<%= about.office_phone || '' %>">
             </div>
             <div class="form-group" style="margin-bottom: 0;">
-              <label for="vision_en" class="form-label">Visi Perusahaan (English)</label>
-              <textarea id="vision_en" name="vision_en" class="form-textarea" style="min-height: 75px;"><%= about.vision_en || '' %></textarea>
-            </div>
-          </div>
-
-          <!-- Misi -->
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md); gap: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="mission_id" class="form-label form-label-required">Misi Perusahaan (Indonesia - baris baru tiap poin)</label>
-              <textarea id="mission_id" name="mission_id" class="form-textarea" style="min-height: 90px;" required><%= about.mission_id || '' %></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="mission_en" class="form-label">Misi Perusahaan (English - baris baru tiap poin)</label>
-              <textarea id="mission_en" name="mission_en" class="form-textarea" style="min-height: 90px;"><%= about.mission_en || '' %></textarea>
-            </div>
-          </div>
-
-          <!-- Slogan & Goal -->
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-md); gap: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="slogan_id" class="form-label">Slogan Korporat (Indonesia)</label>
-              <input type="text" id="slogan_id" name="slogan_id" class="form-control" value="<%= about.slogan_id || '' %>">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="slogan_en" class="form-label">Slogan Korporat (English)</label>
-              <input type="text" id="slogan_en" name="slogan_en" class="form-control" value="<%= about.slogan_en || '' %>">
-            </div>
-          </div>
-
-          <!-- Motto & Goal -->
-          <div class="grid grid-cols-2" style="gap: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="motto_id" class="form-label">Motto Kerja (Indonesia)</label>
-              <textarea id="motto_id" name="motto_id" class="form-textarea" style="min-height: 80px;"><%= about.motto_id || '' %></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="goal_id" class="form-label">Target / Tujuan (Goal)</label>
-              <textarea id="goal_id" name="goal_id" class="form-textarea" style="min-height: 80px;"><%= about.goal_id || '' %></textarea>
+              <label for="office_fax" class="form-label">Fax</label>
+              <input type="text" id="office_fax" name="office_fax" class="form-input" value="<%= about.office_fax || '' %>">
             </div>
           </div>
         </div>
       </div>
-
-      <!-- 3. NILAI-NILAI BUDAYA (T-I-C-K-E-T) -->
-      <div class="card" style="margin-bottom: var(--space-xl); box-shadow: var(--shadow-level-0);">
-        <div class="card-header" style="background-color: var(--color-bg-workspace); border-bottom: 1px solid var(--color-border); padding: var(--space-md) var(--space-lg);">
-          <h2 style="font-size: 1.15rem; color: var(--color-secondary-navy); margin: 0;">3. Nilai Budaya Kerja: T - I - C - K - E - T</h2>
-        </div>
-        <div class="card-body" style="padding: var(--space-lg);">
-          <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted); margin-bottom: var(--space-md);">
-            Nilai fundamental perusahaan yang menjadi pedoman perilaku seluruh staf PT Euodoo sesuai Company Profile resmi.
-          </p>
-
-          <% const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T']; %>
-          <% (about.values || []).forEach(function(val, idx) { %>
-            <% const formKey = idx === 5 ? 'T_2' : val.letter; %>
-            <div style="background-color: var(--color-bg-workspace); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-md);">
-              <div class="flex items-center gap-sm" style="margin-bottom: var(--space-sm);">
-                <span class="badge badge-primary" style="font-size: 1rem; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-full); font-weight: 700;">
-                  <%= val.letter %>
-                </span>
-                <span style="font-weight: 600; color: var(--color-secondary-navy);">Pilar Huruf <%= val.letter %> (<%= idx === 5 ? 'Pilar Ke-6' : 'Pilar Ke-' + (idx + 1) %>)</span>
-              </div>
-
-              <div class="grid grid-cols-2" style="gap: var(--space-sm); margin-bottom: var(--space-sm);">
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Nama Nilai (ID)</label>
-                  <input type="text" name="val_title_id_<%= formKey %>" class="form-control" value="<%= val.title_id %>">
-                </div>
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Nama Nilai (EN)</label>
-                  <input type="text" name="val_title_en_<%= formKey %>" class="form-control" value="<%= val.title_en %>">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2" style="gap: var(--space-sm);">
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Penjelasan / Makna (ID)</label>
-                  <textarea name="val_desc_id_<%= formKey %>" class="form-textarea" style="min-height: 60px; font-size: 13px;"><%= val.desc_id %></textarea>
-                </div>
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Penjelasan / Makna (EN)</label>
-                  <textarea name="val_desc_en_<%= formKey %>" class="form-textarea" style="min-height: 60px; font-size: 13px;"><%= val.desc_en %></textarea>
-                </div>
-              </div>
-            </div>
-          <% }); %>
-        </div>
-      </div>
-
-      <!-- 4. KOMITMEN LINGKUNGAN & SERTIFIKASI -->
-      <div class="card" style="margin-bottom: var(--space-xl); box-shadow: var(--shadow-level-0);">
-        <div class="card-header" style="background-color: var(--color-bg-workspace); border-bottom: 1px solid var(--color-border); padding: var(--space-md) var(--space-lg);">
-          <h2 style="font-size: 1.15rem; color: var(--color-secondary-navy); margin: 0;">4. Komitmen Lingkungan & Sertifikasi Mutu</h2>
-        </div>
-        <div class="card-body" style="padding: var(--space-lg);">
-          <div class="grid grid-cols-2" style="margin-bottom: var(--space-lg); gap: var(--space-md);">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="eco_statement_id" class="form-label">Pernyataan Komitmen Lingkungan (ID)</label>
-              <textarea id="eco_statement_id" name="eco_statement_id" class="form-textarea" style="min-height: 70px;"><%= about.eco_statement_id || '' %></textarea>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="eco_statement_en" class="form-label">Pernyataan Komitmen Lingkungan (EN)</label>
-              <textarea id="eco_statement_en" name="eco_statement_en" class="form-textarea" style="min-height: 70px;"><%= about.eco_statement_en || '' %></textarea>
-            </div>
-          </div>
-
-          <h3 style="font-size: 1rem; color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">Daftar Sertifikasi Resmi (SNI, OXIUM, InSWA)</h3>
-          <% (about.certifications || []).forEach(function(cert, idx) { %>
-            <div style="background-color: var(--color-bg-workspace); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-sm);">
-              <div class="grid grid-cols-3" style="gap: var(--space-sm); margin-bottom: var(--space-xs);">
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Nama Sertifikasi</label>
-                  <input type="text" name="cert_name_<%= idx %>" class="form-control" value="<%= cert.name %>">
-                </div>
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Penerbit / Asosiasi</label>
-                  <input type="text" name="cert_issuer_<%= idx %>" class="form-control" value="<%= cert.issuer %>">
-                </div>
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Label / Badge</label>
-                  <input type="text" name="cert_badge_<%= idx %>" class="form-control" value="<%= cert.badge %>">
-                </div>
-              </div>
-              <div class="grid grid-cols-2" style="gap: var(--space-sm);">
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Keterangan Standar (ID)</label>
-                  <input type="text" name="cert_desc_id_<%= idx %>" class="form-control" value="<%= cert.desc_id %>">
-                </div>
-                <div>
-                  <label class="form-label" style="font-size: 12px;">Keterangan Standar (EN)</label>
-                  <input type="text" name="cert_desc_en_<%= idx %>" class="form-control" value="<%= cert.desc_en %>">
-                </div>
-              </div>
-            </div>
-          <% }); %>
-        </div>
-      </div>
-
-      <!-- 5. LOKASI OPERASIONAL RESMI -->
-      <div class="card" style="margin-bottom: var(--space-xl); box-shadow: var(--shadow-level-0);">
-        <div class="card-header" style="background-color: var(--color-bg-workspace); border-bottom: 1px solid var(--color-border); padding: var(--space-md) var(--space-lg);">
-          <h2 style="font-size: 1.15rem; color: var(--color-secondary-navy); margin: 0;">5. Alamat Resmi Pabrik & Kantor</h2>
-        </div>
-        <div class="card-body" style="padding: var(--space-lg);">
-          <div class="grid grid-cols-2" style="gap: var(--space-lg);">
-            <!-- Pabrik Bandung -->
-            <div style="border-right: 1px solid var(--color-border); padding-right: var(--space-md);">
-              <h3 style="font-size: 1rem; color: var(--color-primary-blue); margin-bottom: var(--space-sm);">Pabrik Produksi & Pemasaran (Bandung)</h3>
-              <div class="form-group">
-                <label for="factory_address" class="form-label">Alamat Pabrik</label>
-                <textarea id="factory_address" name="factory_address" class="form-textarea" style="min-height: 70px;"><%= about.factory_address || '' %></textarea>
-              </div>
-              <div class="grid grid-cols-2" style="gap: var(--space-sm);">
-                <div>
-                  <label for="factory_phone" class="form-label">Telepon</label>
-                  <input type="text" id="factory_phone" name="factory_phone" class="form-control" value="<%= about.factory_phone || '' %>">
-                </div>
-                <div>
-                  <label for="factory_fax" class="form-label">Fax</label>
-                  <input type="text" id="factory_fax" name="factory_fax" class="form-control" value="<%= about.factory_fax || '' %>">
-                </div>
-              </div>
-            </div>
-
-            <!-- Kantor Jakarta -->
-            <div>
-              <h3 style="font-size: 1rem; color: var(--color-secondary-navy); margin-bottom: var(--space-sm);">Kantor Pusat (Jakarta)</h3>
-              <div class="form-group">
-                <label for="office_address" class="form-label">Alamat Kantor</label>
-                <textarea id="office_address" name="office_address" class="form-textarea" style="min-height: 70px;"><%= about.office_address || '' %></textarea>
-              </div>
-              <div class="grid grid-cols-2" style="gap: var(--space-sm);">
-                <div>
-                  <label for="office_phone" class="form-label">Telepon</label>
-                  <input type="text" id="office_phone" name="office_phone" class="form-control" value="<%= about.office_phone || '' %>">
-                </div>
-                <div>
-                  <label for="office_fax" class="form-label">Fax</label>
-                  <input type="text" id="office_fax" name="office_fax" class="form-control" value="<%= about.office_fax || '' %>">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex items-center justify-between" style="padding-top: var(--space-md); padding-bottom: var(--space-2xl);">
-        <button type="submit" class="btn btn-primary btn-lg" style="min-width: 240px;">
-          Simpan Seluruh Perubahan Tentang Kami
-        </button>
-        <a href="/admin/dashboard" class="btn btn-secondary btn-md">
-          Batal & Kembali ke Dashboard
-        </a>
-      </div>
-    </form>
+    </div>
   </div>
-</main>
+
+  <!-- TAB PANE 2: VISI, MISI & SLOGAN -->
+  <div class="about-tab-pane" id="tab-visi-misi" role="tabpanel">
+    <div class="about-glass-card">
+      <div class="form-card-title">Visi &amp; Misi Korporasi</div>
+
+      <!-- Visi -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="vision_id" class="form-label">Visi Perusahaan (Indonesia) *</label>
+          <textarea id="vision_id" name="vision_id" class="form-textarea" style="min-height: 85px;" required><%= about.vision_id || '' %></textarea>
+          <div class="form-hint">Visi luhur yang mengarahkan komitmen masa depan.</div>
+        </div>
+        <div class="form-group">
+          <label for="vision_en" class="form-label">Visi Perusahaan (English)</label>
+          <textarea id="vision_en" name="vision_en" class="form-textarea" style="min-height: 85px;"><%= about.vision_en || '' %></textarea>
+          <div class="form-hint">Corporate long-term vision in English.</div>
+        </div>
+      </div>
+
+      <!-- Misi -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="mission_id" class="form-label">Misi Perusahaan (Indonesia) *</label>
+          <textarea id="mission_id" name="mission_id" class="form-textarea" style="min-height: 105px;" required><%= about.mission_id || '' %></textarea>
+          <div class="form-hint">Ketik baris baru (Enter) untuk setiap butir misi.</div>
+        </div>
+        <div class="form-group">
+          <label for="mission_en" class="form-label">Misi Perusahaan (English)</label>
+          <textarea id="mission_en" name="mission_en" class="form-textarea" style="min-height: 105px;"><%= about.mission_en || '' %></textarea>
+          <div class="form-hint">Separate each mission point with a new line.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-glass-card">
+      <div class="form-card-title">Slogan, Motto &amp; Target (Goal)</div>
+
+      <!-- Slogan -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="slogan_id" class="form-label">Slogan Korporat (Indonesia)</label>
+          <input type="text" id="slogan_id" name="slogan_id" class="form-input" value="<%= about.slogan_id || '' %>">
+        </div>
+        <div class="form-group">
+          <label for="slogan_en" class="form-label">Slogan Korporat (English)</label>
+          <input type="text" id="slogan_en" name="slogan_en" class="form-input" value="<%= about.slogan_en || '' %>">
+        </div>
+      </div>
+
+      <!-- Motto & Goal -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="motto_id" class="form-label">Motto Kerja (Indonesia)</label>
+          <textarea id="motto_id" name="motto_id" class="form-textarea" style="min-height: 80px;"><%= about.motto_id || '' %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="goal_id" class="form-label">Target / Tujuan (Goal)</label>
+          <textarea id="goal_id" name="goal_id" class="form-textarea" style="min-height: 80px;"><%= about.goal_id || '' %></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB PANE 3: NILAI T-I-C-K-E-T -->
+  <div class="about-tab-pane" id="tab-ticket" role="tabpanel">
+    <div class="about-glass-card">
+      <div class="form-card-title" style="display: flex; align-items: center; justify-content: space-between;">
+        <span>Nilai Budaya Kerja: T - I - C - K - E - T</span>
+        <span class="badge badge-primary" style="font-size: 11px;">6 Pilar Utama</span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); margin: -0.5rem 0 1.25rem 0;">
+        Nilai fundamental yang menjadi pedoman perilaku seluruh staf PT Euodoo sesuai Company Profile resmi.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <% const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T']; %>
+        <% (about.values || []).forEach(function(val, idx) { %>
+          <% const formKey = idx === 5 ? 'T_2' : val.letter; %>
+          <div style="background: #ffffff; border: 1px solid var(--border-main); border-radius: var(--r-lg); padding: 1.25rem; box-shadow: var(--shadow-xs);">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.85rem;">
+              <span style="font-size: 14px; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 800; background: var(--primary); color: #ffffff;">
+                <%= val.letter %>
+              </span>
+              <div>
+                <strong style="color: var(--secondary); font-size: 14px;">Pilar Huruf <%= val.letter %> (<%= idx === 5 ? 'Pilar Ke-6' : 'Pilar Ke-' + (idx + 1) %>)</strong>
+              </div>
+            </div>
+
+            <div class="form-row-2" style="margin-bottom: 0.75rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Nama Nilai (ID)</label>
+                <input type="text" name="val_title_id_<%= formKey %>" class="form-input" value="<%= val.title_id %>">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Nama Nilai (EN)</label>
+                <input type="text" name="val_title_en_<%= formKey %>" class="form-input" value="<%= val.title_en %>">
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Penjelasan / Makna (ID)</label>
+                <textarea name="val_desc_id_<%= formKey %>" class="form-textarea" style="min-height: 60px; font-size: 12.5px;"><%= val.desc_id %></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Penjelasan / Makna (EN)</label>
+                <textarea name="val_desc_en_<%= formKey %>" class="form-textarea" style="min-height: 60px; font-size: 12.5px;"><%= val.desc_en %></textarea>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB PANE 4: SERTIFIKASI & LINGKUNGAN -->
+  <div class="about-tab-pane" id="tab-sertifikasi" role="tabpanel">
+    <!-- Eco Statement -->
+    <div class="about-glass-card">
+      <div class="form-card-title">Komitmen Pelestarian Lingkungan Hidup</div>
+
+      <div class="form-row-2">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="eco_statement_id" class="form-label">Pernyataan Komitmen Lingkungan (ID)</label>
+          <textarea id="eco_statement_id" name="eco_statement_id" class="form-textarea" style="min-height: 75px;"><%= about.eco_statement_id || '' %></textarea>
+          <div class="form-hint">Mari selamatkan bumi kita! Produk 100% degradable.</div>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="eco_statement_en" class="form-label">Pernyataan Komitmen Lingkungan (EN)</label>
+          <textarea id="eco_statement_en" name="eco_statement_en" class="form-textarea" style="min-height: 75px;"><%= about.eco_statement_en || '' %></textarea>
+          <div class="form-hint">Let's save our earth! 100% degradable commitment.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daftar Sertifikasi Resmi -->
+    <div class="about-glass-card">
+      <div class="form-card-title" style="display: flex; align-items: center; justify-content: space-between;">
+        <span>Daftar Sertifikasi Resmi Standar Mutu</span>
+        <span class="badge badge-info" style="font-size: 11px;">SNI, OXIUM, InSWA</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <% (about.certifications || []).forEach(function(cert, idx) { %>
+          <div style="background: #ffffff; border: 1px solid var(--border-main); border-radius: var(--r-lg); padding: 1.25rem; box-shadow: var(--shadow-xs);">
+            <div class="form-row-3" style="margin-bottom: 0.75rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Nama Sertifikasi</label>
+                <input type="text" name="cert_name_<%= idx %>" class="form-input" value="<%= cert.name %>">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Penerbit / Asosiasi</label>
+                <input type="text" name="cert_issuer_<%= idx %>" class="form-input" value="<%= cert.issuer %>">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Label / Badge</label>
+                <input type="text" name="cert_badge_<%= idx %>" class="form-input" value="<%= cert.badge %>">
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Keterangan Standar (ID)</label>
+                <input type="text" name="cert_desc_id_<%= idx %>" class="form-input" value="<%= cert.desc_id %>">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 12px;">Keterangan Standar (EN)</label>
+                <input type="text" name="cert_desc_en_<%= idx %>" class="form-input" value="<%= cert.desc_en %>">
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Actions Bar -->
+  <div class="about-sticky-actions">
+    <div class="actions-left" style="display: flex; align-items: center; gap: 8px;">
+      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+      <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">
+        Semua tab tersimpan dalam satu klik.
+      </span>
+    </div>
+    <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">
+      <a href="/admin/dashboard" class="btn btn-secondary">
+        Batal
+      </a>
+      <button type="submit" class="btn btn-primary" style="min-width: 220px;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        <span>Simpan Perubahan</span>
+      </button>
+    </div>
+  </div>
+</form>
 
 <%- include('../../partials/admin-footer') %>

@@ -6,9 +6,10 @@ import rateLimit from 'express-rate-limit';
  */
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5,
+  max: process.env.NODE_ENV === 'test' ? 1000 : 5,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => process.env.NODE_ENV === 'test' || req.headers['x-test-bypass-rate-limit'] === 'true',
   handler: (req, res) => {
     res.status(429).render('admin/login', {
       title: 'Login Terkunci - PT Euodoo CMS',

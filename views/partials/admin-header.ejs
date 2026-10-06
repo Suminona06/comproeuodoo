@@ -13,16 +13,30 @@
   <link rel="icon" href="<%= (typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/favicon.ico' %>">
   <link rel="stylesheet" href="/css/admin.css">
   <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+
+  <!-- Immediate Sidebar State Restore (Prevents Layout Flash) -->
+  <script>
+    (function() {
+      try {
+        if (window.innerWidth > 900 && localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+          document.documentElement.classList.add('sidebar-collapsed-init');
+          document.body ? document.body.classList.add('sidebar-collapsed') : window.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('sidebar-collapsed');
+          });
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body class="admin-body">
   <!-- Mobile Drawer Backdrop -->
   <div class="admin-backdrop" id="adminBackdrop" aria-hidden="true"></div>
 
   <div class="app-layout">
-    <!-- Modern Light Sidebar -->
+    <!-- Modern Light Collapsible Sidebar -->
     <aside class="app-sidebar" id="adminSidebar" aria-label="Navigasi Menu Utama">
       <div class="sidebar-brand-box">
-        <a href="/admin/dashboard" class="brand-link">
+        <a href="/admin/dashboard" class="brand-link" data-tooltip="EUODOO CMS Panel">
           <div class="brand-icon-sq">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
               <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
@@ -30,7 +44,7 @@
               <polyline points="2 12 12 17 22 12"></polyline>
             </svg>
           </div>
-          <div>
+          <div class="brand-text-wrap">
             <div class="brand-main-text">EUODOO</div>
             <div class="brand-sub-badge">CMS Panel</div>
           </div>
@@ -41,7 +55,7 @@
         <!-- 1. Operasional Utama -->
         <div class="nav-section-title">OPERASIONAL</div>
 
-        <a href="/admin/dashboard" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'dashboard' ? 'active' : '' %>">
+        <a href="/admin/dashboard" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'dashboard' ? 'active' : '' %>" data-tooltip="Dashboard">
           <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <rect x="3" y="3" width="7" height="9" rx="1"></rect>
             <rect x="14" y="3" width="7" height="5" rx="1"></rect>
@@ -52,7 +66,7 @@
         </a>
 
         <% if (typeof user !== 'undefined' && user && ['superadmin', 'admin'].includes(user.role)) { %>
-          <a href="/admin/inquiries" class="nav-item <%= typeof activeNav !== 'undefined' && (activeNav === 'inquiries' || activeNav === 'leads') ? 'active' : '' %>">
+          <a href="/admin/inquiries" class="nav-item <%= typeof activeNav !== 'undefined' && (activeNav === 'inquiries' || activeNav === 'leads') ? 'active' : '' %>" data-tooltip="Inquiry & RFQ">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
@@ -68,7 +82,7 @@
         <% if (typeof user !== 'undefined' && user && ['superadmin', 'admin'].includes(user.role)) { %>
           <div class="nav-section-title">KATALOG & MEREK</div>
 
-          <a href="/admin/banners" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'banners' ? 'active' : '' %>">
+          <a href="/admin/banners" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'banners' ? 'active' : '' %>" data-tooltip="Banner Hero">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
               <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -77,14 +91,14 @@
             <span class="nav-item-label">Banner Hero</span>
           </a>
 
-          <a href="/admin/product-categories" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'product-categories' ? 'active' : '' %>">
+          <a href="/admin/product-categories" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'product-categories' ? 'active' : '' %>" data-tooltip="Kategori Produk">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M4 6h16M4 12h16M4 18h7"></path>
             </svg>
             <span class="nav-item-label">Kategori Produk</span>
           </a>
 
-          <a href="/admin/products" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'products' ? 'active' : '' %>">
+          <a href="/admin/products" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'products' ? 'active' : '' %>" data-tooltip="Katalog Produk">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
               <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
@@ -93,7 +107,7 @@
             <span class="nav-item-label">Katalog Produk</span>
           </a>
 
-          <a href="/admin/brands" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'brands' ? 'active' : '' %>">
+          <a href="/admin/brands" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'brands' ? 'active' : '' %>" data-tooltip="Merek Terdaftar">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <circle cx="12" cy="8" r="6"></circle>
               <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path>
@@ -105,7 +119,7 @@
         <!-- 3. Konten & Publikasi (Superadmin, Admin, Editor) -->
         <div class="nav-section-title">KONTEN & MEDIA</div>
 
-        <a href="/admin/post-categories" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'post-categories' ? 'active' : '' %>">
+        <a href="/admin/post-categories" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'post-categories' ? 'active' : '' %>" data-tooltip="Kategori Berita">
           <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <line x1="8" y1="6" x2="21" y2="6"></line>
             <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -117,14 +131,14 @@
           <span class="nav-item-label">Kategori Berita</span>
         </a>
 
-        <a href="/admin/posts" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'posts' ? 'active' : '' %>">
+        <a href="/admin/posts" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'posts' ? 'active' : '' %>" data-tooltip="Berita & Artikel">
           <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
           </svg>
           <span class="nav-item-label">Berita & Artikel</span>
         </a>
 
-        <a href="/admin/media" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'media' ? 'active' : '' %>">
+        <a href="/admin/media" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'media' ? 'active' : '' %>" data-tooltip="Media Library">
           <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -134,7 +148,7 @@
         </a>
 
         <% if (typeof user !== 'undefined' && user && ['superadmin', 'admin'].includes(user.role)) { %>
-          <a href="/admin/about" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'about' ? 'active' : '' %>">
+          <a href="/admin/about" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'about' ? 'active' : '' %>" data-tooltip="Tentang Kami">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M3 21h18"></path>
               <path d="M5 21V7l8-4v18"></path>
@@ -143,14 +157,14 @@
             <span class="nav-item-label">Tentang Kami</span>
           </a>
 
-          <a href="/admin/contact" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'contact-cms' ? 'active' : '' %>">
+          <a href="/admin/contact" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'contact-cms' ? 'active' : '' %>" data-tooltip="Halaman Kontak">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
             </svg>
             <span class="nav-item-label">Halaman Kontak</span>
           </a>
 
-          <a href="/admin/hero-banners" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'hero-banners' ? 'active' : '' %>">
+          <a href="/admin/hero-banners" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'hero-banners' ? 'active' : '' %>" data-tooltip="Hero Banner Halaman">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="3" y1="9" x2="21" y2="9"></line>
@@ -164,7 +178,7 @@
         <div class="nav-section-title">SISTEM & AKUN</div>
 
         <% if (typeof user !== 'undefined' && user && user.role === 'superadmin') { %>
-          <a href="/admin/users" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'users' ? 'active' : '' %>">
+          <a href="/admin/users" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'users' ? 'active' : '' %>" data-tooltip="Kelola User">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
@@ -174,7 +188,7 @@
             <span class="nav-item-label">Kelola User</span>
           </a>
 
-          <a href="/admin/settings" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'settings' ? 'active' : '' %>">
+          <a href="/admin/settings" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'settings' ? 'active' : '' %>" data-tooltip="Pengaturan Situs">
             <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -183,7 +197,7 @@
           </a>
         <% } %>
 
-        <a href="/admin/change-password" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'password' ? 'active' : '' %>">
+        <a href="/admin/change-password" class="nav-item <%= typeof activeNav !== 'undefined' && activeNav === 'password' ? 'active' : '' %>" data-tooltip="Ganti Sandi">
           <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -195,17 +209,17 @@
       <!-- User Profile Sidebar Footer -->
       <div class="sidebar-user-footer">
         <div class="user-profile-wrap">
-          <div class="user-avatar-badge">
+          <div class="user-avatar-badge" data-tooltip="<%= typeof user !== 'undefined' && user && user.name ? user.name : 'User' %> (<%= typeof user !== 'undefined' && user && user.role ? user.role : 'Staff' %>)">
             <%= (typeof user !== 'undefined' && user && user.name ? user.name.charAt(0) : 'U').toUpperCase() %>
           </div>
-          <div>
+          <div class="user-profile-info">
             <div class="user-name"><%= typeof user !== 'undefined' && user && user.name ? user.name : 'User' %></div>
             <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
               <%= typeof user !== 'undefined' && user && user.role ? user.role : 'Staff' %>
             </div>
           </div>
         </div>
-        <a href="/admin/logout" class="user-signout-btn" title="Keluar dari sesi admin">
+        <a href="/admin/logout" class="user-signout-btn" data-tooltip="Keluar dari sesi admin" title="Keluar dari sesi admin">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
@@ -220,6 +234,21 @@
       <!-- Topbar Header -->
       <header class="app-topbar">
         <div class="topbar-left">
+          <!-- Desktop Sidebar Collapse Toggle -->
+          <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Kecilkan/Lebarkan Sidebar" title="Kecilkan atau Lebarkan Sidebar (Ctrl+B)">
+            <svg class="toggle-icon-collapse" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+              <path d="M15 10l-2 2 2 2"></path>
+            </svg>
+            <svg class="toggle-icon-expand" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display: none;">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+              <path d="M13 10l2 2-2 2"></path>
+            </svg>
+          </button>
+
+          <!-- Mobile Drawer Toggle -->
           <button type="button" class="mobile-menu-toggle" aria-label="Buka Navigasi">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <line x1="3" y1="12" x2="21" y2="12"></line>

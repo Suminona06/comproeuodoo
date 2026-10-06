@@ -122,12 +122,14 @@
                 </select>
               </td>
               <td style="text-align: right;">
-                <div style="display: inline-flex; gap: 4px;">
-                  <button type="button" class="btn-action-view" onclick="openInquiryById(<%= item.id %>)">
-                    Tinjau
+                <div class="table-actions">
+                  <button type="button" class="btn-action btn-action-view" onclick="openInquiryById(<%= item.id %>)" title="Tinjau Cepat">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Tinjau</span>
                   </button>
-                  <a href="/admin/inquiries/<%= item.id %>" class="btn btn-secondary btn-sm" title="Rincian Penuh">
-                    &rarr;
+                  <a href="/admin/inquiries/<%= item.id %>" class="btn-action btn-action-edit" title="Halaman Rincian Penuh">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+                    <span>Detail</span>
                   </a>
                 </div>
               </td>
@@ -164,7 +166,12 @@
         <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         <span>Tinjauan Permintaan Penawaran (RFQ)</span>
       </div>
-      <button type="button" class="admin-modal-close" onclick="closeAdminModal('inquiryDetailModal')">&times;</button>
+      <button type="button" class="modal-close-btn admin-modal-close" onclick="closeAdminModal('inquiryDetailModal')" aria-label="Tutup Dialog">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
     <div class="admin-modal-body">
       <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 1rem;">

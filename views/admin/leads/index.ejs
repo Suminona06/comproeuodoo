@@ -1,142 +1,146 @@
 <%- include('../../partials/admin-header') %>
 
-<main class="section-sm" style="flex: 1;">
-  <div class="container">
-    <div class="admin-page-header">
-      <div>
-        <h1 class="admin-page-title">Permintaan Penawaran & Kemitraan (Leads)</h1>
-        <p class="admin-page-subtitle">Kelola pesan masuk dari calon mitra bisnis, atur status penawaran, dan ekspor arsip.</p>
-      </div>
-      <div>
-        <a href="/admin/leads/export" class="btn btn-secondary btn-sm" download>
-          Unduh Laporan CSV
-        </a>
-      </div>
-    </div>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Permintaan Penawaran &amp; Kemitraan (Leads)</h1>
+    <p>Kelola pesan masuk dari calon mitra bisnis, atur status penawaran, dan ekspor arsip data sales.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/admin/leads/export" class="btn btn-secondary" download>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Unduh Laporan CSV</span>
+    </a>
+  </div>
+</div>
 
-    <!-- Filter Bar -->
-    <div class="card" style="margin-bottom: var(--space-lg); box-shadow: var(--shadow-level-0);">
-      <div class="card-body" style="padding: var(--space-md) var(--space-lg);">
-        <form action="/admin/leads" method="GET" class="flex flex-wrap items-center gap-md">
-          <div style="min-width: 180px;">
-            <select name="status" class="form-select">
-              <option value="">Semua Status</option>
-              <option value="baru" <%= selectedStatus === 'baru' ? 'selected' : '' %>>Baru (Pending)</option>
-              <option value="diproses" <%= selectedStatus === 'diproses' ? 'selected' : '' %>>Sedang Diproses</option>
-              <option value="selesai" <%= selectedStatus === 'selesai' ? 'selected' : '' %>>Selesai / Quoted</option>
-              <option value="ditolak" <%= selectedStatus === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
-            </select>
-          </div>
-          <div style="min-width: 180px;">
-            <select name="type" class="form-select">
-              <option value="">Semua Tipe</option>
-              <option value="inquiry" <%= selectedType === 'inquiry' ? 'selected' : '' %>>Penawaran (RFQ)</option>
-              <option value="partnership" <%= selectedType === 'partnership' ? 'selected' : '' %>>Kemitraan</option>
-              <option value="general" <%= selectedType === 'general' ? 'selected' : '' %>>Umum</option>
-            </select>
-          </div>
-          <div>
-            <button type="submit" class="btn btn-secondary btn-md">Filter Data</button>
-            <% if (selectedStatus || selectedType) { %>
-              <a href="/admin/leads" class="btn btn-ghost btn-md">Reset</a>
-            <% } %>
-          </div>
-        </form>
-      </div>
+<!-- Filter Bar -->
+<div class="form-card" style="margin-bottom: 1.5rem; padding: 1rem 1.25rem;">
+  <form action="/admin/leads" method="GET" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
+    <div style="min-width: 180px;">
+      <select name="status" class="form-select">
+        <option value="">Semua Status</option>
+        <option value="baru" <%= selectedStatus === 'baru' ? 'selected' : '' %>>Baru (Pending)</option>
+        <option value="diproses" <%= selectedStatus === 'diproses' ? 'selected' : '' %>>Sedang Diproses</option>
+        <option value="selesai" <%= selectedStatus === 'selesai' ? 'selected' : '' %>>Selesai / Quoted</option>
+        <option value="ditolak" <%= selectedStatus === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
+      </select>
     </div>
+    <div style="min-width: 180px;">
+      <select name="type" class="form-select">
+        <option value="">Semua Tipe</option>
+        <option value="inquiry" <%= selectedType === 'inquiry' ? 'selected' : '' %>>Penawaran (RFQ)</option>
+        <option value="partnership" <%= selectedType === 'partnership' ? 'selected' : '' %>>Kemitraan</option>
+        <option value="general" <%= selectedType === 'general' ? 'selected' : '' %>>Umum</option>
+      </select>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+      <button type="submit" class="btn btn-secondary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        <span>Filter Data</span>
+      </button>
+      <% if (selectedStatus || selectedType) { %>
+        <a href="/admin/leads" class="btn btn-ghost">Reset</a>
+      <% } %>
+    </div>
+  </form>
+</div>
 
-    <!-- Leads Table -->
-    <div class="admin-table-card">
-      <div class="admin-table-header">
-        <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Daftar Permintaan Masuk</h2>
-        <span class="badge badge-neutral"><%= leads.length %> Data Ditemukan</span>
-      </div>
-      <div class="table-responsive" style="border: none; border-radius: 0;">
-        <table class="table">
-          <thead>
+<!-- Leads Table -->
+<div class="table-card">
+  <div class="table-toolbar">
+    <h2 class="toolbar-title">Daftar Permintaan Masuk</h2>
+    <span class="badge badge-info"><%= leads.length %> Data Ditemukan</span>
+  </div>
+  <div class="table-scroll-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 110px;">Tanggal</th>
+          <th>Pengirim &amp; Perusahaan</th>
+          <th>Kontak</th>
+          <th>Pesan / Spesifikasi</th>
+          <th style="width: 120px;">Status</th>
+          <th style="width: 220px;">Ubah Status &amp; Catatan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (leads && leads.length > 0) { %>
+          <% leads.forEach(function(lead) { %>
             <tr>
-              <th class="th-neutral" style="width: 110px;">Tanggal</th>
-              <th class="th-neutral">Pengirim & Perusahaan</th>
-              <th class="th-neutral">Kontak</th>
-              <th class="th-neutral">Pesan / Spesifikasi</th>
-              <th class="th-neutral" style="width: 130px;">Status Saat Ini</th>
-              <th class="th-neutral" style="width: 220px;">Ubah Status & Catatan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% if (leads && leads.length > 0) { %>
-              <% leads.forEach(function(lead) { %>
-                <tr>
-                  <td>
-                    <span style="font-size: 12px; color: var(--color-text-muted);">
-                      <%= new Date(lead.created_at).toLocaleDateString('id-ID') %>
-                    </span>
-                  </td>
-                  <td>
-                    <strong><%= lead.name %></strong><br>
-                    <small style="color: var(--color-text-muted);"><%= lead.company %></small>
-                    <% if (lead.product_name_id) { %>
-                      <br><small style="color: var(--color-primary);">Produk: <%= lead.product_name_id %></small>
-                    <% } %>
-                  </td>
-                  <td>
-                    <a href="mailto:<%= lead.email %>" style="color: var(--color-primary);"><%= lead.email %></a><br>
-                    <a href="https://wa.me/<%= lead.phone.replace(/[^0-9]/g, '') %>" target="_blank" style="color: #16a34a; font-size: 12px;">
+              <td>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">
+                  <%= new Date(lead.created_at).toLocaleDateString('id-ID') %>
+                </span>
+              </td>
+              <td>
+                <strong><%= lead.name %></strong>
+                <% if (lead.company) { %>
+                  <div style="color: var(--text-muted); font-size: 12px;"><%= lead.company %></div>
+                <% } %>
+                <% if (lead.product_name_id) { %>
+                  <div style="color: var(--primary); font-size: 11.5px; font-weight: 600;">Produk: <%= lead.product_name_id %></div>
+                <% } %>
+              </td>
+              <td>
+                <div><a href="mailto:<%= lead.email %>" style="color: var(--primary); font-size: 12.5px;"><%= lead.email %></a></div>
+                <% if (lead.phone) { %>
+                  <div>
+                    <a href="https://wa.me/<%= lead.phone.replace(/[^0-9]/g, '') %>" target="_blank" style="color: #16a34a; font-size: 12px; font-weight: 500;">
                       WA: <%= lead.phone %> &nearr;
                     </a>
-                  </td>
-                  <td>
-                    <p style="font-size: 13px; line-height: 1.4; max-width: 320px; margin-bottom: 4px;">
-                      <%= lead.message %>
-                    </p>
-                    <% if (lead.admin_notes) { %>
-                      <div style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #475569;">
-                        <strong>Catatan Admin:</strong> <%= lead.admin_notes %>
-                      </div>
-                    <% } %>
-                  </td>
-                  <td>
-                    <% if (lead.status === 'baru') { %>
-                      <span class="badge badge-warning">Baru</span>
-                    <% } else if (lead.status === 'diproses') { %>
-                      <span class="badge badge-info">Diproses</span>
-                    <% } else if (lead.status === 'selesai') { %>
-                      <span class="badge badge-success">Selesai</span>
-                    <% } else { %>
-                      <span class="badge badge-error">Ditolak</span>
-                    <% } %>
-                  </td>
-                  <td>
-                    <form action="/admin/leads/<%= lead.id %>/status?_csrf=<%= csrfToken %>" method="POST" class="flex flex-col gap-xs">
-                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                      <div class="flex gap-xs">
-                        <select name="status" class="form-select" style="min-height: 36px; font-size: 12px; padding: 2px 6px;">
-                          <option value="baru" <%= lead.status === 'baru' ? 'selected' : '' %>>Baru</option>
-                          <option value="diproses" <%= lead.status === 'diproses' ? 'selected' : '' %>>Diproses</option>
-                          <option value="selesai" <%= lead.status === 'selesai' ? 'selected' : '' %>>Selesai</option>
-                          <option value="ditolak" <%= lead.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
-                        </select>
-                        <button type="submit" class="btn btn-secondary btn-sm" style="min-height: 36px;">
-                          Simpan
-                        </button>
-                      </div>
-                      <input type="text" name="admin_notes" class="form-control" style="min-height: 30px; font-size: 11px; padding: 2px 6px;" placeholder="Tambah catatan sales..." value="<%= lead.admin_notes || '' %>">
-                    </form>
-                  </td>
-                </tr>
-              <% }); %>
-            <% } else { %>
-              <tr>
-                <td colspan="6" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
-                  Belum ada pesan leads yang cocok dengan kriteria filter.
-                </td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
-    </div>
+                  </div>
+                <% } %>
+              </td>
+              <td>
+                <p style="font-size: 12.5px; line-height: 1.45; max-width: 320px; margin: 0 0 4px 0; color: var(--text-main);">
+                  <%= lead.message %>
+                </p>
+                <% if (lead.admin_notes) { %>
+                  <div style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #475569; border: 1px solid #e2e8f0;">
+                    <strong>Catatan Sales:</strong> <%= lead.admin_notes %>
+                  </div>
+                <% } %>
+              </td>
+              <td>
+                <% if (lead.status === 'baru') { %>
+                  <span class="badge badge-warning">Baru</span>
+                <% } else if (lead.status === 'diproses') { %>
+                  <span class="badge badge-info">Diproses</span>
+                <% } else if (lead.status === 'selesai') { %>
+                  <span class="badge badge-success">Selesai</span>
+                <% } else { %>
+                  <span class="badge badge-error">Ditolak</span>
+                <% } %>
+              </td>
+              <td>
+                <form action="/admin/leads/<%= lead.id %>/status?_csrf=<%= csrfToken %>" method="POST" style="display: flex; flex-direction: column; gap: 4px; margin: 0;">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <div style="display: flex; gap: 4px;">
+                    <select name="status" class="form-select" style="min-height: 32px; font-size: 12px; padding: 2px 6px;">
+                      <option value="baru" <%= lead.status === 'baru' ? 'selected' : '' %>>Baru</option>
+                      <option value="diproses" <%= lead.status === 'diproses' ? 'selected' : '' %>>Diproses</option>
+                      <option value="selesai" <%= lead.status === 'selesai' ? 'selected' : '' %>>Selesai</option>
+                      <option value="ditolak" <%= lead.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
+                    </select>
+                    <button type="submit" class="btn btn-secondary" style="min-height: 32px; padding: 4px 10px; font-size: 12px;">
+                      Simpan
+                    </button>
+                  </div>
+                  <input type="text" name="admin_notes" class="form-input" style="min-height: 28px; font-size: 11.5px; padding: 2px 8px;" placeholder="Catatan sales..." value="<%= lead.admin_notes || '' %>">
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+              Belum ada pesan leads yang cocok dengan kriteria filter.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
   </div>
-</main>
+</div>
 
 <%- include('../../partials/admin-footer') %>

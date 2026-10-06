@@ -1,146 +1,146 @@
 <%- include('../../partials/admin-header') %>
 
-<main class="section-sm" style="flex: 1;">
-  <div class="container">
-    <div class="admin-page-header">
-      <div>
-        <h1 class="admin-page-title">Kapabilitas Fasilitas & Mesin Pabrik</h1>
-        <p class="admin-page-subtitle">Kelola informasi lini mesin produksi (tonase, kapasitas bulanan, dan foto fasilitas).</p>
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Kapabilitas Fasilitas &amp; Mesin Pabrik</h1>
+    <p>Kelola informasi lini mesin produksi (tonase, kapasitas bulanan, dan dokumentasi fasilitas).</p>
+  </div>
+</div>
+
+<div class="grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+  <!-- Form Tambah Kapabilitas -->
+  <div class="form-card">
+    <div class="form-card-title">Tambah Mesin / Fasilitas Baru</div>
+
+    <form action="/admin/capabilities?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="title_id" class="form-label">Nama Fasilitas (Indonesia) *</label>
+          <input type="text" id="title_id" name="title_id" class="form-input" placeholder="Lini Mesin Servo Injection 850T" required>
+        </div>
+        <div class="form-group">
+          <label for="title_en" class="form-label">Nama Fasilitas (English)</label>
+          <input type="text" id="title_en" name="title_en" class="form-input" placeholder="850T Servo Injection Machine Line">
+        </div>
       </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="machine_type" class="form-label">Tipe Mesin &amp; Tonase *</label>
+          <input type="text" id="machine_type" name="machine_type" class="form-input" placeholder="Injection Molding 850 Ton" required>
+        </div>
+        <div class="form-group">
+          <label for="capacity" class="form-label">Estimasi Kapasitas Produksi</label>
+          <input type="text" id="capacity" name="capacity" class="form-input" placeholder="Contoh: 500.000 unit / bulan">
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="description_id" class="form-label">Deskripsi Fasilitas (Indonesia)</label>
+          <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Pencetakan komponen plastik dimensi besar dengan akurasi mikro..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="description_en" class="form-label">Deskripsi Fasilitas (English)</label>
+          <textarea id="description_en" name="description_en" class="form-textarea" placeholder="Large-dimension plastic component molding with micro precision..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="form-group">
+          <label for="image_file" class="form-label">Foto Mesin / Fasilitas</label>
+          <input type="file" id="image_file" name="image_file" class="form-input" accept="image/*" data-preview="capPreview">
+        </div>
+        <div class="form-group">
+          <label for="sort_order" class="form-label">Urutan Tampil</label>
+          <input type="number" id="sort_order" name="sort_order" class="form-input" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status Tayang</label>
+          <div style="height: 38px; display: flex; align-items: center;">
+            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-main);">
+              <input type="checkbox" name="is_active" value="1" checked style="width: 16px; height: 16px; border-radius: 4px; accent-color: var(--primary);">
+              <span>Aktif Tampil di Web</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <img id="capPreview" src="" alt="Pratinjau" style="max-height: 140px; border-radius: var(--r-md); display: none; border: 1px solid var(--border-main);">
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Simpan Kapabilitas</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Daftar Kapabilitas -->
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h2 class="toolbar-title">Daftar Fasilitas Mesin</h2>
+      <span class="badge badge-info"><%= capabilities.length %> Unit</span>
     </div>
-
-    <div class="grid" style="grid-template-columns: 1fr; gap: var(--space-xl);">
-      <!-- Form Tambah Kapabilitas -->
-      <div class="card" style="box-shadow: var(--shadow-level-0);">
-        <div class="card-header">
-          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Tambah Mesin / Fasilitas Baru</h2>
-        </div>
-        <div class="card-body">
-          <form action="/admin/capabilities?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="title_id" class="form-label form-label-required">Nama Fasilitas (Indonesia)</label>
-                <input type="text" id="title_id" name="title_id" class="form-control" placeholder="Lini Mesin Servo Injection 850T" required>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="title_en" class="form-label">Nama Fasilitas (English)</label>
-                <input type="text" id="title_en" name="title_en" class="form-control" placeholder="850T Servo Injection Machine Line">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="machine_type" class="form-label form-label-required">Tipe Mesin & Tonase</label>
-                <input type="text" id="machine_type" name="machine_type" class="form-control" placeholder="Injection Molding 850 Ton" required>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="capacity" class="form-label">Estimasi Kapasitas Produksi</label>
-                <input type="text" id="capacity" name="capacity" class="form-control" placeholder="Contoh: 500.000 unit / bulan">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2" style="margin-bottom: var(--space-md);">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="description_id" class="form-label">Deskripsi Fasilitas (Indonesia)</label>
-                <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Pencetakan komponen plastik dimensi besar dengan akurasi mikro..."></textarea>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="description_en" class="form-label">Deskripsi Fasilitas (English)</label>
-                <textarea id="description_en" name="description_en" class="form-textarea" placeholder="Large-dimension plastic component molding with micro precision..."></textarea>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3" style="margin-bottom: var(--space-md);">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="image_file" class="form-label">Foto Mesin / Fasilitas</label>
-                <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*" data-preview="capPreview">
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="sort_order" class="form-label">Urutan Tampil</label>
-                <input type="number" id="sort_order" name="sort_order" class="form-control" value="0">
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Status Tayang</label>
-                <div class="flex items-center" style="height: 44px;">
-                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                    <input type="checkbox" name="is_active" value="1" checked> Aktif Tampil di Web
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div style="margin-bottom: var(--space-lg);">
-              <img id="capPreview" src="" alt="Pratinjau" style="max-height: 140px; border-radius: var(--radius-sm); display: none; border: 1px solid var(--color-border);">
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-md">
-              Simpan Kapabilitas
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Daftar Kapabilitas -->
-      <div class="admin-table-card">
-        <div class="admin-table-header">
-          <h2 style="font-size: 1.125rem; color: var(--color-text-navy);">Daftar Fasilitas Mesin</h2>
-          <span class="badge badge-neutral"><%= capabilities.length %> Unit</span>
-        </div>
-        <div class="table-responsive" style="border: none; border-radius: 0;">
-          <table class="table">
-            <thead>
+    <div class="table-scroll-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Fasilitas / Mesin</th>
+            <th>Tipe Mesin</th>
+            <th>Kapasitas</th>
+            <th style="width: 80px; text-align: center;">Urutan</th>
+            <th style="width: 100px;">Status</th>
+            <th style="text-align: right; width: 100px;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (capabilities && capabilities.length > 0) { %>
+            <% capabilities.forEach(function(cap) { %>
               <tr>
-                <th class="th-neutral">Fasilitas / Mesin</th>
-                <th class="th-neutral">Tipe Mesin</th>
-                <th class="th-neutral">Kapasitas</th>
-                <th class="th-neutral">Urutan</th>
-                <th class="th-neutral">Status</th>
-                <th class="th-neutral text-right">Aksi</th>
+                <td>
+                  <strong><%= cap.title_id %></strong>
+                  <% if (cap.title_en) { %>
+                    <div style="color: var(--text-muted); font-size: 12px;"><%= cap.title_en %></div>
+                  <% } %>
+                </td>
+                <td><span class="badge badge-primary"><%= cap.machine_type %></span></td>
+                <td><%= cap.capacity || '-' %></td>
+                <td style="text-align: center;"><%= cap.sort_order %></td>
+                <td>
+                  <% if (cap.is_active) { %>
+                    <span class="badge badge-success">Aktif</span>
+                  <% } else { %>
+                    <span class="badge badge-neutral">Nonaktif</span>
+                  <% } %>
+                </td>
+                <td style="text-align: right;">
+                  <div class="table-actions" style="justify-content: flex-end;">
+                    <form action="/admin/capabilities/<%= cap.id %>/delete?_csrf=<%= csrfToken %>" method="POST" class="form-delete" data-confirm="Hapus data kapabilitas mesin ini?" style="display: inline; margin: 0;">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn-action btn-action-delete" title="Hapus Mesin">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Hapus</span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <% if (capabilities && capabilities.length > 0) { %>
-                <% capabilities.forEach(function(cap) { %>
-                  <tr>
-                    <td>
-                      <strong><%= cap.title_id %></strong><br>
-                      <small style="color: var(--color-text-muted);"><%= cap.title_en || '-' %></small>
-                    </td>
-                    <td><span class="badge badge-primary"><%= cap.machine_type %></span></td>
-                    <td><%= cap.capacity || '-' %></td>
-                    <td><%= cap.sort_order %></td>
-                    <td>
-                      <% if (cap.is_active) { %>
-                        <span class="badge badge-success">Aktif</span>
-                      <% } else { %>
-                        <span class="badge badge-neutral">Nonaktif</span>
-                      <% } %>
-                    </td>
-                    <td class="text-right">
-                      <form action="/admin/capabilities/<%= cap.id %>/delete?_csrf=<%= csrfToken %>" method="POST" class="form-delete" data-confirm="Hapus data kapabilitas mesin ini?" style="display: inline;">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--color-error);">
-                          Hapus
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                <% }); %>
-              <% } else { %>
-                <tr>
-                  <td colspan="6" class="text-center" style="padding: var(--space-xl); color: var(--color-text-muted);">
-                    Belum ada data mesin yang ditambahkan.
-                  </td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                Belum ada data mesin yang ditambahkan.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
     </div>
   </div>
-</main>
+</div>
 
 <%- include('../../partials/admin-footer') %>

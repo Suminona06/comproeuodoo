@@ -4,6 +4,45 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Desktop Collapsible Sidebar Controls
+  const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+
+  function toggleSidebarCollapse() {
+    if (window.innerWidth <= 900) {
+      // Di mobile berperilaku sebagai drawer
+      if (document.body.classList.contains('sidebar-open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+      return;
+    }
+
+    const isCollapsed = document.body.classList.toggle('sidebar-collapsed');
+    try {
+      localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+    } catch (e) {}
+  }
+
+  if (sidebarToggleBtn) {
+    sidebarToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleSidebarCollapse();
+    });
+  }
+
+  // Keyboard shortcut Ctrl+B or Cmd+B to toggle sidebar
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        return;
+      }
+      e.preventDefault();
+      toggleSidebarCollapse();
+    }
+  });
+
   // Mobile drawer controls
   const sidebar = document.querySelector('.app-sidebar');
   const toggleBtn = document.querySelector('.mobile-menu-toggle');
@@ -90,6 +129,49 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // CMS Tentang Kami Tabs Navigation
+  const aboutTabButtons = document.querySelectorAll('.about-tabs-nav .about-tab-btn');
+  const aboutTabPanes = document.querySelectorAll('.about-tab-pane');
+
+  if (aboutTabButtons.length > 0 && aboutTabPanes.length > 0) {
+    function switchAboutTab(targetId) {
+      aboutTabButtons.forEach(btn => {
+        const isMatch = btn.getAttribute('data-tab') === targetId;
+        btn.classList.toggle('active', isMatch);
+        btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+      });
+
+      aboutTabPanes.forEach(pane => {
+        const isMatch = pane.id === targetId;
+        pane.classList.toggle('active', isMatch);
+      });
+
+      try {
+        sessionStorage.setItem('active_about_tab', targetId);
+      } catch (e) {}
+    }
+
+    aboutTabButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = btn.getAttribute('data-tab');
+        if (targetId) switchAboutTab(targetId);
+      });
+    });
+
+    // Restore last visited tab or hash
+    let initialTab = window.location.hash ? window.location.hash.substring(1) : '';
+    if (!initialTab) {
+      try {
+        initialTab = sessionStorage.getItem('active_about_tab') || '';
+      } catch (e) {}
+    }
+
+    if (initialTab && document.getElementById(initialTab)) {
+      switchAboutTab(initialTab);
+    }
+  }
 });
 
 // Toast notification helper

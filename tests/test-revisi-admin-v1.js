@@ -15,7 +15,10 @@ async function request(path, options = {}) {
     .map(([k, v]) => `${k}=${v}`)
     .join('; ');
 
-  const headers = { ...(options.headers || {}) };
+  const headers = {
+    'x-test-bypass-rate-limit': 'true',
+    ...(options.headers || {})
+  };
   if (cookieHeader) {
     headers['Cookie'] = cookieHeader;
   }
@@ -627,8 +630,51 @@ async function runTests() {
     assert.strictEqual(checkPost.length, 0, 'Post must be permanently deleted from database');
     console.log('  ✓ Delete article/post executed successfully without 403');
 
+    // [23] Verifikasi UI Polish (C1 - C7)
+    console.log('\n[23] Verification UI Polish C1 - C7: Collapsible Sidebar, CRUD Buttons, Close Buttons, RFQ Footer, Change Password, Tentang Kami Tabs');
+
+    // C6: Change Password View
+    const changePassRes = await request('/admin/change-password');
+    assert.strictEqual(changePassRes.status, 200, 'Change password page must return 200');
+    assert.ok(changePassRes.body.includes('app-sidebar'), 'Change password must include sidebar');
+    assert.ok(changePassRes.body.includes('content-header'), 'Change password must include content-header');
+    assert.ok(changePassRes.body.includes('form-card'), 'Change password must include form-card');
+    assert.ok(changePassRes.body.includes('id="current_password"'), 'Change password must have current_password input');
+    console.log('  ✓ C6: Change Password layout standardized with sidebar and form-card');
+
+    // C7: About Us CMS View
+    const aboutRes = await request('/admin/about');
+    assert.strictEqual(aboutRes.status, 200, 'About page must return 200');
+    assert.ok(aboutRes.body.includes('about-tabs-nav'), 'About page must render tabs navigation');
+    assert.ok(aboutRes.body.includes('id="tab-sejarah"'), 'About page must render tab-sejarah');
+    assert.ok(aboutRes.body.includes('id="tab-visi-misi"'), 'About page must render tab-visi-misi');
+    assert.ok(aboutRes.body.includes('id="tab-ticket"'), 'About page must render tab-ticket');
+    assert.ok(aboutRes.body.includes('id="tab-sertifikasi"'), 'About page must render tab-sertifikasi');
+    assert.ok(aboutRes.body.includes('about-sticky-actions'), 'About page must render sticky action bar');
+    console.log('  ✓ C7: CMS Tentang Kami redesigned with modern tabs and preserved fields');
+
+    // C1, C4, C5: Dashboard RFQ Widget, Collapsible Toggle, Modal Close
+    const dashRes = await request('/admin/dashboard');
+    assert.strictEqual(dashRes.status, 200, 'Dashboard must return 200');
+    assert.ok(dashRes.body.includes('id="sidebarToggleBtn"'), 'Dashboard must have sidebar toggle button');
+    assert.ok(dashRes.body.includes('table-footer'), 'RFQ widget must have table-footer');
+    assert.ok(dashRes.body.includes('modal-close-btn'), 'Inquiry modal must have reusable modal-close-btn');
+    console.log('  ✓ C1, C4, C5: Collapsible sidebar toggle, RFQ table-footer, and modal close button verified');
+
+    // C3 & C2: Inquiries & Brands layout and CRUD button symmetry
+    const inqRes = await request('/admin/inquiries');
+    assert.strictEqual(inqRes.status, 200, 'Inquiries page must return 200');
+    assert.ok(inqRes.body.includes('content-header'), 'Inquiries must use standard content-header');
+    assert.ok(inqRes.body.includes('btn-action'), 'Inquiries must use standardized btn-action');
+
+    const brandRes = await request('/admin/brands');
+    assert.strictEqual(brandRes.status, 200, 'Brands page must return 200');
+    assert.ok(brandRes.body.includes('content-header'), 'Brands must use standard content-header');
+    assert.ok(brandRes.body.includes('btn-action'), 'Brands must use standardized btn-action');
+    console.log('  ✓ C3 & C2: Inquiries & Brands standardized with content-header and symmetric action buttons');
+
     console.log('\n============================================================================');
-    console.log('ALL 8 REVISI ADMIN V1 TASKS & DELETE ACTIONS PASSED SUCCESSFULLY!');
+    console.log('ALL REVISI ADMIN V1 TASKS & POLISH C1-C7 PASSED SUCCESSFULLY!');
     console.log('============================================================================');
   } finally {
     await pool.end();

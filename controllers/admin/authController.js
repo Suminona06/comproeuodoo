@@ -129,7 +129,7 @@ export const authController = {
   changePasswordView(req, res) {
     res.render('admin/change-password', {
       title: 'Ganti Kata Sandi - PT Euodoo CMS',
-      activeNav: 'settings',
+      activeNav: 'password',
       error: null,
       success: null,
       csrfToken: res.locals.csrfToken || ''
@@ -145,7 +145,7 @@ export const authController = {
     if (!current_password || !new_password || !confirm_password) {
       return res.status(400).render('admin/change-password', {
         title: 'Ganti Kata Sandi - PT Euodoo CMS',
-        activeNav: 'settings',
+        activeNav: 'password',
         error: 'Semua kolom kata sandi wajib diisi.',
         success: null,
         csrfToken: res.locals.csrfToken || ''
@@ -155,7 +155,7 @@ export const authController = {
     if (new_password.length < 8) {
       return res.status(400).render('admin/change-password', {
         title: 'Ganti Kata Sandi - PT Euodoo CMS',
-        activeNav: 'settings',
+        activeNav: 'password',
         error: 'Kata sandi baru minimal harus 8 karakter.',
         success: null,
         csrfToken: res.locals.csrfToken || ''
@@ -165,7 +165,7 @@ export const authController = {
     if (new_password !== confirm_password) {
       return res.status(400).render('admin/change-password', {
         title: 'Ganti Kata Sandi - PT Euodoo CMS',
-        activeNav: 'settings',
+        activeNav: 'password',
         error: 'Konfirmasi kata sandi baru tidak sesuai.',
         success: null,
         csrfToken: res.locals.csrfToken || ''
@@ -177,7 +177,7 @@ export const authController = {
       if (!user) {
         return res.status(404).render('admin/change-password', {
           title: 'Ganti Kata Sandi - PT Euodoo CMS',
-          activeNav: 'settings',
+          activeNav: 'password',
           error: 'Pengguna tidak ditemukan dalam sistem.',
           success: null,
           csrfToken: res.locals.csrfToken || ''
@@ -188,7 +188,7 @@ export const authController = {
       if (!isCurrentMatch) {
         return res.status(400).render('admin/change-password', {
           title: 'Ganti Kata Sandi - PT Euodoo CMS',
-          activeNav: 'settings',
+          activeNav: 'password',
           error: 'Kata sandi lama yang Anda masukkan tidak sesuai.',
           success: null,
           csrfToken: res.locals.csrfToken || ''
@@ -202,7 +202,7 @@ export const authController = {
       logger.info(`Password successfully updated for user: ${user.email}`);
       return res.render('admin/change-password', {
         title: 'Ganti Kata Sandi - PT Euodoo CMS',
-        activeNav: 'settings',
+        activeNav: 'password',
         error: null,
         success: 'Kata sandi berhasil diperbarui dengan aman.',
         csrfToken: res.locals.csrfToken || ''
@@ -211,7 +211,7 @@ export const authController = {
       logger.error('Change password error:', { message: err.message });
       return res.status(500).render('admin/change-password', {
         title: 'Ganti Kata Sandi - PT Euodoo CMS',
-        activeNav: 'settings',
+        activeNav: 'password',
         error: 'Terjadi kegagalan saat memperbarui kata sandi.',
         success: null,
         csrfToken: res.locals.csrfToken || ''
