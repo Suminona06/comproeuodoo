@@ -121,7 +121,7 @@
               </td>
               <td style="text-align: right;">
                 <div class="table-actions">
-                  <button type="button" class="btn-action btn-action-view" onclick="viewInquiryDetail(<%= JSON.stringify(item).replace(/"/g, '&quot;') %>)" title="Tinjau Rincian Permintaan">
+                  <button type="button" class="btn-action btn-action-view" data-inquiry-id="<%= item.id %>" onclick="viewInquiryDetail(<%= item.id %>)" title="Tinjau Rincian Permintaan">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     <span>Tinjau</span>
                   </button>
@@ -198,7 +198,15 @@
 </div>
 
 <script>
-  function viewInquiryDetail(item) {
+  const dashboardInquiries = <%- JSON.stringify(recentInquiries || []) %>;
+
+  function viewInquiryDetail(itemOrId) {
+    let item = itemOrId;
+    if (typeof itemOrId === 'number' || typeof itemOrId === 'string') {
+      item = dashboardInquiries.find(i => String(i.id) === String(itemOrId));
+    }
+    if (!item) return;
+
     document.getElementById('modalInquiryId').value = item.id;
     document.getElementById('modalClientCompany').textContent = item.company || 'Pribadi / Retail';
     document.getElementById('modalClientName').textContent = item.name;
@@ -209,6 +217,15 @@
     document.getElementById('modalAdminNotes').value = item.admin_notes || '';
     openAdminModal('inquiryDetailModal');
   }
+  window.viewInquiryDetail = viewInquiryDetail;
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-inquiry-id]');
+    if (btn && btn.classList.contains('btn-action-view')) {
+      const id = btn.getAttribute('data-inquiry-id');
+      viewInquiryDetail(id);
+    }
+  });
 
   async function updateInquiryStatus(id, newStatus) {
     try {

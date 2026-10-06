@@ -130,8 +130,8 @@ export const authController = {
     res.render('admin/change-password', {
       title: 'Ganti Kata Sandi - PT Euodoo CMS',
       activeNav: 'password',
-      error: null,
-      success: null,
+      error: req.query.error || null,
+      success: req.query.success || null,
       csrfToken: res.locals.csrfToken || ''
     });
   },

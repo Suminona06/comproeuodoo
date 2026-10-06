@@ -40,6 +40,7 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
         scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrcAttr: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
         mediaSrc: ["'self'", 'data:', 'blob:', 'https:'],
         connectSrc: ["'self'"],

@@ -212,6 +212,19 @@ window.closeAllModals = function() {
   document.querySelectorAll('.drawer-backdrop').forEach(b => b.classList.remove('open'));
 };
 
+// Global modal click delegation for close buttons & backdrops
+document.addEventListener('click', (e) => {
+  const closeBtn = e.target.closest('.admin-modal-close, .modal-close-btn, [data-modal-close]');
+  if (closeBtn) {
+    const targetModal = closeBtn.closest('.admin-modal-backdrop') || document.querySelector('.admin-modal-backdrop.open');
+    if (targetModal) targetModal.classList.remove('open');
+    return;
+  }
+  if (e.target.classList && e.target.classList.contains('admin-modal-backdrop')) {
+    e.target.classList.remove('open');
+  }
+});
+
 window.showToast = showAdminToast;
 
 // Copy text helper

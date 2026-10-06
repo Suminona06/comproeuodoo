@@ -90,21 +90,30 @@
   <div class="form-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
       <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">3. Tabel Spesifikasi Teknis (Parameter &amp; Nilai)</div>
-      <button type="button" class="btn btn-secondary btn-sm" onclick="addSpecRow()">+ Tambah Baris Parameter</button>
+      <button type="button" id="btnAddSpecRow" class="btn btn-secondary btn-sm" onclick="addSpecRow()">+ Tambah Baris Parameter</button>
     </div>
 
     <div id="specsContainer">
       <div class="form-row-2" style="margin-bottom: 8px;">
         <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Bahan Baku)" value="Bahan Baku">
-        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: High Density Polyethylene)" value="High Density Polyethylene (HDPE)">
+        <div style="display: flex; gap: 6px;">
+          <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: High Density Polyethylene)" value="High Density Polyethylene (HDPE)">
+          <button type="button" class="btn btn-danger btn-sm btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris">&times;</button>
+        </div>
       </div>
       <div class="form-row-2" style="margin-bottom: 8px;">
         <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="Standar Mutu">
-        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="SNI &amp; ISO 9001:2015">
+        <div style="display: flex; gap: 6px;">
+          <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="SNI &amp; ISO 9001:2015">
+          <button type="button" class="btn btn-danger btn-sm btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris">&times;</button>
+        </div>
       </div>
       <div class="form-row-2" style="margin-bottom: 8px;">
         <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="Sifat Biodegradable">
-        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="Tersedia varian 100% degradable (Oxo/Bio)">
+        <div style="display: flex; gap: 6px;">
+          <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="Tersedia varian 100% degradable (Oxo/Bio)">
+          <button type="button" class="btn btn-danger btn-sm btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris">&times;</button>
+        </div>
       </div>
     </div>
   </div>
@@ -113,7 +122,7 @@
   <div class="form-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
       <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">4. Varian Ukuran &amp; Spesifikasi Produk</div>
-      <button type="button" class="btn btn-secondary btn-sm" onclick="addVariantRow()">+ Tambah Baris Varian</button>
+      <button type="button" id="btnAddVariantRow" class="btn btn-secondary btn-sm" onclick="addVariantRow()">+ Tambah Baris Varian</button>
     </div>
 
     <div class="table-scroll-wrapper">
@@ -133,14 +142,14 @@
             <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.035 mm" value="0.035 mm"></td>
             <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam, Merah" value="Putih, Merah"></td>
             <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Standard" value="HDPE Virgin"></td>
-            <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+            <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian">&times;</button></td>
           </tr>
           <tr>
             <td><input type="text" name="var_size[]" class="form-input" placeholder="28 x 48 cm" value="28 x 48 cm"></td>
             <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.040 mm" value="0.040 mm"></td>
             <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam" value="Putih, Hitam"></td>
             <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Standard" value="HDPE Virgin"></td>
-            <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+            <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian">&times;</button></td>
           </tr>
         </tbody>
       </table>
@@ -185,14 +194,32 @@
     div.className = 'form-row-2';
     div.style.marginBottom = '8px';
     div.innerHTML = `
-      <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter">
+      <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Warna)">
       <div style="display: flex; gap: 6px;">
-        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai">
-        <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.form-row-2').remove()">&times;</button>
+        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: Transparan / Custom)">
+        <button type="button" class="btn btn-danger btn-sm btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris">&times;</button>
       </div>
     `;
     container.appendChild(div);
+    div.querySelector('input').focus();
   }
+  window.addSpecRow = addSpecRow;
+
+  function removeSpecRow(btn) {
+    const container = document.getElementById('specsContainer');
+    const rows = container.querySelectorAll('.form-row-2');
+    if (rows.length <= 1) {
+      if (typeof showToast === 'function') {
+        showToast('Minimal 1 baris spesifikasi teknis harus tersedia.');
+      } else {
+        alert('Minimal 1 baris spesifikasi teknis harus tersedia.');
+      }
+      return;
+    }
+    const row = btn.closest('.form-row-2');
+    if (row) row.remove();
+  }
+  window.removeSpecRow = removeSpecRow;
 
   function addVariantRow() {
     const tbody = document.getElementById('variantsBody');
@@ -202,10 +229,33 @@
       <td><input type="text" name="var_thickness[]" class="form-input" placeholder="Tebal"></td>
       <td><input type="text" name="var_color[]" class="form-input" placeholder="Warna"></td>
       <td><input type="text" name="var_material[]" class="form-input" placeholder="Bahan"></td>
-      <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">&times;</button></td>
+      <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian">&times;</button></td>
     `;
     tbody.appendChild(tr);
+    tr.querySelector('input').focus();
   }
+  window.addVariantRow = addVariantRow;
+
+  function removeVariantRow(btn) {
+    const tbody = document.getElementById('variantsBody');
+    const rows = tbody.querySelectorAll('tr');
+    if (rows.length <= 1) {
+      if (typeof showToast === 'function') {
+        showToast('Minimal 1 baris varian ukuran harus tersedia.');
+      } else {
+        alert('Minimal 1 baris varian ukuran harus tersedia.');
+      }
+      return;
+    }
+    const row = btn.closest('tr');
+    if (row) row.remove();
+  }
+  window.removeVariantRow = removeVariantRow;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btnAddSpecRow')?.addEventListener('click', addSpecRow);
+    document.getElementById('btnAddVariantRow')?.addEventListener('click', addVariantRow);
+  });
 </script>
 
 <%- include('../../partials/admin-footer') %>
