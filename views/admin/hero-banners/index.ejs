@@ -1,0 +1,148 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="content-header">
+  <div class="content-title-text">
+    <h1>Hero Banner Per Halaman Publik</h1>
+    <p>Kelola gambar latar belakang, judul headline bilingual, subjudul, dan tingkat kegelapan overlay untuk 4 halaman publik utama.</p>
+  </div>
+</div>
+
+<% if (error) { %>
+  <div class="alert alert-danger" style="margin-bottom: 20px; padding: 12px 16px; border-radius: 6px; background: #fee2e2; border: 1px solid #f87171; color: #991b1b; font-size: 13px;">
+    <strong>Gagal:</strong> <%= error %>
+  </div>
+<% } %>
+
+<% if (success) { %>
+  <div class="alert alert-success" style="margin-bottom: 20px; padding: 12px 16px; border-radius: 6px; background: #dcfce7; border: 1px solid #4ade80; color: #166534; font-size: 13px;">
+    <strong>Sukses:</strong> <%= success %>
+  </div>
+<% } %>
+
+<%
+  const pageConfigs = [
+    { key: 'about', label: 'Tentang Kami', route: '/about', defaultImg: '/images/hero-factory-precision.webp', desc: 'Tampil di bagian paling atas halaman Profil & Sejarah Perusahaan' },
+    { key: 'products', label: 'Katalog Produk', route: '/products', defaultImg: '/images/hero-factory-precision.webp', desc: 'Tampil di bagian atas katalog produk retail & industri' },
+    { key: 'news', label: 'Berita & Artikel', route: '/news', defaultImg: '/images/hero-factory.jpg', desc: 'Tampil di halaman wawasan industri dan blog resmi' },
+    { key: 'contact', label: 'Kontak & RFQ', route: '/contact', defaultImg: '/images/hero-factory.jpg', desc: 'Tampil di bagian atas halaman formulir kontak dan alamat pabrik' }
+  ];
+%>
+
+<div style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 3rem;">
+  <% pageConfigs.forEach(function(cfg, index) { 
+       const banner = (banners || []).find(b => b.page_key === cfg.key) || {
+         page_key: cfg.key,
+         title_id: '',
+         title_en: '',
+         subtitle_id: '',
+         subtitle_en: '',
+         image_url: cfg.defaultImg,
+         overlay_opacity: 0.60,
+         cta_text_id: '',
+         cta_text_en: '',
+         cta_url: '',
+         is_active: 1
+       };
+  %>
+    <div class="form-card" id="card-<%= cfg.key %>">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color, #e2e8f0); padding-bottom: 14px; margin-bottom: 20px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 16px; font-weight: 700; color: var(--text-color, #0f172a);"><%= index + 1 %>. Halaman <%= cfg.label %></span>
+            <span style="font-size: 11px; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 4px; font-family: monospace;"><%= cfg.route %></span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted, #64748b); margin-top: 4px;"><%= cfg.desc %></div>
+        </div>
+        <div>
+          <a href="<%= cfg.route %>" target="_blank" class="btn btn-secondary" style="font-size: 12px; padding: 5px 12px; display: inline-flex; align-items: center; gap: 4px;">
+            <span>Lihat Halaman</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </a>
+        </div>
+      </div>
+
+      <form action="/admin/hero-banners/<%= cfg.key %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <!-- Preview Mockup Banner -->
+        <div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden; position: relative; height: 160px; background: #0f172a; border: 1px solid var(--border-color, #e2e8f0);">
+          <img src="<%= banner.image_url || cfg.defaultImg %>" alt="Hero Preview <%= cfg.label %>" style="width: 100%; height: 100%; object-fit: cover;">
+          <div style="position: absolute; inset: 0; background: rgba(10, 25, 47, 0.65); display: flex; flex-direction: column; justify-content: center; padding: 20px 24px; color: #ffffff;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #38bdf8; font-weight: 700; margin-bottom: 4px;">PRATINJAU TAMPILAN HERO</div>
+            <div style="font-size: 18px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.5);"><%= banner.title_id || cfg.label %></div>
+            <div style="font-size: 12px; opacity: 0.85; max-width: 80%; text-shadow: 0 1px 2px rgba(0,0,0,0.5); margin-top: 2px;"><%= banner.subtitle_id || 'Deskripsi pengantar hero banner...' %></div>
+          </div>
+        </div>
+
+        <!-- Upload & Overlay Controls -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="image_file_<%= cfg.key %>">Ganti Gambar Latar Hero (Maks 1920x1080 px, WebP/JPG/PNG)</label>
+            <input type="file" id="image_file_<%= cfg.key %>" name="image_file" class="form-input" accept="image/jpeg,image/png,image/webp">
+            <div class="form-hint">Kosongkan jika tetap ingin menggunakan gambar saat ini (<%= banner.image_url || cfg.defaultImg %>).</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="overlay_opacity_<%= cfg.key %>">Tingkat Kegelapan Overlay (0.00 - 1.00)</label>
+            <select id="overlay_opacity_<%= cfg.key %>" name="overlay_opacity" class="form-select">
+              <option value="0.40" <%= String(banner.overlay_opacity) === '0.40' ? 'selected' : '' %>>40% (Terang)</option>
+              <option value="0.50" <%= String(banner.overlay_opacity) === '0.50' ? 'selected' : '' %>>50% (Sedang-Terang)</option>
+              <option value="0.60" <%= String(banner.overlay_opacity) === '0.60' || !banner.overlay_opacity ? 'selected' : '' %>>60% (Standar / Rekomendasi)</option>
+              <option value="0.70" <%= String(banner.overlay_opacity) === '0.70' ? 'selected' : '' %>>70% (Kontras Tinggi)</option>
+              <option value="0.80" <%= String(banner.overlay_opacity) === '0.80' ? 'selected' : '' %>>80% (Gelap Pekat)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Teks Headline Bilingual -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="title_id_<%= cfg.key %>">Judul Headline (Bahasa Indonesia) *</label>
+            <input type="text" id="title_id_<%= cfg.key %>" name="title_id" class="form-input" required value="<%= banner.title_id %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="title_en_<%= cfg.key %>">Judul Headline (English)</label>
+            <input type="text" id="title_en_<%= cfg.key %>" name="title_en" class="form-input" value="<%= banner.title_en %>">
+          </div>
+        </div>
+
+        <!-- Subjudul Bilingual -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="subtitle_id_<%= cfg.key %>">Subjudul / Deskripsi (Bahasa Indonesia)</label>
+            <textarea id="subtitle_id_<%= cfg.key %>" name="subtitle_id" class="form-textarea" rows="2"><%= banner.subtitle_id %></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="subtitle_en_<%= cfg.key %>">Subjudul / Deskripsi (English)</label>
+            <textarea id="subtitle_en_<%= cfg.key %>" name="subtitle_en" class="form-textarea" rows="2"><%= banner.subtitle_en %></textarea>
+          </div>
+        </div>
+
+        <!-- CTA Opsional -->
+        <div class="form-row-3" style="display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label" for="cta_text_id_<%= cfg.key %>">Teks Tombol CTA (ID - Opsional)</label>
+            <input type="text" id="cta_text_id_<%= cfg.key %>" name="cta_text_id" class="form-input" placeholder="Misal: Hubungi Kami" value="<%= banner.cta_text_id || '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cta_text_en_<%= cfg.key %>">Teks Tombol CTA (EN - Opsional)</label>
+            <input type="text" id="cta_text_en_<%= cfg.key %>" name="cta_text_en" class="form-input" placeholder="e.g.: Contact Us" value="<%= banner.cta_text_en || '' %>">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cta_url_<%= cfg.key %>">URL Target Tombol CTA</label>
+            <input type="text" id="cta_url_<%= cfg.key %>" name="cta_url" class="form-input" placeholder="/contact atau https://..." value="<%= banner.cta_url || '' %>">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color, #e2e8f0);">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="is_active_<%= cfg.key %>" name="is_active" value="1" <%= banner.is_active ? 'checked' : '' %>>
+            <label for="is_active_<%= cfg.key %>" style="font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-color, #334155);">Aktifkan Hero Banner pada Halaman</label>
+          </div>
+          <button type="submit" class="btn btn-primary" style="padding: 7px 20px; font-size: 13px;">Simpan Banner <%= cfg.label %></button>
+        </div>
+      </form>
+    </div>
+  <% }); %>
+</div>
+
+<%- include('../../partials/admin-footer') %>

@@ -1,5 +1,6 @@
 import productModel from '../../models/productModel.js';
 import productCategoryModel from '../../models/productCategoryModel.js';
+import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import logger from '../../utils/logger.js';
 
 export const productController = {
@@ -37,9 +38,10 @@ export const productController = {
         offset
       };
 
-      const [products, totalCount] = await Promise.all([
+      const [products, totalCount, heroBanner] = await Promise.all([
         productModel.findAll(filterOptions),
-        productModel.countAll(filterOptions)
+        productModel.countAll(filterOptions),
+        pageHeroBannerModel.getByPageKey('products')
       ]);
 
       const totalPages = Math.ceil(totalCount / limit) || 1;
@@ -56,7 +58,8 @@ export const productController = {
         search: search ? search.trim() : '',
         page,
         totalPages,
-        totalProducts: totalCount
+        totalProducts: totalCount,
+        heroBanner
       });
     } catch (err) {
       logger.error('Public productController.index error:', { message: err.message, stack: err.stack });

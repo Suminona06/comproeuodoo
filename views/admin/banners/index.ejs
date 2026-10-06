@@ -64,7 +64,8 @@
                 <%= b.sort_order %>
               </td>
               <td>
-                <form action="/admin/banners/<%= b.id %>/status" method="POST" style="display: inline;">
+                <form action="/admin/banners/<%= b.id %>/status?_csrf=<%= csrfToken %>" method="POST" style="display: inline;">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn btn-sm <%= b.is_active ? 'btn-secondary' : 'btn-danger' %>" style="padding: 2px 7px; font-size: 11px;">
                     <%= b.is_active ? 'Aktif' : 'Nonaktif' %>
                   </button>
@@ -73,7 +74,8 @@
               <td style="text-align: right;">
                 <div style="display: inline-flex; gap: 6px;">
                   <a href="/admin/banners/<%= b.id %>/edit" class="btn-action-view">Edit</a>
-                  <form action="/admin/banners/<%= b.id %>/delete" method="POST" onsubmit="return confirm('Hapus banner ini? Minimal harus ada 1 banner aktif di sistem.');" style="display: inline;">
+                  <form action="/admin/banners/<%= b.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Hapus banner ini? Minimal harus ada 1 banner aktif di sistem.');" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Hapus</button>
                   </form>
                 </div>

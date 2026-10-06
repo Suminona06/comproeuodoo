@@ -13,7 +13,8 @@
 <div class="form-card" style="max-width: 600px; margin: 0 auto;">
   <div class="form-card-title">Informasi Kategori</div>
 
-  <form action="/admin/product-categories" method="POST">
+  <form action="/admin/product-categories?_csrf=<%= csrfToken %>" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="form-group">
       <label class="form-label" for="name_id">Nama Kategori (Bahasa Indonesia) *</label>
       <input type="text" id="name_id" name="name_id" class="form-input" required placeholder="Contoh: Kantong Plastik HDPE" value="<%= typeof formData !== 'undefined' && formData.name_id ? formData.name_id : '' %>">

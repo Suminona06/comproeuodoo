@@ -17,6 +17,7 @@ import { roleMiddleware } from '../middleware/roleMiddleware.js';
 import { loginLimiter } from '../middleware/rateLimiter.js';
 import { uploadMedia } from '../middleware/uploadMiddleware.js';
 import bannerController from '../controllers/admin/bannerController.js';
+import pageHeroBannerController from '../controllers/admin/pageHeroBannerController.js';
 
 const router = Router();
 
@@ -125,5 +126,9 @@ router.post('/about', requireAuth, roleMiddleware(['superadmin', 'admin']), uplo
 // T-63: CMS Halaman Kontak (Superadmin & Admin)
 router.get('/contact', requireAuth, roleMiddleware(['superadmin', 'admin']), contactCmsController.index);
 router.post('/contact', requireAuth, roleMiddleware(['superadmin', 'admin']), contactCmsController.update);
+
+// T-66: CMS Hero Banner Per Halaman (Superadmin & Admin)
+router.get('/hero-banners', requireAuth, roleMiddleware(['superadmin', 'admin']), pageHeroBannerController.index);
+router.post('/hero-banners/:pageKey', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), pageHeroBannerController.update);
 
 export default router;

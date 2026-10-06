@@ -1,6 +1,8 @@
 import inquiryModel from '../../models/inquiryModel.js';
 import leadModel from '../../models/leadModel.js';
 import productModel from '../../models/productModel.js';
+import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
+import { verifyTurnstileToken } from '../../utils/turnstileVerifier.js';
 import mailer from '../../config/mailer.js';
 import logger from '../../utils/logger.js';
 
@@ -8,7 +10,10 @@ export const contactController = {
   async index(req, res) {
     try {
       const { product, success, error } = req.query;
-      const products = await productModel.findAll({ isActive: true });
+      const [products, heroBanner] = await Promise.all([
+        productModel.findAll({ isActive: true }),
+        pageHeroBannerModel.getByPageKey('contact')
+      ]);
 
       let selectedProduct = null;
       if (product) {
@@ -20,11 +25,14 @@ export const contactController = {
         errorMsg = 'Terlalu banyak permintaan terkirim. Mohon tunggu 10 menit sebelum mencoba lagi.';
       } else if (error === 'validation') {
         errorMsg = 'Mohon lengkapi seluruh field bertanda wajib dengan format yang valid.';
+      } else if (error === 'turnstile') {
+        errorMsg = 'Verifikasi keamanan Cloudflare Turnstile gagal atau kedaluwarsa. Silakan centang kembali kotak verifikasi.';
       } else if (error === '1') {
         errorMsg = res.locals.t('contact.error_alert');
       }
 
       const title = res.locals.t('contact.page_title') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
 
       res.render('public/contact', {
         title,
@@ -33,7 +41,9 @@ export const contactController = {
         selectedProduct,
         success: success === '1',
         error: Boolean(errorMsg),
-        errorMsg
+        errorMsg,
+        heroBanner,
+        turnstileSiteKey
       });
     } catch (err) {
       logger.error('Public contactController.index error:', { message: err.message, stack: err.stack });
@@ -79,6 +89,21 @@ export const contactController = {
       }
 
       const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
+
+      // Verifikasi Cloudflare Turnstile CAPTCHA (Item 7 / T-68)
+      const turnstileToken = req.body['cf-turnstile-response'];
+      const turnstileResult = await verifyTurnstileToken(turnstileToken, ipAddress);
+
+      if (!turnstileResult.success) {
+        logger.warn(`[Turnstile] Submission blocked for IP ${ipAddress}. Errors: ${(turnstileResult.errorCodes || []).join(', ')}`);
+        if (isAjax) {
+          return res.status(400).json({
+            success: false,
+            message: 'Verifikasi keamanan Cloudflare Turnstile gagal atau tidak valid. Silakan coba lagi.'
+          });
+        }
+        return res.redirect('/contact?error=turnstile');
+      }
 
       let productName = 'Kebutuhan Custom / Umum';
       let parsedProductId = null;

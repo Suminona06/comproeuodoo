@@ -1,6 +1,9 @@
 import assert from 'assert';
 import dotenv from 'dotenv';
 import { query, execute, pool } from '../config/database.js';
+import productModel from '../models/productModel.js';
+import bannerModel from '../models/bannerModel.js';
+import postModel from '../models/postModel.js';
 
 dotenv.config();
 
@@ -57,6 +60,20 @@ function buildMultipartFormData(fields, boundary) {
   }
   postData += `--${boundary}--\r\n`;
   return postData;
+}
+
+function buildMultipartWithFiles(fields, files, boundary) {
+  const chunks = [];
+  for (const [key, val] of Object.entries(fields)) {
+    chunks.push(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${key}"\r\n\r\n${val}\r\n`));
+  }
+  for (const file of files) {
+    chunks.push(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${file.name}"; filename="${file.filename}"\r\nContent-Type: ${file.contentType}\r\n\r\n`));
+    chunks.push(Buffer.isBuffer(file.content) ? file.content : Buffer.from(file.content));
+    chunks.push(Buffer.from('\r\n'));
+  }
+  chunks.push(Buffer.from(`--${boundary}--\r\n`));
+  return Buffer.concat(chunks);
 }
 
 async function runTests() {
@@ -242,15 +259,387 @@ async function runTests() {
     assert.ok(publicContactEn.body.includes('Test Form Title EN'), 'Must render updated English form title');
     console.log('  ✓ Public contact page correctly reflects bilingual CMS settings');
 
-    console.log('\n=============================================');
-    console.log('ALL TESTS PASSED SUCCESSFULLY! (T-61, T-62, T-63)');
-    console.log('=============================================');
+    // 10. Test T-64 & T-65: GET /admin/settings renders file upload inputs & enctype
+    console.log('\n[10] T-64 & T-65 Test: GET /admin/settings renders favicon & dual logo inputs');
+    const settingsPageRes = await request('/admin/settings');
+    assert.strictEqual(settingsPageRes.status, 200, 'GET /admin/settings must return 200');
+    assert.ok(settingsPageRes.body.includes('enctype="multipart/form-data"'), 'Settings form must be multipart/form-data');
+    assert.ok(settingsPageRes.body.includes('name="favicon_file"'), 'Settings form must contain favicon_file input');
+    assert.ok(settingsPageRes.body.includes('name="logo_header_file"'), 'Settings form must contain logo_header_file input');
+    assert.ok(settingsPageRes.body.includes('name="logo_footer_file"'), 'Settings form must contain logo_footer_file input');
+    console.log('  ✓ Settings page renders all visual identity upload inputs properly');
+
+    // 11. Test T-64 & T-65: POST /admin/settings with multipart files
+    console.log('\n[11] T-64 & T-65 Test: POST /admin/settings upload favicon & dual logos');
+    const settingsBoundary = '----WebKitFormBoundarySettingsUpload999';
+    const sampleIco = Buffer.from([0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x10, 0x10, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x68, 0x04]);
+    const samplePng = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52]);
+
+    const settingsMultipartBody = buildMultipartWithFiles(
+      {
+        company_name: 'PT Euodoo Presisi Indonesia',
+        company_email: 'info@euodoo.com',
+        _csrf: csrfToken
+      },
+      [
+        { name: 'favicon_file', filename: 'custom-fav.ico', contentType: 'image/x-icon', content: sampleIco },
+        { name: 'logo_header_file', filename: 'custom-header-logo.png', contentType: 'image/png', content: samplePng },
+        { name: 'logo_footer_file', filename: 'custom-footer-logo.png', contentType: 'image/png', content: samplePng }
+      ],
+      settingsBoundary
+    );
+
+    const updateSettingsRes = await request(`/admin/settings?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': `multipart/form-data; boundary=${settingsBoundary}` },
+      body: settingsMultipartBody
+    });
+    assert.strictEqual(updateSettingsRes.status, 302, 'POST /admin/settings with uploads must redirect (302)');
+    console.log('  ✓ Settings upload submitted successfully with 302 redirect');
+
+    // Verifikasi DB settings
+    const updatedFav = await query('SELECT setting_value FROM settings WHERE setting_key = "site_favicon"');
+    const updatedLogoH = await query('SELECT setting_value FROM settings WHERE setting_key = "site_logo_header"');
+    const updatedLogoF = await query('SELECT setting_value FROM settings WHERE setting_key = "site_logo_footer"');
+
+    assert.ok(updatedFav[0]?.setting_value?.startsWith('/uploads/settings/favicon-'), 'Favicon path must be saved in DB');
+    assert.ok(updatedLogoH[0]?.setting_value?.startsWith('/uploads/settings/logo-header-'), 'Logo header path must be saved in DB');
+    assert.ok(updatedLogoF[0]?.setting_value?.startsWith('/uploads/settings/logo-footer-'), 'Logo footer path must be saved in DB');
+    console.log('  ✓ Database settings verified with uploaded file URLs');
+
+    // 12. Test T-64 & T-65: Favicon and Dual Logo on Public & Admin Pages
+    console.log('\n[12] T-64 & T-65 Test: Favicon & Logo injection into Public and Admin headers');
+    const publicHomeRes = await request('/');
+    assert.strictEqual(publicHomeRes.status, 200, 'GET / must return 200');
+    assert.ok(publicHomeRes.body.includes(updatedFav[0].setting_value), 'Public page must include custom favicon link');
+    assert.ok(publicHomeRes.body.includes(updatedLogoH[0].setting_value), 'Public page navbar must render custom header logo');
+    assert.ok(publicHomeRes.body.includes(updatedLogoF[0].setting_value), 'Public page footer must render custom footer logo');
+
+    const adminDashRes = await request('/admin/dashboard');
+    assert.strictEqual(adminDashRes.status, 200, 'GET /admin/dashboard must return 200');
+    assert.ok(adminDashRes.body.includes(updatedFav[0].setting_value), 'Admin dashboard must include custom favicon link');
+    console.log('  ✓ Custom favicon and dual logos verified across public and admin templates');
+
+    // 13. Test T-66: GET /admin/hero-banners
+    console.log('\n[13] T-66 Test: GET /admin/hero-banners render configuration cards');
+    const heroBannersPageRes = await request('/admin/hero-banners');
+    assert.strictEqual(heroBannersPageRes.status, 200, 'GET /admin/hero-banners must return 200');
+    assert.ok(heroBannersPageRes.body.includes('Hero Banner Per Halaman Publik'), 'Must render Hero Banners title');
+    assert.ok(heroBannersPageRes.body.includes('card-about'), 'Must contain About card');
+    assert.ok(heroBannersPageRes.body.includes('card-products'), 'Must contain Products card');
+    assert.ok(heroBannersPageRes.body.includes('card-news'), 'Must contain News card');
+    assert.ok(heroBannersPageRes.body.includes('card-contact'), 'Must contain Contact card');
+    console.log('  ✓ Hero banners admin page renders all 4 page cards properly');
+
+    // 14. Test T-66: POST /admin/hero-banners/about update
+    console.log('\n[14] T-66 Test: POST /admin/hero-banners/about update bilingual content');
+    const heroBoundary = '----WebKitFormBoundaryHeroUpdate123';
+    const heroMultipartBody = buildMultipartFormData({
+      title_id: 'Profil Keunggulan Pabrik Euodoo ID',
+      title_en: 'Euodoo Plant Excellence Profile EN',
+      subtitle_id: 'Manufaktur kantong plastik ramah lingkungan modern',
+      subtitle_en: 'Modern eco-friendly plastic bag manufacturing',
+      overlay_opacity: '0.70',
+      cta_text_id: 'Hubungi Sales',
+      cta_text_en: 'Contact Sales',
+      cta_url: '/contact',
+      is_active: '1',
+      _csrf: csrfToken
+    }, heroBoundary);
+
+    const updateHeroRes = await request(`/admin/hero-banners/about?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': `multipart/form-data; boundary=${heroBoundary}` },
+      body: heroMultipartBody
+    });
+    assert.strictEqual(updateHeroRes.status, 302, 'POST /admin/hero-banners/about must redirect (302)');
+    console.log('  ✓ Hero banner updated successfully via multipart without 403');
+
+    // Verifikasi DB
+    const dbAboutHero = await query('SELECT * FROM page_hero_banners WHERE page_key = "about"');
+    assert.strictEqual(dbAboutHero[0].title_id, 'Profil Keunggulan Pabrik Euodoo ID');
+    assert.strictEqual(dbAboutHero[0].title_en, 'Euodoo Plant Excellence Profile EN');
+    console.log('  ✓ Database page_hero_banners verified for page about');
+
+    // 15. Test T-66: Public SSR Rendering for Hero Banners
+    console.log('\n[15] T-66 Test: Public pages SSR rendering with custom hero banners');
+    const publicAboutId = await request('/about?lang=id');
+    assert.strictEqual(publicAboutId.status, 200, 'GET /about?lang=id must return 200');
+    assert.ok(publicAboutId.body.includes('Profil Keunggulan Pabrik Euodoo ID'), 'About ID must render updated hero title');
+
+    const publicAboutEn = await request('/about?lang=en');
+    assert.strictEqual(publicAboutEn.status, 200, 'GET /about?lang=en must return 200');
+    assert.ok(publicAboutEn.body.includes('Euodoo Plant Excellence Profile EN'), 'About EN must render updated hero title');
+
+    const publicProductsRes = await request('/products');
+    assert.strictEqual(publicProductsRes.status, 200, 'GET /products must return 200');
+
+    const publicNewsRes = await request('/news');
+    assert.strictEqual(publicNewsRes.status, 200, 'GET /news must return 200');
+
+    const publicContactRes = await request('/contact');
+    assert.strictEqual(publicContactRes.status, 200, 'GET /contact must return 200');
+    console.log('  ✓ Public pages (/about, /products, /news, /contact) all render hero banners smoothly');
+
+    // 16. Test T-67: Create article with custom slug and uniqueness check
+    console.log('\n[16] T-67 Test: Create article with custom slug & uniqueness validation');
+    await execute('DELETE FROM posts WHERE slug IN ("uji-custom-slug-awal", "uji-custom-slug-baru")');
+    await execute('DELETE FROM slug_redirects WHERE entity_type = "post" AND (old_slug IN ("uji-custom-slug-awal", "uji-custom-slug-baru") OR new_slug IN ("uji-custom-slug-awal", "uji-custom-slug-baru"))');
+
+    const postCats = await query('SELECT id FROM post_categories LIMIT 1');
+    const postCatId = postCats[0]?.id || 1;
+
+    const initialSlug = 'uji-custom-slug-awal';
+    const postBoundary1 = '----WebKitFormBoundaryPostSlug1';
+    const postMultipartBody1 = buildMultipartFormData({
+      title_id: 'Judul Uji Custom Slug',
+      title_en: 'Test Custom Slug Title',
+      slug: initialSlug,
+      type: 'berita',
+      category_id: String(postCatId),
+      content_id: 'Konten artikel uji slug custom.',
+      content_en: 'Content test custom slug.',
+      status: 'published',
+      _csrf: csrfToken
+    }, postBoundary1);
+
+    const createPostRes1 = await request(`/admin/posts?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': `multipart/form-data; boundary=${postBoundary1}` },
+      body: postMultipartBody1
+    });
+    assert.strictEqual(createPostRes1.status, 302, 'Create post with custom slug must redirect (302)');
+
+    const createdPost = await query('SELECT id, slug FROM posts WHERE slug = ?', [initialSlug]);
+    assert.strictEqual(createdPost.length, 1, 'Post must be saved with exact custom slug');
+    const testPostId = createdPost[0].id;
+    console.log('  ✓ Post created successfully with custom slug: ' + initialSlug);
+
+    // Negative test duplicate slug
+    const duplicateBody = buildMultipartFormData({
+      title_id: 'Judul Lain Duplikat Slug',
+      slug: initialSlug,
+      type: 'berita',
+      _csrf: csrfToken
+    }, '----WebKitFormBoundaryDup');
+    const dupRes = await request(`/admin/posts?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundaryDup' },
+      body: duplicateBody
+    });
+    assert.strictEqual(dupRes.status, 400, 'Duplicate slug submission must return 400 validation error');
+    assert.ok(dupRes.body.includes('sudah digunakan'), 'Must show error message that slug is taken');
+    console.log('  ✓ Duplicate slug rejected properly with 400');
+
+    // 17. Test T-67: Edit article slug and record 301 redirect
+    console.log('\n[17] T-67 Test: Edit article slug and record 301 redirect');
+    const updatedSlug = 'uji-custom-slug-baru';
+    const postBoundary2 = '----WebKitFormBoundaryPostSlug2';
+    const postMultipartBody2 = buildMultipartFormData({
+      title_id: 'Judul Uji Custom Slug Diperbarui',
+      title_en: 'Updated Test Custom Slug Title',
+      slug: updatedSlug,
+      type: 'berita',
+      category_id: String(postCatId),
+      content_id: 'Konten artikel dengan slug baru.',
+      content_en: 'Article content with new slug.',
+      status: 'published',
+      _csrf: csrfToken
+    }, postBoundary2);
+
+    const editPostRes = await request(`/admin/posts/${testPostId}?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': `multipart/form-data; boundary=${postBoundary2}` },
+      body: postMultipartBody2
+    });
+    assert.strictEqual(editPostRes.status, 302, 'Edit post must redirect (302)');
+
+    // Verifikasi slug_redirects
+    const redirects = await query('SELECT * FROM slug_redirects WHERE entity_type = "post" AND old_slug = ? AND new_slug = ?', [initialSlug, updatedSlug]);
+    assert.strictEqual(redirects.length, 1, 'slug_redirects must have 1 record mapping old_slug to new_slug');
+    console.log('  ✓ 301 redirect recorded in slug_redirects table: ' + initialSlug + ' -> ' + updatedSlug);
+
+    // 18. Test T-67: Public 301 Permanent Redirect on old slug & 200 on new slug
+    console.log('\n[18] T-67 Test: Public 301 Permanent Redirect on old slug');
+    const oldSlugRes = await request(`/news/${initialSlug}`);
+    assert.strictEqual(oldSlugRes.status, 301, 'Requesting old slug must return HTTP 301 Moved Permanently');
+    assert.strictEqual(oldSlugRes.headers.get('location'), `/news/${updatedSlug}`, '301 location header must point to new slug');
+    console.log('  ✓ Public GET /news/' + initialSlug + ' returned 301 -> /news/' + updatedSlug);
+
+    const newSlugRes = await request(`/news/${updatedSlug}?lang=id`);
+    assert.strictEqual(newSlugRes.status, 200, 'Requesting new slug must return 200 OK');
+    assert.ok(newSlugRes.body.includes('Judul Uji Custom Slug Diperbarui'), 'Must render article content with new slug');
+    assert.ok(newSlugRes.body.includes('Konten artikel dengan slug baru'), 'Must render article body with new slug');
+    console.log('  ✓ Public GET /news/' + updatedSlug + ' returned 200 with article content');
+
+    // Clean up test post & redirects
+    await execute('DELETE FROM posts WHERE id = ?', [testPostId]);
+    await execute('DELETE FROM slug_redirects WHERE entity_type = "post" AND (old_slug = ? OR new_slug = ?)', [initialSlug, updatedSlug]);
+    console.log('  ✓ Test article and slug redirects cleaned up');
+
+    // 19. Test T-68: GET /contact renders Cloudflare Turnstile widget
+    console.log('\n[19] T-68 Test: GET /contact renders Turnstile widget container');
+    const contactPageRes = await request('/contact');
+    assert.strictEqual(contactPageRes.status, 200, 'GET /contact must return 200');
+    assert.ok(contactPageRes.body.includes('class="cf-turnstile"'), 'Must render cf-turnstile widget');
+    assert.ok(contactPageRes.body.includes('data-sitekey='), 'Must contain data-sitekey attribute');
+    assert.ok(contactPageRes.body.includes('challenges.cloudflare.com/turnstile/v0/api.js'), 'Must load Turnstile API script');
+    console.log('  ✓ Public contact form includes Turnstile widget and API script');
+
+    // 20. Test T-68: Negative Test: POST /contact TANPA Turnstile token ditolak
+    console.log('\n[20] T-68 Negative Test: POST /contact without Turnstile token must be rejected');
+    const noTurnstileBody = new URLSearchParams({
+      name: 'Tester Bot',
+      email: 'bot@example.com',
+      phone: '08123456789',
+      message: 'Ini pesan spam bot tanpa CAPTCHA',
+      _csrf: csrfToken
+    }).toString();
+
+    const noTurnstileRes = await request('/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'x-test-bypass-rate-limit': 'true'
+      },
+      body: noTurnstileBody
+    });
+    assert.strictEqual(noTurnstileRes.status, 302, 'Standard submit without Turnstile must redirect');
+    assert.ok(noTurnstileRes.headers.get('location').includes('error=turnstile'), 'Must redirect to error=turnstile');
+
+    // Test juga via AJAX (harus 400 JSON)
+    const ajaxNoTurnstileRes = await request('/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+        'x-test-bypass-rate-limit': 'true'
+      },
+      body: noTurnstileBody
+    });
+    assert.strictEqual(ajaxNoTurnstileRes.status, 400, 'AJAX submit without Turnstile must return 400 Bad Request');
+    const ajaxErrorJson = JSON.parse(ajaxNoTurnstileRes.body);
+    assert.strictEqual(ajaxErrorJson.success, false, 'AJAX response must indicate failure');
+    assert.ok(ajaxErrorJson.message.includes('Turnstile'), 'AJAX error message must mention Turnstile');
+    console.log('  ✓ Submissions without Turnstile token blocked properly (302 redirect & 400 JSON)');
+
+    // 21. Test T-68: Positive Test: POST /contact DENGAN dummy testing token diterima
+    console.log('\n[21] T-68 Positive Test: POST /contact with testing Turnstile token accepted');
+    const validTurnstileBody = new URLSearchParams({
+      name: 'PT Mitra Sukses Mandiri',
+      company: 'PT Mitra Sukses',
+      email: 'procurement@mitrasukses.com',
+      phone: '081298765432',
+      message: 'Permintaan penawaran 50.000 pcs kantong belanja oxium ramah lingkungan.',
+      'cf-turnstile-response': 'XXXX.DUMMY.TOKEN.XXXX',
+      _csrf: csrfToken
+    }).toString();
+
+    const validTurnstileRes = await request('/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'x-test-bypass-rate-limit': 'true'
+      },
+      body: validTurnstileBody
+    });
+    assert.strictEqual(validTurnstileRes.status, 302, 'Submission with valid Turnstile token must redirect (302)');
+    assert.ok(validTurnstileRes.headers.get('location').includes('success=1'), 'Must redirect to success=1');
+
+    // Verifikasi DB inquiry masuk
+    const insertedInquiries = await query('SELECT * FROM inquiries WHERE email = "procurement@mitrasukses.com" ORDER BY id DESC LIMIT 1');
+    assert.ok(insertedInquiries.length > 0, 'Inquiry must be recorded in database');
+    assert.strictEqual(insertedInquiries[0].name, 'PT Mitra Sukses Mandiri');
+    console.log('  ✓ Inquiry successfully created in DB after passing Turnstile verification');
+
+    // Clean up test inquiry
+    await execute('DELETE FROM inquiries WHERE id = ?', [insertedInquiries[0].id]);
+    console.log('  ✓ Test inquiry cleaned up');
+
+    // 22. Test T-61 Khusus Aksi Hapus / DELETE di CMS Admin
+    console.log('\n[22] T-61 Verification: Form Delete & Aksi Hapus pada CRUD Admin (Products, Banners, Posts)');
+
+    // 22a. Verifikasi HTML SSR memuat token CSRF di form delete
+    const productsListView = await request('/admin/products');
+    assert.strictEqual(productsListView.status, 200, 'GET /admin/products must return 200');
+    assert.ok(productsListView.body.includes('/delete?_csrf='), 'Products delete form must have ?_csrf in action URL');
+    assert.ok(productsListView.body.includes('name="_csrf"'), 'Products delete form must contain hidden _csrf input');
+    console.log('  ✓ Form delete markup includes CSRF query param and hidden input in SSR views');
+
+    // 22b. Uji Hapus Produk
+    const dummyProductId = await productModel.create({
+      slug: 'produk-uji-hapus-csrf',
+      name_id: 'Produk Uji Hapus',
+      name_en: 'Test Delete Product',
+      description_id: 'Desc',
+      description_en: 'Desc',
+      status: 'published'
+    });
+
+    const deleteProductRes = await request(`/admin/products/${dummyProductId}/delete?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ _csrf: csrfToken }).toString()
+    });
+    assert.strictEqual(deleteProductRes.status, 302, 'Delete product must redirect with 302 (Not 403)');
+    const checkProduct = await query('SELECT * FROM products WHERE id = ?', [dummyProductId]);
+    assert.strictEqual(checkProduct.length, 0, 'Product must be permanently deleted from database');
+    console.log('  ✓ Delete product executed successfully without 403');
+
+    // 22c. Uji Hapus Banner
+    const dummyBannerId = await bannerModel.create({
+      title_id: 'Banner Uji Hapus',
+      title_en: 'Test Delete Banner',
+      file_url: '/images/banner-test.webp',
+      sort_order: 99,
+      is_active: 0
+    });
+
+    const deleteBannerRes = await request(`/admin/banners/${dummyBannerId}/delete?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ _csrf: csrfToken }).toString()
+    });
+    assert.strictEqual(deleteBannerRes.status, 302, 'Delete banner must redirect with 302 (Not 403)');
+    const checkBanner = await query('SELECT * FROM banners WHERE id = ?', [dummyBannerId]);
+    assert.strictEqual(checkBanner.length, 0, 'Banner must be permanently deleted from database');
+    console.log('  ✓ Delete banner executed successfully without 403');
+
+    // 22d. Uji Hapus Post / Artikel
+    const dummyPostId = await postModel.create({
+      slug: 'artikel-uji-hapus-csrf',
+      title_id: 'Artikel Uji Hapus',
+      title_en: 'Test Delete Article',
+      excerpt_id: 'Ex',
+      excerpt_en: 'Ex',
+      content_id: 'Cont',
+      content_en: 'Cont',
+      status: 'draft'
+    });
+
+    const deletePostRes = await request(`/admin/posts/${dummyPostId}/delete?_csrf=${encodeURIComponent(csrfToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ _csrf: csrfToken }).toString()
+    });
+    assert.strictEqual(deletePostRes.status, 302, 'Delete post must redirect with 302 (Not 403)');
+    const checkPost = await query('SELECT * FROM posts WHERE id = ?', [dummyPostId]);
+    assert.strictEqual(checkPost.length, 0, 'Post must be permanently deleted from database');
+    console.log('  ✓ Delete article/post executed successfully without 403');
+
+    console.log('\n============================================================================');
+    console.log('ALL 8 REVISI ADMIN V1 TASKS & DELETE ACTIONS PASSED SUCCESSFULLY!');
+    console.log('============================================================================');
   } finally {
     await pool.end();
   }
 }
 
-runTests().catch((err) => {
-  console.error('\n❌ REVISI ADMIN V1 TEST FAILED:', err);
-  process.exit(1);
-});
+runTests()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error('\n❌ REVISI ADMIN V1 TEST FAILED:', err);
+    process.exit(1);
+  });

@@ -15,7 +15,8 @@
 <div class="form-card" style="max-width: 680px; margin: 0 auto;">
   <div class="form-card-title">Perbarui Data Akun</div>
 
-  <form action="/admin/users/<%= targetUser.id %>" method="POST">
+  <form action="/admin/users/<%= targetUser.id %>?_csrf=<%= csrfToken %>" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="name">Nama Lengkap *</label>

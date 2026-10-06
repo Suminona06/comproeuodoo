@@ -81,7 +81,8 @@
                     Edit
                   </a>
                   <% if (currentUser && currentUser.id !== u.id) { %>
-                    <form action="/admin/users/<%= u.id %>/delete" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun <%= u.name %>? Tindakan ini tidak dapat dibatalkan.');" style="display: inline;">
+                    <form action="/admin/users/<%= u.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun <%= u.name %>? Tindakan ini tidak dapat dibatalkan.');" style="display: inline;">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">
                         Hapus
                       </button>

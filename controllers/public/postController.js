@@ -1,5 +1,7 @@
 import postModel from '../../models/postModel.js';
 import postCategoryModel from '../../models/postCategoryModel.js';
+import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
+import slugRedirectModel from '../../models/slugRedirectModel.js';
 import logger from '../../utils/logger.js';
 
 export const postController = {
@@ -27,7 +29,7 @@ export const postController = {
         search: search || undefined
       };
 
-      const [posts, totalPosts, categories, headlinePosts] = await Promise.all([
+      const [posts, totalPosts, categories, headlinePosts, heroBanner] = await Promise.all([
         postModel.findAll({
           ...queryOptions,
           limit,
@@ -37,7 +39,8 @@ export const postController = {
         postCategoryModel.findAll({ type: type !== 'all' ? type : null }),
         (page === 1 && !search && !categorySlug)
           ? postModel.findAll({ status: 'published', isHeadline: true, type: type !== 'all' ? type : null, limit: 1 })
-          : Promise.resolve([])
+          : Promise.resolve([]),
+        pageHeroBannerModel.getByPageKey('news')
       ]);
 
       const headlinePost = headlinePosts.length > 0 ? headlinePosts[0] : null;
@@ -56,7 +59,8 @@ export const postController = {
         search,
         currentPage: page,
         totalPages,
-        totalPosts
+        totalPosts,
+        heroBanner
       });
     } catch (err) {
       logger.error('Public postController.index error:', { message: err.message, stack: err.stack });
@@ -82,6 +86,13 @@ export const postController = {
       const post = await postModel.findBySlug(slug);
 
       if (!post || post.status !== 'published') {
+        // Cek riwayat 301 redirect
+        const redirect = await slugRedirectModel.findRedirect('post', slug);
+        if (redirect && redirect.new_slug) {
+          logger.info(`Redirecting 301 from /news/${slug} to /news/${redirect.new_slug}`);
+          return res.redirect(301, `/news/${redirect.new_slug}`);
+        }
+
         return res.status(404).render('public/404', {
           title: 'Artikel Tidak Ditemukan | PT Euodoo',
           path: '/news'

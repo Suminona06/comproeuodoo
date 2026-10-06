@@ -2,10 +2,14 @@
 <%- include('../partials/navbar') %>
 
 <% const lang = typeof currentLang !== 'undefined' ? currentLang : 'id'; %>
+<% 
+  const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
+  const heroBg = heroObj && heroObj.image_url ? `style="background: linear-gradient(rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60}), rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60})), url('${heroObj.image_url}') center/cover no-repeat;"` : '';
+%>
 
 <main id="main-content">
   <!-- PAGE HERO -->
-  <section class="page-hero">
+  <section class="page-hero" <%- heroBg %>>
     <div class="container">
       <div class="breadcrumbs">
         <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
@@ -18,13 +22,24 @@
           <%= lang === 'en' ? 'MANUFACTURING CATALOG' : 'KATALOG PRODUK MANUFAKTUR' %>
         </span>
         <h1 class="page-hero-title">
-          <%= lang === 'en' ? 'Eco-Friendly & Industrial Plastic Bags' : 'Katalog Kantong Plastik HDPE & LLDPE' %>
+          <%= (heroObj && (lang === 'en' ? heroObj.title_en : heroObj.title_id))
+              ? (lang === 'en' ? heroObj.title_en : heroObj.title_id)
+              : (lang === 'en' ? 'Eco-Friendly & Industrial Plastic Bags' : 'Katalog Kantong Plastik HDPE & LLDPE') %>
         </h1>
         <p class="page-hero-desc">
-          <%= lang === 'en'
-            ? 'Discover our complete range of certified degradable shopping bags, heavy-duty industrial liners, and commercial wholesale packaging produced in Bandung, West Java.'
-            : 'Jelajahi lini produk kantong belanja ramah lingkungan 100% degradable, kantong sampah heavy-duty, dan kemasan industri berkualitas tinggi bersertifikasi resmi SNI.' %>
+          <%= (heroObj && (lang === 'en' ? heroObj.subtitle_en : heroObj.subtitle_id))
+              ? (lang === 'en' ? heroObj.subtitle_en : heroObj.subtitle_id)
+              : (lang === 'en'
+                  ? 'Discover our complete range of certified degradable shopping bags, heavy-duty industrial liners, and commercial wholesale packaging produced in Bandung, West Java.'
+                  : 'Jelajahi lini produk kantong belanja ramah lingkungan 100% degradable, kantong sampah heavy-duty, dan kemasan industri berkualitas tinggi bersertifikasi resmi SNI.') %>
         </p>
+        <% if (heroObj && heroObj.cta_url && (lang === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id)) { %>
+          <div style="margin-top: 20px;">
+            <a href="<%= heroObj.cta_url %>" class="btn btn-primary" style="padding: 10px 24px; border-radius: 4px; font-weight: 600; display: inline-flex;">
+              <%= lang === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id %>
+            </a>
+          </div>
+        <% } %>
       </div>
     </div>
   </section>

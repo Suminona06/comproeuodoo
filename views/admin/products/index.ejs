@@ -103,7 +103,8 @@
               <td style="text-align: right;">
                 <div style="display: inline-flex; gap: 6px;">
                   <a href="/admin/products/<%= p.id %>/edit" class="btn-action-view">Edit</a>
-                  <form action="/admin/products/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Hapus produk <%= p.name_id %> secara permanen?');" style="display: inline;">
+                  <form action="/admin/products/<%= p.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Hapus produk <%= p.name_id %> secara permanen?');" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 11px;">Hapus</button>
                   </form>
                 </div>

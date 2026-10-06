@@ -15,11 +15,13 @@
     const q = params.toString();
     return q ? '/news?' + q : '/news';
   };
+  const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
+  const heroBg = heroObj && heroObj.image_url ? `style="background: linear-gradient(rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60}), rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60})), url('${heroObj.image_url}') center/cover no-repeat;"` : '';
 %>
 
 <main id="main-content">
   <!-- Page Hero Header -->
-  <section class="page-hero">
+  <section class="page-hero" <%- heroBg %>>
     <div class="container">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/"><%= t('nav.home') %></a>
@@ -30,11 +32,22 @@
         PUSAT INFORMASI & WARTA INDUSTRI
       </div>
       <h1 class="page-hero-title">
-        <%= t('news.page_title') %>
+        <%= (heroObj && (currentLangCode === 'en' ? heroObj.title_en : heroObj.title_id))
+            ? (currentLangCode === 'en' ? heroObj.title_en : heroObj.title_id)
+            : t('news.page_title') %>
       </h1>
       <p class="page-hero-desc">
-        <%= t('news.page_subtitle') %>
+        <%= (heroObj && (currentLangCode === 'en' ? heroObj.subtitle_en : heroObj.subtitle_id))
+            ? (currentLangCode === 'en' ? heroObj.subtitle_en : heroObj.subtitle_id)
+            : t('news.page_subtitle') %>
       </p>
+      <% if (heroObj && heroObj.cta_url && (currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id)) { %>
+        <div style="margin-top: 20px;">
+          <a href="<%= heroObj.cta_url %>" class="btn btn-primary" style="padding: 10px 24px; border-radius: 4px; font-weight: 600; display: inline-flex;">
+            <%= currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id %>
+          </a>
+        </div>
+      <% } %>
     </div>
   </section>
 

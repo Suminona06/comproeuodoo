@@ -1,17 +1,18 @@
 import postModel from '../../models/postModel.js';
 import postCategoryModel from '../../models/postCategoryModel.js';
+import slugRedirectModel from '../../models/slugRedirectModel.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import { invalidateSitemapCache } from '../../utils/sitemapGenerator.js';
 import logger from '../../utils/logger.js';
 
-const createSlug = (text) => {
-  return text
+const formatSlug = (text) => {
+  return (text || '')
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
+    .replace(/[^a-z0-9\-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
     .replace(/\-\-+/g, '-');
 };
 
@@ -99,9 +100,34 @@ export const postController = {
         imageUrl = await processAndSaveWebP(req.file.buffer, 'posts', { maxWidth: 1200, maxHeight: 800, quality: 80 });
       }
 
-      const baseSlug = createSlug(title_id);
-      const uniqueSuffix = Math.floor(Math.random() * 899 + 100);
-      const slug = `${baseSlug}-${uniqueSuffix}`;
+      let cleanSlug = (req.body.slug && req.body.slug.trim()) ? formatSlug(req.body.slug) : formatSlug(title_id);
+      
+      if (!cleanSlug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(cleanSlug)) {
+        const categories = await postCategoryModel.findAll();
+        return res.status(400).render('admin/posts/create', {
+          title: 'Tulis Artikel Baru',
+          pageTitle: 'Tulis Artikel',
+          activeNav: 'posts',
+          categories,
+          error: 'Format slug URL tidak valid. Gunakan huruf kecil, angka, dan tanda hubung (-) tanpa spasi.',
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      const slugTaken = await postModel.isSlugTaken(cleanSlug);
+      if (slugTaken) {
+        const categories = await postCategoryModel.findAll();
+        return res.status(400).render('admin/posts/create', {
+          title: 'Tulis Artikel Baru',
+          pageTitle: 'Tulis Artikel',
+          activeNav: 'posts',
+          categories,
+          error: `Slug URL "${cleanSlug}" sudah digunakan oleh artikel lain. Silakan ubah slug artikel.`,
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
 
       let postStatus = status || 'draft';
       let scheduleDate = null;
@@ -112,7 +138,7 @@ export const postController = {
       await postModel.create({
         title_id: title_id.trim(),
         title_en: title_en ? title_en.trim() : title_id.trim(),
-        slug,
+        slug: cleanSlug,
         type: type || 'berita',
         category_id: category_id ? parseInt(category_id, 10) : null,
         content_id: content_id || null,
@@ -175,6 +201,35 @@ export const postController = {
         return res.redirect('/admin/posts?error=' + encodeURIComponent('Artikel tidak ditemukan.'));
       }
 
+      let cleanSlug = (req.body.slug && req.body.slug.trim()) ? formatSlug(req.body.slug) : post.slug;
+
+      if (!cleanSlug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(cleanSlug)) {
+        const categories = await postCategoryModel.findAll();
+        return res.status(400).render('admin/posts/edit', {
+          title: 'Edit Artikel - ' + post.title_id,
+          pageTitle: 'Edit Artikel',
+          activeNav: 'posts',
+          post: { ...post, ...req.body },
+          categories,
+          error: 'Format slug URL tidak valid. Gunakan huruf kecil, angka, dan tanda hubung (-).',
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      const slugTaken = await postModel.isSlugTaken(cleanSlug, id);
+      if (slugTaken) {
+        const categories = await postCategoryModel.findAll();
+        return res.status(400).render('admin/posts/edit', {
+          title: 'Edit Artikel - ' + post.title_id,
+          pageTitle: 'Edit Artikel',
+          activeNav: 'posts',
+          post: { ...post, ...req.body },
+          categories,
+          error: `Slug URL "${cleanSlug}" sudah digunakan oleh artikel lain. Silakan gunakan slug yang berbeda.`,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
       const updateData = {
         title_id: title_id ? title_id.trim() : post.title_id,
         title_en: title_en ? title_en.trim() : post.title_en,
@@ -190,6 +245,11 @@ export const postController = {
         meta_desc_id: meta_desc_id || null,
         meta_desc_en: meta_desc_en || null
       };
+
+      if (cleanSlug !== post.slug) {
+        await slugRedirectModel.createRedirect('post', post.id, post.slug, cleanSlug);
+        updateData.slug = cleanSlug;
+      }
 
       if (req.file) {
         if (post.display_image) {
@@ -214,7 +274,10 @@ export const postController = {
       if (post && post.display_image) {
         await storage.delete(post.display_image);
       }
-      await postModel.delete(id);
+      await Promise.all([
+        postModel.delete(id),
+        slugRedirectModel.deleteByEntity('post', id)
+      ]);
       invalidateSitemapCache();
       res.redirect('/admin/posts?success=' + encodeURIComponent('Artikel berhasil dihapus.'));
     } catch (err) {

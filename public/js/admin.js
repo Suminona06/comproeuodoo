@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Toast notification helper
-export function showAdminToast(message, duration = 3000) {
+function showAdminToast(message, duration = 3000) {
   let toast = document.getElementById('adminToast');
   if (!toast) {
     toast = document.createElement('div');
@@ -149,7 +149,7 @@ window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke
   }
 };
 
-// CSRF Protection Auto-Injector for Multipart Forms & Ajax
+// CSRF Protection Auto-Injector for All Forms (Multipart, Standard, Delete, & Ajax)
 (function initCsrfAutoHandler() {
   function getCsrfToken() {
     const meta = document.querySelector('meta[name="csrf-token"]');
@@ -158,9 +158,7 @@ window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke
     return input ? input.value : '';
   }
 
-  // Intercept standard form submits (especially multipart forms)
-  document.addEventListener('submit', (e) => {
-    const form = e.target;
+  function injectCsrfIntoForm(form) {
     if (!form || form.tagName !== 'FORM') return;
     const method = (form.getAttribute('method') || 'GET').toUpperCase();
     if (method === 'GET') return;
@@ -168,7 +166,7 @@ window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke
     const token = getCsrfToken();
     if (!token) return;
 
-    // Ensure hidden _csrf input exists
+    // 1. Pastikan input hidden _csrf tersedia
     let hiddenInput = form.querySelector('input[name="_csrf"]');
     if (!hiddenInput) {
       hiddenInput = document.createElement('input');
@@ -180,15 +178,30 @@ window.copyToClipboard = function(text, successMsg = 'Tautan berhasil disalin ke
       hiddenInput.value = token;
     }
 
-    // For multipart forms, query param is required because multer parses body after CSRF middleware
-    const encType = form.getAttribute('enctype') || '';
-    if (encType.toLowerCase().includes('multipart/form-data')) {
-      const action = form.getAttribute('action') || window.location.pathname;
-      if (!action.includes('_csrf=')) {
-        const separator = action.includes('?') ? '&' : '?';
-        form.setAttribute('action', `${action}${separator}_csrf=${encodeURIComponent(token)}`);
-      }
+    // 2. Tambahkan token ke action URL sebagai query param (?_csrf=...)
+    // Ini mengamankan form multipart (multer parse sesudah middleware) dan form delete
+    const action = form.getAttribute('action') || window.location.pathname;
+    if (!action.includes('_csrf=')) {
+      const separator = action.includes('?') ? '&' : '?';
+      form.setAttribute('action', `${action}${separator}_csrf=${encodeURIComponent(token)}`);
     }
+  }
+
+  function syncAllForms() {
+    document.querySelectorAll('form').forEach(injectCsrfIntoForm);
+  }
+
+  // Jalankan saat DOM siap dan saat form disubmit
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncAllForms);
+  } else {
+    syncAllForms();
+  }
+
+  // Intercept form submission event
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    injectCsrfIntoForm(form);
   }, true);
 
   // Wrap window.fetch to automatically include X-CSRF-Token on mutative requests

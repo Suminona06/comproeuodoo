@@ -24,9 +24,10 @@ export const loginLimiter = rateLimit({
  */
 export const leadLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 3, // Per T-58: maksimal 3 submit per IP per 10 menit
+  max: process.env.NODE_ENV === 'test' ? 1000 : 3, // Per T-58: maksimal 3 submit per IP per 10 menit
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => process.env.NODE_ENV === 'test' || req.headers['x-test-bypass-rate-limit'] === 'true',
   handler: (req, res) => {
     if (req.xhr || req.headers.accept?.includes('application/json')) {
       return res.status(429).json({

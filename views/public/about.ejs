@@ -3,10 +3,14 @@
 
 <% const lang = typeof currentLang !== 'undefined' ? currentLang : 'id'; %>
 <% const data = typeof about !== 'undefined' && about ? about : {}; %>
+<% 
+  const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
+  const heroBg = heroObj && heroObj.image_url ? `style="background: linear-gradient(rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.65}), rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.65})), url('${heroObj.image_url}') center/cover no-repeat;"` : '';
+%>
 
 <main id="main-content">
   <!-- 1. PAGE HERO -->
-  <section class="page-hero">
+  <section class="page-hero" <%- heroBg %>>
     <div class="container">
       <div class="breadcrumbs">
         <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
@@ -19,13 +23,24 @@
           <%= lang === 'en' ? 'ABOUT PT. EUODOO' : 'TENTANG PT. EUODOO' %>
         </span>
         <h1 class="page-hero-title">
-          <%= lang === 'en' ? (data.slogan_en || 'Passion to Build a Better Quality of Life') : (data.slogan_id || 'Semangat Membangun Kualitas Hidup yang Lebih Baik') %>
+          <%= (typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active && (lang === 'en' ? heroBanner.title_en : heroBanner.title_id))
+              ? (lang === 'en' ? heroBanner.title_en : heroBanner.title_id)
+              : (lang === 'en' ? (data.slogan_en || 'Passion to Build a Better Quality of Life') : (data.slogan_id || 'Semangat Membangun Kualitas Hidup yang Lebih Baik')) %>
         </h1>
         <p class="page-hero-desc">
-          <%= lang === 'en'
-            ? 'Pioneering high-grade HDPE and LLDPE plastic film manufacturing in Bandung since 1990, dedicated to certified 100% degradable environmental solutions for modern retail and industrial sectors.'
-            : 'Perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE terkemuka di Bandung sejak tahun 1990, berdedikasi pada penyediaan solusi kemasan ramah lingkungan yang 100% degradable.' %>
+          <%= (typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active && (lang === 'en' ? heroBanner.subtitle_en : heroBanner.subtitle_id))
+              ? (lang === 'en' ? heroBanner.subtitle_en : heroBanner.subtitle_id)
+              : (lang === 'en'
+                  ? 'Pioneering high-grade HDPE and LLDPE plastic film manufacturing in Bandung since 1990, dedicated to certified 100% degradable environmental solutions for modern retail and industrial sectors.'
+                  : 'Perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE terkemuka di Bandung sejak tahun 1990, berdedikasi pada penyediaan solusi kemasan ramah lingkungan yang 100% degradable.') %>
         </p>
+        <% if (typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active && heroBanner.cta_url && (lang === 'en' ? heroBanner.cta_text_en : heroBanner.cta_text_id)) { %>
+          <div style="margin-top: 20px;">
+            <a href="<%= heroBanner.cta_url %>" class="btn btn-primary" style="padding: 10px 24px; border-radius: 4px; font-weight: 600; display: inline-flex;">
+              <%= lang === 'en' ? heroBanner.cta_text_en : heroBanner.cta_text_id %>
+            </a>
+          </div>
+        <% } %>
       </div>
     </div>
   </section>

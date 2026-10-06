@@ -32,7 +32,7 @@
           </div>
         <% } %>
 
-        <form action="/admin/login" method="POST">
+        <form action="/admin/login?_csrf=<%= csrfToken %>" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
           <div class="form-group">

@@ -119,7 +119,7 @@
                       <% } %>
                     </td>
                     <td class="text-right">
-                      <form action="/admin/capabilities/<%= cap.id %>/delete" method="POST" class="form-delete" data-confirm="Hapus data kapabilitas mesin ini?" style="display: inline;">
+                      <form action="/admin/capabilities/<%= cap.id %>/delete?_csrf=<%= csrfToken %>" method="POST" class="form-delete" data-confirm="Hapus data kapabilitas mesin ini?" style="display: inline;">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--color-error);">
                           Hapus

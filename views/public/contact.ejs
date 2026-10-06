@@ -20,11 +20,14 @@
   const formSubheading = isEn
     ? ((settings && settings.contact_form_subtitle_en) || t('contact.form_subheading'))
     : ((settings && settings.contact_form_subtitle_id) || t('contact.form_subheading'));
+
+  const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
+  const heroBg = heroObj && heroObj.image_url ? `style="background: linear-gradient(rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60}), rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60})), url('${heroObj.image_url}') center/cover no-repeat;"` : '';
 %>
 
 <main id="main-content">
   <!-- Page Hero Header -->
-  <section class="page-hero">
+  <section class="page-hero" <%- heroBg %>>
     <div class="container">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/"><%= t('nav.home') %></a>
@@ -35,11 +38,22 @@
         SALES & ENTERPRISE PROCUREMENT
       </div>
       <h1 class="page-hero-title">
-        <%= t('contact.page_title') %>
+        <%= (heroObj && (isEn ? heroObj.title_en : heroObj.title_id))
+            ? (isEn ? heroObj.title_en : heroObj.title_id)
+            : t('contact.page_title') %>
       </h1>
       <p class="page-hero-desc">
-        <%= t('contact.page_subtitle') %>
+        <%= (heroObj && (isEn ? heroObj.subtitle_en : heroObj.subtitle_id))
+            ? (isEn ? heroObj.subtitle_en : heroObj.subtitle_id)
+            : t('contact.page_subtitle') %>
       </p>
+      <% if (heroObj && heroObj.cta_url && (isEn ? heroObj.cta_text_en : heroObj.cta_text_id)) { %>
+        <div style="margin-top: 20px;">
+          <a href="<%= heroObj.cta_url %>" class="btn btn-primary" style="padding: 10px 24px; border-radius: 4px; font-weight: 600; display: inline-flex;">
+            <%= isEn ? heroObj.cta_text_en : heroObj.cta_text_id %>
+          </a>
+        </div>
+      <% } %>
     </div>
   </section>
 
@@ -230,6 +244,13 @@
                         style="min-height: 120px; border-radius: 8px;"></textarea>
             </div>
 
+            <!-- Cloudflare Turnstile CAPTCHA (Item 7 / T-68) -->
+            <% if (typeof turnstileSiteKey !== 'undefined' && turnstileSiteKey) { %>
+              <div class="form-group" style="margin-bottom: 20px;">
+                <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="light"></div>
+              </div>
+            <% } %>
+
             <!-- Submit Button -->
             <button type="submit"
                     id="submitBtn"
@@ -350,5 +371,9 @@
     btn.innerHTML = '<span>Mengirimkan Permintaan...</span>';
   });
 </script>
+
+<% if (typeof turnstileSiteKey !== 'undefined' && turnstileSiteKey) { %>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<% } %>
 
 <%- include('../partials/footer') %>

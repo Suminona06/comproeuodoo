@@ -96,6 +96,7 @@ async function runModul12Tests() {
 
   const formBody = new URLSearchParams({
     _csrf: csrfToken,
+    'cf-turnstile-response': 'XXXX.DUMMY.TOKEN.XXXX',
     name: 'Unit Test Client',
     company: 'PT Unit Test Mitra',
     email: 'client@unittest.com',
@@ -115,6 +116,7 @@ async function runModul12Tests() {
     redirect: 'manual'
   });
 
+  console.log('  RFQ post status:', postRes.status, 'location:', postRes.headers.get('location'));
   assert.strictEqual(postRes.status, 302, 'Successful RFQ submission must redirect with 302');
   assert.ok(postRes.headers.get('location')?.includes('success=1'), 'Redirect URL must indicate success=1');
 

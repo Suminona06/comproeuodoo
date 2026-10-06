@@ -21,7 +21,8 @@
       </div>
 
       <div class="form-card-title" style="margin-top: 1.5rem;">Catatan Tindak Lanjut Tim Penjualan / Internal</div>
-      <form action="/admin/inquiries/<%= inquiry.id %>/status" method="POST">
+      <form action="/admin/inquiries/<%= inquiry.id %>/status?_csrf=<%= csrfToken %>" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
           <label class="form-label" for="admin_notes">Catatan &amp; Riwayat Interaksi</label>
           <textarea id="admin_notes" name="admin_notes" class="form-textarea" style="min-height: 120px;" placeholder="Tuliskan hasil pembicaraan telepon, negosiasi harga, kuantiti yang disepakati, dll..."><%= inquiry.admin_notes || '' %></textarea>
@@ -39,7 +40,8 @@
     <div class="form-card">
       <div class="form-card-title">Status Penanganan</div>
 
-      <form action="/admin/inquiries/<%= inquiry.id %>/status" method="POST" style="margin-bottom: 1.25rem;">
+      <form action="/admin/inquiries/<%= inquiry.id %>/status?_csrf=<%= csrfToken %>" method="POST" style="margin-bottom: 1.25rem;">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
           <label class="form-label" for="status">Ubah Status</label>
           <select id="status" name="status" class="form-select" onchange="this.form.submit()">
@@ -90,7 +92,8 @@
       </div>
 
       <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-main);">
-        <form action="/admin/inquiries/<%= inquiry.id %>/delete" method="POST" onsubmit="return confirm('Hapus permanen inquiry ini?');">
+        <form action="/admin/inquiries/<%= inquiry.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Hapus permanen inquiry ini?');">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">
             Hapus Inquiry Ini
           </button>

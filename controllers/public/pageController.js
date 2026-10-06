@@ -1,5 +1,6 @@
 import aboutModel from '../../models/aboutModel.js';
 import capabilityModel from '../../models/capabilityModel.js';
+import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import logger from '../../utils/logger.js';
 
 export const pageController = {
@@ -8,13 +9,17 @@ export const pageController = {
    */
   async about(req, res) {
     try {
-      const about = await aboutModel.getAboutData();
+      const [about, heroBanner] = await Promise.all([
+        aboutModel.getAboutData(),
+        pageHeroBannerModel.getByPageKey('about')
+      ]);
       const lang = res.locals.currentLang || 'id';
       const title = (lang === 'en' ? 'About Us' : 'Tentang Kami') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
       res.render('public/about', {
         title,
         path: '/about',
-        about
+        about,
+        heroBanner
       });
     } catch (err) {
       logger.error('Public pageController.about error:', { message: err.message, stack: err.stack });

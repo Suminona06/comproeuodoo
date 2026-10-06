@@ -107,7 +107,7 @@
                     <% } %>
                   </td>
                   <td>
-                    <form action="/admin/leads/<%= lead.id %>/status" method="POST" class="flex flex-col gap-xs">
+                    <form action="/admin/leads/<%= lead.id %>/status?_csrf=<%= csrfToken %>" method="POST" class="flex flex-col gap-xs">
                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <div class="flex gap-xs">
                         <select name="status" class="form-select" style="min-height: 36px; font-size: 12px; padding: 2px 6px;">

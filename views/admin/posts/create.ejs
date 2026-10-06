@@ -77,6 +77,15 @@
     </div>
 
     <div class="form-group">
+      <label class="form-label" for="slug">URL Slug Kustom *</label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 13px; color: var(--text-muted, #64748b); background: #f1f5f9; padding: 7px 12px; border: 1px solid var(--border-color, #cbd5e1); border-radius: 6px; font-family: monospace;">/news/</span>
+        <input type="text" id="slug" name="slug" class="form-input" style="flex: 1;" placeholder="judul-artikel-kustom" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" required value="<%= typeof formData !== 'undefined' && formData?.slug ? formData.slug : '' %>">
+      </div>
+      <div class="form-hint" style="font-size: 11.5px; margin-top: 4px;">Otomatis dibuat dari Judul Indonesia, atau tentukan slug kustom Anda sendiri (huruf kecil, angka, dan tanda hubung).</div>
+    </div>
+
+    <div class="form-group">
       <label class="form-label" for="cover_file">Foto Sampul Utama (WebP 1200x800px)</label>
       <input type="file" id="cover_file" name="cover_file" class="form-input" accept="image/*">
     </div>
@@ -131,6 +140,27 @@
     } else {
       row.style.display = 'none';
     }
+  }
+
+  const titleInput = document.getElementById('title_id');
+  const slugInput = document.getElementById('slug');
+  let isSlugManuallyEdited = false;
+
+  if (slugInput && titleInput) {
+    slugInput.addEventListener('input', () => {
+      isSlugManuallyEdited = slugInput.value.trim().length > 0;
+    });
+
+    titleInput.addEventListener('input', () => {
+      if (!isSlugManuallyEdited) {
+        slugInput.value = titleInput.value
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\-]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .replace(/\-\-+/g, '-');
+      }
+    });
   }
 </script>
 

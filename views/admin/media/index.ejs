@@ -86,7 +86,8 @@
               </button>
 
               <% if (['superadmin', 'admin'].includes(user?.role)) { %>
-                <form action="/admin/media/<%= item.id %>/delete" method="POST" onsubmit="return confirm('Hapus media ini secara permanen?');" style="display: inline;">
+                <form action="/admin/media/<%= item.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Hapus media ini secara permanen?');" style="display: inline;">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn btn-danger btn-sm" title="Hapus Berkas" style="padding: 3px 6px;">
                     &times;
                   </button>
@@ -156,7 +157,8 @@
       </div>
       <button type="button" class="admin-modal-close" onclick="closeAdminModal('youtubeModal')">&times;</button>
     </div>
-    <form action="/admin/media/youtube" method="POST">
+    <form action="/admin/media/youtube?_csrf=<%= csrfToken %>" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="admin-modal-body">
         <div class="form-group">
           <label class="form-label" for="title">Judul Video (Opsional)</label>

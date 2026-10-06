@@ -124,6 +124,18 @@ export const postModel = {
     return rows.length > 0 ? rows[0] : null;
   },
 
+  async isSlugTaken(slug, excludeId = null) {
+    let sql = 'SELECT id FROM posts WHERE slug = ?';
+    const params = [slug];
+    if (excludeId) {
+      sql += ' AND id != ?';
+      params.push(excludeId);
+    }
+    sql += ' LIMIT 1';
+    const rows = await query(sql, params);
+    return rows.length > 0;
+  },
+
   async create(data) {
     const coverImage = data.cover_image || data.image_url || null;
     const isHeadline = data.is_headline ? 1 : 0;

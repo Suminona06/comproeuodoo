@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div class="form-row-2" id="scheduledRow" style="display: <%= post.status === 'scheduled' ? 'grid' : 'none' %>;">
+    <div class="form-row-2" id="scheduledRow" <%- post.status === 'scheduled' ? 'style="display: grid;"' : 'style="display: none;"' %>>
       <div class="form-group">
         <label class="form-label" for="scheduled_at">Tanggal &amp; Waktu Terjadwal</label>
         <%
@@ -81,6 +81,15 @@
         <label class="form-label" for="title_en">Judul Artikel (English)</label>
         <input type="text" id="title_en" name="title_en" class="form-input" value="<%= post.title_en || '' %>">
       </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="slug">URL Slug Kustom *</label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 13px; color: var(--text-muted, #64748b); background: #f1f5f9; padding: 7px 12px; border: 1px solid var(--border-color, #cbd5e1); border-radius: 6px; font-family: monospace;">/news/</span>
+        <input type="text" id="slug" name="slug" class="form-input" style="flex: 1;" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" required value="<%= post.slug %>">
+      </div>
+      <div class="form-hint" style="font-size: 11.5px; margin-top: 4px;">Jika slug diubah, sistem otomatis membuat redirect permanen 301 dari slug lama ke slug baru untuk menjaga SEO.</div>
     </div>
 
     <div class="form-group">
