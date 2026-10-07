@@ -36,7 +36,7 @@
         </p>
         <% if (typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active && heroBanner.cta_url && (lang === 'en' ? heroBanner.cta_text_en : heroBanner.cta_text_id)) { %>
           <div style="margin-top: 20px;">
-            <a href="<%= heroBanner.cta_url %>" class="btn btn-primary" style="padding: 10px 24px; border-radius: 4px; font-weight: 600; display: inline-flex;">
+            <a href="<%= heroBanner.cta_url %>" class="btn btn-primary">
               <%= lang === 'en' ? heroBanner.cta_text_en : heroBanner.cta_text_id %>
             </a>
           </div>

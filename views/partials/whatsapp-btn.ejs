@@ -1,24 +1,29 @@
-<% if (typeof settings !== 'undefined' && settings && (settings.whatsapp_formatted_number || settings.whatsapp_number)) { 
+<% 
+if (typeof settings !== 'undefined' && settings) {
   const waNum = settings.whatsapp_formatted_number || (settings.whatsapp_number ? settings.whatsapp_number.replace(/[^0-9]/g, '') : '');
-  const waMsg = settings.whatsapp_default_message || 'Halo PT Euodoo, saya ingin berkonsultasi mengenai permintaan penawaran produk kantong plastik ramah lingkungan.';
-  const waUrl = settings.whatsapp_url || `https://wa.me/${waNum}?text=${encodeURIComponent(waMsg)}`;
-  const waTheme = settings.whatsapp_button_theme || 'corporate';
+  if (waNum) {
+    const waMsg = (typeof currentLang !== 'undefined' && currentLang === 'en' && settings.whatsapp_default_message_en)
+      ? settings.whatsapp_default_message_en
+      : (settings.whatsapp_default_message || 'Halo PT Euodoo, saya ingin berkonsultasi mengenai permintaan penawaran produk kantong plastik ramah lingkungan.');
+    const waUrl = settings.whatsapp_url || `https://wa.me/${waNum}?text=${encodeURIComponent(waMsg)}`;
+    const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+    const waAriaLabel = isEn ? 'Chat WhatsApp' : 'Chat WhatsApp';
+    const waTooltipText = isEn ? 'Chat on WhatsApp' : 'Chat WhatsApp';
 %>
-  <aside class="wa-float-container" aria-label="Layanan Konsultasi WhatsApp PT Euodoo">
+  <aside class="wa-float-container" aria-label="<%= isEn ? 'PT Euodoo WhatsApp Consultation Service' : 'Layanan Konsultasi WhatsApp PT Euodoo' %>">
     <a href="<%= waUrl %>"
-       class="wa-float-btn theme-<%= waTheme %>"
+       class="wa-float-btn"
        id="floatingWhatsAppBtn"
        target="_blank"
        rel="noopener noreferrer"
-       aria-label="Konsultasi WhatsApp Resmi PT Euodoo (Buka di tab baru)">
-      <span class="wa-pulse-indicator" aria-hidden="true">
-        <span class="wa-pulse-ring"></span>
-        <span class="wa-pulse-dot"></span>
-      </span>
-      <svg class="wa-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+       aria-label="<%= waAriaLabel %>">
+      <svg class="wa-icon" viewBox="0 0 24 24" width="28" height="28" fill="#ffffff" aria-hidden="true" focusable="false">
         <path d="M12.031 2C6.512 2 2.02 6.492 2.02 12.012c0 1.986.58 3.844 1.583 5.422L2 22l4.727-1.541a9.96 9.96 0 005.304 1.554c5.52 0 10.012-4.492 10.012-10.012S17.551 2 12.031 2zm0 18.272a8.23 8.23 0 01-4.278-1.196l-.307-.184-2.8 1.05.932-2.905-.201-.321a8.214 8.214 0 01-1.39-4.704c0-4.557 3.708-8.265 8.265-8.265 4.557 0 8.265 3.708 8.265 8.265 0 4.557-3.708 8.272-8.486 8.272zm4.53-6.175c-.248-.124-1.468-.724-1.696-.807-.227-.083-.393-.124-.559.124-.165.248-.641.807-.786.973-.145.165-.29.186-.538.062-.248-.124-1.047-.386-1.995-1.232-.738-.658-1.237-1.472-1.382-1.72-.145-.248-.016-.382.108-.505.111-.11.248-.29.373-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.435-.062-.124-.559-1.348-.766-1.846-.201-.485-.406-.419-.559-.427l-.476-.008c-.165 0-.435.062-.662.31-.227.248-.869.849-.869 2.071 0 1.222.89 2.403 1.014 2.569.124.165 1.751 2.674 4.242 3.75.592.256 1.055.409 1.416.524.595.19 1.136.163 1.564.099.477-.071 1.468-.6 1.675-1.179.207-.579.207-1.076.145-1.179-.062-.103-.227-.165-.476-.29z"/>
       </svg>
-      <span class="wa-float-text">Chat WhatsApp</span>
+      <span class="wa-tooltip" role="tooltip" aria-hidden="true"><%= waTooltipText %></span>
     </a>
   </aside>
-<% } %>
+<% 
+  }
+} 
+%>

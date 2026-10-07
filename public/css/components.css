@@ -7,111 +7,234 @@
 /* ========================================================
    Buttons
    ======================================================== */
-.btn {
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.btn-outline,
+.btn-outline-primary,
+.btn-white,
+.btn-outline-white,
+.btn-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-xs);
-  min-height: 44px; /* Touch target minimum (R-03) */
-  padding: 0 var(--space-lg);
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-body-sm);
-  font-weight: var(--font-weight-semibold);
-  line-height: 1;
+  gap: var(--space-xs, 0.25rem);
+  min-height: 44px; /* Touch target minimum (R-03 / DESIGN.md) */
+  padding: 10px 22px; /* Uniform padding */
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: var(--font-size-body-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.25;
   text-align: center;
+  text-decoration: none;
   white-space: nowrap;
   vertical-align: middle;
   cursor: pointer;
   user-select: none;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-md, 6px); /* DESIGN.md: Soft 6px (bukan pill) */
+  box-sizing: border-box;
+  transition: background-color var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1)),
+              border-color var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1)),
+              color var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1)),
+              box-shadow var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1)),
+              transform var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .btn:disabled,
-.btn.disabled {
+.btn.disabled,
+.btn-primary:disabled,
+.btn-primary.disabled,
+.btn-secondary:disabled,
+.btn-secondary.disabled,
+.btn-outline:disabled,
+.btn-outline.disabled,
+.btn-outline-primary:disabled,
+.btn-outline-primary.disabled,
+.btn-white:disabled,
+.btn-white.disabled,
+.btn-outline-white:disabled,
+.btn-outline-white.disabled {
   opacity: 0.6;
   cursor: not-allowed;
   pointer-events: none;
+  box-shadow: none;
+  transform: none;
 }
 
-/* Primary Button */
+/* Primary Button (DESIGN.md: Background #0055B8, Text #FFFFFF, Hover #1D4ED8, Active #003F8B) */
 .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border-color: var(--color-primary);
+  background-color: var(--color-primary, #0055b8);
+  color: var(--color-on-primary, #ffffff);
+  border-color: var(--color-primary, #0055b8);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-blue-active);
-  border-color: var(--color-blue-active);
+  background-color: var(--color-blue-active, #1d4ed8);
+  border-color: var(--color-blue-active, #1d4ed8);
   color: #ffffff;
-  box-shadow: var(--shadow-level-1);
+  box-shadow: var(--shadow-level-1, 0 1px 3px rgba(10, 25, 47, 0.06), 0 1px 2px rgba(10, 25, 47, 0.04));
+  transform: translateY(-1px);
 }
 
 .btn-primary:active {
-  background-color: var(--color-primary-dark);
+  background-color: var(--color-primary-dark, #003f8b);
+  border-color: var(--color-primary-dark, #003f8b);
+  transform: translateY(0);
 }
 
-/* Secondary Button (Corporate Navy Outline) */
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-sky-tint, #38bdf8);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring, 0 0 0 3px rgba(0, 85, 184, 0.25));
+}
+
+/* Secondary Button (Corporate Navy Outline per DESIGN.md: Border 1.5px #0D2040, Text #0D2040) */
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-secondary-navy);
-  border: 1.5px solid var(--color-secondary-navy);
+  color: var(--color-secondary-navy, #0d2040);
+  border-color: var(--color-secondary-navy, #0d2040);
 }
 
 .btn-secondary:hover {
   background-color: #f1f5f9;
-  color: var(--color-navy-deep);
+  color: var(--color-navy-deep, #0a192f);
+  border-color: var(--color-secondary-navy, #0d2040);
+  transform: translateY(-1px);
 }
 
-/* Tertiary / Ghost Button */
-.btn-ghost {
+.btn-secondary:active {
+  background-color: #e2e8f0;
+  transform: translateY(0);
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--color-sky-tint, #38bdf8);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.25);
+}
+
+/* Primary Outline Button (DESIGN.md: Border 1.5px #0055B8, Text #0055B8) */
+.btn-outline,
+.btn-outline-primary {
   background-color: transparent;
-  color: var(--color-primary);
+  color: var(--color-primary, #0055b8);
+  border-color: var(--color-primary, #0055b8);
+}
+
+.btn-outline:hover,
+.btn-outline-primary:hover {
+  background-color: var(--color-surface-container, #eaedff);
+  color: var(--color-blue-active, #1d4ed8);
+  border-color: var(--color-blue-active, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.btn-outline:active,
+.btn-outline-primary:active {
+  background-color: var(--color-surface-container-high, #e2e7ff);
+  transform: translateY(0);
+}
+
+.btn-outline:focus-visible,
+.btn-outline-primary:focus-visible {
+  outline: 2px solid var(--color-sky-tint, #38bdf8);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.25);
+}
+
+/* Tertiary / Ghost / Link Button (DESIGN.md: Text #0055B8, Transparent) */
+.btn-ghost,
+.btn-link {
+  background-color: transparent;
+  color: var(--color-primary, #0055b8);
   border-color: transparent;
 }
 
-.btn-ghost:hover {
-  background-color: var(--color-surface-container);
-  color: var(--color-blue-active);
+.btn-ghost:hover,
+.btn-link:hover {
+  background-color: var(--color-surface-container, #eaedff);
+  color: var(--color-blue-active, #1d4ed8);
 }
 
-/* White Buttons (for dark navy sections) */
+.btn-ghost:focus-visible,
+.btn-link:focus-visible {
+  outline: 2px solid var(--color-sky-tint, #38bdf8);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.25);
+}
+
+/* White Buttons (for dark navy sections per DESIGN.md) */
 .btn-white {
   background-color: #ffffff;
-  color: var(--color-secondary-navy);
+  color: var(--color-secondary-navy, #0d2040);
   border-color: #ffffff;
 }
 
 .btn-white:hover {
   background-color: #f8fafc;
-  color: var(--color-navy-deep);
-  box-shadow: var(--shadow-level-1);
+  color: var(--color-primary, #0055b8);
+  border-color: #f8fafc;
+  box-shadow: var(--shadow-level-1, 0 1px 3px rgba(10, 25, 47, 0.06), 0 1px 2px rgba(10, 25, 47, 0.04));
+  transform: translateY(-1px);
+}
+
+.btn-white:active {
+  background-color: #e2e8f0;
+  transform: translateY(0);
+}
+
+.btn-white:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.5);
 }
 
 .btn-outline-white {
   background-color: transparent;
   color: #ffffff;
-  border: 1.5px solid #ffffff;
+  border-color: #ffffff;
 }
 
 .btn-outline-white:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   color: #ffffff;
+  border-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-outline-white:active {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(0);
+}
+
+.btn-outline-white:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.5);
 }
 
 /* Button Sizes */
 .btn-sm {
   min-height: 36px;
-  padding: 0 var(--space-md);
-  font-size: var(--font-size-label-md);
+  padding: 6px 14px;
+  font-size: var(--font-size-label-md, 12px);
+  gap: 6px;
+}
+
+.btn-md {
+  min-height: 44px;
+  padding: 10px 22px;
+  font-size: var(--font-size-body-sm, 14px);
+  gap: 8px;
 }
 
 .btn-lg {
   min-height: 52px;
-  padding: 0 var(--space-xl);
-  font-size: var(--font-size-body-md);
+  padding: 14px 28px;
+  font-size: var(--font-size-body-md, 16px);
+  gap: 10px;
 }
 
 .btn-block {
@@ -382,71 +505,133 @@
 }
 
 /* ========================================================
-   Floating WhatsApp Button (R-03, R-32 Compliant)
+   Floating WhatsApp Button (Icon-Only Round, Brand Primary)
+   Acuan: DESIGN.md & WCAG AA (Contrast ratio: 7.02:1)
    ======================================================== */
 .wa-float-container {
   position: fixed;
-  bottom: var(--space-xl);
-  right: var(--space-xl);
-  z-index: 999;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: calc(24px + env(safe-area-inset-right, 0px));
+  z-index: var(--z-modal, 1030);
+  pointer-events: none;
 }
 
 .wa-float-btn {
+  pointer-events: auto;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  min-height: 52px;
-  padding: 0 var(--space-lg) 0 var(--space-md);
-  background-color: #25d366;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill, 9999px);
+  background-color: var(--color-primary, #0055b8);
   color: #ffffff;
-  text-decoration: none;
-  border-radius: var(--radius-pill);
-  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 18px rgba(0, 85, 184, 0.32), 0 2px 6px rgba(10, 25, 47, 0.08);
   cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1)),
+              background-color var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1)),
+              border-color var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1)),
+              box-shadow var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .wa-float-btn:hover {
-  transform: translateY(-2px);
-  background-color: #20ba59;
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+  background-color: var(--color-blue-active, #1d4ed8);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 10px 24px rgba(0, 85, 184, 0.42), 0 4px 10px rgba(10, 25, 47, 0.12);
   color: #ffffff;
 }
 
+.wa-float-btn:active {
+  background-color: var(--color-primary-dark, #003f8b);
+  transform: translateY(0) scale(0.96);
+  box-shadow: 0 2px 8px rgba(0, 85, 184, 0.25);
+}
+
 .wa-float-btn:focus-visible {
-  outline: 3px solid #128c7e;
+  outline: 2px solid var(--color-sky-tint, #38bdf8);
   outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(0, 85, 184, 0.25);
 }
 
-.wa-float-btn svg {
-  width: 26px;
-  height: 26px;
-  fill: currentColor;
+.wa-float-btn .wa-icon {
+  width: 28px;
+  height: 28px;
+  fill: #ffffff;
   flex-shrink: 0;
+  transition: transform var(--transition-fast, 150ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.wa-float-text {
-  font-size: var(--font-size-body-sm);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.01em;
+.wa-float-btn:hover .wa-icon {
+  transform: scale(1.06);
+}
+
+/* Tooltip on desktop hover */
+.wa-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background: var(--color-navy-deep, #0a192f);
+  color: #ffffff;
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
   white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-level-2, 0 10px 15px -3px rgba(10, 25, 47, 0.12));
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity var(--transition-fast, 150ms ease),
+              transform var(--transition-fast, 150ms ease),
+              visibility var(--transition-fast, 150ms ease);
+}
+
+.wa-tooltip::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent var(--color-navy-deep, #0a192f);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wa-float-btn:hover .wa-tooltip,
+  .wa-float-btn:focus-visible .wa-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 @media (max-width: 640px) {
   .wa-float-container {
-    bottom: var(--space-md);
-    right: var(--space-md);
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    right: calc(16px + env(safe-area-inset-right, 0px));
   }
 
   .wa-float-btn {
-    width: 52px;
-    height: 52px;
-    padding: 0;
-    justify-content: center;
+    width: 48px;
+    height: 48px;
   }
 
-  .wa-float-text {
-    display: none;
+  .wa-float-btn .wa-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .wa-tooltip {
+    display: none !important;
   }
 }
 
@@ -2080,105 +2265,6 @@
   }
 }
 
-/* ═══ DYNAMIC WHATSAPP FLOATING BUTTON ═══ */
-.wa-float-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: var(--z-modal, 1030);
-}
-
-.wa-float-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 18px;
-  border-radius: var(--r-pill, 9999px);
-  text-decoration: none;
-  font-family: var(--font, 'Plus Jakarta Sans', sans-serif);
-  font-size: 13.5px;
-  font-weight: 700;
-  box-shadow: 0 10px 25px -4px rgba(10, 25, 47, 0.25), 0 4px 6px -2px rgba(10, 25, 47, 0.1);
-  transition: transform var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
-              box-shadow var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
-              background var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.wa-float-btn:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 14px 30px -4px rgba(10, 25, 47, 0.35);
-}
-
-.wa-float-btn:focus-visible {
-  outline: 2px solid var(--sky, #38bdf8);
-  outline-offset: 3px;
-}
-
-.wa-float-btn.theme-corporate {
-  background: var(--navy, #0a192f);
-  color: #ffffff;
-  border: 1.5px solid rgba(56, 189, 248, 0.4);
-}
-
-.wa-float-btn.theme-corporate:hover {
-  background: var(--primary, #0055b8);
-  border-color: var(--sky, #38bdf8);
-}
-
-.wa-float-btn.theme-emerald,
-.wa-float-btn.theme-default {
-  background: #25D366;
-  color: #ffffff;
-  border: 1.5px solid #20ba5a;
-}
-
-.wa-float-btn.theme-emerald:hover,
-.wa-float-btn.theme-default:hover {
-  background: #20ba5a;
-}
-
-.wa-float-btn.theme-minimal {
-  background: #ffffff;
-  color: var(--navy, #0a192f);
-  border: 1.5px solid var(--border, #e2e8f0);
-}
-
-.wa-float-btn.theme-minimal:hover {
-  background: var(--surface-container, #eaedff);
-  border-color: var(--primary, #0055b8);
-  color: var(--primary, #0055b8);
-}
-
-.wa-pulse-indicator {
-  position: relative;
-  display: inline-flex;
-  width: 10px;
-  height: 10px;
-}
-
-.wa-pulse-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #22c55e;
-  position: relative;
-  z-index: 2;
-}
-
-.wa-pulse-ring {
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  background: rgba(34, 197, 94, 0.5);
-  animation: waPulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  z-index: 1;
-}
-
-@keyframes waPulseRing {
-  0% { transform: scale(0.9); opacity: 1; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-
 /* ═══ SUBPAGE HERO & COMMON UTILITIES ═══ */
 .page-hero {
   position: relative;
@@ -2379,17 +2465,6 @@
   }
   .hero-explore-indicator {
     display: none;
-  }
-  .wa-float-container {
-    bottom: 16px;
-    right: 16px;
-  }
-  .wa-float-text {
-    display: none;
-  }
-  .wa-float-btn {
-    padding: 12px;
-    border-radius: 50%;
   }
 }
 

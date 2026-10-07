@@ -43,7 +43,7 @@
       </p>
       <% if (heroObj && heroObj.cta_url && (currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id)) { %>
         <div style="margin-top: 20px;">
-          <a href="<%= heroObj.cta_url %>" class="btn btn-primary" style="padding: 10px 24px; border-radius: 4px; font-weight: 600; display: inline-flex;">
+          <a href="<%= heroObj.cta_url %>" class="btn btn-primary">
             <%= currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id %>
           </a>
         </div>
@@ -97,9 +97,9 @@
             <% } %>
 
             <div>
-              <a href="/news/<%= headlinePost.slug %>" class="btn btn-primary btn-md" style="min-height: 44px; display: inline-flex; align-items: center; gap: 8px;">
+              <a href="/news/<%= headlinePost.slug %>" class="btn btn-primary btn-md">
                 <span><%= t('common.read_more') %></span>
-                <span aria-hidden="true">→</span>
+                <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </div>
@@ -312,7 +312,7 @@
             Tidak ditemukan artikel atau publikasi yang cocok dengan kriteria filter yang Anda pilih.
           </p>
           <div>
-            <a href="/news" class="btn btn-primary btn-md" style="min-height: 44px; display: inline-flex; align-items: center;">
+            <a href="/news" class="btn btn-primary btn-md">
               Lihat Semua Publikasi
             </a>
           </div>

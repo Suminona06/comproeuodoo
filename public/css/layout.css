@@ -872,6 +872,7 @@
    Responsive Media Queries for Header & Footer
    ======================================================== */
 @media (max-width: 1024px) {
+  .nav-actions .btn,
   .nav-actions .btn-primary {
     display: none;
   }
@@ -916,10 +917,10 @@
     margin-top: 12px;
   }
   .btn-nav-mobile {
-    display: block;
+    display: flex;
     width: 100%;
     text-align: center;
-    padding: 12px 0;
+    justify-content: center;
   }
   .ft-main {
     grid-template-columns: 1fr;
