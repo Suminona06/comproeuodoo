@@ -27,8 +27,16 @@
     <div class="container">
       <nav class="navbar" aria-label="Navigasi Utama">
         <a href="/" class="brand" aria-label="Beranda PT Euodoo">
-          <% if (typeof settings !== 'undefined' && settings && settings.site_logo_header) { %>
-            <img src="<%= settings.site_logo_header %>" alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" class="brand-logo-header" style="max-height: 38px; width: auto; object-fit: contain; display: block;">
+          <% if (typeof settings !== 'undefined' && settings && settings.site_logo_header && settings.site_logo_header.trim() !== '') { %>
+            <img src="<%= settings.site_logo_header %>" 
+                 alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" 
+                 class="brand-logo-header" 
+                 style="max-height: 38px; width: auto; object-fit: contain; display: block;"
+                 onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';">
+            <span class="brand-text-fallback" style="display: none; align-items: center; gap: 8px;">
+              <span class="brand-name">PT EUODOO</span>
+              <span class="brand-badge">MANUFACTURING</span>
+            </span>
           <% } else { %>
             <span class="brand-name">PT EUODOO</span>
             <span class="brand-badge">MANUFACTURING</span>
@@ -44,6 +52,11 @@
           <li>
             <a href="/products" class="nav-link <%= path === '/products' || path.startsWith('/products/') ? 'active' : '' %>">
               <%= currentLang === 'en' ? 'Products' : 'Produk' %>
+            </a>
+          </li>
+          <li>
+            <a href="/#merek" class="nav-link <%= path === '/#merek' ? 'active' : '' %>">
+              <%= currentLang === 'en' ? 'Brands' : 'Merek' %>
             </a>
           </li>
           <li>

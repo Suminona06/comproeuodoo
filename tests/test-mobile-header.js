@@ -64,17 +64,18 @@ async function runTests() {
     assert.ok(html.includes('About Us'), 'English navigation link "About Us" must be present');
   });
 
-  // 3. CSS rule verification for Bug A1 & Bug A2
-  await test('T-80 & T-81: CSS rules resolve hero overlap and slider controls collision', async () => {
+  // 3. CSS rule verification for Hero offset & bottom slider controls
+  await test('T-80 & T-81: CSS rules resolve hero offset and bottom slider controls placement', async () => {
     const compCss = fs.readFileSync(path.resolve('./public/css/components.css'), 'utf-8');
 
-    // Hero offset (Bug A1)
-    assert.ok(compCss.includes('padding-top: calc(34px + 64px + 24px)'), 'Hero slide must have safe padding-top offset (122px)');
+    // Hero offset
+    assert.ok(compCss.includes('padding-top: calc(34px + 64px + 20px)'), 'Hero slide must have safe padding-top offset (118px)');
     
-    // Slider controls relocated to top-right (Bug A2)
-    assert.ok(compCss.includes('.hero-slider-controls {') && compCss.includes('top: calc(34px + 64px + 12px)'), 'Slider controls must be positioned below navbar at top-right');
-    assert.ok(compCss.includes('right: 16px'), 'Slider controls must be aligned to right edge');
-    assert.ok(compCss.includes('bottom: auto'), 'Slider controls bottom must be reset to auto');
+    // Slider controls relocated to bottom-center with safe clearance
+    assert.ok(compCss.includes('.hero-slider-controls {'), 'Slider controls class must be styled');
+    assert.ok(compCss.includes('bottom: 24px;'), 'Slider controls must sit at bottom: 24px');
+    assert.ok(compCss.includes('left: 50%;') && compCss.includes('transform: translateX(-50%);'), 'Slider controls must be centered horizontally');
+    assert.ok(compCss.includes('padding-bottom: 96px;'), 'Hero slide must have 96px padding-bottom safe buffer to prevent collision with CTA buttons');
   });
 
   // 4. CSS rule verification for UI Polish C1 & C2

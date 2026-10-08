@@ -2438,40 +2438,47 @@
 
 @media (max-width: 768px) {
   .hero {
-    min-height: auto;
-    min-height: 85svh;
+    min-height: max(88svh, 600px);
     padding-top: 0;
     width: 100%;
     overflow: hidden;
+    position: relative;
   }
   .hero-slider, .hero-slides-wrapper, .hero-slide {
-    min-height: auto;
-    min-height: 85svh;
+    min-height: max(88svh, 600px);
   }
   .hero-slide {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    padding-top: calc(34px + 64px + 24px); /* 122px offset from fixed header */
-    padding-bottom: 56px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-top: calc(34px + 64px + 20px);
+    padding-bottom: 96px;
+    padding-left: 20px;
+    padding-right: 20px;
     box-sizing: border-box;
   }
   .hero-slider-nav {
     display: none;
   }
-  /* Relocate slider controls below navbar to prevent overlap with CTA buttons */
   .hero-slider-controls {
-    top: calc(34px + 64px + 12px);
-    right: 16px;
-    bottom: auto;
-    left: auto;
-    transform: none;
-    padding: 5px 12px;
-    gap: 10px;
-    font-size: 11px;
+    top: auto;
+    right: auto;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 6px 16px;
+    background: rgba(10, 25, 47, 0.68);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+    font-size: 11.5px;
     z-index: 10;
   }
   .hero-dot {
@@ -2479,14 +2486,18 @@
     height: 6px;
   }
   .hero-dot.is-active {
-    width: 18px;
+    width: 20px;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
   }
   .hero-slide-counter {
-    font-size: 11px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: 0.04em;
   }
   .hero-content {
-    padding-top: 16px !important;
-    padding-bottom: 24px !important;
+    padding: 0 !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100% !important;
@@ -2503,24 +2514,25 @@
     max-width: 100%;
   }
   .hero h1 {
-    font-size: clamp(1.65rem, 6.2vw, 2.25rem);
-    line-height: 1.2;
-    margin-bottom: 16px;
+    font-size: clamp(1.55rem, 5.8vw, 2.1rem);
+    line-height: 1.22;
+    margin-bottom: 14px;
     word-break: break-word;
   }
   .hero-body {
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    margin-bottom: 20px;
     width: 100%;
     max-width: 100%;
+    color: rgba(226, 232, 240, 0.92);
   }
   .hero-actions {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 0;
   }
   .hero-actions a {
     width: 100%;
@@ -2530,6 +2542,8 @@
     justify-content: center;
     text-align: center;
     box-sizing: border-box;
+    font-size: 14px;
+    font-weight: 600;
   }
   .hero-explore-indicator {
     display: none;
