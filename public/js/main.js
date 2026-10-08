@@ -80,6 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Automatically close drawer when resized to desktop (>1024px)
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024 && menu && menu.classList.contains('open')) {
+      closeMobileMenu();
+    }
+  }, { passive: true });
+
   // Smooth scroll for hash anchor links
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', function (e) {

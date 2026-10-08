@@ -2436,32 +2436,100 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .hero {
-    min-height: 84vh;
-    padding-top: 100px;
+    min-height: auto;
+    min-height: 85svh;
+    padding-top: 0;
+    width: 100%;
+    overflow: hidden;
   }
   .hero-slider, .hero-slides-wrapper, .hero-slide {
-    min-height: 84vh;
+    min-height: auto;
+    min-height: 85svh;
   }
   .hero-slide {
-    padding-top: 90px;
-    padding-bottom: 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: calc(34px + 64px + 24px); /* 122px offset from fixed header */
+    padding-bottom: 56px;
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
   }
   .hero-slider-nav {
     display: none;
   }
+  /* Relocate slider controls below navbar to prevent overlap with CTA buttons */
   .hero-slider-controls {
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 6px 14px;
-    gap: 14px;
+    top: calc(34px + 64px + 12px);
+    right: 16px;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    padding: 5px 12px;
+    gap: 10px;
+    font-size: 11px;
+    z-index: 10;
+  }
+  .hero-dot {
+    width: 6px;
+    height: 6px;
+  }
+  .hero-dot.is-active {
+    width: 18px;
+  }
+  .hero-slide-counter {
+    font-size: 11px;
   }
   .hero-content {
-    padding-top: 36px;
-    padding-bottom: 48px;
-    margin-left: 0;
+    padding-top: 16px !important;
+    padding-bottom: 24px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .hero-inner {
+    width: 100%;
+    max-width: 100%;
+  }
+  .hero-welcome {
+    font-size: 11px;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+    max-width: 100%;
+  }
+  .hero h1 {
+    font-size: clamp(1.65rem, 6.2vw, 2.25rem);
+    line-height: 1.2;
+    margin-bottom: 16px;
+    word-break: break-word;
+  }
+  .hero-body {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .hero-actions a {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
   }
   .hero-explore-indicator {
     display: none;

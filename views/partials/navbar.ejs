@@ -3,11 +3,16 @@
     <div class="top-bar">
       <div class="container top-bar-inner">
         <span class="top-tagline">
-          <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) ? (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) : 'Passion To Build A Better Quality of Life' %>
+          <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) ? (currentLang === 'en' ? settings.company_tagline_en : settings.company_tagline_id) : (currentLang === 'en' ? 'Passion To Build A Better Quality of Life' : 'Semangat Membangun Kualitas Hidup yang Lebih Baik') %>
         </span>
+        <div class="top-email-mobile">
+          <a href="mailto:<%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %>">
+            Email: <%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %>
+          </a>
+        </div>
         <div class="top-right">
-          <span>Email: <a href="mailto:<%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %>" style="color: inherit; text-decoration: none;"><%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %></a></span>
-          <span style="opacity:.4">|</span>
+          <span class="top-email-desktop">Email: <a href="mailto:<%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %>" style="color: inherit; text-decoration: none;"><%= typeof settings !== 'undefined' && settings && settings.company_email ? settings.company_email : 'info@euodoo.com' %></a></span>
+          <span class="top-divider" style="opacity:.4">|</span>
           <div class="lang-sw">
             <a href="/lang/id" class="<%= currentLang === 'id' ? 'active' : '' %>" aria-label="Bahasa Indonesia">ID</a>
             <span style="opacity:.4">/</span>
