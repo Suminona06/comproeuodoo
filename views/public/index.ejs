@@ -2,7 +2,6 @@
 <%- include('../partials/navbar') %>
 
 <main id="main-content">
-  <!-- 1. SECTION HERO SLIDER 90vh (Multi-Slide Carousel) -->
   <% 
     const activeBanners = (typeof banners !== 'undefined' && Array.isArray(banners) && banners.length > 0)
       ? banners.filter(b => b.is_active === 1 || b.is_active === true)
@@ -69,7 +68,7 @@
     </div>
 
     <% if (displayBanners.length > 1) { %>
-      <!-- Navigation Arrows -->
+
       <button type="button" class="hero-slider-nav hero-slider-prev" id="heroPrevBtn" aria-label="Slide Sebelumnya">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
@@ -81,7 +80,7 @@
         </svg>
       </button>
 
-      <!-- Pagination Dots & Status -->
+
       <div class="hero-slider-controls">
         <div class="hero-slider-dots" id="heroDots" role="tablist" aria-label="Pilih Slide">
           <% displayBanners.forEach((_, idx) => { %>
@@ -102,7 +101,7 @@
     </div>
   </section>
 
-  <!-- 2. SECTION COMPANY INTRO -->
+
   <section class="sec-intro" id="intro">
     <div class="container">
       <div class="intro-layout reveal">
@@ -125,7 +124,6 @@
     </div>
   </section>
 
-  <!-- 3. SECTION PRODUK UNGGULAN (Symmetrical Bento Grid) -->
   <section class="sec-products" id="produk">
     <div class="container">
       <div class="prod-header reveal">
@@ -214,7 +212,6 @@
     </div>
   </section>
 
-  <!-- 4. SECTION 3 PILAR KEUNGGULAN -->
   <section class="sec-pillars" id="pilar">
     <div class="container">
       <div class="pillars-header reveal">
@@ -280,7 +277,7 @@
     </div>
   </section>
 
-  <!-- 5. SECTION SERTIFIKASI & BUKTI MUTU -->
+
   <section class="sec-evidence" id="sertifikasi">
     <div class="container">
       <div class="ev-layout">
@@ -334,7 +331,6 @@
     </div>
   </section>
 
-  <!-- 6. SECTION OUR BRANDS (Horizontal Marquee Slider) -->
   <section class="sec-brands" id="merek">
     <div class="container">
       <div class="brands-header reveal">
@@ -371,7 +367,7 @@
               </div>
             <% }); %>
           <% } %>
-          <!-- Additional anchor brands from prototype -->
+
           <div class="brand-card">
             <div class="brand-badge-icon brand-badge-pb">PB</div>
             <div class="brand-info">
@@ -407,7 +403,6 @@
           </div>
         </div>
 
-        <!-- Group 2 (Duplicate for seamless CSS Marquee Loop) -->
         <div class="marquee-group" aria-hidden="true">
           <% if (brands && brands.length > 0) { %>
             <% brands.forEach(brand => { %>
@@ -466,7 +461,7 @@
     </div>
   </section>
 
-  <!-- 7. SECTION BERITA & ARTIKEL TERBARU -->
+
   <section class="sec-news" id="berita">
     <div class="container">
       <div class="news-header reveal">
