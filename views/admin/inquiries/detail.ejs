@@ -92,7 +92,7 @@
       </div>
 
       <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-main);">
-        <form action="/admin/inquiries/<%= inquiry.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Hapus permanen inquiry ini?');">
+        <form action="/admin/inquiries/<%= inquiry.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus permanen inquiry ini?" data-confirm-title="Hapus Pesan Masuk">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">
             Hapus Inquiry Ini

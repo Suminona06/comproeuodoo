@@ -149,6 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentVideo) {
         currentVideo.pause();
       }
+      const currentYt = currentSlide.querySelector('iframe.hero-youtube-iframe');
+      if (currentYt && currentYt.contentWindow) {
+        currentYt.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: '' }), '*');
+      }
 
       // Activate new slide
       currentIndex = (newIndex + totalSlides) % totalSlides;
@@ -158,6 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (nextVideo) {
         nextVideo.currentTime = 0;
         nextVideo.play().catch(() => {});
+      }
+      const nextYt = nextSlide.querySelector('iframe.hero-youtube-iframe');
+      if (nextYt && nextYt.contentWindow) {
+        nextYt.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: '' }), '*');
       }
 
       // Update dots

@@ -114,6 +114,8 @@ export const aboutController = {
 
       if (req.file) {
         updatePayload.image_url = await processAndSaveWebP(req.file.buffer, 'pages', { maxWidth: 1920, maxHeight: 1080 });
+      } else if (req.body.image_url !== undefined) {
+        updatePayload.image_url = req.body.image_url ? req.body.image_url.trim() : null;
       }
 
       await aboutModel.updateAboutData(updatePayload);

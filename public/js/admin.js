@@ -318,7 +318,55 @@ document.addEventListener('DOMContentLoaded', () => {
   window.initCustomFileUploads = initCustomFileUploads;
 });
 
-// Toast notification helper
+// SweetAlert2 Toast & Alert Helper
+function createSwalToast() {
+  if (typeof Swal === 'undefined') return null;
+  return Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3500,
+    timerProgressBar: true,
+    customClass: {
+      popup: 'swal2-toast-custom'
+    },
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    }
+  });
+}
+
+let swalToastInstance = null;
+
+function adminToast(typeOrMessage, message) {
+  let type = 'success';
+  let text = '';
+
+  if (typeof message === 'string') {
+    type = typeOrMessage || 'success';
+    text = message;
+  } else if (typeof typeOrMessage === 'object' && typeOrMessage !== null) {
+    type = typeOrMessage.type || 'success';
+    text = typeOrMessage.title || typeOrMessage.message || '';
+  } else {
+    text = String(typeOrMessage || '');
+  }
+
+  if (typeof Swal !== 'undefined') {
+    if (!swalToastInstance) swalToastInstance = createSwalToast();
+    swalToastInstance.fire({
+      icon: ['success', 'error', 'warning', 'info', 'question'].includes(type) ? type : 'info',
+      title: text
+    });
+  } else {
+    showAdminToast(text);
+  }
+}
+
+window.adminToast = adminToast;
+window.showToast = adminToast;
+
 function showAdminToast(message, duration = 3000) {
   let toast = document.getElementById('adminToast');
   if (!toast) {
@@ -338,6 +386,76 @@ function showAdminToast(message, duration = 3000) {
     toast.classList.remove('show');
   }, duration);
 }
+
+// Global SweetAlert2 Delete Confirmation Interceptor
+document.addEventListener('submit', function(e) {
+  const form = e.target;
+  if (!form || !form.matches || !form.matches('form[data-confirm-delete]')) return;
+  if (form.dataset.confirmed === 'true') return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const message = form.getAttribute('data-confirm-message') || 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini permanen.';
+  const title = form.getAttribute('data-confirm-title') || 'Konfirmasi Hapus';
+
+  if (typeof Swal !== 'undefined') {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#DC2626',
+      cancelButtonColor: '#0D2040',
+      confirmButtonText: 'Ya, Hapus Data',
+      cancelButtonText: 'Batal',
+      reverseButtons: true,
+      focusCancel: true,
+      customClass: {
+        popup: 'swal2-custom-popup',
+        title: 'swal2-custom-title',
+        confirmButton: 'swal2-custom-confirm-btn',
+        cancelButton: 'swal2-custom-cancel-btn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        form.dataset.confirmed = 'true';
+        form.submit();
+      }
+    });
+  } else {
+    if (confirm(message)) {
+      form.dataset.confirmed = 'true';
+      form.submit();
+    }
+  }
+});
+
+// Flash Message Auto Listener
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const qSuccess = urlParams.get('success');
+  const qError = urlParams.get('error');
+
+  if (qSuccess) {
+    adminToast('success', decodeURIComponent(qSuccess));
+    if (window.history && window.history.replaceState) {
+      urlParams.delete('success');
+      const newQuery = urlParams.toString();
+      const newUrl = window.location.pathname + (newQuery ? `?${newQuery}` : '') + window.location.hash;
+      window.history.replaceState(null, '', newUrl);
+    }
+  } else if (qError) {
+    adminToast('error', decodeURIComponent(qError));
+    if (window.history && window.history.replaceState) {
+      urlParams.delete('error');
+      const newQuery = urlParams.toString();
+      const newUrl = window.location.pathname + (newQuery ? `?${newQuery}` : '') + window.location.hash;
+      window.history.replaceState(null, '', newUrl);
+    }
+  }
+});
+
 
 // Modal open/close helpers
 window.openAdminModal = function(modalId) {

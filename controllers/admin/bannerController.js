@@ -3,6 +3,13 @@ import { processAndSaveWebP, saveVideoFile } from '../../middleware/uploadMiddle
 import storage from '../../config/storage.js';
 import logger from '../../utils/logger.js';
 
+function extractYouTubeId(url) {
+  if (!url || typeof url !== 'string') return null;
+  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = url.trim().match(regExp);
+  return (match && match[1].length === 11) ? match[1] : null;
+}
+
 export const bannerController = {
   async index(req, res) {
     try {
@@ -42,31 +49,44 @@ export const bannerController = {
     try {
       const {
         title_id, title_en, caption_id, caption_en,
-        cta_text_id, cta_text_en, cta_url, sort_order, media_type, is_active
+        cta_text_id, cta_text_en, cta_url, sort_order, media_type, is_active,
+        file_url, youtube_url, poster_url
       } = req.body;
 
-      if (!title_id || (!req.file && !req.body.image_url)) {
+      if (!title_id || (!req.file && !file_url && !youtube_url)) {
         return res.status(400).render('admin/banners/create', {
           title: 'Tambah Banner Hero',
           pageTitle: 'Tambah Banner Hero',
           activeNav: 'banners',
-          error: 'Judul banner dan berkas media wajib diisi.',
+          error: 'Judul banner dan sumber media wajib diisi.',
           formData: req.body
         });
       }
 
-      let imageUrl = null;
-      let videoUrl = null;
-      const type = media_type || (req.file?.mimetype.startsWith('video/') ? 'video' : 'image');
+      let finalMediaUrl = file_url ? file_url.trim() : null;
+      let finalPosterUrl = poster_url ? poster_url.trim() : null;
+      let type = media_type || 'image';
 
-      if (req.file) {
-        if (req.file.mimetype.startsWith('video/')) {
-          videoUrl = await saveVideoFile(req.file.buffer, req.file.originalname, 'banners');
-        } else {
-          imageUrl = await processAndSaveWebP(req.file.buffer, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
+      if (type === 'youtube') {
+        const ytId = extractYouTubeId(youtube_url || file_url);
+        if (!ytId) {
+          return res.status(400).render('admin/banners/create', {
+            title: 'Tambah Banner Hero',
+            pageTitle: 'Tambah Banner Hero',
+            activeNav: 'banners',
+            error: 'Tautan YouTube tidak valid. Harap masukkan format link video YouTube resmi.',
+            formData: req.body
+          });
         }
-      } else if (req.body.image_url) {
-        imageUrl = req.body.image_url.trim();
+        finalMediaUrl = ytId;
+      } else if (req.file) {
+        if (req.file.mimetype.startsWith('video/')) {
+          finalMediaUrl = await saveVideoFile(req.file.buffer, req.file.originalname, 'banners');
+          type = 'video';
+        } else {
+          finalMediaUrl = await processAndSaveWebP(req.file.buffer, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
+          type = 'image';
+        }
       }
 
       await bannerModel.create({
@@ -75,8 +95,8 @@ export const bannerController = {
         caption_id: caption_id ? caption_id.trim() : null,
         caption_en: caption_en ? caption_en.trim() : null,
         media_type: type,
-        image_url: imageUrl,
-        video_url: videoUrl,
+        file_url: finalMediaUrl,
+        poster_url: finalPosterUrl,
         cta_text_id: cta_text_id ? cta_text_id.trim() : null,
         cta_text_en: cta_text_en ? cta_text_en.trim() : null,
         cta_url: cta_url ? cta_url.trim() : null,
@@ -116,7 +136,8 @@ export const bannerController = {
       const { id } = req.params;
       const {
         title_id, title_en, caption_id, caption_en,
-        cta_text_id, cta_text_en, cta_url, sort_order, media_type, is_active
+        cta_text_id, cta_text_en, cta_url, sort_order, is_active,
+        media_type, file_url, youtube_url, poster_url
       } = req.body;
 
       const banner = await bannerModel.findById(id);
@@ -124,30 +145,41 @@ export const bannerController = {
         return res.redirect('/admin/banners?error=' + encodeURIComponent('Banner tidak ditemukan.'));
       }
 
+      let type = media_type || banner.media_type;
+      let finalMediaUrl = file_url !== undefined && file_url.trim() !== '' ? file_url.trim() : (banner.file_url || banner.image_url);
+      let finalPosterUrl = poster_url !== undefined ? poster_url.trim() : banner.poster_url;
+
+      if (type === 'youtube' && (youtube_url || file_url)) {
+        const ytId = extractYouTubeId(youtube_url || file_url);
+        if (ytId) {
+          finalMediaUrl = ytId;
+        }
+      } else if (req.file) {
+        if (req.file.mimetype.startsWith('video/')) {
+          if (banner.video_url) await storage.delete(banner.video_url);
+          finalMediaUrl = await saveVideoFile(req.file.buffer, req.file.originalname, 'banners');
+          type = 'video';
+        } else {
+          if (banner.image_url) await storage.delete(banner.image_url);
+          finalMediaUrl = await processAndSaveWebP(req.file.buffer, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
+          type = 'image';
+        }
+      }
+
       const updateData = {
         title_id: title_id ? title_id.trim() : banner.title_id,
         title_en: title_en ? title_en.trim() : banner.title_en,
         caption_id: caption_id !== undefined ? caption_id.trim() : banner.caption_id,
         caption_en: caption_en !== undefined ? caption_en.trim() : banner.caption_en,
-        media_type: media_type || banner.media_type,
+        media_type: type,
+        file_url: finalMediaUrl,
+        poster_url: finalPosterUrl,
         cta_text_id: cta_text_id !== undefined ? cta_text_id.trim() : banner.cta_text_id,
         cta_text_en: cta_text_en !== undefined ? cta_text_en.trim() : banner.cta_text_en,
         cta_url: cta_url !== undefined ? cta_url.trim() : banner.cta_url,
         sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : banner.sort_order,
         is_active: is_active === 'on' || is_active === '1' || is_active === true
       };
-
-      if (req.file) {
-        if (req.file.mimetype.startsWith('video/')) {
-          if (banner.video_url) await storage.delete(banner.video_url);
-          updateData.video_url = await saveVideoFile(req.file.buffer, req.file.originalname, 'banners');
-          updateData.media_type = 'video';
-        } else {
-          if (banner.image_url) await storage.delete(banner.image_url);
-          updateData.image_url = await processAndSaveWebP(req.file.buffer, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
-          updateData.media_type = 'image';
-        }
-      }
 
       await bannerModel.update(id, updateData);
       res.redirect('/admin/banners?success=' + encodeURIComponent('Banner berhasil diperbarui.'));

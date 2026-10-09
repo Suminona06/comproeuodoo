@@ -65,6 +65,8 @@ export const pageHeroBannerController = {
         if (imageUrl) {
           updateData.image_url = imageUrl;
         }
+      } else if (req.body.image_url !== undefined && req.body.image_url.trim() !== '') {
+        updateData.image_url = req.body.image_url.trim();
       }
 
       await pageHeroBannerModel.updateByPageKey(pageKey, updateData);

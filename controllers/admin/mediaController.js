@@ -131,9 +131,24 @@ export const mediaController = {
   async destroy(req, res) {
     try {
       const { id } = req.params;
+      const isForce = req.query.force === 'true' || req.body.force === 'true';
+      const isJson = req.xhr || req.headers.accept?.includes('application/json') || req.query.format === 'json';
+
       const media = await mediaModel.findById(id);
       if (!media) {
+        if (isJson) return res.status(404).json({ success: false, message: 'Media tidak ditemukan.' });
         return res.redirect('/admin/media?error=' + encodeURIComponent('Media tidak ditemukan.'));
+      }
+
+      if (!isForce && media.file_url) {
+        const usages = await mediaModel.checkUsage(media.file_url);
+        if (usages.length > 0) {
+          if (isJson) {
+            return res.status(409).json({ success: false, inUse: true, usages });
+          }
+          const usageList = usages.map(u => `${u.source}: ${u.label}`).join(', ');
+          return res.redirect('/admin/media?error=' + encodeURIComponent(`Media sedang aktif digunakan pada: ${usageList}. Gunakan force delete jika ingin tetap menghapus.`));
+        }
       }
 
       if (media.media_type !== 'youtube' && media.file_url) {
@@ -141,18 +156,99 @@ export const mediaController = {
       }
 
       await mediaModel.delete(id);
+
+      if (isJson) {
+        return res.json({ success: true, message: 'Media berhasil dihapus.' });
+      }
       res.redirect('/admin/media?success=' + encodeURIComponent('Media berhasil dihapus.'));
     } catch (err) {
       logger.error('Media controller destroy error:', err);
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
       res.redirect('/admin/media?error=' + encodeURIComponent('Gagal menghapus media.'));
     }
   },
 
   async apiList(req, res) {
     try {
-      const { type = 'image', limit = 30 } = req.query;
-      const list = await mediaModel.findAll({ mediaType: type, limit: parseInt(limit, 10) });
-      res.json({ success: true, data: list });
+      const { type = 'all', search = '', page = 1, limit = 24 } = req.query;
+      const parsedLimit = Math.min(Math.max(parseInt(limit, 10) || 24, 1), 100);
+      const parsedPage = Math.max(parseInt(page, 10) || 1, 1);
+      const offset = (parsedPage - 1) * parsedLimit;
+
+      const [list, total] = await Promise.all([
+        mediaModel.findAll({ mediaType: type, search, limit: parsedLimit, offset }),
+        mediaModel.count({ mediaType: type, search })
+      ]);
+
+      res.json({
+        success: true,
+        data: list,
+        pagination: {
+          page: parsedPage,
+          limit: parsedLimit,
+          total,
+          totalPages: Math.ceil(total / parsedLimit) || 1
+        }
+      });
+    } catch (err) {
+      logger.error('mediaController.apiList error:', err);
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+  async apiUpload(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, message: 'Pilih berkas file yang ingin diunggah.' });
+      }
+
+      const file = req.file;
+      let mediaType = 'image';
+      let fileUrl = null;
+
+      if (file.mimetype.startsWith('image/')) {
+        mediaType = 'image';
+        const result = await processAndSaveImage(file.buffer, 'media', file.originalname, file.mimetype);
+        fileUrl = result.url;
+      } else if (file.mimetype.startsWith('video/')) {
+        mediaType = 'video';
+        const result = await processAndSaveVideo(file.buffer, file.originalname, file.mimetype, 'media');
+        fileUrl = result.url;
+      } else if (file.mimetype === 'application/pdf') {
+        mediaType = 'document';
+        const result = await processAndSaveDocument(file.buffer, file.originalname, file.mimetype, 'media');
+        fileUrl = result.url;
+      } else {
+        return res.status(400).json({ success: false, message: 'Tipe file tidak didukung.' });
+      }
+
+      const newId = await mediaModel.create({
+        filename: file.originalname,
+        file_url: fileUrl,
+        mime_type: file.mimetype,
+        file_size: file.size,
+        media_type: mediaType,
+        created_by: req.user?.id || null
+      });
+
+      const newMedia = await mediaModel.findById(newId);
+      res.json({ success: true, data: newMedia });
+    } catch (err) {
+      logger.error('mediaController.apiUpload error:', err);
+      res.status(500).json({ success: false, message: 'Gagal mengunggah media: ' + err.message });
+    }
+  },
+
+  async apiCheckUsage(req, res) {
+    try {
+      const fileUrl = req.body?.file_url || req.query?.file_url;
+      if (!fileUrl) {
+        return res.json({ inUse: false, usages: [] });
+      }
+      const usages = await mediaModel.checkUsage(fileUrl);
+      res.json({ inUse: usages.length > 0, usages });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
@@ -160,3 +256,4 @@ export const mediaController = {
 };
 
 export default mediaController;
+

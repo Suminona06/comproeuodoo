@@ -52,12 +52,17 @@ router.post('/brands/:id', requireAuth, roleMiddleware(['superadmin', 'admin']),
 router.post('/brands/:id/toggle', requireAuth, roleMiddleware(['superadmin', 'admin']), brandController.toggleStatus);
 router.post('/brands/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), brandController.destroy);
 
-// T-45: Media Library (Editor, Admin, Superadmin; Deletion Admin+)
+// T-45 & T-87: Media Library & Universal Picker (Editor, Admin, Superadmin; Deletion Admin+)
 router.get('/media', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.index);
 router.get('/media/api', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.apiList);
+router.get('/api/media', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.apiList);
+router.post('/api/media/upload', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('file'), mediaController.apiUpload);
+router.post('/api/media/check-usage', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.apiCheckUsage);
 router.post('/media/upload', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('file'), mediaController.upload);
 router.post('/media/youtube', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.addYoutube);
 router.post('/media/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), mediaController.destroy);
+router.delete('/api/media/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), mediaController.destroy);
+
 
 // T-46: Product Categories & Products (Superadmin & Admin)
 router.get('/product-categories', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.index);

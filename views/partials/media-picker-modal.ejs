@@ -1,0 +1,96 @@
+<!-- Universal Media Picker Modal (T-87) -->
+<div id="universalMediaPickerModal" class="admin-modal-backdrop media-picker-modal" aria-hidden="true" role="dialog" aria-labelledby="mediaPickerTitle">
+  <div class="admin-modal-box">
+    <!-- Header -->
+    <div class="media-picker-modal-header">
+      <div>
+        <h3 id="mediaPickerTitle" style="font-size: 1.15rem; font-weight: 700; color: var(--secondary, #0d2040); margin: 0;">Pilih Media dari Library</h3>
+        <p style="font-size: 12.5px; color: #64748b; margin: 3px 0 0;">Pilih aset visual yang sudah tersedia atau unggah berkas baru secara langsung.</p>
+      </div>
+      <button type="button" class="admin-modal-close" id="btnCloseMediaPicker" aria-label="Tutup Modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="media-picker-tabs" role="tablist">
+      <button type="button" class="media-picker-tab-btn active" data-tab="library" data-type="all">Semua Media</button>
+      <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="image">Gambar</button>
+      <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="video">Video</button>
+      <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="youtube">YouTube</button>
+      <button type="button" class="media-picker-tab-btn" data-tab="upload" style="margin-left: auto; color: var(--primary, #0055b8);">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: -2px; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Unggah Berkas Baru
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="media-picker-body">
+      <!-- Tab 1: Library View -->
+      <div id="mediaPickerTabLibrary">
+        <div style="display: flex; gap: 10px; margin-bottom: 1rem; align-items: center;">
+          <div style="position: relative; flex: 1;">
+            <input type="text" id="mediaPickerSearch" class="form-input" placeholder="Cari nama berkas atau URL..." style="padding-left: 36px; height: 38px; font-size: 13px;">
+            <svg width="16" height="16" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24" style="position: absolute; left: 12px; top: 11px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <button type="button" class="btn btn-sm btn-secondary" id="btnRefreshMediaPicker" title="Muat Ulang">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          </button>
+        </div>
+
+        <div id="mediaPickerLoading" style="display: none; text-align: center; padding: 3rem 0; color: #64748b;">
+          <div class="spinner" style="margin: 0 auto 0.75rem;"></div>
+          <span>Memuat aset media...</span>
+        </div>
+
+        <div id="mediaPickerGrid" class="media-picker-grid">
+          <!-- Cards rendered dynamically via JS -->
+        </div>
+
+        <div id="mediaPickerEmpty" style="display: none; text-align: center; padding: 3.5rem 1rem; color: #94a3b8;">
+          <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin: 0 auto 0.75rem;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <div style="font-weight: 600; font-size: 14px; color: #475569;">Tidak ada berkas media ditemukan</div>
+          <p style="font-size: 12.5px; margin-top: 4px;">Coba ubah kata kunci pencarian atau unggah berkas baru.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div id="mediaPickerPagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border-main, #e2e8f0);">
+          <span id="mediaPickerPageInfo" style="font-size: 12px; color: #64748b;">Halaman 1 dari 1</span>
+          <div style="display: flex; gap: 6px;">
+            <button type="button" class="btn btn-sm btn-ghost" id="btnMediaPickerPrev">Sebelumnya</button>
+            <button type="button" class="btn btn-sm btn-ghost" id="btnMediaPickerNext">Berikutnya</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Upload Direct -->
+      <div id="mediaPickerTabUpload" style="display: none;">
+        <div style="border: 2px dashed var(--primary, #0055b8); background: #f8fafc; border-radius: var(--r-xl, 12px); padding: 3rem 1.5rem; text-align: center; cursor: pointer;" id="pickerUploadDropzone">
+          <svg width="48" height="48" fill="none" stroke="var(--primary, #0055b8)" stroke-width="1.8" viewBox="0 0 24 24" style="margin: 0 auto 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <div style="font-weight: 700; font-size: 15px; color: var(--secondary, #0d2040); margin-bottom: 4px;">Pilih Berkas atau Tarik ke Sini</div>
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 1.25rem;">Mendukung format gambar (JPG, PNG, WebP, SVG), video (MP4, WebM), atau PDF (Maks 15MB).</p>
+          <input type="file" id="pickerFileInput" style="display: none;" accept="image/*,video/*,application/pdf">
+          <button type="button" class="btn btn-primary btn-sm" id="btnTriggerBrowseFile">Pilih dari Komputer</button>
+        </div>
+
+        <div id="pickerUploadProgress" style="display: none; margin-top: 1.5rem; text-align: center;">
+          <div style="font-size: 13px; font-weight: 600; color: var(--primary, #0055b8); margin-bottom: 6px;" id="pickerUploadProgressText">Mengunggah &amp; mengoptimasi berkas...</div>
+          <div style="background: #e2e8f0; border-radius: 9999px; height: 6px; overflow: hidden; width: 100%;">
+            <div id="pickerUploadProgressBar" style="width: 30%; height: 100%; background: var(--primary, #0055b8); transition: width 200ms ease;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="media-picker-footer">
+      <div class="media-picker-selected-info" id="pickerSelectedInfo">
+        <span style="color: #94a3b8; font-style: italic;">Belum ada media dipilih</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnCancelMediaPicker">Batal</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnConfirmSelectMedia" disabled>Gunakan Media Ini</button>
+      </div>
+    </div>
+  </div>
+</div>

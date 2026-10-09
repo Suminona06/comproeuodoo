@@ -140,7 +140,7 @@
                 </td>
                 <td style="text-align: right;">
                   <div class="table-actions" style="justify-content: flex-end;">
-                    <form action="/admin/capabilities/<%= cap.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Hapus data kapabilitas mesin ini?');" style="display: inline; margin: 0;">
+                    <form action="/admin/capabilities/<%= cap.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus data kapabilitas mesin ini?" data-confirm-title="Hapus Kapabilitas Mesin" style="display: inline; margin: 0;">
                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button type="submit" class="btn-action btn-action-delete" title="Hapus Mesin">
                         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>

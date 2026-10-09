@@ -1881,3 +1881,243 @@ body.sidebar-open .admin-backdrop {
     justify-content: flex-end;
   }
 }
+
+/* SweetAlert2 Brand Styling (DESIGN.md Pacific Corporate) */
+.swal2-container {
+  z-index: 100000 !important;
+}
+.swal2-popup.swal2-custom-popup {
+  font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
+  border-radius: var(--r-xl, 12px) !important;
+  padding: 1.75rem 1.5rem !important;
+  box-shadow: 0 20px 25px -5px rgba(13, 32, 64, 0.15), 0 8px 10px -6px rgba(13, 32, 64, 0.1) !important;
+  border: 1px solid var(--border-main, #e2e8f0) !important;
+}
+.swal2-title.swal2-custom-title {
+  font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: var(--secondary, #0d2040) !important;
+  margin-bottom: 0.5rem !important;
+}
+.swal2-html-container {
+  font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
+  font-size: 0.9rem !important;
+  color: #475569 !important;
+  line-height: 1.5 !important;
+}
+.swal2-actions {
+  gap: 0.75rem !important;
+  margin-top: 1.5rem !important;
+}
+.swal2-styled.swal2-custom-confirm-btn {
+  font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  padding: 0.625rem 1.25rem !important;
+  border-radius: var(--r-md, 6px) !important;
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px 0 rgba(220, 38, 38, 0.2) !important;
+}
+.swal2-styled.swal2-custom-cancel-btn {
+  font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  padding: 0.625rem 1.25rem !important;
+  border-radius: var(--r-md, 6px) !important;
+  background-color: var(--secondary, #0d2040) !important;
+  color: #ffffff !important;
+}
+.swal2-toast-custom {
+  font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
+  border-radius: var(--r-md, 6px) !important;
+  box-shadow: 0 10px 15px -3px rgba(13, 32, 64, 0.12), 0 4px 6px -4px rgba(13, 32, 64, 0.08) !important;
+  border: 1px solid var(--border-main, #e2e8f0) !important;
+}
+.admin-alerts-container {
+  display: none !important;
+}
+
+/* Media Picker Field Component */
+.media-picker-component {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.media-picker-preview-box {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  height: 180px;
+  border-radius: var(--r-lg, 8px);
+  border: 1.5px dashed var(--border-main, #cbd5e1);
+  background: #f8fafc;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--ease, 200ms ease);
+}
+.media-picker-preview-box:hover {
+  border-color: var(--primary, #0055b8);
+}
+.media-picker-preview-box img,
+.media-picker-preview-box video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #0f172a;
+}
+.media-picker-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #94a3b8;
+  font-size: 13px;
+  text-align: center;
+  padding: 1rem;
+}
+.media-picker-empty svg {
+  stroke: #94a3b8;
+}
+.media-picker-ctrls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Media Picker Modal */
+.media-picker-modal .admin-modal-box {
+  max-width: 900px;
+  width: 95vw;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: var(--r-xl, 12px);
+  overflow: hidden;
+}
+.media-picker-modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-main, #e2e8f0);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.media-picker-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-main, #e2e8f0);
+  background: #f8fafc;
+  padding: 0 1.5rem;
+  gap: 1rem;
+}
+.media-picker-tab-btn {
+  padding: 0.75rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+.media-picker-tab-btn:hover {
+  color: var(--primary, #0055b8);
+}
+.media-picker-tab-btn.active {
+  color: var(--primary, #0055b8);
+  border-bottom-color: var(--primary, #0055b8);
+}
+.media-picker-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 380px;
+}
+.media-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+.media-picker-card {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--r-md, 6px);
+  border: 2px solid var(--border-main, #e2e8f0);
+  overflow: hidden;
+  background: #f1f5f9;
+  cursor: pointer;
+  transition: all 150ms ease;
+  display: flex;
+  flex-direction: column;
+}
+.media-picker-card:hover {
+  border-color: #93c5fd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+.media-picker-card.selected {
+  border-color: var(--primary, #0055b8);
+  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.2);
+}
+.media-picker-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  background: var(--primary, #0055b8);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+.media-picker-card-thumb {
+  flex: 1;
+  width: 100%;
+  object-fit: cover;
+}
+.media-picker-card-name {
+  font-size: 11px;
+  padding: 4px 6px;
+  background: #ffffff;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-top: 1px solid var(--border-main, #e2e8f0);
+}
+.media-picker-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-main, #e2e8f0);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.media-picker-selected-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #475569;
+  overflow: hidden;
+}
+.media-picker-selected-thumb {
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #cbd5e1;
+}

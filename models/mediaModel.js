@@ -134,7 +134,42 @@ export const mediaModel = {
       document: parseInt(row.doc_count || 0, 10),
       youtube: parseInt(row.youtube_count || 0, 10)
     };
+  },
+
+  async checkUsage(fileUrl) {
+    if (!fileUrl) return [];
+    try {
+      const sql = `
+        SELECT 'Banner' as source, title_id as label FROM banners WHERE file_url = ? OR poster_url = ?
+        UNION ALL
+        SELECT 'Hero Banner' as source, page_key as label FROM page_hero_banners WHERE image_url = ?
+        UNION ALL
+        SELECT 'Katalog Produk' as source, name_id as label FROM products WHERE image_url = ?
+        UNION ALL
+        SELECT 'Artikel Berita' as source, title_id as label FROM posts WHERE cover_image = ?
+        UNION ALL
+        SELECT 'Merek' as source, name as label FROM brands WHERE logo_url = ?
+        UNION ALL
+        SELECT 'Kapabilitas' as source, title_id as label FROM capabilities WHERE image_url = ?
+        UNION ALL
+        SELECT 'Pengaturan' as source, 'Logo / Favicon / Dokumentasi' as label FROM settings
+        WHERE site_logo_header = ? OR site_logo_footer = ? OR site_favicon = ? OR about_image_url = ?
+      `;
+      const params = [
+        fileUrl, fileUrl,
+        fileUrl,
+        fileUrl,
+        fileUrl,
+        fileUrl,
+        fileUrl,
+        fileUrl, fileUrl, fileUrl, fileUrl
+      ];
+      return await query(sql, params);
+    } catch (err) {
+      return [];
+    }
   }
 };
 
 export default mediaModel;
+

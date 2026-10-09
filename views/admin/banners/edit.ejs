@@ -3,17 +3,17 @@
 <div class="content-header">
   <div class="content-title-text">
     <h1>Edit Banner Hero: <%= banner.title_id %></h1>
-    <p>Perbarui judul headline, caption, tautan CTA, atau ganti file media.</p>
+    <p>Perbarui judul headline, caption, tautan CTA, atau ganti file media/YouTube.</p>
   </div>
   <div class="header-actions">
     <a href="/admin/banners" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
   </div>
 </div>
 
-<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+<div class="form-card" style="max-width: 740px; margin: 0 auto;">
   <div class="form-card-title">Perbarui Banner Hero</div>
 
-  <form action="/admin/banners/<%= banner.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+  <form action="/admin/banners/<%= banner.id %>?_csrf=<%= csrfToken %>" method="POST">
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="title_id">Judul Headline (Bahasa Indonesia) *</label>
@@ -36,45 +36,78 @@
       </div>
     </div>
 
+    <!-- Pilihan Sumber Media Multi-Sumber (B.2) -->
     <div class="form-group">
-      <label class="form-label" for="media_type">Tipe Media *</label>
-      <select id="media_type" name="media_type" class="form-select">
-        <option value="image" <%= banner.media_type === 'image' ? 'selected' : '' %>>Gambar Beresolusi Tinggi (WebP)</option>
-        <option value="video" <%= banner.media_type === 'video' ? 'selected' : '' %>>Video Background (MP4 / WebM)</option>
+      <label class="form-label" for="media_type">Tipe Sumber Media Latar Belakang *</label>
+      <select id="media_type" name="media_type" class="form-select" onchange="toggleBannerSource(this.value)">
+        <option value="image" <%= banner.media_type === 'image' ? 'selected' : '' %>>Gambar Beresolusi Tinggi (WebP / JPG / PNG)</option>
+        <option value="video" <%= banner.media_type === 'video' ? 'selected' : '' %>>Berkas Video Lokal (MP4 / WebM)</option>
+        <option value="youtube" <%= banner.media_type === 'youtube' ? 'selected' : '' %>>Streaming Video YouTube (URL Embed Resmi)</option>
       </select>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="media_file">Ganti Berkas Media (Opsional)</label>
-      <div class="custom-file-upload" data-initial-preview="<%= (banner.media_type !== 'video' && banner.image_url) ? banner.image_url : '' %>">
-        <input type="file" id="media_file" name="media_file" accept="image/*,video/mp4,video/webm">
-        <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret berkas media">
-          <div class="file-upload-preview">
-            <img src="<%= (banner.media_type !== 'video' && banner.image_url) ? banner.image_url : '' %>" alt="Pratinjau" style="display: none;">
-            <div class="preview-placeholder-icon">
-              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+    <!-- Media Library Picker Input -->
+    <div class="form-group" id="groupMediaPicker" style="<%= banner.media_type === 'youtube' ? 'display: none;' : '' %>">
+      <label class="form-label" id="labelMediaPicker">Berkas Media (Gambar / Video)</label>
+      <div class="media-picker-component">
+        <input type="hidden" id="banner_file_url" name="file_url" value="<%= banner.media_type !== 'youtube' ? (banner.file_url || banner.image_url || '') : '' %>">
+        <div class="media-picker-preview-box">
+          <% if (banner.media_type === 'image' && (banner.file_url || banner.image_url)) { %>
+            <img src="<%= banner.file_url || banner.image_url %>" alt="Pratinjau" style="display: block;">
+            <video src="" controls style="display: none;"></video>
+            <div class="media-picker-empty" style="display: none;"></div>
+          <% } else if (banner.media_type === 'video' && (banner.file_url || banner.video_url)) { %>
+            <img src="" alt="Pratinjau" style="display: none;">
+            <video src="<%= banner.file_url || banner.video_url %>" controls style="display: block;"></video>
+            <div class="media-picker-empty" style="display: none;"></div>
+          <% } else { %>
+            <img src="" alt="Pratinjau" style="display: none;">
+            <video src="" controls style="display: none;"></video>
+            <div class="media-picker-empty">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Belum ada aset media dipilih</span>
             </div>
-          </div>
-          <div class="file-upload-content">
-            <div class="file-upload-header">
-              <span class="file-upload-btn-pill">
-                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <span>Pilih Berkas</span>
-              </span>
-              <span class="file-upload-label">atau seret dan lepas ke sini</span>
-            </div>
-            <div class="file-upload-filename"><%= (banner.image_url || banner.video_url) ? 'Media aktif tersimpan' : 'Belum ada berkas dipilih' %></div>
-            <div class="file-upload-meta">
-              <% if (banner.media_type === 'video' && banner.video_url) { %>
-                Format aktif: Video MP4. Unggah file baru untuk menggantinya.
-              <% } else { %>
-                Gambar (JPG, PNG, WebP) atau Video (MP4, WebM). Maks 25MB.
-              <% } %>
-            </div>
-          </div>
-          <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <% } %>
+        </div>
+        <div class="media-picker-ctrls">
+          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="banner_file_url" data-picker-type="<%= banner.media_type === 'video' ? 'video' : 'image' %>" id="btnBannerOpenPicker">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Pilih dari Media Library
           </button>
+          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= (banner.file_url || banner.image_url) ? '' : 'display: none;' %>">Hapus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube Link Input -->
+    <div class="form-group" id="groupYouTubeInput" style="<%= banner.media_type === 'youtube' ? '' : 'display: none;' %>">
+      <label class="form-label" for="youtube_url">Tautan / URL Video YouTube</label>
+      <input type="text" id="youtube_url" name="youtube_url" class="form-input" value="<%= banner.media_type === 'youtube' ? (banner.file_url?.length === 11 ? 'https://www.youtube.com/watch?v=' + banner.file_url : banner.file_url) : '' %>" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+      <span style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">Mendukung format tautan YouTube reguler, share youtu.be, shorts, atau ID video 11 karakter.</span>
+    </div>
+
+    <!-- Poster Fallback Image Picker (untuk Video & YouTube) -->
+    <div class="form-group" id="groupPosterPicker" style="<%= (banner.media_type === 'video' || banner.media_type === 'youtube') ? '' : 'display: none;' %>">
+      <label class="form-label">Gambar Poster Fallback (Disarankan untuk Tampilan Ponsel / Mobile)</label>
+      <div class="media-picker-component">
+        <input type="hidden" id="banner_poster_url" name="poster_url" value="<%= banner.poster_url || '' %>">
+        <div class="media-picker-preview-box" style="height: 120px; max-width: 240px;">
+          <% if (banner.poster_url) { %>
+            <img src="<%= banner.poster_url %>" alt="Poster Pratinjau" style="display: block;">
+            <div class="media-picker-empty" style="display: none;"></div>
+          <% } else { %>
+            <img src="" alt="Poster Pratinjau" style="display: none;">
+            <div class="media-picker-empty">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span style="font-size: 11.5px;">Belum ada poster dipilih</span>
+            </div>
+          <% } %>
+        </div>
+        <div class="media-picker-ctrls">
+          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="banner_poster_url" data-picker-type="image">
+            Pilih Poster
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= banner.poster_url ? '' : 'display: none;' %>">Hapus</button>
         </div>
       </div>
     </div>
@@ -101,17 +134,42 @@
       </div>
       <div class="form-group" style="justify-content: flex-end;">
         <label class="form-check" style="margin-bottom: 8px;">
-          <input type="checkbox" name="is_active" value="1" <%= banner.is_active ? 'checked' : '' %>>
+          <input type="checkbox" name="is_active" value="1" <%= (banner.is_active === 1 || banner.is_active === true) ? 'checked' : '' %>>
           <span>Aktifkan banner ini dalam slider</span>
         </label>
       </div>
     </div>
 
-    <div class="form-actions-bar">
+    <div class="form-actions">
       <a href="/admin/banners" class="btn btn-secondary">Batal</a>
       <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
     </div>
   </form>
 </div>
+
+<script>
+  function toggleBannerSource(type) {
+    const groupMediaPicker = document.getElementById('groupMediaPicker');
+    const groupYouTube = document.getElementById('groupYouTubeInput');
+    const groupPoster = document.getElementById('groupPosterPicker');
+    const btnPicker = document.getElementById('btnBannerOpenPicker');
+
+    if (type === 'youtube') {
+      groupMediaPicker.style.display = 'none';
+      groupYouTube.style.display = 'block';
+      groupPoster.style.display = 'block';
+    } else if (type === 'video') {
+      groupMediaPicker.style.display = 'block';
+      groupYouTube.style.display = 'none';
+      groupPoster.style.display = 'block';
+      if (btnPicker) btnPicker.setAttribute('data-picker-type', 'video');
+    } else {
+      groupMediaPicker.style.display = 'block';
+      groupYouTube.style.display = 'none';
+      groupPoster.style.display = 'none';
+      if (btnPicker) btnPicker.setAttribute('data-picker-type', 'image');
+    }
+  }
+</script>
 
 <%- include('../../partials/admin-footer') %>

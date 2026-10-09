@@ -87,7 +87,7 @@
               </button>
 
               <% if (['superadmin', 'admin'].includes(user?.role)) { %>
-                <form action="/admin/media/<%= item.id %>/delete?_csrf=<%= csrfToken %>" method="POST" onsubmit="return confirm('Hapus media ini secara permanen?');" style="margin: 0; display: inline-flex;">
+                <form action="/admin/media/<%= item.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus berkas media ini secara permanen?" data-confirm-title="Hapus Media" data-media-url="<%= item.file_url %>" style="margin: 0; display: inline-flex;">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn-action btn-action-delete" title="Hapus Berkas">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
