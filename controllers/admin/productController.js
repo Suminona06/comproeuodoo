@@ -168,6 +168,8 @@ export const productController = {
       let imageUrl = null;
       if (req.file) {
         imageUrl = await processAndSaveWebP(req.file.buffer, 'products');
+      } else if (req.body.image_url) {
+        imageUrl = req.body.image_url.trim();
       }
 
       const technicalSpecs = parseTechnicalSpecs(req.body);
@@ -269,6 +271,8 @@ export const productController = {
           await storage.delete(product.image_url);
         }
         updateData.image_url = await processAndSaveWebP(req.file.buffer, 'products');
+      } else if (req.body.image_url !== undefined) {
+        updateData.image_url = req.body.image_url ? req.body.image_url.trim() : null;
       }
 
       await productModel.update(id, updateData);

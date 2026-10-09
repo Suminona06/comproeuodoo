@@ -99,6 +99,8 @@ export const postController = {
       let imageUrl = null;
       if (req.file) {
         imageUrl = await processAndSaveWebP(req.file.buffer, 'posts', { maxWidth: 1200, maxHeight: 800, quality: 80 });
+      } else if (req.body.image_url) {
+        imageUrl = req.body.image_url.trim();
       }
 
       let cleanSlug = (req.body.slug && req.body.slug.trim()) ? formatSlug(req.body.slug) : formatSlug(title_id);
@@ -263,6 +265,8 @@ export const postController = {
           await storage.delete(post.display_image);
         }
         updateData.image_url = await processAndSaveWebP(req.file.buffer, 'posts', { maxWidth: 1200, maxHeight: 800, quality: 80 });
+      } else if (req.body.image_url !== undefined) {
+        updateData.image_url = req.body.image_url ? req.body.image_url.trim() : null;
       }
 
       await postModel.update(id, updateData);

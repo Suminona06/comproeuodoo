@@ -17,90 +17,63 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
       <!-- Favicon -->
       <div class="form-group" style="padding: 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px;">
-        <label class="form-label" for="favicon_file" style="font-weight: 600;">Favicon Situs (.ico / .png / .svg)</label>
-        <div class="custom-file-upload" data-initial-preview="<%= settings.site_favicon || '/favicon.ico' %>">
-          <input type="file" id="favicon_file" name="favicon_file" accept=".ico,image/png,image/svg+xml">
-          <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret favicon">
-            <div class="file-upload-preview">
-              <img src="<%= settings.site_favicon || '/favicon.ico' %>" alt="Favicon" style="display: none; width: 28px; height: 28px; object-fit: contain;">
-              <div class="preview-placeholder-icon">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              </div>
+        <label class="form-label" style="font-weight: 600;">Favicon Situs (.ico / .png / .svg)</label>
+        <div class="media-picker-component">
+          <input type="hidden" id="setting_site_favicon" name="site_favicon" value="<%= settings.site_favicon || '/favicon.ico' %>">
+          <div class="media-picker-preview-box" style="height: 100px;">
+            <img src="<%= settings.site_favicon || '/favicon.ico' %>" alt="Favicon" style="<%= settings.site_favicon ? 'display: block; width: 32px; height: 32px; object-fit: contain;' : 'display: none;' %>">
+            <div class="media-picker-empty" style="<%= settings.site_favicon ? 'display: none;' : '' %>">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Belum ada favicon</span>
             </div>
-            <div class="file-upload-content">
-              <div class="file-upload-header">
-                <span class="file-upload-btn-pill">
-                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                  <span>Pilih Berkas</span>
-                </span>
-                <span class="file-upload-label">atau seret ke sini</span>
-              </div>
-              <div class="file-upload-filename">Favicon aktif tersimpan</div>
-              <div class="file-upload-meta">.ico, .png, .svg (optimal 32x32 / 64x64 px).</div>
-            </div>
-            <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
-              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </div>
+          <div class="media-picker-ctrls">
+            <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="setting_site_favicon" data-picker-type="image">
+              Pilih Favicon
             </button>
+            <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= settings.site_favicon ? '' : 'display: none;' %>">Hapus</button>
           </div>
         </div>
       </div>
 
       <!-- Logo Header -->
       <div class="form-group" style="padding: 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px;">
-        <label class="form-label" for="logo_header_file" style="font-weight: 600;">Logo Header (Navbar)</label>
-        <div class="custom-file-upload" data-initial-preview="<%= settings.site_logo_header || '' %>">
-          <input type="file" id="logo_header_file" name="logo_header_file" accept="image/png,image/webp,image/svg+xml">
-          <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret logo navbar">
-            <div class="file-upload-preview">
-              <img src="<%= settings.site_logo_header || '' %>" alt="Logo Header" style="display: none; object-fit: contain;">
-              <div class="preview-placeholder-icon">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              </div>
+        <label class="form-label" style="font-weight: 600;">Logo Header (Navbar)</label>
+        <div class="media-picker-component">
+          <input type="hidden" id="setting_site_logo_header" name="site_logo_header" value="<%= settings.site_logo_header || '' %>">
+          <div class="media-picker-preview-box" style="height: 100px;">
+            <img src="<%= settings.site_logo_header || '' %>" alt="Logo Header" style="<%= settings.site_logo_header ? 'display: block; max-height: 60px; object-fit: contain;' : 'display: none;' %>">
+            <div class="media-picker-empty" style="<%= settings.site_logo_header ? 'display: none;' : '' %>">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Belum ada logo navbar</span>
             </div>
-            <div class="file-upload-content">
-              <div class="file-upload-header">
-                <span class="file-upload-btn-pill">
-                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                  <span>Pilih Berkas</span>
-                </span>
-                <span class="file-upload-label">atau seret ke sini</span>
-              </div>
-              <div class="file-upload-filename"><%= settings.site_logo_header ? 'Logo aktif tersimpan' : 'Belum ada berkas dipilih' %></div>
-              <div class="file-upload-meta">PNG transparan, WebP, SVG. Tampil di navbar.</div>
-            </div>
-            <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
-              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </div>
+          <div class="media-picker-ctrls">
+            <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="setting_site_logo_header" data-picker-type="image">
+              Pilih Logo Header
             </button>
+            <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= settings.site_logo_header ? '' : 'display: none;' %>">Hapus</button>
           </div>
         </div>
       </div>
 
       <!-- Logo Footer -->
       <div class="form-group" style="padding: 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px;">
-        <label class="form-label" for="logo_footer_file" style="font-weight: 600;">Logo Footer (Latar Gelap)</label>
-        <div class="custom-file-upload" data-initial-preview="<%= settings.site_logo_footer || '' %>">
-          <input type="file" id="logo_footer_file" name="logo_footer_file" accept="image/png,image/webp,image/svg+xml">
-          <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret logo footer">
-            <div class="file-upload-preview" style="background: #0a192f; border-color: #1e293b;">
-              <img src="<%= settings.site_logo_footer || '' %>" alt="Logo Footer" style="display: none; object-fit: contain;">
-              <div class="preview-placeholder-icon" style="color: #94a3b8;">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              </div>
+        <label class="form-label" style="font-weight: 600;">Logo Footer (Latar Gelap)</label>
+        <div class="media-picker-component">
+          <input type="hidden" id="setting_site_logo_footer" name="site_logo_footer" value="<%= settings.site_logo_footer || '' %>">
+          <div class="media-picker-preview-box" style="height: 100px; background: #0a192f; border-color: #1e293b;">
+            <img src="<%= settings.site_logo_footer || '' %>" alt="Logo Footer" style="<%= settings.site_logo_footer ? 'display: block; max-height: 60px; object-fit: contain;' : 'display: none;' %>">
+            <div class="media-picker-empty" style="<%= settings.site_logo_footer ? 'display: none;' : 'display: flex;' %> color: #94a3b8;">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span style="color: #94a3b8;">Belum ada logo footer</span>
             </div>
-            <div class="file-upload-content">
-              <div class="file-upload-header">
-                <span class="file-upload-btn-pill">
-                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                  <span>Pilih Berkas</span>
-                </span>
-                <span class="file-upload-label">atau seret ke sini</span>
-              </div>
-              <div class="file-upload-filename"><%= settings.site_logo_footer ? 'Logo aktif tersimpan' : 'Belum ada berkas dipilih' %></div>
-              <div class="file-upload-meta">PNG transparan, WebP, SVG (latar gelap).</div>
-            </div>
-            <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
-              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </div>
+          <div class="media-picker-ctrls">
+            <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="setting_site_logo_footer" data-picker-type="image">
+              Pilih Logo Footer
             </button>
+            <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= settings.site_logo_footer ? '' : 'display: none;' %>">Hapus</button>
           </div>
         </div>
       </div>

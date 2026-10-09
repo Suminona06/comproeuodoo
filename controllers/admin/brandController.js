@@ -53,6 +53,8 @@ export const brandController = {
       let logoUrl = null;
       if (req.file) {
         logoUrl = await processAndSaveWebP(req.file.buffer, 'brands');
+      } else if (req.body.logo_url) {
+        logoUrl = req.body.logo_url.trim();
       }
 
       await brandModel.create({
@@ -120,6 +122,8 @@ export const brandController = {
           await storage.delete(brand.logo_url);
         }
         updateData.logo_url = await processAndSaveWebP(req.file.buffer, 'brands');
+      } else if (req.body.logo_url !== undefined) {
+        updateData.logo_url = req.body.logo_url ? req.body.logo_url.trim() : null;
       }
 
       await brandModel.update(id, updateData);
