@@ -11,7 +11,7 @@ export const homeController = {
         bannerModel.findAll(true),
         productModel.findAll({ isFeatured: true, status: 'published', limit: 4 }),
         brandModel.findAll({ activeOnly: true }),
-        postModel.findAll({ status: 'published', limit: 3 })
+        postModel.findAll({ status: 'published', limit: 2 })
       ]);
 
       // Fallback if featured products are less than 4

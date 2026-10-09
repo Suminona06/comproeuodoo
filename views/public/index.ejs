@@ -470,38 +470,62 @@
   <section class="sec-news" id="berita">
     <div class="container">
       <div class="news-header reveal">
-        <div>
-          <h2><%= currentLang === 'en' ? 'Industry Insights & Company Updates' : 'Wawasan & Berita Industri' %></h2>
-          <p style="color: var(--text-variant); margin-top: 6px;">
-            <%= currentLang === 'en' ? 'Latest publications on plastic film technology and sustainable packaging.' : 'Publikasi terkini seputar inovasi manufaktur plastik ramah lingkungan dan regulasi industri.' %>
-          </p>
-        </div>
-        <a href="/news" class="btn btn-primary">
-          <span><%= currentLang === 'en' ? 'View All News' : 'Lihat Semua Berita' %></span>
-          <span aria-hidden="true">&rarr;</span>
-        </a>
+        <h2><%= currentLang === 'en' ? 'Latest News' : 'Informasi Terbaru' %></h2>
+        <a href="/news" class="btn-secondary"><%= currentLang === 'en' ? 'View All News' : 'Lihat Semua Berita' %></a>
       </div>
 
-      <div class="news-grid">
-        <% if (latestPosts && latestPosts.length > 0) { %>
-          <% latestPosts.forEach((post, i) => { 
-            const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
-            const postImg = post.display_image || post.cover_image || `/images/news/news-${i + 1}.webp`;
-            const dateStr = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLang === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '2026';
-          %>
-            <article class="news-card reveal">
-              <a href="/news/<%= post.slug || post.id %>" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; height: 100%; justify-content: flex-end;">
-                <div class="bg">
-                  <img src="<%= postImg %>" alt="<%= postTitle %>" loading="lazy">
-                </div>
-                <div class="ov"></div>
-                <div class="ct">
-                  <div class="news-date"><%= dateStr %> &bull; <%= post.category_name_id || (post.type === 'pers' ? 'Siaran Pers' : 'Berita') %></div>
-                  <h3 class="news-title"><%= postTitle %></h3>
-                </div>
-              </a>
-            </article>
-          <% }); %>
+      <div class="news-grid reveal">
+        <% 
+          const displayPosts = (typeof latestPosts !== 'undefined' && Array.isArray(latestPosts) && latestPosts.length > 0)
+            ? latestPosts.slice(0, 2)
+            : [];
+          if (displayPosts.length > 0) {
+            displayPosts.forEach((post, i) => { 
+              const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
+              const fallbackImg = i === 0 ? '/images/post-eco-community.jpg' : '/images/post-school-recycling.jpg';
+              const postImg = (post.display_image || post.cover_image) && !(post.display_image || post.cover_image).includes('hero-factory-precision')
+                ? (post.display_image || post.cover_image)
+                : fallbackImg;
+              
+              let dateStr = '2026';
+              if (post.published_at) {
+                const d = new Date(post.published_at);
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = d.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'id-ID', { month: 'short' }).toUpperCase();
+                const year = d.getFullYear();
+                dateStr = `${day} ${month} ${year}`;
+              }
+        %>
+          <a href="/news/<%= post.slug || post.id %>" class="news-card">
+            <div class="bg">
+              <img src="<%= postImg %>" alt="<%= postTitle %>" loading="lazy" onerror="this.onerror=null; this.src='<%= fallbackImg %>';">
+            </div>
+            <div class="ov"></div>
+            <div class="ct">
+              <div class="news-date"><%= dateStr %></div>
+              <div class="news-title"><%= postTitle %></div>
+            </div>
+          </a>
+        <% 
+            });
+          } else { 
+        %>
+          <a href="/news" class="news-card">
+            <div class="bg"><img src="/images/post-eco-community.jpg" alt="Berita lingkungan" loading="lazy"></div>
+            <div class="ov"></div>
+            <div class="ct">
+              <div class="news-date">25 SEP 2026</div>
+              <div class="news-title"><%= currentLang === 'en' ? '[Main news title from CMS will appear here]' : '[Judul berita utama dari CMS akan tampil di sini]' %></div>
+            </div>
+          </a>
+          <a href="/news" class="news-card">
+            <div class="bg"><img src="/images/post-school-recycling.jpg" alt="Berita daur ulang" loading="lazy"></div>
+            <div class="ov"></div>
+            <div class="ct">
+              <div class="news-date">18 SEP 2026</div>
+              <div class="news-title"><%= currentLang === 'en' ? '[Second news title from CMS]' : '[Judul berita kedua dari CMS]' %></div>
+            </div>
+          </a>
         <% } %>
       </div>
     </div>
