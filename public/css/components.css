@@ -1108,25 +1108,48 @@
   min-height: 44px;
   transition: background var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               border-color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
+              color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               transform var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               box-shadow var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
   text-decoration: none;
 }
 
-.btn-see-more:hover {
+.btn-see-more:hover,
+.btn-see-more:hover span,
+.btn-see-more:focus-visible,
+.btn-see-more:focus-visible span {
+  color: #ffffff;
   background: var(--primary-hover, #1d4ed8);
   border-color: var(--primary-hover, #1d4ed8);
   transform: translateY(-2px);
   box-shadow: var(--shadow-2, 0 10px 15px -3px rgba(10, 25, 47, 0.08));
 }
 
+.btn-see-more:active,
+.btn-see-more:active span {
+  color: #ffffff;
+  background: var(--color-primary-dark, #003f8b);
+  border-color: var(--color-primary-dark, #003f8b);
+  transform: translateY(0);
+}
+
+.btn-see-more:focus-visible {
+  outline: 2px solid var(--color-sky-tint, #38bdf8);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.25);
+}
+
 .btn-see-more svg {
+  color: #ffffff;
+  stroke: currentColor;
   transition: transform var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.btn-see-more:hover svg {
+.btn-see-more:hover svg,
+.btn-see-more:focus-visible svg {
   transform: translateX(4px);
 }
+
 
 /* ═══ HERO SECTION & SLIDER CAROUSEL ═══ */
 .hero {

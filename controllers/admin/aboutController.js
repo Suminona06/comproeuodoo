@@ -1,5 +1,6 @@
 import aboutModel from '../../models/aboutModel.js';
 import logger from '../../utils/logger.js';
+import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 
 export const aboutController = {
   /**
@@ -112,7 +113,7 @@ export const aboutController = {
       };
 
       if (req.file) {
-        updatePayload.image_url = `/uploads/${req.file.filename}`;
+        updatePayload.image_url = await processAndSaveWebP(req.file.buffer, 'pages', { maxWidth: 1920, maxHeight: 1080 });
       }
 
       await aboutModel.updateAboutData(updatePayload);
