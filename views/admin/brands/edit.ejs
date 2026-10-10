@@ -26,30 +26,22 @@
     </div>
 
     <div class="form-group">
-      <label class="form-label" for="logo_file">Logo Merek</label>
-      <div class="custom-file-upload" data-initial-preview="<%= brand.logo_url || '' %>">
-        <input type="file" id="logo_file" name="logo_file" accept="image/*">
-        <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret logo merek">
-          <div class="file-upload-preview">
-            <img src="<%= brand.logo_url || '' %>" alt="Pratinjau Logo" style="display: none;">
-            <div class="preview-placeholder-icon">
-              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            </div>
+      <label class="form-label">Logo Merek (Media Library)</label>
+      <div class="media-picker-component">
+        <input type="hidden" id="brand_logo_url" name="logo_url" value="<%= brand.logo_url || '' %>">
+        <div class="media-picker-preview-box" style="height: 120px;">
+          <img src="<%= brand.logo_url || '' %>" alt="Pratinjau Logo" style="<%= brand.logo_url ? 'display: block; max-height: 80px; object-fit: contain;' : 'display: none;' %>">
+          <div class="media-picker-empty" style="<%= brand.logo_url ? 'display: none;' : '' %>">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Belum ada logo dipilih</span>
           </div>
-          <div class="file-upload-content">
-            <div class="file-upload-header">
-              <span class="file-upload-btn-pill">
-                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <span>Pilih Berkas</span>
-              </span>
-              <span class="file-upload-label">atau seret dan lepas ke sini</span>
-            </div>
-            <div class="file-upload-filename"><%= brand.logo_url ? 'Logo aktif tersimpan' : 'Belum ada berkas dipilih' %></div>
-            <div class="file-upload-meta">PNG, JPG, WebP. Maks 5MB (otomatis dikompresi ke WebP 400x400px).</div>
-          </div>
-          <button type="button" class="file-upload-clear-btn" title="Hapus berkas" style="display: none;">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="media-picker-ctrls">
+          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="brand_logo_url" data-picker-type="image">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Pilih dari Media Library
           </button>
+          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= brand.logo_url ? '' : 'display: none;' %>">Hapus</button>
         </div>
       </div>
     </div>

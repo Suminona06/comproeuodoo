@@ -38,6 +38,8 @@ export const capabilityController = {
       let imageUrl = null;
       if (req.file) {
         imageUrl = await processAndSaveWebP(req.file.buffer, 'products', { maxWidth: 1200, maxHeight: 800, quality: 80 });
+      } else if (req.body.image_url) {
+        imageUrl = req.body.image_url.trim();
       }
 
       await capabilityModel.create({
@@ -64,7 +66,7 @@ export const capabilityController = {
     try {
       const { title_id, title_en, machine_type, capacity, description_id, description_en, sort_order, is_active } = req.body;
 
-      await capabilityModel.update(id, {
+      const updateData = {
         title_id,
         title_en: title_en || title_id,
         machine_type,
@@ -73,7 +75,15 @@ export const capabilityController = {
         description_en,
         sort_order: parseInt(sort_order || '0', 10),
         is_active: is_active === '0' ? 0 : 1
-      });
+      };
+
+      if (req.file) {
+        updateData.image_url = await processAndSaveWebP(req.file.buffer, 'products', { maxWidth: 1200, maxHeight: 800, quality: 80 });
+      } else if (req.body.image_url !== undefined) {
+        updateData.image_url = req.body.image_url ? req.body.image_url.trim() : null;
+      }
+
+      await capabilityModel.update(id, updateData);
 
       return res.redirect('/admin/capabilities?success=Data+kapabilitas+berhasil+diperbarui.');
     } catch (err) {

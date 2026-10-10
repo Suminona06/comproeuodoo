@@ -2605,6 +2605,479 @@
   .hero-explore-indicator {
     display: none;
   }
+
+  .sec-intro,
+  .sec-products,
+  .sec-pillars,
+  .sec-evidence,
+  .sec-brands,
+  .sec-news {
+    padding: 60px 0;
+  }
+  .sec-cta {
+    padding: 56px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: max(84svh, 560px);
+  }
+  .hero-slider, .hero-slides-wrapper, .hero-slide {
+    min-height: max(84svh, 560px);
+  }
+  .hero-slide {
+    padding-top: calc(34px + 64px + 16px);
+    padding-bottom: 88px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .hero-welcome {
+    font-size: 10.5px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: clamp(1.45rem, 6.2vw, 1.85rem);
+    line-height: 1.22;
+    margin-bottom: 12px;
+  }
+  .hero-body {
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  .hero-actions {
+    gap: 8px;
+  }
+  .hero-actions a {
+    min-height: 46px;
+    font-size: 13.5px;
+    padding: 10px 16px;
+  }
+  .hero-slider-controls {
+    bottom: 20px;
+    padding: 5px 14px;
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .sec-intro,
+  .sec-products,
+  .sec-pillars,
+  .sec-evidence,
+  .sec-brands,
+  .sec-news {
+    padding: 52px 0;
+  }
+  .sec-cta {
+    padding: 48px 0;
+  }
+
+  .intro-layout {
+    gap: 20px;
+  }
+  .intro-layout h2 {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    line-height: 1.25;
+  }
+  .intro-layout p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .prod-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .prod-title {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    line-height: 1.25;
+  }
+  .prod-subtitle {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .prod-header .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
+    box-sizing: border-box;
+  }
+  .bento-grid {
+    gap: 14px;
+  }
+  .bento-split-media {
+    height: 190px;
+  }
+  .bento-split-content {
+    padding: 18px 16px;
+  }
+  .bento-badge {
+    font-size: 10.5px;
+    padding: 2.5px 8px;
+    margin-bottom: 8px;
+  }
+  .bento-card-title {
+    font-size: 17px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .bento-card-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .bento-specs {
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .bento-spec-tag {
+    font-size: 10.5px;
+    padding: 3px 7px;
+    gap: 4px;
+  }
+  .bento-card-footer {
+    padding-top: 12px;
+    gap: 6px;
+  }
+  .bento-card-link {
+    font-size: 12.5px;
+    gap: 4px;
+  }
+  .bento-meta-badge {
+    font-size: 10.5px;
+  }
+  .prod-more-wrap {
+    width: 100%;
+    margin-top: 28px;
+  }
+  .btn-see-more {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 20px;
+    font-size: 14px;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .pillars-header {
+    margin-bottom: 24px;
+  }
+  .pillars-header h2 {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    margin-bottom: 8px;
+  }
+  .pillars-header p {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .pillars-grid {
+    gap: 12px;
+  }
+  .pillar-card {
+    padding: 20px 18px;
+    border-radius: 10px;
+  }
+  .pillar-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 14px;
+  }
+  .pillar-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .pillar-title {
+    font-size: 16.5px;
+    margin-bottom: 8px;
+  }
+  .pillar-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+
+  .ev-layout h2 {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    margin-bottom: 8px;
+  }
+  .ev-body {
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-bottom: 20px;
+  }
+  .ev-layout .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
+    box-sizing: border-box;
+  }
+  .cert-grid {
+    gap: 8px;
+  }
+  .cert-item {
+    padding: 14px 14px;
+    border-radius: 8px;
+    gap: 10px;
+  }
+  .cert-chk {
+    width: 20px;
+    height: 20px;
+    font-size: 10.5px;
+  }
+  .cert-name {
+    font-size: 13.5px;
+    margin-bottom: 2px;
+  }
+  .cert-desc {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .brands-header {
+    margin-bottom: 24px;
+  }
+  .brands-kicker {
+    font-size: 11px;
+  }
+  .brands-title {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .brands-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .marquee-wrapper {
+    padding: 10px 0;
+  }
+  .marquee-group {
+    gap: 14px;
+    padding-right: 14px;
+  }
+  .brand-card {
+    min-width: 240px;
+    padding: 14px 16px;
+    gap: 12px;
+    border-radius: 10px;
+  }
+  .brand-badge-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 14px;
+  }
+  .brand-name-lg {
+    font-size: 14.5px;
+  }
+  .brand-reg-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+  .brand-role {
+    font-size: 12px;
+  }
+  .brand-detail {
+    font-size: 11px;
+  }
+
+  .news-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .news-header h2 {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    margin: 0;
+  }
+  .news-header .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .news-grid {
+    gap: 14px;
+  }
+  .news-card {
+    min-height: 240px;
+    border-radius: 10px;
+  }
+  .news-card .ct {
+    padding: 18px 16px;
+  }
+  .news-date {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+  .news-title {
+    font-size: 15.5px;
+    line-height: 1.35;
+  }
+  .news-card:first-child .news-title {
+    font-size: 16.5px;
+  }
+
+  .cta-layout {
+    gap: 24px;
+  }
+  .cta-layout h2 {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    margin-bottom: 8px;
+  }
+  .cta-layout > div:first-child p {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .cta-actions {
+    gap: 10px;
+  }
+  .cta-card {
+    padding: 16px 18px;
+    border-radius: 10px;
+    min-height: 48px;
+    box-sizing: border-box;
+  }
+  .cta-card-title {
+    font-size: 14.5px;
+  }
+  .cta-card-sub {
+    font-size: 12px;
+  }
+  .cta-card-arrow {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-slide {
+    padding-top: calc(34px + 64px + 12px);
+    padding-bottom: 80px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .hero h1 {
+    font-size: 1.45rem;
+    line-height: 1.24;
+  }
+  .hero-body {
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+  .hero-actions a {
+    min-height: 44px;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  .hero-slider-controls {
+    bottom: 14px;
+    padding: 4px 10px;
+    gap: 8px;
+    font-size: 10px;
+  }
+
+  .sec-intro,
+  .sec-products,
+  .sec-pillars,
+  .sec-evidence,
+  .sec-brands,
+  .sec-news {
+    padding: 44px 0;
+  }
+  .sec-cta {
+    padding: 40px 0;
+  }
+
+  .bento-split-media {
+    height: 165px;
+  }
+  .bento-split-content {
+    padding: 15px 12px;
+  }
+  .bento-card-title {
+    font-size: 16px;
+  }
+  .bento-card-desc {
+    font-size: 12.5px;
+    margin-bottom: 10px;
+  }
+  .bento-specs {
+    gap: 4px;
+  }
+  .bento-spec-tag {
+    font-size: 10px;
+    padding: 2.5px 6px;
+  }
+  .btn-see-more {
+    font-size: 13.5px;
+    padding: 11px 14px;
+    gap: 8px;
+  }
+
+  .pillar-card {
+    padding: 18px 14px;
+  }
+  .pillar-title {
+    font-size: 15.5px;
+  }
+  .pillar-desc {
+    font-size: 13px;
+  }
+
+  .cert-item {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+  .cert-name {
+    font-size: 13px;
+  }
+  .cert-desc {
+    font-size: 11.5px;
+  }
+
+  .brand-card {
+    min-width: 215px;
+    padding: 12px 12px;
+    gap: 8px;
+  }
+  .brand-badge-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+  }
+  .brand-name-lg {
+    font-size: 13.5px;
+  }
+
+  .news-card {
+    min-height: 220px;
+  }
+  .news-card .ct {
+    padding: 15px 12px;
+  }
+  .news-title {
+    font-size: 14.5px;
+  }
+  .news-card:first-child .news-title {
+    font-size: 15.5px;
+  }
+
+  .cta-card {
+    padding: 14px 12px;
+    gap: 8px;
+  }
+  .cta-card-title {
+    font-size: 13.5px;
+  }
+  .cta-card-sub {
+    font-size: 11.5px;
+  }
 }
 
 /* ═══ NEWS & PUBLICATIONS V2 (PROTOTYPE STANDARD) ═══ */
