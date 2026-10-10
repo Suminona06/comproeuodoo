@@ -203,7 +203,7 @@
           <div class="form-hint">Mendukung format https://youtu.be/ID atau https://youtube.com/watch?v=ID</div>
         </div>
         <div id="ytPreviewWrap" style="display: none; margin-top: 10px;">
-          <iframe id="ytIframe" width="100%" height="200" src="" frameborder="0" allowfullscreen style="border-radius: var(--r-md); border: 1px solid var(--border-main);"></iframe>
+          <iframe id="ytIframe" width="100%" height="200" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: var(--r-md); border: 1px solid var(--border-main);"></iframe>
         </div>
       </div>
       <div class="admin-modal-footer">
@@ -216,12 +216,24 @@
 
 <script>
   function previewYoutube(url) {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
+    if (!url) {
+      document.getElementById('ytPreviewWrap').style.display = 'none';
+      document.getElementById('ytIframe').src = '';
+      return;
+    }
+    const trimmed = url.trim();
+    let ytId = null;
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+      ytId = trimmed;
+    } else {
+      const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = trimmed.match(regExp);
+      if (match && match[1].length === 11) ytId = match[1];
+    }
     const wrap = document.getElementById('ytPreviewWrap');
     const iframe = document.getElementById('ytIframe');
-    if (match && match[2].length === 11) {
-      iframe.src = 'https://www.youtube.com/embed/' + match[2];
+    if (ytId) {
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + ytId;
       wrap.style.display = 'block';
     } else {
       wrap.style.display = 'none';

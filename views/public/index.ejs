@@ -34,14 +34,23 @@
       %>
       <div class="hero-slide <%= index === 0 ? 'is-active' : '' %>" data-slide-index="<%= index %>" role="group" aria-roledescription="slide" aria-label="Slide <%= index + 1 %> dari <%= displayBanners.length %>">
         <div class="hero-bg">
-          <% if (banner.media_type === 'youtube') { %>
+          <% if (banner.media_type === 'youtube') { 
+            let ytId = banner.file_url || '';
+            if (ytId.includes('embed/')) {
+              ytId = ytId.split('embed/')[1].split('?')[0];
+            } else if (ytId.includes('watch?v=') || ytId.includes('youtu.be/')) {
+              const m = ytId.match(/(?:v=|youtu\.be\/)([^"&?\/\s]{11})/);
+              if (m) ytId = m[1];
+            }
+          %>
             <div class="hero-youtube-wrapper">
               <iframe
                 class="hero-youtube-iframe"
-                src="https://www.youtube-nocookie.com/embed/<%= banner.file_url %>?autoplay=<%= index === 0 ? '1' : '0' %>&mute=1&controls=0&loop=1&playlist=<%= banner.file_url %>&playsinline=1&rel=0&showinfo=0&modestbranding=1&enablejsapi=1"
+                src="https://www.youtube.com/embed/<%= ytId %>?autoplay=<%= index === 0 ? '1' : '0' %>&mute=1&controls=0&playsinline=1&rel=0&showinfo=0&modestbranding=1&disablekb=1&fs=0&iv_load_policy=3&enablejsapi=1"
                 title="<%= bannerTitle %>"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen
                 tabindex="-1"
                 aria-hidden="true"
@@ -50,8 +59,9 @@
             <% if (banner.poster_url) { %>
               <img src="<%= banner.poster_url %>" alt="<%= bannerTitle %>" class="hero-youtube-poster" aria-hidden="true">
             <% } %>
+            <div class="hero-video-shield" aria-hidden="true"></div>
           <% } else if (isVideo) { %>
-            <video <%= index === 0 ? 'autoplay' : '' %> muted loop playsinline preload="metadata" poster="<%= banner.poster_url || '/images/hero-factory.jpg' %>">
+            <video <%= index === 0 ? 'autoplay' : '' %> muted loop playsinline preload="auto" <%= banner.poster_url ? `poster="${banner.poster_url}"` : '' %>>
               <source src="<%= bannerMediaUrl %>" type="video/mp4">
             </video>
           <% } else { %>

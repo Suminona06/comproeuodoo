@@ -34,6 +34,9 @@ app.set('trust proxy', 1);
 // Security Headers (Helmet)
 app.use(
   helmet({
+    referrerPolicy: {
+      policy: 'strict-origin-when-cross-origin'
+    },
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],

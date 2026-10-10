@@ -122,13 +122,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  (function initHeroYouTube() {
+    const iframes = document.querySelectorAll('iframe.hero-youtube-iframe');
+    if (!iframes.length) return;
+
+    iframes.forEach(iframe => {
+      iframe.addEventListener('load', () => {
+        try {
+          if (iframe.contentWindow) {
+            iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'mute', args: '' }), '*');
+            iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: '' }), '*');
+            iframe.contentWindow.postMessage(JSON.stringify({ event: 'listening' }), '*');
+          }
+        } catch (_) {}
+      });
+    });
+
+    window.addEventListener('message', (event) => {
+      if (!event.data) return;
+      let data = event.data;
+      if (typeof data === 'string') {
+        try {
+          data = JSON.parse(data);
+        } catch (_) {
+          return;
+        }
+      }
+      if (data && (data.event === 'infoDelivery' || data.event === 'onStateChange' || data.event === 'initialDelivery')) {
+        const state = (data.info && typeof data.info.playerState !== 'undefined') ? data.info.playerState : data.info;
+        if (state === 0) {
+          const activeIframe = document.querySelector('.hero-slide.is-active iframe.hero-youtube-iframe') || document.querySelector('iframe.hero-youtube-iframe');
+          if (activeIframe && activeIframe.contentWindow) {
+            activeIframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [0, true] }), '*');
+            activeIframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: '' }), '*');
+          }
+        }
+      }
+    });
+  })();
+
   // ═══ HERO BANNER SLIDER (Autoplay, Nav, Dots, Touch, Loop) ═══
   (function initHeroSlider() {
     const slider = document.getElementById('heroSlider');
     if (!slider) return;
 
     const slides = slider.querySelectorAll('.hero-slide');
-    if (slides.length <= 1) return; // Single banner doesn't need carousel logic
+    if (slides.length <= 1) return;
 
     const prevBtn = document.getElementById('heroPrevBtn');
     const nextBtn = document.getElementById('heroNextBtn');
@@ -142,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let isTransitioning = false;
 
     function updateActiveState(newIndex) {
-      // Deactivate current slide
       const currentSlide = slides[currentIndex];
       currentSlide.classList.remove('is-active');
       const currentVideo = currentSlide.querySelector('video');
@@ -154,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentYt.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: '' }), '*');
       }
 
-      // Activate new slide
       currentIndex = (newIndex + totalSlides) % totalSlides;
       const nextSlide = slides[currentIndex];
       nextSlide.classList.add('is-active');

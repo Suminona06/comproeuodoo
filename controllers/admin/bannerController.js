@@ -5,8 +5,12 @@ import logger from '../../utils/logger.js';
 
 function extractYouTubeId(url) {
   if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+    return trimmed;
+  }
   const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const match = url.trim().match(regExp);
+  const match = trimmed.match(regExp);
   return (match && match[1].length === 11) ? match[1] : null;
 }
 
