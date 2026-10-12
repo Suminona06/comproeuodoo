@@ -2039,6 +2039,27 @@
   box-shadow: var(--shadow-2, 0 10px 15px -3px rgba(10, 25, 47, 0.08));
 }
 
+.brand-logo-wrap {
+  width: 68px;
+  height: 52px;
+  border-radius: var(--r-md, 6px);
+  background: #ffffff;
+  border: 1px solid var(--border, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.brand-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .brand-badge-icon {
   width: 52px;
   height: 52px;

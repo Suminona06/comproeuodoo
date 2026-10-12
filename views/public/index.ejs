@@ -377,9 +377,15 @@
           <% if (brands && brands.length > 0) { %>
             <% brands.forEach(brand => { %>
               <div class="brand-card">
-                <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
-                  <%= brand.name.substring(0, 2).toUpperCase() %>
-                </div>
+                <% if (brand.logo_url) { %>
+                  <div class="brand-logo-wrap">
+                    <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" class="brand-logo-img" loading="lazy">
+                  </div>
+                <% } else { %>
+                  <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
+                    <%= brand.name.substring(0, 2).toUpperCase() %>
+                  </div>
+                <% } %>
                 <div class="brand-info">
                   <div class="brand-card-header">
                     <span class="brand-name-lg"><%= brand.name.toUpperCase() %></span>
@@ -387,55 +393,30 @@
                       <%= brand.name.toLowerCase().includes('eco') ? 'PATEN DEGRADABLE' : 'DAFTAR RESMI' %>
                     </span>
                   </div>
-                  <p class="brand-role"><%= currentLang === 'en' ? (brand.description_en || 'Registered Brand Portfolio') : (brand.description_id || 'Merek Terdaftar PT Euodoo') %></p>
-                  <span class="brand-detail">Standar mutu presisi manufaktur sejak 1990</span>
+                  <% const brandDesc = currentLang === 'en' ? (brand.description_en || '') : (brand.description_id || ''); %>
+                  <% if (brandDesc) { %>
+                    <p class="brand-role"><%= brandDesc %></p>
+                  <% } %>
                 </div>
               </div>
             <% }); %>
           <% } %>
-
-          <div class="brand-card">
-            <div class="brand-badge-icon brand-badge-pb">PB</div>
-            <div class="brand-info">
-              <div class="brand-card-header">
-                <span class="brand-name-lg">MEREK PB</span>
-                <span class="brand-reg-tag">DAFTAR RESMI</span>
-              </div>
-              <p class="brand-role">Kantong Sampah &amp; Heavy Duty</p>
-              <span class="brand-detail">Segel bintang star-seal anti-bocor dipercaya sejak 1990</span>
-            </div>
-          </div>
-          <div class="brand-card">
-            <div class="brand-badge-icon brand-badge-berkah">BK</div>
-            <div class="brand-info">
-              <div class="brand-card-header">
-                <span class="brand-name-lg">MEREK BERKAH</span>
-                <span class="brand-reg-tag">MEREK TERDAFTAR</span>
-              </div>
-              <p class="brand-role">Kantong Kresek Bening Higienis</p>
-              <span class="brand-detail">HDPE murni tanpa bau untuk pasar grosir &amp; toko roti</span>
-            </div>
-          </div>
-          <div class="brand-card">
-            <div class="brand-badge-icon brand-badge-oxium">OX</div>
-            <div class="brand-info">
-              <div class="brand-card-header">
-                <span class="brand-name-lg">OXIUM&reg;</span>
-                <span class="brand-reg-tag brand-tag-eco">PATEN DEGRADABLE</span>
-              </div>
-              <p class="brand-role">100% Eco-Degradable Technology</p>
-              <span class="brand-detail">Bersertifikasi SNI 7188.7:2011 &amp; InSWA Green Label</span>
-            </div>
-          </div>
         </div>
 
+        <!-- Group 2 (Duplikasi untuk efek seamless scroll tanpa kartu statis) -->
         <div class="marquee-group" aria-hidden="true">
           <% if (brands && brands.length > 0) { %>
             <% brands.forEach(brand => { %>
               <div class="brand-card">
-                <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
-                  <%= brand.name.substring(0, 2).toUpperCase() %>
-                </div>
+                <% if (brand.logo_url) { %>
+                  <div class="brand-logo-wrap">
+                    <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" class="brand-logo-img" loading="lazy">
+                  </div>
+                <% } else { %>
+                  <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
+                    <%= brand.name.substring(0, 2).toUpperCase() %>
+                  </div>
+                <% } %>
                 <div class="brand-info">
                   <div class="brand-card-header">
                     <span class="brand-name-lg"><%= brand.name.toUpperCase() %></span>
@@ -443,45 +424,14 @@
                       <%= brand.name.toLowerCase().includes('eco') ? 'PATEN DEGRADABLE' : 'DAFTAR RESMI' %>
                     </span>
                   </div>
-                  <p class="brand-role"><%= currentLang === 'en' ? (brand.description_en || 'Registered Brand Portfolio') : (brand.description_id || 'Merek Terdaftar PT Euodoo') %></p>
-                  <span class="brand-detail">Standar mutu presisi manufaktur sejak 1990</span>
+                  <% const brandDesc = currentLang === 'en' ? (brand.description_en || '') : (brand.description_id || ''); %>
+                  <% if (brandDesc) { %>
+                    <p class="brand-role"><%= brandDesc %></p>
+                  <% } %>
                 </div>
               </div>
             <% }); %>
           <% } %>
-          <div class="brand-card">
-            <div class="brand-badge-icon brand-badge-pb">PB</div>
-            <div class="brand-info">
-              <div class="brand-card-header">
-                <span class="brand-name-lg">MEREK PB</span>
-                <span class="brand-reg-tag">DAFTAR RESMI</span>
-              </div>
-              <p class="brand-role">Kantong Sampah &amp; Heavy Duty</p>
-              <span class="brand-detail">Segel bintang star-seal anti-bocor dipercaya sejak 1990</span>
-            </div>
-          </div>
-          <div class="brand-card">
-            <div class="brand-badge-icon brand-badge-berkah">BK</div>
-            <div class="brand-info">
-              <div class="brand-card-header">
-                <span class="brand-name-lg">MEREK BERKAH</span>
-                <span class="brand-reg-tag">MEREK TERDAFTAR</span>
-              </div>
-              <p class="brand-role">Kantong Kresek Bening Higienis</p>
-              <span class="brand-detail">HDPE murni tanpa bau untuk pasar grosir &amp; toko roti</span>
-            </div>
-          </div>
-          <div class="brand-card">
-            <div class="brand-badge-icon brand-badge-oxium">OX</div>
-            <div class="brand-info">
-              <div class="brand-card-header">
-                <span class="brand-name-lg">OXIUM&reg;</span>
-                <span class="brand-reg-tag brand-tag-eco">PATEN DEGRADABLE</span>
-              </div>
-              <p class="brand-role">100% Eco-Degradable Technology</p>
-              <span class="brand-detail">Bersertifikasi SNI 7188.7:2011 &amp; InSWA Green Label</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
