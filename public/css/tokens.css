@@ -8,16 +8,26 @@
   /* ========================================================
      Color Palette - Foundations & Brand
      ======================================================== */
-  /* Surfaces */
-  --color-surface: #faf8ff;
-  --color-surface-dim: #d2d9f4;
-  --color-surface-bright: #faf8ff;
+  /* Dual-Token Public Background System (Revisi v5: #FFFFFF & #F8FAFC) */
+  --bg-base: #ffffff;
+  --bg-subtle: #f8fafc;
+  --color-bg-base: #ffffff;
+  --color-bg-subtle: #f8fafc;
+
+  /* Surfaces & Neutral Containers */
+  --color-surface: var(--bg-base);
+  --color-surface-dim: #e2e8f0;
+  --color-surface-bright: var(--bg-base);
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f2f3ff;
-  --color-surface-container: #eaedff;
-  --color-surface-container-high: #e2e7ff;
-  --color-surface-container-highest: #dae2fd;
+  --color-surface-container-low: var(--bg-subtle);
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-high: #e2e8f0;
+  --color-surface-container-highest: #cbd5e1;
   --color-workspace-bg: #f8fafc;
+
+  /* Section Transition Gradients (Opsi 1A: Soft Vertical Gradient Blend) */
+  --trans-base-to-subtle: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+  --trans-subtle-to-base: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
 
   /* Typography / Text Neutrals */
   --color-text-main: #0f172a;
@@ -26,7 +36,7 @@
   --color-text-variant: #424753;
   --color-text-inverse: #ffffff;
   --color-inverse-surface: #283044;
-  --color-inverse-on-surface: #eef0ff;
+  --color-inverse-on-surface: #f8fafc;
 
   /* Brand Primary (Signature Industrial Blue) */
   --color-primary: #0055b8;
@@ -191,10 +201,10 @@
   --navy-footer: #182147;
   --sky: #38bdf8;
   --sky-hover: #0284c7;
-  --surface: #faf8ff;
+  --surface: var(--bg-base);
   --surface-white: #ffffff;
   --workspace: #f8fafc;
-  --surface-container: #eaedff;
+  --surface-container: #f1f5f9;
   --container-light: #f1f5f9;
   --text-main: #0f172a;
   --text-navy: #131b2e;

@@ -114,7 +114,7 @@
           margin: 1.5rem 0;
           padding: 0.75rem 1.25rem;
           border-left: 4px solid #0055B8;
-          background-color: #FAF8FF;
+          background-color: #F8FAFC;
           color: #424753;
           font-style: italic;
           border-radius: 0 6px 6px 0;

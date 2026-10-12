@@ -28,7 +28,7 @@ export const notFoundHandler = (req, res, next) => {
         <meta charset="UTF-8">
         <title>404 - Halaman Tidak Ditemukan | PT Euodoo</title>
         <style>
-          body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #faf8ff; color: #131b2e; }
+          body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #131b2e; }
           .container { text-align: center; padding: 2rem; }
           h1 { font-size: 3rem; color: #0055b8; margin-bottom: 0.5rem; }
           p { font-size: 1.1rem; color: #424753; margin-bottom: 1.5rem; }
@@ -79,12 +79,12 @@ export const errorHandler = (err, req, res, next) => {
       <meta charset="UTF-8">
       <title>${statusCode} - Terjadi Kesalahan | PT Euodoo</title>
       <style>
-        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #faf8ff; color: #131b2e; }
+        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #131b2e; }
         .container { text-align: center; padding: 2rem; max-width: 600px; }
         h1 { font-size: 3rem; color: #ba1a1a; margin-bottom: 0.5rem; }
         p { font-size: 1.1rem; color: #424753; margin-bottom: 1.5rem; }
         a { display: inline-block; padding: 0.75rem 1.5rem; background: #0055b8; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 600; }
-        pre { text-align: left; background: #eaedff; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; color: #131b2e; }
+        pre { text-align: left; background: #f1f5f9; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; color: #131b2e; }
       </style>
     </head>
     <body>

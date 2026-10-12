@@ -40,13 +40,13 @@
 }
 
 .tox .tox-tbtn:hover {
-  background-color: #EAEDFF !important;
+  background-color: #EFF6FF !important;
   color: var(--color-primary, #0055B8) !important;
 }
 
 .tox .tox-tbtn--enabled,
 .tox .tox-tbtn--enabled:hover {
-  background-color: #EAEDFF !important;
+  background-color: #EFF6FF !important;
   color: var(--color-primary, #0055B8) !important;
 }
 

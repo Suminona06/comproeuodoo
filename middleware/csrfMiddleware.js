@@ -84,7 +84,7 @@ export const csrfProtection = (req, res, next) => {
         <meta charset="UTF-8">
         <title>403 - Token CSRF Tidak Valid | PT Euodoo</title>
         <style>
-          body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #faf8ff; color: #131b2e; }
+          body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #131b2e; }
           .container { text-align: center; padding: 2rem; max-width: 500px; }
           h1 { color: #ba1a1a; margin-bottom: 0.5rem; }
           p { color: #424753; margin-bottom: 1.5rem; line-height: 1.5; }

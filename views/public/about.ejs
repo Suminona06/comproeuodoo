@@ -54,7 +54,7 @@
           <h2>
             <%= lang === 'en' ? (data.history_title_en || 'Company Background & History') : (data.history_title_id || 'Latar Belakang & Sejarah Perusahaan') %>
           </h2>
-          <div style="margin-top: 24px; padding: 20px 24px; background: var(--workspace, #f8fafc); border-left: 4px solid var(--primary, #0055b8); border-radius: var(--r-md, 6px);">
+          <div style="margin-top: 24px; padding: 20px 24px; background: var(--bg-subtle, #f8fafc); border-left: 4px solid var(--primary, #0055b8); border-radius: var(--r-md, 6px);">
             <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted, #64748b); font-weight: 700;">
               <%= lang === 'en' ? 'ESTABLISHED' : 'TAHUN PENDIRIAN & ENTITAS AWAL' %>
             </div>
@@ -94,7 +94,7 @@
   </section>
 
   <!-- 3. VISI & MISI PERUSAHAAN -->
-  <section class="sec-pillars" id="vision-mission">
+  <section class="sec-pillars" id="vision-mission" style="background: var(--bg-subtle, #f8fafc);">
     <div class="container">
       <div class="pillars-header reveal">
         <span class="brands-kicker"><%= lang === 'en' ? 'STRATEGIC DIRECTION' : 'ARAHAN STRATEGIS' %></span>
@@ -108,7 +108,7 @@
 
       <div class="grid grid-cols-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
         <!-- Visi Card -->
-        <div class="pillar-card reveal" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="pillar-card reveal" style="background: #ffffff; display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <div style="color: var(--primary, #0055b8); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">
               <%= lang === 'en' ? 'CORPORATE VISION' : 'VISI PERUSAHAAN' %>
@@ -125,7 +125,7 @@
         </div>
 
         <!-- Misi Card -->
-        <div class="pillar-card reveal" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="pillar-card reveal" style="background: #ffffff; display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <div style="color: var(--success, #16a34a); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">
               <%= lang === 'en' ? 'STRATEGIC MISSION' : 'MISI PERUSAHAAN' %>
@@ -137,7 +137,7 @@
               %>
               <% missionPoints.forEach(function(point, idx) { %>
                 <li style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px;">
-                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--surface-container, #eaedff); color: var(--primary, #0055b8); font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #eff6ff; border: 1px solid #bfdbfe; color: var(--primary, #0055b8); font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;">
                     <%= idx + 1 %>
                   </span>
                   <span style="font-size: 14.5px; color: var(--text-main, #0f172a); font-weight: 500; line-height: 1.55;">
@@ -169,7 +169,7 @@
         <% (data.values || []).forEach(function(val) { %>
           <div class="pillar-card reveal" style="padding: 24px;">
             <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
-              <div style="width: 44px; height: 44px; border-radius: var(--r-lg, 8px); background: var(--surface-container, #eaedff); color: var(--primary, #0055b8); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 800;">
+              <div style="width: 44px; height: 44px; border-radius: var(--r-lg, 8px); background: #eff6ff; border: 1px solid #bfdbfe; color: var(--primary, #0055b8); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 800;">
                 <%= val.letter %>
               </div>
               <h3 style="font-size: 1.15rem; color: var(--navy, #0a192f); margin: 0; font-weight: 700;">
@@ -186,7 +186,7 @@
   </section>
 
   <!-- 5. FASILITAS OPERASIONAL & PABRIK -->
-  <section class="sec-pillars" id="facilities">
+  <section class="sec-pillars" id="facilities" style="background: var(--bg-subtle, #f8fafc);">
     <div class="container">
       <div class="pillars-header reveal">
         <span class="brands-kicker"><%= lang === 'en' ? 'OPERATIONAL FACILITIES' : 'LOKASI OPERASIONAL' %></span>
@@ -195,7 +195,7 @@
 
       <div class="grid grid-cols-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
         <!-- Pabrik Bandung -->
-        <div class="pillar-card reveal">
+        <div class="pillar-card reveal" style="background: #ffffff;">
           <div style="font-size: 11px; color: var(--sky, #0284c7); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">
             <%= lang === 'en' ? 'PRODUCTION PLANT & WAREHOUSE' : 'PABRIK PRODUKSI & LOGISTIK' %>
           </div>
@@ -212,7 +212,7 @@
         </div>
 
         <!-- Kantor Jakarta -->
-        <div class="pillar-card reveal">
+        <div class="pillar-card reveal" style="background: #ffffff;">
           <div style="font-size: 11px; color: var(--primary, #0055b8); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">
             <%= lang === 'en' ? 'CORPORATE & MARKETING OFFICE' : 'KANTOR PUSAT & PEMASARAN' %>
           </div>

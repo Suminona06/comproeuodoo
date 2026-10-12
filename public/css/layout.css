@@ -53,7 +53,7 @@
 }
 
 .section-bg-workspace {
-  background-color: var(--color-workspace-bg);
+  background-color: var(--bg-subtle, var(--color-workspace-bg, #f8fafc));
 }
 
 .section-bg-white {
@@ -607,7 +607,7 @@
 
 .header-wrap.is-scrolled .nav-link:hover {
   color: var(--primary, #0055b8);
-  background: var(--surface-container, #eaedff);
+  background: var(--surface-container, #eff6ff);
 }
 
 .header-wrap.is-scrolled .nav-link.active {
