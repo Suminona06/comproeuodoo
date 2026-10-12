@@ -54,7 +54,7 @@
                 <%= cat.sort_order %>
               </td>
               <td>
-                <span class="badge-status <%= cat.is_active ? 'st-selesai' : 'st-ditolak' %>" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                <span class="badge-status <%= cat.is_active ? 'badge-status--success' : 'badge-status--danger' %>">
                   <%= cat.is_active ? 'Aktif' : 'Nonaktif' %>
                 </span>
               </td>

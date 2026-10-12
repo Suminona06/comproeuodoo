@@ -57,15 +57,15 @@
               </td>
               <td>
                 <% if (u.locked_until && new Date(u.locked_until) > new Date()) { %>
-                  <span class="badge-status st-ditolak" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                  <span class="badge-status badge-status--danger">
                     Terkunci s/d <%= new Date(u.locked_until).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %>
                   </span>
                 <% } else if (u.failed_attempts > 0) { %>
-                  <span class="badge-status st-baru" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                  <span class="badge-status badge-status--warning">
                     <%= u.failed_attempts %>x Gagal Login
                   </span>
                 <% } else { %>
-                  <span class="badge-status st-selesai" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
+                  <span class="badge-status badge-status--success">
                     Normal
                   </span>
                 <% } %>

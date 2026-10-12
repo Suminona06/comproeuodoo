@@ -71,7 +71,7 @@
               </td>
               <td style="text-align: center;">
                 <% if (post.is_headline) { %>
-                  <span class="badge-status st-baru" style="font-size: 10.5px; padding: 2px 6px; border-radius: 4px;">Top Slider</span>
+                  <span class="badge-status badge-status--primary">Top Slider</span>
                 <% } else { %>
                   <span style="color: var(--text-tertiary); font-size: 12px;">-</span>
                 <% } %>
@@ -87,8 +87,8 @@
                 <% } %>
               </td>
               <td>
-                <span class="badge-status <%= post.status === 'published' ? 'st-selesai' : (post.status === 'scheduled' ? 'st-diproses' : 'st-baru') %>" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
-                  <%= post.status %>
+                <span class="badge-status <%= post.status === 'published' ? 'badge-status--success' : (post.status === 'scheduled' ? 'badge-status--warning' : 'badge-status--neutral') %>">
+                  <%= post.status === 'published' ? 'Published' : (post.status === 'scheduled' ? 'Terjadwal' : 'Draft') %>
                 </span>
               </td>
               <td style="text-align: right;">

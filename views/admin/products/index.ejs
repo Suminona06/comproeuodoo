@@ -84,14 +84,14 @@
               </td>
               <td style="text-align: center;">
                 <% if (p.featured || p.is_featured) { %>
-                  <span class="badge-status st-baru" style="font-size: 10.5px; padding: 2px 6px; border-radius: 4px;">Featured</span>
+                  <span class="badge-status badge-status--primary">Featured</span>
                 <% } else { %>
                   <span style="color: var(--text-tertiary); font-size: 12px;">-</span>
                 <% } %>
               </td>
               <td>
-                <span class="badge-status <%= p.status === 'published' ? 'st-selesai' : (p.status === 'draft' ? 'st-baru' : 'st-ditolak') %>" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;">
-                  <%= p.status || 'published' %>
+                <span class="badge-status <%= p.status === 'published' ? 'badge-status--success' : (p.status === 'draft' ? 'badge-status--warning' : 'badge-status--danger') %>">
+                  <%= p.status === 'published' ? 'Published' : (p.status === 'draft' ? 'Draft' : (p.status || '-')) %>
                 </span>
               </td>
               <td style="text-align: right;">

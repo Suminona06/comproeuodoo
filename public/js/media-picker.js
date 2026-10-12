@@ -44,6 +44,7 @@
     currentFilterType = options.type || 'all';
     currentPage = 1;
     selectedMedia = null;
+    if (selectedInfo) selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
     updateConfirmButton();
 
     // Activate the appropriate tab
@@ -69,6 +70,7 @@
     currentTargetInputId = null;
     currentTargetCallback = null;
     selectedMedia = null;
+    if (selectedInfo) selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
   }
 
   function switchTab(tabName) {
