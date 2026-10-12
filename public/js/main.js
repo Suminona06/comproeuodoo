@@ -331,4 +331,71 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial autoplay start
     startAutoplay();
   })();
+
+  // Brand Logo Zoom Preview Lightbox Modal
+  (() => {
+    const modal = document.getElementById('brandPreviewModal');
+    if (!modal) return;
+
+    const backdrop = document.getElementById('brandModalBackdrop');
+    const closeBtn = document.getElementById('brandModalCloseBtn');
+    const closeAction = document.getElementById('brandModalCloseAction');
+    const titleEl = document.getElementById('brandModalTitle');
+    const imgWrapEl = document.getElementById('brandModalImgWrap');
+    let lastActiveTrigger = null;
+
+    function openModal(trigger) {
+      const name = trigger.getAttribute('data-brand-name') || 'Merek Resmi';
+      const logoUrl = trigger.getAttribute('data-brand-logo') || '';
+      const initials = trigger.getAttribute('data-brand-initials') || name.substring(0, 2).toUpperCase();
+
+      if (titleEl) titleEl.textContent = name;
+      if (imgWrapEl) {
+        if (logoUrl) {
+          imgWrapEl.innerHTML = `<img src="${logoUrl}" alt="${name}" class="brand-modal-zoom-img">`;
+        } else {
+          imgWrapEl.innerHTML = `<span class="brand-fallback-initials">${initials}</span>`;
+        }
+      }
+
+      lastActiveTrigger = trigger;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      // Accessible focus to close button
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastActiveTrigger) {
+        lastActiveTrigger.focus();
+        lastActiveTrigger = null;
+      }
+    }
+
+    // Attach click and keyboard events to triggers
+    document.querySelectorAll('.js-brand-preview-trigger').forEach((trigger) => {
+      trigger.addEventListener('click', () => openModal(trigger));
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openModal(trigger);
+        }
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (closeAction) closeAction.addEventListener('click', closeModal);
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+        closeModal();
+      }
+    });
+  })();
 });

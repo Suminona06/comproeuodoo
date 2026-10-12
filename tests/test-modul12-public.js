@@ -110,7 +110,8 @@ async function runModul12Tests() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Cookie': cookies || ''
+      'Cookie': cookies || '',
+      'x-test-bypass-rate-limit': 'true'
     },
     body: formBody.toString(),
     redirect: 'manual'
