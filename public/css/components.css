@@ -1999,7 +1999,9 @@
   animation: marquee 32s linear infinite;
 }
 
-.marquee-wrapper:hover .marquee-group {
+.marquee-wrapper:hover .marquee-group,
+.marquee-wrapper:focus-within .marquee-group,
+.marquee-wrapper:active .marquee-group {
   animation-play-state: paused;
 }
 
@@ -2020,13 +2022,13 @@
 .brand-card {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
   background: #ffffff;
   border: 1px solid var(--border, #e2e8f0);
   border-radius: var(--r-xl, 12px);
-  padding: 20px 24px;
-  min-width: 340px;
-  box-shadow: var(--shadow-1, 0 1px 3px rgba(10, 25, 47, 0.06));
+  padding: 14px 22px;
+  min-width: 240px;
+  box-shadow: 0 1px 3px rgba(10, 25, 47, 0.04);
   transition: transform var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               border-color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               box-shadow var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
@@ -2034,21 +2036,21 @@
 }
 
 .brand-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   border-color: var(--primary, #0055b8);
-  box-shadow: var(--shadow-2, 0 10px 15px -3px rgba(10, 25, 47, 0.08));
+  box-shadow: 0 8px 18px -4px rgba(0, 85, 184, 0.12), 0 2px 6px -1px rgba(10, 25, 47, 0.04);
 }
 
 .brand-logo-wrap {
-  width: 68px;
-  height: 52px;
-  border-radius: var(--r-md, 6px);
+  width: 60px;
+  height: 46px;
+  border-radius: var(--r-md, 8px);
   background: #ffffff;
   border: 1px solid var(--border, #e2e8f0);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  padding: 5px 8px;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -2060,59 +2062,27 @@
   display: block;
 }
 
-.brand-badge-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--r-lg, 8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-  flex-shrink: 0;
-  background: var(--primary, #0055b8);
-  color: #ffffff;
-}
-
-.brand-badge-pb {
-  background: var(--primary-dark, #003f8b);
-  color: #ffffff;
-}
-
-.brand-badge-berkah {
-  background: var(--sky-hover, #0284c7);
-  color: #ffffff;
-}
-
-.brand-badge-oxium {
-  background: var(--success, #16a34a);
-  color: #ffffff;
-}
-
-.brand-badge-sb {
-  background: var(--navy, #0a192f);
-  color: #ffffff;
-}
-
-.brand-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.brand-card-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.brand-name-lg {
-  font-size: 16px;
+.brand-fallback-initials {
+  font-size: 15px;
   font-weight: 700;
-  color: var(--navy, #0a192f);
+  color: var(--primary, #0055b8);
   letter-spacing: -0.01em;
+}
+
+.brand-meta-wrap {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.brand-name-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy-deep, #0a192f);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .brand-reg-tag {
@@ -2128,19 +2098,6 @@
 .brand-tag-eco {
   color: var(--success, #16a34a);
   background: var(--success-bg, #dcfce7);
-}
-
-.brand-role {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-main, #0f172a);
-  margin: 0;
-}
-
-.brand-detail {
-  font-size: 12px;
-  color: var(--text-variant, #424753);
-  line-height: 1.4;
 }
 
 /* ═══ NEWS SECTION ═══ */
@@ -2489,8 +2446,9 @@
     padding: 24px 20px;
   }
   .brand-card {
-    min-width: 260px;
-    padding: 16px 20px;
+    min-width: 210px;
+    padding: 12px 18px;
+    gap: 12px;
   }
   .pillars-grid {
     grid-template-columns: 1fr;
@@ -2891,28 +2849,22 @@
     padding-right: 14px;
   }
   .brand-card {
-    min-width: 240px;
-    padding: 14px 16px;
+    min-width: 190px;
+    padding: 11px 16px;
     gap: 12px;
     border-radius: 10px;
   }
-  .brand-badge-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 14px;
+  .brand-logo-wrap {
+    width: 52px;
+    height: 40px;
+    padding: 4px 6px;
   }
-  .brand-name-lg {
-    font-size: 14.5px;
+  .brand-name-text {
+    font-size: 14px;
   }
   .brand-reg-tag {
     font-size: 10px;
     padding: 2px 6px;
-  }
-  .brand-role {
-    font-size: 12px;
-  }
-  .brand-detail {
-    font-size: 11px;
   }
 
   .news-header {
@@ -3072,18 +3024,29 @@
     font-size: 11.5px;
   }
 
+  .marquee-wrapper {
+    padding: 8px 0;
+  }
+  .marquee-group {
+    gap: 10px;
+    padding-right: 10px;
+  }
   .brand-card {
-    min-width: 215px;
-    padding: 12px 12px;
-    gap: 8px;
+    min-width: 165px;
+    padding: 9px 12px;
+    gap: 10px;
+    border-radius: 8px;
   }
-  .brand-badge-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 12px;
+  .brand-logo-wrap {
+    width: 44px;
+    height: 34px;
+    padding: 3px 5px;
   }
-  .brand-name-lg {
-    font-size: 13.5px;
+  .brand-fallback-initials {
+    font-size: 13px;
+  }
+  .brand-name-text {
+    font-size: 13px;
   }
 
   .news-card {

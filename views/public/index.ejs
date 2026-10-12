@@ -61,7 +61,7 @@
             <% } %>
             <div class="hero-video-shield" aria-hidden="true"></div>
           <% } else if (isVideo) { %>
-            <video <%= index === 0 ? 'autoplay' : '' %> muted loop playsinline preload="auto" <%= banner.poster_url ? `poster="${banner.poster_url}"` : '' %>>
+            <video <%= index === 0 ? 'autoplay' : '' %> muted loop playsinline preload="metadata" <%= banner.poster_url ? `poster="${banner.poster_url}"` : '' %>>
               <source src="<%= bannerMediaUrl %>" type="video/mp4">
             </video>
           <% } else { %>
@@ -377,26 +377,15 @@
           <% if (brands && brands.length > 0) { %>
             <% brands.forEach(brand => { %>
               <div class="brand-card">
-                <% if (brand.logo_url) { %>
-                  <div class="brand-logo-wrap">
+                <div class="brand-logo-wrap">
+                  <% if (brand.logo_url) { %>
                     <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" class="brand-logo-img" loading="lazy">
-                  </div>
-                <% } else { %>
-                  <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
-                    <%= brand.name.substring(0, 2).toUpperCase() %>
-                  </div>
-                <% } %>
-                <div class="brand-info">
-                  <div class="brand-card-header">
-                    <span class="brand-name-lg"><%= brand.name.toUpperCase() %></span>
-                    <span class="brand-reg-tag <%= brand.name.toLowerCase().includes('eco') ? 'brand-tag-eco' : '' %>">
-                      <%= brand.name.toLowerCase().includes('eco') ? 'PATEN DEGRADABLE' : 'DAFTAR RESMI' %>
-                    </span>
-                  </div>
-                  <% const brandDesc = currentLang === 'en' ? (brand.description_en || '') : (brand.description_id || ''); %>
-                  <% if (brandDesc) { %>
-                    <p class="brand-role"><%= brandDesc %></p>
+                  <% } else { %>
+                    <span class="brand-fallback-initials"><%= brand.name.substring(0, 2).toUpperCase() %></span>
                   <% } %>
+                </div>
+                <div class="brand-meta-wrap">
+                  <span class="brand-name-text"><%= brand.name %></span>
                 </div>
               </div>
             <% }); %>
@@ -408,26 +397,15 @@
           <% if (brands && brands.length > 0) { %>
             <% brands.forEach(brand => { %>
               <div class="brand-card">
-                <% if (brand.logo_url) { %>
-                  <div class="brand-logo-wrap">
+                <div class="brand-logo-wrap">
+                  <% if (brand.logo_url) { %>
                     <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" class="brand-logo-img" loading="lazy">
-                  </div>
-                <% } else { %>
-                  <div class="brand-badge-icon brand-badge-<%= brand.name.toLowerCase().includes('berkah') ? 'berkah' : (brand.name.toLowerCase().includes('eco') ? 'oxium' : 'pb') %>">
-                    <%= brand.name.substring(0, 2).toUpperCase() %>
-                  </div>
-                <% } %>
-                <div class="brand-info">
-                  <div class="brand-card-header">
-                    <span class="brand-name-lg"><%= brand.name.toUpperCase() %></span>
-                    <span class="brand-reg-tag <%= brand.name.toLowerCase().includes('eco') ? 'brand-tag-eco' : '' %>">
-                      <%= brand.name.toLowerCase().includes('eco') ? 'PATEN DEGRADABLE' : 'DAFTAR RESMI' %>
-                    </span>
-                  </div>
-                  <% const brandDesc = currentLang === 'en' ? (brand.description_en || '') : (brand.description_id || ''); %>
-                  <% if (brandDesc) { %>
-                    <p class="brand-role"><%= brandDesc %></p>
+                  <% } else { %>
+                    <span class="brand-fallback-initials"><%= brand.name.substring(0, 2).toUpperCase() %></span>
                   <% } %>
+                </div>
+                <div class="brand-meta-wrap">
+                  <span class="brand-name-text"><%= brand.name %></span>
                 </div>
               </div>
             <% }); %>
