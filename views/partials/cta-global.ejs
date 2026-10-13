@@ -1,0 +1,78 @@
+<% 
+  const currentPath = typeof path !== 'undefined' ? path : '';
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'id';
+  const ctaData = (typeof globalCta !== 'undefined' && globalCta)
+    ? globalCta
+    : ((typeof settings !== 'undefined' && settings?.globalCta) ? settings.globalCta : null);
+
+  let pageKey = 'home';
+  if (currentPath === '/' || currentPath === '') {
+    pageKey = 'home';
+  } else if (currentPath.startsWith('/about')) {
+    pageKey = 'about';
+  } else if (currentPath === '/products') {
+    pageKey = 'products';
+  } else if (currentPath.startsWith('/products/')) {
+    pageKey = 'product_detail';
+  } else if (currentPath.startsWith('/capabilities')) {
+    pageKey = 'capabilities';
+  } else if (currentPath === '/news') {
+    pageKey = 'news';
+  } else if (currentPath.startsWith('/news/')) {
+    pageKey = 'news_detail';
+  } else if (currentPath.startsWith('/contact')) {
+    pageKey = 'contact';
+  } else if (currentPath === '/404') {
+    pageKey = '404';
+  }
+
+  const pagesConfig = (ctaData && ctaData.pages) ? ctaData.pages : {
+    home: 1, about: 1, products: 1, product_detail: 1, capabilities: 1, news: 1, news_detail: 1, contact: 0, '404': 0
+  };
+
+  const isPageEnabled = pagesConfig[pageKey] === 1 || pagesConfig[pageKey] === '1' || pagesConfig[pageKey] === true;
+  const isCtaActive = ctaData ? (ctaData.is_active !== 0 && ctaData.is_active !== '0' && ctaData.is_active !== false) : true;
+  const shouldShowCta = isCtaActive && isPageEnabled && !(typeof hideGlobalCta !== 'undefined' && hideGlobalCta);
+%>
+<% if (shouldShowCta) { 
+  const ctaTitle = ctaData ? (lang === 'en' ? (ctaData.title_en || ctaData.title_id) : ctaData.title_id) : (lang === 'en' ? 'Start Your Manufacturing Partnership with PT. EUODOO' : 'Mulai Kemitraan Manufaktur Bersama PT. EUODOO');
+  const ctaSub = ctaData ? (lang === 'en' ? (ctaData.subtitle_en || ctaData.subtitle_id) : ctaData.subtitle_id) : (lang === 'en' ? 'Consult with our experienced production and engineering team to develop custom plastic bag packaging tailored to your brand, strength parameters, and delivery schedules.' : 'Konsultasikan kebutuhan spesifikasi kantong plastik, ukuran kustom, dan volume pesanan bisnis Anda bersama tim teknis dan pemasaran kami.');
+  
+  const btn1Title = ctaData ? (lang === 'en' ? (ctaData.btn1_title_en || ctaData.btn1_title_id) : ctaData.btn1_title_id) : (lang === 'en' ? 'Contact Sales & Engineering' : 'Hubungi Tim Pemasaran');
+  const btn1Sub = ctaData ? (lang === 'en' ? (ctaData.btn1_sub_en || ctaData.btn1_sub_id) : ctaData.btn1_sub_id) : (lang === 'en' ? 'Submit RFQ form and technical inquiries' : 'Formulir penawaran harga dan konsultasi');
+  const btn1Url = (ctaData && ctaData.btn1_url) ? ctaData.btn1_url : '/contact';
+
+  const btn2Title = ctaData ? (lang === 'en' ? (ctaData.btn2_title_en || ctaData.btn2_title_id) : ctaData.btn2_title_id) : (lang === 'en' ? 'Direct WhatsApp Consultation' : 'Kirim Pesan WhatsApp');
+  const btn2Sub = ctaData ? (lang === 'en' ? (ctaData.btn2_sub_en || ctaData.btn2_sub_id) : ctaData.btn2_sub_id) : (lang === 'en' ? 'Fast response from our customer support' : 'Respon cepat dari tim sales kami');
+  const defaultWa = (typeof settings !== 'undefined' && settings?.whatsapp_url) ? settings.whatsapp_url : 'https://wa.me/628123456789';
+  const btn2Url = (ctaData && ctaData.btn2_url) ? ctaData.btn2_url : defaultWa;
+%>
+<section class="sec-cta" id="global-cta">
+  <div class="container">
+    <div class="cta-layout reveal">
+      <div>
+        <h2><%= ctaTitle %></h2>
+        <p><%= ctaSub %></p>
+      </div>
+
+      <div class="cta-actions">
+        <a href="<%= btn1Url %>" class="cta-card">
+          <div>
+            <div class="cta-card-title"><%= btn1Title %></div>
+            <div class="cta-card-sub"><%= btn1Sub %></div>
+          </div>
+          <span class="cta-card-arrow" aria-hidden="true">&#8594;</span>
+        </a>
+
+        <a href="<%= btn2Url %>" class="cta-card" <%= btn2Url.includes('wa.me') || btn2Url.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : '' %>>
+          <div>
+            <div class="cta-card-title"><%= btn2Title %></div>
+            <div class="cta-card-sub"><%= btn2Sub %></div>
+          </div>
+          <span class="cta-card-arrow" aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>

@@ -19,6 +19,22 @@
       file_url: '/images/hero-factory.jpg',
       media_type: 'image'
     }];
+
+    const getPillarSvg = (iconName) => {
+      switch (iconName) {
+        case 'shield':
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+        case 'leaf':
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>';
+        case 'gear':
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+        case 'award':
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>';
+        case 'factory':
+        default:
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+      }
+    };
   %>
   <section class="hero hero-slider" id="heroSlider" aria-roledescription="carousel" aria-label="Hero Banners" tabindex="0">
     <div class="hero-slides-wrapper" id="heroSlidesTrack">
@@ -128,27 +144,35 @@
   </section>
 
 
+  <% if (typeof homeContent !== 'undefined' && homeContent?.intro && (homeContent.intro.is_active === 1 || homeContent.intro.is_active === '1' || homeContent.intro.is_active === true)) { 
+    const intro = homeContent.intro;
+    const introTitle = currentLang === 'en' ? (intro.title_en || intro.title_id) : intro.title_id;
+    const introP1 = currentLang === 'en' ? (intro.paragraph_1_en || intro.paragraph_1_id) : intro.paragraph_1_id;
+    const introP2 = currentLang === 'en' ? (intro.paragraph_2_en || intro.paragraph_2_id) : intro.paragraph_2_id;
+    const introEyebrow = currentLang === 'en' ? (intro.eyebrow_en || intro.eyebrow_id) : intro.eyebrow_id;
+  %>
   <section class="sec-intro" id="intro">
     <div class="container">
-      <div class="intro-layout reveal">
-        <h2>
-          <%= currentLang === 'en' ? 'Over Three Decades of Plastic Film Manufacturing Excellence' : 'Dedikasi Manufaktur Plastik Berkualitas Sejak 1990' %>
-        </h2>
+      <div class="intro-layout reveal <%= intro.image_url ? 'has-media' : '' %>">
         <div>
-          <p style="margin-bottom: 16px;">
-            <%= currentLang === 'en' 
-                ? 'Since our founding in 1990 in Bandung, West Java (originating from PT Sahabat Baru and PT Pelita Baru), PT EUODOO has been producing high-grade HDPE and LLDPE plastic bags for modern retail chains, traditional wholesale hubs, and industrial sectors.'
-                : 'Sejak berdiri pada tahun 1990 di Bandung, Jawa Barat (bermula dari PT Sahabat Baru dan PT Pelita Baru), PT EUODOO telah memproduksi kantong plastik HDPE dan LLDPE berkualitas tinggi untuk jaringan ritel modern, pasar grosir tradisional, dan sektor industri nasional.' %>
-          </p>
-          <p>
-            <%= currentLang === 'en'
-                ? 'With high-capacity production facilities in Cigondewah and corporate offices in Palmerah Jakarta, we integrate advanced blown film extrusion lines, certified 100% degradable formulations under SNI standards, and strict quality control for partners across Indonesia.'
-                : 'Dengan fasilitas produksi berkapasitas tinggi di Cigondewah dan kantor manajemen di Palmerah Jakarta, kami menggabungkan teknologi ekstrusi film mutakhir, formula ramah lingkungan 100% degradable berstandar SNI, serta ketelitian presisi demi kepuasan mitra usaha di seluruh Indonesia.' %>
-          </p>
+          <% if (introEyebrow) { %>
+            <span class="intro-eyebrow" style="display:inline-block; font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--primary, #0055b8); margin-bottom:8px; text-transform:uppercase;"><%= introEyebrow %></span>
+          <% } %>
+          <h2><%= introTitle %></h2>
+          <% if (intro.image_url) { %>
+            <div class="intro-media-wrap" style="margin-top:20px; border-radius:var(--r-xl, 1rem); overflow:hidden; border:1px solid var(--border, #e2e8f0); box-shadow:var(--shadow-sm, 0 1px 3px rgba(10,25,47,0.06));">
+              <img src="<%= intro.image_url %>" alt="<%= introTitle %>" loading="lazy" style="width:100%; height:auto; display:block; object-fit:cover;">
+            </div>
+          <% } %>
+        </div>
+        <div>
+          <p style="margin-bottom: 16px;"><%= introP1 %></p>
+          <p><%= introP2 %></p>
         </div>
       </div>
     </div>
   </section>
+  <% } %>
 
   <section class="sec-products" id="produk">
     <div class="container">
@@ -238,124 +262,79 @@
     </div>
   </section>
 
+  <% if (typeof homeContent !== 'undefined' && homeContent?.pillars && (homeContent.pillars.is_active === 1 || homeContent.pillars.is_active === '1' || homeContent.pillars.is_active === true)) { 
+    const pData = homeContent.pillars;
+    const pTitle = currentLang === 'en' ? (pData.title_en || pData.title_id) : pData.title_id;
+    const pSub = currentLang === 'en' ? (pData.subtitle_en || pData.subtitle_id) : pData.subtitle_id;
+    const pItems = (pData.items || []).filter(item => item.is_active === 1 || item.is_active === '1' || item.is_active === true).sort((a,b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+  %>
   <section class="sec-pillars" id="pilar">
     <div class="container">
       <div class="pillars-header reveal">
-        <h2><%= currentLang === 'en' ? 'Three Pillars of Manufacturing Excellence' : 'Tiga Pilar Keunggulan Kami' %></h2>
-        <p>
-          <%= currentLang === 'en' 
-              ? 'Our unwavering commitment to precision, production capacity, and environmental sustainability.'
-              : 'Komitmen menyeluruh dalam menghadirkan standar mutu plastik terdepan bagi mitra B2B.' %>
-        </p>
+        <h2><%= pTitle %></h2>
+        <p><%= pSub %></p>
       </div>
 
       <div class="pillars-grid reveal">
-        <div class="pillar-card" tabindex="0" role="region" aria-label="<%= currentLang === 'en' ? 'Pillar: High-Volume Production Capacity' : 'Pilar: Teknologi & Kapasitas Produksi' %>">
-          <div class="pillar-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-              <line x1="8" y1="21" x2="16" y2="21"/>
-              <line x1="12" y1="17" x2="12" y2="21"/>
-            </svg>
+        <% pItems.forEach((pItem) => { 
+          const pItemTitle = currentLang === 'en' ? (pItem.title_en || pItem.title_id) : pItem.title_id;
+          const pItemDesc = currentLang === 'en' ? (pItem.desc_en || pItem.desc_id) : pItem.desc_id;
+        %>
+          <div class="pillar-card" tabindex="0" role="region" aria-label="<%= pItemTitle %>">
+            <div class="pillar-icon">
+              <%- getPillarSvg(pItem.icon) %>
+            </div>
+            <h3 class="pillar-title"><%= pItemTitle %></h3>
+            <p class="pillar-desc"><%= pItemDesc %></p>
           </div>
-          <h3 class="pillar-title">
-            <%= currentLang === 'en' ? 'High-Volume Production Capacity' : 'Teknologi & Kapasitas Produksi' %>
-          </h3>
-          <p class="pillar-desc">
-            <%= currentLang === 'en'
-                ? 'Equipped with multi-layer blown film extruders, automated precision bag-making lines, and multi-color flexographic printing machines.'
-                : 'Didukung deretan mesin ekstrusi multi-layer modern dan converting line berkecepatan tinggi di Cigondewah untuk menjamin ketepatan jadwal pasokan skala besar.' %>
-          </p>
-        </div>
-
-        <div class="pillar-card" tabindex="0" role="region" aria-label="<%= currentLang === 'en' ? 'Pillar: Consistent Quality & Precision' : 'Pilar: Standar Mutu & Presisi Konsisten' %>">
-          <div class="pillar-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
-          <h3 class="pillar-title">
-            <%= currentLang === 'en' ? 'Consistent Quality & Precision' : 'Standar Mutu & Presisi Konsisten' %>
-          </h3>
-          <p class="pillar-desc">
-            <%= currentLang === 'en'
-                ? 'Rigorous quality control protocols verifying tensile elongation, drop-impact resistance, seal integrity, and micron uniformity.'
-                : 'Penerapan kontrol kualitas berkala meliputi uji ketahanan jatuh (drop-test), segel anti-bocor star-seal, dan ketebalan mikron yang konsisten di setiap batch.' %>
-          </p>
-        </div>
-
-        <div class="pillar-card" tabindex="0" role="region" aria-label="<%= currentLang === 'en' ? 'Pillar: Sustainable OXIUM Degradable' : 'Pilar: Solusi Ramah Lingkungan OXIUM' %>">
-          <div class="pillar-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-            </svg>
-          </div>
-          <h3 class="pillar-title">
-            <%= currentLang === 'en' ? 'Sustainable OXIUM® Degradable' : 'Solusi Ramah Lingkungan OXIUM' %>
-          </h3>
-          <p class="pillar-desc">
-            <%= currentLang === 'en'
-                ? 'Certified 100% degradable technology tested under US ASTM D6954 standards and Indonesian Green Label SNI 7188.7:2011.'
-                : 'Pionir penerapan aditif OXIUM teruji 100% terdegradasi menjadi biomassa dan air tanpa menyisakan mikroplastik berbahaya, berstandar resmi SNI.' %>
-          </p>
-        </div>
+        <% }); %>
       </div>
     </div>
   </section>
+  <% } %>
 
-
+  <% if (typeof homeContent !== 'undefined' && homeContent?.certifications && (homeContent.certifications.is_active === 1 || homeContent.certifications.is_active === '1' || homeContent.certifications.is_active === true)) { 
+    const cert = homeContent.certifications;
+    const certTitle = currentLang === 'en' ? (cert.title_en || cert.title_id) : cert.title_id;
+    const certBody = currentLang === 'en' ? (cert.body_en || cert.body_id) : cert.body_id;
+    const certBtnText = currentLang === 'en' ? (cert.btn_text_en || cert.btn_text_id) : cert.btn_text_id;
+    const certItems = (cert.items || []).filter(i => i.is_active === 1 || i.is_active === '1' || i.is_active === true).sort((a,b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+  %>
   <section class="sec-evidence" id="sertifikasi">
     <div class="container">
       <div class="ev-layout">
         <div class="reveal">
-          <h2><%= currentLang === 'en' ? 'Verified Quality & Eco-Certifications' : 'Sertifikasi Mutu & Komitmen Lingkungan' %></h2>
-          <p class="ev-body">
-            <%= currentLang === 'en'
-                ? 'Our manufacturing processes strictly comply with national standards and certified laboratory testing, ensuring packaging safety, durability, and full regulatory compliance.'
-                : 'Standar produksi kami didukung sertifikasi resmi nasional dan pengujian laboratorium terakreditasi, memastikan setiap produk aman digunakan, kuat, dan memenuhi regulasi ramah lingkungan.' %>
-          </p>
-          <a href="/about#sertifikasi" class="btn btn-primary">
-            <span><%= currentLang === 'en' ? 'Learn More About Certifications' : 'Pelajari Detail Sertifikasi' %></span>
-            <span aria-hidden="true">&rarr;</span>
-          </a>
+          <h2><%= certTitle %></h2>
+          <p class="ev-body"><%= certBody %></p>
+          <% if ((cert.show_btn === 1 || cert.show_btn === '1' || cert.show_btn === true) && certBtnText) { %>
+            <a href="<%= cert.btn_url || '/about#sertifikasi' %>" class="btn btn-primary">
+              <span><%= certBtnText %></span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          <% } %>
         </div>
 
         <div class="cert-grid reveal">
-          <div class="cert-item">
-            <span class="cert-chk">&#10003;</span>
-            <div>
-              <div class="cert-name">SNI 7188.7:2011</div>
-              <div class="cert-desc"><%= currentLang === 'en' ? 'Indonesian National Standard for degradable shopping bags' : 'Standar Nasional Indonesia untuk kantong belanja mudah terurai' %></div>
+          <% certItems.forEach(item => { 
+            const itemDesc = currentLang === 'en' ? (item.desc_en || item.desc_id) : item.desc_id;
+          %>
+            <div class="cert-item">
+              <% if (item.logo_url) { %>
+                <img src="<%= item.logo_url %>" alt="<%= item.name %>" class="cert-logo-img" loading="lazy" style="max-height: 36px; max-width: 48px; object-fit: contain; margin-right: 12px; display: inline-block;">
+              <% } else { %>
+                <span class="cert-chk" aria-hidden="true">&#10003;</span>
+              <% } %>
+              <div>
+                <div class="cert-name"><%= item.name %></div>
+                <div class="cert-desc"><%= itemDesc %></div>
+              </div>
             </div>
-          </div>
-
-          <div class="cert-item">
-            <span class="cert-chk">&#10003;</span>
-            <div>
-              <div class="cert-name">OXIUM&reg; Technology</div>
-              <div class="cert-desc"><%= currentLang === 'en' ? 'US ASTM D6954 certified oxo-biodegradable formulation' : 'Formula degradasi alami berstandar internasional ASTM D6954' %></div>
-            </div>
-          </div>
-
-          <div class="cert-item">
-            <span class="cert-chk">&#10003;</span>
-            <div>
-              <div class="cert-name">InSWA Eco Label</div>
-              <div class="cert-desc"><%= currentLang === 'en' ? 'Endorsed by Indonesia Solid Waste Association' : 'Sertifikasi Resmi Asosiasi Pengelolaan Sampah Indonesia' %></div>
-            </div>
-          </div>
-
-          <div class="cert-item">
-            <span class="cert-chk">&#10003;</span>
-            <div>
-              <div class="cert-name">Virgin Food-Grade Contact</div>
-              <div class="cert-desc"><%= currentLang === 'en' ? 'Pure non-recycled polymers safe for food contact' : 'Bahan baku murni higienis aman untuk produk pangan dan retail' %></div>
-            </div>
-          </div>
+          <% }); %>
         </div>
       </div>
     </div>
   </section>
+  <% } %>
 
   <section class="sec-brands" id="merek">
     <div class="container">
@@ -532,40 +511,6 @@
     </div>
   </section>
 
-  <!-- 8. SECTION CTA KEMITRAAN -->
-  <section class="sec-cta" id="kontak">
-    <div class="container">
-      <div class="cta-layout reveal">
-        <div>
-          <h2><%= currentLang === 'en' ? 'Start Your Manufacturing Partnership with PT. EUODOO' : 'Mulai Kemitraan Manufaktur Bersama PT. EUODOO' %></h2>
-          <p>
-            <%= currentLang === 'en'
-                ? 'Consult with our experienced production and engineering team to develop custom plastic bag packaging tailored to your brand, strength parameters, and delivery schedules.'
-                : 'Konsultasikan kebutuhan spesifikasi kantong plastik, ukuran kustom, dan volume pesanan bisnis Anda bersama tim teknis dan pemasaran kami.' %>
-          </p>
-        </div>
-
-        <div class="cta-actions">
-          <a href="/contact" class="cta-card">
-            <div>
-              <div class="cta-card-title"><%= currentLang === 'en' ? 'Contact Sales & Engineering' : 'Hubungi Tim Pemasaran' %></div>
-              <div class="cta-card-sub"><%= currentLang === 'en' ? 'Submit RFQ form and technical inquiries' : 'Formulir penawaran harga dan konsultasi' %></div>
-            </div>
-            <span class="cta-card-arrow">&#8594;</span>
-          </a>
-
-          <% const waLink = (typeof settings !== 'undefined' && settings?.whatsapp_url) ? settings.whatsapp_url : 'https://wa.me/628123456789'; %>
-          <a href="<%= waLink %>" class="cta-card" target="_blank" rel="noopener noreferrer">
-            <div>
-              <div class="cta-card-title"><%= currentLang === 'en' ? 'Direct WhatsApp Consultation' : 'Kirim Pesan WhatsApp' %></div>
-              <div class="cta-card-sub"><%= currentLang === 'en' ? 'Fast response from our customer support' : 'Respon cepat dari tim sales kami' %></div>
-            </div>
-            <span class="cta-card-arrow">&#8594;</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
 <%- include('../partials/footer') %>

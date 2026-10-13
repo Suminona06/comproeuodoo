@@ -2,16 +2,18 @@ import bannerModel from '../../models/bannerModel.js';
 import productModel from '../../models/productModel.js';
 import brandModel from '../../models/brandModel.js';
 import postModel from '../../models/postModel.js';
+import homeContentModel from '../../models/homeContentModel.js';
 import logger from '../../utils/logger.js';
 
 export const homeController = {
   async index(req, res) {
     try {
-      const [banners, featuredProducts, brands, latestPosts] = await Promise.all([
+      const [banners, featuredProducts, brands, latestPosts, homeContent] = await Promise.all([
         bannerModel.findAll(true),
         productModel.findAll({ isFeatured: true, status: 'published', limit: 4 }),
         brandModel.findAll({ activeOnly: true }),
-        postModel.findAll({ status: 'published', limit: 2 })
+        postModel.findAll({ status: 'published', limit: 2 }),
+        homeContentModel.getHomeContentData()
       ]);
 
       // Fallback if featured products are less than 4
@@ -32,7 +34,8 @@ export const homeController = {
         banners: banners || [],
         featuredProducts: products || [],
         brands: brands || [],
-        latestPosts: latestPosts || []
+        latestPosts: latestPosts || [],
+        homeContent: homeContent || homeContentModel.getDefaults()
       });
     } catch (err) {
       logger.error('Public homeController error:', { message: err.message, stack: err.stack });
@@ -42,7 +45,8 @@ export const homeController = {
         banners: [],
         featuredProducts: [],
         brands: [],
-        latestPosts: []
+        latestPosts: [],
+        homeContent: homeContentModel.getDefaults()
       });
     }
   }

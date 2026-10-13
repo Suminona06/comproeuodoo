@@ -63,7 +63,44 @@ export const settingsMiddleware = async (req, res, next) => {
   settings.company_phone = settings.company_phone || settings.about_office_phone || '+6221-53668626';
   settings.company_email = settings.company_email || 'info@euodoo.com';
 
+  // Structured global pre-footer CTA
+  let globalCtaPages = { home: 1, about: 1, products: 1, product_detail: 1, capabilities: 1, news: 1, news_detail: 1, contact: 0, 404: 0 };
+  if (settings.global_cta_pages_json) {
+    try {
+      const parsedPages = typeof settings.global_cta_pages_json === 'string'
+        ? JSON.parse(settings.global_cta_pages_json)
+        : settings.global_cta_pages_json;
+      if (parsedPages && typeof parsedPages === 'object') {
+        globalCtaPages = parsedPages;
+      }
+    } catch {
+      // Retain fallback defaults
+    }
+  }
+
+  settings.globalCta = {
+    title_id: settings.global_cta_title_id || 'Mulai Kemitraan Manufaktur Bersama PT. EUODOO',
+    title_en: settings.global_cta_title_en || 'Start Your Manufacturing Partnership with PT. EUODOO',
+    subtitle_id: settings.global_cta_subtitle_id || 'Konsultasikan kebutuhan spesifikasi kantong plastik, ukuran kustom, dan volume pesanan bisnis Anda bersama tim teknis dan pemasaran kami.',
+    subtitle_en: settings.global_cta_subtitle_en || 'Consult with our experienced production and engineering team to develop custom plastic bag packaging tailored to your brand, strength parameters, and delivery schedules.',
+    btn1_title_id: settings.global_cta_btn1_title_id || 'Hubungi Tim Pemasaran',
+    btn1_title_en: settings.global_cta_btn1_title_en || 'Contact Sales & Engineering',
+    btn1_sub_id: settings.global_cta_btn1_sub_id || 'Formulir penawaran harga dan konsultasi',
+    btn1_sub_en: settings.global_cta_btn1_sub_en || 'Submit RFQ form and technical inquiries',
+    btn1_url: settings.global_cta_btn1_url || '/contact',
+    btn2_title_id: settings.global_cta_btn2_title_id || 'Kirim Pesan WhatsApp',
+    btn2_title_en: settings.global_cta_btn2_title_en || 'Direct WhatsApp Consultation',
+    btn2_sub_id: settings.global_cta_btn2_sub_id || 'Respon cepat dari tim sales kami',
+    btn2_sub_en: settings.global_cta_btn2_sub_en || 'Fast response from our customer support',
+    btn2_url: settings.global_cta_btn2_url || settings.whatsapp_url,
+    pages: globalCtaPages,
+    is_active: settings.global_cta_is_active !== undefined
+      ? (settings.global_cta_is_active === '1' || settings.global_cta_is_active === 1 || settings.global_cta_is_active === true)
+      : true
+  };
+
   res.locals.settings = settings;
+  res.locals.globalCta = settings.globalCta;
   next();
 };
 

@@ -148,6 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       try {
+        const pageKey = window.location.pathname.replace(/[^a-zA-Z0-9_-]/g, '_');
+        sessionStorage.setItem('active_tab_' + pageKey, targetId);
         sessionStorage.setItem('active_about_tab', targetId);
       } catch (e) {}
     }
@@ -160,11 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Restore last visited tab or hash
+    // Restore last visited tab per page pathname or URL hash
     let initialTab = window.location.hash ? window.location.hash.substring(1) : '';
     if (!initialTab) {
       try {
-        initialTab = sessionStorage.getItem('active_about_tab') || '';
+        const pageKey = window.location.pathname.replace(/[^a-zA-Z0-9_-]/g, '_');
+        initialTab = sessionStorage.getItem('active_tab_' + pageKey) || sessionStorage.getItem('active_about_tab') || '';
       } catch (e) {}
     }
 

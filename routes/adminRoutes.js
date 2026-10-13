@@ -19,6 +19,7 @@ import { uploadMedia } from '../middleware/uploadMiddleware.js';
 import bannerController from '../controllers/admin/bannerController.js';
 import pageHeroBannerController from '../controllers/admin/pageHeroBannerController.js';
 import capabilityController from '../controllers/admin/capabilityController.js';
+import homeContentController from '../controllers/admin/homeContentController.js';
 
 const router = Router();
 
@@ -143,5 +144,9 @@ router.get('/capabilities', requireAuth, roleMiddleware(['superadmin', 'admin'])
 router.post('/capabilities', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), capabilityController.store);
 router.post('/capabilities/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), capabilityController.update);
 router.post('/capabilities/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), capabilityController.destroy);
+
+// T-105: CMS Konten Homepage (Superadmin & Admin)
+router.get('/home-content', requireAuth, roleMiddleware(['superadmin', 'admin']), homeContentController.index);
+router.post('/home-content', requireAuth, roleMiddleware(['superadmin', 'admin']), homeContentController.update);
 
 export default router;
