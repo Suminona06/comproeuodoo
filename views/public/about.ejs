@@ -185,52 +185,6 @@
     </div>
   </section>
 
-  <!-- 5. FASILITAS OPERASIONAL & PABRIK -->
-  <section class="sec-pillars" id="facilities" style="background: var(--bg-subtle, #f8fafc);">
-    <div class="container">
-      <div class="pillars-header reveal">
-        <span class="brands-kicker"><%= lang === 'en' ? 'OPERATIONAL FACILITIES' : 'LOKASI OPERASIONAL' %></span>
-        <h2><%= lang === 'en' ? 'Production Plant & Management Offices' : 'Fasilitas Pabrik & Kantor Manajemen' %></h2>
-      </div>
-
-      <div class="grid grid-cols-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-        <!-- Pabrik Bandung -->
-        <div class="pillar-card reveal" style="background: #ffffff;">
-          <div style="font-size: 11px; color: var(--sky, #0284c7); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">
-            <%= lang === 'en' ? 'PRODUCTION PLANT & WAREHOUSE' : 'PABRIK PRODUKSI & LOGISTIK' %>
-          </div>
-          <h3 style="font-size: 1.25rem; color: var(--navy, #0a192f); margin-bottom: 12px; font-weight: 700;">
-            Bandung, Jawa Barat
-          </h3>
-          <p style="font-size: 14.5px; color: var(--text-variant, #424753); line-height: 1.6; margin-bottom: 16px;">
-            <%= data.factory_address || 'Jl. Paralon II No. 21 Cijerah Bandung 40214 - Indonesia' %>
-          </p>
-          <div style="font-size: 13px; color: var(--text-muted, #64748b); line-height: 1.8;">
-            <div>Telepon: <strong style="color: var(--navy, #0a192f);"><%= data.factory_phone || '(022) 6012519' %></strong></div>
-            <div>Fax: <%= data.factory_fax || '(022) 6074730' %></div>
-          </div>
-        </div>
-
-        <!-- Kantor Jakarta -->
-        <div class="pillar-card reveal" style="background: #ffffff;">
-          <div style="font-size: 11px; color: var(--primary, #0055b8); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">
-            <%= lang === 'en' ? 'CORPORATE & MARKETING OFFICE' : 'KANTOR PUSAT & PEMASARAN' %>
-          </div>
-          <h3 style="font-size: 1.25rem; color: var(--navy, #0a192f); margin-bottom: 12px; font-weight: 700;">
-            Jakarta Pusat
-          </h3>
-          <p style="font-size: 14.5px; color: var(--text-variant, #424753); line-height: 1.6; margin-bottom: 16px;">
-            <%= data.office_address || 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270' %>
-          </p>
-          <div style="font-size: 13px; color: var(--text-muted, #64748b); line-height: 1.8;">
-            <div>Telepon: <strong style="color: var(--navy, #0a192f);"><%= data.office_phone || '(021) 53668626' %></strong></div>
-            <div>Fax: <%= data.office_fax || '(021) 53668648' %></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <%- include('../partials/footer') %>

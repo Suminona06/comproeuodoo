@@ -20,7 +20,7 @@
   <div class="about-tabs-nav" role="tablist">
     <button type="button" class="about-tab-btn active" data-tab="tab-sejarah" role="tab" aria-selected="true">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      <span>1. Sejarah &amp; Lokasi</span>
+      <span>1. Sejarah</span>
     </button>
     <button type="button" class="about-tab-btn" data-tab="tab-visi-misi" role="tab" aria-selected="false">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
@@ -36,7 +36,7 @@
     </button>
   </div>
 
-  <!-- TAB PANE 1: SEJARAH & LOKASI -->
+  <!-- TAB PANE 1: SEJARAH -->
   <div class="about-tab-pane active" id="tab-sejarah" role="tabpanel">
     <!-- Card 1: Latar Belakang & Sejarah Pabrik -->
     <div class="about-glass-card">
@@ -96,57 +96,6 @@
               Pilih dari Media Library
             </button>
             <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= about.image_url ? '' : 'display: none;' %>">Hapus</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 2: Alamat Resmi Pabrik & Kantor -->
-    <div class="about-glass-card">
-      <div class="form-card-title">Lokasi Operasional Resmi Perusahaan</div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
-        <!-- Pabrik Bandung -->
-        <div style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: var(--r-lg); padding: 1.25rem;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;">
-            <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <strong style="color: var(--secondary); font-size: 14px;">Pabrik Produksi &amp; Pemasaran (Bandung)</strong>
-          </div>
-          <div class="form-group">
-            <label for="factory_address" class="form-label">Alamat Pabrik</label>
-            <textarea id="factory_address" name="factory_address" class="form-textarea" style="min-height: 70px;"><%= about.factory_address || '' %></textarea>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="factory_phone" class="form-label">Telepon</label>
-              <input type="text" id="factory_phone" name="factory_phone" class="form-input" value="<%= about.factory_phone || '' %>">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="factory_fax" class="form-label">Fax</label>
-              <input type="text" id="factory_fax" name="factory_fax" class="form-input" value="<%= about.factory_fax || '' %>">
-            </div>
-          </div>
-        </div>
-
-        <!-- Kantor Jakarta -->
-        <div style="background: #f8fafc; border: 1px solid var(--border-main); border-radius: var(--r-lg); padding: 1.25rem;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;">
-            <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="22.01"></line><line x1="15" y1="22" x2="15" y2="22.01"></line></svg>
-            <strong style="color: var(--secondary); font-size: 14px;">Kantor Pusat (Jakarta)</strong>
-          </div>
-          <div class="form-group">
-            <label for="office_address" class="form-label">Alamat Kantor</label>
-            <textarea id="office_address" name="office_address" class="form-textarea" style="min-height: 70px;"><%= about.office_address || '' %></textarea>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="office_phone" class="form-label">Telepon</label>
-              <input type="text" id="office_phone" name="office_phone" class="form-input" value="<%= about.office_phone || '' %>">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="office_fax" class="form-label">Fax</label>
-              <input type="text" id="office_fax" name="office_fax" class="form-input" value="<%= about.office_fax || '' %>">
-            </div>
           </div>
         </div>
       </div>

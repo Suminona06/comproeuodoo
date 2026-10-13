@@ -180,12 +180,70 @@ export const aboutModel = {
         factory_phone: allSettings.about_factory_phone || defaults.factory_phone,
         factory_fax: allSettings.about_factory_fax || defaults.factory_fax,
         image_url: allSettings.about_image_url || defaults.image_url,
+        vision_image_url: allSettings.vision_image_url || '',
+        mission_image_url: allSettings.mission_image_url || '',
         values,
         certifications
       };
     } catch (err) {
       logger.error('aboutModel.getAboutData error:', { message: err.message });
       return this.getDefaults();
+    }
+  },
+
+  async getGalleryHeader() {
+    try {
+      const allSettings = await settingModel.getAll();
+      return {
+        kicker_id: allSettings.about_gallery_kicker_id || 'Galeri Kami',
+        kicker_en: allSettings.about_gallery_kicker_en || 'Our Gallery',
+        title_id: allSettings.about_gallery_title_id || 'Di Dalam Operasional Kami',
+        title_en: allSettings.about_gallery_title_en || 'Inside Our Operations',
+        body_id: allSettings.about_gallery_body_id || '',
+        body_en: allSettings.about_gallery_body_en || ''
+      };
+    } catch (err) {
+      logger.error('aboutModel.getGalleryHeader error:', { message: err.message });
+      return {
+        kicker_id: 'Galeri Kami',
+        kicker_en: 'Our Gallery',
+        title_id: 'Di Dalam Operasional Kami',
+        title_en: 'Inside Our Operations',
+        body_id: '',
+        body_en: ''
+      };
+    }
+  },
+
+  async getStoryHeader() {
+    try {
+      const allSettings = await settingModel.getAll();
+      return {
+        kicker_id: allSettings.about_story_kicker_id || 'Kisah Kami',
+        kicker_en: allSettings.about_story_kicker_en || 'Our Story'
+      };
+    } catch (err) {
+      logger.error('aboutModel.getStoryHeader error:', { message: err.message });
+      return {
+        kicker_id: 'Kisah Kami',
+        kicker_en: 'Our Story'
+      };
+    }
+  },
+
+  async getVisionMissionImages() {
+    try {
+      const allSettings = await settingModel.getAll();
+      return {
+        vision_image_url: allSettings.vision_image_url || '',
+        mission_image_url: allSettings.mission_image_url || ''
+      };
+    } catch (err) {
+      logger.error('aboutModel.getVisionMissionImages error:', { message: err.message });
+      return {
+        vision_image_url: '',
+        mission_image_url: ''
+      };
     }
   },
 
@@ -226,6 +284,25 @@ export const aboutModel = {
     stringFields.forEach((field) => {
       if (data[field] !== undefined) {
         updateObj[`about_${field}`] = typeof data[field] === 'string' ? data[field].trim() : String(data[field]);
+      }
+    });
+
+    const directSettingKeys = [
+      'vision_image_url',
+      'mission_image_url',
+      'about_gallery_kicker_id',
+      'about_gallery_kicker_en',
+      'about_gallery_title_id',
+      'about_gallery_title_en',
+      'about_gallery_body_id',
+      'about_gallery_body_en',
+      'about_story_kicker_id',
+      'about_story_kicker_en'
+    ];
+
+    directSettingKeys.forEach((key) => {
+      if (data[key] !== undefined) {
+        updateObj[key] = typeof data[key] === 'string' ? data[key].trim() : String(data[key]);
       }
     });
 

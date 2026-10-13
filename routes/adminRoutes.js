@@ -131,6 +131,21 @@ router.post('/banners/:id/delete', requireAuth, roleMiddleware(['superadmin', 'a
 router.get('/about', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.index);
 router.post('/about', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('about_image'), aboutController.update);
 
+// Gallery Slides CRUD
+router.post('/about/gallery', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.storeGallerySlide);
+router.post('/about/gallery/:id/update', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.updateGallerySlide);
+router.post('/about/gallery/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.deleteGallerySlide);
+
+// Statistics CRUD
+router.post('/about/stats', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.storeStats);
+router.post('/about/stats/:id/update', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.updateStats);
+router.post('/about/stats/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.deleteStats);
+
+// Timeline CRUD
+router.post('/about/timeline', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.storeTimeline);
+router.post('/about/timeline/:id/update', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.updateTimeline);
+router.post('/about/timeline/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), aboutController.deleteTimeline);
+
 // T-63: CMS Halaman Kontak (Superadmin & Admin)
 router.get('/contact', requireAuth, roleMiddleware(['superadmin', 'admin']), contactCmsController.index);
 router.post('/contact', requireAuth, roleMiddleware(['superadmin', 'admin']), contactCmsController.update);
