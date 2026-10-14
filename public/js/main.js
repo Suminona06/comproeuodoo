@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
-  // Bento mosaic gallery page transitions and controls (T-122, T-123)
+  // Bento mosaic gallery page transitions and controls (T-133, T-134, T-135)
   (() => {
     const bentoGallery = document.getElementById('bentoGallery');
     const bentoGrid = document.getElementById('bentoGrid');
@@ -416,6 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!slides.length) return;
 
+    const bentoViewport = document.getElementById('abtGalViewport') || bentoGallery;
     const bentoPager = document.getElementById('bentoPager');
     const bentoCur = document.getElementById('bentoCur');
     const bentoTotal = document.getElementById('bentoTotal');
@@ -424,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentPage = 0;
     let isTransitioning = false;
-    let transitionTimer = null;
+    let activeTimeline = null;
 
     const getPageSize = () => (window.innerWidth <= 768 ? 4 : 6);
     const pad2 = (n) => (n < 10 ? '0' : '') + n;
@@ -440,7 +441,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function updatePager(totalPages) {
-      if (bentoCur) bentoCur.textContent = pad2(currentPage + 1);
+      if (bentoCur) {
+        const nextText = pad2(currentPage + 1);
+        if (bentoCur.textContent !== nextText) {
+          bentoCur.textContent = nextText;
+          if (typeof anime !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            anime({
+              targets: bentoCur,
+              opacity: [0.3, 1],
+              translateY: [-3, 0],
+              duration: 350,
+              easing: 'easeOutCubic'
+            });
+          }
+        }
+      }
       if (bentoTotal) bentoTotal.textContent = pad2(totalPages);
       if (bentoPrev) bentoPrev.disabled = currentPage === 0;
       if (bentoNext) bentoNext.disabled = currentPage >= totalPages - 1;
@@ -451,60 +466,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createSingleTile(slide, idx, isMobile, totalTiles = 6, entering = false) {
       const tile = document.createElement('div');
-      let posClass = 'bento-tile--pos-' + (idx + 1);
+      let posClass = 'abt-gal-tile--pos-' + (idx + 1) + ' bento-tile--pos-' + (idx + 1);
       if (!isMobile && totalTiles === 6) {
-        if (idx === 0) posClass += ' bento-tile--tall';
-        else if (idx === 1 || idx === 4) posClass += ' bento-tile--wide';
+        if (idx === 0) posClass = 'abt-gal-tile--pos-1 abt-gal-tile--tall bento-tile--pos-1 bento-tile--tall';
+        else if (idx === 1 || idx === 4) posClass = 'abt-gal-tile--pos-' + (idx + 1) + ' abt-gal-tile--wide bento-tile--pos-' + (idx + 1) + ' bento-tile--wide';
       }
-      tile.className = 'bento-tile ' + posClass + (entering ? ' is-entering' : '');
+      tile.className = 'abt-gal-tile bento-tile ' + posClass + (entering ? ' is-entering' : '');
       tile.tabIndex = 0;
       tile.style.setProperty('--tile-i', idx);
 
-      const catHtml = slide.category
-        ? `<span class="bento-cat">${escapeHtml(slide.category)}</span>`
-        : '';
-      const titleHtml = slide.title
-        ? `<div class="bento-title">${escapeHtml(slide.title)}</div>`
-        : '';
+      const tag = slide.category ? slide.category.trim() : '';
+      const titleText = slide.title ? slide.title.trim() : '';
+      const photoNum = pad2(idx + 1);
+      const isEnglish = document.documentElement.lang === 'en';
+      const fallbackLabel = isEnglish
+        ? ('PT Euodoo Manufacturing & Operations Facility (Photo ' + photoNum + ')')
+        : ('Fasilitas Manufaktur & Operasional PT Euodoo (Foto ' + photoNum + ')');
+      const altText = titleText || tag || fallbackLabel;
+      tile.setAttribute('aria-label', altText);
+
+      const hasCaption = Boolean(tag || titleText);
+      const catHtml = tag ? `<span class="abt-gal-cat bento-cat">${escapeHtml(tag)}</span>` : '';
+      const titleHtml = titleText ? `<div class="abt-gal-title bento-title">${escapeHtml(titleText)}</div>` : '';
+      const capHtml = hasCaption ? `<div class="abt-gal-cap bento-cap">${catHtml}${titleHtml}</div>` : '';
 
       tile.innerHTML = `
-        <img src="${escapeHtml(slide.image_url)}" alt="${escapeHtml(slide.title || 'Euodoo Gallery')}" ${idx > 0 ? 'loading="lazy"' : ''}>
-        <div class="bento-cap">
-          ${catHtml}
-          ${titleHtml}
-        </div>
+        <img src="${escapeHtml(slide.image_url)}" alt="${escapeHtml(altText)}" decoding="async">
+        ${capHtml}
       `;
       return tile;
     }
 
-    function createTilesFragment(pageSlides, isMobile, entering = false) {
-      const fragment = document.createDocumentFragment();
-      pageSlides.forEach((slide, idx) => {
-        fragment.appendChild(createSingleTile(slide, idx, isMobile, pageSlides.length, entering));
-      });
-      return fragment;
-    }
-
-    function applyGridModifiers(pageSlideCount, isMobile) {
-      bentoGrid.className = 'bento-grid';
+    function applyGridModifiers(gridEl, pageSlideCount, isMobile) {
+      gridEl.className = 'abt-gal-grid bento-grid';
       if (!isMobile) {
-        if (pageSlideCount === 5) bentoGrid.classList.add('bento-grid--5');
-        else if (pageSlideCount === 4) bentoGrid.classList.add('bento-grid--4');
-        else if (pageSlideCount === 3) bentoGrid.classList.add('bento-grid--3');
-        else if (pageSlideCount === 2) bentoGrid.classList.add('bento-grid--2');
-        else if (pageSlideCount === 1) bentoGrid.classList.add('bento-grid--1');
+        if (pageSlideCount === 5) gridEl.classList.add('abt-gal-grid--5', 'bento-grid--5');
+        else if (pageSlideCount === 4) gridEl.classList.add('abt-gal-grid--4', 'bento-grid--4');
+        else if (pageSlideCount === 3) gridEl.classList.add('abt-gal-grid--3', 'bento-grid--3');
+        else if (pageSlideCount === 2) gridEl.classList.add('abt-gal-grid--2', 'bento-grid--2');
+        else if (pageSlideCount === 1) gridEl.classList.add('abt-gal-grid--1', 'bento-grid--1');
       } else {
-        if (pageSlideCount === 1) bentoGrid.classList.add('bento-grid--1');
+        if (pageSlideCount === 1) gridEl.classList.add('abt-gal-grid--1', 'bento-grid--1');
       }
     }
 
-    function transitionToPage(targetPage, immediate = false) {
+    async function transitionToPage(targetPage, immediate = false) {
       const pageSize = getPageSize();
       const totalPages = Math.ceil(slides.length / pageSize);
       const boundedTarget = Math.max(0, Math.min(targetPage, totalPages - 1));
 
       if (isTransitioning || (boundedTarget === currentPage && !immediate)) return;
 
+      const direction = boundedTarget > currentPage ? 1 : -1;
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       currentPage = boundedTarget;
 
@@ -513,122 +526,133 @@ document.addEventListener('DOMContentLoaded', () => {
       const pageSlides = slides.slice(start, end);
       const isMobile = window.innerWidth <= 768;
 
+      let currentGrid = document.getElementById('bentoGrid');
+
+      // Pre-decode target page images to ensure instant rendering without white flashes
+      await Promise.all(pageSlides.map((slide) => {
+        if (!slide.image_url) return Promise.resolve();
+        const img = new Image();
+        img.src = slide.image_url;
+        return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+      }));
+
+      // Immediate swap for prefers-reduced-motion or initial resize
       if (prefersReducedMotion || immediate) {
-        applyGridModifiers(pageSlides.length, isMobile);
-        const fragment = createTilesFragment(pageSlides, isMobile, false);
-        bentoGrid.innerHTML = '';
-        bentoGrid.appendChild(fragment);
+        if (currentGrid) {
+          applyGridModifiers(currentGrid, pageSlides.length, isMobile);
+          currentGrid.innerHTML = '';
+          pageSlides.forEach((slide, idx) => {
+            currentGrid.appendChild(createSingleTile(slide, idx, isMobile, pageSlides.length, false));
+          });
+        }
         updatePager(totalPages);
         return;
       }
 
       isTransitioning = true;
-      updatePager(totalPages);
+      if (bentoPrev) { bentoPrev.disabled = true; bentoPrev.style.pointerEvents = 'none'; }
+      if (bentoNext) { bentoNext.disabled = true; bentoNext.style.pointerEvents = 'none'; }
 
-      const currentTiles = Array.from(bentoGrid.querySelectorAll('.bento-tile'));
-      const staggerDelay = 45;
-      const closeDuration = 220;
-      const openDuration = 340;
-
-      // Preload next/target page images to ensure instant rendering at swap apex
-      pageSlides.forEach((slide) => {
-        if (slide.image_url) {
-          const img = new Image();
-          img.src = slide.image_url;
-        }
-      });
-
-      // Synchronized continuous shutter wave
-      currentTiles.forEach((tile, idx) => {
-        tile.style.setProperty('--tile-i', idx);
-        tile.classList.remove('is-entering', 'is-opening');
-        tile.classList.add('is-leaving');
-
-        const swapTime = idx * staggerDelay + closeDuration;
-        setTimeout(() => {
-          if (idx < pageSlides.length) {
-            const slide = pageSlides[idx];
-            const img = tile.querySelector('img');
-            if (img) {
-              img.src = slide.image_url;
-              img.alt = slide.title || 'Euodoo Gallery';
-            }
-            let cat = tile.querySelector('.bento-cat');
-            if (slide.category) {
-              if (!cat) {
-                cat = document.createElement('span');
-                cat.className = 'bento-cat';
-                const cap = tile.querySelector('.bento-cap');
-                if (cap) cap.prepend(cat);
-              }
-              cat.textContent = slide.category;
-              cat.style.display = '';
-            } else if (cat) {
-              cat.style.display = 'none';
-            }
-
-            let title = tile.querySelector('.bento-title');
-            if (slide.title) {
-              if (!title) {
-                title = document.createElement('div');
-                title.className = 'bento-title';
-                const cap = tile.querySelector('.bento-cap');
-                if (cap) cap.appendChild(title);
-              }
-              title.textContent = slide.title;
-              title.style.display = '';
-            } else if (title) {
-              title.style.display = 'none';
-            }
-
-            let targetPosClass = 'bento-tile--pos-' + (idx + 1);
-            if (!isMobile && pageSlides.length === 6) {
-              if (idx === 0) targetPosClass += ' bento-tile--tall';
-              else if (idx === 1 || idx === 4) targetPosClass += ' bento-tile--wide';
-            }
-            tile.className = 'bento-tile ' + targetPosClass + ' is-entering';
-          } else {
-            tile.remove();
-          }
-        }, swapTime);
-      });
-
-      // Handle extra tiles if page expands (e.g. 4 to 6)
-      if (pageSlides.length > currentTiles.length) {
-        const extraSlides = pageSlides.slice(currentTiles.length);
-        const appendTime = currentTiles.length * staggerDelay + closeDuration;
-        setTimeout(() => {
-          applyGridModifiers(pageSlides.length, isMobile);
-          extraSlides.forEach((slide, extraIdx) => {
-            const actualIdx = currentTiles.length + extraIdx;
-            const newTile = createSingleTile(slide, actualIdx, isMobile, pageSlides.length, true);
-            bentoGrid.appendChild(newTile);
-          });
-        }, appendTime);
-      } else {
-        setTimeout(() => {
-          applyGridModifiers(pageSlides.length, isMobile);
-        }, closeDuration);
+      if (activeTimeline) {
+        try { activeTimeline.pause(); } catch (_) {}
+        activeTimeline = null;
       }
 
-      const totalTransitionTime =
-        (Math.max(currentTiles.length, pageSlides.length) - 1) * staggerDelay +
-        closeDuration +
-        openDuration +
-        60;
+      // Layered Stacking: construct incoming grid
+      const incomingGrid = document.createElement('div');
+      applyGridModifiers(incomingGrid, pageSlides.length, isMobile);
+      incomingGrid.id = 'bentoGrid';
+      incomingGrid.classList.add('is-incoming');
 
-      clearTimeout(transitionTimer);
-      transitionTimer = setTimeout(() => {
-        bentoGrid.querySelectorAll('.bento-tile').forEach((t) => {
-          t.classList.remove('is-leaving', 'is-entering', 'is-opening');
+      pageSlides.forEach((slide, idx) => {
+        const tile = createSingleTile(slide, idx, isMobile, pageSlides.length, true);
+        tile.style.opacity = '0';
+        tile.style.transform = 'scale(0.96)';
+        tile.style.clipPath = 'inset(0% 50% 0% 50% round 12px)';
+        tile.style.willChange = 'transform, opacity, clip-path';
+        incomingGrid.appendChild(tile);
+      });
+
+      if (currentGrid) {
+        currentGrid.removeAttribute('id');
+        currentGrid.classList.add('is-outgoing');
+        currentGrid.querySelectorAll('.abt-gal-tile, .bento-tile').forEach((tile) => {
+          tile.classList.add('is-leaving');
+          tile.style.willChange = 'transform, opacity, clip-path';
         });
+      }
+
+      bentoViewport.appendChild(incomingGrid);
+
+      const outgoingTiles = currentGrid ? Array.from(currentGrid.children) : [];
+      const incomingTiles = Array.from(incomingGrid.children);
+
+      const onComplete = () => {
+        if (currentGrid && currentGrid.parentNode) {
+          currentGrid.parentNode.removeChild(currentGrid);
+        }
+        incomingGrid.classList.remove('is-incoming');
+        incomingTiles.forEach((tile, idx) => {
+          tile.classList.remove('is-entering', 'is-leaving');
+          tile.style.removeProperty('opacity');
+          tile.style.removeProperty('transform');
+          tile.style.removeProperty('clip-path');
+          tile.style.removeProperty('will-change');
+          tile.style.setProperty('--tile-i', idx);
+        });
+
         isTransitioning = false;
-      }, totalTransitionTime);
+        if (bentoPrev) bentoPrev.style.pointerEvents = '';
+        if (bentoNext) bentoNext.style.pointerEvents = '';
+        updatePager(totalPages);
+        activeTimeline = null;
+      };
+
+      if (typeof anime !== 'undefined') {
+        const staggerOpts = direction < 0 ? { from: 'last' } : undefined;
+        const timeline = anime.timeline({
+          easing: 'easeInOutQuad',
+          complete: onComplete
+        });
+        activeTimeline = timeline;
+
+        if (outgoingTiles.length) {
+          timeline.add({
+            targets: outgoingTiles,
+            opacity: [1, 0],
+            scale: [1, 0.96],
+            clipPath: ['inset(0% 0% 0% 0% round 12px)', 'inset(0% 50% 0% 50% round 12px)'],
+            duration: 360,
+            easing: 'easeInOutQuad',
+            delay: anime.stagger(45, staggerOpts)
+          });
+        }
+
+        timeline.add({
+          targets: incomingTiles,
+          opacity: [0, 1],
+          scale: [0.96, 1],
+          clipPath: ['inset(0% 50% 0% 50% round 12px)', 'inset(0% 0% 0% 0% round 12px)'],
+          duration: 460,
+          easing: 'easeOutCubic',
+          delay: anime.stagger(50, staggerOpts)
+        }, outgoingTiles.length ? '-=220' : 0);
+      } else {
+        setTimeout(onComplete, 450);
+      }
     }
 
     if (bentoPrev) {
       bentoPrev.addEventListener('click', () => {
         if (!isTransitioning && currentPage > 0) {
+          if (typeof anime !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            anime({
+              targets: bentoPrev,
+              scale: [0.92, 1],
+              duration: 300,
+              easing: 'easeOutElastic(1, .8)'
+            });
+          }
           transitionToPage(currentPage - 1);
         }
       });
@@ -639,13 +663,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const pageSize = getPageSize();
         const totalPages = Math.ceil(slides.length / pageSize);
         if (!isTransitioning && currentPage < totalPages - 1) {
+          if (typeof anime !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            anime({
+              targets: bentoNext,
+              scale: [0.92, 1],
+              duration: 300,
+              easing: 'easeOutElastic(1, .8)'
+            });
+          }
           transitionToPage(currentPage + 1);
         }
       });
     }
 
     bentoGallery.addEventListener('keydown', (e) => {
-      if ((e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') && e.target.classList.contains('bento-tile')) {
+      if ((e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') && (e.target.classList.contains('bento-tile') || e.target.classList.contains('abt-gal-tile'))) {
         e.preventDefault();
         return;
       }
@@ -740,18 +772,18 @@ document.addEventListener('DOMContentLoaded', () => {
       updatePager(initialTotalPages);
     }
 
-    // Opening sequence when gallery enters viewport (Membuka Gallery)
+    // Opening sequence when gallery enters viewport
     if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       const openGalleryObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const tiles = bentoGrid.querySelectorAll('.bento-tile');
+            const tiles = bentoGallery.querySelectorAll('.abt-gal-tile, .bento-tile');
             tiles.forEach((tile, idx) => {
               tile.style.setProperty('--tile-i', idx);
               tile.classList.add('is-opening');
             });
             setTimeout(() => {
-              bentoGrid.querySelectorAll('.bento-tile.is-opening').forEach((t) => {
+              bentoGallery.querySelectorAll('.abt-gal-tile.is-opening, .bento-tile.is-opening').forEach((t) => {
                 t.classList.remove('is-opening');
               });
             }, (tiles.length - 1) * 65 + 600);
