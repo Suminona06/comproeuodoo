@@ -15,11 +15,11 @@
       <div class="breadcrumbs">
         <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
         <span>&rsaquo;</span>
-        <span style="color: var(--sky, #38bdf8);"><%= lang === 'en' ? 'About Us' : 'Tentang Kami' %></span>
+        <span class="current"><%= lang === 'en' ? 'About Us' : 'Tentang Kami' %></span>
       </div>
 
       <div style="max-width: 840px;">
-        <span class="brands-kicker" style="color: var(--sky, #38bdf8); margin-bottom: 8px;">
+        <span class="page-hero-kicker">
           <%= lang === 'en' ? 'ABOUT PT. EUODOO' : 'TENTANG PT. EUODOO' %>
         </span>
         <h1 class="page-hero-title">
@@ -34,71 +34,62 @@
                   ? 'Pioneering high-grade HDPE and LLDPE plastic film manufacturing in Bandung since 1990, dedicated to certified 100% degradable environmental solutions for modern retail and industrial sectors.'
                   : 'Perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE terkemuka di Bandung sejak tahun 1990, berdedikasi pada penyediaan solusi kemasan ramah lingkungan yang 100% degradable.') %>
         </p>
-        <% if (typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active && heroBanner.cta_url && (lang === 'en' ? heroBanner.cta_text_en : heroBanner.cta_text_id)) { %>
-          <div style="margin-top: 20px;">
-            <a href="<%= heroBanner.cta_url %>" class="btn btn-primary">
-              <%= lang === 'en' ? heroBanner.cta_text_en : heroBanner.cta_text_id %>
-            </a>
-          </div>
-        <% } %>
       </div>
     </div>
   </section>
 
   <!-- 2. SEJARAH & LATAR BELAKANG PERUSAHAAN -->
-  <section class="sec-intro" id="history">
+  <section class="sec-story" id="sejarah" data-od-id="company-story">
     <div class="container">
-      <div class="intro-layout reveal">
-        <div>
-          <span class="brands-kicker"><%= lang === 'en' ? 'OUR HERITAGE & ORIGINS' : 'JEJAK LANGKAH SEJAK 1990' %></span>
-          <h2>
-            <%= lang === 'en' ? (data.history_title_en || 'Company Background & History') : (data.history_title_id || 'Latar Belakang & Sejarah Perusahaan') %>
-          </h2>
-          <div style="margin-top: 24px; padding: 20px 24px; background: var(--bg-subtle, #f8fafc); border-left: 4px solid var(--primary, #0055b8); border-radius: var(--r-md, 6px);">
-            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted, #64748b); font-weight: 700;">
-              <%= lang === 'en' ? 'ESTABLISHED' : 'TAHUN PENDIRIAN & ENTITAS AWAL' %>
+      <div class="story-layout">
+        <div class="story-sticky reveal">
+          <span class="story-kicker"><%= (lang === 'en' ? storyHeader?.kicker_en : storyHeader?.kicker_id) || (lang === 'en' ? 'Our Story' : 'Kisah Kami') %></span>
+          <h2><%= lang === 'en' ? (data.history_title_en || 'Building Quality of Life for a Better Tomorrow') : (data.history_title_id || 'Semangat Membangun Kualitas Hidup yang Lebih Baik') %></h2>
+          <p><%= lang === 'en' ? (data.history_en || 'Starting by serving traditional markets, we grew into a manufacturing partner for modern retail networks and the national industrial sector.') : (data.history_id || 'Berawal dari melayani pasar tradisional, kami tumbuh menjadi mitra manufaktur bagi jaringan retail modern dan sektor industri nasional. Perjalanan kami ditopang satu keyakinan: mutu yang konsisten dan komitmen pada kelestarian lingkungan adalah fondasi kemitraan jangka panjang.') %></p>
+          
+          <% if (typeof stats !== 'undefined' && stats && stats.length > 0) { %>
+            <div class="story-stats">
+              <% stats.forEach(stat => { %>
+                <div class="story-stat">
+                  <div class="story-stat-num"><%= stat.stat_value %></div>
+                  <div class="story-stat-label"><%= lang === 'en' ? (stat.label_en || stat.label_id) : stat.label_id %></div>
+                </div>
+              <% }); %>
             </div>
-            <div style="font-size: 1.75rem; font-weight: 800; color: var(--navy, #0a192f); margin-top: 4px;">
-              <%= data.founded_year || '1990' %>
-              <span style="font-size: 14px; font-weight: 500; color: var(--text-variant, #424753);">
-                (<%= data.former_names || 'PT. Sahabat Baru & PT. Pelita Baru' %>)
-              </span>
-            </div>
-          </div>
+          <% } %>
         </div>
 
-        <div>
-          <p style="font-size: 16px; color: var(--text-variant, #424753); line-height: 1.8; margin-bottom: 20px;">
-            <%= lang === 'en' ? data.history_en : data.history_id %>
-          </p>
-
-          <div style="background: linear-gradient(145deg, #0a192f 0%, #0d2040 100%); color: #ffffff; padding: 28px; border-radius: var(--r-xl, 12px); box-shadow: var(--shadow-2);">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-              <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--r-md, 6px); background: rgba(56, 189, 248, 0.2); color: var(--sky, #38bdf8);">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </span>
-              <h3 style="color: #ffffff; font-size: 1.15rem; font-weight: 700; margin: 0;">
-                LET'S SAVE OUR EARTH!
-              </h3>
+        <div class="timeline reveal" data-od-id="company-timeline">
+          <% if (typeof timeline !== 'undefined' && timeline && timeline.length > 0) { %>
+            <% timeline.forEach(item => { %>
+              <div class="tl-item">
+                <div class="tl-year"><%= lang === 'en' ? (item.year_label_en || item.year_label_id) : item.year_label_id %></div>
+                <div class="tl-title"><%= lang === 'en' ? (item.title_en || item.title_id) : item.title_id %></div>
+                <div class="tl-desc"><%= lang === 'en' ? (item.description_en || item.description_id) : item.description_id %></div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="tl-empty" style="padding: 24px; color: var(--text-muted); font-size: 14px; font-style: italic;">
+              <%= lang === 'en' ? 'Company journey timeline will be updated soon.' : 'Linimasa perjalanan perusahaan akan segera diperbarui.' %>
             </div>
-            <p style="color: #cbd5e1; font-size: 14px; line-height: 1.65; margin-bottom: 16px;">
-              <%= lang === 'en' ? data.eco_statement_en : data.eco_statement_id %>
-            </p>
-            <div style="padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.12); font-size: 13px; color: var(--sky, #38bdf8); font-style: italic;">
-              "<%= lang === 'en' ? data.goal_en : data.goal_id %>"
-            </div>
-          </div>
+          <% } %>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 3. VISI & MISI PERUSAHAAN -->
-  <section class="sec-pillars" id="vision-mission" style="background: var(--bg-subtle, #f8fafc);">
+  <%
+    const visionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.vision_image_url) ? visionMissionImages.vision_image_url.trim() : '';
+    const missionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.mission_image_url) ? visionMissionImages.mission_image_url.trim() : '';
+    const rawMission = lang === 'en' ? (data.mission_en || '') : (data.mission_id || '');
+    const missionPoints = rawMission.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+  %>
+  <section class="sec-vm" id="visi-misi" data-od-id="vision-mission">
     <div class="container">
-      <div class="pillars-header reveal">
-        <span class="brands-kicker"><%= lang === 'en' ? 'STRATEGIC DIRECTION' : 'ARAHAN STRATEGIS' %></span>
-        <h2><%= lang === 'en' ? 'Our Guiding Principles & Purpose' : 'Visi & Misi Perusahaan' %></h2>
+      <div class="vm-header reveal">
+        <span class="vm-kicker"><%= lang === 'en' ? 'OUR GUIDING PURPOSE' : 'ARAHAN STRATEGIS' %></span>
+        <h2><%= lang === 'en' ? 'Vision & Mission' : 'Visi & Misi Perusahaan' %></h2>
         <p>
           <%= lang === 'en'
             ? 'Core commitments driving our manufacturing quality, workforce welfare, and sustainable environmental preservation.'
@@ -106,46 +97,51 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-        <!-- Visi Card -->
-        <div class="pillar-card reveal" style="background: #ffffff; display: flex; flex-direction: column; justify-content: space-between;">
-          <div>
-            <div style="color: var(--primary, #0055b8); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">
-              <%= lang === 'en' ? 'CORPORATE VISION' : 'VISI PERUSAHAAN' %>
-            </div>
-            <h3 style="font-size: 1.35rem; color: var(--navy, #0a192f); margin-bottom: 16px; line-height: 1.35; font-weight: 700;">
-              <%= lang === 'en' ? data.vision_en : data.vision_id %>
-            </h3>
-            <p style="font-size: 14.5px; color: var(--text-variant, #424753); line-height: 1.7; margin: 0;">
+      <div class="vm-rows">
+        <!-- Visi Row: Card Teks Kiri + Gambar Kanan (Jika Ada) -->
+        <div class="vm-row reveal <%= visionImg ? 'has-image' : 'no-image' %>">
+          <div class="vm-card">
+            <span class="vm-card-kicker"><%= lang === 'en' ? 'CORPORATE VISION' : 'VISI' %></span>
+            <h3 class="vm-card-title"><%= lang === 'en' ? data.vision_en : data.vision_id %></h3>
+            <p class="vm-card-desc">
               <%= lang === 'en'
                 ? 'We continuously aim to improve the quality of life within and outside the company, ensuring environmental preservation alongside commercial excellence.'
                 : 'Kami berupaya terus-menerus meningkatkan kualitas kehidupan di dalam dan luar perusahaan, mengutamakan kelestarian alam dan pendidikan karyawan.' %>
             </p>
           </div>
+          <% if (visionImg) { %>
+            <div class="vm-media">
+              <img src="<%= visionImg %>" alt="<%= lang === 'en' ? 'PT Euodoo Corporate Vision' : 'Visi PT Euodoo' %>" loading="lazy">
+            </div>
+          <% } %>
         </div>
 
-        <!-- Misi Card -->
-        <div class="pillar-card reveal" style="background: #ffffff; display: flex; flex-direction: column; justify-content: space-between;">
-          <div>
-            <div style="color: var(--success, #16a34a); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">
-              <%= lang === 'en' ? 'STRATEGIC MISSION' : 'MISI PERUSAHAAN' %>
+        <!-- Misi Row: Gambar Kiri (Jika Ada) + Card Teks Kanan -->
+        <div class="vm-row reveal <%= missionImg ? 'has-image' : 'no-image' %>">
+          <% if (missionImg) { %>
+            <div class="vm-media">
+              <img src="<%= missionImg %>" alt="<%= lang === 'en' ? 'PT Euodoo Corporate Mission' : 'Misi PT Euodoo' %>" loading="lazy">
             </div>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-              <% 
-                const rawMission = lang === 'en' ? (data.mission_en || '') : (data.mission_id || '');
-                const missionPoints = rawMission.split('\n').filter(p => p.trim().length > 0);
-              %>
-              <% missionPoints.forEach(function(point, idx) { %>
-                <li style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px;">
-                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #eff6ff; border: 1px solid #bfdbfe; color: var(--primary, #0055b8); font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;">
-                    <%= idx + 1 %>
-                  </span>
-                  <span style="font-size: 14.5px; color: var(--text-main, #0f172a); font-weight: 500; line-height: 1.55;">
-                    <%= point.trim() %>
-                  </span>
-                </li>
-              <% }); %>
-            </ul>
+          <% } %>
+          <div class="vm-card">
+            <span class="vm-card-kicker"><%= lang === 'en' ? 'STRATEGIC MISSION' : 'MISI' %></span>
+            <% if (missionPoints.length > 1) { %>
+              <ul class="vm-list">
+                <% missionPoints.forEach(function(point, idx) { %>
+                  <% 
+                    const cleanPoint = point.replace(/^\d+[\.\)]\s*/, '');
+                  %>
+                  <li>
+                    <span class="vm-list-badge"><%= idx + 1 %></span>
+                    <span style="font-size: 15px; color: var(--text-main, #0f172a); font-weight: 500; line-height: 1.6;">
+                      <%= cleanPoint %>
+                    </span>
+                  </li>
+                <% }); %>
+              </ul>
+            <% } else { %>
+              <h3 class="vm-card-title"><%= rawMission %></h3>
+            <% } %>
           </div>
         </div>
       </div>

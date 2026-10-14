@@ -162,8 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Restore last visited tab per page pathname or URL hash
-    let initialTab = window.location.hash ? window.location.hash.substring(1) : '';
+    // Restore last visited tab per query param (?tab=), page pathname or URL hash
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTab = urlParams.get('tab');
+    let initialTab = urlTab || (window.location.hash ? window.location.hash.substring(1) : '');
     if (!initialTab) {
       try {
         const pageKey = window.location.pathname.replace(/[^a-zA-Z0-9_-]/g, '_');
@@ -469,6 +471,154 @@ window.openAdminModal = function(modalId) {
 window.closeAdminModal = function(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) modal.classList.remove('open');
+};
+
+// ========================================================
+// About CMS Dynamic Modal Handlers (Gallery, Stats, Timeline)
+// ========================================================
+window.openGalleryModal = function(slideData) {
+  const modal = document.getElementById('galleryModal');
+  if (!modal) return;
+  const form = document.getElementById('galleryForm');
+  const titleEl = document.getElementById('galleryModalTitle');
+  const previewImg = document.getElementById('gallery_preview_img');
+  const emptyPlaceholder = document.getElementById('gallery_preview_empty');
+  const clearBtn = document.getElementById('gallery_btn_clear');
+
+  if (slideData) {
+    if (titleEl) titleEl.textContent = 'Edit Slide Galeri';
+    if (form) form.action = `/admin/about/gallery/${slideData.id}/update`;
+    document.getElementById('gallery_slide_id').value = slideData.id || '';
+    document.getElementById('gallery_image_url').value = slideData.image_url || '';
+    document.getElementById('gallery_category_id').value = slideData.category_id || '';
+    document.getElementById('gallery_category_en').value = slideData.category_en || '';
+    document.getElementById('gallery_title_id').value = slideData.title_id || '';
+    document.getElementById('gallery_title_en').value = slideData.title_en || '';
+    document.getElementById('gallery_subtitle_id').value = slideData.subtitle_id || '';
+    document.getElementById('gallery_subtitle_en').value = slideData.subtitle_en || '';
+    document.getElementById('gallery_sort_order').value = slideData.sort_order ?? 0;
+    document.getElementById('gallery_is_active').checked = slideData.is_active !== 0 && slideData.is_active !== false;
+
+    if (slideData.image_url) {
+      if (previewImg) { previewImg.src = slideData.image_url; previewImg.style.display = 'block'; }
+      if (emptyPlaceholder) emptyPlaceholder.style.display = 'none';
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+    } else {
+      if (previewImg) { previewImg.src = ''; previewImg.style.display = 'none'; }
+      if (emptyPlaceholder) emptyPlaceholder.style.display = '';
+      if (clearBtn) clearBtn.style.display = 'none';
+    }
+  } else {
+    if (titleEl) titleEl.textContent = 'Tambah Slide Galeri Baru';
+    if (form) {
+      form.action = '/admin/about/gallery';
+      form.reset();
+    }
+    document.getElementById('gallery_slide_id').value = '';
+    document.getElementById('gallery_image_url').value = '';
+    document.getElementById('gallery_sort_order').value = 0;
+    document.getElementById('gallery_is_active').checked = true;
+    if (previewImg) { previewImg.src = ''; previewImg.style.display = 'none'; }
+    if (emptyPlaceholder) emptyPlaceholder.style.display = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+  }
+  openAdminModal('galleryModal');
+};
+
+window.openStatsModal = function(statData) {
+  const modal = document.getElementById('statsModal');
+  if (!modal) return;
+  const form = document.getElementById('statsForm');
+  const titleEl = document.getElementById('statsModalTitle');
+
+  if (statData) {
+    if (titleEl) titleEl.textContent = 'Edit Item Statistik';
+    if (form) form.action = `/admin/about/stats/${statData.id}/update`;
+    document.getElementById('stats_id').value = statData.id || '';
+    document.getElementById('stats_value').value = statData.stat_value || '';
+    document.getElementById('stats_label_id').value = statData.label_id || '';
+    document.getElementById('stats_label_en').value = statData.label_en || '';
+    document.getElementById('stats_sort_order').value = statData.sort_order ?? 0;
+    document.getElementById('stats_is_active').checked = statData.is_active !== 0 && statData.is_active !== false;
+  } else {
+    if (titleEl) titleEl.textContent = 'Tambah Item Statistik Baru';
+    if (form) {
+      form.action = '/admin/about/stats';
+      form.reset();
+    }
+    document.getElementById('stats_id').value = '';
+    document.getElementById('stats_sort_order').value = 0;
+    document.getElementById('stats_is_active').checked = true;
+  }
+  openAdminModal('statsModal');
+};
+
+window.openTimelineModal = function(timelineData) {
+  const modal = document.getElementById('timelineModal');
+  if (!modal) return;
+  const form = document.getElementById('timelineForm');
+  const titleEl = document.getElementById('timelineModalTitle');
+
+  if (timelineData) {
+    if (titleEl) titleEl.textContent = 'Edit Milestone Linimasa';
+    if (form) form.action = `/admin/about/timeline/${timelineData.id}/update`;
+    document.getElementById('timeline_id').value = timelineData.id || '';
+    document.getElementById('timeline_year_label_id').value = timelineData.year_label_id || '';
+    document.getElementById('timeline_year_label_en').value = timelineData.year_label_en || '';
+    document.getElementById('timeline_title_id').value = timelineData.title_id || '';
+    document.getElementById('timeline_title_en').value = timelineData.title_en || '';
+    document.getElementById('timeline_description_id').value = timelineData.description_id || '';
+    document.getElementById('timeline_description_en').value = timelineData.description_en || '';
+    document.getElementById('timeline_sort_order').value = timelineData.sort_order ?? 0;
+    document.getElementById('timeline_is_active').checked = timelineData.is_active !== 0 && timelineData.is_active !== false;
+  } else {
+    if (titleEl) titleEl.textContent = 'Tambah Milestone Linimasa';
+    if (form) {
+      form.action = '/admin/about/timeline';
+      form.reset();
+    }
+    document.getElementById('timeline_id').value = '';
+    document.getElementById('timeline_sort_order').value = 0;
+    document.getElementById('timeline_is_active').checked = true;
+  }
+  openAdminModal('timelineModal');
+};
+
+window.confirmDeleteAboutItem = function(actionUrl, itemTitle) {
+  const form = document.getElementById('genericDeleteForm');
+  if (!form) return;
+  form.action = actionUrl;
+
+  const msg = `Apakah Anda yakin ingin menghapus "${itemTitle}"? Data yang dihapus tidak dapat dipulihkan.`;
+
+  if (typeof Swal !== 'undefined') {
+    Swal.fire({
+      title: 'Konfirmasi Hapus',
+      text: msg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#DC2626',
+      cancelButtonColor: '#0D2040',
+      confirmButtonText: 'Ya, Hapus',
+      cancelButtonText: 'Batal',
+      reverseButtons: true,
+      focusCancel: true,
+      customClass: {
+        popup: 'swal2-custom-popup',
+        title: 'swal2-custom-title',
+        confirmButton: 'swal2-custom-confirm-btn',
+        cancelButton: 'swal2-custom-cancel-btn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        form.submit();
+      }
+    });
+  } else {
+    if (confirm(msg)) {
+      form.submit();
+    }
+  }
 };
 
 window.closeAllModals = function() {

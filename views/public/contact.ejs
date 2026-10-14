@@ -31,12 +31,12 @@
     <div class="container">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/"><%= t('nav.home') %></a>
-        <span aria-hidden="true">/</span>
-        <span style="color: #ffffff; font-weight: 600;"><%= t('nav.contact') %></span>
+        <span aria-hidden="true">&rsaquo;</span>
+        <span class="current"><%= t('nav.contact') %></span>
       </nav>
-      <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky, #38bdf8); margin-bottom: 10px;">
-        SALES & ENTERPRISE PROCUREMENT
-      </div>
+      <span class="page-hero-kicker">
+        <%= isEn ? 'SALES & ENTERPRISE PROCUREMENT' : 'KONSULTASI & PENGADAAN BISNIS' %>
+      </span>
       <h1 class="page-hero-title">
         <%= (heroObj && (isEn ? heroObj.title_en : heroObj.title_id))
             ? (isEn ? heroObj.title_en : heroObj.title_id)
