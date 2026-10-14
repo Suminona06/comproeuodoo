@@ -172,18 +172,20 @@
                   </td>
                   <td style="text-align: center;">
                     <% if (item.is_active) { %>
-                      <span class="badge badge-success" style="font-size: 11px;">Aktif</span>
+                      <span class="badge-status active">Aktif</span>
                     <% } else { %>
-                      <span class="badge" style="font-size: 11px; background: #e2e8f0; color: #64748b;">Nonaktif</span>
+                      <span class="badge-status inactive">Nonaktif</span>
                     <% } %>
                   </td>
                   <td style="text-align: right;">
-                    <div style="display: inline-flex; align-items: center; gap: 6px;">
-                      <button type="button" class="btn btn-secondary btn-sm" style="padding: 4px 8px;" title="Edit Statistik" onclick="openStatsModal(JSON.parse(decodeURIComponent(this.getAttribute('data-stat'))))" data-stat="<%= encodeURIComponent(JSON.stringify(item)) %>">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <div class="table-actions">
+                      <button type="button" class="btn-action btn-action-edit" title="Edit Statistik" onclick="openStatsModal(JSON.parse(decodeURIComponent(this.getAttribute('data-stat'))))" data-stat="<%= encodeURIComponent(JSON.stringify(item)) %>">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        <span>Edit</span>
                       </button>
-                      <button type="button" class="btn btn-danger btn-sm" style="padding: 4px 8px;" title="Hapus Statistik" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/stats/<%= item.id %>/delete" data-title="<%= item.stat_value %> - <%= item.label_id %>">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      <button type="button" class="btn-action btn-action-delete" title="Hapus Statistik" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/stats/<%= item.id %>/delete" data-title="<%= item.stat_value %> - <%= item.label_id %>">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Hapus</span>
                       </button>
                     </div>
                   </td>
@@ -259,18 +261,20 @@
                   </td>
                   <td style="text-align: center;">
                     <% if (item.is_active) { %>
-                      <span class="badge badge-success" style="font-size: 11px;">Aktif</span>
+                      <span class="badge-status active">Aktif</span>
                     <% } else { %>
-                      <span class="badge" style="font-size: 11px; background: #e2e8f0; color: #64748b;">Nonaktif</span>
+                      <span class="badge-status inactive">Nonaktif</span>
                     <% } %>
                   </td>
                   <td style="text-align: right;">
-                    <div style="display: inline-flex; align-items: center; gap: 6px;">
-                      <button type="button" class="btn btn-secondary btn-sm" style="padding: 4px 8px;" title="Edit Milestone" onclick="openTimelineModal(JSON.parse(decodeURIComponent(this.getAttribute('data-timeline'))))" data-timeline="<%= encodeURIComponent(JSON.stringify(item)) %>">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <div class="table-actions">
+                      <button type="button" class="btn-action btn-action-edit" title="Edit Milestone" onclick="openTimelineModal(JSON.parse(decodeURIComponent(this.getAttribute('data-timeline'))))" data-timeline="<%= encodeURIComponent(JSON.stringify(item)) %>">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        <span>Edit</span>
                       </button>
-                      <button type="button" class="btn btn-danger btn-sm" style="padding: 4px 8px;" title="Hapus Milestone" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/timeline/<%= item.id %>/delete" data-title="<%= item.year_label_id %>">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      <button type="button" class="btn-action btn-action-delete" title="Hapus Milestone" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/timeline/<%= item.id %>/delete" data-title="<%= item.year_label_id %>">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Hapus</span>
                       </button>
                     </div>
                   </td>
@@ -581,7 +585,7 @@
         </button>
       </div>
       <p style="font-size: 13px; color: var(--text-muted); margin: -0.5rem 0 1.25rem 0;">
-        Kelola slide gambar fasilitas manufaktur dan teknologi pabrik yang tampil pada slider interaktif halaman Tentang Kami.
+        Kelola slide gambar fasilitas manufaktur dan teknologi pabrik yang tampil pada grid mosaik bento berhalaman di halaman Tentang Kami.
       </p>
 
       <% if (gallerySlides && gallerySlides.length > 0) { %>
@@ -614,7 +618,7 @@
                   </td>
                   <td>
                     <% if (slide.category_id) { %>
-                      <span class="badge badge-info" style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;">
+                      <span class="badge-status badge-status--info">
                         <%= slide.category_id %>
                       </span>
                     <% } else { %>
@@ -643,18 +647,20 @@
                   </td>
                   <td style="text-align: center;">
                     <% if (slide.is_active) { %>
-                      <span class="badge badge-success" style="font-size: 11px;">Aktif</span>
+                      <span class="badge-status active">Aktif</span>
                     <% } else { %>
-                      <span class="badge" style="font-size: 11px; background: #e2e8f0; color: #64748b;">Nonaktif</span>
+                      <span class="badge-status inactive">Nonaktif</span>
                     <% } %>
                   </td>
                   <td style="text-align: right;">
-                    <div style="display: inline-flex; align-items: center; gap: 6px;">
-                      <button type="button" class="btn btn-secondary btn-sm" style="padding: 4px 8px;" title="Edit Slide" onclick="openGalleryModal(JSON.parse(decodeURIComponent(this.getAttribute('data-slide'))))" data-slide="<%= encodeURIComponent(JSON.stringify(slide)) %>">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <div class="table-actions">
+                      <button type="button" class="btn-action btn-action-edit" title="Edit Slide" onclick="openGalleryModal(JSON.parse(decodeURIComponent(this.getAttribute('data-slide'))))" data-slide="<%= encodeURIComponent(JSON.stringify(slide)) %>">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        <span>Edit</span>
                       </button>
-                      <button type="button" class="btn btn-danger btn-sm" style="padding: 4px 8px;" title="Hapus Slide" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/gallery/<%= slide.id %>/delete" data-title="<%= slide.title_id %>">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      <button type="button" class="btn-action btn-action-delete" title="Hapus Slide" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/gallery/<%= slide.id %>/delete" data-title="<%= slide.title_id %>">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span>Hapus</span>
                       </button>
                     </div>
                   </td>
@@ -731,7 +737,7 @@
               <button type="button" class="btn btn-ghost btn-sm btn-clear-media" id="gallery_btn_clear" style="display: none;">Hapus Gambar</button>
             </div>
           </div>
-          <div class="form-hint">Disarankan rasio landscape 16:9 atau 4:3 (minimal 1200x800px).</div>
+          <div class="form-hint">Disarankan resolusi minimal 1200x800px. Gambar landscape 16:9 atau 4:3. Semua gambar ditampilkan dalam format cover (crop otomatis sesuai tile mosaik).</div>
         </div>
 
         <!-- Kategori / Tag Badge -->

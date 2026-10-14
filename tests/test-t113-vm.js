@@ -5,17 +5,26 @@ import { pool } from '../config/database.js';
 async function testVM() {
   console.log('Testing T-113: Vision & Mission Section...');
 
-  // 1. Test Without Images
-  const resEmpty = await fetch('http://localhost:3000/about');
-  const htmlEmpty = await resEmpty.text();
+  const origData = await aboutModel.getAboutData();
+  const origVision = origData?.vision_image_url || '';
+  const origMission = origData?.mission_image_url || '';
 
-  assert(htmlEmpty.includes('id="visi-misi"'), 'Section #visi-misi harus ada');
-  assert(htmlEmpty.includes('class="sec-vm"'), 'Class .sec-vm harus ada');
-  assert(htmlEmpty.includes('no-image'), 'Harus ada class no-image saat URL gambar kosong');
-  assert(!htmlEmpty.includes('class="vm-media"'), 'Tidak boleh ada class .vm-media saat URL gambar kosong');
-
-  // 2. Test With Images
   try {
+    // 1. Test Without Images
+    await aboutModel.updateAboutData({
+      vision_image_url: '',
+      mission_image_url: ''
+    });
+
+    const resEmpty = await fetch('http://localhost:3000/about');
+    const htmlEmpty = await resEmpty.text();
+
+    assert(htmlEmpty.includes('id="visi-misi"'), 'Section #visi-misi harus ada');
+    assert(htmlEmpty.includes('class="sec-vm"'), 'Class .sec-vm harus ada');
+    assert(htmlEmpty.includes('no-image'), 'Harus ada class no-image saat URL gambar kosong');
+    assert(!htmlEmpty.includes('class="vm-media"'), 'Tidak boleh ada class .vm-media saat URL gambar kosong');
+
+    // 2. Test With Images
     await aboutModel.updateAboutData({
       vision_image_url: '/uploads/media/test-vis.jpg',
       mission_image_url: '/uploads/media/test-mis.jpg'
@@ -42,8 +51,8 @@ async function testVM() {
   } finally {
     // Revert settings
     await aboutModel.updateAboutData({
-      vision_image_url: '',
-      mission_image_url: ''
+      vision_image_url: origVision,
+      mission_image_url: origMission
     });
   }
 

@@ -149,7 +149,7 @@
   </section>
 
   <!-- 4. NILAI-NILAI INTI BUDAYA KERJA T-I-C-K-E-T -->
-  <section class="sec-intro" id="core-values">
+  <section class="sec-values" id="core-values">
     <div class="container">
       <div class="pillars-header reveal">
         <span class="brands-kicker"><%= lang === 'en' ? 'CORE VALUES' : 'NILAI INTI BUDAYA' %></span>
@@ -181,7 +181,7 @@
     </div>
   </section>
 
-  <!-- 5. GALERI FASILITAS & OPERASIONAL -->
+  <!-- 5. GALERI FASILITAS & OPERASIONAL (Bento Mosaic Grid) -->
   <% if (typeof gallerySlides !== 'undefined' && gallerySlides && gallerySlides.length > 0) { %>
     <section class="sec-gallery" id="galeri" data-od-id="gallery">
       <div class="container">
@@ -191,48 +191,68 @@
             <h2><%= (lang === 'en' ? galleryHeader?.title_en : galleryHeader?.title_id) || (lang === 'en' ? 'Inside Our Operations' : 'Di Dalam Operasional Kami') %></h2>
             <p><%= (lang === 'en' ? galleryHeader?.body_en : galleryHeader?.body_id) || (lang === 'en' ? 'A glimpse of our production activity, modern extrusion lines, and industrial capabilities.' : 'Sepintas aktivitas produksi, lini ekstrusi film mutakhir, pengujian laboratorium, dan standar kebersihan manufaktur PT EUODOO.') %></p>
           </div>
-          <% if (gallerySlides.length > 1) { %>
-            <div class="gal-nav">
-              <span class="gal-count"><strong id="galCur">01</strong> / <span id="galTotal"><%= String(gallerySlides.length).padStart(2, '0') %></span></span>
-              <div class="gal-arrows">
-                <button type="button" class="gal-arrow" id="galPrev" aria-label="<%= lang === 'en' ? 'Previous photo' : 'Foto sebelumnya' %>">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
-                </button>
-                <button type="button" class="gal-arrow" id="galNext" aria-label="<%= lang === 'en' ? 'Next photo' : 'Foto berikutnya' %>">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
-                </button>
-              </div>
-            </div>
-          <% } %>
         </div>
 
-        <div class="gal-viewport reveal">
-          <div class="gal-track" id="galTrack">
-            <% gallerySlides.forEach((slide, idx) => { %>
-              <div class="gal-slide">
+        <% 
+          const totalSlides = gallerySlides.length;
+          const initialPageCount = Math.ceil(totalSlides / 6);
+          const initialSlice = gallerySlides.slice(0, Math.min(6, totalSlides));
+          let gridModifier = '';
+          if (initialSlice.length === 5) gridModifier = 'bento-grid--5';
+          else if (initialSlice.length === 4) gridModifier = 'bento-grid--4';
+          else if (initialSlice.length === 3) gridModifier = 'bento-grid--3';
+          else if (initialSlice.length === 2) gridModifier = 'bento-grid--2';
+          else if (initialSlice.length === 1) gridModifier = 'bento-grid--1';
+        %>
+
+        <div class="bento-gallery" id="bentoGallery">
+          <div class="bento-grid <%= gridModifier %>" id="bentoGrid">
+            <% initialSlice.forEach((slide, idx) => { 
+                 let posClass = 'bento-tile--pos-' + (idx + 1);
+                 if (initialSlice.length === 6) {
+                   if (idx === 0) posClass += ' bento-tile--tall';
+                   else if (idx === 1 || idx === 4) posClass += ' bento-tile--wide';
+                 }
+                 const tag = lang === 'en' ? (slide.category_en || slide.category_id) : slide.category_id;
+                 const titleText = lang === 'en' ? (slide.title_en || slide.title_id) : slide.title_id;
+            %>
+              <div class="bento-tile <%= posClass %>" tabindex="0" style="--tile-i: <%= idx %>;">
                 <img 
                   src="<%= slide.image_url %>" 
-                  alt="<%= lang === 'en' ? (slide.title_en || slide.title_id) : slide.title_id %>"
+                  alt="<%= titleText || 'Euodoo Gallery' %>"
                   <%- idx > 0 ? 'loading="lazy"' : '' %>>
-                <div class="gal-slide-cap">
-                  <% const tag = lang === 'en' ? (slide.category_en || slide.category_id) : slide.category_id; %>
+                <div class="bento-cap">
                   <% if (tag) { %>
-                    <span class="gal-slide-tag"><%= tag %></span>
+                    <span class="bento-cat"><%= tag %></span>
                   <% } %>
-                  <div class="gal-slide-title"><%= lang === 'en' ? (slide.title_en || slide.title_id) : slide.title_id %></div>
-                  <% const sub = lang === 'en' ? (slide.subtitle_en || slide.subtitle_id) : slide.subtitle_id; %>
-                  <% if (sub) { %>
-                    <div class="gal-slide-sub"><%= sub %></div>
+                  <% if (titleText) { %>
+                    <div class="bento-title"><%= titleText %></div>
                   <% } %>
                 </div>
               </div>
             <% }); %>
           </div>
+
+          <div class="bento-pager" id="bentoPager" <%- totalSlides <= 1 ? 'style="display: none;"' : '' %>>
+            <span class="bento-pager-count" aria-live="polite" aria-atomic="true"><strong id="bentoCur">01</strong> / <span id="bentoTotal"><%= String(initialPageCount).padStart(2, '0') %></span></span>
+            <div class="bento-pager-arrows">
+              <button type="button" class="bento-pager-btn" id="bentoPrev" aria-label="<%= lang === 'en' ? 'Previous gallery page' : 'Halaman galeri sebelumnya' %>" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+              </button>
+              <button type="button" class="bento-pager-btn" id="bentoNext" aria-label="<%= lang === 'en' ? 'Next gallery page' : 'Halaman galeri berikutnya' %>" <%- initialPageCount <= 1 ? 'disabled' : '' %>>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <% if (gallerySlides.length > 1) { %>
-          <div class="gal-thumbs" id="galThumbs" aria-label="<%= lang === 'en' ? 'Select photo' : 'Pilih foto' %>"></div>
-        <% } %>
+        <script type="application/json" id="bentoGalleryData">
+          <%- JSON.stringify(gallerySlides.map(s => ({
+            image_url: s.image_url,
+            category: lang === 'en' ? (s.category_en || s.category_id || '') : (s.category_id || ''),
+            title: lang === 'en' ? (s.title_en || s.title_id || '') : (s.title_id || '')
+          }))) %>
+        </script>
       </div>
     </section>
   <% } %>
