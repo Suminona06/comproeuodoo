@@ -3,7 +3,7 @@
 <div class="content-header">
   <div class="content-title-text">
     <h1>CMS Konten Halaman Kontak &amp; Inquiry</h1>
-    <p>Kelola alamat kantor/pabrik dwibahasa, jam kerja, kontak korespondensi, peta Google Maps, dan teks formulir penawaran.</p>
+    <p>Kelola jam kerja operasional dwibahasa serta teks judul dan pengantar formulir konsultasi penawaran.</p>
   </div>
   <div class="header-actions">
     <a href="/contact" target="_blank" class="btn btn-secondary" title="Buka Halaman Kontak Publik">
@@ -16,46 +16,12 @@
 <form action="/admin/contact?_csrf=<%= csrfToken %>" method="POST">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-  <!-- Informational Banner: Centralized Master Settings Link (Decision 1A) -->
-  <div style="margin-bottom: 24px; padding: 18px 22px; border-radius: 10px; background: #eff6ff; border: 1.5px solid #bfdbfe; color: #1e40af; display: flex; align-items: flex-start; gap: 14px;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
-      <circle cx="12" cy="12" r="10"></circle>
-      <line x1="12" y1="16" x2="12" y2="12"></line>
-      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-    </svg>
-    <div style="font-size: 14px; line-height: 1.6;">
-      <strong style="font-weight: 700; color: #1e3a8a;">Sentralisasi Master Data Kontak &amp; Alamat</strong>
-      <p style="margin: 4px 0 10px 0; color: #1d4ed8;">
-        Alamat fisik Kantor Pusat (Jakarta) dan Pabrik Manufaktur (Bandung), nomor telepon resmi, email korespondensi, serta peta Google Maps dikelola secara terpusat di menu <strong>Pengaturan Situs</strong>.
-      </p>
-      <a href="/admin/settings" class="btn btn-secondary btn-sm" style="background: #ffffff; border-color: #93c5fd; color: #1d4ed8; font-weight: 600;">
-        Buka Pengaturan Situs &rarr;
-      </a>
-    </div>
-  </div>
+  <input type="hidden" name="contact_address_id" value="<%= settings.contact_address_id || settings.factory_address || '' %>">
+  <input type="hidden" name="contact_address_en" value="<%= settings.contact_address_en || settings.factory_address || '' %>">
 
-  <!-- Card 1: Alamat Fisik Kantor & Pabrik Terpusat (Bilingual Readonly Synchronization) -->
-  <div class="form-card" style="opacity: 0.95;">
-    <div class="form-card-title">1. Alamat Fisik Kantor &amp; Pabrik (Tersinkronisasi Terpusat)</div>
-    <div style="font-size: 13px; color: var(--text-variant, #64748b); margin-bottom: 14px;">
-      Data alamat di bawah ini disinkronkan langsung dari Pengaturan Situs. Untuk mengubah alamat resmi, silakan gunakan menu Pengaturan Situs.
-    </div>
-
-    <div class="form-row-2">
-      <div class="form-group">
-        <label class="form-label" for="contact_address_id">Alamat Pabrik Bandung (Bahasa Indonesia)</label>
-        <textarea id="contact_address_id" name="contact_address_id" class="form-textarea" rows="2" readonly style="background: #f8fafc; cursor: default;"><%= settings.contact_address_id || settings.factory_address || '' %></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="contact_address_en">Alamat Pabrik Bandung (English)</label>
-        <textarea id="contact_address_en" name="contact_address_en" class="form-textarea" rows="2" readonly style="background: #f8fafc; cursor: default;"><%= settings.contact_address_en || settings.factory_address || '' %></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- Card 2: Jam Operasional Kerja -->
+  <!-- Card 1: Jam Operasional Kerja -->
   <div class="form-card">
-    <div class="form-card-title">2. Jam Operasional Kerja (Bilingual)</div>
+    <div class="form-card-title">1. Jam Operasional Kerja (Bilingual)</div>
 
     <div class="form-row-2">
       <div class="form-group">
@@ -69,9 +35,9 @@
     </div>
   </div>
 
-  <!-- Card 5: Teks Seksi Formulir Inquiry -->
+  <!-- Card 2: Teks Seksi Formulir Inquiry -->
   <div class="form-card">
-    <div class="form-card-title">5. Teks Seksi Formulir Inquiry &amp; Penawaran (Bilingual)</div>
+    <div class="form-card-title">2. Teks Seksi Formulir Inquiry &amp; Penawaran (Bilingual)</div>
 
     <div class="form-row-2">
       <div class="form-group">
@@ -96,10 +62,23 @@
     </div>
   </div>
 
-  <div class="form-actions-bar" style="margin-bottom: 2rem;">
-    <button type="submit" class="btn btn-primary" style="padding: 10px 28px; font-size: 14px;">
-      Simpan Konten Halaman Kontak
-    </button>
+  <!-- Sticky Actions Bar -->
+  <div class="settings-sticky-actions">
+    <div class="actions-left" style="display: flex; align-items: center; gap: 8px;">
+      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+      <span style="font-size: 13px; color: var(--text-muted, #64748b); font-weight: 500;">
+        Perubahan konten langsung diterapkan pada formulir kontak publik.
+      </span>
+    </div>
+    <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">
+      <a href="/admin/dashboard" class="btn btn-secondary">
+        Batal
+      </a>
+      <button type="submit" class="btn btn-primary" style="min-width: 220px;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        <span>Simpan Konten Kontak</span>
+      </button>
+    </div>
   </div>
 </form>
 
