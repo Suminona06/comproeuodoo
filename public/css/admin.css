@@ -1861,6 +1861,7 @@ body.sidebar-open .admin-backdrop {
   margin-bottom: 1.5rem;
 }
 
+.settings-sticky-actions,
 .about-sticky-actions {
   position: sticky;
   bottom: 0;
@@ -1953,12 +1954,14 @@ body.sidebar-open .admin-backdrop {
   .app-sidebar .sidebar-user-footer [data-tooltip]::after {
     display: none !important;
   }
+  .settings-sticky-actions,
   .about-sticky-actions {
     margin: 1.5rem -1rem -1rem;
     padding: 0.85rem 1rem;
     flex-direction: column;
     align-items: stretch;
   }
+  .settings-sticky-actions .actions-right,
   .about-sticky-actions .actions-right {
     display: flex;
     gap: 8px;

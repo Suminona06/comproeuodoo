@@ -3,6 +3,51 @@ import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
 import { saveSettingUpload } from '../../middleware/uploadMiddleware.js';
 import logger from '../../utils/logger.js';
 
+/**
+ * Extract clean src URL from raw input or iframe HTML and validate Google Maps domain
+ * @param {string} rawInput
+ * @returns {string}
+ */
+export function parseAndValidateGoogleMapsUrl(rawInput) {
+  if (!rawInput || typeof rawInput !== 'string') return '';
+  const trimmed = rawInput.trim();
+  if (!trimmed) return '';
+
+  let extractedUrl = trimmed;
+
+  if (trimmed.startsWith('<iframe') || trimmed.includes('<iframe')) {
+    const srcMatch = trimmed.match(/src=["'](https:\/\/[^"']+)["']/i);
+    if (!srcMatch || !srcMatch[1]) {
+      throw new Error('Kode embed iframe Google Maps tidak memiliki atribut src yang valid.');
+    }
+    extractedUrl = srcMatch[1];
+  }
+
+  try {
+    const parsed = new URL(extractedUrl);
+    if (parsed.protocol !== 'https:') {
+      throw new Error('URL Google Maps wajib menggunakan protokol aman HTTPS.');
+    }
+
+    const hostname = parsed.hostname.toLowerCase();
+    const isGoogleDomain = (
+      hostname === 'www.google.com' ||
+      hostname === 'google.com' ||
+      hostname === 'maps.google.com'
+    );
+
+    const isMapsPath = parsed.pathname.startsWith('/maps/embed') || parsed.pathname.startsWith('/maps');
+
+    if (!isGoogleDomain || !isMapsPath) {
+      throw new Error('URL wajib berasal dari domain sematan resmi Google Maps (google.com/maps/embed).');
+    }
+
+    return extractedUrl;
+  } catch (err) {
+    throw new Error('Format URL Google Maps tidak valid: ' + err.message);
+  }
+}
+
 export const settingController = {
   async index(req, res) {
     try {
@@ -24,34 +69,65 @@ export const settingController = {
 
   async update(req, res) {
     try {
-      const allowedKeys = [
+      const textKeys = [
         'company_name', 'company_tagline_id', 'company_tagline_en',
         'company_phone', 'company_email',
-        'office_address', 'office_city',
-        'factory_address', 'factory_city',
-        'google_maps_embed',
-        'whatsapp_number', 'whatsapp_default_message',
-        'whatsapp_button_theme', 'whatsapp_floating_enabled',
-        'facebook_url', 'instagram_url', 'linkedin_url', 'youtube_url',
-        'site_favicon', 'site_logo_header', 'site_logo_footer'
+        'office_name_id', 'office_name_en', 'office_address', 'office_city', 'office_phone', 'office_fax',
+        'factory_name_id', 'factory_name_en', 'factory_address', 'factory_city', 'factory_phone',
+        'factory_working_hours_id', 'factory_working_hours_en',
+        'whatsapp_default_message', 'whatsapp_button_theme', 'whatsapp_floating_enabled'
       ];
 
       const updates = {};
-      for (const key of allowedKeys) {
+
+      for (const key of textKeys) {
         if (req.body && req.body[key] !== undefined) {
-          if (key === 'whatsapp_number') {
-            updates[key] = req.body[key].replace(/[^0-9]/g, '');
-          } else {
-            updates[key] = req.body[key].trim();
-          }
+          updates[key] = req.body[key].trim();
         }
+      }
+
+      // Synchronize company_phone and office_phone
+      if (updates.office_phone && !updates.company_phone) {
+        updates.company_phone = updates.office_phone;
+      } else if (updates.company_phone && !updates.office_phone) {
+        updates.office_phone = updates.company_phone;
+      }
+
+      // Handle WhatsApp number normalization
+      if (req.body && req.body.whatsapp_number !== undefined) {
+        updates.whatsapp_number = req.body.whatsapp_number.replace(/[^0-9]/g, '');
+      }
+
+      // Handle Google Maps embed with validation and iframe parser
+      if (req.body && req.body.google_maps_embed !== undefined) {
+        updates.google_maps_embed = parseAndValidateGoogleMapsUrl(req.body.google_maps_embed);
+        updates.contact_maps_embed_url = updates.google_maps_embed;
+      }
+
+      // Handle social media visibility toggles and URLs (Opsi 4B)
+      const socialPlatforms = ['linkedin', 'instagram', 'facebook', 'youtube'];
+      for (const platform of socialPlatforms) {
+        const toggleKey = `social_${platform}_visible`;
+        updates[toggleKey] = req.body && req.body[toggleKey] === '1' ? '1' : '0';
+
+        const urlKey = `social_${platform}_url`;
+        const legacyUrlKey = `${platform}_url`;
+        const rawUrl = (req.body && (req.body[urlKey] !== undefined ? req.body[urlKey] : req.body[legacyUrlKey])) || '';
+        const trimmedUrl = rawUrl.trim();
+
+        if (trimmedUrl && !trimmedUrl.startsWith('https://')) {
+          throw new Error(`URL ${platform} wajib menggunakan protokol aman https://`);
+        }
+
+        updates[urlKey] = trimmedUrl;
+        updates[legacyUrlKey] = trimmedUrl;
       }
 
       // Handle upload favicon file (T-64)
       if (req.files && req.files.favicon_file && req.files.favicon_file[0]) {
         const faviconUrl = await saveSettingUpload(req.files.favicon_file[0], 'favicon');
         if (faviconUrl) {
-          updates['site_favicon'] = faviconUrl;
+          updates.site_favicon = faviconUrl;
         }
       }
 
@@ -59,7 +135,7 @@ export const settingController = {
       if (req.files && req.files.logo_header_file && req.files.logo_header_file[0]) {
         const logoHeaderUrl = await saveSettingUpload(req.files.logo_header_file[0], 'logo-header');
         if (logoHeaderUrl) {
-          updates['site_logo_header'] = logoHeaderUrl;
+          updates.site_logo_header = logoHeaderUrl;
         }
       }
 
@@ -67,7 +143,7 @@ export const settingController = {
       if (req.files && req.files.logo_footer_file && req.files.logo_footer_file[0]) {
         const logoFooterUrl = await saveSettingUpload(req.files.logo_footer_file[0], 'logo-footer');
         if (logoFooterUrl) {
-          updates['site_logo_footer'] = logoFooterUrl;
+          updates.site_logo_footer = logoFooterUrl;
         }
       }
 

@@ -30,13 +30,13 @@
           <div class="ft-office-card">
             <div class="ft-office-label">
               <span class="ft-office-dot"></span>
-              <%= currentLang === 'en' ? 'Head Office (Jakarta)' : 'Kantor Pusat Jakarta' %>
+              <%= currentLang === 'en' ? (settings?.office_name_en || 'Head Office (Jakarta)') : (settings?.office_name_id || 'Kantor Pusat (Jakarta)') %>
             </div>
             <div class="ft-office-addr">
               <%= typeof settings !== 'undefined' && settings?.office_address ? settings.office_address : 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02-07, Jakarta Pusat 10270' %><br>
               <span class="ft-phone-label"><%= currentLang === 'en' ? 'Phone:' : 'Telp:' %></span>
-              <a href="tel:<%= (typeof settings !== 'undefined' && settings?.company_phone ? settings.company_phone : '02153668626').replace(/[^0-9]/g, '') %>" class="ft-phone-val">
-                <%= typeof settings !== 'undefined' && settings?.company_phone ? settings.company_phone : '(021) 53668626' %>
+              <a href="tel:<%= (typeof settings !== 'undefined' && (settings?.office_phone || settings?.company_phone) ? (settings.office_phone || settings.company_phone) : '02153668626').replace(/[^0-9+]/g, '') %>" class="ft-phone-val">
+                <%= typeof settings !== 'undefined' && (settings?.office_phone || settings?.company_phone) ? (settings.office_phone || settings.company_phone) : '(021) 53668626' %>
               </a>
             </div>
           </div>
@@ -44,12 +44,14 @@
           <div class="ft-office-card">
             <div class="ft-office-label">
               <span class="ft-office-dot"></span>
-              <%= currentLang === 'en' ? 'Production Plant (Bandung)' : 'Pabrik Produksi Bandung' %>
+              <%= currentLang === 'en' ? (settings?.factory_name_en || 'Manufacturing Plant (Bandung)') : (settings?.factory_name_id || 'Pabrik Manufaktur (Bandung)') %>
             </div>
             <div class="ft-office-addr">
-              <%= typeof settings !== 'undefined' && settings?.factory_address ? settings.factory_address : 'Jl. Paralon II No. 21 Cijerah Bandung 40214' %><br>
+              <%= typeof settings !== 'undefined' && settings?.factory_address ? settings.factory_address : 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214' %><br>
               <span class="ft-phone-label"><%= currentLang === 'en' ? 'Phone:' : 'Telp:' %></span>
-              <a href="tel:0226012519" class="ft-phone-val">(022) 6012519</a>
+              <a href="tel:<%= (typeof settings !== 'undefined' && settings?.factory_phone ? settings.factory_phone : '0226012519').replace(/[^0-9+]/g, '') %>" class="ft-phone-val">
+                <%= typeof settings !== 'undefined' && settings?.factory_phone ? settings.factory_phone : '(022) 6012519' %>
+              </a>
             </div>
           </div>
         </div>
@@ -78,26 +80,51 @@
     <div class="ft-bottom">
       <span>&copy; <%= typeof currentYear !== 'undefined' ? currentYear : new Date().getFullYear() %> PT. EUODOO. <%= currentLang === 'en' ? 'All rights reserved.' : 'Hak cipta dilindungi undang-undang.' %></span>
       
-      <div class="social-row" aria-label="Media Sosial Resmi">
-        <a href="<%= typeof settings !== 'undefined' && settings?.social_linkedin ? settings.social_linkedin : 'https://linkedin.com' %>"
-           class="social-btn" aria-label="LinkedIn PT Euodoo" target="_blank" rel="noopener noreferrer">
-          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.27a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z" />
-          </svg>
-        </a>
-        <a href="<%= typeof settings !== 'undefined' && settings?.social_instagram ? settings.social_instagram : 'https://instagram.com' %>"
-           class="social-btn" aria-label="Instagram PT Euodoo" target="_blank" rel="noopener noreferrer">
-          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-          </svg>
-        </a>
-        <a href="<%= typeof settings !== 'undefined' && settings?.social_facebook ? settings.social_facebook : 'https://facebook.com' %>"
-           class="social-btn" aria-label="Facebook PT Euodoo" target="_blank" rel="noopener noreferrer">
-          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-          </svg>
-        </a>
-      </div>
+      <%
+        const socials = [
+          {
+            id: 'linkedin',
+            name: 'LinkedIn',
+            url: typeof settings !== 'undefined' ? (settings?.social_linkedin_url || settings?.linkedin_url || '') : '',
+            visible: typeof settings !== 'undefined' ? (settings?.social_linkedin_visible !== '0' && settings?.social_linkedin_visible !== 0) : true,
+            svg: '<path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.27a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z" />'
+          },
+          {
+            id: 'instagram',
+            name: 'Instagram',
+            url: typeof settings !== 'undefined' ? (settings?.social_instagram_url || settings?.instagram_url || '') : '',
+            visible: typeof settings !== 'undefined' ? (settings?.social_instagram_visible !== '0' && settings?.social_instagram_visible !== 0) : true,
+            svg: '<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />'
+          },
+          {
+            id: 'facebook',
+            name: 'Facebook',
+            url: typeof settings !== 'undefined' ? (settings?.social_facebook_url || settings?.facebook_url || '') : '',
+            visible: typeof settings !== 'undefined' ? (settings?.social_facebook_visible !== '0' && settings?.social_facebook_visible !== 0) : true,
+            svg: '<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />'
+          },
+          {
+            id: 'youtube',
+            name: 'YouTube',
+            url: typeof settings !== 'undefined' ? (settings?.social_youtube_url || settings?.youtube_url || '') : '',
+            visible: typeof settings !== 'undefined' ? (settings?.social_youtube_visible !== '0' && settings?.social_youtube_visible !== 0) : true,
+            svg: '<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />'
+          }
+        ];
+
+        const activeSocials = socials.filter(s => s.visible && s.url && s.url.startsWith('https://'));
+      %>
+      <% if (activeSocials.length > 0) { %>
+        <div class="social-row" aria-label="<%= currentLang === 'en' ? 'Official Social Media Channels' : 'Media Sosial Resmi PT Euodoo' %>">
+          <% activeSocials.forEach(s => { %>
+            <a href="<%= s.url %>" class="social-btn" aria-label="<%= s.name %> PT Euodoo" target="_blank" rel="noopener noreferrer">
+              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <%- s.svg %>
+              </svg>
+            </a>
+          <% }); %>
+        </div>
+      <% } %>
 
       <div class="ft-legal-links">
         <a href="/about" class="ft-legal-link"><%= currentLang === 'en' ? 'Terms & Conditions' : 'Syarat & Ketentuan' %></a>

@@ -44,6 +44,13 @@ export const contactCmsController = {
         }
       }
 
+      if (updates.contact_working_hours_id) {
+        updates.factory_working_hours_id = updates.contact_working_hours_id;
+      }
+      if (updates.contact_working_hours_en) {
+        updates.factory_working_hours_en = updates.contact_working_hours_en;
+      }
+
       await settingModel.updateMany(updates);
       clearSettingsCache();
 

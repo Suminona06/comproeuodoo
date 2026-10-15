@@ -111,25 +111,95 @@
   <div class="form-card">
     <div class="form-card-title">3. Alamat Kantor Jakarta &amp; Pabrik Manufaktur Bandung</div>
 
-    <div class="form-row-2">
-      <div class="form-group">
-        <label class="form-label" for="office_address">Alamat Kantor Pemasaran (Jakarta Barat) *</label>
-        <textarea id="office_address" name="office_address" class="form-textarea" required><%= settings.office_address || 'Jl. Palmerah Barat No. 29, Jakarta Barat 11480' %></textarea>
+    <!-- Lokasi 1: Jakarta -->
+    <div style="background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+      <div style="font-weight: 700; font-size: 14px; color: var(--navy, #0a192f); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary, #0055b8);"></span>
+        Lokasi 1: Kantor Pusat (Jakarta)
       </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="office_name_id">Nama Label Lokasi (Bahasa Indonesia) *</label>
+          <input type="text" id="office_name_id" name="office_name_id" class="form-input" required value="<%= settings.office_name_id || 'Kantor Pusat (Jakarta)' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="office_name_en">Nama Label Lokasi (English) *</label>
+          <input type="text" id="office_name_en" name="office_name_en" class="form-input" required value="<%= settings.office_name_en || 'Head Office (Jakarta)' %>">
+        </div>
+      </div>
+
       <div class="form-group">
-        <label class="form-label" for="factory_address">Alamat Pabrik Manufaktur (Bandung) *</label>
-        <textarea id="factory_address" name="factory_address" class="form-textarea" required><%= settings.factory_address || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214' %></textarea>
+        <label class="form-label" for="office_address">Alamat Lengkap Kantor Jakarta *</label>
+        <textarea id="office_address" name="office_address" class="form-textarea" rows="2" required><%= settings.office_address || 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02-07, Jakarta Pusat 10270' %></textarea>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="office_phone">Nomor Telepon Kantor Jakarta *</label>
+          <input type="text" id="office_phone" name="office_phone" class="form-input" required value="<%= settings.office_phone || settings.company_phone || '(021) 53668626' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="office_fax">Nomor Fax Kantor Jakarta (Opsional)</label>
+          <input type="text" id="office_fax" name="office_fax" class="form-input" value="<%= settings.office_fax || '+6221-53668648' %>">
+        </div>
       </div>
     </div>
 
+    <!-- Lokasi 2: Bandung -->
+    <div style="background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+      <div style="font-weight: 700; font-size: 14px; color: var(--navy, #0a192f); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #059669;"></span>
+        Lokasi 2: Pabrik Manufaktur (Bandung)
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="factory_name_id">Nama Label Lokasi (Bahasa Indonesia) *</label>
+          <input type="text" id="factory_name_id" name="factory_name_id" class="form-input" required value="<%= settings.factory_name_id || 'Pabrik Manufaktur (Bandung)' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="factory_name_en">Nama Label Lokasi (English) *</label>
+          <input type="text" id="factory_name_en" name="factory_name_en" class="form-input" required value="<%= settings.factory_name_en || 'Manufacturing Plant (Bandung)' %>">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="factory_address">Alamat Lengkap Pabrik Bandung *</label>
+        <textarea id="factory_address" name="factory_address" class="form-textarea" rows="2" required><%= settings.factory_address || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214' %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="factory_phone">Nomor Telepon Pabrik / Hotline *</label>
+        <input type="text" id="factory_phone" name="factory_phone" class="form-input" required value="<%= settings.factory_phone || '(022) 6012519' %>">
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="factory_working_hours_id">Jam Operasional (Bahasa Indonesia)</label>
+          <input type="text" id="factory_working_hours_id" name="factory_working_hours_id" class="form-input" value="<%= settings.factory_working_hours_id || 'Senin - Jumat: 08.00 - 17.00 WIB | Sabtu: 08.00 - 13.00 WIB' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="factory_working_hours_en">Jam Operasional (English)</label>
+          <input type="text" id="factory_working_hours_en" name="factory_working_hours_en" class="form-input" value="<%= settings.factory_working_hours_en || 'Monday - Friday: 08:00 - 17:00 WIB | Saturday: 08:00 - 13:00 WIB' %>">
+        </div>
+      </div>
+    </div>
+
+    <!-- Peta Google Maps Terpadu -->
     <div class="form-group">
-      <label class="form-label" for="google_maps_embed">Kode Embed Google Maps (URL iframe)</label>
-      <input type="text" id="google_maps_embed" name="google_maps_embed" class="form-input" value="<%= settings.google_maps_embed || '' %>" placeholder="https://www.google.com/maps/embed?pb=...">
-      <div class="form-hint">Salin URL dari atribut 'src' pada kode embed Google Maps resmi.</div>
+      <label class="form-label" for="google_maps_embed">Kode Embed Google Maps Pabrik Bandung (URL iframe atau kode sematan utuh)</label>
+      <input type="text" id="google_maps_embed" name="google_maps_embed" class="form-input" value="<%= settings.google_maps_embed || '' %>" placeholder="https://www.google.com/maps/embed?pb=... atau <iframe src='...'></iframe>">
+      <div class="form-hint">Dapat berupa URL langsung atau seluruh kode tag &lt;iframe&gt; dari Google Maps resmi (sistem akan mengekstrak URL secara otomatis dan aman).</div>
+      <% if (settings.google_maps_embed) { %>
+        <div style="margin-top: 12px; border-radius: 8px; overflow: hidden; height: 180px; border: 1px solid #e2e8f0;">
+          <iframe src="<%= settings.google_maps_embed %>" width="100%" height="180" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      <% } %>
     </div>
   </div>
 
-  <!-- Card 3: WhatsApp & Floating Button -->
+  <!-- Card 4: WhatsApp & Floating Button -->
   <div class="form-card">
     <div class="form-card-title">4. Layanan WhatsApp &amp; Tombol Melayang (Floating CTA)</div>
 
@@ -156,35 +226,83 @@
     </div>
   </div>
 
-  <!-- Card 4: Media Sosial -->
+  <!-- Card 5: Media Sosial -->
   <div class="form-card">
     <div class="form-card-title">5. Akun Media Sosial Resmi Perusahaan</div>
-
-    <div class="form-row-2">
-      <div class="form-group">
-        <label class="form-label" for="linkedin_url">LinkedIn URL</label>
-        <input type="url" id="linkedin_url" name="linkedin_url" class="form-input" placeholder="https://linkedin.com/company/pt-euodoo" value="<%= settings.linkedin_url || '' %>">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="instagram_url">Instagram URL</label>
-        <input type="url" id="instagram_url" name="instagram_url" class="form-input" placeholder="https://instagram.com/euodoo.id" value="<%= settings.instagram_url || '' %>">
-      </div>
+    <div style="color: var(--text-variant, #64748b); font-size: 13px; margin-bottom: 16px;">
+      Aktifkan atau sembunyikan ikon media sosial di footer publik. Masukkan URL akun dengan awalan protokol <code>https://</code>.
     </div>
 
     <div class="form-row-2">
-      <div class="form-group">
-        <label class="form-label" for="facebook_url">Facebook URL</label>
-        <input type="url" id="facebook_url" name="facebook_url" class="form-input" placeholder="https://facebook.com/pteuodoo" value="<%= settings.facebook_url || '' %>">
+      <!-- LinkedIn -->
+      <div class="form-group" style="padding: 14px 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label class="form-label" for="social_linkedin_url" style="font-weight: 700; color: var(--navy, #0a192f); margin-bottom: 0;">LinkedIn</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary, #475569);">
+            <input type="checkbox" name="social_linkedin_visible" value="1" <%= (settings.social_linkedin_visible !== '0' && settings.social_linkedin_visible !== 0) ? 'checked' : '' %> style="width: 16px; height: 16px; accent-color: var(--primary, #0055b8);">
+            <span>Tampilkan</span>
+          </label>
+        </div>
+        <input type="url" id="social_linkedin_url" name="social_linkedin_url" class="form-input" placeholder="https://linkedin.com/company/pt-euodoo" value="<%= settings.social_linkedin_url || settings.linkedin_url || '' %>">
       </div>
-      <div class="form-group">
-        <label class="form-label" for="youtube_url">YouTube Channel URL</label>
-        <input type="url" id="youtube_url" name="youtube_url" class="form-input" placeholder="https://youtube.com/@pteuodoo" value="<%= settings.youtube_url || '' %>">
+
+      <!-- Instagram -->
+      <div class="form-group" style="padding: 14px 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label class="form-label" for="social_instagram_url" style="font-weight: 700; color: var(--navy, #0a192f); margin-bottom: 0;">Instagram</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary, #475569);">
+            <input type="checkbox" name="social_instagram_visible" value="1" <%= (settings.social_instagram_visible !== '0' && settings.social_instagram_visible !== 0) ? 'checked' : '' %> style="width: 16px; height: 16px; accent-color: var(--primary, #0055b8);">
+            <span>Tampilkan</span>
+          </label>
+        </div>
+        <input type="url" id="social_instagram_url" name="social_instagram_url" class="form-input" placeholder="https://instagram.com/euodoo.id" value="<%= settings.social_instagram_url || settings.instagram_url || '' %>">
+      </div>
+    </div>
+
+    <div class="form-row-2" style="margin-top: 1rem;">
+      <!-- Facebook -->
+      <div class="form-group" style="padding: 14px 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label class="form-label" for="social_facebook_url" style="font-weight: 700; color: var(--navy, #0a192f); margin-bottom: 0;">Facebook</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary, #475569);">
+            <input type="checkbox" name="social_facebook_visible" value="1" <%= (settings.social_facebook_visible !== '0' && settings.social_facebook_visible !== 0) ? 'checked' : '' %> style="width: 16px; height: 16px; accent-color: var(--primary, #0055b8);">
+            <span>Tampilkan</span>
+          </label>
+        </div>
+        <input type="url" id="social_facebook_url" name="social_facebook_url" class="form-input" placeholder="https://facebook.com/pteuodoo" value="<%= settings.social_facebook_url || settings.facebook_url || '' %>">
+      </div>
+
+      <!-- YouTube -->
+      <div class="form-group" style="padding: 14px 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; margin-bottom: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label class="form-label" for="social_youtube_url" style="font-weight: 700; color: var(--navy, #0a192f); margin-bottom: 0;">YouTube</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary, #475569);">
+            <input type="checkbox" name="social_youtube_visible" value="1" <%= (settings.social_youtube_visible !== '0' && settings.social_youtube_visible !== 0) ? 'checked' : '' %> style="width: 16px; height: 16px; accent-color: var(--primary, #0055b8);">
+            <span>Tampilkan</span>
+          </label>
+        </div>
+        <input type="url" id="social_youtube_url" name="social_youtube_url" class="form-input" placeholder="https://youtube.com/@pteuodoo" value="<%= settings.social_youtube_url || settings.youtube_url || '' %>">
       </div>
     </div>
   </div>
 
-  <div class="form-actions-bar" style="margin-bottom: 2rem;">
-    <button type="submit" class="btn btn-primary" style="padding: 8px 24px; font-size: 13px;">Simpan Semua Pengaturan</button>
+  <!-- Sticky Actions Bar -->
+  <div class="settings-sticky-actions">
+    <div class="actions-left" style="display: flex; align-items: center; gap: 8px;">
+      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+      <span style="font-size: 13px; color: var(--text-muted, #64748b); font-weight: 500;">
+        Perubahan pengaturan langsung diterapkan pada seluruh halaman publik.
+      </span>
+    </div>
+    <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">
+      <a href="/admin/dashboard" class="btn btn-secondary">
+        Batal
+      </a>
+      <button type="submit" class="btn btn-primary" style="min-width: 220px;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        <span>Simpan Semua Pengaturan</span>
+      </button>
+    </div>
   </div>
 </form>
 

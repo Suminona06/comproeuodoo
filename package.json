@@ -17,7 +17,8 @@
     "test:cms": "node tests/test-modul11-cms.js",
     "test:public": "node tests/test-modul12-public.js",
     "test:audit": "node tests/test-modul13-seo-audit.js",
-    "test:admin-http": "node tests/test-admin-http.js"
+    "test:admin-http": "node tests/test-admin-http.js",
+    "test:footer": "node tests/test-t140-t141-footer-bugs.js && node tests/test-t142-t143-specs.js && node tests/test-t144-ui-polish.js && node tests/test-t145-qa-regression.js"
   },
   "keywords": [
     "express",
