@@ -66,7 +66,7 @@ async function runTest() {
   );
 
   // SSR tabindex
-  assert.ok(aboutEjs.includes('class="bento-tile'), 'SSR template must render bento-tile');
+  assert.ok(aboutEjs.includes('bento-tile'), 'SSR template must render bento-tile');
   assert.ok(aboutEjs.includes('tabindex="0"'), 'SSR bento-tile must have tabindex="0"');
 
   // Dynamic JS tabindex

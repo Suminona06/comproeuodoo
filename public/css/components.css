@@ -4680,7 +4680,7 @@
     touch-action: pan-y;
   }
   .sec-gallery .abt-gal-viewport {
-    min-height: 372px;
+    min-height: 180px;
   }
   .sec-gallery .abt-gal-grid,
   .sec-gallery .bento-grid {
@@ -4694,27 +4694,42 @@
     grid-column: auto !important;
     grid-row: auto !important;
   }
+  .sec-gallery .abt-gal-grid > .abt-gal-tile:nth-child(n+3),
+  .sec-gallery .bento-grid > .bento-tile:nth-child(n+3) {
+    display: none !important;
+  }
   .sec-gallery .abt-gal-grid.abt-gal-grid--1 .abt-gal-tile,
   .sec-gallery .bento-grid.bento-grid--1 .bento-tile {
-    grid-column: 1 / -1 !important;
+    grid-column: 1 !important;
     grid-row: 1 !important;
   }
   .sec-gallery .abt-gal-cap,
   .sec-gallery .bento-cap {
-    padding: 14px 14px;
-    gap: 4px;
+    padding: 8px 10px;
+    gap: 3px;
+    background: linear-gradient(to top, rgba(7, 19, 36, 0.88) 0%, rgba(7, 19, 36, 0.45) 65%, transparent 100%);
   }
   .sec-gallery .abt-gal-title,
   .sec-gallery .bento-title {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    line-height: 1.25;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
     word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .sec-gallery .abt-gal-cat,
   .sec-gallery .bento-cat {
-    font-size: 10px;
-    padding: 3px 8px;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: var(--r-xs, 4px);
+    align-self: flex-start;
   }
   .sec-gallery .abt-gal-pager,
   .sec-gallery .bento-pager {
@@ -4729,7 +4744,7 @@
     padding: 56px 0;
   }
   .sec-gallery .abt-gal-viewport {
-    min-height: 308px;
+    min-height: 150px;
   }
   .sec-gallery .abt-gal-grid,
   .sec-gallery .bento-grid {
@@ -4738,18 +4753,20 @@
   }
   .sec-gallery .abt-gal-cap,
   .sec-gallery .bento-cap {
-    padding: 10px 10px;
-    gap: 4px;
+    padding: 6px 8px;
+    gap: 2px;
   }
   .sec-gallery .abt-gal-title,
   .sec-gallery .bento-title {
-    font-size: 12px;
-    line-height: 1.2;
+    font-size: 10.5px;
+    line-height: 1.18;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
   .sec-gallery .abt-gal-cat,
   .sec-gallery .bento-cat {
-    font-size: 9.5px;
-    padding: 2px 7px;
+    font-size: 8px;
+    padding: 1.5px 5px;
   }
   .sec-gallery .abt-gal-pager-count,
   .sec-gallery .bento-pager-count {

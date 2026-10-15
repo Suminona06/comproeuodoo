@@ -149,8 +149,8 @@ export const aboutController = {
     try {
       const { image_url, category_id, category_en, title_id, title_en, subtitle_id, subtitle_en, sort_order, is_active } = req.body;
 
-      if (!title_id || !title_id.trim() || !image_url || !image_url.trim()) {
-        const errorMsg = 'Judul slide dan gambar wajib diisi.';
+      if (!image_url || !image_url.trim()) {
+        const errorMsg = 'Gambar slide galeri wajib diisi.';
         if (req.xhr || req.headers.accept?.includes('application/json')) {
           return res.status(400).json({ success: false, message: errorMsg });
         }
@@ -161,7 +161,7 @@ export const aboutController = {
         image_url: image_url.trim(),
         category_id: category_id ? category_id.trim() : '',
         category_en: category_en ? category_en.trim() : '',
-        title_id: title_id.trim(),
+        title_id: title_id ? title_id.trim() : '',
         title_en: title_en ? title_en.trim() : '',
         subtitle_id: subtitle_id ? subtitle_id.trim() : '',
         subtitle_en: subtitle_en ? subtitle_en.trim() : '',
@@ -194,6 +194,14 @@ export const aboutController = {
       }
 
       const { image_url, category_id, category_en, title_id, title_en, subtitle_id, subtitle_en, sort_order, is_active } = req.body;
+
+      if (image_url !== undefined && !image_url.trim()) {
+        const errorMsg = 'Gambar slide galeri wajib diisi.';
+        if (req.xhr || req.headers.accept?.includes('application/json')) {
+          return res.status(400).json({ success: false, message: errorMsg });
+        }
+        return res.redirect(`/admin/about?tab=tab-gallery&error=${encodeURIComponent(errorMsg)}`);
+      }
 
       await aboutGalleryModel.update(id, {
         image_url: image_url !== undefined ? image_url.trim() : undefined,

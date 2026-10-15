@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isTransitioning = false;
     let activeTimeline = null;
 
-    const getPageSize = () => (window.innerWidth <= 768 ? 4 : 6);
+    const getPageSize = () => (window.innerWidth <= 768 ? 2 : 6);
     const pad2 = (n) => (n < 10 ? '0' : '') + n;
 
     const escapeHtml = (str) => {

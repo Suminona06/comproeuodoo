@@ -95,7 +95,8 @@ async function testHttpEndpoints() {
     { name: 'Brands', path: '/admin/brands' },
     { name: 'Media Library', path: '/admin/media' },
     { name: 'Users Management', path: '/admin/users' },
-    { name: 'Settings CMS', path: '/admin/settings' }
+    { name: 'Settings CMS', path: '/admin/settings' },
+    { name: 'About CMS', path: '/admin/about' }
   ];
 
   for (const ep of adminEndpoints) {

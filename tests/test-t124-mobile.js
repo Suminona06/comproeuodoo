@@ -22,11 +22,11 @@ async function runTest() {
   assert.ok(css.includes('grid-auto-rows: 150px'), 'Mobile tile row height must scale down at 480px');
   console.log('  -> CSS mobile layout, touch-action, and breakpoint rules verified.\n');
 
-  // 2. Verify main.js 4-tile mobile pagination and 50px swipe threshold
+  // 2. Verify main.js 2-tile mobile pagination and 50px swipe threshold
   console.log('[2] Verifying main.js mobile pagination and touch swipe logic...');
   const js = fs.readFileSync(path.join(__dirname, '../public/js/main.js'), 'utf8');
 
-  assert.ok(js.includes('window.innerWidth <= 768 ? 4 : 6'), 'Mobile page size must be 4 tiles (Opsi 1A)');
+  assert.ok(js.includes('window.innerWidth <= 768 ? 2 : 6'), 'Mobile page size must be 2 tiles');
   assert.ok(js.includes('touchstart'), 'main.js must attach touchstart listener');
   assert.ok(js.includes('touchmove'), 'main.js must attach touchmove listener');
   assert.ok(js.includes('touchend'), 'main.js must attach touchend listener');
@@ -34,13 +34,13 @@ async function runTest() {
   assert.ok(js.includes('absDeltaX >= 50'), 'Swipe handler must enforce 50px threshold (Opsi 4A)');
   assert.ok(js.includes('absDeltaX > absDeltaY'), 'Swipe handler must ensure horizontal movement exceeds vertical');
   assert.ok(js.includes('passive: true'), 'Touch listeners must use passive: true for scroll performance');
-  console.log('  -> main.js 4-tile mobile pagination and 50px swipe logic verified.\n');
+  console.log('  -> main.js 2-tile mobile pagination and 50px swipe logic verified.\n');
 
   // 3. Verify mobile page calculation logic
-  console.log('[3] Verifying page calculation math for mobile (4 tiles/page)...');
-  const getPageSize = (width) => (width <= 768 ? 4 : 6);
-  const testSlideCounts = [1, 4, 5, 7, 10, 12];
-  const expectedMobilePages = [1, 1, 2, 2, 3, 3];
+  console.log('[3] Verifying page calculation math for mobile (2 tiles/page)...');
+  const getPageSize = (width) => (width <= 768 ? 2 : 6);
+  const testSlideCounts = [1, 2, 3, 4, 7, 10];
+  const expectedMobilePages = [1, 1, 2, 2, 4, 5];
 
   testSlideCounts.forEach((count, i) => {
     const pages = Math.ceil(count / getPageSize(375));

@@ -214,27 +214,30 @@
                      if (idx === 0) posClass = 'abt-gal-tile--pos-1 abt-gal-tile--tall bento-tile--pos-1 bento-tile--tall';
                      else if (idx === 1 || idx === 4) posClass = 'abt-gal-tile--pos-' + (idx + 1) + ' abt-gal-tile--wide bento-tile--pos-' + (idx + 1) + ' bento-tile--wide';
                    }
-                   const tag = lang === 'en' ? (slide.category_en || slide.category_id) : slide.category_id;
-                   const titleText = lang === 'en' ? (slide.title_en || slide.title_id) : slide.title_id;
+                   const tag = (lang === 'en' ? (slide.category_en || slide.category_id) : slide.category_id) || '';
+                   const titleText = (lang === 'en' ? (slide.title_en || slide.title_id) : slide.title_id) || '';
+                   const cleanTag = tag.trim();
+                   const cleanTitle = titleText.trim();
                    const photoNum = String(idx + 1).padStart(2, '0');
                    const fallbackLabel = lang === 'en' 
                      ? ('PT Euodoo Manufacturing & Operations Facility (Photo ' + photoNum + ')')
                      : ('Fasilitas Manufaktur & Operasional PT Euodoo (Foto ' + photoNum + ')');
-                   const altText = titleText || tag || fallbackLabel;
-                   const hasCaption = Boolean((tag && tag.trim()) || (titleText && titleText.trim()));
+                   const altText = cleanTitle || cleanTag || fallbackLabel;
+                   const hasCaption = Boolean(cleanTag || cleanTitle);
               %>
-                <div class="abt-gal-tile bento-tile <%= posClass %>" tabindex="0" style="--tile-i: <%= idx %>;" aria-label="<%= altText %>">
+                <div class="bento-tile abt-gal-tile <%= posClass %>" tabindex="0" style="--tile-i: <%= idx %>;" aria-label="<%= altText %>">
                   <img 
                     src="<%= slide.image_url %>" 
                     alt="<%= altText %>"
+                    decoding="async"
                     <%- idx > 0 ? 'loading="lazy"' : '' %>>
                   <% if (hasCaption) { %>
                     <div class="abt-gal-cap bento-cap">
-                      <% if (tag) { %>
-                        <span class="abt-gal-cat bento-cat"><%= tag %></span>
+                      <% if (cleanTag) { %>
+                        <span class="abt-gal-cat bento-cat"><%= cleanTag %></span>
                       <% } %>
-                      <% if (titleText) { %>
-                        <div class="abt-gal-title bento-title"><%= titleText %></div>
+                      <% if (cleanTitle) { %>
+                        <div class="abt-gal-title bento-title"><%= cleanTitle %></div>
                       <% } %>
                     </div>
                   <% } %>

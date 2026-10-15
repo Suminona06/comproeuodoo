@@ -26,7 +26,7 @@ export const aboutGalleryModel = {
       data.image_url,
       data.category_id || '',
       data.category_en || '',
-      data.title_id,
+      data.title_id || '',
       data.title_en || '',
       data.subtitle_id || '',
       data.subtitle_en || '',
