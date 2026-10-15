@@ -2287,3 +2287,11 @@ body.sidebar-open .admin-backdrop {
   border: 1px solid #e2e8f0;
   cursor: not-allowed;
 }
+
+.loginForm{
+  display: flex;
+  flex-direction: row;  
+  justify-content: center; 
+  align-items: center; 
+  gap: 10px; 
+}

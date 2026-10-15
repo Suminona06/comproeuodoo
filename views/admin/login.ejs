@@ -18,7 +18,7 @@
 <body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--color-workspace-bg); padding: var(--space-md);">
   <div style="width: 100%; max-width: 420px;">
     <div style="text-align: center; margin-bottom: var(--space-xl);">
-     <div style="margin-bottom: var(--space-lg);">
+     <div class="loginForm">
           <% if (typeof settings !== 'undefined' && settings && settings.site_logo_header && settings.site_logo_header.trim() !== '') { %>
             <img src="<%= settings.site_logo_header %>" 
                  alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" 
