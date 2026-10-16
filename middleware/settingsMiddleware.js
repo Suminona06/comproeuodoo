@@ -90,13 +90,16 @@ export const settingsMiddleware = async (req, res, next) => {
   settings.office_address = settings.office_address || settings.about_office_address || 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270';
   settings.office_phone = settings.office_phone || settings.company_phone || settings.about_office_phone || '(021) 53668626';
   settings.company_phone = settings.office_phone;
-  settings.office_fax = settings.office_fax || '+6221-53668648';
+  settings.office_fax = settings.office_fax !== undefined ? settings.office_fax : '+6221-53668648';
   settings.company_email = settings.company_email || 'info@euodoo.com';
+  settings.office_email = settings.office_email || settings.company_email;
 
   settings.factory_name_id = settings.factory_name_id || 'Pabrik Manufaktur (Bandung)';
   settings.factory_name_en = settings.factory_name_en || 'Manufacturing Plant (Bandung)';
   settings.factory_address = settings.factory_address || settings.about_factory_address || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214';
   settings.factory_phone = settings.factory_phone || '(022) 6012519';
+  settings.factory_fax = settings.factory_fax || '';
+  settings.factory_email = settings.factory_email || '';
   settings.factory_working_hours_id = settings.factory_working_hours_id || settings.contact_working_hours_id || 'Senin - Jumat: 08.00 - 17.00 WIB | Sabtu: 08.00 - 13.00 WIB';
   settings.factory_working_hours_en = settings.factory_working_hours_en || settings.contact_working_hours_en || 'Monday - Friday: 08:00 - 17:00 WIB | Saturday: 08:00 - 13:00 WIB';
 

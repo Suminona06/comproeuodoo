@@ -13,7 +13,9 @@
     "send": "Kirim Formulir Penawaran",
     "sending": "Mengirim...",
     "status_active": "Tersedia untuk Produksi",
-    "whatsapp_consult": "Konsultasi WhatsApp"
+    "whatsapp_consult": "Konsultasi WhatsApp",
+    "previous": "Sebelumnya",
+    "next": "Berikutnya"
   },
   "nav": {
     "home": "Beranda",
@@ -92,6 +94,7 @@
   "contact": {
     "page_title": "Kontak Resmi & Permintaan Penawaran",
     "page_subtitle": "Hubungi kantor pusat kami di Jakarta atau pabrik produksi di Bandung untuk konsultasi pesanan kantong plastik.",
+    "kicker_label": "FORMULIR RFQ B2B",
     "form_heading": "Formulir Permintaan Penawaran Kemitraan",
     "form_subheading": "Sampaikan rincian kebutuhan kantong plastik Anda. Tim pemasaran kami akan merespons dalam waktu 1x24 jam kerja.",
     "name_label": "Nama Lengkap",
@@ -102,13 +105,30 @@
     "email_placeholder": "email@perusahaan.com",
     "phone_label": "Nomor Telepon / WhatsApp",
     "phone_placeholder": "081234567890",
+    "product_label": "Produk yang Diminati",
+    "product_select_default": "-- Pilih Produk (Opsional) --",
+    "inquiry_type_label": "Tipe Permintaan",
+    "inquiry_type_rfq": "Permintaan Penawaran Harga (RFQ)",
+    "inquiry_type_partnership": "Kemitraan Distributor / Reseller",
+    "inquiry_type_general": "Pertanyaan Umum & Konsultasi Spesifikasi",
     "quantity_label": "Estimasi Kuantitas / Volume Kebutuhan",
     "quantity_placeholder": "Contoh: 10.000 lembar per bulan / 500 kg",
     "message_label": "Rincian Kebutuhan & Spesifikasi",
     "message_placeholder": "Tuliskan spesifikasi produk (ukuran, ketebalan, warna, cetak logo, atau model pegangan yang diinginkan)...",
     "submit_btn": "Kirim Permintaan Penawaran",
+    "loading_text": "Mengirimkan Permintaan...",
+    "success_title": "Permintaan Penawaran Berhasil Dikirim!",
     "success_alert": "Terima kasih. Permintaan penawaran Anda telah berhasil dikirim. Tim penjualan kami akan segera menghubungi Anda.",
-    "error_alert": "Terjadi kendala saat mengirimkan formulir. Silakan coba kembali atau hubungi kami langsung via WhatsApp."
+    "error_title": "Perhatian",
+    "error_alert": "Terjadi kendala saat mengirimkan formulir. Silakan coba kembali atau hubungi kami langsung via WhatsApp.",
+    "badge_head_office": "Kantor Pusat & Sales",
+    "badge_factory": "Pabrik Manufaktur & Gudang",
+    "phone_label_short": "Telepon:",
+    "hotline_label": "Telepon / Hotline:",
+    "fax_label_short": "Fax:",
+    "email_label_short": "Email:",
+    "operating_hours_label": "Operasional:",
+    "map_title": "Peta Lokasi Fasilitas Pabrik PT Euodoo"
   },
   "footer": {
     "desc": "PT. EUODOO memproduksi kantong plastik HDPE dan LLDPE 100% degradable untuk retail modern, sektor industri, dan pasar tradisional sejak 1990.",

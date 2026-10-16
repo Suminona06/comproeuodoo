@@ -144,6 +144,11 @@
           <input type="text" id="office_fax" name="office_fax" class="form-input" value="<%= settings.office_fax || '+6221-53668648' %>">
         </div>
       </div>
+
+      <div class="form-group">
+        <label class="form-label" for="office_email">Email Kantor Jakarta (Opsional - default: email perusahaan)</label>
+        <input type="email" id="office_email" name="office_email" class="form-input" value="<%= settings.office_email || '' %>" placeholder="info@euodoo.com">
+      </div>
     </div>
 
     <!-- Lokasi 2: Bandung -->
@@ -169,9 +174,20 @@
         <textarea id="factory_address" name="factory_address" class="form-textarea" rows="2" required><%= settings.factory_address || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214' %></textarea>
       </div>
 
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="factory_phone">Nomor Telepon Pabrik / Hotline *</label>
+          <input type="text" id="factory_phone" name="factory_phone" class="form-input" required value="<%= settings.factory_phone || '(022) 6012519' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="factory_fax">Nomor Fax Pabrik Bandung (Opsional)</label>
+          <input type="text" id="factory_fax" name="factory_fax" class="form-input" value="<%= settings.factory_fax || '' %>" placeholder="+6222-6012519">
+        </div>
+      </div>
+
       <div class="form-group">
-        <label class="form-label" for="factory_phone">Nomor Telepon Pabrik / Hotline *</label>
-        <input type="text" id="factory_phone" name="factory_phone" class="form-input" required value="<%= settings.factory_phone || '(022) 6012519' %>">
+        <label class="form-label" for="factory_email">Email Pabrik Bandung (Opsional)</label>
+        <input type="email" id="factory_email" name="factory_email" class="form-input" value="<%= settings.factory_email || '' %>" placeholder="pabrik@euodoo.com">
       </div>
 
       <div class="form-row-2">

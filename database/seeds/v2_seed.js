@@ -275,9 +275,11 @@ async function runV2Seed() {
       { key: 'office_address', value: 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270' },
       { key: 'office_phone', value: '+6221-53668626' },
       { key: 'office_fax', value: '+6221-53668648' },
+      { key: 'office_email', value: 'info@euodoo.com' },
       { key: 'factory_address', value: 'Jl. Paralon II No. 21 Cijerah Bandung 40214 - Indonesia' },
       { key: 'factory_phone', value: '+6222-6012519' },
       { key: 'factory_fax', value: '+6222-6074730' },
+      { key: 'factory_email', value: '' },
       { key: 'company_email', value: 'info@euodoo.com' },
       { key: 'whatsapp_number', value: '6281234567890' },
       {

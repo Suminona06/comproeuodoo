@@ -13,7 +13,9 @@
     "send": "Submit Quote Form",
     "sending": "Submitting...",
     "status_active": "Available for Production",
-    "whatsapp_consult": "WhatsApp Consultation"
+    "whatsapp_consult": "WhatsApp Consultation",
+    "previous": "Previous",
+    "next": "Next"
   },
   "nav": {
     "home": "Home",
@@ -92,6 +94,7 @@
   "contact": {
     "page_title": "Official Contact & RFQ Inquiry",
     "page_subtitle": "Connect with our Jakarta corporate office or Bandung production facility to discuss your packaging requirements.",
+    "kicker_label": "B2B RFQ FORM",
     "form_heading": "Partnership & Quote Request Form",
     "form_subheading": "Provide details about your packaging needs. Our sales team will follow up within 1 business day.",
     "name_label": "Full Name",
@@ -102,13 +105,30 @@
     "email_placeholder": "email@company.com",
     "phone_label": "Phone / WhatsApp Number",
     "phone_placeholder": "+62 812 3456 7890",
+    "product_label": "Product of Interest",
+    "product_select_default": "-- Select Product (Optional) --",
+    "inquiry_type_label": "Inquiry Type",
+    "inquiry_type_rfq": "Request for Quotation (RFQ)",
+    "inquiry_type_partnership": "Distributor / Reseller Partnership",
+    "inquiry_type_general": "General Inquiry & Specification Consultation",
     "quantity_label": "Estimated Volume / Quantity Needed",
     "quantity_placeholder": "e.g. 10,000 bags per month / 500 kg",
     "message_label": "Specifications & Notes",
     "message_placeholder": "Specify dimensions, film thickness, color, logo printing, or handle style (soft loop, patch handle, roll)...",
     "submit_btn": "Submit Quote Request",
+    "loading_text": "Submitting Request...",
+    "success_title": "Quote Request Sent Successfully!",
     "success_alert": "Thank you. Your inquiry has been sent successfully. Our sales team will contact you shortly.",
-    "error_alert": "There was an issue sending your message. Please try again or contact us directly via WhatsApp."
+    "error_title": "Attention",
+    "error_alert": "There was an issue sending your message. Please try again or contact us directly via WhatsApp.",
+    "badge_head_office": "Corporate Head Office",
+    "badge_factory": "Manufacturing Plant",
+    "phone_label_short": "Phone:",
+    "hotline_label": "Phone / Hotline:",
+    "fax_label_short": "Fax:",
+    "email_label_short": "Email:",
+    "operating_hours_label": "Operating Hours:",
+    "map_title": "PT Euodoo Facility Location Map"
   },
   "footer": {
     "desc": "PT. EUODOO manufactures 100% degradable HDPE and LLDPE plastic bags for retailers, industries, and traditional markets since 1990.",

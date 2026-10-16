@@ -4831,5 +4831,409 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   CONTACT FORM & OFFICE LOCATIONS (.cf-*)
+   Acuan: DESIGN.md, WCAG AA, & Revisi Kontak & Footer v1 (T-150 s/d T-154)
+   ═══════════════════════════════════════════════════════════ */
 
+/* Section Spacing & Hero CTA */
+.cf-section {
+  padding-top: var(--space-2xl, 4rem);
+  padding-bottom: var(--space-3xl, 5rem);
+}
 
+.cf-hero-cta {
+  margin-top: 20px;
+}
+
+/* Status Alerts */
+.cf-alert {
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  border-radius: var(--r-xl, 12px);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(10, 25, 47, 0.05));
+}
+
+.cf-alert-success {
+  background-color: var(--st-selesai-bg, #ecfdf5);
+  border: 1.5px solid var(--st-selesai-border, #a7f3d0);
+  color: var(--st-selesai-text, #065f46);
+}
+
+.cf-alert-error {
+  background-color: var(--st-ditolak-bg, #fef2f2);
+  border: 1.5px solid var(--st-ditolak-border, #fecaca);
+  color: var(--st-ditolak-text, #991b1b);
+}
+
+.cf-alert-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cf-alert-success .cf-alert-icon {
+  stroke: #059669;
+}
+
+.cf-alert-error .cf-alert-icon {
+  stroke: #dc2626;
+}
+
+.cf-alert-title {
+  font-size: 1.1rem;
+  margin: 0 0 4px 0;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.cf-alert-success .cf-alert-title {
+  color: #065f46;
+}
+
+.cf-alert-error .cf-alert-title {
+  color: #991b1b;
+}
+
+.cf-alert-desc {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cf-alert-success .cf-alert-desc {
+  color: #047857;
+}
+
+.cf-alert-error .cf-alert-desc {
+  color: #b91c1c;
+}
+
+/* Form Header */
+.cf-header {
+  margin-bottom: 28px;
+}
+
+.cf-kicker {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted, #64748B);
+  margin-bottom: 6px;
+}
+
+.cf-title {
+  font-size: 1.65rem;
+  color: var(--navy, #0a192f);
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.cf-subtitle {
+  color: var(--text-variant, #424753);
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Form Grid & Layout */
+.cf-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.cf-form-group {
+  margin-bottom: 16px;
+}
+
+.cf-form-group-last {
+  margin-bottom: 24px;
+}
+
+.cf-form-group-turnstile {
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.cf-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main, #0F172A);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.cf-label-required::after {
+  content: " *";
+  color: var(--error, #BA1A1A);
+  font-weight: 700;
+}
+
+/* Controls (Input, Select, Textarea) */
+.cf-input,
+.cf-select,
+.cf-textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 14.5px;
+  font-family: inherit;
+  color: var(--text-main, #0F172A);
+  background-color: var(--bg-base, #FFFFFF);
+  border: 1px solid var(--border, #E2E8F0);
+  border-radius: var(--r-md, 8px);
+  box-sizing: border-box;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.cf-input:hover,
+.cf-select:hover,
+.cf-textarea:hover {
+  border-color: var(--outline-variant, #C2C6D5);
+}
+
+.cf-input:focus,
+.cf-select:focus,
+.cf-textarea:focus {
+  outline: none;
+  border-color: var(--primary, #0055B8);
+  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.15);
+}
+
+.cf-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Custom Accessible Select Chevron (T-152 Opsi A) */
+.cf-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 42px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px 16px;
+  cursor: pointer;
+}
+
+.cf-select:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230055B8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+/* Invalid State */
+.cf-input.is-invalid,
+.cf-select.is-invalid,
+.cf-textarea.is-invalid {
+  border-color: var(--error, #BA1A1A);
+  box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.15);
+}
+
+.cf-field-error {
+  display: none;
+  font-size: 13px;
+  color: var(--error, #BA1A1A);
+  margin-top: 4px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.cf-field-error.show {
+  display: block;
+}
+
+/* Submit Button & Disabled Loading State */
+.cf-btn-submit {
+  width: 100%;
+  min-height: 48px;
+  border-radius: var(--r-md, 8px);
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.cf-btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Office Info Cards */
+.cf-office-card {
+  background: var(--bg-base, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--r-xl, 16px);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px -2px rgba(10, 25, 47, 0.05);
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.cf-office-card:hover {
+  border-color: var(--outline-variant, #c2c6d5);
+  box-shadow: 0 8px 24px -4px rgba(10, 25, 47, 0.08);
+}
+
+.cf-office-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cf-office-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cf-office-icon-primary {
+  background: rgba(0, 85, 184, 0.1);
+  color: var(--primary, #0055b8);
+}
+
+.cf-office-icon-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.cf-office-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cf-office-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy, #0a192f);
+  margin: 2px 0 0 0;
+  line-height: 1.3;
+}
+
+.cf-office-addr {
+  font-size: 13.5px;
+  color: var(--text-variant, #424753);
+  line-height: 1.6;
+  margin: 0 0 10px 0;
+}
+
+.cf-office-detail {
+  font-size: 13px;
+  color: var(--navy, #0a192f);
+  line-height: 1.6;
+}
+
+.cf-link-primary {
+  color: var(--primary, #0055b8);
+  text-decoration: none;
+  transition: opacity 150ms ease;
+}
+
+.cf-link-primary:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.cf-link-inherit {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cf-link-inherit:hover {
+  text-decoration: underline;
+}
+
+/* Google Maps Container */
+.cf-maps-wrap {
+  border-radius: var(--r-xl, 16px);
+  overflow: hidden;
+  border: 1px solid var(--border, #e2e8f0);
+  height: 260px;
+  box-shadow: 0 4px 14px -2px rgba(10, 25, 47, 0.05);
+  background: #e2e8f0;
+}
+
+.cf-maps-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Responsive Breakpoints (T-153) */
+@media (max-width: 768px) {
+  .cf-section {
+    padding-top: var(--space-xl, 2.5rem);
+    padding-bottom: var(--space-2xl, 4rem);
+  }
+
+  .cf-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .cf-form-row .cf-form-group {
+    margin-bottom: 16px;
+  }
+
+  .cf-title {
+    font-size: 1.4rem;
+  }
+
+  .cf-textarea {
+    min-height: 100px;
+  }
+
+  .cf-office-card {
+    padding: 20px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cf-section {
+    padding-top: var(--space-lg, 1.5rem);
+    padding-bottom: var(--space-xl, 2.5rem);
+  }
+
+  .cf-subtitle {
+    font-size: 13px;
+  }
+
+  .cf-alert {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .cf-alert-title {
+    font-size: 1rem;
+  }
+
+  .cf-alert-desc {
+    font-size: 13px;
+  }
+
+  .cf-maps-wrap {
+    height: 220px;
+  }
+}

@@ -72,8 +72,8 @@ export const settingController = {
       const textKeys = [
         'company_name', 'company_tagline_id', 'company_tagline_en',
         'company_phone', 'company_email',
-        'office_name_id', 'office_name_en', 'office_address', 'office_city', 'office_phone', 'office_fax',
-        'factory_name_id', 'factory_name_en', 'factory_address', 'factory_city', 'factory_phone',
+        'office_name_id', 'office_name_en', 'office_address', 'office_city', 'office_phone', 'office_fax', 'office_email',
+        'factory_name_id', 'factory_name_en', 'factory_address', 'factory_city', 'factory_phone', 'factory_fax', 'factory_email',
         'factory_working_hours_id', 'factory_working_hours_en',
         'whatsapp_default_message', 'whatsapp_button_theme', 'whatsapp_floating_enabled'
       ];
@@ -84,6 +84,33 @@ export const settingController = {
         if (req.body && req.body[key] !== undefined) {
           updates[key] = req.body[key].trim();
         }
+      }
+
+      // Validasi format email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (updates.company_email && !emailRegex.test(updates.company_email)) {
+        throw new Error('Format alamat email perusahaan tidak valid.');
+      }
+      if (updates.office_email && !emailRegex.test(updates.office_email)) {
+        throw new Error('Format alamat email kantor Jakarta tidak valid.');
+      }
+      if (updates.factory_email && !emailRegex.test(updates.factory_email)) {
+        throw new Error('Format alamat email pabrik Bandung tidak valid.');
+      }
+
+      // Validasi karakter aman telepon dan fax (angka, spasi, +, -, kurung)
+      const phoneSanitizeRegex = /^[0-9\s+\-()]*$/;
+      if (updates.office_phone && !phoneSanitizeRegex.test(updates.office_phone)) {
+        throw new Error('Nomor telepon kantor Jakarta hanya boleh berisi angka, spasi, tanda plus, tanda hubung, dan kurung.');
+      }
+      if (updates.office_fax && !phoneSanitizeRegex.test(updates.office_fax)) {
+        throw new Error('Nomor fax kantor Jakarta hanya boleh berisi angka, spasi, tanda plus, tanda hubung, dan kurung.');
+      }
+      if (updates.factory_phone && !phoneSanitizeRegex.test(updates.factory_phone)) {
+        throw new Error('Nomor telepon pabrik Bandung hanya boleh berisi angka, spasi, tanda plus, tanda hubung, dan kurung.');
+      }
+      if (updates.factory_fax && !phoneSanitizeRegex.test(updates.factory_fax)) {
+        throw new Error('Nomor fax pabrik Bandung hanya boleh berisi angka, spasi, tanda plus, tanda hubung, dan kurung.');
       }
 
       // Synchronize company_phone and office_phone

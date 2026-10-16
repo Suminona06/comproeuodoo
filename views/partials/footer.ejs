@@ -38,6 +38,23 @@
               <a href="tel:<%= (typeof settings !== 'undefined' && (settings?.office_phone || settings?.company_phone) ? (settings.office_phone || settings.company_phone) : '02153668626').replace(/[^0-9+]/g, '') %>" class="ft-phone-val">
                 <%= typeof settings !== 'undefined' && (settings?.office_phone || settings?.company_phone) ? (settings.office_phone || settings.company_phone) : '(021) 53668626' %>
               </a>
+              <% if (typeof settings !== 'undefined' && settings?.office_fax) { %>
+                <br>
+                <span class="ft-phone-label"><%= currentLang === 'en' ? 'Fax:' : 'Faks:' %></span>
+                <a href="tel:<%= settings.office_fax.replace(/[^0-9+]/g, '') %>" class="ft-phone-val">
+                  <%= settings.office_fax %>
+                </a>
+              <% } %>
+              <% 
+                const jktFooterEmail = typeof settings !== 'undefined' ? (settings?.office_email || settings?.company_email || '') : '';
+                if (jktFooterEmail) { 
+              %>
+                <br>
+                <span class="ft-phone-label">Email:</span>
+                <a href="mailto:<%= jktFooterEmail %>" class="ft-phone-val">
+                  <%= jktFooterEmail %>
+                </a>
+              <% } %>
             </div>
           </div>
 
@@ -52,6 +69,20 @@
               <a href="tel:<%= (typeof settings !== 'undefined' && settings?.factory_phone ? settings.factory_phone : '0226012519').replace(/[^0-9+]/g, '') %>" class="ft-phone-val">
                 <%= typeof settings !== 'undefined' && settings?.factory_phone ? settings.factory_phone : '(022) 6012519' %>
               </a>
+              <% if (typeof settings !== 'undefined' && settings?.factory_fax) { %>
+                <br>
+                <span class="ft-phone-label"><%= currentLang === 'en' ? 'Fax:' : 'Faks:' %></span>
+                <a href="tel:<%= settings.factory_fax.replace(/[^0-9+]/g, '') %>" class="ft-phone-val">
+                  <%= settings.factory_fax %>
+                </a>
+              <% } %>
+              <% if (typeof settings !== 'undefined' && settings?.factory_email) { %>
+                <br>
+                <span class="ft-phone-label">Email:</span>
+                <a href="mailto:<%= settings.factory_email %>" class="ft-phone-val">
+                  <%= settings.factory_email %>
+                </a>
+              <% } %>
             </div>
           </div>
         </div>
