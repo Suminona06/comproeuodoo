@@ -53,3 +53,10 @@ skills-lock.json
 *prototype*
 *.prototype.*
 public/*prototype*
+
+# Local Development Port Forwarding (WSL / Windows LAN)
+port-forward.bat
+port-forward*
+scripts/*port-forward*
+scripts/setup-port-forward*
+scripts/port-forward*

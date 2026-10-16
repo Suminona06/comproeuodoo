@@ -50,7 +50,24 @@ Kredensial Default Admin:
 ```bash
 npm run dev
 ```
-Akses website melalui peramban pada `http://localhost:3000`.
+Akses website melalui peramban:
+- **Local (PC ini):** `http://localhost:3000`
+- **Jaringan Lokal (Akses dari HP / Laptop lain via Wi-Fi/LAN):**
+  Untuk mengakses server dari perangkat lain melalui IP Address PC Windows Anda:
+  ```bash
+  npm run port-forward
+  ```
+  *(Atau double-click file `port-forward.bat` dari Windows Explorer).*
+  Perintah ini otomatis mengonfigurasi `netsh portproxy` dan Windows Firewall sehingga server dapat diakses melalui `http://<IP_PC_WINDOWS>:3000`.
+
+  Untuk mengecek status port forwarding:
+  ```bash
+  npm run port-forward:status
+  ```
+  Untuk membersihkan rule port forwarding:
+  ```bash
+  npm run port-forward:clean
+  ```
 
 ---
 

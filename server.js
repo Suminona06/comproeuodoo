@@ -1,8 +1,10 @@
+import os from 'os';
 import app from './app.js';
 import logger from './utils/logger.js';
 import { testConnection } from './config/database.js';
 
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 let server;
@@ -15,10 +17,22 @@ if (typeof PhusionPassenger !== 'undefined') {
   });
 } else {
   // Standard standalone / local development runtime
-  server = app.listen(PORT, async () => {
-    logger.info(`PT Euodoo Web Server running on port ${PORT} [Mode: ${NODE_ENV}]`);
+  server = app.listen(PORT, HOST, async () => {
+    logger.info(`PT Euodoo Web Server running on ${HOST}:${PORT} [Mode: ${NODE_ENV}]`);
     if (NODE_ENV !== 'production') {
-      logger.info(`Local URL: http://localhost:${PORT}`);
+      logger.info(`> Local URL:   http://localhost:${PORT}`);
+      try {
+        const interfaces = os.networkInterfaces();
+        for (const name of Object.keys(interfaces)) {
+          for (const net of interfaces[name]) {
+            if (net.family === 'IPv4' && !net.internal) {
+              logger.info(`> WSL Network: http://${net.address}:${PORT} (${name})`);
+            }
+          }
+        }
+      } catch (err) {
+        logger.debug('Could not inspect network interfaces', { error: err.message });
+      }
     }
     await testConnection();
   });

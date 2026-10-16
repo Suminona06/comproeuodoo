@@ -18,7 +18,10 @@
     "test:public": "node tests/test-modul12-public.js",
     "test:audit": "node tests/test-modul13-seo-audit.js",
     "test:admin-http": "node tests/test-admin-http.js",
-    "test:footer": "node tests/test-t140-t141-footer-bugs.js && node tests/test-t142-t143-specs.js && node tests/test-t144-ui-polish.js && node tests/test-t145-qa-regression.js"
+    "test:footer": "node tests/test-t140-t141-footer-bugs.js && node tests/test-t142-t143-specs.js && node tests/test-t144-ui-polish.js && node tests/test-t145-qa-regression.js",
+    "port-forward": "node scripts/port-forward.js",
+    "port-forward:status": "powershell.exe -NoProfile -Command \"netsh interface portproxy show v4tov4\"",
+    "port-forward:clean": "powershell.exe -ExecutionPolicy Bypass -Command \"Start-Process powershell.exe -Verb RunAs -ArgumentList '-NoProfile -Command netsh interface portproxy delete v4tov4 listenport=3000 listenaddress=0.0.0.0'\""
   },
   "keywords": [
     "express",

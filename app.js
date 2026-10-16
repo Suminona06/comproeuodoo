@@ -31,6 +31,8 @@ app.set('views', path.join(__dirname, 'views'));
 // Trust proxy for cPanel / Nginx reverse proxy
 app.set('trust proxy', 1);
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 // Security Headers (Helmet)
 app.use(
   helmet({
@@ -47,10 +49,13 @@ app.use(
         imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
         mediaSrc: ["'self'", 'data:', 'blob:', 'https:'],
         connectSrc: ["'self'"],
-        frameSrc: ["'self'", 'https://www.google.com', 'https://www.youtube.com', 'https://www.youtube-nocookie.com']
+        frameSrc: ["'self'", 'https://www.google.com', 'https://www.youtube.com', 'https://www.youtube-nocookie.com'],
+        upgradeInsecureRequests: isDev ? null : []
       }
     },
-    crossOriginEmbedderPolicy: false
+    hsts: isDev ? false : { maxAge: 15552000, includeSubDomains: true },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false
   })
 );
 
