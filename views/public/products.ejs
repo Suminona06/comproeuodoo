@@ -4,21 +4,30 @@
 <% const lang = typeof currentLang !== 'undefined' ? currentLang : 'id'; %>
 <% 
   const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
-  const heroBg = heroObj && heroObj.image_url ? `style="background: linear-gradient(rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60}), rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.60})), url('${heroObj.image_url}') center/cover no-repeat;"` : '';
+  const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.50;
+  const midOpacity = Math.min(0.85, 0.45 + (userOpacity * 0.40)).toFixed(2);
+  const edgeOpacity = Math.max(0.12, userOpacity * 0.50).toFixed(2);
+  const heroBg = heroObj && heroObj.image_url 
+    ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
+    : '';
 %>
 
 <main id="main-content">
   <!-- PAGE HERO -->
-  <section class="page-hero" <%- heroBg %>>
+  <section class="page-hero <%= heroObj && heroObj.image_url ? 'page-hero--has-bg' : '' %>" <%- heroBg %>>
+    <% if (heroObj && heroObj.image_url) { %>
+      <div class="page-hero-scrim" aria-hidden="true"></div>
+    <% } %>
     <div class="container">
-      <div class="breadcrumbs">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
-        <span>&rsaquo;</span>
+        <span class="separator" aria-hidden="true">&rsaquo;</span>
         <span class="current"><%= lang === 'en' ? 'Products' : 'Produk' %></span>
-      </div>
+      </nav>
 
-      <div style="max-width: 840px;">
+      <div class="page-hero-content" style="max-width: 840px;">
         <span class="page-hero-kicker">
+          <span class="page-hero-kicker-dot" aria-hidden="true"></span>
           <%= lang === 'en' ? 'MANUFACTURING CATALOG' : 'KATALOG PRODUK MANUFAKTUR' %>
         </span>
         <h1 class="page-hero-title">

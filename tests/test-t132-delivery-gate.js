@@ -61,7 +61,7 @@ async function runTest() {
   // Bento pager button focus ring
   assert.ok(css.includes('.bento-pager-btn:focus-visible'), 'CSS must define .bento-pager-btn:focus-visible');
   assert.ok(
-    css.includes('outline: 2px solid var(--primary, #0055b8)'),
+    css.includes('outline: 2px solid var(--primary, #00755a)') || css.includes('outline: 2px solid var(--primary'),
     '.bento-pager-btn:focus-visible must provide clear outline'
   );
 

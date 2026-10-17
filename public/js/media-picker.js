@@ -140,7 +140,7 @@
         mediaHtml = `<img src="${item.file_url}" alt="${item.filename}" class="media-picker-card-thumb" loading="lazy">`;
       } else if (item.media_type === 'video') {
         mediaHtml = `
-          <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #0f172a; color: #38bdf8;">
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #0f172a; color: #00906e;">
             <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
           </div>
         `;
@@ -193,7 +193,7 @@
     selectedInfo.innerHTML = `
       <img src="${thumbSrc}" class="media-picker-selected-thumb" onerror="this.style.display='none'">
       <div style="overflow: hidden;">
-        <strong style="color: var(--secondary, #0d2040); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px;">${item.filename || item.original_name}</strong>
+        <strong style="color: var(--surface-dark, #071F17); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px;">${item.filename || item.original_name}</strong>
         <span style="font-size: 11.5px; color: #64748b; font-family: monospace;">${item.file_url}</span>
       </div>
     `;
@@ -372,17 +372,17 @@
 
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      dropzone.style.borderColor = 'var(--secondary, #0d2040)';
-      dropzone.style.background = '#eef2ff';
+      dropzone.style.borderColor = 'var(--secondary, #0b281e)';
+      dropzone.style.background = '#e6f7f2';
     });
     dropzone.addEventListener('dragleave', (e) => {
       e.preventDefault();
-      dropzone.style.borderColor = 'var(--primary, #0055b8)';
+      dropzone.style.borderColor = 'var(--primary, #00755a)';
       dropzone.style.background = '#f8fafc';
     });
     dropzone.addEventListener('drop', (e) => {
       e.preventDefault();
-      dropzone.style.borderColor = 'var(--primary, #0055b8)';
+      dropzone.style.borderColor = 'var(--primary, #00755a)';
       dropzone.style.background = '#f8fafc';
       if (e.dataTransfer && e.dataTransfer.files.length > 0) {
         handleFileUpload(e.dataTransfer.files[0]);
@@ -489,7 +489,7 @@
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#DC2626',
-            cancelButtonColor: '#0D2040',
+            cancelButtonColor: '#071F17',
             confirmButtonText: 'Tetap Hapus (Paksa Hapus)',
             cancelButtonText: 'Batal',
             reverseButtons: true,

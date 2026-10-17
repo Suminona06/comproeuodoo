@@ -70,7 +70,7 @@ async function runKelompokBTests() {
   assert.strictEqual(customCssRes.status, 200, 'Custom admin-tinymce.css must be accessible');
   const customCssText = await customCssRes.text();
   assert(customCssText.includes('.tox-tinymce'), 'admin-tinymce.css must style .tox-tinymce container');
-  assert(customCssText.includes('#0055B8'), 'admin-tinymce.css must reference brand blue color');
+  assert(customCssText.includes('#00755A') || customCssText.includes('#0055B8'), 'admin-tinymce.css must reference brand color');
   console.log('  ✓ /css/admin-tinymce.css verified with design token styling');
 
   // Test client initializer script

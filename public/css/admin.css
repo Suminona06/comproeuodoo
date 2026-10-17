@@ -13,7 +13,7 @@
   --border-subtle: #f1f5f9;
   --border-main: #e2e8f0;
   --border-hover: #94a3b8;
-  --border-focus: #0055b8;
+  --border-focus: #00755a;
 
   /* Typography Colors - High Contrast (WCAG AA Compliant) */
   --text-main: #090d16;
@@ -21,20 +21,20 @@
   --text-muted: #64748b;
   --text-tertiary: #94a3b8;
 
-  /* Brand Accent (Deep Cobalt Blue) */
-  --primary: #0055b8;
-  --primary-hover: #004294;
-  --primary-subtle: #eff6ff;
-  --primary-border: #bfdbfe;
+  /* Brand Accent (Deep Emerald Green v1) */
+  --primary: #00755a;
+  --primary-hover: #00573f;
+  --primary-subtle: #e6f7f2;
+  --primary-border: #a3e0d0;
 
   /* High-Contrast Status Palette */
   --st-baru-bg: #fef3c7;
   --st-baru-text: #92400e;
   --st-baru-border: #fde68a;
 
-  --st-diproses-bg: #dbeafe;
-  --st-diproses-text: #1e40af;
-  --st-diproses-border: #bfdbfe;
+  --st-diproses-bg: #e6f7f2;
+  --st-diproses-text: #00573f;
+  --st-diproses-border: #a3e0d0;
 
   --st-selesai-bg: #dcfce7;
   --st-selesai-text: #166534;
@@ -144,13 +144,13 @@ button {
   width: 32px;
   height: 32px;
   border-radius: var(--r-md);
-  background: linear-gradient(135deg, var(--primary) 0%, #003e85 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #00573f 100%);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0, 85, 184, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 117, 90, 0.3);
 }
 
 .brand-text-wrap {
@@ -972,15 +972,15 @@ body.sidebar-open .admin-backdrop {
 
 .badge-status--primary,
 .badge-status.st-baru {
-  background-color: #eff6ff;
-  color: #1d4ed8;
-  border-color: #bfdbfe;
+  background-color: #e6f7f2;
+  color: #00573f;
+  border-color: #a3e0d0;
 }
 
 .badge-status--info {
-  background-color: #e0f2fe;
-  color: #0369a1;
-  border-color: #bae6fd;
+  background-color: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
 }
 
 .badge-status--neutral {
@@ -991,9 +991,9 @@ body.sidebar-open .admin-backdrop {
 
 /* Status Selector (Inquiry & Interactive Dropdowns) */
 .status-select.st-baru {
-  background-color: #eff6ff;
-  color: #1d4ed8;
-  border-color: #bfdbfe;
+  background-color: #e6f7f2;
+  color: #00573f;
+  border-color: #a3e0d0;
 }
 
 .status-select.st-diproses {
@@ -1094,7 +1094,7 @@ body.sidebar-open .admin-backdrop {
   background: var(--primary);
   color: #ffffff;
   border-color: var(--primary);
-  box-shadow: 0 2px 6px rgba(0, 85, 184, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 117, 90, 0.2);
 }
 
 .btn-action-delete {
@@ -1120,7 +1120,7 @@ body.sidebar-open .admin-backdrop {
   background: var(--primary);
   color: #ffffff;
   border-color: var(--primary);
-  box-shadow: 0 2px 6px rgba(0, 85, 184, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 117, 90, 0.2);
 }
 
 .btn-action-status {
@@ -1302,8 +1302,8 @@ body.sidebar-open .admin-backdrop {
 .file-upload-dropzone.dragover {
   border-color: var(--primary);
   border-style: solid;
-  background: #eff6ff;
-  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.15);
+  background: #e6f7f2;
+  box-shadow: 0 0 0 3px rgba(0, 117, 90, 0.15);
   transform: scale(1.005);
 }
 
@@ -1977,14 +1977,14 @@ body.sidebar-open .admin-backdrop {
   font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
   border-radius: var(--r-xl, 12px) !important;
   padding: 1.75rem 1.5rem !important;
-  box-shadow: 0 20px 25px -5px rgba(13, 32, 64, 0.15), 0 8px 10px -6px rgba(13, 32, 64, 0.1) !important;
+  box-shadow: 0 20px 25px -5px rgba(7, 31, 23, 0.15), 0 8px 10px -6px rgba(7, 31, 23, 0.1) !important;
   border: 1px solid var(--border-main, #e2e8f0) !important;
 }
 .swal2-title.swal2-custom-title {
   font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
   font-size: 1.15rem !important;
   font-weight: 700 !important;
-  color: var(--secondary, #0d2040) !important;
+  color: var(--surface-dark, #071f17) !important;
   margin-bottom: 0.5rem !important;
 }
 .swal2-html-container {
@@ -2013,13 +2013,13 @@ body.sidebar-open .admin-backdrop {
   font-size: 0.875rem !important;
   padding: 0.625rem 1.25rem !important;
   border-radius: var(--r-md, 6px) !important;
-  background-color: var(--secondary, #0d2040) !important;
+  background-color: var(--surface-dark, #071f17) !important;
   color: #ffffff !important;
 }
 .swal2-toast-custom {
   font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
   border-radius: var(--r-md, 6px) !important;
-  box-shadow: 0 10px 15px -3px rgba(13, 32, 64, 0.12), 0 4px 6px -4px rgba(13, 32, 64, 0.08) !important;
+  box-shadow: 0 10px 15px -3px rgba(7, 31, 23, 0.12), 0 4px 6px -4px rgba(7, 31, 23, 0.08) !important;
   border: 1px solid var(--border-main, #e2e8f0) !important;
 }
 .admin-alerts-container {
@@ -2047,7 +2047,7 @@ body.sidebar-open .admin-backdrop {
   transition: border-color var(--ease, 200ms ease);
 }
 .media-picker-preview-box:hover {
-  border-color: var(--primary, #0055b8);
+  border-color: var(--primary, #00755a);
 }
 .media-picker-preview-box img,
 .media-picker-preview-box video {
@@ -2078,7 +2078,7 @@ body.sidebar-open .admin-backdrop {
 
 /* Media Picker Modal - Liquid Glass & Accessibility Polish (T-95) */
 .media-picker-modal.admin-modal-backdrop {
-  background: rgba(10, 25, 47, 0.68);
+  background: rgba(7, 31, 23, 0.68);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -2099,7 +2099,7 @@ body.sidebar-open .admin-backdrop {
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.85);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9),
-              0 25px 50px -12px rgba(10, 25, 47, 0.35);
+              0 25px 50px -12px rgba(7, 31, 23, 0.35);
   transform: scale(0.95) translateY(10px);
   transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -2139,12 +2139,12 @@ body.sidebar-open .admin-backdrop {
 }
 
 .media-picker-tab-btn:hover {
-  color: var(--primary, #0055b8);
+  color: var(--primary, #00755a);
 }
 
 .media-picker-tab-btn.active {
-  color: var(--primary, #0055b8);
-  border-bottom-color: var(--primary, #0055b8);
+  color: var(--primary, #00755a);
+  border-bottom-color: var(--primary, #00755a);
 }
 
 .media-picker-body {
@@ -2175,14 +2175,14 @@ body.sidebar-open .admin-backdrop {
 }
 
 .media-picker-card:hover {
-  border-color: #93c5fd;
+  border-color: #a3e0d0;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px -2px rgba(10, 25, 47, 0.12);
+  box-shadow: 0 6px 12px -2px rgba(7, 31, 23, 0.12);
 }
 
 .media-picker-card.selected {
-  border-color: var(--primary, #0055b8);
-  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.25);
+  border-color: var(--primary, #00755a);
+  box-shadow: 0 0 0 3px rgba(0, 117, 90, 0.25);
 }
 
 .media-picker-card.selected::after {
@@ -2192,7 +2192,7 @@ body.sidebar-open .admin-backdrop {
   right: 6px;
   width: 22px;
   height: 22px;
-  background: var(--primary, #0055b8);
+  background: var(--primary, #00755a);
   color: #ffffff;
   border-radius: 50%;
   display: flex;
@@ -2275,8 +2275,8 @@ body.sidebar-open .admin-backdrop {
 #btnMediaPickerPrev:not(:disabled):hover,
 #btnMediaPickerNext:not(:disabled):hover {
   background: #f8fafc;
-  color: var(--primary, #0055b8);
-  border-color: var(--primary, #0055b8);
+  color: var(--primary, #00755a);
+  border-color: var(--primary, #00755a);
 }
 
 #btnMediaPickerPrev:disabled,

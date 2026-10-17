@@ -5,21 +5,30 @@
 <% const data = typeof about !== 'undefined' && about ? about : {}; %>
 <% 
   const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
-  const heroBg = heroObj && heroObj.image_url ? `style="background: linear-gradient(rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.65}), rgba(10, 25, 47, ${heroObj.overlay_opacity || 0.65})), url('${heroObj.image_url}') center/cover no-repeat;"` : '';
+  const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.50;
+  const midOpacity = Math.min(0.85, 0.45 + (userOpacity * 0.40)).toFixed(2);
+  const edgeOpacity = Math.max(0.12, userOpacity * 0.50).toFixed(2);
+  const heroBg = heroObj && heroObj.image_url 
+    ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
+    : '';
 %>
 
 <main id="main-content">
   <!-- 1. PAGE HERO -->
-  <section class="page-hero" <%- heroBg %>>
+  <section class="page-hero <%= heroObj && heroObj.image_url ? 'page-hero--has-bg' : '' %>" <%- heroBg %>>
+    <% if (heroObj && heroObj.image_url) { %>
+      <div class="page-hero-scrim" aria-hidden="true"></div>
+    <% } %>
     <div class="container">
-      <div class="breadcrumbs">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
-        <span>&rsaquo;</span>
+        <span class="separator" aria-hidden="true">&rsaquo;</span>
         <span class="current"><%= lang === 'en' ? 'About Us' : 'Tentang Kami' %></span>
-      </div>
+      </nav>
 
-      <div style="max-width: 840px;">
+      <div class="page-hero-content" style="max-width: 840px;">
         <span class="page-hero-kicker">
+          <span class="page-hero-kicker-dot" aria-hidden="true"></span>
           <%= lang === 'en' ? 'ABOUT PT. EUODOO' : 'TENTANG PT. EUODOO' %>
         </span>
         <h1 class="page-hero-title">
@@ -165,10 +174,10 @@
         <% (data.values || []).forEach(function(val) { %>
           <div class="pillar-card reveal" style="padding: 24px;">
             <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
-              <div style="width: 44px; height: 44px; border-radius: var(--r-lg, 8px); background: #eff6ff; border: 1px solid #bfdbfe; color: var(--primary, #0055b8); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 800;">
+              <div style="width: 44px; height: 44px; border-radius: var(--r-lg, 8px); background: #e6f7f2; border: 1px solid #a3e0d0; color: var(--primary, #00755a); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 800;">
                 <%= val.letter %>
               </div>
-              <h3 style="font-size: 1.15rem; color: var(--navy, #0a192f); margin: 0; font-weight: 700;">
+              <h3 style="font-size: 1.15rem; color: var(--navy, #071f17); margin: 0; font-weight: 700;">
                 <%= lang === 'en' ? val.title_en : val.title_id %>
               </h3>
             </div>

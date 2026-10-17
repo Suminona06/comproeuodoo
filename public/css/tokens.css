@@ -1,13 +1,10 @@
 /**
- * Design Tokens: Pacific Corporate & Energy
- * Acuan: Design/DESIGN.md & Antislop Guidance
+ * Design Tokens: Euodoo Industrial (Rebrand Palet Hijau v1)
+ * Acuan: Design/DESIGN.md & Keputusan Terkunci User (2026-10-17)
  * PT Euodoo - Website Company Profile & CMS
  */
 
 :root {
-  /* ========================================================
-     Color Palette - Foundations & Brand
-     ======================================================== */
   /* Dual-Token Public Background System (Revisi v5: #FFFFFF & #F8FAFC) */
   --bg-base: #ffffff;
   --bg-subtle: #f8fafc;
@@ -25,7 +22,7 @@
   --color-surface-container-highest: #cbd5e1;
   --color-workspace-bg: #f8fafc;
 
-  /* Section Transition Gradients (Opsi 1A: Soft Vertical Gradient Blend) */
+  /* Section Transition Gradients */
   --trans-base-to-subtle: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
   --trans-subtle-to-base: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
 
@@ -38,32 +35,49 @@
   --color-inverse-surface: #283044;
   --color-inverse-on-surface: #f8fafc;
 
-  /* Brand Primary (Signature Industrial Blue) */
-  --color-primary: #0055b8;
-  --color-primary-dark: #003f8b;
+  /* Brand Primary Foundations (Palet Hijau v1) */
+  --color-primary: #00755a;
+  --color-primary-dark: #00573f;
+  --color-primary-hover: #009476;
+  --color-primary-bright: #00906e;
+  --color-leaf: #7cbe38;
   --color-on-primary: #ffffff;
-  --color-primary-container: #0055b8;
-  --color-on-primary-container: #bcd0ff;
-  --color-inverse-primary: #aec6ff;
+  --color-primary-container: #00755a;
+  --color-on-primary-container: #e6f7f2;
+  --color-inverse-primary: #a3e0d0;
 
-  /* Brand Secondary (Authoritative Corporate Navy) */
-  --color-secondary-navy: #0d2040;
-  --color-navy-deep: #0a192f;
-  --color-navy-surface: #0d2040;
+  /* Turunan Semantik Resmi */
+  --primary-subtle: #e6f7f2;
+  --primary-border: #a3e0d0;
+  --shadow-primary: 0 2px 6px rgba(0, 117, 90, 0.20);
+  --trans-cta-gradient: linear-gradient(135deg, #00573f 0%, #00755a 60%, #009476 100%);
+
+  /* Dark & Transparent Surfaces (Keputusan Terkunci 2026-10-17) */
+  --surface-dark-deep: #071f17;
+  --surface-dark-surface: #0b281e;
+  --surface-dark-footer: #00573f;
+  --topbar-bg: rgba(0, 87, 63, 0.35);
+  --hero-grad: linear-gradient(105deg, rgba(0, 87, 63, 0.45) 0%, rgba(0, 87, 63, 0.22) 50%, rgba(0, 87, 63, 0.08) 100%);
+  --color-secondary-navy: #071f17;
+  --color-navy-deep: #071f17;
+  --color-navy-surface: #0b281e;
+  --color-navy-footer: #00573f;
   --color-on-secondary: #ffffff;
-  --color-secondary: #4d5e82;
-  --color-secondary-container: #c3d4fe;
+  --color-secondary: #00573f;
+  --color-secondary-container: #e6f7f2;
 
-  /* Brand Tertiary / Interactive Blue */
-  --color-blue-vibrant: #2563eb;
-  --color-blue-active: #1d4ed8;
-  --color-sky-tint: #38bdf8;
-  --color-sky-hover: #0284c7;
+  /* Brand Accent & Interactive */
+  --color-accent: #00906e;
+  --color-accent-hover: #009476;
+  --color-blue-vibrant: #00755a;
+  --color-blue-active: #00573f;
+  --color-sky-tint: #00906e;
+  --color-sky-hover: #009476;
 
   /* Eco-Friendly / Sustainability Accents */
-  --color-accent-teal: #0d9488;
-  --color-accent-teal-dark: #0f766e;
-  --color-eco-green: #16a34a;
+  --color-accent-teal: #00755a;
+  --color-accent-teal-dark: #00573f;
+  --color-eco-green: #15803d;
   --color-eco-green-light: #dcfce7;
 
   /* Borders & Dividers */
@@ -72,18 +86,20 @@
   --color-outline-variant: #c2c6d5;
 
   /* Semantic Feedback */
-  --color-success: #16a34a;
+  --color-success: #15803d;
   --color-success-bg: #dcfce7;
   --color-warning: #f59e0b;
   --color-warning-bg: #fef3c7;
   --color-error: #ba1a1a;
   --color-error-bg: #ffdad6;
-  --color-info: #0284c7;
-  --color-info-bg: #e0f2fe;
+  --color-info: #334155;
+  --color-info-bg: #f1f5f9;
+  --color-info-border: #cbd5e1;
+  --status-info: #334155;
+  --status-info-bg: #f1f5f9;
+  --status-info-border: #cbd5e1;
 
-  /* ========================================================
-     Typography Tokens (Plus Jakarta Sans)
-     ======================================================== */
+  /* Typography Tokens (Plus Jakarta Sans) */
   --font-family-base: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   /* Headings */
@@ -134,9 +150,7 @@
   --letter-spacing-normal: 0em;
   --letter-spacing-wide: 0.05em;
 
-  /* ========================================================
-     Spacing & Grid Scale (8px Atomic Grid)
-     ======================================================== */
+  /* Spacing & Grid Scale (8px Atomic Grid) */
   --space-2xs: 0.125rem; /* 2px */
   --space-xs: 0.25rem;   /* 4px */
   --space-sm: 0.5rem;    /* 8px */
@@ -153,9 +167,7 @@
   --container-gutter-desktop: 1.5rem; /* 24px */
   --container-gutter-mobile: 1rem;    /* 16px */
 
-  /* ========================================================
-     Shapes & Border Radii
-     ======================================================== */
+  /* Shapes & Border Radii */
   --radius-xs: 0.125rem; /* 2px */
   --radius-sm: 0.25rem;  /* 4px - Inputs & compact controls */
   --radius-md: 0.375rem; /* 6px - Buttons & interactive cards */
@@ -163,44 +175,33 @@
   --radius-xl: 0.75rem;  /* 12px - Featured hero frames */
   --radius-pill: 9999px; /* Status badges & indicator pills only */
 
-  /* ========================================================
-     Elevation & Depth (Industrial Architectural Precision)
-     ======================================================== */
-  /* Level 0: Flat planar surface */
+  /* Elevation & Depth */
   --shadow-level-0: none;
   --border-level-0: 1px solid var(--color-border);
+  --shadow-level-1: 0 1px 3px rgba(7, 31, 23, 0.06), 0 1px 2px rgba(7, 31, 23, 0.04);
+  --shadow-level-2: 0 10px 15px -3px rgba(7, 31, 23, 0.08), 0 4px 6px -2px rgba(7, 31, 23, 0.04);
+  --shadow-level-3: 0 20px 25px -5px rgba(7, 31, 23, 0.12), 0 10px 10px -5px rgba(7, 31, 23, 0.04);
 
-  /* Level 1: Subtle lift for interactive cards */
-  --shadow-level-1: 0 1px 3px rgba(10, 25, 47, 0.06), 0 1px 2px rgba(10, 25, 47, 0.04);
-
-  /* Level 2: Active & floating menus, dropdowns */
-  --shadow-level-2: 0 10px 15px -3px rgba(10, 25, 47, 0.08), 0 4px 6px -2px rgba(10, 25, 47, 0.04);
-
-  /* Level 3: High overlay, modal drawers, toasts */
-  --shadow-level-3: 0 20px 25px -5px rgba(10, 25, 47, 0.12), 0 10px 10px -5px rgba(10, 25, 47, 0.04);
-
-  /* ========================================================
-     Transitions & Motion (Calm / Subtle)
-     ======================================================== */
+  /* Transitions & Motion */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Accessibility Focus Ring */
-  --focus-ring: 0 0 0 3px rgba(0, 85, 184, 0.25);
-  --focus-ring-outline: 2px solid var(--color-sky-tint);
+  --focus-ring: 0 0 0 3px rgba(0, 117, 90, 0.25);
+  --focus-ring-outline: 2px solid var(--color-primary-bright, #00906e);
 
-  /* ========================================================
-     Prototype v2 Direct Aliases (Compatibility Layer)
-     ======================================================== */
-  --primary: #0055b8;
-  --primary-dark: #003f8b;
-  --primary-hover: #1d4ed8;
-  --navy: #0a192f;
-  --navy-surface: #0d2040;
-  --navy-footer: #182147;
-  --sky: #38bdf8;
-  --sky-hover: #0284c7;
+  /* Prototype & Compatibility Aliases */
+  --primary: #00755a;
+  --primary-dark: #00573f;
+  --primary-hover: #00573f;
+  --primary-bright: #00906e;
+  --leaf: #7cbe38;
+  --navy: #071f17;
+  --navy-surface: #0b281e;
+  --navy-footer: #00573f;
+  --sky: #00906e;
+  --sky-hover: #009476;
   --surface: var(--bg-base);
   --surface-white: #ffffff;
   --workspace: #f8fafc;
@@ -211,20 +212,21 @@
   --text-variant: #424753;
   --text-muted: #64748b;
   --text-subtle: #737784;
-  --text-on-dark: #cbd5e1;
+  --text-on-dark: #e2e8f0;
   --text-inverse: #ffffff;
   --border: #e2e8f0;
   --border-light: #e2e8f0;
   --outline: #737784;
   --outline-variant: #c2c6d5;
-  --success: #16a34a;
+  --success: #15803d;
   --success-bg: #dcfce7;
   --warning: #f59e0b;
   --warning-bg: #fef3c7;
   --error: #ba1a1a;
   --error-bg: #ffdad6;
-  --info: #0284c7;
-  --info-bg: #e0f2fe;
+  --info: #334155;
+  --info-bg: #f1f5f9;
+  --info-border: #cbd5e1;
   --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --r-xs: 2px;
   --r-sm: 4px;
@@ -232,9 +234,9 @@
   --r-lg: 8px;
   --r-xl: 12px;
   --r-pill: 9999px;
-  --shadow-1: 0 1px 3px rgba(10, 25, 47, 0.06), 0 1px 2px rgba(10, 25, 47, 0.04);
-  --shadow-2: 0 10px 15px -3px rgba(10, 25, 47, 0.08), 0 4px 6px -2px rgba(10, 25, 47, 0.04);
-  --shadow-3: 0 20px 25px -5px rgba(10, 25, 47, 0.12), 0 10px 10px -5px rgba(10, 25, 47, 0.04);
+  --shadow-1: 0 1px 3px rgba(7, 31, 23, 0.06), 0 1px 2px rgba(7, 31, 23, 0.04);
+  --shadow-2: 0 10px 15px -3px rgba(7, 31, 23, 0.08), 0 4px 6px -2px rgba(7, 31, 23, 0.04);
+  --shadow-3: 0 20px 25px -5px rgba(7, 31, 23, 0.12), 0 10px 10px -5px rgba(7, 31, 23, 0.04);
   --ease-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --ease: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --ease-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);

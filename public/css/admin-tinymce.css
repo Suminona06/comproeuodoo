@@ -7,15 +7,15 @@
   border: 1px solid var(--border-main, #E2E8F0) !important;
   border-radius: var(--r-md, 8px) !important;
   background-color: var(--surface-white, #FFFFFF) !important;
-  box-shadow: 0 1px 3px rgba(10, 25, 47, 0.04) !important;
+  box-shadow: 0 1px 3px rgba(7, 31, 23, 0.04) !important;
   transition: border-color 200ms ease, box-shadow 200ms ease !important;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
   overflow: hidden;
 }
 
 .tox-tinymce:focus-within {
-  border-color: var(--color-primary, #0055B8) !important;
-  box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.15) !important;
+  border-color: var(--color-primary, #00755A) !important;
+  box-shadow: 0 0 0 3px rgba(0, 117, 90, 0.15) !important;
 }
 
 .tox .tox-toolbar-overlord,
@@ -40,14 +40,14 @@
 }
 
 .tox .tox-tbtn:hover {
-  background-color: #EFF6FF !important;
-  color: var(--color-primary, #0055B8) !important;
+  background-color: #E6F7F2 !important;
+  color: var(--color-primary, #00755A) !important;
 }
 
 .tox .tox-tbtn--enabled,
 .tox .tox-tbtn--enabled:hover {
-  background-color: #EFF6FF !important;
-  color: var(--color-primary, #0055B8) !important;
+  background-color: #E6F7F2 !important;
+  color: var(--color-primary, #00755A) !important;
 }
 
 .tox .tox-tbtn svg {
@@ -67,7 +67,7 @@
 }
 
 .tox .tox-statusbar a {
-  color: var(--color-primary, #0055B8) !important;
+  color: var(--color-primary, #00755A) !important;
   text-decoration: none !important;
 }
 
@@ -79,7 +79,7 @@
 .tox .tox-dialog {
   border-radius: 12px !important;
   border: 1px solid var(--border-main, #E2E8F0) !important;
-  box-shadow: 0 20px 25px -5px rgba(10, 25, 47, 0.12), 0 10px 10px -5px rgba(10, 25, 47, 0.04) !important;
+  box-shadow: 0 20px 25px -5px rgba(7, 31, 23, 0.12), 0 10px 10px -5px rgba(7, 31, 23, 0.04) !important;
   overflow: hidden;
 }
 
@@ -92,7 +92,7 @@
 .tox .tox-dialog__title {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   font-weight: 700 !important;
-  color: var(--navy-deep, #0A192F) !important;
+  color: var(--navy-deep, #071F17) !important;
 }
 
 .tox .tox-dialog__footer {
@@ -119,14 +119,14 @@
 }
 
 .tox .tox-button:not(.tox-button--secondary) {
-  background-color: var(--color-primary, #0055B8) !important;
-  border-color: var(--color-primary, #0055B8) !important;
+  background-color: var(--color-primary, #00755A) !important;
+  border-color: var(--color-primary, #00755A) !important;
   color: #FFFFFF !important;
 }
 
 .tox .tox-button:not(.tox-button--secondary):hover {
-  background-color: #1D4ED8 !important;
-  border-color: #1D4ED8 !important;
+  background-color: #00573F !important;
+  border-color: #00573F !important;
 }
 
 /* Fallback textarea when JS is loading */

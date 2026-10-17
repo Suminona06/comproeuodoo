@@ -88,7 +88,7 @@ export const csrfProtection = (req, res, next) => {
           .container { text-align: center; padding: 2rem; max-width: 500px; }
           h1 { color: #ba1a1a; margin-bottom: 0.5rem; }
           p { color: #424753; margin-bottom: 1.5rem; line-height: 1.5; }
-          a { display: inline-block; padding: 0.75rem 1.5rem; background: #0055b8; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 600; }
+          a { display: inline-block; padding: 0.75rem 1.5rem; background: #00755a; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 600; }
         </style>
       </head>
       <body>

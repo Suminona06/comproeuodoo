@@ -112,12 +112,10 @@ a {
 }
 
 a:hover {
-  color: var(--color-blue-active);
+  color: var(--color-primary-dark, #00573f);
 }
 
-/* ========================================================
-   Accessibility & Focus Visible
-   ======================================================== */
+/* Accessibility & Focus Visible */
 :focus {
   outline: none;
 }
@@ -132,8 +130,8 @@ a:hover {
   position: absolute;
   top: -100px;
   left: var(--space-md);
-  background: var(--color-secondary-navy);
-  color: var(--color-on-secondary);
+  background: var(--surface-dark-deep, #071f17);
+  color: var(--color-on-secondary, #ffffff);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-sm);
   z-index: 9999;
@@ -145,12 +143,10 @@ a:hover {
   top: var(--space-md);
 }
 
-/* ========================================================
-   Text Selection
-   ======================================================== */
+/* Text Selection */
 ::selection {
-  background-color: var(--color-primary-container);
-  color: var(--color-on-primary);
+  background-color: var(--primary-subtle, #e6f7f2);
+  color: var(--primary-dark, #00573f);
 }
 
 /* ========================================================

@@ -4,7 +4,7 @@
     <!-- Header -->
     <div class="media-picker-modal-header">
       <div>
-        <h3 id="mediaPickerTitle" style="font-size: 1.15rem; font-weight: 700; color: var(--secondary, #0d2040); margin: 0;">Pilih Media dari Library</h3>
+        <h3 id="mediaPickerTitle" style="font-size: 1.15rem; font-weight: 700; color: var(--surface-dark, #071F17); margin: 0;">Pilih Media dari Library</h3>
         <p style="font-size: 12.5px; color: #64748b; margin: 3px 0 0;">Pilih aset visual yang sudah tersedia atau unggah berkas baru secara langsung.</p>
       </div>
       <button type="button" class="admin-modal-close" id="btnCloseMediaPicker" aria-label="Tutup Modal">
@@ -18,7 +18,7 @@
       <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="image">Gambar</button>
       <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="video">Video</button>
       <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="youtube">YouTube</button>
-      <button type="button" class="media-picker-tab-btn" data-tab="upload" style="margin-left: auto; color: var(--primary, #0055b8);">
+      <button type="button" class="media-picker-tab-btn" data-tab="upload" style="margin-left: auto; color: var(--primary, #00755a);">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: -2px; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
         Unggah Berkas Baru
       </button>
@@ -65,18 +65,18 @@
 
       <!-- Tab 2: Upload Direct -->
       <div id="mediaPickerTabUpload" style="display: none;">
-        <div style="border: 2px dashed var(--primary, #0055b8); background: #f8fafc; border-radius: var(--r-xl, 12px); padding: 3rem 1.5rem; text-align: center; cursor: pointer;" id="pickerUploadDropzone">
-          <svg width="48" height="48" fill="none" stroke="var(--primary, #0055b8)" stroke-width="1.8" viewBox="0 0 24 24" style="margin: 0 auto 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          <div style="font-weight: 700; font-size: 15px; color: var(--secondary, #0d2040); margin-bottom: 4px;">Pilih Berkas atau Tarik ke Sini</div>
+        <div style="border: 2px dashed var(--primary, #00755a); background: #f8fafc; border-radius: var(--r-xl, 12px); padding: 3rem 1.5rem; text-align: center; cursor: pointer;" id="pickerUploadDropzone">
+          <svg width="48" height="48" fill="none" stroke="var(--primary, #00755a)" stroke-width="1.8" viewBox="0 0 24 24" style="margin: 0 auto 1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <div style="font-weight: 700; font-size: 15px; color: var(--secondary, #0b281e); margin-bottom: 4px;">Pilih Berkas atau Tarik ke Sini</div>
           <p style="font-size: 13px; color: #64748b; margin-bottom: 1.25rem;">Mendukung format gambar (JPG, PNG, WebP, SVG), video (MP4, WebM), atau PDF (Maks 15MB).</p>
           <input type="file" id="pickerFileInput" style="display: none;" accept="image/*,video/*,application/pdf">
           <button type="button" class="btn btn-primary btn-sm" id="btnTriggerBrowseFile">Pilih dari Komputer</button>
         </div>
 
         <div id="pickerUploadProgress" style="display: none; margin-top: 1.5rem; text-align: center;">
-          <div style="font-size: 13px; font-weight: 600; color: var(--primary, #0055b8); margin-bottom: 6px;" id="pickerUploadProgressText">Mengunggah &amp; mengoptimasi berkas...</div>
+          <div style="font-size: 13px; font-weight: 600; color: var(--primary, #00755a); margin-bottom: 6px;" id="pickerUploadProgressText">Mengunggah &amp; mengoptimasi berkas...</div>
           <div style="background: #e2e8f0; border-radius: 9999px; height: 6px; overflow: hidden; width: 100%;">
-            <div id="pickerUploadProgressBar" style="width: 30%; height: 100%; background: var(--primary, #0055b8); transition: width 200ms ease;"></div>
+            <div id="pickerUploadProgressBar" style="width: 30%; height: 100%; background: var(--primary, #00755a); transition: width 200ms ease;"></div>
           </div>
         </div>
       </div>

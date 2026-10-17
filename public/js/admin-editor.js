@@ -102,18 +102,18 @@
           margin: 0;
           background-color: #FFFFFF;
         }
-        h2 { font-size: 1.5rem; font-weight: 700; color: #0A192F; margin-top: 1.5rem; margin-bottom: 0.75rem; line-height: 1.3; }
-        h3 { font-size: 1.25rem; font-weight: 600; color: #0A192F; margin-top: 1.25rem; margin-bottom: 0.5rem; line-height: 1.35; }
-        h4 { font-size: 1.1rem; font-weight: 600; color: #0A192F; margin-top: 1rem; margin-bottom: 0.5rem; }
+        h2 { font-size: 1.5rem; font-weight: 700; color: #071F17; margin-top: 1.5rem; margin-bottom: 0.75rem; line-height: 1.3; }
+        h3 { font-size: 1.25rem; font-weight: 600; color: #071F17; margin-top: 1.25rem; margin-bottom: 0.5rem; line-height: 1.35; }
+        h4 { font-size: 1.1rem; font-weight: 600; color: #071F17; margin-top: 1rem; margin-bottom: 0.5rem; }
         p { margin-top: 0; margin-bottom: 1rem; }
-        a { color: #0055B8; text-decoration: underline; text-underline-offset: 3px; }
-        a:hover { color: #1D4ED8; }
+        a { color: #00755A; text-decoration: underline; text-underline-offset: 3px; }
+        a:hover { color: #00573F; }
         ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
         li { margin-bottom: 0.35rem; }
         blockquote {
           margin: 1.5rem 0;
           padding: 0.75rem 1.25rem;
-          border-left: 4px solid #0055B8;
+          border-left: 4px solid #00755A;
           background-color: #F8FAFC;
           color: #424753;
           font-style: italic;
@@ -125,7 +125,7 @@
           border-radius: 8px;
           margin: 1rem 0;
           display: block;
-          box-shadow: 0 1px 3px rgba(10, 25, 47, 0.08);
+          box-shadow: 0 1px 3px rgba(7, 31, 23, 0.08);
         }
         table {
           width: 100%;
@@ -141,7 +141,7 @@
         th {
           background-color: #F8FAFC;
           font-weight: 600;
-          color: #0A192F;
+          color: #071F17;
         }
         code {
           background-color: #F1F5F9;
@@ -152,7 +152,7 @@
           font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
         pre {
-          background-color: #0A192F;
+          background-color: #071F17;
           color: #F8FAFC;
           padding: 14px 18px;
           border-radius: 8px;

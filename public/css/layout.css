@@ -191,15 +191,15 @@
 }
 
 .top-bar {
-  background-color: var(--color-navy-deep);
-  color: var(--color-on-primary-container);
+  background-color: var(--topbar-bg, rgba(0, 87, 63, 0.35));
+  color: rgba(255, 255, 255, 0.9);
   font-size: var(--font-size-label-sm);
-  padding: var(--space-xs) 0;
+  padding: 5px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .top-bar a {
-  color: var(--color-on-primary-container);
+  color: rgba(255, 255, 255, 0.85);
   transition: color var(--transition-fast);
 }
 
@@ -327,7 +327,7 @@
 .mobile-drawer-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(10, 25, 47, 0.5);
+  background-color: rgba(7, 31, 23, 0.5);
   z-index: 1999;
   opacity: 0;
   pointer-events: none;
@@ -343,7 +343,7 @@
    Footer Layout
    ======================================================== */
 .site-footer {
-  background-color: var(--color-navy-deep);
+  background-color: var(--surface-dark-footer, #00573f);
   color: var(--color-on-secondary);
   padding-top: var(--space-3xl);
   padding-bottom: var(--space-xl);
@@ -445,12 +445,12 @@
 .top-bar {
   min-height: 0;
   overflow: hidden;
-  background: rgba(10, 25, 47, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--topbar-bg, rgba(0, 87, 63, 0.35));
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   color: rgba(255, 255, 255, 0.9);
-  font-size: 12px;
-  padding: 8px 0;
+  font-size: 11.5px;
+  padding: 5px 0;
   border: none;
   transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
@@ -526,7 +526,7 @@
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border, #e2e8f0);
-  box-shadow: var(--shadow-1, 0 1px 3px rgba(10, 25, 47, 0.06));
+  box-shadow: var(--shadow-1, 0 1px 3px rgba(7, 31, 23, 0.06));
 }
 
 .navbar {
@@ -552,7 +552,7 @@
 }
 
 .header-wrap.is-scrolled .brand-name {
-  color: var(--navy, #0a192f);
+  color: var(--navy, #071f17);
 }
 
 .brand-badge {
@@ -567,7 +567,7 @@
 }
 
 .header-wrap.is-scrolled .brand-badge {
-  background: var(--navy, #0a192f);
+  background: var(--navy, #071f17);
   color: #ffffff;
 }
 
@@ -606,13 +606,13 @@
 }
 
 .header-wrap.is-scrolled .nav-link:hover {
-  color: var(--primary, #0055b8);
-  background: var(--surface-container, #eff6ff);
+  color: var(--primary, #00755a);
+  background: var(--primary-subtle, #e6f7f2);
 }
 
 .header-wrap.is-scrolled .nav-link.active {
-  color: var(--primary, #0055b8);
-  background: rgba(0, 85, 184, 0.08);
+  color: var(--primary, #00755a);
+  background: var(--primary-subtle, #e6f7f2);
   font-weight: 600;
 }
 
@@ -661,7 +661,7 @@
 }
 
 .header-wrap.is-scrolled .mobile-toggle span {
-  background: var(--navy, #0a192f);
+  background: var(--navy, #071f17);
 }
 
 /* Active close state */
@@ -673,12 +673,12 @@
 
 .mobile-toggle.active:hover,
 .header-wrap.menu-open .mobile-toggle:hover {
-  background: rgba(10, 25, 47, 0.06) !important;
+  background: rgba(7, 31, 23, 0.06) !important;
 }
 
 .mobile-toggle.active span,
 .header-wrap.menu-open .mobile-toggle span {
-  background: var(--navy, #0a192f);
+  background: var(--navy, #071f17);
 }
 
 .mobile-toggle.active span:nth-child(1) {
@@ -698,15 +698,15 @@
 .header-wrap.menu-open .site-header {
   background: #ffffff !important;
   border-bottom: 1px solid var(--border, #e2e8f0) !important;
-  box-shadow: 0 4px 16px rgba(10, 25, 47, 0.06) !important;
+  box-shadow: 0 4px 16px rgba(7, 31, 23, 0.06) !important;
 }
 
 .header-wrap.menu-open .brand-name {
-  color: var(--navy, #0a192f) !important;
+  color: var(--navy, #071f17) !important;
 }
 
 .header-wrap.menu-open .brand-badge {
-  background: var(--navy, #0a192f) !important;
+  background: var(--navy, #071f17) !important;
   color: #ffffff !important;
 }
 
@@ -718,7 +718,7 @@
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(10, 25, 47, 0.45);
+  background: rgba(7, 31, 23, 0.45);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   opacity: 0;
@@ -734,10 +734,10 @@
 }
 
 /* ========================================================
-   PT Euodoo Prototype v2 Footer Layout (#182147 Calm Corporate Navy)
+   PT Euodoo Footer Layout (#00573F Signature Deep Forest Green)
    ======================================================== */
 .site-footer {
-  background: var(--navy-footer, #182147);
+  background: var(--surface-dark-footer, #00573f);
   color: #ffffff;
   padding: 64px 0 32px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -1041,7 +1041,7 @@
     border-radius: 0 0 16px 16px;
     padding: 16px !important;
     border-bottom: 1px solid var(--border, #e2e8f0);
-    box-shadow: 0 16px 36px rgba(10, 25, 47, 0.12);
+    box-shadow: 0 16px 36px rgba(7, 31, 23, 0.12);
     max-height: calc(100vh - 80px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -1094,13 +1094,13 @@
     content: none !important;
   }
   .nav-menu .nav-link:hover {
-    color: var(--primary, #0055b8) !important;
+    color: var(--primary, #00755a) !important;
     background: #f1f5f9 !important;
     text-decoration: none !important;
   }
   .nav-menu .nav-link.active {
-    color: var(--primary, #0055b8) !important;
-    background: rgba(0, 85, 184, 0.08) !important;
+    color: var(--primary, #00755a) !important;
+    background: var(--primary-subtle, #e6f7f2) !important;
     font-weight: 600;
     text-decoration: none !important;
   }
@@ -1126,14 +1126,14 @@
     font-size: 15px !important;
     font-weight: 600;
     border-radius: 8px !important;
-    background: var(--primary, #0055b8) !important;
+    background: var(--primary, #00755a) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(0, 85, 184, 0.22) !important;
+    box-shadow: 0 4px 14px rgba(0, 117, 90, 0.22) !important;
     text-decoration: none !important;
     box-sizing: border-box;
   }
   .btn-nav-mobile:hover {
-    background: var(--primary-dark, #003f88) !important;
+    background: var(--primary-dark, #00573f) !important;
     color: #ffffff !important;
   }
   .ft-main {

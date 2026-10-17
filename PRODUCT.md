@@ -39,7 +39,7 @@ Buyers typically compare manufacturers via website visits, WhatsApp conversation
 
 - Name: PT. EUODOO
 - Font: Plus Jakarta Sans (all roles)
-- Color identity: Deep navy (#0A192F, #0D2040) for authority, signature blue (#0055B8) for brand, sky tint (#38BDF8) for interactive accents
+- Color identity: Signature Forest Green (#00755A) for brand CTA, Deep Forest Green (#00573F) for footer & dark authority, Vibrant Emerald (#00906E) for focus/accents, Fresh Leaf (#7CBE38) for decorative eco-accents
 - Personality: authoritative, resilient, progressive, industrially precise
 - Environmental stewardship is a core brand commitment, not marketing decoration
 

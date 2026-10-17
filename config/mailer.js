@@ -29,9 +29,9 @@ export const mailer = {
 
       const htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-          <div style="background-color: #0a192f; color: #ffffff; padding: 20px; text-align: center;">
+          <div style="background-color: #00573F; color: #ffffff; padding: 20px; text-align: center;">
             <h2 style="margin: 0; font-size: 20px;">PT Euodoo Presisi Indonesia</h2>
-            <p style="margin: 5px 0 0 0; color: #0d9488; font-size: 14px;">Notifikasi Permintaan Penawaran Harga (RFQ)</p>
+            <p style="margin: 5px 0 0 0; color: #a3e0d0; font-size: 14px;">Notifikasi Permintaan Penawaran Harga (RFQ)</p>
           </div>
           <div style="padding: 24px; background-color: #ffffff;">
             <p style="font-size: 15px; color: #334155; margin-top: 0;">
@@ -71,7 +71,7 @@ export const mailer = {
             </table>
             <div style="margin-top: 24px; text-align: center;">
               <a href="mailto:${lead.email}?subject=Tanggapan%20Penawaran%20PT%20Euodoo"
-                 style="background-color: #0284c7; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; display: inline-block;">
+                 style="background-color: #00755A; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; display: inline-block;">
                 Balas Email Prospek
               </a>
             </div>
