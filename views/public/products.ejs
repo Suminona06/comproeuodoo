@@ -5,8 +5,8 @@
 <% 
   const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
   const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.50;
-  const midOpacity = Math.min(0.85, 0.45 + (userOpacity * 0.40)).toFixed(2);
-  const edgeOpacity = Math.max(0.12, userOpacity * 0.50).toFixed(2);
+  const midOpacity = Math.min(0.72, 0.35 + (userOpacity * 0.40)).toFixed(2);
+  const edgeOpacity = Math.max(0.08, (userOpacity * 0.35)).toFixed(2);
   const heroBg = heroObj && heroObj.image_url 
     ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
     : '';
@@ -26,10 +26,6 @@
       </nav>
 
       <div class="page-hero-content" style="max-width: 840px;">
-        <span class="page-hero-kicker">
-          <span class="page-hero-kicker-dot" aria-hidden="true"></span>
-          <%= lang === 'en' ? 'MANUFACTURING CATALOG' : 'KATALOG PRODUK MANUFAKTUR' %>
-        </span>
         <h1 class="page-hero-title">
           <%= (heroObj && (lang === 'en' ? heroObj.title_en : heroObj.title_id))
               ? (lang === 'en' ? heroObj.title_en : heroObj.title_id)

@@ -17,8 +17,8 @@
   };
   const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
   const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.50;
-  const midOpacity = Math.min(0.85, 0.45 + (userOpacity * 0.40)).toFixed(2);
-  const edgeOpacity = Math.max(0.12, userOpacity * 0.50).toFixed(2);
+  const midOpacity = Math.min(0.72, 0.35 + (userOpacity * 0.40)).toFixed(2);
+  const edgeOpacity = Math.max(0.08, (userOpacity * 0.35)).toFixed(2);
   const heroBg = heroObj && heroObj.image_url 
     ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
     : '';
@@ -37,10 +37,6 @@
         <span class="current"><%= t('nav.news') %></span>
       </nav>
       <div class="page-hero-content" style="max-width: 840px;">
-        <span class="page-hero-kicker">
-          <span class="page-hero-kicker-dot" aria-hidden="true"></span>
-          <%= currentLangCode === 'en' ? 'NEWS & MEDIA CENTER' : 'PUSAT INFORMASI & WARTA INDUSTRI' %>
-        </span>
         <h1 class="page-hero-title">
           <%= (heroObj && (currentLangCode === 'en' ? heroObj.title_en : heroObj.title_id))
               ? (currentLangCode === 'en' ? heroObj.title_en : heroObj.title_id)

@@ -48,7 +48,7 @@
         const bannerMediaUrl = banner.file_url || banner.image_url || '/images/hero-factory.jpg';
         const isVideo = banner.media_type === 'video';
       %>
-      <div class="hero-slide <%= index === 0 ? 'is-active' : '' %>" data-slide-index="<%= index %>" role="group" aria-roledescription="slide" aria-label="Slide <%= index + 1 %> dari <%= displayBanners.length %>">
+      <div class="hero-slide <%= index === 0 ? 'is-active' : '' %> <%= isVideo ? 'hero-slide-video' : (banner.media_type === 'youtube' ? 'hero-slide-youtube' : 'hero-slide-image') %>" data-slide-index="<%= index %>" role="group" aria-roledescription="slide" aria-label="Slide <%= index + 1 %> dari <%= displayBanners.length %>">
         <div class="hero-bg">
           <% if (banner.media_type === 'youtube') { 
             let ytId = banner.file_url || '';
