@@ -11,6 +11,7 @@ import postModel from '../models/postModel.js';
 import inquiryModel from '../models/inquiryModel.js';
 import bannerModel from '../models/bannerModel.js';
 import userModel from '../models/userModel.js';
+import homeContentModel from '../models/homeContentModel.js';
 
 async function runModul11Tests() {
   console.log('--- STARTING MODUL 11 (CMS ADMIN v2.0) TESTS ---');
@@ -120,7 +121,6 @@ async function runModul11Tests() {
       { size_label: '28x48 cm', thickness: '0.040 mm', color: 'Merah', material_type: 'HDPE' }
     ],
     status: 'published',
-    featured: true,
     sort_order: 1
   });
   console.log('  5a. Product created with ID:', testProdId);
@@ -217,6 +217,26 @@ async function runModul11Tests() {
   const allBanners = await bannerModel.findAll(false);
   if (allBanners.length < 1) throw new Error('No banners found in system');
   console.log('  8b. Total banners in DB:', allBanners.length, ': PASSED');
+
+  // ==========================================
+  // TEST 9: homeContentModel v2 & getHomepageCategories (T-176)
+  // ==========================================
+  console.log('\n[TEST 9] Testing homeContentModel & homepage categories...');
+  const homeData = await homeContentModel.getHomeContentData();
+  if (!homeData.why_choose_us || !homeData.categories || !homeData.homepage_categories) {
+    throw new Error('homeContentModel missing why_choose_us, categories, or homepage_categories');
+  }
+  console.log('  9a. homeContentModel why_choose_us and categories retrieved: PASSED');
+
+  const homeCats = await productCategoryModel.getHomepageCategories();
+  if (!Array.isArray(homeCats) || homeCats.length < 4) {
+    throw new Error('getHomepageCategories should return 4 primary categories');
+  }
+  const firstCat = homeCats[0];
+  if (!firstCat.id || !firstCat.name_id || !firstCat.slug || !firstCat.image_url) {
+    throw new Error('Homepage category items missing required fields');
+  }
+  console.log('  9b. productCategoryModel.getHomepageCategories 4 items verified: PASSED');
 
   console.log('\n--- ALL MODUL 11 TESTS PASSED SUCCESSFULLY! ---');
   process.exit(0);

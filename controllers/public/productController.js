@@ -27,6 +27,8 @@ export const productController = {
         }
         if (selectedCategory) {
           categoryId = selectedCategory.id;
+        } else {
+          categoryId = -1;
         }
       }
 

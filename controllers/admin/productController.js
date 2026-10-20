@@ -114,7 +114,6 @@ export const productController = {
         { label: 'Kategori', key: r => r.category_name_id || 'Tidak Berkategori' },
         { label: 'Spesifikasi Material', key: 'material_specs' },
         { label: 'Status', key: 'status' },
-        { label: 'Unggulan (Featured)', key: r => r.featured ? 'Ya' : 'Tidak' },
         { label: 'URL Gambar', key: 'image_url' },
         { label: 'Dibuat Pada', key: 'created_at' }
       ];
@@ -148,7 +147,7 @@ export const productController = {
     try {
       const {
         name_id, name_en, category_id, description_id, description_en,
-        material_specs, status, featured, sort_order,
+        material_specs, status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
 
@@ -188,7 +187,6 @@ export const productController = {
         variants,
         image_url: imageUrl,
         status: status || 'published',
-        featured: featured === 'on' || featured === '1' || featured === true,
         sort_order: parseInt(sort_order || '0', 10),
         meta_title_id: meta_title_id || null,
         meta_title_en: meta_title_en || null,
@@ -235,7 +233,7 @@ export const productController = {
       const { id } = req.params;
       const {
         name_id, name_en, category_id, description_id, description_en,
-        material_specs, status, featured, sort_order,
+        material_specs, status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
 
@@ -258,7 +256,6 @@ export const productController = {
         technical_specs: technicalSpecs,
         variants,
         status: status || product.status,
-        featured: featured === 'on' || featured === '1' || featured === true,
         sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : product.sort_order,
         meta_title_id: meta_title_id || null,
         meta_title_en: meta_title_en || null,

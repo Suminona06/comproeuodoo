@@ -343,7 +343,6 @@ async function runV2Seed() {
           '/images/hero-factory-precision.webp'
         ]),
         status: 'published',
-        is_featured: 1,
         sort_order: 1,
         variants: [
           { name_id: 'Ukuran S (25 x 35 cm)', name_en: 'Size S (25 x 35 cm)', sku: 'SLB-HD-S', specs: { thickness: '40 micron', capacity: '5 kg' } },
@@ -371,7 +370,6 @@ async function runV2Seed() {
         main_image: '/images/products/patch-handle-bag.webp',
         gallery_images: JSON.stringify(['/images/products/patch-handle-bag.webp']),
         status: 'published',
-        is_featured: 1,
         sort_order: 2,
         variants: [
           { name_id: 'Medium (28 x 38 cm)', name_en: 'Medium (28 x 38 cm)', sku: 'PHB-HD-M', specs: { thickness: '40 micron', capacity: '6 kg' } },
@@ -398,7 +396,6 @@ async function runV2Seed() {
         main_image: '/images/products/industrial-lldpe-liner.webp',
         gallery_images: JSON.stringify(['/images/products/industrial-lldpe-liner.webp']),
         status: 'published',
-        is_featured: 1,
         sort_order: 3,
         variants: [
           { name_id: 'Drum Liner 200 Liter', name_en: 'Drum Liner 200 Liters', sku: 'LNR-LL-200L', specs: { diameter: '60 cm', height: '100 cm', thickness: '100 micron' } },
@@ -425,7 +422,6 @@ async function runV2Seed() {
         main_image: '/images/products/karung-woven-pp.webp',
         gallery_images: JSON.stringify(['/images/products/karung-woven-pp.webp']),
         status: 'published',
-        is_featured: 1,
         sort_order: 4,
         variants: [
           { name_id: 'Kapasitas 25 kg (45 x 75 cm)', name_en: 'Capacity 25 kg (45 x 75 cm)', sku: 'PPW-25K', specs: { capacity: '25 kg', mesh: '10x10' } },
@@ -440,8 +436,8 @@ async function runV2Seed() {
         `INSERT INTO products (
            category_id, name_id, name_en, slug, description_id, description_en,
            material_specs, technical_specs, main_image, gallery_images, status,
-           is_featured, is_active, sort_order
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
+           is_active, sort_order
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
          ON DUPLICATE KEY UPDATE
            category_id = VALUES(category_id),
            name_id = VALUES(name_id),
@@ -453,12 +449,11 @@ async function runV2Seed() {
            main_image = VALUES(main_image),
            gallery_images = VALUES(gallery_images),
            status = VALUES(status),
-           is_featured = VALUES(is_featured),
            sort_order = VALUES(sort_order)`,
         [
           categoryId, p.name_id, p.name_en, p.slug, p.description_id, p.description_en,
           p.material_specs, p.technical_specs, p.main_image, p.gallery_images, p.status,
-          p.is_featured, p.sort_order
+          p.sort_order
         ]
       );
 

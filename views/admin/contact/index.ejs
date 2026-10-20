@@ -13,6 +13,17 @@
   </div>
 </div>
 
+<div class="alert alert-info" style="margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: rgba(0, 117, 90, 0.08); border: 1px solid rgba(0, 117, 90, 0.2); border-radius: var(--r-md, 8px); padding: 14px 18px;">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary, #00755a)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+    <div>
+      <strong style="color: var(--primary, #00755a); display: block; font-size: 13.5px;">Sentralisasi Master Data Kontak</strong>
+      <span style="font-size: 12.5px; color: var(--text-variant, #424753);">Alamat kantor, pabrik, telepon, email, dan peta Google Maps dikelola secara terpusat di Pengaturan Umum.</span>
+    </div>
+  </div>
+  <a href="/admin/settings" class="btn btn-outline btn-sm" style="flex-shrink: 0;">Buka Pengaturan</a>
+</div>
+
 <form action="/admin/contact?_csrf=<%= csrfToken %>" method="POST">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 

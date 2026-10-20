@@ -12,12 +12,18 @@ async function runModul12Tests() {
   assert.strictEqual(resHome.status, 200, 'Homepage must return HTTP 200');
   const homeHtml = await resHome.text();
   assert.ok(homeHtml.includes('hero'), 'Must contain hero section');
-  assert.ok(homeHtml.includes('bento-grid'), 'Must contain bento products grid');
+  assert.ok(homeHtml.includes('hcat-grid') || homeHtml.includes('bento-grid'), 'Must contain primary category panels or bento grid');
   assert.ok(homeHtml.includes('sec-pillars'), 'Must contain 3 manufacturing pillars');
-  assert.ok(homeHtml.includes('sec-evidence'), 'Must contain certifications section');
-  assert.ok(homeHtml.includes('sec-brands'), 'Must contain brand marquee/showcase');
-  assert.ok(homeHtml.includes('wa-float-btn'), 'Must contain floating WhatsApp button');
+  assert.ok(homeHtml.includes('sec-why-us'), 'Must contain sec-why-us section');
+  assert.ok(homeHtml.includes('wcu-artbox'), 'Must contain Why Choose Us artbox');
+  assert.ok(homeHtml.includes('wcu-float-card'), 'Must contain Why Choose Us floating card');
+  assert.ok(homeHtml.includes('wcu-desc'), 'Must contain Why Choose Us description');
+  assert.ok(!homeHtml.includes('aria-controls="detail"'), 'STRICT: Must NOT contain toggle detail button');
+  assert.ok(homeHtml.includes('prod-title'), 'Must contain prod-title');
+  assert.ok(homeHtml.includes('prod-subtitle'), 'Must contain prod-subtitle');
+  assert.ok(homeHtml.includes('hcat-panel'), 'Must contain primary category panel');
   console.log('  1a. Homepage full 8-section layout verified: PASSED');
+  console.log('  1b. Why Choose Us asymmetric 2-column layout & artbox verified: PASSED');
 
   // Test 2: About Us Page
   console.log('\n[TEST 2] Testing About Us (/about) SSR...');

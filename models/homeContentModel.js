@@ -17,6 +17,40 @@ export const homeContentModel = {
         image_url: '',
         is_active: 1
       },
+      categories: {
+        title_id: 'Produk Unggulan Manufaktur',
+        title_en: 'Featured Manufacturing Products',
+        subtitle_id: 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail, industri, dan pasar komersial.',
+        subtitle_en: 'High-grade HDPE, LLDPE, and woven PP plastic bags manufactured to exact customer specifications.'
+      },
+      why_choose_us: {
+        is_active: 1,
+        eyebrow_id: 'Inovasi untuk masa depan',
+        eyebrow_en: 'Innovation for the future',
+        title_id: 'Why choose us[accent]?[/accent]',
+        title_en: 'Why choose us[accent]?[/accent]',
+        chip_label_id: 'Solusi ramah lingkungan',
+        chip_label_en: 'Eco-friendly solutions',
+        chip_icon: 'tree',
+        headline_id: 'Inovasi material, dengan [mark]dampak yang lebih baik.[/mark]',
+        headline_en: 'Material innovation, with [mark]better impact.[/mark]',
+        desc_id: 'Sebagai [strong]pionir penerapan aditif ramah lingkungan[/strong], kami menghadirkan solusi yang dirancang untuk membantu mengurangi dampak sampah plastik. Didukung formula aditif degradable yang telah teruji serta mengacu pada standar resmi [strong]SNI[/strong] untuk kemasan ramah lingkungan.',
+        desc_en: 'As a [strong]pioneer in eco-friendly additives[/strong], we deliver solutions designed to help reduce plastic waste impact. Supported by verified degradable additive formulations in accordance with official [strong]SNI[/strong] standards for eco-friendly packaging.',
+        callout_lead_id: 'Dirancang dengan kepedulian.',
+        callout_lead_en: 'Designed with care.',
+        callout_body_id: 'Kami mengedepankan inovasi aditif ramah lingkungan sebagai bagian dari pendekatan untuk membantu mengurangi dampak lingkungan.',
+        callout_body_en: 'We prioritize eco-friendly additive innovations as part of our commitment to reducing environmental impact.',
+        note_id: 'Komitmen kami: inovasi yang berpijak pada pengujian dan tanggung jawab lingkungan.',
+        note_en: 'Our commitment: innovation grounded in rigorous testing and environmental responsibility.',
+        art_label_id: 'Material · Alam · Masa depan',
+        art_label_en: 'Material · Nature · Future',
+        float_eyebrow_id: 'Berorientasi masa depan',
+        float_eyebrow_en: 'Future-oriented',
+        float_title_id: 'Better by design.',
+        float_title_en: 'Better by design.',
+        float_desc_id: 'Inovasi material untuk langkah yang lebih bertanggung jawab.',
+        float_desc_en: 'Material innovation for a more responsible path.'
+      },
       pillars: {
         title_id: 'Tiga Pilar Keunggulan Kami',
         title_en: 'Three Pillars of Manufacturing Excellence',
@@ -158,12 +192,12 @@ export const homeContentModel = {
       };
 
       const pillars = {
-        title_id: allSettings.home_pillars_title_id || defaults.pillars.title_id,
-        title_en: allSettings.home_pillars_title_en || defaults.pillars.title_en,
-        subtitle_id: allSettings.home_pillars_subtitle_id || defaults.pillars.subtitle_id,
-        subtitle_en: allSettings.home_pillars_subtitle_en || defaults.pillars.subtitle_en,
-        is_active: allSettings.home_pillars_is_active !== undefined ? Number(allSettings.home_pillars_is_active) : defaults.pillars.is_active,
-        items: parseJsonSafe(allSettings.home_pillars_json, defaults.pillars.items)
+        title_id: defaults.pillars?.title_id || '',
+        title_en: defaults.pillars?.title_en || '',
+        subtitle_id: defaults.pillars?.subtitle_id || '',
+        subtitle_en: defaults.pillars?.subtitle_en || '',
+        is_active: 0,
+        items: []
       };
 
       const certifications = {
@@ -198,7 +232,50 @@ export const homeContentModel = {
         is_active: allSettings.global_cta_is_active !== undefined ? Number(allSettings.global_cta_is_active) : defaults.cta.is_active
       };
 
-      return { intro, pillars, certifications, cta };
+      const categories = {
+        title_id: allSettings.home_cat_title_id || defaults.categories.title_id,
+        title_en: allSettings.home_cat_title_en || defaults.categories.title_en,
+        subtitle_id: allSettings.home_cat_subtitle_id || defaults.categories.subtitle_id,
+        subtitle_en: allSettings.home_cat_subtitle_en || defaults.categories.subtitle_en
+      };
+
+      const homepage_categories = parseJsonSafe(allSettings.home_categories_json, [
+        { category_id: 4, image_url: '/images/segment-retail.jpg' },
+        { category_id: 5, image_url: '/images/segment-industrial.jpg' },
+        { category_id: 6, image_url: '/images/segment-traditional.jpg' },
+        { category_id: 7, image_url: '/images/segment-sustainability.jpg' }
+      ]);
+
+      const why_choose_us = {
+        is_active: allSettings.home_wcu_is_active !== undefined ? Number(allSettings.home_wcu_is_active) : defaults.why_choose_us.is_active,
+        eyebrow_id: allSettings.home_wcu_eyebrow_id || defaults.why_choose_us.eyebrow_id,
+        eyebrow_en: allSettings.home_wcu_eyebrow_en || defaults.why_choose_us.eyebrow_en,
+        title_id: allSettings.home_wcu_title_id || defaults.why_choose_us.title_id,
+        title_en: allSettings.home_wcu_title_en || defaults.why_choose_us.title_en,
+        chip_label_id: allSettings.home_wcu_chip_label_id || defaults.why_choose_us.chip_label_id,
+        chip_label_en: allSettings.home_wcu_chip_label_en || defaults.why_choose_us.chip_label_en,
+        chip_icon: allSettings.home_wcu_chip_icon || defaults.why_choose_us.chip_icon,
+        headline_id: allSettings.home_wcu_headline_id || defaults.why_choose_us.headline_id,
+        headline_en: allSettings.home_wcu_headline_en || defaults.why_choose_us.headline_en,
+        desc_id: allSettings.home_wcu_desc_id || defaults.why_choose_us.desc_id,
+        desc_en: allSettings.home_wcu_desc_en || defaults.why_choose_us.desc_en,
+        callout_lead_id: allSettings.home_wcu_callout_lead_id || defaults.why_choose_us.callout_lead_id,
+        callout_lead_en: allSettings.home_wcu_callout_lead_en || defaults.why_choose_us.callout_lead_en,
+        callout_body_id: allSettings.home_wcu_callout_body_id || defaults.why_choose_us.callout_body_id,
+        callout_body_en: allSettings.home_wcu_callout_body_en || defaults.why_choose_us.callout_body_en,
+        note_id: allSettings.home_wcu_note_id || defaults.why_choose_us.note_id,
+        note_en: allSettings.home_wcu_note_en || defaults.why_choose_us.note_en,
+        art_label_id: allSettings.home_wcu_art_label_id || defaults.why_choose_us.art_label_id,
+        art_label_en: allSettings.home_wcu_art_label_en || defaults.why_choose_us.art_label_en,
+        float_eyebrow_id: allSettings.home_wcu_float_eyebrow_id || defaults.why_choose_us.float_eyebrow_id,
+        float_eyebrow_en: allSettings.home_wcu_float_eyebrow_en || defaults.why_choose_us.float_eyebrow_en,
+        float_title_id: allSettings.home_wcu_float_title_id || defaults.why_choose_us.float_title_id,
+        float_title_en: allSettings.home_wcu_float_title_en || defaults.why_choose_us.float_title_en,
+        float_desc_id: allSettings.home_wcu_float_desc_id || defaults.why_choose_us.float_desc_id,
+        float_desc_en: allSettings.home_wcu_float_desc_en || defaults.why_choose_us.float_desc_en
+      };
+
+      return { intro, categories, homepage_categories, pillars, why_choose_us, certifications, cta };
     } catch (err) {
       logger.error('Failed to load home content data, using defaults', { message: err.message });
       return this.getDefaults();
@@ -222,15 +299,49 @@ export const homeContentModel = {
       if (i.is_active !== undefined) settingsMap.home_intro_is_active = String(i.is_active);
     }
 
-    if (payload.pillars) {
-      const p = payload.pillars;
-      if (p.title_id !== undefined) settingsMap.home_pillars_title_id = p.title_id;
-      if (p.title_en !== undefined) settingsMap.home_pillars_title_en = p.title_en;
-      if (p.subtitle_id !== undefined) settingsMap.home_pillars_subtitle_id = p.subtitle_id;
-      if (p.subtitle_en !== undefined) settingsMap.home_pillars_subtitle_en = p.subtitle_en;
-      if (p.is_active !== undefined) settingsMap.home_pillars_is_active = String(p.is_active);
-      if (p.items !== undefined) settingsMap.home_pillars_json = JSON.stringify(p.items);
+    if (payload.categories) {
+      const c = payload.categories;
+      if (c.title_id !== undefined) settingsMap.home_cat_title_id = c.title_id;
+      if (c.title_en !== undefined) settingsMap.home_cat_title_en = c.title_en;
+      if (c.subtitle_id !== undefined) settingsMap.home_cat_subtitle_id = c.subtitle_id;
+      if (c.subtitle_en !== undefined) settingsMap.home_cat_subtitle_en = c.subtitle_en;
     }
+
+    if (payload.homepage_categories !== undefined) {
+      settingsMap.home_categories_json = JSON.stringify(payload.homepage_categories);
+    }
+
+    if (payload.why_choose_us) {
+      const w = payload.why_choose_us;
+      if (w.is_active !== undefined) settingsMap.home_wcu_is_active = String(w.is_active);
+      if (w.eyebrow_id !== undefined) settingsMap.home_wcu_eyebrow_id = w.eyebrow_id;
+      if (w.eyebrow_en !== undefined) settingsMap.home_wcu_eyebrow_en = w.eyebrow_en;
+      if (w.title_id !== undefined) settingsMap.home_wcu_title_id = w.title_id;
+      if (w.title_en !== undefined) settingsMap.home_wcu_title_en = w.title_en;
+      if (w.chip_label_id !== undefined) settingsMap.home_wcu_chip_label_id = w.chip_label_id;
+      if (w.chip_label_en !== undefined) settingsMap.home_wcu_chip_label_en = w.chip_label_en;
+      if (w.chip_icon !== undefined) settingsMap.home_wcu_chip_icon = w.chip_icon;
+      if (w.headline_id !== undefined) settingsMap.home_wcu_headline_id = w.headline_id;
+      if (w.headline_en !== undefined) settingsMap.home_wcu_headline_en = w.headline_en;
+      if (w.desc_id !== undefined) settingsMap.home_wcu_desc_id = w.desc_id;
+      if (w.desc_en !== undefined) settingsMap.home_wcu_desc_en = w.desc_en;
+      if (w.callout_lead_id !== undefined) settingsMap.home_wcu_callout_lead_id = w.callout_lead_id;
+      if (w.callout_lead_en !== undefined) settingsMap.home_wcu_callout_lead_en = w.callout_lead_en;
+      if (w.callout_body_id !== undefined) settingsMap.home_wcu_callout_body_id = w.callout_body_id;
+      if (w.callout_body_en !== undefined) settingsMap.home_wcu_callout_body_en = w.callout_body_en;
+      if (w.note_id !== undefined) settingsMap.home_wcu_note_id = w.note_id;
+      if (w.note_en !== undefined) settingsMap.home_wcu_note_en = w.note_en;
+      if (w.art_label_id !== undefined) settingsMap.home_wcu_art_label_id = w.art_label_id;
+      if (w.art_label_en !== undefined) settingsMap.home_wcu_art_label_en = w.art_label_en;
+      if (w.float_eyebrow_id !== undefined) settingsMap.home_wcu_float_eyebrow_id = w.float_eyebrow_id;
+      if (w.float_eyebrow_en !== undefined) settingsMap.home_wcu_float_eyebrow_en = w.float_eyebrow_en;
+      if (w.float_title_id !== undefined) settingsMap.home_wcu_float_title_id = w.float_title_id;
+      if (w.float_title_en !== undefined) settingsMap.home_wcu_float_title_en = w.float_title_en;
+      if (w.float_desc_id !== undefined) settingsMap.home_wcu_float_desc_id = w.float_desc_id;
+      if (w.float_desc_en !== undefined) settingsMap.home_wcu_float_desc_en = w.float_desc_en;
+    }
+
+
 
     if (payload.certifications) {
       const c = payload.certifications;

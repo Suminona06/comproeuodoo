@@ -1,7 +1,8 @@
 import homeContentModel from '../../models/homeContentModel.js';
+import productCategoryModel from '../../models/productCategoryModel.js';
 import logger from '../../utils/logger.js';
 
-const ALLOWED_ICONS = ['factory', 'shield', 'leaf', 'gear', 'award'];
+const ALLOWED_KICKER_ICONS = ['tree', 'leaf', 'sparkle'];
 
 const cleanStr = (val, maxLen = 255) => {
   if (val === undefined || val === null) return '';
@@ -12,12 +13,16 @@ const cleanStr = (val, maxLen = 255) => {
 export const homeContentController = {
   async index(req, res) {
     try {
-      const homeContent = await homeContentModel.getHomeContentData();
+      const [homeContent, allCategories] = await Promise.all([
+        homeContentModel.getHomeContentData(),
+        productCategoryModel.findAll()
+      ]);
       res.render('admin/home-content/index', {
         title: 'Manajemen Konten Homepage - PT Euodoo CMS',
         activeNav: 'home-content',
         homeContent,
-        allowedIcons: ALLOWED_ICONS,
+        allCategories: allCategories || [],
+        allowedKickerIcons: ALLOWED_KICKER_ICONS,
         error: req.query.error || null,
         success: req.query.success || null,
         csrfToken: res.locals.csrfToken || ''
@@ -49,28 +54,52 @@ export const homeContentController = {
         return res.redirect('/admin/home-content?error=Judul+Intro+wajib+diisi.');
       }
 
-      const pillarItems = [0, 1, 2].map((idx) => {
-        const rawIcon = cleanStr(b[`pillar_${idx}_icon`], 50);
-        const icon = ALLOWED_ICONS.includes(rawIcon) ? rawIcon : 'factory';
-        return {
-          icon,
-          title_id: cleanStr(b[`pillar_${idx}_title_id`], 255),
-          title_en: cleanStr(b[`pillar_${idx}_title_en`], 255),
-          desc_id: cleanStr(b[`pillar_${idx}_desc_id`], 1000),
-          desc_en: cleanStr(b[`pillar_${idx}_desc_en`], 1000),
-          sort_order: Number(b[`pillar_${idx}_sort_order`]) || (idx + 1),
-          is_active: (b[`pillar_${idx}_is_active`] === '1' || b[`pillar_${idx}_is_active`] === 'on') ? 1 : 0
-        };
-      });
-
-      const pillars = {
-        title_id: cleanStr(b.pillars_title_id, 255),
-        title_en: cleanStr(b.pillars_title_en, 255),
-        subtitle_id: cleanStr(b.pillars_subtitle_id, 500),
-        subtitle_en: cleanStr(b.pillars_subtitle_en, 500),
-        is_active: (b.pillars_is_active === '1' || b.pillars_is_active === 'on') ? 1 : 0,
-        items: pillarItems
+      const why_choose_us = {
+        is_active: (b.wcu_is_active === '1' || b.wcu_is_active === 'on') ? 1 : 0,
+        eyebrow_id: cleanStr(b.wcu_eyebrow_id, 100),
+        eyebrow_en: cleanStr(b.wcu_eyebrow_en, 100),
+        title_id: cleanStr(b.wcu_title_id, 255) || 'Why choose us[accent]?[/accent]',
+        title_en: cleanStr(b.wcu_title_en, 255) || 'Why choose us[accent]?[/accent]',
+        chip_label_id: cleanStr(b.wcu_chip_label_id, 100),
+        chip_label_en: cleanStr(b.wcu_chip_label_en, 100),
+        chip_icon: ALLOWED_KICKER_ICONS.includes(cleanStr(b.wcu_chip_icon)) ? cleanStr(b.wcu_chip_icon) : 'tree',
+        headline_id: cleanStr(b.wcu_headline_id, 255),
+        headline_en: cleanStr(b.wcu_headline_en, 255),
+        desc_id: cleanStr(b.wcu_desc_id, 2000),
+        desc_en: cleanStr(b.wcu_desc_en, 2000),
+        callout_lead_id: cleanStr(b.wcu_callout_lead_id, 255),
+        callout_lead_en: cleanStr(b.wcu_callout_lead_en, 255),
+        callout_body_id: cleanStr(b.wcu_callout_body_id, 1000),
+        callout_body_en: cleanStr(b.wcu_callout_body_en, 1000),
+        note_id: cleanStr(b.wcu_note_id, 500),
+        note_en: cleanStr(b.wcu_note_en, 500),
+        art_label_id: cleanStr(b.wcu_art_label_id, 100),
+        art_label_en: cleanStr(b.wcu_art_label_en, 100),
+        float_eyebrow_id: cleanStr(b.wcu_float_eyebrow_id, 100),
+        float_eyebrow_en: cleanStr(b.wcu_float_eyebrow_en, 100),
+        float_title_id: cleanStr(b.wcu_float_title_id, 100),
+        float_title_en: cleanStr(b.wcu_float_title_en, 100),
+        float_desc_id: cleanStr(b.wcu_float_desc_id, 255),
+        float_desc_en: cleanStr(b.wcu_float_desc_en, 255)
       };
+
+      const categories = {
+        title_id: cleanStr(b.cat_title_id, 255) || 'Produk Unggulan Manufaktur',
+        title_en: cleanStr(b.cat_title_en, 255) || 'Featured Manufacturing Products',
+        subtitle_id: cleanStr(b.cat_subtitle_id, 1000),
+        subtitle_en: cleanStr(b.cat_subtitle_en, 1000)
+      };
+
+      const homepage_categories = [0, 1, 2, 3].map(idx => {
+        const rawCatId = b[`home_cat_${idx}_id`];
+        const catId = Number(rawCatId);
+        const imageUrl = cleanStr(b[`home_cat_${idx}_image_url`], 500);
+        return {
+          category_id: !isNaN(catId) && catId > 0 ? catId : 0,
+          image_url: imageUrl,
+          sort_order: idx + 1
+        };
+      }).filter(c => c.category_id > 0);
 
       const certItems = [0, 1, 2, 3].map((idx) => {
         return {
@@ -129,7 +158,9 @@ export const homeContentController = {
 
       await homeContentModel.updateHomeContent({
         intro,
-        pillars,
+        why_choose_us,
+        categories,
+        homepage_categories,
         certifications,
         cta
       });

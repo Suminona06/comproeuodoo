@@ -19,22 +19,6 @@
       file_url: '/images/hero-factory.jpg',
       media_type: 'image'
     }];
-
-    const getPillarSvg = (iconName) => {
-      switch (iconName) {
-        case 'shield':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
-        case 'leaf':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>';
-        case 'gear':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
-        case 'award':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>';
-        case 'factory':
-        default:
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
-      }
-    };
   %>
   <section class="hero hero-slider" id="heroSlider" aria-roledescription="carousel" aria-label="Hero Banners" tabindex="0">
     <div class="hero-slides-wrapper" id="heroSlidesTrack">
@@ -77,7 +61,7 @@
             <% } %>
             <div class="hero-video-shield" aria-hidden="true"></div>
           <% } else if (isVideo) { %>
-            <video <%= index === 0 ? 'autoplay' : '' %> muted loop playsinline preload="metadata" <%= banner.poster_url ? `poster="${banner.poster_url}"` : '' %>>
+            <video <%= index === 0 ? 'autoplay' : '' %> muted loop playsinline preload="metadata" poster="<%= banner.poster_url || '/images/hero-factory.jpg' %>">
               <source src="<%= bannerMediaUrl %>" type="video/mp4">
             </video>
           <% } else { %>
@@ -178,12 +162,17 @@
     <div class="container">
       <div class="prod-header reveal">
         <div>
-          <h2 class="prod-title"><%= currentLang === 'en' ? 'Featured Manufacturing Products' : 'Produk Unggulan Manufaktur' %></h2>
-          <p class="prod-subtitle">
-            <%= currentLang === 'en' 
-                ? 'High-grade HDPE, LLDPE, and woven PP plastic bags manufactured to exact customer specifications.'
-                : 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail, industri, dan pasar komersial.' %>
-          </p>
+          <% 
+            const catSec = (typeof homeContent !== 'undefined' && homeContent?.categories) ? homeContent.categories : {};
+            const catSecTitle = currentLang === 'en' 
+              ? (catSec.title_en || 'Featured Manufacturing Products') 
+              : (catSec.title_id || 'Produk Unggulan Manufaktur');
+            const catSecSub = currentLang === 'en'
+              ? (catSec.subtitle_en || 'High-grade HDPE, LLDPE, and woven PP plastic bags manufactured to exact customer specifications.')
+              : (catSec.subtitle_id || 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail, industri, dan pasar komersial.');
+          %>
+          <h2 class="prod-title"><%= catSecTitle %></h2>
+          <p class="prod-subtitle"><%= catSecSub %></p>
         </div>
         <a href="/products" class="btn btn-primary">
           <span><%= currentLang === 'en' ? 'View All Catalog' : 'Lihat Seluruh Katalog' %></span>
@@ -191,64 +180,34 @@
         </a>
       </div>
 
-      <div class="bento-grid">
-        <% if (featuredProducts && featuredProducts.length > 0) { %>
-          <% featuredProducts.slice(0, 4).forEach((product, idx) => { 
-            const prodName = currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id;
-            const prodDesc = currentLang === 'en' ? (product.description_en || product.description_id) : product.description_id;
-            const prodImg = product.image_url || `/images/products/prod-${(idx % 4) + 1}.webp`;
-            const badgeClass = idx === 0 ? 'bento-badge-blue' : (idx === 1 ? 'bento-badge-navy' : (idx === 2 ? 'bento-badge-green' : 'bento-badge-blue'));
-            const cardThemeClass = idx === 0 ? 'bento-card-featured' : (idx === 1 ? 'bento-card-tech' : (idx === 2 ? 'bento-card-eco' : 'bento-card-pb'));
-            const overlayText = idx === 2 ? '100% ECO' : (idx === 1 ? 'HEAVY DUTY' : 'RETAIL READY');
+      <% 
+        const catsToDisplay = (typeof homepageCategories !== 'undefined' && homepageCategories && homepageCategories.length > 0) 
+          ? homepageCategories 
+          : []; 
+      %>
+      <div class="hcat-grid reveal" style="--hcat-cols: <%= catsToDisplay.length || 4 %>;">
+        <% if (catsToDisplay.length > 0) { %>
+          <% catsToDisplay.forEach((cat, idx) => { 
+            const catName = currentLang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id;
+            const catCount = typeof cat.published_product_count !== 'undefined' ? parseInt(cat.published_product_count, 10) : 0;
+            const segmentKeys = ['retail', 'industrial', 'traditional', 'sustainability'];
+            const catImg = cat.image_url || `/images/segment-${segmentKeys[idx % 4]}.jpg`;
+            const countLabel = currentLang === 'en' ? `${catCount} ${catCount === 1 ? 'Product' : 'Products'}` : `${catCount} Produk`;
           %>
-            <article class="bento-col-6 reveal">
-              <a href="/products/<%= product.slug || product.id %>" class="bento-card <%= cardThemeClass %>" aria-label="Lihat detail <%= prodName %>">
-                <div class="bento-split">
-                  <div class="bento-split-content">
-                    <div>
-                      <div class="bento-badge <%= badgeClass %>">
-                        <% if (idx === 2) { %><span class="dot-green"></span><% } %>
-                        <%= product.category_name_id || (idx === 2 ? 'OXIUM DEGRADABLE' : 'RETAIL MODERN') %>
-                      </div>
-                      <h3 class="bento-card-title"><%= prodName %></h3>
-                      <p class="bento-card-desc">
-                        <%= prodDesc ? (prodDesc.length > 120 ? prodDesc.substring(0, 120) + '...' : prodDesc) : 'Diproduksi dengan bahan baku murni virgin grade dan ketahanan beban optimal.' %>
-                      </p>
-                      
-                      <div class="bento-specs">
-                        <span class="bento-spec-tag">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                          Virgin HDPE / LLDPE
-                        </span>
-                        <span class="bento-spec-tag">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                          Drop-Test Teruji
-                        </span>
-                        <span class="bento-spec-tag">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                          Custom Printing
-                        </span>
-                      </div>
-                    </div>
-
-                    <div class="bento-card-footer">
-                      <span class="bento-card-link">
-                        <%= currentLang === 'en' ? 'Product Specifications' : 'Lihat Detail Produk' %>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                      </span>
-                      <span class="bento-meta-badge <%= idx === 2 ? 'eco' : '' %>">
-                        <%= idx === 2 ? 'SNI 7188.7:2011' : 'B2B Custom' %>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div class="bento-split-media">
-                    <img src="<%= prodImg %>" alt="<%= prodName %>" loading="lazy">
-                    <span class="media-overlay-pill <%= idx === 2 ? 'eco' : '' %>"><%= overlayText %></span>
-                  </div>
+            <a href="/products?category=<%= cat.slug %>" class="hcat-panel" aria-label="<%= catName %> (<%= countLabel %>)">
+              <img class="hcat-img" src="<%= catImg %>" alt="<%= catName %>" loading="lazy" width="600" height="800">
+              <div class="hcat-scrim" aria-hidden="true"></div>
+              <div class="hcat-content">
+                <h3 class="hcat-title"><%= catName %></h3>
+                <div class="hcat-count">
+                  <span><%= countLabel %></span>
+                  <svg class="hcat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
                 </div>
-              </a>
-            </article>
+              </div>
+            </a>
           <% }); %>
         <% } %>
       </div>
@@ -262,32 +221,108 @@
     </div>
   </section>
 
-  <% if (typeof homeContent !== 'undefined' && homeContent?.pillars && (homeContent.pillars.is_active === 1 || homeContent.pillars.is_active === '1' || homeContent.pillars.is_active === true)) { 
-    const pData = homeContent.pillars;
-    const pTitle = currentLang === 'en' ? (pData.title_en || pData.title_id) : pData.title_id;
-    const pSub = currentLang === 'en' ? (pData.subtitle_en || pData.subtitle_id) : pData.subtitle_id;
-    const pItems = (pData.items || []).filter(item => item.is_active === 1 || item.is_active === '1' || item.is_active === true).sort((a,b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+  <% 
+    const wcuData = homeContent?.why_choose_us;
+    const isWcuActive = wcuData ? (wcuData.is_active === 1 || wcuData.is_active === '1' || wcuData.is_active === true) : true;
+    if (typeof homeContent !== 'undefined' && isWcuActive) { 
+      const wcu = wcuData || {};
+      const isEn = currentLang === 'en';
+      const wcuEyebrow = isEn ? (wcu.eyebrow_en || wcu.eyebrow_id || 'Innovation for the future') : (wcu.eyebrow_id || 'Inovasi untuk masa depan');
+      const wcuTitle = isEn ? (wcu.title_en || wcu.title_id || 'Why choose us[accent]?[/accent]') : (wcu.title_id || 'Why choose us[accent]?[/accent]');
+      const wcuChipLabel = isEn ? (wcu.chip_label_en || wcu.chip_label_id || 'Eco-friendly solutions') : (wcu.chip_label_id || 'Solusi ramah lingkungan');
+      const wcuChipIcon = wcu.chip_icon || 'asterisk';
+      const wcuHeadline = isEn ? (wcu.headline_en || wcu.headline_id || 'Material innovation, with [mark]better impact.[/mark]') : (wcu.headline_id || 'Inovasi material, dengan [mark]dampak yang lebih baik.[/mark]');
+      const wcuDesc = isEn ? (wcu.desc_en || wcu.desc_id || 'As a [strong]pioneer in eco-friendly additives[/strong], we deliver solutions designed to help reduce plastic waste impact.') : (wcu.desc_id || 'Sebagai [strong]pionir penerapan aditif ramah lingkungan[/strong], kami menghadirkan solusi yang dirancang untuk membantu mengurangi dampak sampah plastik. Didukung formula aditif degradable yang telah teruji serta mengacu pada standar resmi [strong]SNI[/strong] untuk kemasan ramah lingkungan.');
+      const wcuCalloutLead = isEn ? (wcu.callout_lead_en || wcu.callout_lead_id || 'Designed with care.') : (wcu.callout_lead_id || 'Dirancang dengan kepedulian.');
+      const wcuCalloutBody = isEn ? (wcu.callout_body_en || wcu.callout_body_id || 'We prioritize eco-friendly additive innovations as part of our commitment to reducing environmental impact.') : (wcu.callout_body_id || 'Kami mengedepankan inovasi aditif ramah lingkungan sebagai bagian dari pendekatan untuk membantu mengurangi dampak lingkungan.');
+      const wcuNote = isEn ? (wcu.note_en || wcu.note_id || 'Our commitment: innovation grounded in rigorous testing and environmental responsibility.') : (wcu.note_id || 'Komitmen kami: inovasi yang berpijak pada pengujian dan tanggung jawab lingkungan.');
+      const wcuArtLabel = isEn ? (wcu.art_label_en || wcu.art_label_id || 'Material · Nature · Future') : (wcu.art_label_id || 'Material · Alam · Masa depan');
+      const wcuFloatEyebrow = isEn ? (wcu.float_eyebrow_en || wcu.float_eyebrow_id || 'Future-oriented') : (wcu.float_eyebrow_id || 'Berorientasi masa depan');
+      const wcuFloatTitle = isEn ? (wcu.float_title_en || wcu.float_title_id || 'Better by design.') : (wcu.float_title_id || 'Better by design.');
+      const wcuFloatDesc = isEn ? (wcu.float_desc_en || wcu.float_desc_id || 'Material innovation for a more responsible path.') : (wcu.float_desc_id || 'Inovasi material untuk langkah yang lebih bertanggung jawab.');
+      const fmt = typeof formatInlineText === 'function' ? formatInlineText : (t) => t;
   %>
-  <section class="sec-pillars" id="pilar">
+  <section class="sec-why-us sec-pillars" id="why-us">
+    <span id="pilar" class="sec-pillars" aria-hidden="true"></span>
     <div class="container">
-      <div class="pillars-header reveal">
-        <h2><%= pTitle %></h2>
-        <p><%= pSub %></p>
-      </div>
+      <div class="wcu-card reveal">
+        <div class="wcu-header">
+          <div class="wcu-eyebrow"><%= wcuEyebrow %></div>
+          <h2 class="wcu-title"><%- fmt(wcuTitle) %></h2>
+        </div>
 
-      <div class="pillars-grid reveal">
-        <% pItems.forEach((pItem) => { 
-          const pItemTitle = currentLang === 'en' ? (pItem.title_en || pItem.title_id) : pItem.title_id;
-          const pItemDesc = currentLang === 'en' ? (pItem.desc_en || pItem.desc_id) : pItem.desc_id;
-        %>
-          <div class="pillar-card" tabindex="0" role="region" aria-label="<%= pItemTitle %>">
-            <div class="pillar-icon">
-              <%- getPillarSvg(pItem.icon) %>
+        <div class="wcu-layout">
+          <!-- Kolom Kiri: Narasi Editorial B2B -->
+          <div class="wcu-copy">
+            <div class="wcu-kicker" tabindex="0" role="status" aria-label="<%= wcuChipLabel %>">
+              <span class="wcu-kicker-icon" aria-hidden="true">
+                <% if (wcuChipIcon === 'leaf') { %>
+                  <svg class="wcu-kicker-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                <% } else if (wcuChipIcon === 'sparkle') { %>
+                  <svg class="wcu-kicker-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                <% } else { %>
+                  <!-- Icon Pohon Botani Ramah Lingkungan -->
+                  <svg class="wcu-kicker-svg wcu-tree-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 19h8a4 4 0 0 0 3.8-2.8 4 4 0 0 0-1.6-4.5A4 4 0 0 0 16 4a4 4 0 0 0-8 0 4 4 0 0 0-2.2 7.7 4 4 0 0 0-1.6 4.5A4 4 0 0 0 8 19Z" fill="currentColor" fill-opacity="0.18"/>
+                    <path d="M12 19v3"/>
+                    <path d="M12 14v-4" stroke-width="1.4"/>
+                    <path d="m12 12 2.4-1.8" stroke-width="1.4"/>
+                    <path d="m12 13.5-2.4-1.8" stroke-width="1.4"/>
+                  </svg>
+                <% } %>
+              </span>
+              <span class="wcu-kicker-text"><%= wcuChipLabel %></span>
             </div>
-            <h3 class="pillar-title"><%= pItemTitle %></h3>
-            <p class="pillar-desc"><%= pItemDesc %></p>
+
+            <h3 class="wcu-headline"><%- fmt(wcuHeadline) %></h3>
+
+            <p class="wcu-desc"><%- fmt(wcuDesc) %></p>
           </div>
-        <% }); %>
+
+          <!-- Kolom Kanan: Visual Artbox & Floating Badge -->
+          <div class="wcu-artbox" aria-label="<%= isEn ? 'Conceptual illustration of sustainable packaging material' : 'Ilustrasi konseptual material ramah lingkungan' %>">
+            <div class="wcu-art-label"><%= wcuArtLabel %></div>
+            <svg class="wcu-art" viewBox="0 0 500 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="wcu-grad-a" x1="110" y1="90" x2="340" y2="330" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#7CBE38"/>
+                  <stop offset="1" stop-color="#00755A"/>
+                </linearGradient>
+                <linearGradient id="wcu-grad-b" x1="380" y1="70" x2="200" y2="320" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#00906E"/>
+                  <stop offset="1" stop-color="#00573F"/>
+                </linearGradient>
+              </defs>
+              <circle cx="250" cy="205" r="135" fill="#ffffff55" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>
+              <circle cx="250" cy="205" r="112" stroke="#fff" stroke-opacity=".7" stroke-dasharray="3 9" stroke-width="2"/>
+              <path d="M247 318C241 259 244 204 253 132" stroke="#176c4b" stroke-width="7" stroke-linecap="round"/>
+              <path d="M246 263C194 266 145 234 132 183C185 177 231 205 246 263Z" fill="url(#wcu-grad-a)"/>
+              <path d="m246 263-96-71" stroke="#d8efb5" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M252 211C259 151 307 109 364 117C360 171 315 208 252 211Z" fill="url(#wcu-grad-b)"/>
+              <path d="m252 211 94-76" stroke="#b9e5c8" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M247 318C202 305 181 275 184 240C222 249 245 280 247 318Z" fill="#7CBE38"/>
+              <path d="m247 318-49-62" stroke="#e2f2bf" stroke-width="2" stroke-linecap="round"/>
+              <path d="M253 132C238 105 246 75 273 60C294 89 282 115 253 132Z" fill="#00906E"/>
+              <path d="m253 132 15-57" stroke="#d2f0dc" stroke-width="2"/>
+              <circle cx="139" cy="121" r="19" fill="#fff" fill-opacity=".8"/>
+              <path d="M130 121h18m-9-9v18" stroke="#00755A" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="385" cy="254" r="24" fill="#fff" fill-opacity=".85"/>
+              <path d="M385 240c-8 9-11 16 0 27 11-11 8-18 0-27Z" fill="#00906E"/>
+              <path d="M376 258c6-1 10-5 12-11" stroke="#7CBE38" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="358" cy="80" r="5" fill="#7CBE38"/>
+              <circle cx="126" cy="287" r="7" fill="#00906E" opacity=".65"/>
+              <circle cx="350" cy="325" r="4" fill="#7CBE38"/>
+            </svg>
+            <div class="wcu-float-card">
+              <small class="wcu-float-eyebrow">
+                <span class="wcu-float-dot" aria-hidden="true"></span>
+                <%= wcuFloatEyebrow %>
+              </small>
+              <strong class="wcu-float-title"><%= wcuFloatTitle %></strong>
+              <span class="wcu-float-desc"><%= wcuFloatDesc %></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

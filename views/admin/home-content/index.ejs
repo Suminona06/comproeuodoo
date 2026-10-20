@@ -21,17 +21,21 @@
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
       <span>1. Intro Homepage</span>
     </button>
-    <button type="button" class="about-tab-btn" data-tab="tab-home-pillars" role="tab" aria-selected="false">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-      <span>2. Tiga Pilar Keunggulan</span>
+    <button type="button" class="about-tab-btn" data-tab="tab-home-wcu" role="tab" aria-selected="false">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <span>2. Kenapa Memilih Kami</span>
+    </button>
+    <button type="button" class="about-tab-btn" data-tab="tab-home-categories" role="tab" aria-selected="false">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18" rx="1"></rect><rect x="14" y="3" width="7" height="18" rx="1"></rect></svg>
+      <span>3. 4 Kategori Beranda</span>
     </button>
     <button type="button" class="about-tab-btn" data-tab="tab-home-certs" role="tab" aria-selected="false">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-      <span>3. Sertifikasi Mutu</span>
+      <span>4. Sertifikasi Mutu</span>
     </button>
     <button type="button" class="about-tab-btn" data-tab="tab-home-cta" role="tab" aria-selected="false">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-      <span>4. CTA Global Pre-Footer</span>
+      <span>5. CTA Global Pre-Footer</span>
     </button>
   </div>
 
@@ -114,59 +118,203 @@
     </div>
   </div>
 
-  <!-- TAB PANE 2: PILAR KEUNGGULAN -->
-  <div class="about-tab-pane" id="tab-home-pillars" role="tabpanel">
+  <!-- TAB PANE 2: KENAPA MEMILIH KAMI (WHY CHOOSE US) -->
+  <div class="about-tab-pane" id="tab-home-wcu" role="tabpanel">
+    <!-- Header & Status Seksi -->
     <div class="about-glass-card">
       <div class="form-card-title" style="display: flex; align-items: center; justify-content: space-between;">
-        <span>Header Seksi Pilar Keunggulan (#pilar)</span>
+        <span>Header &amp; Status Seksi Why Choose Us (#why-us)</span>
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
-          <input type="checkbox" name="pillars_is_active" value="1" <%= (homeContent.pillars.is_active === 1 || homeContent.pillars.is_active === '1' || homeContent.pillars.is_active === true) ? 'checked' : '' %>>
-          <span>Tampilkan Seksi Pilar</span>
+          <input type="checkbox" name="wcu_is_active" value="1" <%= (homeContent.why_choose_us?.is_active === 1 || homeContent.why_choose_us?.is_active === '1' || homeContent.why_choose_us?.is_active === true) ? 'checked' : '' %>>
+          <span>Tampilkan Seksi Why Choose Us</span>
         </label>
       </div>
 
       <div class="form-row-2">
         <div class="form-group">
-          <label for="pillars_title_id" class="form-label">Judul Seksi (Indonesia) *</label>
-          <input type="text" id="pillars_title_id" name="pillars_title_id" class="form-input" value="<%= homeContent.pillars.title_id || '' %>" required>
+          <label for="wcu_eyebrow_id" class="form-label">Eyebrow / Sub-label (Indonesia)</label>
+          <input type="text" id="wcu_eyebrow_id" name="wcu_eyebrow_id" class="form-input" value="<%= homeContent.why_choose_us?.eyebrow_id || '' %>" placeholder="Inovasi untuk masa depan">
+          <div class="form-hint">Label kecil di atas judul utama seksi.</div>
         </div>
         <div class="form-group">
-          <label for="pillars_title_en" class="form-label">Judul Seksi (English)</label>
-          <input type="text" id="pillars_title_en" name="pillars_title_en" class="form-input" value="<%= homeContent.pillars.title_en || '' %>">
+          <label for="wcu_eyebrow_en" class="form-label">Eyebrow / Sub-label (English)</label>
+          <input type="text" id="wcu_eyebrow_en" name="wcu_eyebrow_en" class="form-input" value="<%= homeContent.why_choose_us?.eyebrow_en || '' %>" placeholder="Innovation for the future">
         </div>
       </div>
 
       <div class="form-row-2">
         <div class="form-group" style="margin-bottom: 0;">
-          <label for="pillars_subtitle_id" class="form-label">Subtitle Pengantar (Indonesia)</label>
-          <textarea id="pillars_subtitle_id" name="pillars_subtitle_id" class="form-textarea" style="min-height: 70px;"><%= homeContent.pillars.subtitle_id || '' %></textarea>
+          <label for="wcu_title_id" class="form-label">Judul Utama Seksi (Indonesia) *</label>
+          <input type="text" id="wcu_title_id" name="wcu_title_id" class="form-input" value="<%= homeContent.why_choose_us?.title_id || '' %>" placeholder="Why choose us[accent]?[/accent]" required>
+          <div class="form-hint">Dukungan format markup: <code>[accent]?[/accent]</code> untuk aksen warna gradien hijau.</div>
         </div>
         <div class="form-group" style="margin-bottom: 0;">
-          <label for="pillars_subtitle_en" class="form-label">Subtitle Pengantar (English)</label>
-          <textarea id="pillars_subtitle_en" name="pillars_subtitle_en" class="form-textarea" style="min-height: 70px;"><%= homeContent.pillars.subtitle_en || '' %></textarea>
+          <label for="wcu_title_en" class="form-label">Judul Utama Seksi (English)</label>
+          <input type="text" id="wcu_title_en" name="wcu_title_en" class="form-input" value="<%= homeContent.why_choose_us?.title_en || '' %>" placeholder="Why choose us[accent]?[/accent]">
         </div>
       </div>
     </div>
 
-    <!-- 3 Fixed Pillar Cards -->
+    <!-- Konten Editorial & Nilai Unggulan -->
+    <div class="about-glass-card">
+      <div class="form-card-title">
+        <span>Konten Editorial &amp; Narasi Nilai Unggulan (Kolom Kiri)</span>
+      </div>
+
+      <div class="form-row-3">
+        <div class="form-group">
+          <label for="wcu_chip_icon" class="form-label">Ikon Kicker Chip</label>
+          <select id="wcu_chip_icon" name="wcu_chip_icon" class="form-input">
+            <option value="tree" <%= (homeContent.why_choose_us?.chip_icon === 'tree' || !homeContent.why_choose_us?.chip_icon) ? 'selected' : '' %>>Pohon Botani Eco (tree)</option>
+            <option value="leaf" <%= homeContent.why_choose_us?.chip_icon === 'leaf' ? 'selected' : '' %>>Daun Hijau (leaf)</option>
+            <option value="sparkle" <%= homeContent.why_choose_us?.chip_icon === 'sparkle' ? 'selected' : '' %>>Kilau Inovasi (sparkle)</option>
+          </select>
+          <div class="form-hint">Ikon interaktif mikro di samping label chip.</div>
+        </div>
+        <div class="form-group">
+          <label for="wcu_chip_label_id" class="form-label">Label Chip Kicker (Indonesia)</label>
+          <input type="text" id="wcu_chip_label_id" name="wcu_chip_label_id" class="form-input" value="<%= homeContent.why_choose_us?.chip_label_id || '' %>" placeholder="Solusi ramah lingkungan">
+        </div>
+        <div class="form-group">
+          <label for="wcu_chip_label_en" class="form-label">Label Chip Kicker (English)</label>
+          <input type="text" id="wcu_chip_label_en" name="wcu_chip_label_en" class="form-input" value="<%= homeContent.why_choose_us?.chip_label_en || '' %>" placeholder="Eco-friendly solutions">
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="wcu_headline_id" class="form-label">Headline / Pernyataan Nilai (Indonesia)</label>
+          <input type="text" id="wcu_headline_id" name="wcu_headline_id" class="form-input" value="<%= homeContent.why_choose_us?.headline_id || '' %>" placeholder="Inovasi material, dengan [mark]dampak yang lebih baik.[/mark]">
+          <div class="form-hint">Dukungan format markup: <code>[mark]teks[/mark]</code> atau <code>==teks==</code> untuk highlight hijau.</div>
+        </div>
+        <div class="form-group">
+          <label for="wcu_headline_en" class="form-label">Headline / Pernyataan Nilai (English)</label>
+          <input type="text" id="wcu_headline_en" name="wcu_headline_en" class="form-input" value="<%= homeContent.why_choose_us?.headline_en || '' %>" placeholder="Material innovation, with [mark]better impact.[/mark]">
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="wcu_desc_id" class="form-label">Paragraf Deskripsi Narasi (Indonesia)</label>
+          <textarea id="wcu_desc_id" name="wcu_desc_id" class="form-textarea" style="min-height: 100px;"><%= homeContent.why_choose_us?.desc_id || '' %></textarea>
+          <div class="form-hint">Dukungan format markup: <code>[strong]teks[/strong]</code> atau <code>**teks**</code> untuk teks tebal.</div>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="wcu_desc_en" class="form-label">Paragraf Deskripsi Narasi (English)</label>
+          <textarea id="wcu_desc_en" name="wcu_desc_en" class="form-textarea" style="min-height: 100px;"><%= homeContent.why_choose_us?.desc_en || '' %></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual Artbox & Floating Card -->
+    <div class="about-glass-card">
+      <div class="form-card-title">
+        <span>Artbox Ilustrasi &amp; Kartu Mengambang (Kolom Kanan)</span>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="wcu_art_label_id" class="form-label">Label Pita Artbox (Indonesia)</label>
+          <input type="text" id="wcu_art_label_id" name="wcu_art_label_id" class="form-input" value="<%= homeContent.why_choose_us?.art_label_id || '' %>" placeholder="Material · Alam · Masa depan">
+          <div class="form-hint">Label kecil di pojok kiri atas wadah ilustrasi SVG.</div>
+        </div>
+        <div class="form-group">
+          <label for="wcu_art_label_en" class="form-label">Label Pita Artbox (English)</label>
+          <input type="text" id="wcu_art_label_en" name="wcu_art_label_en" class="form-input" value="<%= homeContent.why_choose_us?.art_label_en || '' %>" placeholder="Material · Nature · Future">
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="wcu_float_eyebrow_id" class="form-label">Floating Card Eyebrow (Indonesia)</label>
+          <input type="text" id="wcu_float_eyebrow_id" name="wcu_float_eyebrow_id" class="form-input" value="<%= homeContent.why_choose_us?.float_eyebrow_id || '' %>" placeholder="Berorientasi masa depan">
+        </div>
+        <div class="form-group">
+          <label for="wcu_float_eyebrow_en" class="form-label">Floating Card Eyebrow (English)</label>
+          <input type="text" id="wcu_float_eyebrow_en" name="wcu_float_eyebrow_en" class="form-input" value="<%= homeContent.why_choose_us?.float_eyebrow_en || '' %>" placeholder="Future-oriented">
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="wcu_float_title_id" class="form-label">Floating Card Judul (Indonesia)</label>
+          <input type="text" id="wcu_float_title_id" name="wcu_float_title_id" class="form-input" value="<%= homeContent.why_choose_us?.float_title_id || '' %>" placeholder="Better by design.">
+        </div>
+        <div class="form-group">
+          <label for="wcu_float_title_en" class="form-label">Floating Card Judul (English)</label>
+          <input type="text" id="wcu_float_title_en" name="wcu_float_title_en" class="form-input" value="<%= homeContent.why_choose_us?.float_title_en || '' %>" placeholder="Better by design.">
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="wcu_float_desc_id" class="form-label">Floating Card Keterangan (Indonesia)</label>
+          <input type="text" id="wcu_float_desc_id" name="wcu_float_desc_id" class="form-input" value="<%= homeContent.why_choose_us?.float_desc_id || '' %>" placeholder="Inovasi material untuk langkah yang lebih bertanggung jawab.">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="wcu_float_desc_en" class="form-label">Floating Card Keterangan (English)</label>
+          <input type="text" id="wcu_float_desc_en" name="wcu_float_desc_en" class="form-input" value="<%= homeContent.why_choose_us?.float_desc_en || '' %>" placeholder="Material innovation for a more responsible path.">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB PANE 3: 4 KATEGORI BERANDA -->
+  <div class="about-tab-pane" id="tab-home-categories" role="tabpanel">
+    <!-- Header Seksi Produk Beranda -->
+    <div class="about-glass-card">
+      <div class="form-card-title">
+        <span>Header Seksi Kategori Produk (#produk)</span>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="cat_title_id" class="form-label">Judul Seksi (Indonesia) *</label>
+          <input type="text" id="cat_title_id" name="cat_title_id" class="form-input" value="<%= homeContent.categories?.title_id || 'Produk Unggulan Manufaktur' %>" required>
+        </div>
+        <div class="form-group">
+          <label for="cat_title_en" class="form-label">Judul Seksi (English)</label>
+          <input type="text" id="cat_title_en" name="cat_title_en" class="form-input" value="<%= homeContent.categories?.title_en || 'Featured Manufacturing Products' %>">
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="cat_subtitle_id" class="form-label">Subtitle Pengantar (Indonesia)</label>
+          <textarea id="cat_subtitle_id" name="cat_subtitle_id" class="form-textarea" style="min-height: 70px;"><%= homeContent.categories?.subtitle_id || '' %></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="cat_subtitle_en" class="form-label">Subtitle Pengantar (English)</label>
+          <textarea id="cat_subtitle_en" name="cat_subtitle_en" class="form-textarea" style="min-height: 70px;"><%= homeContent.categories?.subtitle_en || '' %></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 Slot Panel Kategori Primer -->
     <div class="about-glass-card">
       <div class="form-card-title" style="display: flex; align-items: center; justify-content: space-between;">
-        <span>Tiga Kartu Pilar Keunggulan Manufaktur</span>
-        <span class="badge badge-info" style="font-size: 11px;">Fixed 3 Pilar B2B</span>
+        <span>Manajemen 4 Panel Kategori Primer Homepage</span>
+        <span class="badge badge-info" style="font-size: 11px;">Fixed 4 Slot Panel</span>
       </div>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem;">
+        Pilih kategori produk dari database untuk masing-masing slot panel di beranda. Cover image bersifat kustom via Media Library; jika tidak diisi, sistem akan otomatis menggunakan gambar segmen bawaan kategori.
+      </p>
 
       <div style="display: flex; flex-direction: column; gap: 1.25rem;">
         <% 
-          const pItems = (homeContent.pillars.items && homeContent.pillars.items.length >= 3)
-            ? homeContent.pillars.items
+          const defaultSlotIds = [4, 5, 6, 7];
+          const activeHomeCats = (homeContent.homepage_categories && homeContent.homepage_categories.length > 0)
+            ? homeContent.homepage_categories
             : [
-                { icon: 'factory', title_id: '', title_en: '', desc_id: '', desc_en: '', sort_order: 1, is_active: 1 },
-                { icon: 'shield', title_id: '', title_en: '', desc_id: '', desc_en: '', sort_order: 2, is_active: 1 },
-                { icon: 'leaf', title_id: '', title_en: '', desc_id: '', desc_en: '', sort_order: 3, is_active: 1 }
+                { category_id: 4, image_url: '/images/segment-retail.jpg' },
+                { category_id: 5, image_url: '/images/segment-industrial.jpg' },
+                { category_id: 6, image_url: '/images/segment-traditional.jpg' },
+                { category_id: 7, image_url: '/images/segment-sustainability.jpg' }
               ];
         %>
-        <% [0, 1, 2].forEach(function(idx) { 
-          const item = pItems[idx] || {};
+        <% [0, 1, 2, 3].forEach(function(idx) { 
+          const catItem = activeHomeCats[idx] || { category_id: defaultSlotIds[idx], image_url: '' };
+          const selectedCatId = Number(catItem.category_id || defaultSlotIds[idx]);
         %>
           <div style="background: #ffffff; border: 1px solid var(--border-main); border-radius: var(--r-lg); padding: 1.25rem; box-shadow: var(--shadow-xs);">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle, #f1f5f9); padding-bottom: 0.75rem;">
@@ -174,49 +322,44 @@
                 <span style="font-size: 13px; font-weight: 700; width: 30px; height: 30px; border-radius: 50%; background: var(--primary, #00755a); color: #ffffff; display: inline-flex; align-items: center; justify-content: center;">
                   #<%= idx + 1 %>
                 </span>
-                <strong style="color: var(--secondary, #071f17); font-size: 14px;">Pilar <%= idx + 1 %></strong>
+                <strong style="color: var(--secondary, #071f17); font-size: 14px;">Panel Slot <%= idx + 1 %></strong>
               </div>
-              <div style="display: flex; align-items: center; gap: 16px;">
-                <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;">
-                  <span>Urutan:</span>
-                  <input type="number" name="pillar_<%= idx %>_sort_order" class="form-input" style="width: 60px; padding: 4px 8px;" value="<%= item.sort_order || (idx + 1) %>" min="1" max="10">
-                </label>
-                <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                  <input type="checkbox" name="pillar_<%= idx %>_is_active" value="1" <%= (item.is_active === 1 || item.is_active === '1' || item.is_active === true) ? 'checked' : '' %>>
-                  <span>Aktif</span>
-                </label>
-              </div>
-            </div>
-
-            <div class="form-row-3" style="margin-bottom: 0.75rem;">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" style="font-size: 12px;">Preset Ikon SVG *</label>
-                <select name="pillar_<%= idx %>_icon" class="form-input" style="font-size: 13px;">
-                  <option value="factory" <%= item.icon === 'factory' ? 'selected' : '' %>>Pabrik &amp; Ekstrusi (factory)</option>
-                  <option value="shield" <%= item.icon === 'shield' ? 'selected' : '' %>>Standar Mutu (shield)</option>
-                  <option value="leaf" <%= item.icon === 'leaf' ? 'selected' : '' %>>Ramah Lingkungan (leaf)</option>
-                  <option value="gear" <%= item.icon === 'gear' ? 'selected' : '' %>>Presisi &amp; Mesin (gear)</option>
-                  <option value="award" <%= item.icon === 'award' ? 'selected' : '' %>>Keunggulan / Rekam Jejak (award)</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" style="font-size: 12px;">Judul Pilar (ID) *</label>
-                <input type="text" name="pillar_<%= idx %>_title_id" class="form-input" value="<%= item.title_id || '' %>" required>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" style="font-size: 12px;">Judul Pilar (EN)</label>
-                <input type="text" name="pillar_<%= idx %>_title_en" class="form-input" value="<%= item.title_en || '' %>">
-              </div>
+              <span class="badge badge-secondary" style="font-size: 11px;">Slot Urutan <%= idx + 1 %></span>
             </div>
 
             <div class="form-row-2">
               <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" style="font-size: 12px;">Deskripsi Pilar (ID) *</label>
-                <textarea name="pillar_<%= idx %>_desc_id" class="form-textarea" style="min-height: 70px; font-size: 12.5px;" required><%= item.desc_id || '' %></textarea>
+                <label for="home_cat_<%= idx %>_id" class="form-label">Kategori Produk Terpilih *</label>
+                <select id="home_cat_<%= idx %>_id" name="home_cat_<%= idx %>_id" class="form-input" required>
+                  <option value="">-- Pilih Kategori --</option>
+                  <% (allCategories || []).forEach(function(cat) { %>
+                    <option value="<%= cat.id %>" <%= cat.id === selectedCatId ? 'selected' : '' %>>
+                      <%= cat.name_id %> (<%= cat.slug %>) - <%= cat.product_count || 0 %> Produk
+                    </option>
+                  <% }); %>
+                </select>
+                <div class="form-hint">Target link panel di homepage akan mengarah ke <code>/products?category={slug}</code>.</div>
               </div>
+
               <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" style="font-size: 12px;">Deskripsi Pilar (EN)</label>
-                <textarea name="pillar_<%= idx %>_desc_en" class="form-textarea" style="min-height: 70px; font-size: 12.5px;"><%= item.desc_en || '' %></textarea>
+                <label class="form-label">Gambar Cover Panel (Media Library)</label>
+                <div class="media-picker-component">
+                  <input type="hidden" id="home_cat_<%= idx %>_image_url" name="home_cat_<%= idx %>_image_url" value="<%= catItem.image_url || '' %>">
+                  <div class="media-picker-preview-box">
+                    <img src="<%= catItem.image_url || '' %>" alt="Pratinjau Cover" style="<%= catItem.image_url ? 'display: block;' : 'display: none;' %>">
+                    <div class="media-picker-empty" style="<%= catItem.image_url ? 'display: none;' : '' %>">
+                      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                      <span>Gambar cover custom (opsional, jika kosong fallback bawaan)</span>
+                    </div>
+                  </div>
+                  <div class="media-picker-ctrls">
+                    <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="home_cat_<%= idx %>_image_url" data-picker-type="image">
+                      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                      Pilih dari Media Library
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= catItem.image_url ? '' : 'display: none;' %>">Hapus</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -225,7 +368,7 @@
     </div>
   </div>
 
-  <!-- TAB PANE 3: SERTIFIKASI MUTU -->
+  <!-- TAB PANE 4: SERTIFIKASI MUTU -->
   <div class="about-tab-pane" id="tab-home-certs" role="tabpanel">
     <div class="about-glass-card">
       <div class="form-card-title" style="display: flex; align-items: center; justify-content: space-between;">
@@ -356,7 +499,7 @@
     </div>
   </div>
 
-  <!-- TAB PANE 4: CTA GLOBAL PRE-FOOTER -->
+  <!-- TAB PANE 5: CTA GLOBAL PRE-FOOTER -->
   <div class="about-tab-pane" id="tab-home-cta" role="tabpanel">
     <div class="about-glass-card">
       <div class="form-card-title" style="display: flex; align-items: center; justify-content: space-between;">
@@ -508,7 +651,7 @@
     <div class="actions-left" style="display: flex; align-items: center; gap: 8px;">
       <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
       <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">
-        Semua 4 tab tersimpan sekaligus dalam satu klik.
+        Semua 5 tab tersimpan sekaligus dalam satu klik.
       </span>
     </div>
     <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">

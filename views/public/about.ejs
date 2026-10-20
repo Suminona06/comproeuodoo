@@ -156,7 +156,7 @@
   <!-- 4. NILAI-NILAI INTI BUDAYA KERJA T-I-C-K-E-T -->
   <section class="sec-values" id="core-values">
     <div class="container">
-      <div class="pillars-header reveal">
+      <div class="values-header pillars-header reveal">
         <span class="brands-kicker"><%= lang === 'en' ? 'CORE VALUES' : 'NILAI INTI BUDAYA' %></span>
         <h2>Budaya Kerja T - I - C - K - E - T</h2>
         <p>
@@ -168,7 +168,7 @@
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
         <% (data.values || []).forEach(function(val) { %>
-          <div class="pillar-card reveal" style="padding: 24px;">
+          <div class="value-card pillar-card reveal" style="padding: 24px;">
             <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
               <div style="width: 44px; height: 44px; border-radius: var(--r-lg, 8px); background: #e6f7f2; border: 1px solid #a3e0d0; color: var(--primary, #00755a); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 800;">
                 <%= val.letter %>

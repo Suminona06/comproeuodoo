@@ -17,10 +17,6 @@ export const productModel = {
       conditions.push('p.status = ?');
       params.push(status);
     }
-    if (isFeatured !== undefined) {
-      conditions.push('p.is_featured = ?');
-      params.push(isFeatured ? 1 : 0);
-    }
     if (search) {
       conditions.push('(p.name_id LIKE ? OR p.name_en LIKE ? OR p.slug LIKE ?)');
       const term = `%${search}%`;
@@ -67,10 +63,6 @@ export const productModel = {
     if (status) {
       conditions.push('status = ?');
       params.push(status);
-    }
-    if (isFeatured !== undefined) {
-      conditions.push('is_featured = ?');
-      params.push(isFeatured ? 1 : 0);
     }
     if (search) {
       conditions.push('(name_id LIKE ? OR name_en LIKE ? OR slug LIKE ?)');
@@ -142,8 +134,8 @@ export const productModel = {
         main_image, gallery_images, status,
         meta_title_id, meta_title_en, meta_description_id, meta_description_en,
         og_image, canonical_url, robots, jsonld,
-        is_featured, is_active, sort_order
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        is_active, sort_order
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const materialSpecsJson = data.material_specs
@@ -160,7 +152,6 @@ export const productModel = {
       : null;
 
     const mainImage = data.main_image || data.image_url || null;
-    const isFeatured = data.is_featured !== undefined ? (data.is_featured ? 1 : 0) : (data.featured ? 1 : 0);
     const isActive = data.is_active !== undefined ? (data.is_active ? 1 : 0) : 1;
 
     const params = [
@@ -183,7 +174,6 @@ export const productModel = {
       data.canonical_url || null,
       data.robots || 'index',
       data.jsonld ? (typeof data.jsonld === 'object' ? JSON.stringify(data.jsonld) : data.jsonld) : null,
-      isFeatured,
       isActive,
       data.sort_order || 0
     ];
@@ -225,7 +215,6 @@ export const productModel = {
       canonical_url: (v) => v || null,
       robots: (v) => v || 'index',
       jsonld: (v) => (typeof v === 'object' ? JSON.stringify(v) : v || null),
-      is_featured: (v) => (v ? 1 : 0),
       is_active: (v) => (v ? 1 : 0),
       sort_order: (v) => parseInt(v || 0, 10)
     };
@@ -236,9 +225,6 @@ export const productModel = {
     }
     if (data.gallery !== undefined && data.gallery_images === undefined) {
       data.gallery_images = data.gallery;
-    }
-    if (data.featured !== undefined && data.is_featured === undefined) {
-      data.is_featured = data.featured;
     }
     if (data.meta_desc_id !== undefined && data.meta_description_id === undefined) {
       data.meta_description_id = data.meta_desc_id;
@@ -365,7 +351,6 @@ export const productModel = {
     // Friendly aliases
     copy.image_url = copy.main_image || null;
     copy.gallery = copy.gallery_images;
-    copy.featured = !!copy.is_featured;
 
     return copy;
   }
