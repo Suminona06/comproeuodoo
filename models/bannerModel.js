@@ -29,8 +29,9 @@ export const bannerModel = {
       INSERT INTO banners (
         title_id, title_en, caption_id, caption_en, file_url,
         media_type, poster_url, cta_text_id, cta_text_en,
-        cta_url, sort_order, is_active
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        cta_url, cta_secondary_text_id, cta_secondary_text_en,
+        cta_secondary_url, sort_order, is_active
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const params = [
@@ -44,6 +45,9 @@ export const bannerModel = {
       data.cta_text_id || null,
       data.cta_text_en || null,
       ctaUrl,
+      data.cta_secondary_text_id || null,
+      data.cta_secondary_text_en || null,
+      data.cta_secondary_url || null,
       parseInt(data.sort_order || '0', 10),
       data.is_active !== undefined ? (data.is_active ? 1 : 0) : 1
     ];
@@ -69,6 +73,9 @@ export const bannerModel = {
       cta_text_id: data.cta_text_id,
       cta_text_en: data.cta_text_en,
       cta_url: data.cta_url !== undefined ? data.cta_url : data.link_url,
+      cta_secondary_text_id: data.cta_secondary_text_id,
+      cta_secondary_text_en: data.cta_secondary_text_en,
+      cta_secondary_url: data.cta_secondary_url,
       sort_order: data.sort_order !== undefined ? parseInt(data.sort_order, 10) : undefined,
       is_active: data.is_active !== undefined ? (data.is_active ? 1 : 0) : undefined
     };
@@ -116,7 +123,10 @@ export const bannerModel = {
       caption_id: banner.caption_id || banner.subtitle_id || '',
       caption_en: banner.caption_en || banner.subtitle_en || '',
       image_url: banner.image_url || banner.file_url || '',
-      cta_url: banner.cta_url || banner.link_url || ''
+      cta_url: banner.cta_url || banner.link_url || '',
+      cta_secondary_text_id: banner.cta_secondary_text_id || '',
+      cta_secondary_text_en: banner.cta_secondary_text_en || '',
+      cta_secondary_url: banner.cta_secondary_url || ''
     };
   }
 };

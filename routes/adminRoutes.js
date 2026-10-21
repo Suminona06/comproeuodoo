@@ -48,6 +48,7 @@ router.post('/users/:id/delete', requireAuth, roleMiddleware(['superadmin']), us
 router.get('/brands', requireAuth, roleMiddleware(['superadmin', 'admin']), brandController.index);
 router.get('/brands/create', requireAuth, roleMiddleware(['superadmin', 'admin']), brandController.createView);
 router.post('/brands', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('logo_file'), brandController.store);
+router.post('/brands/section-title', requireAuth, roleMiddleware(['superadmin', 'admin']), brandController.updateSectionTitle);
 router.get('/brands/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), brandController.editView);
 router.post('/brands/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('logo_file'), brandController.update);
 router.post('/brands/:id/toggle', requireAuth, roleMiddleware(['superadmin', 'admin']), brandController.toggleStatus);

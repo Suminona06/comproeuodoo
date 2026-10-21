@@ -16,6 +16,9 @@
       cta_text_id: 'Minta Penawaran',
       cta_text_en: 'Request a Quote',
       cta_url: '/contact',
+      cta_secondary_text_id: 'Tentang Kami',
+      cta_secondary_text_en: 'About Us',
+      cta_secondary_url: '/about',
       file_url: '/images/hero-factory.jpg',
       media_type: 'image'
     }];
@@ -25,10 +28,27 @@
       <% displayBanners.forEach((banner, index) => { 
         const bannerTitle = currentLang === 'en' ? (banner.title_en || banner.title_id) : banner.title_id;
         const bannerCaption = currentLang === 'en' ? (banner.caption_en || banner.caption_id) : banner.caption_id;
-        const bannerCtaText = banner && (banner.cta_text_id || banner.cta_text_en)
-          ? (currentLang === 'en' ? (banner.cta_text_en || banner.cta_text_id) : banner.cta_text_id)
-          : (currentLang === 'en' ? 'Request a Quote' : 'Minta Penawaran');
-        const bannerCtaUrl = banner.cta_url || banner.link_url || '/contact';
+
+        // Tombol Utama (Primary CTA)
+        const primaryText = currentLang === 'en'
+          ? (banner.cta_text_en || banner.cta_text_id || '')
+          : (banner.cta_text_id || banner.cta_text_en || '');
+        const hasPrimary = Boolean(primaryText && primaryText.trim());
+        const primaryUrl = (banner.cta_url && banner.cta_url.trim())
+          ? banner.cta_url.trim()
+          : (banner.link_url && banner.link_url.trim() ? banner.link_url.trim() : '/contact');
+        const isPrimaryExternal = /^https?:\/\//i.test(primaryUrl);
+
+        // Tombol Kedua (Secondary CTA)
+        const secondaryText = currentLang === 'en'
+          ? (banner.cta_secondary_text_en || banner.cta_secondary_text_id || '')
+          : (banner.cta_secondary_text_id || banner.cta_secondary_text_en || '');
+        const hasSecondary = Boolean(secondaryText && secondaryText.trim());
+        const secondaryUrl = (banner.cta_secondary_url && banner.cta_secondary_url.trim())
+          ? banner.cta_secondary_url.trim()
+          : '/about';
+        const isSecondaryExternal = /^https?:\/\//i.test(secondaryUrl);
+
         const bannerMediaUrl = banner.file_url || banner.image_url || '/images/hero-factory.jpg';
         const isVideo = banner.media_type === 'video';
       %>
@@ -79,14 +99,24 @@
             <% if (bannerCaption) { %>
               <p class="hero-body"><%= bannerCaption %></p>
             <% } %>
-            <div class="hero-actions">
-              <a href="<%= bannerCtaUrl %>" class="btn-pill-solid-white">
-                <%= bannerCtaText %>
-              </a>
-              <a href="/about" class="btn-pill-white">
-                <%= currentLang === 'en' ? 'Learn More' : 'Lihat Detail' %>
-              </a>
+            <% if (hasPrimary || hasSecondary) { %>
+            <div class="hero-actions hero-cta-wrap">
+              <% if (hasPrimary) { %>
+                <a href="<%= primaryUrl %>" 
+                   class="hero-cta-btn hero-cta-btn--primary btn-pill-solid-white"
+                   <%- isPrimaryExternal ? 'target="_blank" rel="noopener noreferrer"' : '' %>>
+                  <%= primaryText %>
+                </a>
+              <% } %>
+              <% if (hasSecondary) { %>
+                <a href="<%= secondaryUrl %>" 
+                   class="hero-cta-btn hero-cta-btn--secondary btn-pill-white"
+                   <%- isSecondaryExternal ? 'target="_blank" rel="noopener noreferrer"' : '' %>>
+                  <%= secondaryText %>
+                </a>
+              <% } %>
             </div>
+            <% } %>
           </div>
         </div>
       </div>
@@ -371,36 +401,49 @@
   </section>
   <% } %>
 
-  <section class="sec-brands" id="merek">
-    <div class="container">
-      <div class="brands-header reveal">
-        <span class="brands-kicker"><%= currentLang === 'en' ? 'Registered Trademarks' : 'Merek Paten & Terdaftar' %></span>
-        <h2 class="brands-title"><%= currentLang === 'en' ? 'Official Brand Portfolio of PT. EUODOO' : 'Portofolio Merek Resmi PT. EUODOO' %></h2>
-        <p class="brands-desc">
-          <%= currentLang === 'en'
-              ? 'For more than three decades, our registered trademark brands have been the trusted choice for modern hypermarkets, wholesale traditional markets, and industrial supply chains across Indonesia.'
-              : 'Selama lebih dari tiga dekade, kami memproduksi kantong plastik berkualitas di bawah merek-merek paten terdaftar yang menjadi pilihan utama jaringan ritel modern, pasar grosir tradisional, dan sektor industri nasional.' %>
-        </p>
+  <% 
+    let activeBrandList = (typeof brands !== 'undefined' && Array.isArray(brands)) 
+      ? brands.filter(b => b.is_active !== 0 && b.is_active !== false) 
+      : [];
+    
+    // Duplikasi otomatis jika kurang dari 8 item agar continuous marquee loop mulus tanpa celah
+    let marqueeBrands = [...activeBrandList];
+    if (marqueeBrands.length > 0 && marqueeBrands.length < 8) {
+      const originalBrands = [...marqueeBrands];
+      while (marqueeBrands.length < 8) {
+        marqueeBrands = marqueeBrands.concat(originalBrands);
+      }
+    }
+    const brandSectionTitle = (currentLang === 'en' ? settings?.home_brand_title_en : settings?.home_brand_title_id) 
+      || (currentLang === 'en' ? 'Registered Trademarks' : 'Merek Paten & Terdaftar');
+  %>
+  <% if (marqueeBrands.length > 0) { %>
+  <section class="sec-brands brand-strip-sec" id="merek" aria-label="<%= brandSectionTitle %>">
+    <div class="brand-strip-container">
+      <div class="brand-strip-header">
+        <h2 class="brand-strip-title"><%= brandSectionTitle %></h2>
       </div>
-    </div>
 
-    <div class="marquee-wrapper reveal" aria-label="Slider Merek Resmi PT Euodoo">
-      <div class="marquee-track">
-        <!-- Group 1 -->
-        <div class="marquee-group">
-          <% if (brands && brands.length > 0) { %>
-            <% brands.forEach(brand => { %>
-              <div class="brand-card js-brand-preview-trigger" role="button" tabindex="0"
+      <div class="brand-strip-wrapper" tabindex="0" role="region" aria-label="<%= currentLang === 'en' ? 'Scrolling list of registered trademark logos' : 'Daftar logo merek terdaftar yang bergulir' %>">
+        <div class="brand-strip-marquee">
+          <!-- Track 1 (Accessible) -->
+          <div class="brand-strip-track">
+            <% marqueeBrands.forEach(brand => { %>
+              <div class="brand-strip-item js-brand-preview-trigger" role="button" tabindex="0"
                    aria-haspopup="dialog"
                    aria-label="<%= currentLang === 'en' ? `Preview brand ${brand.name}` : `Preview merek ${brand.name}` %>"
                    data-brand-name="<%= brand.name %>"
                    data-brand-logo="<%= brand.logo_url || '' %>"
                    data-brand-initials="<%= brand.name.substring(0, 2).toUpperCase() %>">
-                <div class="brand-logo-wrap">
+                <div class="brand-strip-logo-box">
                   <% if (brand.logo_url) { %>
-                    <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" class="brand-logo-img" loading="lazy">
+                    <img src="<%= brand.logo_url %>" 
+                         alt="Logo <%= brand.name %>" 
+                         title="<%= brand.name %>"
+                         loading="lazy" 
+                         class="brand-strip-logo">
                   <% } else { %>
-                    <span class="brand-fallback-initials"><%= brand.name.substring(0, 2).toUpperCase() %></span>
+                    <span class="brand-strip-text"><%= brand.name %></span>
                   <% } %>
                   <span class="brand-zoom-hint" aria-hidden="true" title="<%= currentLang === 'en' ? 'Click to enlarge' : 'Klik untuk perbesar' %>">
                     <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -411,29 +454,27 @@
                     </svg>
                   </span>
                 </div>
-                <div class="brand-meta-wrap">
-                  <span class="brand-name-text"><%= brand.name %></span>
-                </div>
               </div>
             <% }); %>
-          <% } %>
-        </div>
+          </div>
 
-        <!-- Group 2 (Duplikasi untuk efek seamless scroll tanpa kartu statis) -->
-        <div class="marquee-group" aria-hidden="true">
-          <% if (brands && brands.length > 0) { %>
-            <% brands.forEach(brand => { %>
-              <div class="brand-card js-brand-preview-trigger" role="button" tabindex="0"
-                   aria-haspopup="dialog"
+          <!-- Track 2 (Duplikat Seamless Loop, aria-hidden) -->
+          <div class="brand-strip-track" aria-hidden="true">
+            <% marqueeBrands.forEach(brand => { %>
+              <div class="brand-strip-item js-brand-preview-trigger" role="button" tabindex="-1"
                    aria-label="<%= currentLang === 'en' ? `Preview brand ${brand.name}` : `Preview merek ${brand.name}` %>"
                    data-brand-name="<%= brand.name %>"
                    data-brand-logo="<%= brand.logo_url || '' %>"
                    data-brand-initials="<%= brand.name.substring(0, 2).toUpperCase() %>">
-                <div class="brand-logo-wrap">
+                <div class="brand-strip-logo-box">
                   <% if (brand.logo_url) { %>
-                    <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" class="brand-logo-img" loading="lazy">
+                    <img src="<%= brand.logo_url %>" 
+                         alt="" 
+                         tabindex="-1"
+                         loading="lazy" 
+                         class="brand-strip-logo">
                   <% } else { %>
-                    <span class="brand-fallback-initials"><%= brand.name.substring(0, 2).toUpperCase() %></span>
+                    <span class="brand-strip-text" tabindex="-1"><%= brand.name %></span>
                   <% } %>
                   <span class="brand-zoom-hint" aria-hidden="true">
                     <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -444,12 +485,9 @@
                     </svg>
                   </span>
                 </div>
-                <div class="brand-meta-wrap">
-                  <span class="brand-name-text"><%= brand.name %></span>
-                </div>
               </div>
             <% }); %>
-          <% } %>
+          </div>
         </div>
       </div>
     </div>
@@ -480,6 +518,7 @@
       </div>
     </div>
   </section>
+  <% } %>
 
 
   <section class="sec-news" id="berita">

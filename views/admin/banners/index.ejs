@@ -54,9 +54,14 @@
                 <div class="td-req-text" title="<%= b.caption_id || '' %>">
                   <%= b.caption_id || '-' %>
                 </div>
-                <% if (b.cta_text_id && b.cta_url) { %>
-                  <div style="font-size: 11px; color: var(--primary); font-weight: 600; margin-top: 2px;">
-                    CTA: "<%= b.cta_text_id %>" &rarr; <%= b.cta_url %>
+                <% if (b.cta_text_id || b.cta_url) { %>
+                  <div style="font-size: 11px; color: var(--primary); font-weight: 600; margin-top: 4px;">
+                    CTA 1: "<%= b.cta_text_id || 'Hubungi Kami' %>" &rarr; <%= b.cta_url || '/contact' %>
+                  </div>
+                <% } %>
+                <% if (b.cta_secondary_text_id) { %>
+                  <div style="font-size: 11px; color: #475569; font-weight: 600; margin-top: 2px;">
+                    CTA 2: "<%= b.cta_secondary_text_id %>" &rarr; <%= b.cta_secondary_url || '-' %>
                   </div>
                 <% } %>
               </td>

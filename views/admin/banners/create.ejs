@@ -17,22 +17,22 @@
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="title_id">Judul Headline (Bahasa Indonesia) *</label>
-        <input type="text" id="title_id" name="title_id" class="form-input" required placeholder="Contoh: Manufaktur Kantong Plastik Terpercaya">
+        <input type="text" id="title_id" name="title_id" class="form-input" required placeholder="Contoh: Manufaktur Kantong Plastik Terpercaya" value="<%= (typeof formData !== 'undefined' && formData.title_id) ? formData.title_id : '' %>">
       </div>
       <div class="form-group">
         <label class="form-label" for="title_en">Judul Headline (English)</label>
-        <input type="text" id="title_en" name="title_en" class="form-input" placeholder="Example: Trusted Plastic Bags Manufacturer">
+        <input type="text" id="title_en" name="title_en" class="form-input" placeholder="Example: Trusted Plastic Bags Manufacturer" value="<%= (typeof formData !== 'undefined' && formData.title_en) ? formData.title_en : '' %>">
       </div>
     </div>
 
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="caption_id">Sub-headline / Caption (Bahasa Indonesia)</label>
-        <textarea id="caption_id" name="caption_id" class="form-textarea" placeholder="Menghasilkan lebih dari 150 ton produk kemasan berkualitas per bulan..."></textarea>
+        <textarea id="caption_id" name="caption_id" class="form-textarea" placeholder="Menghasilkan lebih dari 150 ton produk kemasan berkualitas per bulan..."><%= (typeof formData !== 'undefined' && formData.caption_id) ? formData.caption_id : '' %></textarea>
       </div>
       <div class="form-group">
         <label class="form-label" for="caption_en">Sub-headline / Caption (English)</label>
-        <textarea id="caption_en" name="caption_en" class="form-textarea" placeholder="Producing over 150 tons of premium plastic packaging per month..."></textarea>
+        <textarea id="caption_en" name="caption_en" class="form-textarea" placeholder="Producing over 150 tons of premium plastic packaging per month..."><%= (typeof formData !== 'undefined' && formData.caption_en) ? formData.caption_en : '' %></textarea>
       </div>
     </div>
 
@@ -40,9 +40,9 @@
     <div class="form-group">
       <label class="form-label" for="media_type">Tipe Sumber Media Latar Belakang *</label>
       <select id="media_type" name="media_type" class="form-select" onchange="toggleBannerSource(this.value)">
-        <option value="image" selected>Gambar Beresolusi Tinggi (WebP / JPG / PNG)</option>
-        <option value="video">Berkas Video Lokal (MP4 / WebM)</option>
-        <option value="youtube">Streaming Video YouTube (URL Embed Resmi)</option>
+        <option value="image" <%= (typeof formData !== 'undefined' && formData.media_type === 'image') ? 'selected' : (!typeof formData || !formData.media_type ? 'selected' : '') %>>Gambar Beresolusi Tinggi (WebP / JPG / PNG)</option>
+        <option value="video" <%= (typeof formData !== 'undefined' && formData.media_type === 'video') ? 'selected' : '' %>>Berkas Video Lokal (MP4 / WebM)</option>
+        <option value="youtube" <%= (typeof formData !== 'undefined' && formData.media_type === 'youtube') ? 'selected' : '' %>>Streaming Video YouTube (URL Embed Resmi)</option>
       </select>
     </div>
 
@@ -50,7 +50,7 @@
     <div class="form-group" id="groupMediaPicker">
       <label class="form-label" id="labelMediaPicker">Pilih Berkas Media (Gambar / Video) *</label>
       <div class="media-picker-component">
-        <input type="hidden" id="banner_file_url" name="file_url" value="">
+        <input type="hidden" id="banner_file_url" name="file_url" value="<%= (typeof formData !== 'undefined' && formData.file_url) ? formData.file_url : '' %>">
         <div class="media-picker-preview-box">
           <img src="" alt="Pratinjau" style="display: none;">
           <video src="" controls style="display: none;"></video>
@@ -72,7 +72,7 @@
     <!-- YouTube Link Input -->
     <div class="form-group" id="groupYouTubeInput" style="display: none;">
       <label class="form-label" for="youtube_url">Tautan / URL Video YouTube *</label>
-      <input type="text" id="youtube_url" name="youtube_url" class="form-input" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ atau https://youtu.be/..." oninput="previewBannerYoutube(this.value)">
+      <input type="text" id="youtube_url" name="youtube_url" class="form-input" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ atau https://youtu.be/..." oninput="previewBannerYoutube(this.value)" value="<%= (typeof formData !== 'undefined' && formData.youtube_url) ? formData.youtube_url : '' %>">
       <span style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">Mendukung URL YouTube resmi, tautan pendek youtu.be, shorts, atau ID video 11 karakter.</span>
       <div id="bannerYtPreview" style="display: none; margin-top: 10px;">
         <iframe id="bannerYtIframe" width="100%" height="220" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: var(--r-md); border: 1px solid var(--border-main); max-width: 480px;"></iframe>
@@ -83,7 +83,7 @@
     <div class="form-group" id="groupPosterPicker" style="display: none;">
       <label class="form-label">Gambar Poster Fallback (Disarankan untuk Tampilan Ponsel / Mobile)</label>
       <div class="media-picker-component">
-        <input type="hidden" id="banner_poster_url" name="poster_url" value="">
+        <input type="hidden" id="banner_poster_url" name="poster_url" value="<%= (typeof formData !== 'undefined' && formData.poster_url) ? formData.poster_url : '' %>">
         <div class="media-picker-preview-box" style="height: 120px; max-width: 240px;">
           <img src="" alt="Poster Pratinjau" style="display: none;">
           <div class="media-picker-empty">
@@ -100,29 +100,55 @@
       </div>
     </div>
 
-    <div class="form-row-3">
-      <div class="form-group">
-        <label class="form-label" for="cta_text_id">Teks Tombol CTA (ID)</label>
-        <input type="text" id="cta_text_id" name="cta_text_id" class="form-input" placeholder="Contoh: Konsultasi Sekarang">
+    <!-- Pengaturan Tombol CTA Hero (Dual Buttons) -->
+    <div style="border-top: 1px solid var(--border-main); padding-top: 1.25rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <h3 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">Tombol Utama (Primary CTA)</h3>
+      <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.85rem;">Tombol solid utama. Jika URL dikosongkan, secara otomatis mengarah ke halaman kontak (/contact).</p>
+      
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label" for="cta_text_id">Teks Tombol (ID)</label>
+          <input type="text" id="cta_text_id" name="cta_text_id" class="form-input" maxlength="100" placeholder="Contoh: Hubungi Kami" value="<%= (typeof formData !== 'undefined' && formData.cta_text_id) ? formData.cta_text_id : '' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cta_text_en">Teks Tombol (EN)</label>
+          <input type="text" id="cta_text_en" name="cta_text_en" class="form-input" maxlength="100" placeholder="Example: Contact Us" value="<%= (typeof formData !== 'undefined' && formData.cta_text_en) ? formData.cta_text_en : '' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cta_url">URL Tujuan</label>
+          <input type="text" id="cta_url" name="cta_url" class="form-input" maxlength="500" placeholder="Contoh: /contact atau #kontak" value="<%= (typeof formData !== 'undefined' && formData.cta_url) ? formData.cta_url : '' %>">
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="cta_text_en">Teks Tombol CTA (EN)</label>
-        <input type="text" id="cta_text_en" name="cta_text_en" class="form-input" placeholder="Example: Inquire Now">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="cta_url">URL Tujuan Tombol CTA</label>
-        <input type="text" id="cta_url" name="cta_url" class="form-input" placeholder="#inquiry atau /products">
+    </div>
+
+    <div style="border-top: 1px solid var(--border-main); padding-top: 1.25rem; margin-bottom: 1.25rem;">
+      <h3 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">Tombol Kedua (Secondary CTA)</h3>
+      <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.85rem;">Tombol outline pendamping. Kosongkan teks jika hanya butuh 1 tombol. Mendukung internal path (diawali / atau #) dan link eksternal (http/https).</p>
+      
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label" for="cta_secondary_text_id">Teks Tombol Kedua (ID)</label>
+          <input type="text" id="cta_secondary_text_id" name="cta_secondary_text_id" class="form-input" maxlength="100" placeholder="Contoh: Lihat Detail" value="<%= (typeof formData !== 'undefined' && formData.cta_secondary_text_id) ? formData.cta_secondary_text_id : '' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cta_secondary_text_en">Teks Tombol Kedua (EN)</label>
+          <input type="text" id="cta_secondary_text_en" name="cta_secondary_text_en" class="form-input" maxlength="100" placeholder="Example: Learn More" value="<%= (typeof formData !== 'undefined' && formData.cta_secondary_text_en) ? formData.cta_secondary_text_en : '' %>">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cta_secondary_url">URL Tujuan Tombol Kedua</label>
+          <input type="text" id="cta_secondary_url" name="cta_secondary_url" class="form-input" maxlength="500" placeholder="Contoh: /products atau https://wa.me/..." value="<%= (typeof formData !== 'undefined' && formData.cta_secondary_url) ? formData.cta_secondary_url : '' %>">
+        </div>
       </div>
     </div>
 
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="sort_order">Nomor Urutan Tampil (Slide)</label>
-        <input type="number" id="sort_order" name="sort_order" class="form-input" value="0" min="0">
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="<%= (typeof formData !== 'undefined' && formData.sort_order !== undefined) ? formData.sort_order : '0' %>" min="0">
       </div>
       <div class="form-group" style="justify-content: flex-end;">
         <label class="form-check" style="margin-bottom: 8px;">
-          <input type="checkbox" name="is_active" value="1" checked>
+          <input type="checkbox" name="is_active" value="1" <%= (typeof formData === 'undefined' || formData.is_active === '1' || formData.is_active === 1 || formData.is_active === 'on' || formData.is_active === true) ? 'checked' : '' %>>
           <span>Aktifkan banner ini dalam slider</span>
         </label>
       </div>

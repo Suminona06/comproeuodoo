@@ -127,7 +127,7 @@ async function runQaTests() {
     { selector: 'class="sec-products"', name: 'Category Showcase' },
     { selector: 'class="sec-why-us sec-pillars"', name: 'Why Choose Us' },
     { selector: 'class="sec-evidence"', name: 'Certifications & Accreditations' },
-    { selector: 'class="sec-brands"', name: 'Our Registered Brands Marquee' },
+    { selector: 'sec-brands', name: 'Our Registered Brands Marquee' },
     { selector: 'class="sec-news"', name: 'Latest News & Insights' },
     { selector: 'class="site-footer"', name: 'Master Site Footer' }
   ];

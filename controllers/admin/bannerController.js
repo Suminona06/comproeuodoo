@@ -14,6 +14,33 @@ function extractYouTubeId(url) {
   return (match && match[1].length === 11) ? match[1] : null;
 }
 
+function isValidCtaUrl(url) {
+  if (!url || typeof url !== 'string') return true;
+  const trimmed = url.trim();
+  if (trimmed.length === 0) return true;
+  if (trimmed.length > 500) return false;
+
+  const dangerousPatterns = /^(javascript:|data:|vbscript:|\/\/)/i;
+  if (dangerousPatterns.test(trimmed)) {
+    return false;
+  }
+
+  const isInternal = /^\/([a-zA-Z0-9\-_./?#=&%~]*)$/.test(trimmed) || /^#[a-zA-Z0-9\-_]+$/.test(trimmed);
+  if (isInternal) return true;
+
+  try {
+    const parsed = new URL(trimmed);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function isValidCtaText(text) {
+  if (!text || typeof text !== 'string') return true;
+  return text.trim().length <= 100;
+}
+
 export const bannerController = {
   async index(req, res) {
     try {
@@ -45,7 +72,9 @@ export const bannerController = {
       title: 'Tambah Banner Hero',
       pageTitle: 'Tambah Banner Hero',
       activeNav: 'banners',
-      error: null
+      error: null,
+      formData: {},
+      csrfToken: res.locals.csrfToken || ''
     });
   },
 
@@ -53,7 +82,9 @@ export const bannerController = {
     try {
       const {
         title_id, title_en, caption_id, caption_en,
-        cta_text_id, cta_text_en, cta_url, sort_order, media_type, is_active,
+        cta_text_id, cta_text_en, cta_url,
+        cta_secondary_text_id, cta_secondary_text_en, cta_secondary_url,
+        sort_order, media_type, is_active,
         file_url, youtube_url, poster_url
       } = req.body;
 
@@ -63,7 +94,42 @@ export const bannerController = {
           pageTitle: 'Tambah Banner Hero',
           activeNav: 'banners',
           error: 'Judul banner dan sumber media wajib diisi.',
-          formData: req.body
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      if (!isValidCtaUrl(cta_url)) {
+        return res.status(400).render('admin/banners/create', {
+          title: 'Tambah Banner Hero',
+          pageTitle: 'Tambah Banner Hero',
+          activeNav: 'banners',
+          error: 'Format URL Tombol Utama tidak valid. Gunakan path internal (diawali / atau #) atau URL eksternal (http/https).',
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      if (!isValidCtaUrl(cta_secondary_url)) {
+        return res.status(400).render('admin/banners/create', {
+          title: 'Tambah Banner Hero',
+          pageTitle: 'Tambah Banner Hero',
+          activeNav: 'banners',
+          error: 'Format URL Tombol Kedua tidak valid. Gunakan path internal (diawali / atau #) atau URL eksternal (http/https).',
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      if (!isValidCtaText(cta_text_id) || !isValidCtaText(cta_text_en) ||
+          !isValidCtaText(cta_secondary_text_id) || !isValidCtaText(cta_secondary_text_en)) {
+        return res.status(400).render('admin/banners/create', {
+          title: 'Tambah Banner Hero',
+          pageTitle: 'Tambah Banner Hero',
+          activeNav: 'banners',
+          error: 'Teks tombol CTA tidak boleh melebihi 100 karakter.',
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
         });
       }
 
@@ -79,7 +145,8 @@ export const bannerController = {
             pageTitle: 'Tambah Banner Hero',
             activeNav: 'banners',
             error: 'Tautan YouTube tidak valid. Harap masukkan format link video YouTube resmi.',
-            formData: req.body
+            formData: req.body,
+            csrfToken: res.locals.csrfToken || ''
           });
         }
         finalMediaUrl = ytId;
@@ -104,6 +171,9 @@ export const bannerController = {
         cta_text_id: cta_text_id ? cta_text_id.trim() : null,
         cta_text_en: cta_text_en ? cta_text_en.trim() : null,
         cta_url: cta_url ? cta_url.trim() : null,
+        cta_secondary_text_id: cta_secondary_text_id ? cta_secondary_text_id.trim() : null,
+        cta_secondary_text_en: cta_secondary_text_en ? cta_secondary_text_en.trim() : null,
+        cta_secondary_url: cta_secondary_url ? cta_secondary_url.trim() : null,
         sort_order: parseInt(sort_order || '0', 10),
         is_active: is_active === 'on' || is_active === '1' || is_active === true
       });
@@ -127,7 +197,8 @@ export const bannerController = {
         pageTitle: 'Edit Banner Hero',
         activeNav: 'banners',
         banner,
-        error: null
+        error: null,
+        csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
       logger.error('Banner editView error:', err);
@@ -140,13 +211,49 @@ export const bannerController = {
       const { id } = req.params;
       const {
         title_id, title_en, caption_id, caption_en,
-        cta_text_id, cta_text_en, cta_url, sort_order, is_active,
+        cta_text_id, cta_text_en, cta_url,
+        cta_secondary_text_id, cta_secondary_text_en, cta_secondary_url,
+        sort_order, is_active,
         media_type, file_url, youtube_url, poster_url
       } = req.body;
 
       const banner = await bannerModel.findById(id);
       if (!banner) {
         return res.redirect('/admin/banners?error=' + encodeURIComponent('Banner tidak ditemukan.'));
+      }
+
+      if (!isValidCtaUrl(cta_url)) {
+        return res.status(400).render('admin/banners/edit', {
+          title: 'Edit Banner - ' + banner.title_id,
+          pageTitle: 'Edit Banner Hero',
+          activeNav: 'banners',
+          banner: { ...banner, ...req.body },
+          error: 'Format URL Tombol Utama tidak valid. Gunakan path internal (diawali / atau #) atau URL eksternal (http/https).',
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      if (!isValidCtaUrl(cta_secondary_url)) {
+        return res.status(400).render('admin/banners/edit', {
+          title: 'Edit Banner - ' + banner.title_id,
+          pageTitle: 'Edit Banner Hero',
+          activeNav: 'banners',
+          banner: { ...banner, ...req.body },
+          error: 'Format URL Tombol Kedua tidak valid. Gunakan path internal (diawali / atau #) atau URL eksternal (http/https).',
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      if (!isValidCtaText(cta_text_id) || !isValidCtaText(cta_text_en) ||
+          !isValidCtaText(cta_secondary_text_id) || !isValidCtaText(cta_secondary_text_en)) {
+        return res.status(400).render('admin/banners/edit', {
+          title: 'Edit Banner - ' + banner.title_id,
+          pageTitle: 'Edit Banner Hero',
+          activeNav: 'banners',
+          banner: { ...banner, ...req.body },
+          error: 'Teks tombol CTA tidak boleh melebihi 100 karakter.',
+          csrfToken: res.locals.csrfToken || ''
+        });
       }
 
       let type = media_type || banner.media_type;
@@ -181,6 +288,9 @@ export const bannerController = {
         cta_text_id: cta_text_id !== undefined ? cta_text_id.trim() : banner.cta_text_id,
         cta_text_en: cta_text_en !== undefined ? cta_text_en.trim() : banner.cta_text_en,
         cta_url: cta_url !== undefined ? cta_url.trim() : banner.cta_url,
+        cta_secondary_text_id: cta_secondary_text_id !== undefined ? cta_secondary_text_id.trim() : banner.cta_secondary_text_id,
+        cta_secondary_text_en: cta_secondary_text_en !== undefined ? cta_secondary_text_en.trim() : banner.cta_secondary_text_en,
+        cta_secondary_url: cta_secondary_url !== undefined ? cta_secondary_url.trim() : banner.cta_secondary_url,
         sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : banner.sort_order,
         is_active: is_active === 'on' || is_active === '1' || is_active === true
       };

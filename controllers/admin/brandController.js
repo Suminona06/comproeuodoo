@@ -1,4 +1,6 @@
 import brandModel from '../../models/brandModel.js';
+import settingModel from '../../models/settingModel.js';
+import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import logger from '../../utils/logger.js';
@@ -12,6 +14,8 @@ export const brandController = {
         pageTitle: 'Merek Terdaftar (Our Brands)',
         activeNav: 'brands',
         brands,
+        settings: res.locals.settings || {},
+        csrfToken: res.locals.csrfToken || '',
         error: req.query.error || null,
         success: req.query.success || null
       });
@@ -22,8 +26,33 @@ export const brandController = {
         pageTitle: 'Merek Terdaftar',
         activeNav: 'brands',
         brands: [],
+        settings: res.locals.settings || {},
+        csrfToken: res.locals.csrfToken || '',
         error: 'Gagal memuat daftar merek perusahaan.'
       });
+    }
+  },
+
+  async updateSectionTitle(req, res) {
+    try {
+      const { home_brand_title_id, home_brand_title_en } = req.body;
+      const titleId = (home_brand_title_id && home_brand_title_id.trim()) ? home_brand_title_id.trim() : 'Merek Paten & Terdaftar';
+      const titleEn = (home_brand_title_en && home_brand_title_en.trim()) ? home_brand_title_en.trim() : 'Registered Trademarks';
+
+      if (titleId.length > 150 || titleEn.length > 150) {
+        return res.redirect('/admin/brands?error=' + encodeURIComponent('Judul section tidak boleh melebihi 150 karakter.'));
+      }
+
+      await settingModel.updateMany({
+        home_brand_title_id: titleId,
+        home_brand_title_en: titleEn
+      });
+      clearSettingsCache();
+
+      res.redirect('/admin/brands?success=' + encodeURIComponent('Judul section merek beranda berhasil diperbarui.'));
+    } catch (err) {
+      logger.error('Brand updateSectionTitle error:', err);
+      res.redirect('/admin/brands?error=' + encodeURIComponent('Gagal memperbarui judul section merek: ' + err.message));
     }
   },
 

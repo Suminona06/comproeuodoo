@@ -12,6 +12,35 @@
     </a>
   </div>
 </div>
+<!-- Form Pengaturan Judul Section Merek Beranda -->
+<div class="table-card" style="margin-bottom: 1.5rem;">
+  <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-main);">
+    <h2 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Pengaturan Judul Section Beranda</h2>
+    <p style="font-size: 12.5px; color: var(--text-tertiary); margin: 0;">Atur teks judul section merek terdaftar yang ditampilkan di halaman beranda (Homepage).</p>
+  </div>
+  <form action="/admin/brands/section-title" method="POST" style="padding: 1.25rem 1.5rem;">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="form-row-2">
+      <div class="form-group" style="margin-bottom: 0;">
+        <label class="form-label" for="home_brand_title_id">Judul Section (ID)</label>
+        <input type="text" id="home_brand_title_id" name="home_brand_title_id" class="form-input" maxlength="150" 
+               value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_id) ? settings.home_brand_title_id : 'Merek Paten & Terdaftar' %>" 
+               placeholder="Contoh: Merek Paten & Terdaftar" required>
+      </div>
+      <div class="form-group" style="margin-bottom: 0;">
+        <label class="form-label" for="home_brand_title_en">Judul Section (EN)</label>
+        <input type="text" id="home_brand_title_en" name="home_brand_title_en" class="form-input" maxlength="150" 
+               value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_en) ? settings.home_brand_title_en : 'Registered Trademarks' %>" 
+               placeholder="Example: Registered Trademarks" required>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+      <button type="submit" class="btn btn-primary">
+        Simpan Judul Section
+      </button>
+    </div>
+  </form>
+</div>
 
 <div class="table-card">
   <div class="table-toolbar">
