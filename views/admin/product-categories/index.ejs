@@ -54,9 +54,12 @@
                 <%= cat.sort_order %>
               </td>
               <td>
-                <span class="badge-status <%= cat.is_active ? 'badge-status--success' : 'badge-status--danger' %>">
-                  <%= cat.is_active ? 'Aktif' : 'Nonaktif' %>
-                </span>
+                <form action="/admin/product-categories/<%= cat.id %>/toggle?_csrf=<%= csrfToken %>" method="POST" style="display: inline;">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn-action btn-action-status <%= cat.is_active ? 'active' : 'inactive' %>" title="Ubah Status Kategori (Aktifkan / Nonaktifkan)">
+                    <%= cat.is_active ? 'Aktif' : 'Nonaktif' %>
+                  </button>
+                </form>
               </td>
               <td style="text-align: right;">
                 <div class="table-actions">

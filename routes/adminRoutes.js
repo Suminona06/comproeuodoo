@@ -71,6 +71,7 @@ router.get('/product-categories/create', requireAuth, roleMiddleware(['superadmi
 router.post('/product-categories', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.store);
 router.get('/product-categories/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.editView);
 router.post('/product-categories/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.update);
+router.post('/product-categories/:id/toggle', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.toggleStatus);
 router.post('/product-categories/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.destroy);
 
 router.get('/products', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.index);

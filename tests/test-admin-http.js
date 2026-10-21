@@ -253,6 +253,65 @@ async function testHttpEndpoints() {
   await productModel.delete(createdTestProd.id);
   console.log('  [CLEANUP] Test product deleted cleanly.');
 
+  // Step 6: Testing product category status toggle and is_active update
+  console.log('\nStep 6: Testing product category status toggle and is_active update...');
+  const { default: productCategoryModel } = await import('../models/productCategoryModel.js');
+  const tempCatId = await productCategoryModel.create({
+    name_id: 'Kategori Uji Status HTTP',
+    name_en: 'Test Category Status HTTP',
+    slug: 'kategori-uji-status-http',
+    sort_order: 50,
+    is_active: 1
+  });
+
+  // 6a. Toggle status via HTTP POST
+  const postToggleCat = await makeRequest({
+    method: 'POST',
+    path: `/admin/product-categories/${tempCatId}/toggle?_csrf=${encodeURIComponent(homeCsrf)}`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Cookie': `${sessionCookie}; ${csrfCookie}`
+    },
+    body: `_csrf=${encodeURIComponent(homeCsrf)}`
+  });
+
+  if (postToggleCat.statusCode !== 302 || !postToggleCat.headers.location.includes('success')) {
+    throw new Error(`POST /admin/product-categories/:id/toggle failed: status ${postToggleCat.statusCode}`);
+  }
+  let catAfterToggle = await productCategoryModel.findById(tempCatId);
+  if (catAfterToggle.is_active !== 0) throw new Error('Expected category to be deactivated after toggle');
+  console.log('  [OK 302] POST /admin/product-categories/:id/toggle toggled status to 0');
+
+  // 6b. Update category and activate it via HTTP POST
+  const updateCatBody = new URLSearchParams({
+    _csrf: homeCsrf,
+    name_id: 'Kategori Uji Status HTTP Aktif',
+    name_en: 'Test Category Status HTTP Active',
+    sort_order: '50',
+    is_active: '1'
+  }).toString();
+
+  const postUpdateCat = await makeRequest({
+    method: 'POST',
+    path: `/admin/product-categories/${tempCatId}?_csrf=${encodeURIComponent(homeCsrf)}`,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(updateCatBody),
+      'Cookie': `${sessionCookie}; ${csrfCookie}`
+    },
+    body: updateCatBody
+  });
+
+  if (postUpdateCat.statusCode !== 302 || !postUpdateCat.headers.location.includes('success')) {
+    throw new Error(`POST /admin/product-categories/:id update failed: status ${postUpdateCat.statusCode}`);
+  }
+  let catAfterUpdate = await productCategoryModel.findById(tempCatId);
+  if (catAfterUpdate.is_active !== 1) throw new Error('Expected category to be active after update with is_active=1');
+  console.log('  [OK 302] POST /admin/product-categories/:id updated and activated category successfully');
+
+  await productCategoryModel.delete(tempCatId);
+  console.log('  [CLEANUP] Test category deleted cleanly.');
+
   console.log('\n--- ALL HTTP ADMIN ENDPOINTS PASSED SUCCESSFULLY! ---');
   process.exit(0);
 }

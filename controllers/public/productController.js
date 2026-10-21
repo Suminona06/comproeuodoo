@@ -14,7 +14,7 @@ export const productController = {
       const limit = 12;
       const offset = (page - 1) * limit;
 
-      const categories = await productCategoryModel.findAll();
+      const categories = await productCategoryModel.findAll({ activeOnly: true });
 
       let selectedCategory = null;
       let categoryId = undefined;
@@ -25,9 +25,10 @@ export const productController = {
         } else {
           selectedCategory = await productCategoryModel.findBySlug(category);
         }
-        if (selectedCategory) {
+        if (selectedCategory && (selectedCategory.is_active === 1 || selectedCategory.is_active === null)) {
           categoryId = selectedCategory.id;
         } else {
+          selectedCategory = null;
           categoryId = -1;
         }
       }
