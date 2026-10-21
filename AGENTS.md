@@ -10,3 +10,11 @@ Only an explicit choice of antislop during or after selects a session mode. A re
 If the mode is unresolved, ask during/after and end the response; wait for the answer before any UI review, planning, or concept. For read-only tasks, put the active-mode notice only at the start of the final answer, never in progress messages. For editing tasks, announce before the first edit and omit it from the final answer.
 To update antislop later: `npx antislop-ai --update`, or run `npx antislop-ai` and pick Overwrite them.
 <!-- antislop:end -->
+
+## Aturan Spesifikasi & Dokumentasi (.agents)
+- **Baca `.agents/INDEX.md` dulu**, lalu **hanya** baca modul `prd/<modul>.md` dan `tech/<modul>.md` yang relevan dengan tugas. Dilarang membaca seluruh PRD/Tech Spec secara bersamaan.
+- **Dilarang membaca direktori `.agents/archive/`** kecuali diminta secara eksplisit oleh pengguna.
+- **Baca `.agents/3-TASKS.md` hanya saat mengerjakan atau menutup task.**
+- **Wajib mengikuti alur kerja pada `.agents/WORKFLOW.md`** untuk setiap revisi perilaku, perubahan spek, atau penambahan fitur baru.
+- **Dilarang menambah bagian "Revisi vN"** atau menyimpan narasi riwayat di dalam dokumen modul spek. Seluruh perubahan wajib menimpa kondisi lama di tempat (*current state only*).
+- **Batas Ukuran:** Setiap berkas modul maksimal ~8KB, `.agents/INDEX.md` maksimal 60 baris. Jika melebihi batas, wajib dipecah menjadi sub-modul yang lebih spesifik.
