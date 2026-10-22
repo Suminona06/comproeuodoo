@@ -2191,7 +2191,30 @@
   transition: color var(--transition-fast, 0.15s ease);
 }
 
+.plp-sidebar-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plp-cat-count {
+  font-size: 9px;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-left: 6px;
+  margin-right: 6px;
+  letter-spacing: 0;
+  flex-shrink: 0;
+  transition: color var(--transition-fast, 0.15s ease);
+}
+
 .plp-sidebar-link:hover {
+  color: var(--color-primary, #00755a);
+}
+
+.plp-sidebar-link:hover .plp-cat-count {
   color: var(--color-primary, #00755a);
 }
 
@@ -2200,15 +2223,21 @@
   font-weight: 700;
 }
 
+.plp-sidebar-link.active .plp-cat-count {
+  color: var(--color-primary, #00755a);
+  font-weight: 600;
+}
+
 .plp-chevron {
   width: 10px;
   height: 6px;
   flex-shrink: 0;
   stroke: #64748b;
-  transition: transform var(--transition-fast, 0.15s ease);
+  transition: transform var(--transition-fast, 0.15s ease), stroke var(--transition-fast, 0.15s ease);
 }
 
-.plp-sidebar-link:hover .plp-chevron {
+.plp-sidebar-link:hover .plp-chevron,
+.plp-sidebar-link.active .plp-chevron {
   stroke: var(--color-primary, #00755a);
 }
 
@@ -2258,6 +2287,12 @@
   column-gap: 16px;
   row-gap: 32px;
   width: 100%;
+  transition: opacity 0.15s ease;
+}
+
+.plp-grid.is-loading {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 /* ── PRODUCT CARD (EXACT MATCH REFERENCE DESIGN) ── */
@@ -2531,14 +2566,25 @@
     border: 1px solid var(--color-border, #e2e8f0);
     border-radius: 0px;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   }
   .plp-sidebar-link .plp-chevron {
     display: none;
+  }
+  .plp-sidebar-link .plp-cat-count {
+    font-size: 8.5px;
+    margin-left: 2px;
+    margin-right: 0;
   }
   .plp-sidebar-link.active {
     background: var(--color-primary, #00755a);
     color: var(--color-on-primary, #ffffff);
     border-color: var(--color-primary, #00755a);
+  }
+  .plp-sidebar-link.active .plp-cat-count {
+    color: rgba(255, 255, 255, 0.85);
   }
   .plp-main {
     width: 100%;

@@ -47,9 +47,10 @@ export const productController = {
         offset
       };
 
-      const [products, totalCount, heroBanner] = await Promise.all([
+      const [products, totalCount, totalAllProducts, heroBanner] = await Promise.all([
         productModel.findAll(filterOptions),
         productModel.countAll(filterOptions),
+        productModel.countAll({ status: 'published' }),
         pageHeroBannerModel.getByPageKey('products')
       ]);
 
@@ -69,6 +70,7 @@ export const productController = {
       if (isFragment) {
         res.set('X-Has-More', String(hasMore));
         res.set('X-Total-Count', String(totalCount));
+        res.set('X-Total-All-Count', String(totalAllProducts));
         res.set('X-Current-Page', String(page));
         res.set('X-Total-Pages', String(totalPages));
 
@@ -89,7 +91,8 @@ export const productController = {
               hasMore,
               page,
               totalPages,
-              totalProducts: totalCount
+              totalProducts: totalCount,
+              totalAllProducts
             });
           });
         }
@@ -116,6 +119,7 @@ export const productController = {
         page,
         totalPages,
         totalProducts: totalCount,
+        totalAllProducts,
         hasMore,
         heroBanner
       });
@@ -135,6 +139,7 @@ export const productController = {
         page: 1,
         totalPages: 1,
         totalProducts: 0,
+        totalAllProducts: 0,
         hasMore: false
       });
     }

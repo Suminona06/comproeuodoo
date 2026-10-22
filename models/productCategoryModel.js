@@ -5,7 +5,10 @@ export const productCategoryModel = {
     let sql = `
       SELECT c.*, COUNT(p.id) as product_count
       FROM product_categories c
-      LEFT JOIN products p ON c.id = p.category_id
+      LEFT JOIN products p 
+        ON c.id = p.category_id 
+        AND p.status = 'published' 
+        AND (p.is_active = 1 OR p.is_active IS NULL)
     `;
     const params = [];
     if (options && options.activeOnly) {

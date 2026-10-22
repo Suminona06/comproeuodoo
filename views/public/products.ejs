@@ -53,10 +53,16 @@
         <aside class="plp-sidebar" aria-label="Filter By">
           <h2 class="plp-sidebar-title">FILTER BY</h2>
 
-          <ul class="plp-sidebar-list" role="list">
+          <ul class="plp-sidebar-list" role="list" id="plp-sidebar-list">
             <li class="plp-sidebar-item">
-              <a href="/products" class="plp-sidebar-link <%= !selectedCategory ? 'active' : '' %>">
-                <span><%= lang === 'en' ? 'ALL PRODUCTS' : 'SEMUA PRODUK' %></span>
+              <a href="/products<%= search ? '?search=' + encodeURIComponent(search) : '' %><%= sort && sort !== 'newest' ? (search ? '&' : '?') + 'sort=' + encodeURIComponent(sort) : '' %>"
+                 class="plp-sidebar-link <%= !selectedCategory ? 'active' : '' %>"
+                 data-category=""
+                 aria-current="<%= !selectedCategory ? 'true' : 'false' %>">
+                <span class="plp-sidebar-name"><%= lang === 'en' ? 'ALL PRODUCTS' : 'SEMUA PRODUK' %></span>
+                <% if (typeof totalAllProducts !== 'undefined' && totalAllProducts !== null) { %>
+                  <span class="plp-cat-count" id="plp-total-all-count">(<%= totalAllProducts %>)</span>
+                <% } %>
                 <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
                   <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -65,9 +71,15 @@
             <% if (categories && categories.length > 0) { %>
               <% categories.forEach(cat => { %>
                 <% const isActiveCat = selectedCategory && selectedCategory.id === cat.id; %>
+                <% const catHref = '/products?category=' + encodeURIComponent(cat.slug) + (search ? '&search=' + encodeURIComponent(search) : '') + (sort && sort !== 'newest' ? '&sort=' + encodeURIComponent(sort) : ''); %>
                 <li class="plp-sidebar-item">
-                  <a href="/products?category=<%= cat.slug %>" class="plp-sidebar-link <%= isActiveCat ? 'active' : '' %>">
-                    <span><%= lang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %></span>
+                  <a href="<%= catHref %>"
+                     class="plp-sidebar-link <%= isActiveCat ? 'active' : '' %>"
+                     data-category="<%= cat.slug %>"
+                     data-category-id="<%= cat.id %>"
+                     aria-current="<%= isActiveCat ? 'true' : 'false' %>">
+                    <span class="plp-sidebar-name"><%= lang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %></span>
+                    <span class="plp-cat-count">(<%= cat.product_count || 0 %>)</span>
                     <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
                       <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -159,8 +171,10 @@
         </div>
       </div>
 
+      <div id="plp-live-region" class="sr-only" aria-live="polite" role="status"></div>
     </div>
   </section>
 </main>
 
+<script src="/js/products.js" defer></script>
 <%- include('../partials/footer') %>

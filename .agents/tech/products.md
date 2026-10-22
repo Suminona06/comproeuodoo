@@ -71,7 +71,7 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Rasio potret kartu dikunci pada `aspect-ratio: 9 / 10` di desktop dan `1 / 1` di mobile (identik referensi visual) dengan `object-fit: cover` (CLS = 0) serta garis pembatas horizontal individual presisi selebar foto kartu (`.plp-card-line`, `width: 100%`) tanpa menyambung antar kolom.
 - Tombol outline selebar kartu: border tipis netral dengan warna font hijau brand `var(--color-primary)` (hover terisi `var(--color-primary)` teks putih `var(--color-on-primary)`), tinggi ultra-kompak 26px (dengan kompensasi hit-target 44px WCAG AA), tipografi nama produk ramping 9px (mobile: 8.5px).
 
-### D. Navigasi Kategori Dinamis & Deep Link Homepage [PENDING T-194]
+### D. Navigasi Kategori Dinamis & Deep Link Homepage [COMPLETED T-194]
 - `productCategoryModel.findAll({ activeOnly: true })` mengambil kategori aktif dinamis beserta jumlah produk aktif.
 - Status aktif filter sinkron dengan query URL `?category=<slug>` via `window.history.pushState`.
 - Deep link dari 4 panel homepage (`/products?category=<slug>`) berfungsi normal tanpa perubahan file beranda.

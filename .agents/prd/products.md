@@ -9,7 +9,7 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 
 ## 2. Functional Requirements
 
-### FR-07: Tata Letak Katalog Produk Publik (PLP) & Navigasi Kategori [PENDING T-194]
+### FR-07: Tata Letak Katalog Produk Publik (PLP) & Navigasi Kategori [COMPLETED T-194]
 - Katalog di `/products` berstruktur 2 kolom: Sidebar Kiri (kategori) dan Konten Utama (toolbar & grid).
 - Hero banner dinamis CMS dipertahankan di atas; navigasi breadcrumb dan layout 2-kolom berada tepat di bawahnya.
 - Sidebar kiri memuat "Filter By" > Kategori, menyajikan seluruh kategori aktif secara dinamis dari database (`is_active = 1`), opsi teratas "Semua Produk", dan badge jumlah produk aktif. Kategori baru dari CMS otomatis tampil.

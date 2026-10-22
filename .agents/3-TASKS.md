@@ -54,7 +54,7 @@
 
 - **Modul:** Products Catalog
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Deskripsi:** Membangun kolom kiri ("Filter By" > Kategori) yang merender seluruh kategori produk aktif secara dinamis dari database, mendukung status aktif visual, opsi "Semua Produk" dengan badge jumlah produk, dan tersinkronisasi dua arah dengan parameter URL (`?category=<slug>`) serta tombol navigasi back/forward peramban.
 - **Acceptance Criteria:**
   - Seluruh kategori aktif muncul otomatis; kategori baru dari CMS langsung tampil tanpa ubah kode.
