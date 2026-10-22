@@ -76,21 +76,21 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Status aktif filter sinkron dengan query URL `?category=<slug>` via `window.history.pushState`.
 - Deep link dari 4 panel homepage (`/products?category=<slug>`) berfungsi normal tanpa perubahan file beranda.
 
-### E. Toolbar Atas, Debounce Search & Live Region [PENDING T-195]
+### E. Toolbar Atas, Debounce Search & Live Region [COMPLETED T-195]
 - Input pencarian di kanan toolbar mengeksekusi pencarian asinkron dengan debounce 350ms.
 - Dropdown urutan memicu pengurutan seketika tanpa parameter harga.
 - Pengumuman jumlah hasil dieksekusi via live region: `<div class="sr-only" aria-live="polite" role="status">`.
 
-### F. Progressive Enhancement Load More [PENDING T-196]
+### F. Progressive Enhancement Load More [COMPLETED T-196]
 - Tombol `<a href="/products?page=2..." class="plp-more-btn">` berfungsi sebagai fallback navigasi reguler.
 - Skrip AJAX `public/js/products.js` menangani event klik, melakukan fetch fragmen EJS, dan menyisipkannya ke `.plp-grid`.
 - Animasi transisi masuk: `opacity: 0; transform: translateY(12px)` ke `opacity: 1; transform: translateY(0)` dalam `var(--transition-normal)`. Menghormati `prefers-reduced-motion`. Tombol disembunyikan saat `offset + limit >= totalProducts`.
 
-### G. Adaptasi Responsif Mobile & Filter Drawer [PENDING T-197]
+### G. Adaptasi Responsif Mobile & Filter Drawer [COMPLETED T-197]
 - Desktop (>= 1024px): 2 kolom (sidebar 280px + grid 3 kolom). Tablet (768px - 1023px): grid 2 kolom + sidebar adaptif.
 - Mobile (< 768px): grid 2 kolom kompak; filter kategori disajikan via tombol trigger yang memunculkan Drawer samping (*offcanvas*), dapat ditutup via overlay click atau tombol Escape. Target sentuh minimal 44 x 44 px.
 
-### H. SEO Canonical, Pagination Noindex & Kepatuhan CSP [PENDING T-198]
+### H. SEO Canonical, Pagination Noindex & Kepatuhan CSP [COMPLETED T-198]
 - Tag canonical mengarah ke URL dasar `/products` (atau kategori valid).
 - Paginasi `page > 1`, pencarian, atau pengurutan otomatis menginjeksi tag `<meta name="robots" content="noindex, follow">`.
 - Seluruh event listener dikelola di `public/js/products.js` tanpa inline script/handler (`onclick`, `onchange`), 100% patuh pada CSP Helmet.

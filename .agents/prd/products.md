@@ -33,20 +33,20 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - **Tombol Selebar Kartu:** Tombol selebar kartu (100% width) berlabel "Detail Produk" (ID) / "Product Details" (EN) menuju `/products/:slug`. Gaya outline border hijau `var(--color-primary)` dan teks `var(--color-text-main)`, hover terisi hijau `var(--color-primary)` teks putih `var(--color-on-primary)`.
 - **Tanpa Harga:** Bebas total dari angka harga (kepatuhan model B2B custom RFQ).
 
-### FR-25: Toolbar Atas, Pencarian Debounced, Pengurutan & Live Region [PENDING T-195]
+### FR-25: Toolbar Atas, Pencarian Debounced, Pengurutan & Live Region [COMPLETED T-195]
 - **Posisi Kontrol:** Kolom pencarian di kanan toolbar menggantikan teks statis produk, bersanding dengan dropdown "Urutkan".
 - **Pencarian Debounced:** Eksekusi otomatis via AJAX (debounce 350ms) tanpa perlu menekan Enter, menelusuri nama (`name_id`, `name_en`) dan deskripsi (`description_id`, `description_en`).
 - **Pilihan Urutan (Tanpa Harga):** Mendukung 4 opsi: "Terbaru" (Default - ID DESC), "Nama A-Z", "Nama Z-A", dan "Urutan Katalog" (sort_order ASC).
 - **Pengumuman Aksesibel:** Jumlah hasil diumumkan dinamis ke pembaca layar (*screen reader*) via live region (`.sr-only`, `aria-live="polite"`, `role="status"`).
 - **Empty State:** Menampilkan pesan informatif dwibahasa dan tombol reset jika produk tidak ditemukan.
 
-### FR-26: Progressive Enhancement "Muat Lebih Banyak" AJAX [PENDING T-196]
+### FR-26: Progressive Enhancement "Muat Lebih Banyak" AJAX [COMPLETED T-196]
 - **Kondisi Tampil:** Tombol "Muat Lebih Banyak" tampil hanya jika total produk yang sesuai kriteria > 9 (`totalCount > 9`) dan masih ada halaman lanjutan.
 - **Progressive Enhancement:** Elemen tautan semantik `<a href="/products?page=2&...">` sebagai fallback SEO/non-JS, ditingkatkan AJAX untuk memuat 9 kartu baru tanpa reload halaman.
 - **Aksesibilitas & Animasi:** Kartu baru muncul halus dengan animasi transisi opacity dan transform (menghormati `prefers-reduced-motion`). Fokus keyboard diarahkan ke kartu baru pertama; tombol hilang jika seluruh data termuat.
 - **Reset Paginasi:** Mengubah filter, search, atau urutan otomatis mereset paginasi ke halaman 1.
 
-### FR-29: Tata Letak Responsif Mobile & Filter Drawer [PENDING T-197]
+### FR-29: Tata Letak Responsif Mobile & Filter Drawer [COMPLETED T-197]
 - Pada mobile (< 768px), grid kartu produk reflow menjadi 2 kolom kompak.
 - Filter kategori disajikan via tombol trigger yang membuka Drawer samping (*offcanvas*), dapat ditutup via tombol silang atau Escape, dengan target sentuh minimal 44 x 44 px.
 

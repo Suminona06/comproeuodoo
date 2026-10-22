@@ -2,10 +2,10 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 5 Task (T-194 s/d T-198) &mdash; 2 Selesai (T-192, T-193)
-- **Total Task Selesai:** 191 Task (T-01 s/d T-191) &mdash; Selesai 100%
+- **Task Aktif Terbuka:** 0 Task &mdash; Seluruh Task (T-192 s/d T-198) Selesai 100%
+- **Total Task Selesai:** 198 Task (T-01 s/d T-198) &mdash; Selesai 100%
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
-- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-192**.
+- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-199**.
 
 ---
 
@@ -72,7 +72,7 @@
 
 - **Modul:** Products Catalog
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Deskripsi:** Mengimplementasikan toolbar atas dengan kolom pencarian di sebelah kanan (menggantikan teks "Showing N products") dan dropdown pengurutan ("Urutkan"). Mengatur mekanisme pencarian debounced 350ms, pengumuman status hasil ke screen reader (`.sr-only`, `aria-live="polite"`), serta tampilan empty state dwibahasa.
 - **Acceptance Criteria:**
   - Pencarian merespons ketikan dengan debounce 350ms tanpa reload halaman penuh.
@@ -91,7 +91,7 @@
 
 - **Modul:** Products Catalog
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Deskripsi:** Membangun tombol "Muat Lebih Banyak" yang hanya tampil jika total produk > 9, dilengkapi tautan semantik fallback dan skrip AJAX append tanpa reload, animasi pemuatan halus, serta penanganan fokus aksesibilitas.
 - **Acceptance Criteria:**
   - Tombol tampil hanya jika `totalProducts > 9` dan masih ada halaman lanjutan.
@@ -111,7 +111,7 @@
 
 - **Modul:** Products Catalog
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Deskripsi:** Mengadaptasi seluruh tata letak halaman listing produk untuk berbagai ukuran viewport: mobile (320-480px) dengan reflow grid 2 kolom dan filter drawer offcanvas, tablet (768px), dan desktop (1024-1440px), memastikan target sentuh minimal 44px dan nihil overflow horizontal.
 - **Acceptance Criteria:**
   - Layout reflow secara terencana di breakpoint mobile (2 kolom kartu), tablet, dan desktop tanpa clipping.
@@ -129,7 +129,7 @@
 
 - **Modul:** Products Catalog
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Deskripsi:** Menjalankan audit menyeluruh untuk memverifikasi kontras warna AA, navigasi keyboard (Tab, Enter, Escape), visibilitas focus ring, kepatuhan CSP (nol inline script/event handler), serta pengujian regresi untuk memastikan homepage, detail produk, dan admin CMS tetap berfungsi normal 100%.
 - **Acceptance Criteria:**
   - Seluruh elemen teks dan tombol lolos kontras WCAG AA (>= 4.5:1 untuk teks, >= 3:1 untuk outline).

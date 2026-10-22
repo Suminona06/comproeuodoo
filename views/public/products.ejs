@@ -49,9 +49,17 @@
     <div class="container plp-container">
 
       <div class="plp-layout">
-        <!-- SIDEBAR (LEFT COLUMN: FILTER BY) -->
-        <aside class="plp-sidebar" aria-label="Filter By">
-          <h2 class="plp-sidebar-title">FILTER BY</h2>
+        <!-- SIDEBAR (LEFT COLUMN: FILTER BY / MOBILE DRAWER) -->
+        <aside class="plp-sidebar" id="plp-sidebar" aria-label="Filter By">
+          <div class="plp-drawer-header">
+            <h2 class="plp-sidebar-title plp-drawer-title">FILTER BY</h2>
+            <button type="button" class="plp-drawer-close" id="plp-filter-drawer-close" aria-label="<%= lang === 'en' ? 'Close Category Filter' : 'Tutup Filter Kategori' %>">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
 
           <ul class="plp-sidebar-list" role="list" id="plp-sidebar-list">
             <li class="plp-sidebar-item">
@@ -63,9 +71,6 @@
                 <% if (typeof totalAllProducts !== 'undefined' && totalAllProducts !== null) { %>
                   <span class="plp-cat-count" id="plp-total-all-count">(<%= totalAllProducts %>)</span>
                 <% } %>
-                <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
               </a>
             </li>
             <% if (categories && categories.length > 0) { %>
@@ -80,9 +85,6 @@
                      aria-current="<%= isActiveCat ? 'true' : 'false' %>">
                     <span class="plp-sidebar-name"><%= lang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %></span>
                     <span class="plp-cat-count">(<%= cat.product_count || 0 %>)</span>
-                    <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-                      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
                   </a>
                 </li>
               <% }); %>
@@ -90,16 +92,70 @@
           </ul>
         </aside>
 
+        <!-- MOBILE DRAWER BACKDROP -->
+        <div class="plp-drawer-backdrop" id="plp-filter-drawer-backdrop" aria-hidden="true"></div>
+
         <!-- MAIN CATALOG (RIGHT COLUMN): TOOLBAR + GRID + SHOW MORE -->
         <div class="plp-main">
-          <!-- TOOLBAR: ALIGNED RIGHT (SHOWING 100 PRODUCTS       SORT BY : NEWEST v) -->
+          <!-- TOOLBAR: SEARCH INPUT (DEBOUNCED) + FILTER DRAWER TRIGGER (MOBILE) + SORT SELECT -->
           <div class="plp-toolbar">
-            <span class="plp-toolbar-count">
-              <%= lang === 'en' ? `SHOWING ${totalProducts || 0} PRODUCTS` : `SHOWING ${totalProducts || 0} PRODUCTS` %>
-            </span>
+            <button type="button" class="plp-drawer-trigger" id="plp-filter-drawer-open" aria-controls="plp-sidebar" aria-expanded="false" aria-label="<%= lang === 'en' ? 'Open Category Filter' : 'Buka Filter Kategori' %>">
+              <svg class="plp-drawer-trigger-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="4" y1="21" x2="4" y2="14"></line>
+                <line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line>
+                <line x1="20" y1="12" x2="20" y2="3"></line>
+                <line x1="1" y1="14" x2="7" y2="14"></line>
+                <line x1="9" y1="8" x2="15" y2="8"></line>
+                <line x1="17" y1="16" x2="23" y2="16"></line>
+              </svg>
+              <span class="plp-drawer-trigger-text">FILTER</span>
+              <% if (selectedCategory) { %>
+                <span class="plp-drawer-trigger-badge" aria-hidden="true">1</span>
+              <% } %>
+            </button>
 
-            <div class="plp-toolbar-sort">
-              <span class="plp-sort-label"><%= lang === 'en' ? 'SORT BY :  NEWEST' : 'SORT BY :  NEWEST' %></span>
+            <form action="/products" method="GET" class="plp-search-wrap" id="plp-search-form" role="search" aria-label="<%= lang === 'en' ? 'Product search' : 'Pencarian produk' %>">
+              <% if (selectedCategory) { %>
+                <input type="hidden" name="category" value="<%= selectedCategory.slug %>" />
+              <% } %>
+              <input type="search"
+                     name="search"
+                     id="plp-search-input"
+                     class="plp-search-input"
+                     value="<%= search || '' %>"
+                     placeholder="<%= lang === 'en' ? 'Search name or specs...' : 'Cari nama atau spesifikasi...' %>"
+                     aria-label="<%= lang === 'en' ? 'Search products' : 'Cari produk' %>"
+                     autocomplete="off" />
+              <button type="button" class="plp-search-clear <%= search ? 'visible' : '' %>" id="plp-search-clear" aria-label="<%= lang === 'en' ? 'Clear search' : 'Hapus pencarian' %>">
+                &times;
+              </button>
+              <button type="submit" class="plp-search-btn" id="plp-search-btn" aria-label="<%= lang === 'en' ? 'Search' : 'Cari' %>" title="<%= lang === 'en' ? 'Search' : 'Cari' %>">
+                <svg class="plp-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+            </form>
+
+            <div class="plp-sort-wrap">
+              <label for="plp-sort-select" class="sr-only"><%= lang === 'en' ? 'Sort By' : 'Urutkan' %></label>
+              <select name="sort" id="plp-sort-select" class="plp-sort-select" aria-label="<%= lang === 'en' ? 'Sort by' : 'Urutkan berdasarkan' %>">
+                <option value="newest" <%= (!sort || sort === 'newest') ? 'selected' : '' %>>
+                  <%= lang === 'en' ? 'SORT : NEWEST' : 'URUTKAN : TERBARU' %>
+                </option>
+                <option value="alpha-asc" <%= sort === 'alpha-asc' ? 'selected' : '' %>>
+                  <%= lang === 'en' ? 'SORT : NAME A-Z' : 'URUTKAN : NAMA A-Z' %>
+                </option>
+                <option value="alpha-desc" <%= sort === 'alpha-desc' ? 'selected' : '' %>>
+                  <%= lang === 'en' ? 'SORT : NAME Z-A' : 'URUTKAN : NAMA Z-A' %>
+                </option>
+                <option value="catalog" <%= sort === 'catalog' ? 'selected' : '' %>>
+                  <%= lang === 'en' ? 'SORT : CATALOG' : 'URUTKAN : KATALOG' %>
+                </option>
+              </select>
               <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
                 <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -112,16 +168,18 @@
               <%- include('partials/product-card-fragment', { products, currentLang: lang }) %>
             </div>
 
-            <!-- SHOW MORE BUTTON (MATCHING REFERENCE SHOW MORE BUTTON) -->
-            <% if (hasMore) { %>
-              <div class="plp-more-wrap">
-                <a href="/products?page=<%= page + 1 %><%= selectedCategory ? '&category=' + encodeURIComponent(selectedCategory.slug) : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort && sort !== 'newest' ? '&sort=' + encodeURIComponent(sort) : '' %>"
-                   class="plp-more-btn"
-                   id="plp-load-more-btn">
-                  <%= lang === 'en' ? 'SHOW MORE' : 'MUAT LEBIH BANYAK' %>
-                </a>
-              </div>
-            <% } %>
+            <!-- SHOW MORE BUTTON (PROGRESSIVE ENHANCEMENT) -->
+            <div class="plp-more-wrap" id="plp-more-wrap" <% if (!hasMore || totalProducts <= 9) { %>style="display: none;"<% } %>>
+              <a href="/products?page=<%= page + 1 %><%= selectedCategory ? '&category=' + encodeURIComponent(selectedCategory.slug) : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort && sort !== 'newest' ? '&sort=' + encodeURIComponent(sort) : '' %>"
+                 class="plp-more-btn"
+                 id="plp-load-more-btn"
+                 role="button"
+                 aria-busy="false"
+                 data-current-page="<%= page %>"
+                 data-total-pages="<%= totalPages %>">
+                <span class="plp-more-btn-text"><%= lang === 'en' ? 'SHOW MORE' : 'MUAT LEBIH BANYAK' %></span>
+              </a>
+            </div>
 
             <!-- Accessible Pagination Fallback Controls -->
             <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
