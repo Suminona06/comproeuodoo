@@ -1,9 +1,9 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/public/productController.js, models/productModel.js, views/public/products.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/public/productController.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
 
-# Tech Spec: Modul Produk, Katalog & Kapabilitas Mesin (Products & Capabilities)
+# Tech Spec: Modul Produk & Katalog Manufaktur (Products Catalog)
 
 ## 1. Arsitektur & Komponen
-Modul ini mengelola katalog produk manufaktur, varian teknis kemasan plastik, pengelompokan kategori produk aktif, ekspor spreadsheet CSV, serta etalase mesin industri di pabrik Cigondewah.
+Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi teknis di `/products/:slug`, navigasi kategori dinamis, pencarian debounced, pengurutan multi-kriteria, pemuatan fragmen via AJAX, serta operasi CMS produk di `/admin/products`.
 
 ---
 
@@ -11,22 +11,20 @@ Modul ini mengelola katalog produk manufaktur, varian teknis kemasan plastik, pe
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/products` | `productController.index` | `seoMiddleware`, `i18nMiddleware` | Render katalog publik |
-| `GET` | `/products/:slug` | `productController.detail` | `seoMiddleware`, `i18nMiddleware` | Render detail produk |
-| `GET` | `/capabilities` | `pageController.capabilities` | `seoMiddleware`, `i18nMiddleware` | Render kapabilitas mesin |
+| `GET` | `/products` | `productController.index` | `seoMiddleware`, `i18nMiddleware` | Render katalog SSR atau fragmen AJAX `[PENDING T-192]` |
+| `GET` | `/products/:slug` | `productController.detail` | `seoMiddleware`, `i18nMiddleware` | Render detail spesifikasi produk |
 | `GET` | `/admin/products` | `admin/productController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS daftar produk |
-| `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV produk |
+| `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV katalog produk |
 | `POST` | `/admin/products` | `admin/productController.store` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Tambah produk baru |
 | `POST` | `/admin/products/:id` | `admin/productController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Perbarui data produk |
-| `GET/POST`| `/admin/product-categories`| `productCategoryController.*` | `requireAuth`, `roleMiddleware` | Kelola kategori produk |
-| `GET/POST`| `/admin/capabilities` | `capabilityController.*` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Kelola mesin industri |
+| `GET/POST`| `/admin/product-categories`| `productCategoryController.*` | `requireAuth`, `roleMiddleware` | Kelola kategori produk aktif |
 
 ---
 
 ## 3. Skema Data Terkait
 
 ### A. Tabel `product_categories`
-*File Migrasi:* `database/migrations/003_upgrade_v2_schema.sql`, `013_add_is_active_to_product_categories.sql`
+*Migrasi:* `003_upgrade_v2_schema.sql`, `013_add_is_active_to_product_categories.sql`
 
 | Kolom | Tipe | Nullable | Default | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
@@ -34,39 +32,65 @@ Modul ini mengelola katalog produk manufaktur, varian teknis kemasan plastik, pe
 | `name_id` | `VARCHAR(150)` | NO | - | Nama kategori (ID) |
 | `name_en` | `VARCHAR(150)` | NO | - | Nama kategori (EN) |
 | `slug` | `VARCHAR(191)` | NO | - | Unique slug URL |
-| `description_id` | `TEXT` | YES | NULL | Deskripsi segmen (ID) |
-| `description_en` | `TEXT` | YES | NULL | Deskripsi segmen (EN) |
-| `image_url` | `VARCHAR(500)` | YES | NULL | Gambar representatif segmen panel |
+| `description_id`, `description_en` | `TEXT` | YES | NULL | Deskripsi segmen |
+| `image_url` | `VARCHAR(500)` | YES | NULL | Gambar segmen panel |
 | `sort_order` | `INT` | YES | `0` | Urutan penataan |
-| `is_active` | `TINYINT(1)` | NO | `1` | Flag status aktif |
+| `is_active` | `TINYINT(1)` | NO | `1` | Flag status penayangan |
 
-### B. Tabel `products`
-*Catatan:* Kolom `is_featured` telah dihapus permanen oleh migrasi `011_drop_product_is_featured.sql`.
-
-| Kolom | Tipe | Nullable | Default | Keterangan |
-| :--- | :--- | :--- | :--- | :--- |
-| `id` | `INT` | NO | Auto Inc | Primary Key |
-| `category_id` | `INT` | NO | - | Foreign Key ke `product_categories.id` |
-| `name_id` | `VARCHAR(255)` | NO | - | Nama produk (ID) |
-| `name_en` | `VARCHAR(255)` | NO | - | Nama produk (EN) |
-| `slug` | `VARCHAR(191)` | NO | - | Unique slug URL |
-| `description_id` | `TEXT` | YES | NULL | Deskripsi detail (ID) |
-| `description_en` | `TEXT` | YES | NULL | Deskripsi detail (EN) |
-| `material_specs` | `JSON` | YES | NULL | Spesifikasi material JSON (ID/EN) |
-| `technical_specs`| `JSON` | YES | NULL | Spesifikasi teknis JSON (ID/EN) |
-| `main_image` | `VARCHAR(500)` | YES | NULL | Gambar utama produk |
-| `gallery_images` | `JSON` | YES | NULL | Array string path gambar galeri |
-| `status` | `ENUM('draft','published','archived')` | YES | `'published'` | Status publikasi |
-| `is_active` | `TINYINT(1)` | YES | `1` | Status ketersediaan |
-| `sort_order` | `INT` | YES | `0` | Urutan tampilan |
-| `meta_*`, `og_image`, `canonical_url`, `robots`, `jsonld` | Berbagai | YES | - | Metadata SEO per produk |
-
-### C. Tabel `product_variants` & `capabilities`
-- `product_variants`: `id`, `product_id` (FK `products.id`), `name_id`, `name_en`, `sku`, `specs` (JSON: dimensi, ketebalan, warna, kapasitas), `sort_order`. Dikelola langsung di dalam `models/productModel.js`.
-- `capabilities`: `id`, `name_id`, `name_en`, `category` (ekstrusi, bag-making, printing), `description_id`, `description_en`, `specs` (JSON: kecepatan, kapasitas bulanan), `image_url`, `sort_order`, `is_active`.
+### B. Tabel `products` & `product_variants`
+*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Sistem bebas kolom harga (zero-price).
+- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `description_id`, `description_en`, `material_specs` (JSON), `technical_specs` (JSON), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
+- `product_variants`: `id`, `product_id` (FK), `name_id`, `name_en`, `sku`, `specs` (JSON dimensi, ketebalan, beban), `sort_order`.
 
 ---
 
-## 4. Komponen Antarmuka & Validasi
-- **Deep Link Filter Kategori:** Controller membaca `req.query.category`. Jika parameter slug valid ditemukan, katalog memfilter produk berdasarkan kategori terkait dan menetapkan status tab aktif.
-- **Ekspor CSV:** Utilitas `utils/csvExporter.js` menghasilkan stream response CSV dengan header `Content-Type: text/csv` dan `Content-Disposition: attachment; filename=products_export_<timestamp>.csv`.
+## 4. Komponen Antarmuka, Server Contract & Validasi
+
+### A. Kontrak Parameter URL & Validasi Server (`productController.js`) [PENDING T-192]
+- Parameter Query:
+  - `category` (string, opsional): Divalidasi terhadap slug pada `product_categories WHERE is_active = 1`.
+  - `search` (string, opsional): Sanitasi input, dipangkas (trim), panjang maksimal 100 karakter.
+  - `sort` (enum, opsional): Whitelist `['newest', 'alpha-asc', 'alpha-desc', 'catalog']`, default `'newest'`.
+  - `page` (integer, opsional): Bilangan bulat positif >= 1, default `1`. Batas muatan default adalah 9 (`limit = 9`).
+  - `format` (enum, opsional): Whitelist `['html', 'fragment']`, default `'html'`.
+- Respons Parsial (Fragment Mode):
+  - Jika `req.query.format === 'fragment'` atau request memiliki header `X-Requested-With: XMLHttpRequest`, controller merender partial EJS `views/public/partials/product-card-fragment.ejs`. Seluruh output variabel menggunakan escape EJS `<%= %>`.
+
+### B. Kueri Data Dinamis (`productModel.js`) [PENDING T-192]
+- Sorting dinamis berbasis whitelist pada `findAll()`:
+  - `newest`: `ORDER BY p.id DESC`
+  - `alpha-asc`: `ORDER BY p.name_id ASC`
+  - `alpha-desc`: `ORDER BY p.name_id DESC`
+  - `catalog`: `ORDER BY p.sort_order ASC, p.id DESC`
+- Pencarian multi-kolom terparameter: `(p.name_id LIKE ? OR p.name_en LIKE ? OR p.slug LIKE ? OR p.description_id LIKE ? OR p.description_en LIKE ?)` dengan binding `%search%`.
+
+### C. Isolasi Namespace CSS `.plp-*` & Desain Sistem [PENDING T-193]
+- Seluruh elemen visual katalog menggunakan prefix unik `.plp-*` pada `components.css` untuk mencegah tabrakan dengan selector `.prod-*` beranda:
+  - Layout: `.plp-section`, `.plp-container`, `.plp-layout`, `.plp-sidebar`, `.plp-main`, `.plp-grid`.
+  - Komponen: `.plp-sidebar-card`, `.plp-filter-title`, `.plp-cat-list`, `.plp-cat-item`, `.plp-cat-link`, `.plp-cat-count`, `.plp-toolbar`, `.plp-search-wrap`, `.plp-search-input`, `.plp-sort-wrap`, `.plp-sort-select`, `.plp-card`, `.plp-card-media`, `.plp-card-img`, `.plp-card-body`, `.plp-card-title`, `.plp-card-btn`, `.plp-more-wrap`, `.plp-more-btn`.
+- Rasio potret kartu dikunci pada `aspect-ratio: 3 / 4` dengan `object-fit: cover` untuk menjamin CLS = 0.
+- Tombol outline selebar kartu: border `var(--color-primary)`, teks `var(--color-text-main)`, hover latar terisi `var(--color-primary)` teks putih `var(--color-on-primary)` (kontras AA >= 4.5:1).
+
+### D. Navigasi Kategori Dinamis & Deep Link Homepage [PENDING T-194]
+- `productCategoryModel.findAll({ activeOnly: true })` mengambil kategori aktif dinamis beserta jumlah produk aktif.
+- Status aktif filter sinkron dengan query URL `?category=<slug>` via `window.history.pushState`.
+- Deep link dari 4 panel homepage (`/products?category=<slug>`) berfungsi normal tanpa perubahan file beranda.
+
+### E. Toolbar Atas, Debounce Search & Live Region [PENDING T-195]
+- Input pencarian di kanan toolbar mengeksekusi pencarian asinkron dengan debounce 350ms.
+- Dropdown urutan memicu pengurutan seketika tanpa parameter harga.
+- Pengumuman jumlah hasil dieksekusi via live region: `<div class="sr-only" aria-live="polite" role="status">`.
+
+### F. Progressive Enhancement Load More [PENDING T-196]
+- Tombol `<a href="/products?page=2..." class="plp-more-btn">` berfungsi sebagai fallback navigasi reguler.
+- Skrip AJAX `public/js/products.js` menangani event klik, melakukan fetch fragmen EJS, dan menyisipkannya ke `.plp-grid`.
+- Animasi transisi masuk: `opacity: 0; transform: translateY(12px)` ke `opacity: 1; transform: translateY(0)` dalam `var(--transition-normal)`. Menghormati `prefers-reduced-motion`. Tombol disembunyikan saat `offset + limit >= totalProducts`.
+
+### G. Adaptasi Responsif Mobile & Filter Drawer [PENDING T-197]
+- Desktop (>= 1024px): 2 kolom (sidebar 280px + grid 3 kolom). Tablet (768px - 1023px): grid 2 kolom + sidebar adaptif.
+- Mobile (< 768px): grid 2 kolom kompak; filter kategori disajikan via tombol trigger yang memunculkan Drawer samping (*offcanvas*), dapat ditutup via overlay click atau tombol Escape. Target sentuh minimal 44 x 44 px.
+
+### H. SEO Canonical, Pagination Noindex & Kepatuhan CSP [PENDING T-198]
+- Tag canonical mengarah ke URL dasar `/products` (atau kategori valid).
+- Paginasi `page > 1`, pencarian, atau pengurutan otomatis menginjeksi tag `<meta name="robots" content="noindex, follow">`.
+- Seluruh event listener dikelola di `public/js/products.js` tanpa inline script/handler (`onclick`, `onchange`), 100% patuh pada CSP Helmet.
