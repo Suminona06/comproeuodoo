@@ -19,11 +19,6 @@
       <div class="page-hero-scrim" aria-hidden="true"></div>
     <% } %>
     <div class="container">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
-        <span class="separator" aria-hidden="true">&rsaquo;</span>
-        <span class="current"><%= lang === 'en' ? 'Products' : 'Produk' %></span>
-      </nav>
 
       <div class="page-hero-content" style="max-width: 840px;">
         <h1 class="page-hero-title">
@@ -49,183 +44,121 @@
     </div>
   </section>
 
-  <!-- CATALOG & FILTER SECTION -->
-  <section class="sec-products" style="background: var(--bg-subtle, #f8fafc); padding: 56px 0 96px;">
-    <div class="container">
-      <!-- Filter Bar & Search Controls -->
-      <div style="background: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: var(--r-xl, 12px); padding: 24px; margin-bottom: 40px; box-shadow: var(--shadow-1);">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
-          <!-- Category Tabs -->
-          <div class="filter-bar" style="margin-bottom: 0;">
-            <a href="/products<%= search ? '?search=' + encodeURIComponent(search) : '' %>"
-               class="pill-filter <%= !selectedCategory ? 'active' : '' %>">
-              <%= lang === 'en' ? 'All Products' : 'Semua Produk' %>
-            </a>
+  <!-- CATALOG & FILTER SECTION (.plp-*) -->
+  <section class="sec-products plp-section">
+    <div class="container plp-container">
+
+      <div class="plp-layout">
+        <!-- SIDEBAR (LEFT COLUMN: FILTER BY) -->
+        <aside class="plp-sidebar" aria-label="Filter By">
+          <h2 class="plp-sidebar-title">FILTER BY</h2>
+
+          <ul class="plp-sidebar-list" role="list">
+            <li class="plp-sidebar-item">
+              <a href="/products" class="plp-sidebar-link <%= !selectedCategory ? 'active' : '' %>">
+                <span><%= lang === 'en' ? 'ALL PRODUCTS' : 'SEMUA PRODUK' %></span>
+                <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </li>
             <% if (categories && categories.length > 0) { %>
               <% categories.forEach(cat => { %>
                 <% const isActiveCat = selectedCategory && selectedCategory.id === cat.id; %>
-                <a href="/products?category=<%= cat.slug %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
-                   class="pill-filter <%= isActiveCat ? 'active' : '' %>">
-                  <%= lang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %>
-                </a>
+                <li class="plp-sidebar-item">
+                  <a href="/products?category=<%= cat.slug %>" class="plp-sidebar-link <%= isActiveCat ? 'active' : '' %>">
+                    <span><%= lang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id %></span>
+                    <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </a>
+                </li>
               <% }); %>
             <% } %>
-          </div>
+          </ul>
+        </aside>
 
-          <!-- Search Form -->
-          <form method="GET" action="/products" style="display: flex; gap: 8px; flex: 1; max-width: 380px; min-width: 260px;">
-            <% if (selectedCategory) { %>
-              <input type="hidden" name="category" value="<%= selectedCategory.slug %>">
-            <% } %>
-            <div style="position: relative; width: 100%;">
-              <input type="text"
-                     name="search"
-                     value="<%= search || '' %>"
-                     placeholder="<%= lang === 'en' ? 'Search by name or material...' : 'Cari nama produk atau material...' %>"
-                     style="width: 100%; height: 44px; padding: 0 36px 0 16px; border: 1.5px solid var(--border, #e2e8f0); border-radius: var(--r-md, 6px); font-size: 14px; font-family: var(--font); color: var(--text-main);"
-                     aria-label="Cari produk">
-              <% if (search) { %>
-                <a href="/products<%= selectedCategory ? '?category=' + selectedCategory.slug : '' %>"
-                   style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; text-decoration: none;"
-                   title="Reset">&times;</a>
-              <% } %>
-            </div>
-            <button type="submit" class="btn btn-primary" aria-label="Cari">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <!-- MAIN CATALOG (RIGHT COLUMN): TOOLBAR + GRID + SHOW MORE -->
+        <div class="plp-main">
+          <!-- TOOLBAR: ALIGNED RIGHT (SHOWING 100 PRODUCTS       SORT BY : NEWEST v) -->
+          <div class="plp-toolbar">
+            <span class="plp-toolbar-count">
+              <%= lang === 'en' ? `SHOWING ${totalProducts || 0} PRODUCTS` : `SHOWING ${totalProducts || 0} PRODUCTS` %>
+            </span>
+
+            <div class="plp-toolbar-sort">
+              <span class="plp-sort-label"><%= lang === 'en' ? 'SORT BY :  NEWEST' : 'SORT BY :  NEWEST' %></span>
+              <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-            </button>
-          </form>
-        </div>
-
-        <% if (selectedCategory || search) { %>
-          <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border, #e2e8f0); font-size: 13px;">
-            <span style="color: var(--text-muted);"><%= lang === 'en' ? 'Active filter:' : 'Filter aktif:' %></span>
-            <% if (selectedCategory) { %>
-              <span class="brand-reg-tag" style="font-size: 12px;">
-                <%= lang === 'en' ? (selectedCategory.name_en || selectedCategory.name_id) : selectedCategory.name_id %>
-              </span>
-            <% } %>
-            <% if (search) { %>
-              <span class="brand-reg-tag" style="font-size: 12px; background: var(--container-light); color: var(--text-main);">
-                "<%= search %>"
-              </span>
-            <% } %>
-            <a href="/products" style="color: var(--primary); text-decoration: underline; margin-left: 8px;">
-              <%= lang === 'en' ? 'Clear Filters' : 'Reset Filter' %>
-            </a>
+            </div>
           </div>
-        <% } %>
+
+          <!-- Products Grid (.plp-grid) -->
+          <% if (products && products.length > 0) { %>
+            <div class="plp-grid" id="plp-products-grid">
+              <%- include('partials/product-card-fragment', { products, currentLang: lang }) %>
+            </div>
+
+            <!-- SHOW MORE BUTTON (MATCHING REFERENCE SHOW MORE BUTTON) -->
+            <% if (hasMore) { %>
+              <div class="plp-more-wrap">
+                <a href="/products?page=<%= page + 1 %><%= selectedCategory ? '&category=' + encodeURIComponent(selectedCategory.slug) : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort && sort !== 'newest' ? '&sort=' + encodeURIComponent(sort) : '' %>"
+                   class="plp-more-btn"
+                   id="plp-load-more-btn">
+                  <%= lang === 'en' ? 'SHOW MORE' : 'MUAT LEBIH BANYAK' %>
+                </a>
+              </div>
+            <% } %>
+
+            <!-- Accessible Pagination Fallback Controls -->
+            <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+              <nav class="plp-pagination" aria-label="<%= lang === 'en' ? 'Pagination' : 'Paginasi Halaman' %>">
+                <% if (page > 1) { %>
+                  <a href="/products?page=<%= page - 1 %><%= selectedCategory ? '&category=' + encodeURIComponent(selectedCategory.slug) : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort && sort !== 'newest' ? '&sort=' + encodeURIComponent(sort) : '' %>"
+                     class="plp-pagination-btn"
+                     aria-label="<%= lang === 'en' ? 'Previous page' : 'Halaman sebelumnya' %>">
+                    &larr; <%= lang === 'en' ? 'PREV' : 'SEBELUMNYA' %>
+                  </a>
+                <% } %>
+
+                <% for (let p = 1; p <= totalPages; p++) { %>
+                  <a href="/products?page=<%= p %><%= selectedCategory ? '&category=' + encodeURIComponent(selectedCategory.slug) : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort && sort !== 'newest' ? '&sort=' + encodeURIComponent(sort) : '' %>"
+                     class="plp-pagination-num <%= page === p ? 'active' : '' %>"
+                     aria-current="<%= page === p ? 'page' : 'false' %>">
+                    <%= p %>
+                  </a>
+                <% } %>
+
+                <% if (page < totalPages) { %>
+                  <a href="/products?page=<%= page + 1 %><%= selectedCategory ? '&category=' + encodeURIComponent(selectedCategory.slug) : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %><%= sort && sort !== 'newest' ? '&sort=' + encodeURIComponent(sort) : '' %>"
+                     class="plp-pagination-btn"
+                     aria-label="<%= lang === 'en' ? 'Next page' : 'Halaman berikutnya' %>">
+                    <%= lang === 'en' ? 'NEXT' : 'BERIKUTNYA' %> &rarr;
+                  </a>
+                <% } %>
+              </nav>
+            <% } %>
+
+          <% } else { %>
+            <!-- Empty State -->
+            <div style="background: #ffffff; border: 1px solid var(--color-border, #e2e8f0); padding: 56px 24px; text-align: center; max-width: 480px; margin: 40px auto;">
+              <h2 style="font-size: 1.1rem; color: var(--color-text-main, #0f172a); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+                <%= lang === 'en' ? 'No Products Found' : 'Produk Tidak Ditemukan' %>
+              </h2>
+              <p style="font-size: 12px; color: var(--color-text-variant, #64748b); line-height: 1.6; margin-bottom: 20px;">
+                <%= lang === 'en'
+                  ? 'Try adjusting your search query or selecting a different product category.'
+                  : 'Silakan sesuaikan kata kunci pencarian atau pilih kategori produk lain.' %>
+              </p>
+              <a href="/products" class="plp-more-btn" style="display: inline-flex;">
+                <%= lang === 'en' ? 'RESET ALL FILTERS' : 'TAMPILKAN SEMUA PRODUK' %>
+              </a>
+            </div>
+          <% } %>
+        </div>
       </div>
 
-      <!-- Products Grid (Symmetrical Bento Cards) -->
-      <% if (products && products.length > 0) { %>
-        <div class="bento-grid">
-          <% products.forEach((prod, idx) => { 
-            const prodName = lang === 'en' ? (prod.name_en || prod.name_id) : prod.name_id;
-            const prodDesc = lang === 'en' ? (prod.description_en || prod.description_id) : prod.description_id;
-            const prodImg = prod.image_url || prod.main_image || `/images/products/prod-${(idx % 4) + 1}.webp`;
-            const isEco = (prodName + ' ' + (prodDesc || '')).toLowerCase().includes('oxium') || (prodName + ' ' + (prodDesc || '')).toLowerCase().includes('ramah lingkungan');
-          %>
-            <article class="bento-col-6 reveal">
-              <a href="/products/<%= prod.slug || prod.id %>" class="bento-card <%= isEco ? 'bento-card-eco' : '' %>" aria-label="Lihat rincian <%= prodName %>">
-                <div class="bento-split">
-                  <div class="bento-split-content">
-                    <div>
-                      <div class="bento-badge <%= isEco ? 'bento-badge-green' : 'bento-badge-blue' %>">
-                        <% if (isEco) { %><span class="dot-green"></span><% } %>
-                        <%= prod.category_name_id || (isEco ? 'OXIUM DEGRADABLE' : 'PRODUK INDUSTRI') %>
-                      </div>
-                      <h2 class="bento-card-title"><%= prodName %></h2>
-                      <p class="bento-card-desc">
-                        <%= prodDesc ? (prodDesc.length > 120 ? prodDesc.substring(0, 120) + '...' : prodDesc) : 'Diproduksi dengan bahan baku berkualitas prima dan presisi ekstrusi tinggi.' %>
-                      </p>
-
-                      <div class="bento-specs">
-                        <span class="bento-spec-tag">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                          HDPE / LLDPE
-                        </span>
-                        <span class="bento-spec-tag">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                          Beban Teruji
-                        </span>
-                        <span class="bento-spec-tag">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                          Custom Size
-                        </span>
-                      </div>
-                    </div>
-
-                    <div class="bento-card-footer">
-                      <span class="bento-card-link">
-                        <%= lang === 'en' ? 'Product Specifications' : 'Lihat Detail Produk' %>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                      </span>
-                      <span class="bento-meta-badge <%= isEco ? 'eco' : '' %>">
-                        <%= isEco ? 'SNI 7188.7:2011' : 'B2B Custom' %>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div class="bento-split-media">
-                    <img src="<%= prodImg %>" alt="<%= prodName %>" loading="lazy">
-                    <span class="media-overlay-pill <%= isEco ? 'eco' : '' %>">
-                      <%= isEco ? '100% ECO' : 'MANUFACTURING' %>
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </article>
-          <% }); %>
-        </div>
-
-        <!-- Pagination Controls -->
-        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
-          <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 56px;">
-            <% if (page > 1) { %>
-              <a href="/products?page=<%= page - 1 %><%= selectedCategory ? '&category=' + selectedCategory.slug : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
-                 class="btn btn-secondary btn-sm">
-                &larr; <%= lang === 'en' ? 'Prev' : 'Sebelumnya' %>
-              </a>
-            <% } %>
-
-            <% for (let p = 1; p <= totalPages; p++) { %>
-              <a href="/products?page=<%= p %><%= selectedCategory ? '&category=' + selectedCategory.slug : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
-                 class="pill-filter <%= page === p ? 'active' : '' %>" style="min-width: 40px; justify-content: center;">
-                <%= p %>
-              </a>
-            <% } %>
-
-            <% if (page < totalPages) { %>
-              <a href="/products?page=<%= page + 1 %><%= selectedCategory ? '&category=' + selectedCategory.slug : '' %><%= search ? '&search=' + encodeURIComponent(search) : '' %>"
-                 class="btn btn-secondary btn-sm">
-                <%= lang === 'en' ? 'Next' : 'Berikutnya' %> &rarr;
-              </a>
-            <% } %>
-          </div>
-        <% } %>
-
-      <% } else { %>
-        <!-- Empty State -->
-        <div style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--r-xl); padding: 64px 24px; text-align: center; max-width: 580px; margin: 0 auto; box-shadow: var(--shadow-1);">
-          <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--surface-container); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </div>
-          <h2 style="font-size: 1.35rem; color: var(--navy); margin-bottom: 8px; font-weight: 700;">
-            <%= lang === 'en' ? 'No Products Found' : 'Produk Tidak Ditemukan' %>
-          </h2>
-          <p style="font-size: 14px; color: var(--text-variant); line-height: 1.6; margin-bottom: 24px;">
-            <%= lang === 'en'
-              ? 'Try adjusting your search query or selecting a different product category.'
-              : 'Silakan sesuaikan kata kunci pencarian atau pilih kategori produk lain.' %>
-          </p>
-          <a href="/products" class="btn btn-primary">
-            <%= lang === 'en' ? 'Reset All Filters' : 'Tampilkan Seluruh Produk' %>
-          </a>
-        </div>
-      <% } %>
     </div>
   </section>
 </main>

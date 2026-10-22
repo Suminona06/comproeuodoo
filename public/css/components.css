@@ -2124,6 +2124,515 @@
   justify-content: center;
 }
 
+/* ════ PRODUCT LISTING PAGE (.plp-*) COMPONENT DESIGN SYSTEM ════ */
+/* Referensi Visual: media_1792567769603.png (Minimalist High-Fashion / Industrial Precise) */
+
+.plp-section {
+  background-color: var(--color-surface, #ffffff);
+  padding: 32px 0 80px;
+}
+
+.plp-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.plp-layout {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+/* ── SIDEBAR (LEFT COLUMN: FILTER BY) ── */
+.plp-sidebar {
+  flex: 0 0 180px;
+  width: 180px;
+  position: sticky;
+  top: 96px;
+}
+
+.plp-sidebar-title {
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-main, #0f172a);
+  margin: 0 0 10px 0;
+  padding: 0;
+  border: none;
+}
+
+.plp-sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.plp-sidebar-item {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.plp-sidebar-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0 10px;
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-main, #0f172a);
+  text-decoration: none;
+  transition: color var(--transition-fast, 0.15s ease);
+}
+
+.plp-sidebar-link:hover {
+  color: var(--color-primary, #00755a);
+}
+
+.plp-sidebar-link.active {
+  color: var(--color-primary, #00755a);
+  font-weight: 700;
+}
+
+.plp-chevron {
+  width: 10px;
+  height: 6px;
+  flex-shrink: 0;
+  stroke: #64748b;
+  transition: transform var(--transition-fast, 0.15s ease);
+}
+
+.plp-sidebar-link:hover .plp-chevron {
+  stroke: var(--color-primary, #00755a);
+}
+
+/* ── MAIN CONTENT (RIGHT COLUMN) ── */
+.plp-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Toolbar: Aligned right above the grid, text-only minimal matching reference */
+.plp-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 14px;
+  padding: 0;
+  border: none;
+}
+
+.plp-toolbar-count {
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+}
+
+.plp-toolbar-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-main, #0f172a);
+  cursor: pointer;
+}
+
+/* ── PRODUCT GRID (3 COLUMNS) ── */
+.plp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 32px;
+  width: 100%;
+}
+
+/* ── PRODUCT CARD (EXACT MATCH REFERENCE DESIGN) ── */
+.plp-card {
+  position: relative;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  transition: transform var(--transition-fast, 0.2s ease);
+}
+
+.plp-card:hover {
+  transform: translateY(-2px);
+}
+
+.plp-card-media {
+  display: block;
+  width: 100%;
+  /* Rasio 9:10 (hampir 1:1 sedikit lebih tinggi) persis referensi desktop */
+  aspect-ratio: 9 / 10;
+  background-color: var(--color-surface-container-low, #f8fafc);
+  overflow: hidden;
+  position: relative;
+  text-decoration: none;
+}
+
+.plp-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform var(--transition-slow, 0.35s ease);
+}
+
+.plp-card:hover .plp-card-img {
+  transform: scale(1.03);
+}
+
+/* ── GARIS SETELAH FOTO PRODUK (CRISP INDIVIDUAL CARD DIVIDER) ── */
+.plp-card-line {
+  width: 100%;
+  height: 1px;
+  background-color: #cbd5e1; /* Garis tipis bersih selebar foto masing-masing kartu, tidak menyambung antar kartu */
+  margin-top: 10px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.plp-card-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  background-color: transparent;
+}
+
+.plp-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  min-height: 14px;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Ukuran nama produk kecil, ramping, elegan sesuai referensi */
+.plp-card-title {
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-main, #0f172a);
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Button ramping, kompak, sudut siku 0px dengan warna font hijau sesuai instruksi */
+.plp-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 26px;
+  min-height: 26px;
+  position: relative;
+  padding: 0 8px;
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 8.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: var(--color-primary, #00755a); /* Font button hijau sesuai permintaan user */
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* WCAG AA 44px tap target padding (mobile friendly tanpa memperbesar visual button) */
+.plp-card-btn::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+}
+
+.plp-card-btn:hover {
+  background-color: var(--color-primary, #00755a);
+  color: var(--color-on-primary, #ffffff);
+  border-color: var(--color-primary, #00755a);
+}
+
+.plp-card-btn:focus-visible {
+  outline: 2px solid var(--color-primary-bright, #00906e);
+  outline-offset: 2px;
+}
+
+/* ── SHOW MORE BUTTON (BOTTOM) ── */
+.plp-more-wrap {
+  margin-top: 48px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.plp-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 24px;
+  background-color: var(--color-primary-dark, #00573f);
+  color: var(--color-on-primary, #ffffff);
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.plp-more-btn:hover {
+  background-color: var(--color-primary, #00755a);
+  color: var(--color-on-primary, #ffffff);
+}
+
+.plp-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.plp-pagination-num,
+.plp-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  font-family: var(--font-family-base, 'Plus Jakarta Sans', sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text-main, #0f172a);
+  background-color: #ffffff;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0px;
+  transition: all var(--transition-fast);
+}
+
+.plp-pagination-num.active {
+  background-color: var(--color-primary, #00755a);
+  color: var(--color-on-primary, #ffffff);
+  border-color: var(--color-primary, #00755a);
+  font-weight: 700;
+}
+
+.plp-pagination-num:hover:not(.active),
+.plp-pagination-btn:hover {
+  border-color: var(--color-primary, #00755a);
+  color: var(--color-primary, #00755a);
+}
+
+/* ── RESPONSIVE & MOBILE FRIENDLY ADAPTATIONS ── */
+@media (max-width: 1023px) {
+  .plp-layout {
+    gap: 20px;
+  }
+  .plp-sidebar {
+    flex: 0 0 150px;
+    width: 150px;
+  }
+  .plp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 14px;
+    row-gap: 24px;
+    width: 100%;
+  }
+  .plp-card-line {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .plp-container {
+    padding: 0 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .plp-layout {
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .plp-sidebar {
+    width: 100%;
+    flex: none;
+    position: static;
+  }
+  .plp-sidebar-title {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+  .plp-sidebar-list {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .plp-sidebar-list::-webkit-scrollbar {
+    display: none;
+  }
+  .plp-sidebar-item {
+    border-bottom: none;
+    flex-shrink: 0;
+  }
+  .plp-sidebar-link {
+    padding: 6px 12px;
+    font-size: 9.5px;
+    background: var(--color-surface-container-low, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0px;
+    white-space: nowrap;
+  }
+  .plp-sidebar-link .plp-chevron {
+    display: none;
+  }
+  .plp-sidebar-link.active {
+    background: var(--color-primary, #00755a);
+    color: var(--color-on-primary, #ffffff);
+    border-color: var(--color-primary, #00755a);
+  }
+  .plp-main {
+    width: 100%;
+    min-width: 0;
+  }
+  .plp-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .plp-toolbar-count {
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #64748b;
+    white-space: nowrap;
+  }
+  .plp-toolbar-sort {
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-text-main, #0f172a);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .plp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 12px;
+    row-gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .plp-card {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+  .plp-card-media {
+    width: 100%;
+    /* Rasio 1:1 di mobile sesuai instruksi user: rapi, ngepas 2 kolom, modern profesional */
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .plp-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .plp-card-line {
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 6px;
+  }
+  .plp-card-body {
+    width: 100%;
+    min-width: 0;
+  }
+  .plp-card-header {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 6px;
+  }
+  .plp-card-title {
+    width: 100%;
+    min-width: 0;
+    font-size: 8.5px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .plp-card-btn {
+    width: 100%;
+    height: 26px;
+    font-size: 8px;
+    color: var(--color-primary, #00755a);
+    border: 1px solid #cbd5e1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plp-card,
+  .plp-card-img,
+  .plp-card-btn {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
 /* ═══ WHY CHOOSE US SECTION (.wcu-*) ═══ */
 .sec-why-us {
   padding: clamp(64px, 8vw, 100px) 0;

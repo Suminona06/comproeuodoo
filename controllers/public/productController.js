@@ -5,14 +5,19 @@ import logger from '../../utils/logger.js';
 
 export const productController = {
   /**
-   * Display product catalog with category filter, search, and SSR pagination
+   * Display product catalog with category filter, search, sorting, and SSR/AJAX pagination
    */
   async index(req, res) {
     try {
-      const { category, search, page: rawPage } = req.query;
-      const page = Math.max(1, parseInt(rawPage || '1', 10));
-      const limit = 12;
+      const { category, search, sort: rawSort, page: rawPage, format } = req.query;
+      const page = Math.max(1, parseInt(rawPage || '1', 10) || 1);
+      const limit = 9;
       const offset = (page - 1) * limit;
+
+      const ALLOWED_SORTS = ['newest', 'alpha-asc', 'alpha-desc', 'catalog'];
+      const sort = ALLOWED_SORTS.includes(rawSort) ? rawSort : 'newest';
+
+      const sanitizedSearch = typeof search === 'string' ? search.trim().slice(0, 100) : '';
 
       const categories = await productCategoryModel.findAll({ activeOnly: true });
 
@@ -36,7 +41,8 @@ export const productController = {
       const filterOptions = {
         categoryId,
         status: 'published',
-        search: search ? search.trim() : undefined,
+        search: sanitizedSearch || undefined,
+        sort,
         limit,
         offset
       };
@@ -48,8 +54,55 @@ export const productController = {
       ]);
 
       const totalPages = Math.ceil(totalCount / limit) || 1;
+      const hasMore = page < totalPages;
 
       const lang = res.locals.currentLang || 'id';
+
+      if (res.locals?.seo) {
+        if (page > 1 || sanitizedSearch || (rawSort && rawSort !== 'newest') || (category && !selectedCategory)) {
+          res.locals.seo.robots = 'noindex, follow';
+        }
+      }
+
+      const isFragment = format === 'fragment' || req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest';
+
+      if (isFragment) {
+        res.set('X-Has-More', String(hasMore));
+        res.set('X-Total-Count', String(totalCount));
+        res.set('X-Current-Page', String(page));
+        res.set('X-Total-Pages', String(totalPages));
+
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+          return res.app.render('public/partials/product-card-fragment', {
+            products: products || [],
+            currentLang: lang,
+            page,
+            hasMore,
+            totalProducts: totalCount
+          }, (err, html) => {
+            if (err) {
+              logger.error('Error rendering product card fragment JSON:', err);
+              return res.status(500).json({ error: 'Failed to render fragment' });
+            }
+            return res.json({
+              html,
+              hasMore,
+              page,
+              totalPages,
+              totalProducts: totalCount
+            });
+          });
+        }
+
+        return res.render('public/partials/product-card-fragment', {
+          products: products || [],
+          currentLang: lang,
+          page,
+          hasMore,
+          totalProducts: totalCount
+        });
+      }
+
       const pageTitle = (lang === 'en' ? 'Product Catalog' : 'Katalog Produk') + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
 
       res.render('public/products', {
@@ -58,14 +111,19 @@ export const productController = {
         categories: categories || [],
         selectedCategory,
         products: products || [],
-        search: search ? search.trim() : '',
+        search: sanitizedSearch,
+        sort,
         page,
         totalPages,
         totalProducts: totalCount,
+        hasMore,
         heroBanner
       });
     } catch (err) {
       logger.error('Public productController.index error:', { message: err.message, stack: err.stack });
+      if (req.query.format === 'fragment' || req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest') {
+        return res.status(500).send('');
+      }
       res.status(500).render('public/products', {
         title: 'Katalog Produk | PT. EUODOO',
         path: '/products',
@@ -73,9 +131,11 @@ export const productController = {
         selectedCategory: null,
         products: [],
         search: '',
+        sort: 'newest',
         page: 1,
         totalPages: 1,
-        totalProducts: 0
+        totalProducts: 0,
+        hasMore: false
       });
     }
   },

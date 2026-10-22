@@ -68,8 +68,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Seluruh elemen visual katalog menggunakan prefix unik `.plp-*` pada `components.css` untuk mencegah tabrakan dengan selector `.prod-*` beranda:
   - Layout: `.plp-section`, `.plp-container`, `.plp-layout`, `.plp-sidebar`, `.plp-main`, `.plp-grid`.
   - Komponen: `.plp-sidebar-card`, `.plp-filter-title`, `.plp-cat-list`, `.plp-cat-item`, `.plp-cat-link`, `.plp-cat-count`, `.plp-toolbar`, `.plp-search-wrap`, `.plp-search-input`, `.plp-sort-wrap`, `.plp-sort-select`, `.plp-card`, `.plp-card-media`, `.plp-card-img`, `.plp-card-body`, `.plp-card-title`, `.plp-card-btn`, `.plp-more-wrap`, `.plp-more-btn`.
-- Rasio potret kartu dikunci pada `aspect-ratio: 3 / 4` dengan `object-fit: cover` untuk menjamin CLS = 0.
-- Tombol outline selebar kartu: border `var(--color-primary)`, teks `var(--color-text-main)`, hover latar terisi `var(--color-primary)` teks putih `var(--color-on-primary)` (kontras AA >= 4.5:1).
+- Rasio potret kartu dikunci pada `aspect-ratio: 9 / 10` di desktop dan `1 / 1` di mobile (identik referensi visual) dengan `object-fit: cover` (CLS = 0) serta garis pembatas horizontal individual presisi selebar foto kartu (`.plp-card-line`, `width: 100%`) tanpa menyambung antar kolom.
+- Tombol outline selebar kartu: border tipis netral dengan warna font hijau brand `var(--color-primary)` (hover terisi `var(--color-primary)` teks putih `var(--color-on-primary)`), tinggi ultra-kompak 26px (dengan kompensasi hit-target 44px WCAG AA), tipografi nama produk ramping 9px (mobile: 8.5px).
 
 ### D. Navigasi Kategori Dinamis & Deep Link Homepage [PENDING T-194]
 - `productCategoryModel.findAll({ activeOnly: true })` mengambil kategori aktif dinamis beserta jumlah produk aktif.

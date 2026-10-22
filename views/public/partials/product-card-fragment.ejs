@@ -1,0 +1,29 @@
+<% 
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'id';
+  const productList = typeof products !== 'undefined' && Array.isArray(products) ? products : [];
+%>
+
+<% if (productList.length > 0) { %>
+  <% productList.forEach((prod) => { 
+    const prodName = lang === 'en' ? (prod.name_en || prod.name_id) : prod.name_id;
+    const prodSlug = prod.slug || prod.id;
+    const prodImg = prod.main_image || prod.image_url || '/images/segment-retail.jpg';
+    const detailUrl = '/products/' + encodeURIComponent(prodSlug);
+    const btnLabel = lang === 'en' ? 'Product Details' : 'Detail Produk';
+  %>
+    <article class="plp-card" data-product-id="<%= prod.id %>">
+      <a href="<%= detailUrl %>" class="plp-card-media" aria-label="<%= prodName %>">
+        <img src="<%= prodImg %>" alt="<%= prodName %>" class="plp-card-img" loading="lazy" />
+      </a>
+      <div class="plp-card-line" aria-hidden="true"></div>
+      <div class="plp-card-body">
+        <div class="plp-card-header">
+          <h3 class="plp-card-title"><%= prodName %></h3>
+        </div>
+        <a href="<%= detailUrl %>" class="plp-card-btn">
+          <%= btnLabel %>
+        </a>
+      </div>
+    </article>
+  <% }); %>
+<% } %>

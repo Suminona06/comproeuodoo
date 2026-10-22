@@ -1,7 +1,8 @@
 # TASKS: Website Company Profile PT Euodoo
 
 ## Ringkasan Status Task
-- **Task Aktif Terbuka:** 7 Task (T-192 s/d T-198) &mdash; Redesain Halaman Listing Produk (PLP)
+
+- **Task Aktif Terbuka:** 5 Task (T-194 s/d T-198) &mdash; 2 Selesai (T-192, T-193)
 - **Total Task Selesai:** 191 Task (T-01 s/d T-191) &mdash; Selesai 100%
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-192**.
@@ -11,9 +12,10 @@
 ## Task Aktif / Terbuka (Open Tasks)
 
 ### T-192: Kontrak Server, Validasi Query, Sanitasi & Endpoint Fragmen Parsial
+
 - **Modul:** Products Catalog
 - **Prioritas:** High
-- **Status:** Todo
+- **Status:** Done
 - **Deskripsi:** Menambahkan parameter query URL (`category`, `search`, `sort`, `page`, `format`), validasi whitelist ketat, sanitasi string pencarian, klausul sorting dinamis di `productModel.js`, serta logika render respons parsial (`format=fragment`) di `productController.js` untuk melayani request AJAX pemuatan produk bertahap.
 - **Acceptance Criteria:**
   - Query parameter divalidasi ketat (slug kategori aktif, panjang search max 100 karakter, sort whitelist, page integer positif).
@@ -27,15 +29,20 @@
 - **Verifikasi:** Uji kueri database dengan variasi parameter `sort` dan `search`, serta uji HTTP GET `/products?format=fragment&page=2`.
 
 ### T-193: Desain Sistem Token, Prefix Isolasi `.plp-*` & Komponen Kartu Produk Potret
+
 - **Modul:** Products Catalog
 - **Prioritas:** High
-- **Status:** Todo
-- **Deskripsi:** Merancang struktur markup dan style kartu produk potret minimalis identik referensi dengan rasio tetap 3:4 menggunakan `object-fit: cover` (CLS = 0), garis tipis di bawah gambar, nama produk kapital kecil rata kiri, sisi kanan nama dikosongkan bersih, tombol outline selebar kartu "Detail Produk", dan pembersihan total elemen harga menggunakan namespace CSS `.plp-*`.
+- **Status:** Done
+- **Deskripsi:** Merancang struktur markup dan style kartu produk potret minimalis identik referensi dengan rasio potret 9:10 (desktop) dan 1:1 (mobile 2 kolom) menggunakan `object-fit: cover` (CLS = 0), garis pemisah horizontal individual presisi selebar foto kartu (.plp-card-line, width 100%), nama produk kapital ramping (font 9px/8.5px, letter-spacing 0.06em), tombol ultra-kompak outline "Detail Produk" (tinggi 26px, font 8.5px/8px, warna teks hijau brand `var(--color-primary)`, hit-target 44px WCAG AA), serta adaptasi mobile rapi, clean, profesional tanpa overflow/clipping menggunakan namespace CSS `.plp-*`.
 - **Acceptance Criteria:**
-  - Menggunakan token resmi (`var(--color-border)`, `var(--color-text-main)`, `var(--color-primary)`, `var(--color-surface)`), bebas nilai hex.
-  - Rasio aspek gambar vertikal (3:4) konsisten tanpa layout shift.
-  - Tombol selebar kartu dengan state outline border hijau dan hover terisi hijau teks putih memenuhi kontras AA (>= 4.5:1).
+  - Menggunakan token resmi (`var(--color-border)`, `var(--color-text-main)`, `var(--color-primary)`, `var(--color-surface)`).
+  - Rasio aspek gambar 9:10 di desktop dan 1:1 di mobile konsisten tanpa layout shift atau konten terpotong.
+  - Garis sehabis foto produk (`.plp-card-line`) individual presisi selebar foto (width 100%) dan tidak menyambung antar kolom kartu.
+  - Warna font tombol "Detail Produk" hijau brand (`var(--color-primary)`) dengan tinggi 26px.
+  - Tampilan mobile 2 kolom rapi dan pas tanpa horizontal scroll leak atau teks terpotong di tepi kanan.
+
   - Tidak ada konflik atau perubahan terhadap class `.prod-*` di beranda.
+
 - **File yang Diubah:**
   - `public/css/components.css`
   - `views/public/products.ejs`
@@ -44,6 +51,7 @@
 - **Verifikasi:** Uji render kartu pada peramban, ukur kontras warna WCAG AA, dan verifikasi tampilan tanpa layout shift.
 
 ### T-194: Sidebar Navigasi Filter Kategori Dinamis & Deep Link URL
+
 - **Modul:** Products Catalog
 - **Prioritas:** High
 - **Status:** Todo
@@ -52,7 +60,7 @@
   - Seluruh kategori aktif muncul otomatis; kategori baru dari CMS langsung tampil tanpa ubah kode.
   - Deep link dari 4 panel beranda (`/products?category=<slug>`) berfungsi sempurna tanpa mengubah kode beranda.
   - Terdapat opsi "Semua Produk" untuk mereset filter kategori.
-  - Sinkronisasi URL berfungsi dan dapat dibagikan (*shareable URL*).
+  - Sinkronisasi URL berfungsi dan dapat dibagikan (_shareable URL_).
 - **File yang Diubah:**
   - `views/public/products.ejs`
   - `models/productCategoryModel.js`
@@ -61,6 +69,7 @@
 - **Verifikasi:** Klik tiap kategori, periksa URL dan hasil filter, navigasikan tombol back browser, dan klik link dari beranda.
 
 ### T-195: Toolbar Atas: Pencarian Debounced, Kontrol Pengurutan & Live Region Aksesibel
+
 - **Modul:** Products Catalog
 - **Prioritas:** High
 - **Status:** Todo
@@ -79,6 +88,7 @@
 - **Verifikasi:** Uji pengetikan pencarian, ubah opsi urutan, periksa DOM element `aria-live`, dan verifikasi tampilan hasil kosong.
 
 ### T-196: Tombol "Muat Lebih Banyak" (Progressive Enhancement AJAX & Transisi Halus)
+
 - **Modul:** Products Catalog
 - **Prioritas:** High
 - **Status:** Todo
@@ -98,6 +108,7 @@
 - **Verifikasi:** Uji muat lebih banyak hingga seluruh data habis, periksa transisi visual, perpindahan fokus keyboard, dan fallback tanpa JS.
 
 ### T-197: Tata Letak Responsif Multi-Breakpoint & Adaptasi Mobile
+
 - **Modul:** Products Catalog
 - **Prioritas:** High
 - **Status:** Todo
@@ -115,6 +126,7 @@
 - **Verifikasi:** Uji layout pada resolusi 320px, 375px, 425px, 768px, 1024px, dan 1440px menggunakan devtools responsif.
 
 ### T-198: Audit Aksesibilitas WCAG AA, Kepatuhan CSP & Uji Regresi Menyeluruh
+
 - **Modul:** Products Catalog
 - **Prioritas:** High
 - **Status:** Todo

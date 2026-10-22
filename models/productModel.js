@@ -2,10 +2,10 @@ import { query, execute } from '../config/database.js';
 
 export const productModel = {
   /**
-   * Find products with v2 filters (category, status, featured, search)
+   * Find products with v2 filters (category, status, featured, search, sort)
    */
   async findAll(options = {}) {
-    const { categoryId, status, isFeatured, limit, offset, search } = options;
+    const { categoryId, status, isFeatured, limit, offset, search, sort } = options;
     const conditions = [];
     const params = [];
 
@@ -18,9 +18,20 @@ export const productModel = {
       params.push(status);
     }
     if (search) {
-      conditions.push('(p.name_id LIKE ? OR p.name_en LIKE ? OR p.slug LIKE ?)');
+      conditions.push('(p.name_id LIKE ? OR p.name_en LIKE ? OR p.slug LIKE ? OR p.description_id LIKE ? OR p.description_en LIKE ?)');
       const term = `%${search}%`;
-      params.push(term, term, term);
+      params.push(term, term, term, term, term);
+    }
+
+    let orderByClause = 'ORDER BY p.sort_order ASC, p.id DESC';
+    if (sort === 'newest') {
+      orderByClause = 'ORDER BY p.id DESC';
+    } else if (sort === 'alpha-asc') {
+      orderByClause = 'ORDER BY p.name_id ASC';
+    } else if (sort === 'alpha-desc') {
+      orderByClause = 'ORDER BY p.name_id DESC';
+    } else if (sort === 'catalog') {
+      orderByClause = 'ORDER BY p.sort_order ASC, p.id DESC';
     }
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -32,7 +43,7 @@ export const productModel = {
       FROM products p
       LEFT JOIN product_categories c ON p.category_id = c.id
       ${whereClause}
-      ORDER BY p.sort_order ASC, p.id DESC
+      ${orderByClause}
     `;
 
     if (limit) {
@@ -65,9 +76,9 @@ export const productModel = {
       params.push(status);
     }
     if (search) {
-      conditions.push('(name_id LIKE ? OR name_en LIKE ? OR slug LIKE ?)');
+      conditions.push('(name_id LIKE ? OR name_en LIKE ? OR slug LIKE ? OR description_id LIKE ? OR description_en LIKE ?)');
       const term = `%${search}%`;
-      params.push(term, term, term);
+      params.push(term, term, term, term, term);
     }
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
