@@ -131,7 +131,7 @@ async function runTask200Tests() {
   assert.ok(renderedData.product, 'Must pass product object');
   assert.ok(renderedData.whatsappQuoteUrl, 'Must pass whatsappQuoteUrl');
   assert.ok(renderedData.whatsappQuoteUrl.includes('6281299887766') || renderedData.whatsappQuoteUrl.includes('81299887766'), 'WA number must be normalized digits');
-  assert.ok(renderedData.whatsappQuoteUrl.includes(encodeURIComponent('Halo PT Euodoo, saya tertarik dengan produk')), 'WA text must match spec');
+  assert.ok(renderedData.whatsappQuoteUrl.includes(encodeURIComponent('Halo, saya tertarik dengan produk')), 'WA text must match spec');
   console.log('  4a. public productController.detail verified (WA link: ' + renderedData.whatsappQuoteUrl.slice(0, 50) + '...): PASSED');
 
   // Test public controller 404 for inactive / non-existent product

@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 3 Task (T-201 s/d T-203)
-- **Total Task Selesai:** 200 Task (T-01 s/d T-200)
+- **Task Aktif Terbuka:** 2 Task (T-202 s/d T-203)
+- **Total Task Selesai:** 201 Task (T-01 s/d T-201)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-199**.
 
@@ -45,7 +45,7 @@
 
 - **Modul:** Products Detail
 - **Prioritas:** High
-- **Status:** Open
+- **Status:** Done
 - **Deskripsi:** Merombak total `views/public/product-detail.ejs`, menambahkan style dengan namespace `.pd-*` pada `public/css/components.css`, dan membuat skrip interaksi `public/js/product-detail.js` identik dengan prototipe HTML: grid 5:6, galeri foto sticky + thumbnail strip dengan transisi opacity 200ms, breadcrumb, judul responsif, deskripsi singkat, pil varian ukuran, CTA WhatsApp & RFQ form, tab bar navigasi Deskripsi & Tabel Ukuran (mobile card view via `data-l`), serta sticky CTA bar mobile dengan retensi penutupan `sessionStorage`.
 - **Acceptance Criteria:**
   - Tata letak identik dengan referensi prototype HTML menggunakan token resmi `tokens.css` (tanpa warna biru, tanpa nilai hex hardcoded).
