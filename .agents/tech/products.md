@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/public/productController.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-23 | Kode: controllers/public/productController.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
 
 # Tech Spec: Modul Produk & Katalog Manufaktur (Products Catalog)
 
@@ -11,8 +11,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/products` | `productController.index` | `seoMiddleware`, `i18nMiddleware` | Render katalog SSR atau fragmen AJAX `[PENDING T-192]` |
-| `GET` | `/products/:slug` | `productController.detail` | `seoMiddleware`, `i18nMiddleware` | Render detail spesifikasi produk |
+| `GET` | `/products` | `productController.index` | `seoMiddleware`, `i18nMiddleware` | Render katalog SSR atau fragmen AJAX `[COMPLETED T-192]` |
+| `GET` | `/products/:slug` | `productController.detail` | `seoMiddleware`, `i18nMiddleware` | Render detail spesifikasi produk `[PENDING T-201]` (Rincian lengkap: `tech/products-detail.md`) |
 | `GET` | `/admin/products` | `admin/productController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS daftar produk |
 | `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV katalog produk |
 | `POST` | `/admin/products` | `admin/productController.store` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Tambah produk baru |
@@ -38,15 +38,15 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 | `is_active` | `TINYINT(1)` | NO | `1` | Flag status penayangan |
 
 ### B. Tabel `products` & `product_variants`
-*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Sistem bebas kolom harga (zero-price).
-- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `description_id`, `description_en`, `material_specs` (JSON), `technical_specs` (JSON), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
+*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Sistem bebas kolom harga (zero-price). Kolom baru detail produk ditambahkan oleh migrasi `015_add_product_detail_fields.sql` `[PENDING T-199]`.
+- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `short_description_id` `[PENDING T-199]`, `short_description_en` `[PENDING T-199]`, `description_id`, `description_en`, `material_specs` (JSON), `technical_specs` (JSON), `variants` (JSON) `[PENDING T-199]`, `size_table` (JSON) `[PENDING T-199]`, `main_image`, `gallery_images` (JSON) `[PENDING T-199]`, `status`, `is_active`, `sort_order`, field SEO.
 - `product_variants`: `id`, `product_id` (FK), `name_id`, `name_en`, `sku`, `specs` (JSON dimensi, ketebalan, beban), `sort_order`.
 
 ---
 
 ## 4. Komponen Antarmuka, Server Contract & Validasi
 
-### A. Kontrak Parameter URL & Validasi Server (`productController.js`) [PENDING T-192]
+### A. Kontrak Parameter URL & Validasi Server (`productController.js`) [COMPLETED T-192]
 - Parameter Query:
   - `category` (string, opsional): Divalidasi terhadap slug pada `product_categories WHERE is_active = 1`.
   - `search` (string, opsional): Sanitasi input, dipangkas (trim), panjang maksimal 100 karakter.
@@ -56,7 +56,7 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Respons Parsial (Fragment Mode):
   - Jika `req.query.format === 'fragment'` atau request memiliki header `X-Requested-With: XMLHttpRequest`, controller merender partial EJS `views/public/partials/product-card-fragment.ejs`. Seluruh output variabel menggunakan escape EJS `<%= %>`.
 
-### B. Kueri Data Dinamis (`productModel.js`) [PENDING T-192]
+### B. Kueri Data Dinamis (`productModel.js`) [COMPLETED T-192]
 - Sorting dinamis berbasis whitelist pada `findAll()`:
   - `newest`: `ORDER BY p.id DESC`
   - `alpha-asc`: `ORDER BY p.name_id ASC`
@@ -64,7 +64,7 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
   - `catalog`: `ORDER BY p.sort_order ASC, p.id DESC`
 - Pencarian multi-kolom terparameter: `(p.name_id LIKE ? OR p.name_en LIKE ? OR p.slug LIKE ? OR p.description_id LIKE ? OR p.description_en LIKE ?)` dengan binding `%search%`.
 
-### C. Isolasi Namespace CSS `.plp-*` & Desain Sistem [PENDING T-193]
+### C. Isolasi Namespace CSS `.plp-*` & Desain Sistem [COMPLETED T-193]
 - Seluruh elemen visual katalog menggunakan prefix unik `.plp-*` pada `components.css` untuk mencegah tabrakan dengan selector `.prod-*` beranda:
   - Layout: `.plp-section`, `.plp-container`, `.plp-layout`, `.plp-sidebar`, `.plp-main`, `.plp-grid`.
   - Komponen: `.plp-sidebar-card`, `.plp-filter-title`, `.plp-cat-list`, `.plp-cat-item`, `.plp-cat-link`, `.plp-cat-count`, `.plp-toolbar`, `.plp-search-wrap`, `.plp-search-input`, `.plp-sort-wrap`, `.plp-sort-select`, `.plp-card`, `.plp-card-media`, `.plp-card-img`, `.plp-card-body`, `.plp-card-title`, `.plp-card-btn`, `.plp-more-wrap`, `.plp-more-btn`.

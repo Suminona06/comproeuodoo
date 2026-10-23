@@ -56,3 +56,23 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 4. **Proteksi Brute-Force:**
    - Setelah 5 kali gagal memasukkan kata sandi, kolom `locked_until` diisi `NOW() + INTERVAL 15 MINUTE`.
    - Selama masa terkunci, sistem menolak seluruh upaya login untuk akun tersebut dan mengembalikan pesan error countdown.
+
+---
+
+## 5. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery [PENDING T-202]
+
+1. **Komponen Form Produk (`views/admin/products/create.ejs` & `edit.ejs`):**
+   - **Thumbnail Utama:** Input hidden `image_url` terhubung ke single-select Universal Media Picker (dipertahankan).
+   - **Galeri Foto Produk (Multi-Picker):** Input hidden `gallery_images` menyimpan JSON array string URL. Tombol pemilih memanggil modal via `openMediaPicker({ multiple: true, type: 'image', onSelect: (items) => ... })`.
+   - **Pengurutan (Reorder) & Hapus Galeri:** Setiap kartu thumbnail memiliki tombol panah geser (`btn-move-left` / `btn-move-right`) dan tombol silang (×) untuk menghapus. Setiap aksi memicu re-index array URL ke input hidden.
+   - **Short Description ID & EN:** Textarea dengan atribut `maxlength="200"` dan elemen counter `.char-counter` yang ter-update via event `input`.
+   - **Deskripsi Lengkap TinyMCE:** Memuat script `/tinymce/tinymce.min.js` dan inisialisasi pada `#description_id` dan `#description_en` konsisten dengan modul artikel/posts.
+   - **Varian Ukuran Dinamis:** Kontainer `#variantsContainer`, tombol `#btnAddVariant` menyisipkan baris `<input name="variant_labels[]">`, tombol `.btn-remove-variant` menghapus baris. Serialisasi ke JSON array string di controller.
+   - **Tabel Ukuran Dinamis:** Kontainer `#sizeTableContainer`, tombol `#btnAddSizeRow` menyisipkan baris dengan 6 input: `size_code[]`, `size_width[]`, `size_length[]`, `size_thickness[]`, `size_capacity[]`, `size_material[]`. Serialisasi ke JSON array of objects di controller.
+   - **Layout Responsif Modal & Form:** Header form sticky, area form scrollable, action buttons (Batal/Simpan) selalu terlihat di viewport pada zoom 100%, 125%, 150%.
+
+2. **Validasi Server-Side Controller (`controllers/admin/productController.js`) [PENDING T-200]:**
+   - Sanitasi input dan batas maksimal 500 karakter untuk `short_description_id` dan `short_description_en`.
+   - Validasi struktur JSON array of strings untuk `variants`.
+   - Validasi whitelist keys: `['product_code', 'width', 'length', 'thickness', 'capacity', 'material']` untuk setiap objek pada `size_table`.
+   - Validasi format URL untuk `gallery_images`.

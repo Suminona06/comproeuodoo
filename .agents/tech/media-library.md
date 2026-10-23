@@ -61,3 +61,19 @@ Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke fo
 Fungsi `mediaController.apiCheckUsage` menjalankan query agregasi ke 7 tabel database:
 `banners (file_url)`, `page_hero_banners (image_url)`, `settings (site_logo_*, site_favicon)`, `products (main_image)`, `brands (logo_url)`, `posts (cover_image)`, dan `capabilities (image_url)`.
 Jika ditemukan referensi aktif, sistem mengembalikan daftar lokasi keterkaitan dan mencegah penghapusan tanpa konfirmasi eksplisit dari admin.
+
+---
+
+## 6. Integrasi Multi-Select Universal Media Picker [PENDING T-202]
+1. **Konfigurasi Klien (`public/js/media-picker.js`):**
+   - Fungsi `openModal(options)` menerima opsi `multiple: true` (default `false`).
+   - Variabel state seleksi:
+     - `selectedMedia` (mode single): menyimpan objek item tunggal.
+     - `selectedMediaList` (mode multiple): array menyimpan objek item terpilih `[{ id, file_url, filename, thumbnail_url }, ...]`.
+   - Interaksi Kartu Media `.media-picker-card`:
+     - Pada klik mode multiple: toggle keberadaan item di dalam `selectedMediaList` dan toggle kelas `.selected`.
+     - Memperbarui counter footer: `pickerSelectedInfo.innerHTML = "<span>N media dipilih</span>"`.
+     - Tombol konfirmasi `#btnConfirmSelectMedia`: aktif jika `selectedMediaList.length > 0` dengan label "Gunakan N Media Ini".
+2. **Callback Kembalian:**
+   - Eksekusi `currentTargetCallback(selectedMediaList)` mengembalikan array objek media lengkap ke form pemanggil (misal form galeri produk admin).
+   - Mode single-select tetap mengembalikan single URL string ke input target (backward compatible).

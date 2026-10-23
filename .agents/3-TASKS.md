@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 0 Task &mdash; Seluruh Task (T-192 s/d T-198) Selesai 100%
-- **Total Task Selesai:** 198 Task (T-01 s/d T-198) &mdash; Selesai 100%
+- **Task Aktif Terbuka:** 4 Task (T-200 s/d T-203)
+- **Total Task Selesai:** 199 Task (T-01 s/d T-199)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-199**.
 
@@ -11,133 +11,89 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### T-192: Kontrak Server, Validasi Query, Sanitasi & Endpoint Fragmen Parsial
+### T-199: Migrasi Database Skema Kolom Baru Produk
 
-- **Modul:** Products Catalog
+- **Modul:** Products Detail / Database
 - **Prioritas:** High
 - **Status:** Done
-- **Deskripsi:** Menambahkan parameter query URL (`category`, `search`, `sort`, `page`, `format`), validasi whitelist ketat, sanitasi string pencarian, klausul sorting dinamis di `productModel.js`, serta logika render respons parsial (`format=fragment`) di `productController.js` untuk melayani request AJAX pemuatan produk bertahap.
+- **Deskripsi:** Membuat berkas migrasi SQL `database/migrations/015_add_product_detail_fields.sql` untuk menambahkan kolom nullable pada tabel `products`: `short_description_id` (VARCHAR 500), `short_description_en` (VARCHAR 500), `variants` (JSON), `size_table` (JSON), serta memastikan kesiapan kolom `gallery_images` (JSON).
 - **Acceptance Criteria:**
-  - Query parameter divalidasi ketat (slug kategori aktif, panjang search max 100 karakter, sort whitelist, page integer positif).
-  - SQL injection dicegah menggunakan parameter binding database.
-  - Request dengan `format=fragment` atau header AJAX mengembalikan fragmen HTML kartu ter-escape via `views/public/partials/product-card-fragment.ejs`.
-  - Tag meta `noindex, follow` aktif otomatis untuk halaman terfilter atau berhalaman `page > 1`.
+  - Berkas migrasi `015_add_product_detail_fields.sql` berhasil dieksekusi tanpa error.
+  - Kolom baru bertipe NULLABLE sehingga aman bagi seluruh data produk eksisting.
+  - Data JSON default berupa `NULL` atau array kosong `[]`.
+- **File yang Diubah / Dibuat:**
+  - `database/migrations/015_add_product_detail_fields.sql` (baru)
+- **Verifikasi:** Eksekusi script migrasi dan periksa ketersediaan kolom via `DESCRIBE products;`.
+
+### T-200: Backend Model, Controller & Validasi Server-Side
+
+- **Modul:** Products Detail & Admin CMS
+- **Prioritas:** High
+- **Status:** Open
+- **Deskripsi:** Memperbarui `models/productModel.js`, `controllers/public/productController.js`, dan `controllers/admin/productController.js` untuk mendukung query, safe JSON parse, dan validasi server-side whitelist pada seluruh kolom baru.
+- **Acceptance Criteria:**
+  - `productModel.findBySlug` dan `productModel.findById` mengembalikan kolom baru dengan safe JSON parsing (fallback `[]`).
+  - `controllers/public/productController.detail` merender data baru ke view EJS tanpa error 500 saat kolom bernilai null.
+  - `controllers/admin/productController.store` dan `update` memvalidasi ketat: panjang short description maksimal 500 karakter, variants berupa array of strings, size_table berupa array of objects dengan whitelist keys (`product_code`, `width`, `length`, `thickness`, `capacity`, `material`), dan gallery_images berupa array URL valid.
 - **File yang Diubah:**
-  - `controllers/public/productController.js`
   - `models/productModel.js`
-  - `views/public/partials/product-card-fragment.ejs` (baru)
-- **Verifikasi:** Uji kueri database dengan variasi parameter `sort` dan `search`, serta uji HTTP GET `/products?format=fragment&page=2`.
+  - `controllers/public/productController.js`
+  - `controllers/admin/productController.js`
+- **Verifikasi:** Uji request POST simpan produk dengan berbagai payload data baru dan uji akses GET `/products/:slug` via curl atau browser.
 
-### T-193: Desain Sistem Token, Prefix Isolasi `.plp-*` & Komponen Kartu Produk Potret
+### T-201: Frontend Publik Halaman Detail Produk Baru
 
-- **Modul:** Products Catalog
+- **Modul:** Products Detail
 - **Prioritas:** High
-- **Status:** Done
-- **Deskripsi:** Merancang struktur markup dan style kartu produk potret minimalis identik referensi dengan rasio potret 9:10 (desktop) dan 1:1 (mobile 2 kolom) menggunakan `object-fit: cover` (CLS = 0), garis pemisah horizontal individual presisi selebar foto kartu (.plp-card-line, width 100%), nama produk kapital ramping (font 9px/8.5px, letter-spacing 0.06em), tombol ultra-kompak outline "Detail Produk" (tinggi 26px, font 8.5px/8px, warna teks hijau brand `var(--color-primary)`, hit-target 44px WCAG AA), serta adaptasi mobile rapi, clean, profesional tanpa overflow/clipping menggunakan namespace CSS `.plp-*`.
+- **Status:** Open
+- **Deskripsi:** Merombak total `views/public/product-detail.ejs`, menambahkan style dengan namespace `.pd-*` pada `public/css/components.css`, dan membuat skrip interaksi `public/js/product-detail.js` identik dengan prototipe HTML: grid 5:6, galeri foto sticky + thumbnail strip dengan transisi opacity 200ms, breadcrumb, judul responsif, deskripsi singkat, pil varian ukuran, CTA WhatsApp & RFQ form, tab bar navigasi Deskripsi & Tabel Ukuran (mobile card view via `data-l`), serta sticky CTA bar mobile dengan retensi penutupan `sessionStorage`.
 - **Acceptance Criteria:**
-  - Menggunakan token resmi (`var(--color-border)`, `var(--color-text-main)`, `var(--color-primary)`, `var(--color-surface)`).
-  - Rasio aspek gambar 9:10 di desktop dan 1:1 di mobile konsisten tanpa layout shift atau konten terpotong.
-  - Garis sehabis foto produk (`.plp-card-line`) individual presisi selebar foto (width 100%) dan tidak menyambung antar kolom kartu.
-  - Warna font tombol "Detail Produk" hijau brand (`var(--color-primary)`) dengan tinggi 26px.
-  - Tampilan mobile 2 kolom rapi dan pas tanpa horizontal scroll leak atau teks terpotong di tepi kanan.
-
-  - Tidak ada konflik atau perubahan terhadap class `.prod-*` di beranda.
-
-- **File yang Diubah:**
+  - Tata letak identik dengan referensi prototype HTML menggunakan token resmi `tokens.css` (tanpa warna biru, tanpa nilai hex hardcoded).
+  - Galeri foto sticky di desktop dan thumbnail strip interaktif berfungsi mulus tanpa layout shift.
+  - Pil varian ukuran dapat dipilih dengan status `aria-pressed` yang benar; tersembunyi jika data kosong.
+  - Tab bar berpindah mulus antara Deskripsi dan Tabel Ukuran; tabel di mobile (<= 600px) bertransformasi rapi menjadi card layout dengan label `data-l`.
+  - Bilah sticky CTA mobile tampil di layar <= 760px dan tombol silang (×) menyembunyikannya selama sesi berjalan.
+  - 100% bebas dari inline style baru dan inline event handler (`onclick`), patuh CSP Helmet.
+- **File yang Diubah / Dibuat:**
+  - `views/public/product-detail.ejs`
   - `public/css/components.css`
-  - `views/public/products.ejs`
-  - `views/public/partials/product-card-fragment.ejs`
-- **Skill:** `impeccable` ($polish)
-- **Verifikasi:** Uji render kartu pada peramban, ukur kontras warna WCAG AA, dan verifikasi tampilan tanpa layout shift.
+  - `public/js/product-detail.js` (baru)
+- **Skill:** `impeccable` ($polish, $adapt, $animate)
+- **Verifikasi:** Buka halaman detail produk di browser pada resolusi 320px, 480px, 768px, 1024px, dan 1440px; verifikasi klik thumbnail, klik varian, tab switching, dan tombol close sticky bar.
 
-### T-194: Sidebar Navigasi Filter Kategori Dinamis & Deep Link URL
+### T-202: Admin CMS Form Produk & Multi-Select Media Picker
 
-- **Modul:** Products Catalog
+- **Modul:** Admin CMS & Media Library
 - **Prioritas:** High
-- **Status:** Done
-- **Deskripsi:** Membangun kolom kiri ("Filter By" > Kategori) yang merender seluruh kategori produk aktif secara dinamis dari database, mendukung status aktif visual, opsi "Semua Produk" dengan badge jumlah produk, dan tersinkronisasi dua arah dengan parameter URL (`?category=<slug>`) serta tombol navigasi back/forward peramban.
+- **Status:** Open
+- **Deskripsi:** Memperbarui Universal Media Picker untuk mendukung mode multi-select, serta memperbarui formulir tambah dan edit produk di admin (`views/admin/products/create.ejs` dan `edit.ejs`): galeri foto multi-picker dengan tombol pengatur urutan (panah) dan hapus, textarea deskripsi singkat dengan counter 200 karakter, editor TinyMCE untuk deskripsi lengkap, input varian ukuran dinamis, dan tabel ukuran dinamis 6 kolom.
 - **Acceptance Criteria:**
-  - Seluruh kategori aktif muncul otomatis; kategori baru dari CMS langsung tampil tanpa ubah kode.
-  - Deep link dari 4 panel beranda (`/products?category=<slug>`) berfungsi sempurna tanpa mengubah kode beranda.
-  - Terdapat opsi "Semua Produk" untuk mereset filter kategori.
-  - Sinkronisasi URL berfungsi dan dapat dibagikan (_shareable URL_).
-- **File yang Diubah:**
-  - `views/public/products.ejs`
-  - `models/productCategoryModel.js`
-  - `public/js/products.js` (baru)
-- **Skill:** `impeccable` ($polish)
-- **Verifikasi:** Klik tiap kategori, periksa URL dan hasil filter, navigasikan tombol back browser, dan klik link dari beranda.
+  - Universal Media Picker mendukung opsi `multiple: true` untuk memilih beberapa gambar sekaligus tanpa merusak mode single-select eksisting.
+  - Admin dapat menambah, mengurutkan (geser panah), dan menghapus gambar galeri produk.
+  - Counter karakter pada deskripsi singkat menghitung sisa karakter secara akurat real-time.
+  - Editor TinyMCE terintegrasi untuk input deskripsi lengkap dwibahasa.
+  - Input varian dan tabel ukuran mendukung penambahan dan penghapusan baris dinamis secara instan.
+  - Modal dan layout form tetap rapi (header sticky, footer aksi selalu terlihat) pada zoom 100%, 125%, 150%.
+- **File yang Diubah / Dibuat:**
+  - `views/partials/media-picker-modal.ejs`
+  - `public/js/media-picker.js`
+  - `views/admin/products/create.ejs`
+  - `views/admin/products/edit.ejs`
+- **Skill:** `antislop-code`, `impeccable` ($polish)
+- **Verifikasi:** Buat produk baru melalui CMS dengan mengisi seluruh field baru, periksa penyimpanan di database, lalu buka form edit untuk memverifikasi data ter-populate kembali dengan benar.
 
-### T-195: Toolbar Atas: Pencarian Debounced, Kontrol Pengurutan & Live Region Aksesibel
+### T-203: QA, Kepatuhan CSP, Audit Aksesibilitas WCAG AA & Uji Regresi
 
-- **Modul:** Products Catalog
+- **Modul:** Cross-Module QA
 - **Prioritas:** High
-- **Status:** Done
-- **Deskripsi:** Mengimplementasikan toolbar atas dengan kolom pencarian di sebelah kanan (menggantikan teks "Showing N products") dan dropdown pengurutan ("Urutkan"). Mengatur mekanisme pencarian debounced 350ms, pengumuman status hasil ke screen reader (`.sr-only`, `aria-live="polite"`), serta tampilan empty state dwibahasa.
+- **Status:** Open
+- **Deskripsi:** Menjalankan pengujian menyeluruh terhadap halaman publik detail produk dan form admin: pengujian responsif (320px hingga 1440px), pengujian dwibahasa (ID dan EN), audit kontras warna WCAG AA, navigasi keyboard (Tab, Enter, Space, Escape), verifikasi zero console error, validasi kepatuhan CSP Helmet, serta pengujian regresi untuk memastikan homepage, listing produk (`/products`), dan modul admin lainnya tidak mengalami gangguan.
 - **Acceptance Criteria:**
-  - Pencarian merespons ketikan dengan debounce 350ms tanpa reload halaman penuh.
-  - Pengurutan berfungsi akurat (Terbaru default, A-Z, Z-A, Katalog) tanpa opsi harga.
-  - Jumlah produk diumumkan secara aksesibel ke pembaca layar tanpa tampilan angka visual yang mengganggu toolbar.
-  - Tampilan ketika produk tidak ditemukan menyajikan pesan ramah dwibahasa dan tombol reset filter.
-- **File yang Diubah:**
-  - `views/public/products.ejs`
-  - `public/js/products.js`
-  - `locales/id.json`
-  - `locales/en.json`
-- **Skill:** `impeccable` ($polish), `antislop-human`
-- **Verifikasi:** Uji pengetikan pencarian, ubah opsi urutan, periksa DOM element `aria-live`, dan verifikasi tampilan hasil kosong.
-
-### T-196: Tombol "Muat Lebih Banyak" (Progressive Enhancement AJAX & Transisi Halus)
-
-- **Modul:** Products Catalog
-- **Prioritas:** High
-- **Status:** Done
-- **Deskripsi:** Membangun tombol "Muat Lebih Banyak" yang hanya tampil jika total produk > 9, dilengkapi tautan semantik fallback dan skrip AJAX append tanpa reload, animasi pemuatan halus, serta penanganan fokus aksesibilitas.
-- **Acceptance Criteria:**
-  - Tombol tampil hanya jika `totalProducts > 9` dan masih ada halaman lanjutan.
-  - Klik tombol melakukan fetch fragmen produk berikutnya dan menyisipkannya ke grid tanpa refresh.
-  - Kartu baru muncul dengan transisi opacity dan transform halus (menghormati `prefers-reduced-motion`).
-  - Fokus keyboard dipindahkan ke kartu baru pertama dan status diumumkan ke teknologi asistif.
-  - Tombol otomatis hilang saat produk terakhir telah termuat.
-  - Mengubah filter kategori, pencarian, atau urutan mereset daftar ke halaman pertama.
-- **File yang Diubah:**
-  - `views/public/products.ejs`
-  - `public/js/products.js`
-  - `public/css/components.css`
-- **Skill:** `impeccable` ($animate)
-- **Verifikasi:** Uji muat lebih banyak hingga seluruh data habis, periksa transisi visual, perpindahan fokus keyboard, dan fallback tanpa JS.
-
-### T-197: Tata Letak Responsif Multi-Breakpoint & Adaptasi Mobile
-
-- **Modul:** Products Catalog
-- **Prioritas:** High
-- **Status:** Done
-- **Deskripsi:** Mengadaptasi seluruh tata letak halaman listing produk untuk berbagai ukuran viewport: mobile (320-480px) dengan reflow grid 2 kolom dan filter drawer offcanvas, tablet (768px), dan desktop (1024-1440px), memastikan target sentuh minimal 44px dan nihil overflow horizontal.
-- **Acceptance Criteria:**
-  - Layout reflow secara terencana di breakpoint mobile (2 kolom kartu), tablet, dan desktop tanpa clipping.
-  - Target sentuh semua tombol dan link minimal 44 x 44 px.
-  - Tidak ada scroll horizontal (overflow-x: hidden / 0 horizontal scroll).
-  - Filter di mobile disajikan via drawer geser yang nyaman disentuh dan dapat ditutup via tombol silang atau tombol Escape.
-- **File yang Diubah:**
-  - `public/css/components.css`
-  - `views/public/products.ejs`
-  - `public/js/products.js`
-- **Skill:** `impeccable` ($adapt), `antislop-layoutmobile`
-- **Verifikasi:** Uji layout pada resolusi 320px, 375px, 425px, 768px, 1024px, dan 1440px menggunakan devtools responsif.
-
-### T-198: Audit Aksesibilitas WCAG AA, Kepatuhan CSP & Uji Regresi Menyeluruh
-
-- **Modul:** Products Catalog
-- **Prioritas:** High
-- **Status:** Done
-- **Deskripsi:** Menjalankan audit menyeluruh untuk memverifikasi kontras warna AA, navigasi keyboard (Tab, Enter, Escape), visibilitas focus ring, kepatuhan CSP (nol inline script/event handler), serta pengujian regresi untuk memastikan homepage, detail produk, dan admin CMS tetap berfungsi normal 100%.
-- **Acceptance Criteria:**
-  - Seluruh elemen teks dan tombol lolos kontras WCAG AA (>= 4.5:1 untuk teks, >= 3:1 untuk outline).
-  - Navigasi keyboard penuh berfungsi logis dari atas hingga bawah halaman.
-  - Bebas dari error console browser dan nol pelanggaran CSP Helmet.
-  - Deep link beranda 4 panel, halaman detail produk (`/products/:slug`), dan CMS admin produk (`/admin/products`) terverifikasi utuh tanpa gangguan.
-- **File yang Diubah:**
-  - `tests/test-product-listing-redesign-qa.js` (baru)
-  - `public/css/components.css`
+  - Kontras warna teks dan elemen interaktif memenuhi standar WCAG AA (>= 4.5:1 untuk teks normal, >= 3:1 untuk elemen UI).
+  - Seluruh interaksi dapat diakses penuh via keyboard dengan focus ring yang tampak jelas.
+  - Bebas dari error JavaScript console browser dan nol peringatan pelanggaran CSP.
+  - Halaman listing produk (`/products`), beranda 4 panel kategori, dan menu admin lain berfungsi normal 100% tanpa regresi.
+- **File yang Diubah / Dibuat:**
+  - `tests/test-product-detail-redesign-qa.js` (baru)
 - **Skill:** `antislop-human`, `antislop-code`
-- **Verifikasi:** Eksekusi test suite otomatis `node tests/test-product-listing-redesign-qa.js` dan click-through audit manual.
+- **Verifikasi:** Jalankan automated QA script `node tests/test-product-detail-redesign-qa.js` dan lakukan click-through audit manual di berbagai viewport.

@@ -32,12 +32,22 @@ Modul Media Library mengelola penyimpanan, optimasi, dan penggunaan aset visual 
 ### Fleksibilitas Storage Driver
 - Mendukung penyimpanan berkas lokal (`public/uploads/`) untuk lingkungan pengembangan dan penyimpanan awan (Amazon S3 / kompatibel S3) melalui konfigurasi environment `STORAGE_DRIVER`.
 
+### FR-27: Dukungan Mode Multi-Select pada Universal Media Picker [PENDING T-202]
+- Universal Media Picker Modal (`views/partials/media-picker-modal.ejs`) mendukung mode seleksi ganda (*multi-select*).
+- Form pemanggil dapat mengaktifkan mode ini melalui konfigurasi opsi: `{ multiple: true }`.
+- Fitur interaksi mode multi-select:
+  1. Klik kartu media menambah/menghapus item dari daftar pilihan aktif tanpa menutup modal secara instan.
+  2. Kartu terpilih ditandai dengan border hijau brand `var(--color-primary)` dan badge indikator centang atau nomor urut pilihan.
+  3. Bagian footer menampilkan ringkasan jumlah ("N media dipilih") dan tombol konfirmasi mengembalikan seluruh array item yang dipilih ke callback form pemanggil.
+  4. Kompatibilitas mundur penuh (*backward compatible*): mode default tanpa flag `multiple` tetap berfungsi sebagai single-select untuk Banner, Merek, dan Tentang Kami.
+
 ---
 
 ## 3. Keputusan Desain & Fungsional Terkunci
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
+| **Mode Multi-Select Universal Picker** | Mengizinkan kurasi galeri multi-foto produk yang efisien dalam satu dialog tanpa perulangan buka modal. | 2026-10-23 |
 | **Kompresi Otomatis ke Format WebP** | Menghasilkan ukuran berkas gambar 30-50% lebih ringan tanpa mengorbankan ketajaman detail produk manufaktur. | 2026-10-05 |
 | **Universal Media Picker Modal** | Mengurangi duplikasi upload berkas yang sama dan mempermudah alur kerja editor konten. | 2026-10-09 |
 | **Pencegahan Penghapusan Berkas Aktif (Check Usage)** | Mencegah terjadinya gambar rusak (broken image) di halaman publik akibat ketidaksengajaan admin. | 2026-10-09 |

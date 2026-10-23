@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-191)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-198)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-10-21  
-**Status Keseluruhan:** Selesai 100% (191 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-10-23  
+**Status Keseluruhan:** Selesai 100% (198 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-191)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-198)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -183,3 +183,16 @@
     - [x] Kelompok B: Perubahan Spesifikasi Dual Button CTA & Strip Marquee .brand-strip-* (T-183 s/d T-185)
     - [x] Kelompok C: Implementasi Dual CTA, Marquee Track, Pembersihan Dead Code CSS (T-186 s/d T-189)
     - [x] Kelompok D: Verifikasi Keamanan URL, Responsif, Reduced Motion, QA Regresi (T-190 s/d T-191)
+
+- **Task Redesain Katalog Produk (PLP) v1:** [archive/2026-10-21_product-page-redesign.md](2026-10-21_product-page-redesign.md)
+  - **Tanggal:** 2026-10-21 s/d 2026-10-23
+  - **Total Task:** 7 Task terperinci (T-192 s/d T-198)
+  - **Status:** Selesai 100% (7/7 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-192: Kontrak Server, Validasi Query, Sanitasi & Endpoint Fragmen Parsial
+    - [x] T-193: Desain Sistem Token, Prefix Isolasi `.plp-*` & Komponen Kartu Produk Potret
+    - [x] T-194: Sidebar Navigasi Filter Kategori Dinamis & Deep Link URL
+    - [x] T-195: Toolbar Atas: Pencarian Debounced, Kontrol Pengurutan & Live Region Aksesibel
+    - [x] T-196: Tombol "Muat Lebih Banyak" (Progressive Enhancement AJAX & Transisi Halus)
+    - [x] T-197: Tata Letak Responsif Multi-Breakpoint & Adaptasi Mobile
+    - [x] T-198: Audit Aksesibilitas WCAG AA, Kepatuhan CSP & Uji Regresi Menyeluruh

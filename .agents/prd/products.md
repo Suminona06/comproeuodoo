@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-23 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
 
 # PRD: Modul Produk & Katalog Manufaktur (Products Catalog)
 
@@ -9,46 +9,39 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 
 ## 2. Functional Requirements
 
-### FR-07: Tata Letak Katalog Produk Publik (PLP) & Navigasi Kategori [COMPLETED T-194]
-- Katalog di `/products` berstruktur 2 kolom: Sidebar Kiri (kategori) dan Konten Utama (toolbar & grid).
-- Hero banner dinamis CMS dipertahankan di atas; navigasi breadcrumb dan layout 2-kolom berada tepat di bawahnya.
-- Sidebar kiri memuat "Filter By" > Kategori, menyajikan seluruh kategori aktif secara dinamis dari database (`is_active = 1`), opsi teratas "Semua Produk", dan badge jumlah produk aktif. Kategori baru dari CMS otomatis tampil.
-- Kategori terpilih sinkron dengan query URL (`/products?category=<slug>`) sehingga *shareable* dan tombol back/forward browser berfungsi.
-- Deep link dari 4 panel kategori beranda (`/products?category=<slug>`) langsung memfilter kategori terkait tanpa mengubah beranda.
-- Produk yang tampil hanya yang berstatus `published` dan `is_active = 1`. Paginasi default: 9 produk per muatan (`limit = 9`).
-
-### FR-08: Halaman Detail Produk & Spesifikasi Teknis
-- Akses detail melalui URL ramah SEO: `/products/:slug`.
-- Halaman detail menyajikan galeri foto beresolusi tinggi, judul/kategori dwibahasa (ID/EN), tabel spesifikasi material (grade polimer, aditif oxium, mikron), tabel varian ukuran (`product_variants`), dan tombol konversi B2B RFQ via WhatsApp/form (tanpa harga/zero-price).
+### FR-07: Tata Letak Katalog Produk Publik (PLP) & Navigasi Kategori [COMPLETED T-192-T-197]
+- **Struktur 2 Kolom:** Katalog di `/products` berstruktur 2 kolom: Sidebar Kiri (kategori) dan Konten Utama (toolbar & grid). Paginasi default: 9 produk per muatan (`limit = 9`).
+- **Sidebar Kategori Dinamis [COMPLETED T-194]:** Sidebar kiri menyajikan kategori aktif dari database (`is_active = 1`), opsi "Semua Produk", dan badge jumlah produk aktif. Kategori terpilih sinkron dengan query URL (`/products?category=<slug>`) dan deep link 4 panel beranda.
+- **Kartu Produk Potret Minimalis [COMPLETED T-193]:** Rasio aspek potret vertikal tetap 3:4 dengan `object-fit: cover` (CLS = 0), garis pemisah tipis `border-bottom: 1px solid var(--color-border)`, nama produk kapital kecil rata kiri, tombol selebar kartu outline hijau brand `var(--color-primary)` menuju `/products/:slug`, bebas harga (zero-price B2B).
+- **Toolbar Atas, Pencarian Debounced & Pengurutan [COMPLETED T-195]:** Pencarian debounced 350ms, 4 opsi urutan (Terbaru, A-Z, Z-A, Katalog), live region aksesibel (`.sr-only`, `aria-live="polite"`), pesan hasil kosong dwibahasa.
+- **Progressive Enhancement Muat Lebih Banyak [COMPLETED T-196]:** Tombol "Muat Lebih Banyak" tampil jika total > 9, memuat 9 kartu via AJAX tanpa reload, animasi transisi opacity & transform (menghormati `prefers-reduced-motion`).
+- **Tata Letak Mobile & Filter Drawer [COMPLETED T-197]:** Mobile (< 768px) reflow 2 kolom kompak; filter kategori disajikan via drawer samping (*offcanvas*) dengan target sentuh minimal 44 x 44 px.
 
 ### FR-09: Ekspor Data Produk ke Format CSV (CMS)
 - Admin dapat mengunduh seluruh data katalog ke file spreadsheet `.csv` via `/admin/products/export`.
 - Kolom CSV: ID, SKU/Slug, Nama Produk (ID/EN), Kategori, Status Publikasi, Tanggal Dibuat.
 
-### FR-24: Kartu Produk Potret Minimalis & Tombol Selebar Kartu [PENDING T-193]
-- **Rasio Potret Tetap:** Gambar produk berasio aspek vertikal tetap (3:4) dengan `object-fit: cover` untuk mencegah layout shift (CLS = 0).
-- **Garis Pembatas Bawah:** Garis pemisah tipis horizontal (`border-bottom: 1px solid var(--color-border)`) membatasi media gambar dan metadata.
-- **Tipografi Huruf Kapital Kecil:** Nama produk berhuruf kapital kecil rata kiri (`text-transform: uppercase`, ukuran `var(--font-size-label-md)`, bobot `var(--font-weight-bold)`, spasi `var(--letter-spacing-wide)`, warna `var(--color-text-main)`).
-- **Sisi Kanan Bersih:** Sisi kanan nama produk dikosongkan bersih untuk menonjolkan tipografi minimalis.
-- **Tombol Selebar Kartu:** Tombol selebar kartu (100% width) berlabel "Detail Produk" (ID) / "Product Details" (EN) menuju `/products/:slug`. Gaya outline border hijau `var(--color-primary)` dan teks `var(--color-text-main)`, hover terisi hijau `var(--color-primary)` teks putih `var(--color-on-primary)`.
-- **Tanpa Harga:** Bebas total dari angka harga (kepatuhan model B2B custom RFQ).
+### FR-24: Redesain Layout Halaman Detail Produk (PDP) [PENDING T-201]
+- Akses detail melalui URL ramah SEO: `/products/:slug` dengan isolasi gaya prefix `.pd-*`.
+- **Layout Grid 5:6:** 2 kolom berimbang (`minmax(0, 5fr) minmax(0, 6fr)` gap 34px) di desktop (>= 901px), reflow 1 kolom di mobile/tablet (<= 900px).
+- **Galeri Foto Sticky & Thumbnail:** Kolom galeri sticky di desktop (`position: sticky; top: 24px`); foto utama rasio `4 / 3.4`, radius `var(--r-xl)`, border `var(--color-border)`; strip thumbnail `76 x 64 px` border hijau brand `var(--color-primary)` saat aktif (`aria-pressed="true"`) dari array JSON `gallery_images`. Klik thumbnail memicu pergantian gambar dengan transisi opacity 200ms tanpa layout shift.
+- **Breadcrumb Semantik:** Beranda (`/`) > Produk (`/products`) > [Kategori] (`/products?category=:slug`) > [Nama Produk].
+- **Judul & Short Description:** Judul responsif `clamp(26px, 3.6vw, 38px)` bobot 800 `var(--color-text-main)`; deskripsi singkat tepat di bawah judul max `56ch`, ukuran 15.5px, warna `var(--color-text-muted)` dari kolom `short_description_id/en`.
+- **Pil Varian Ukuran:** Tombol pil border netral, radius penuh `999px` (`var(--r-full)`), terpilih berganti latar `var(--color-primary)` teks putih `var(--color-on-primary)` (`aria-pressed="true"`), data dari array JSON `variants`. Sembunyi jika kolom kosong/null.
+- **Baris Aksi CTA (52px):** Tombol WhatsApp latar `var(--color-primary)` pesan pre-filled ke `settings.whatsapp_number`, dan tombol "Submit RFQ Form" outline latar putih `var(--color-surface)` border `var(--color-border)`. Mobile <= 560px full-width.
+- **Bilah Tab & Panel Konten:** Tab "Deskripsi" dan "Tabel Ukuran" dengan underline aktif hijau brand `var(--color-primary)`. Default tab: Deskripsi.
+  - Panel Deskripsi: teks kaya TinyMCE (`description_id/en`) max `75ch` warna `var(--color-text-variant)`.
+  - Panel Tabel Ukuran: tabel 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dari array JSON `size_table`. Mobile <= 600px: thead sembunyi, setiap baris tampil sebagai card dengan label `data-l`. Jika `size_table` kosong, tab tabel ukuran disembunyikan.
+- **Sticky CTA Mobile (<= 760px):** Bilah melayang di dasar viewport memuat 2 tombol aksi kompak (48px) dan tombol silang (×) penutup yang menyimpan status tutup di `sessionStorage`.
+- **Aksesibilitas & Animasi:** Animasi hanya GPU transform/opacity, `prefers-reduced-motion` statis.
 
-### FR-25: Toolbar Atas, Pencarian Debounced, Pengurutan & Live Region [COMPLETED T-195]
-- **Posisi Kontrol:** Kolom pencarian di kanan toolbar menggantikan teks statis produk, bersanding dengan dropdown "Urutkan".
-- **Pencarian Debounced:** Eksekusi otomatis via AJAX (debounce 350ms) tanpa perlu menekan Enter, menelusuri nama (`name_id`, `name_en`) dan deskripsi (`description_id`, `description_en`).
-- **Pilihan Urutan (Tanpa Harga):** Mendukung 4 opsi: "Terbaru" (Default - ID DESC), "Nama A-Z", "Nama Z-A", dan "Urutan Katalog" (sort_order ASC).
-- **Pengumuman Aksesibel:** Jumlah hasil diumumkan dinamis ke pembaca layar (*screen reader*) via live region (`.sr-only`, `aria-live="polite"`, `role="status"`).
-- **Empty State:** Menampilkan pesan informatif dwibahasa dan tombol reset jika produk tidak ditemukan.
-
-### FR-26: Progressive Enhancement "Muat Lebih Banyak" AJAX [COMPLETED T-196]
-- **Kondisi Tampil:** Tombol "Muat Lebih Banyak" tampil hanya jika total produk yang sesuai kriteria > 9 (`totalCount > 9`) dan masih ada halaman lanjutan.
-- **Progressive Enhancement:** Elemen tautan semantik `<a href="/products?page=2&...">` sebagai fallback SEO/non-JS, ditingkatkan AJAX untuk memuat 9 kartu baru tanpa reload halaman.
-- **Aksesibilitas & Animasi:** Kartu baru muncul halus dengan animasi transisi opacity dan transform (menghormati `prefers-reduced-motion`). Fokus keyboard diarahkan ke kartu baru pertama; tombol hilang jika seluruh data termuat.
-- **Reset Paginasi:** Mengubah filter, search, atau urutan otomatis mereset paginasi ke halaman 1.
-
-### FR-29: Tata Letak Responsif Mobile & Filter Drawer [COMPLETED T-197]
-- Pada mobile (< 768px), grid kartu produk reflow menjadi 2 kolom kompak.
-- Filter kategori disajikan via tombol trigger yang membuka Drawer samping (*offcanvas*), dapat ditutup via tombol silang atau Escape, dengan target sentuh minimal 44 x 44 px.
+### FR-25: Skema Kolom Baru Database Produk [PENDING T-199]
+- Penambahan kolom nullable pada tabel `products` via migrasi `database/migrations/015_add_product_detail_fields.sql`:
+  - `short_description_id`: VARCHAR(500) NULL
+  - `short_description_en`: VARCHAR(500) NULL
+  - `variants`: JSON NULL (array of strings label ukuran)
+  - `size_table`: JSON NULL (array of objects spesifikasi ukuran)
+  - `gallery_images`: JSON NULL (array of URL foto produk)
 
 ---
 
@@ -56,6 +49,8 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
+| **Layout Grid 5:6 & Galeri Sticky** | Menyajikan informasi produk B2B dengan proporsi visual seimbang dan ergonomis persis prototipe. | 2026-10-23 |
+| **Penyimpanan Varian & Tabel Ukuran JSON** | Memberikan fleksibilitas struktur spesifikasi produk manufaktur tanpa kompleksitas multi-tabel relasional. | 2026-10-23 |
 | **Grid 2 Kolom Mobile & Filter Drawer** | Memaksimalkan efisiensi ruang ponsel untuk menampilkan pilihan produk dengan drawer ergonomis. | 2026-10-21 |
 | **Gambar Potret Object-Fit Cover** | Menjamin keteraturan visual seluruh kartu dalam grid 3 kolom tanpa variasi tinggi gambar. | 2026-10-21 |
 | **Tombol Outline Selebar Kartu** | Memberikan affordance klik yang jelas dan modern persis referensi desain dengan aksen hijau brand. | 2026-10-21 |

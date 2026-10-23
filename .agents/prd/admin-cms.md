@@ -47,12 +47,31 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   - Jumlah Artikel Berita terpublikasi.
   - Tabel 5 Inquiry terbaru untuk penanganan cepat tim sales.
 
+### FR-26: Formulir Produk Admin Terpadu & Field Dinamis [PENDING T-202]
+- Pembaruan formulir tambah (`/admin/products/create`) dan ubah (`/admin/products/:id/edit`) dengan komponen terstruktur:
+  1. **Thumbnail Utama:** Satu gambar pilihan via Universal Media Picker modal.
+  2. **Galeri Foto Produk (Gallery Multi-Picker):** Membuka media picker dalam mode multi-select untuk memilih banyak gambar sekaligus. Dilengkapi tombol panah geser (atas/bawah atau kiri/kanan) untuk mengatur urutan tampilan dan tombol silang (×) untuk menghapus gambar dari galeri. Disimpan sebagai array JSON string URL (`gallery_images`).
+  3. **Deskripsi Singkat (Short Description ID & EN):** Textarea dwibahasa maksimal 200 karakter dilengkapi indikator penghitung karakter real-time (*character counter*).
+  4. **Deskripsi Lengkap (Full Description ID & EN):** Integrasi editor teks kaya TinyMCE untuk penulisan deskripsi lengkap berformat.
+  5. **Variasi Ukuran Produk (Variant Pills):** Baris dinamis dengan tombol "+ Tambah Ukuran" dan tombol hapus baris (×). Disimpan sebagai array JSON of strings (`variants`).
+  6. **Tabel Ukuran Dinamis (Size Table):** Tabel baris dinamis 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dengan tombol "+ Tambah Baris" dan tombol hapus baris (×). Disimpan sebagai array JSON of objects (`size_table`).
+  7. **Kepatuhan Tampilan Form Admin:** Header form tetap (*sticky*), area isi form dapat digulir (*scrollable body*), tombol aksi Simpan/Batal selalu terlihat di layar pada tingkat zoom 100%, 125%, 150% dan ketinggian layar 600–768px.
+
+### FR-27: Validasi Server-Side Data Produk & Whitelist [PENDING T-200]
+- Validasi ketat pada endpoint simpan/update produk:
+  1. `short_description_id` dan `short_description_en`: string maksimal 500 karakter.
+  2. `variants`: array of strings yang disanitasi dari tag berbahaya.
+  3. `size_table`: array of objects yang hanya mengizinkan whitelist keys: `['product_code', 'width', 'length', 'thickness', 'capacity', 'material']`.
+  4. `gallery_images`: array of strings URL yang valid.
+
 ---
 
 ## 3. Keputusan Desain & Fungsional Terkunci
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
+| **Pengurutan Galeri via Tombol Panah** | Menghindari dependensi drag-and-drop eksternal, 100% aman CSP, dan ramah aksesibilitas. | 2026-10-23 |
+| **Validasi Whitelist Kolom JSON Produk** | Mencegah injeksi payload data tak terduga pada kolom varian dan tabel ukuran produk. | 2026-10-23 |
 | **Pemisahan Peran 3 Tingkat (Superadmin/Admin/Editor)** | Mencegah staf konten mengubah pengaturan sensitif dan memastikan privasi data kontak prospek terjaga. | 2026-10-05 |
 | **Tabel Resmi Tunggal `inquiries`** | Memusatkan pencatatan seluruh saluran formulir RFQ ke satu tabel database terstruktur. | 2026-10-06 |
 | **Cookie Session HttpOnly & SameSite Lax** | Melindungi kredensial sesi admin dari pencurian skrip jahat (anti-XSS). | 2026-09-29 |
