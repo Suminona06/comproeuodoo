@@ -61,6 +61,138 @@ function parseVariants(body) {
   return variants;
 }
 
+function parseGalleryImages(body) {
+  const raw = body.gallery_images || body.gallery;
+  if (!raw) return [];
+  let list = [];
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        list = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        list = [];
+      }
+    } else if (trimmed.includes(',')) {
+      list = trimmed.split(',').map(s => s.trim());
+    } else if (trimmed) {
+      list = [trimmed];
+    }
+  } else if (Array.isArray(raw)) {
+    list = raw;
+  }
+  return list
+    .filter(item => typeof item === 'string')
+    .map(item => item.trim())
+    .filter(item => item.length > 0 && /^(https?:\/\/|\/)/i.test(item));
+}
+
+function parseVariantLabels(body) {
+  if (body.variant_labels !== undefined) {
+    const raw = Array.isArray(body.variant_labels) ? body.variant_labels : [body.variant_labels];
+    return raw
+      .map(v => (typeof v === 'string' ? v.trim() : ''))
+      .filter(v => v.length > 0);
+  }
+  if (body.variants !== undefined) {
+    if (typeof body.variants === 'string') {
+      try {
+        const parsed = JSON.parse(body.variants);
+        if (Array.isArray(parsed)) {
+          return parsed.map(v => typeof v === 'string' ? v.trim() : (v.size_label || v.name_id || '')).filter(Boolean);
+        }
+      } catch {
+        if (body.variants.trim()) return [body.variants.trim()];
+      }
+    } else if (Array.isArray(body.variants)) {
+      return body.variants.map(v => typeof v === 'string' ? v.trim() : (v.size_label || v.name_id || '')).filter(Boolean);
+    }
+  }
+  const legacy = parseVariants(body);
+  if (legacy.length > 0) {
+    return legacy.map(v => {
+      const label = v.size_label || '';
+      const extra = v.thickness ? ` (${v.thickness})` : '';
+      return label ? `${label}${extra}` : '';
+    }).filter(Boolean);
+  }
+  return [];
+}
+
+function parseSizeTable(body) {
+  const ALLOWED_KEYS = ['product_code', 'width', 'length', 'thickness', 'capacity', 'material'];
+  const rows = [];
+
+  const hasFormInputs = body.size_code !== undefined
+    || body.size_width !== undefined
+    || body.size_length !== undefined
+    || body.size_thickness !== undefined
+    || body.size_capacity !== undefined
+    || body.size_material !== undefined;
+
+  if (hasFormInputs) {
+    const codes = Array.isArray(body.size_code) ? body.size_code : [body.size_code || ''];
+    const widths = Array.isArray(body.size_width) ? body.size_width : [body.size_width || ''];
+    const lengths = Array.isArray(body.size_length) ? body.size_length : [body.size_length || ''];
+    const thicknesses = Array.isArray(body.size_thickness) ? body.size_thickness : [body.size_thickness || ''];
+    const capacities = Array.isArray(body.size_capacity) ? body.size_capacity : [body.size_capacity || ''];
+    const materials = Array.isArray(body.size_material) ? body.size_material : [body.size_material || ''];
+
+    const maxLen = Math.max(codes.length, widths.length, lengths.length, thicknesses.length, capacities.length, materials.length);
+    for (let i = 0; i < maxLen; i++) {
+      const code = (codes[i] || '').trim();
+      const width = (widths[i] || '').trim();
+      const length = (lengths[i] || '').trim();
+      const thickness = (thicknesses[i] || '').trim();
+      const capacity = (capacities[i] || '').trim();
+      const material = (materials[i] || '').trim();
+
+      if (code || width || length || thickness || capacity || material) {
+        rows.push({
+          product_code: code,
+          width,
+          length,
+          thickness,
+          capacity,
+          material
+        });
+      }
+    }
+  } else if (body.size_table !== undefined) {
+    let rawList = [];
+    if (typeof body.size_table === 'string') {
+      try {
+        const parsed = JSON.parse(body.size_table);
+        rawList = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        rawList = [];
+      }
+    } else if (Array.isArray(body.size_table)) {
+      rawList = body.size_table;
+    }
+
+    for (const item of rawList) {
+      if (typeof item !== 'object' || item === null) continue;
+      const cleaned = {};
+      let hasValue = false;
+      for (const key of ALLOWED_KEYS) {
+        const val = item[key] !== undefined
+          ? item[key]
+          : (key === 'product_code' ? (item.code || item.size_code) : item[`size_${key}`]);
+        const str = typeof val === 'string' ? val.trim() : (val !== undefined && val !== null ? String(val).trim() : '');
+        cleaned[key] = str;
+        if (str) hasValue = true;
+      }
+      if (hasValue) {
+        rows.push(cleaned);
+      }
+    }
+  }
+
+  return rows;
+}
+
 export const productController = {
   async index(req, res) {
     try {
@@ -146,7 +278,9 @@ export const productController = {
   async store(req, res) {
     try {
       const {
-        name_id, name_en, category_id, description_id, description_en,
+        name_id, name_en, category_id,
+        short_description_id, short_description_en,
+        description_id, description_en,
         material_specs, status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
@@ -164,6 +298,32 @@ export const productController = {
         });
       }
 
+      if (short_description_id && short_description_id.trim().length > 500) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Deskripsi singkat (ID) maksimal 500 karakter.',
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
+      if (short_description_en && short_description_en.trim().length > 500) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Deskripsi singkat (EN) maksimal 500 karakter.',
+          formData: req.body,
+          csrfToken: res.locals.csrfToken || ''
+        });
+      }
+
       let imageUrl = null;
       if (req.file) {
         imageUrl = await processAndSaveWebP(req.file.buffer, 'products');
@@ -172,7 +332,10 @@ export const productController = {
       }
 
       const technicalSpecs = parseTechnicalSpecs(req.body);
-      const variants = parseVariants(req.body);
+      const galleryImages = parseGalleryImages(req.body);
+      const variantLabels = parseVariantLabels(req.body);
+      const sizeTable = parseSizeTable(req.body);
+      const legacyVariants = parseVariants(req.body);
       const slug = createSlug(name_id);
 
       await productModel.create({
@@ -180,12 +343,16 @@ export const productController = {
         name_en: name_en ? name_en.trim() : name_id.trim(),
         slug,
         category_id: category_id ? parseInt(category_id, 10) : null,
+        short_description_id: short_description_id ? short_description_id.trim() : null,
+        short_description_en: short_description_en ? short_description_en.trim() : null,
         description_id: description_id ? description_id.trim() : null,
         description_en: description_en ? description_en.trim() : null,
         material_specs: material_specs ? material_specs.trim() : null,
         technical_specs: technicalSpecs,
-        variants,
-        image_url: imageUrl,
+        variants: variantLabels.length > 0 ? variantLabels : (legacyVariants.length > 0 ? legacyVariants : []),
+        size_table: sizeTable,
+        main_image: imageUrl,
+        gallery_images: galleryImages,
         status: status || 'published',
         sort_order: parseInt(sort_order || '0', 10),
         meta_title_id: meta_title_id || null,
@@ -232,7 +399,9 @@ export const productController = {
     try {
       const { id } = req.params;
       const {
-        name_id, name_en, category_id, description_id, description_en,
+        name_id, name_en, category_id,
+        short_description_id, short_description_en,
+        description_id, description_en,
         material_specs, status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
@@ -242,19 +411,42 @@ export const productController = {
         return res.redirect('/admin/products?error=' + encodeURIComponent('Produk tidak ditemukan.'));
       }
 
+      if (short_description_id && short_description_id.trim().length > 500) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (ID) maksimal 500 karakter.'));
+      }
+      if (short_description_en && short_description_en.trim().length > 500) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (EN) maksimal 500 karakter.'));
+      }
+
       const technicalSpecs = parseTechnicalSpecs(req.body);
-      const variants = parseVariants(req.body);
+      const galleryImages = parseGalleryImages(req.body);
+      const variantLabels = parseVariantLabels(req.body);
+      const sizeTable = parseSizeTable(req.body);
+      const legacyVariants = parseVariants(req.body);
+
+      const hasVariantInput = req.body.variant_labels !== undefined
+        || req.body.variants !== undefined
+        || req.body.var_size !== undefined;
+      const hasSizeTableInput = req.body.size_code !== undefined
+        || req.body.size_width !== undefined
+        || req.body.size_length !== undefined
+        || req.body.size_thickness !== undefined
+        || req.body.size_capacity !== undefined
+        || req.body.size_material !== undefined
+        || req.body.size_table !== undefined;
+      const hasGalleryInput = req.body.gallery_images !== undefined || req.body.gallery !== undefined;
 
       const updateData = {
         name_id: name_id ? name_id.trim() : product.name_id,
         name_en: name_en ? name_en.trim() : product.name_en,
         slug: name_id ? createSlug(name_id) : product.slug,
         category_id: category_id ? parseInt(category_id, 10) : null,
+        short_description_id: short_description_id !== undefined ? (short_description_id ? short_description_id.trim() : null) : product.short_description_id,
+        short_description_en: short_description_en !== undefined ? (short_description_en ? short_description_en.trim() : null) : product.short_description_en,
         description_id: description_id !== undefined ? description_id.trim() : product.description_id,
         description_en: description_en !== undefined ? description_en.trim() : product.description_en,
         material_specs: material_specs !== undefined ? material_specs.trim() : product.material_specs,
         technical_specs: technicalSpecs,
-        variants,
         status: status || product.status,
         sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : product.sort_order,
         meta_title_id: meta_title_id || null,
@@ -262,6 +454,16 @@ export const productController = {
         meta_desc_id: meta_desc_id || null,
         meta_desc_en: meta_desc_en || null
       };
+
+      if (hasVariantInput) {
+        updateData.variants = variantLabels.length > 0 ? variantLabels : (legacyVariants.length > 0 ? legacyVariants : []);
+      }
+      if (hasSizeTableInput) {
+        updateData.size_table = sizeTable;
+      }
+      if (hasGalleryInput) {
+        updateData.gallery_images = galleryImages;
+      }
 
       if (req.file) {
         if (product.image_url) {

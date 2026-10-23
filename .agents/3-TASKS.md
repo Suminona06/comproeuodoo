@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 4 Task (T-200 s/d T-203)
-- **Total Task Selesai:** 199 Task (T-01 s/d T-199)
+- **Task Aktif Terbuka:** 3 Task (T-201 s/d T-203)
+- **Total Task Selesai:** 200 Task (T-01 s/d T-200)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-199**.
 
@@ -29,7 +29,7 @@
 
 - **Modul:** Products Detail & Admin CMS
 - **Prioritas:** High
-- **Status:** Open
+- **Status:** Done
 - **Deskripsi:** Memperbarui `models/productModel.js`, `controllers/public/productController.js`, dan `controllers/admin/productController.js` untuk mendukung query, safe JSON parse, dan validasi server-side whitelist pada seluruh kolom baru.
 - **Acceptance Criteria:**
   - `productModel.findBySlug` dan `productModel.findById` mengembalikan kolom baru dengan safe JSON parsing (fallback `[]`).

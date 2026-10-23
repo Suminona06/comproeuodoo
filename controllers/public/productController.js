@@ -159,13 +159,43 @@ export const productController = {
         product = await productModel.findBySlug(slug);
       }
 
-      if (!product || product.status !== 'published') {
+      if (!product || product.status !== 'published' || product.is_active === 0) {
         return res.status(404).render('public/404', {
           title: 'Produk Tidak Ditemukan | PT. EUODOO',
           path: '/products',
           message: 'Produk yang Anda cari tidak tersedia atau sedang diperbarui.'
         });
       }
+
+      product.short_description_id = product.short_description_id || null;
+      product.short_description_en = product.short_description_en || null;
+      product.variants = Array.isArray(product.variants) ? product.variants : [];
+      product.size_table = Array.isArray(product.size_table) ? product.size_table : [];
+
+      const mainImage = product.main_image || product.image_url || null;
+      let gallery = [];
+      if (Array.isArray(product.gallery_images) && product.gallery_images.length > 0) {
+        gallery = product.gallery_images;
+      } else if (Array.isArray(product.gallery) && product.gallery.length > 0) {
+        gallery = product.gallery;
+      } else if (mainImage) {
+        gallery = [mainImage];
+      }
+      product.gallery_images = gallery;
+      product.gallery = gallery;
+      product.images = gallery;
+
+      const lang = res.locals.currentLang || 'id';
+      const prodName = lang === 'en' ? (product.name_en || product.name_id) : product.name_id;
+      const title = prodName + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
+
+      const settings = res.locals.settings || {};
+      const waNumber = settings.whatsapp_formatted_number
+        || (settings.whatsapp_number ? String(settings.whatsapp_number).replace(/[^0-9]/g, '') : '6281234567890');
+      const canonicalUrl = product.canonical_url || `${req.protocol}://${req.get('host')}/products/${product.slug || product.id}`;
+      const waMessage = `Halo, saya tertarik dengan produk ${prodName}. Boleh saya minta informasi lebih lanjut?`;
+      const whatsappQuoteUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+      product.whatsapp_quote_url = whatsappQuoteUrl;
 
       // Fetch related products in the same category
       const relatedProducts = await productModel.findAll({
@@ -174,14 +204,12 @@ export const productController = {
         limit: 4
       });
 
-      const lang = res.locals.currentLang || 'id';
-      const prodName = lang === 'en' ? (product.name_en || product.name_id) : product.name_id;
-      const title = prodName + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
-
       res.render('public/product-detail', {
         title,
         path: '/products',
         product,
+        canonicalUrl,
+        whatsappQuoteUrl,
         relatedProducts: (relatedProducts || []).filter(p => p.id !== product.id).slice(0, 3)
       });
     } catch (err) {
