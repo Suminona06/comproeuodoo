@@ -43,17 +43,94 @@
       drawerBackdrop.classList.add('is-open');
       document.body.classList.add('plp-drawer-locked');
       if (drawerOpenBtn) drawerOpenBtn.setAttribute('aria-expanded', 'true');
-      if (drawerCloseBtn) drawerCloseBtn.focus();
+
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const animeLib = typeof anime !== 'undefined' ? anime : (typeof window !== 'undefined' ? window.anime : null);
+
+      if (animeLib && !prefersReducedMotion) {
+        animeLib.remove([sidebarEl, drawerBackdrop]);
+        const items = sidebarEl.querySelectorAll('.plp-sidebar-item');
+        if (items.length > 0) animeLib.remove(items);
+
+        // Backdrop fade in
+        animeLib({
+          targets: drawerBackdrop,
+          opacity: [0, 1],
+          duration: 320,
+          easing: 'easeOutQuad'
+        });
+
+        // Sidebar slide-in with natural smooth deceleration curve
+        animeLib({
+          targets: sidebarEl,
+          translateX: ['-100%', '0%'],
+          duration: 380,
+          easing: 'easeOutQuart',
+          complete: () => {
+            if (drawerCloseBtn) drawerCloseBtn.focus();
+          }
+        });
+
+        // Stagger category items for an ultra-delightful entrance cascade
+        if (items.length > 0) {
+          animeLib({
+            targets: items,
+            translateX: [-18, 0],
+            opacity: [0, 1],
+            delay: animeLib.stagger(30, { start: 100 }),
+            duration: 320,
+            easing: 'easeOutQuad'
+          });
+        }
+      } else {
+        if (drawerCloseBtn) drawerCloseBtn.focus();
+      }
     }
 
     function closeDrawer() {
       if (!sidebarEl || !drawerBackdrop) return;
-      sidebarEl.classList.remove('is-open');
-      drawerBackdrop.classList.remove('is-open');
       document.body.classList.remove('plp-drawer-locked');
       if (drawerOpenBtn) {
         drawerOpenBtn.setAttribute('aria-expanded', 'false');
         drawerOpenBtn.focus();
+      }
+
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const animeLib = typeof anime !== 'undefined' ? anime : (typeof window !== 'undefined' ? window.anime : null);
+
+      if (animeLib && !prefersReducedMotion && sidebarEl.classList.contains('is-open')) {
+        animeLib.remove([sidebarEl, drawerBackdrop]);
+        const items = sidebarEl.querySelectorAll('.plp-sidebar-item');
+        if (items.length > 0) animeLib.remove(items);
+
+        animeLib({
+          targets: drawerBackdrop,
+          opacity: [1, 0],
+          duration: 250,
+          easing: 'easeInQuad'
+        });
+
+        animeLib({
+          targets: sidebarEl,
+          translateX: ['0%', '-100%'],
+          duration: 280,
+          easing: 'easeInCubic',
+          complete: () => {
+            sidebarEl.classList.remove('is-open');
+            drawerBackdrop.classList.remove('is-open');
+            sidebarEl.style.transform = '';
+            drawerBackdrop.style.opacity = '';
+            items.forEach((item) => {
+              item.style.transform = '';
+              item.style.opacity = '';
+            });
+          }
+        });
+      } else {
+        sidebarEl.classList.remove('is-open');
+        drawerBackdrop.classList.remove('is-open');
+        sidebarEl.style.transform = '';
+        drawerBackdrop.style.opacity = '';
       }
     }
 

@@ -129,8 +129,11 @@
                      placeholder="<%= lang === 'en' ? 'Search name or specs...' : 'Cari nama atau spesifikasi...' %>"
                      aria-label="<%= lang === 'en' ? 'Search products' : 'Cari produk' %>"
                      autocomplete="off" />
-              <button type="button" class="plp-search-clear <%= search ? 'visible' : '' %>" id="plp-search-clear" aria-label="<%= lang === 'en' ? 'Clear search' : 'Hapus pencarian' %>">
-                &times;
+              <button type="button" class="plp-search-clear <%= search ? 'visible' : '' %>" id="plp-search-clear" aria-label="<%= lang === 'en' ? 'Clear search' : 'Hapus pencarian' %>" title="<%= lang === 'en' ? 'Clear search' : 'Hapus pencarian' %>">
+                <svg class="plp-search-clear-icon" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
               </button>
               <button type="submit" class="plp-search-btn" id="plp-search-btn" aria-label="<%= lang === 'en' ? 'Search' : 'Cari' %>" title="<%= lang === 'en' ? 'Search' : 'Cari' %>">
                 <svg class="plp-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
