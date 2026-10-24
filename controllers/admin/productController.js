@@ -17,22 +17,6 @@ const createSlug = (text) => {
     .replace(/\-\-+/g, '-');
 };
 
-function parseTechnicalSpecs(body) {
-  const specs = {};
-  if (body.spec_key && body.spec_val) {
-    const keys = Array.isArray(body.spec_key) ? body.spec_key : [body.spec_key];
-    const vals = Array.isArray(body.spec_val) ? body.spec_val : [body.spec_val];
-    for (let i = 0; i < keys.length; i++) {
-      const k = keys[i]?.trim();
-      const v = vals[i]?.trim();
-      if (k && v) {
-        specs[k] = v;
-      }
-    }
-  }
-  return specs;
-}
-
 function parseVariants(body) {
   const variants = [];
   if (body.var_size || body.var_thickness || body.var_color) {
@@ -279,7 +263,8 @@ export const productController = {
         { label: 'Nama Produk (ID)', key: 'name_id' },
         { label: 'Nama Produk (EN)', key: 'name_en' },
         { label: 'Kategori', key: r => r.category_name_id || 'Tidak Berkategori' },
-        { label: 'Spesifikasi Material', key: 'material_specs' },
+        { label: 'Teks CTA (ID)', key: 'cta_text_id' },
+        { label: 'Teks CTA (EN)', key: 'cta_text_en' },
         { label: 'Status', key: 'status' },
         { label: 'URL Gambar', key: 'image_url' },
         { label: 'Dibuat Pada', key: 'created_at' }
@@ -316,7 +301,8 @@ export const productController = {
         name_id, name_en, category_id,
         short_description_id, short_description_en,
         description_id, description_en,
-        material_specs, status, sort_order,
+        cta_text_id, cta_text_en,
+        status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
 
@@ -359,6 +345,35 @@ export const productController = {
         });
       }
 
+      const cleanCtaId = cta_text_id ? cta_text_id.replace(/<[^>]*>/g, '').trim() : '';
+      const cleanCtaEn = cta_text_en ? cta_text_en.replace(/<[^>]*>/g, '').trim() : '';
+
+      if (cleanCtaId.length > 50) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Teks tombol CTA (ID) maksimal 50 karakter.',
+          formData: req.body,
+          csrfToken: res.locals?.csrfToken || ''
+        });
+      }
+
+      if (cleanCtaEn.length > 50) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Teks tombol CTA (EN) maksimal 50 karakter.',
+          formData: req.body,
+          csrfToken: res.locals?.csrfToken || ''
+        });
+      }
+
       let imageUrl = null;
       if (req.file) {
         imageUrl = await processAndSaveWebP(req.file.buffer, 'products');
@@ -366,7 +381,6 @@ export const productController = {
         imageUrl = req.body.image_url.trim();
       }
 
-      const technicalSpecs = parseTechnicalSpecs(req.body);
       const galleryImages = parseGalleryImages(req.body);
       const variantLabels = parseVariantLabels(req.body);
       const sizeTable = parseSizeTable(req.body);
@@ -382,8 +396,8 @@ export const productController = {
         short_description_en: short_description_en ? short_description_en.trim() : null,
         description_id: description_id ? description_id.trim() : null,
         description_en: description_en ? description_en.trim() : null,
-        material_specs: material_specs ? material_specs.trim() : null,
-        technical_specs: technicalSpecs,
+        cta_text_id: cleanCtaId.length > 0 ? cleanCtaId : null,
+        cta_text_en: cleanCtaEn.length > 0 ? cleanCtaEn : null,
         variants: variantLabels.length > 0 ? variantLabels : (legacyVariants.length > 0 ? legacyVariants : []),
         size_table: sizeTable,
         main_image: imageUrl,
@@ -465,7 +479,8 @@ export const productController = {
         name_id, name_en, category_id,
         short_description_id, short_description_en,
         description_id, description_en,
-        material_specs, status, sort_order,
+        cta_text_id, cta_text_en,
+        status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
 
@@ -481,7 +496,16 @@ export const productController = {
         return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (EN) maksimal 200 karakter.'));
       }
 
-      const technicalSpecs = parseTechnicalSpecs(req.body);
+      const cleanCtaId = cta_text_id !== undefined ? (cta_text_id ? cta_text_id.replace(/<[^>]*>/g, '').trim() : '') : null;
+      const cleanCtaEn = cta_text_en !== undefined ? (cta_text_en ? cta_text_en.replace(/<[^>]*>/g, '').trim() : '') : null;
+
+      if (cleanCtaId !== null && cleanCtaId.length > 50) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Teks tombol CTA (ID) maksimal 50 karakter.'));
+      }
+      if (cleanCtaEn !== null && cleanCtaEn.length > 50) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Teks tombol CTA (EN) maksimal 50 karakter.'));
+      }
+
       const galleryImages = parseGalleryImages(req.body);
       const variantLabels = parseVariantLabels(req.body);
       const sizeTable = parseSizeTable(req.body);
@@ -514,8 +538,8 @@ export const productController = {
         short_description_en: short_description_en !== undefined ? (short_description_en ? short_description_en.trim() : null) : product.short_description_en,
         description_id: description_id !== undefined ? description_id.trim() : product.description_id,
         description_en: description_en !== undefined ? description_en.trim() : product.description_en,
-        material_specs: material_specs !== undefined ? material_specs.trim() : product.material_specs,
-        technical_specs: technicalSpecs,
+        cta_text_id: cta_text_id !== undefined ? (cleanCtaId && cleanCtaId.length > 0 ? cleanCtaId : null) : product.cta_text_id,
+        cta_text_en: cta_text_en !== undefined ? (cleanCtaEn && cleanCtaEn.length > 0 ? cleanCtaEn : null) : product.cta_text_en,
         status: status || product.status,
         sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : product.sort_order,
         meta_title_id: meta_title_id || null,

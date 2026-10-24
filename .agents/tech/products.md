@@ -38,8 +38,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 | `is_active` | `TINYINT(1)` | NO | `1` | Flag status penayangan |
 
 ### B. Tabel `products` & `product_variants`
-*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Sistem bebas kolom harga (zero-price). Kolom baru detail produk ditambahkan oleh migrasi `015_add_product_detail_fields.sql`.
-- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `short_description_id`, `short_description_en`, `description_id`, `description_en`, `material_specs` (JSON), `technical_specs` (JSON), `variants` (JSON), `size_table` (JSON), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
+*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Kolom legacy `material_specs` dan `technical_specs` di-drop oleh migrasi `016`. Sistem bebas kolom harga (zero-price). Kolom baru detail produk ditambahkan oleh migrasi `015` dan `017` (`cta_text_id`, `cta_text_en`) `[PENDING T-204-T-205]`.
+- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `short_description_id`, `short_description_en`, `description_id`, `description_en`, `cta_text_id`, `cta_text_en`, `variants` (JSON), `size_table` (JSON), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
 - `product_variants`: `id`, `product_id` (FK), `name_id`, `name_en`, `sku`, `specs` (JSON dimensi, ketebalan, beban), `sort_order`.
 
 ---

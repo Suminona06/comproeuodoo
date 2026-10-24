@@ -1461,24 +1461,6 @@ body.sidebar-open .admin-backdrop {
   outline-offset: 1px;
 }
 
-/* Row wrapper for dynamic specifications */
-.spec-item-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 38px;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-@media (max-width: 640px) {
-  .spec-item-row {
-    grid-template-columns: 1fr 38px;
-  }
-  .spec-item-row .spec-col-key {
-    grid-column: 1 / -1;
-  }
-}
-
 /* Modern Add Row Button */
 .btn-add-row {
   display: inline-flex;

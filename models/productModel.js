@@ -157,7 +157,7 @@ export const productModel = {
         category_id, name_id, name_en, slug,
         short_description_id, short_description_en,
         description_id, description_en,
-        material_specs, technical_specs,
+        cta_text_id, cta_text_en,
         main_image, gallery_images,
         variants, size_table,
         status,
@@ -167,13 +167,8 @@ export const productModel = {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const materialSpecsJson = data.material_specs
-      ? (typeof data.material_specs === 'object' ? JSON.stringify(data.material_specs) : JSON.stringify({ note: String(data.material_specs) }))
-      : null;
-
-    const technicalSpecsJson = data.technical_specs
-      ? (typeof data.technical_specs === 'object' ? JSON.stringify(data.technical_specs) : JSON.stringify({ note: String(data.technical_specs) }))
-      : null;
+    const ctaTextId = data.cta_text_id ? String(data.cta_text_id).trim().slice(0, 50) : null;
+    const ctaTextEn = data.cta_text_en ? String(data.cta_text_en).trim().slice(0, 50) : null;
 
     const galleryRaw = data.gallery_images || data.gallery;
     let galleryJson = null;
@@ -233,8 +228,8 @@ export const productModel = {
       shortDescEn,
       data.description_id || null,
       data.description_en || null,
-      materialSpecsJson,
-      technicalSpecsJson,
+      ctaTextId,
+      ctaTextEn,
       mainImage,
       galleryJson,
       variantsJson,
@@ -278,8 +273,8 @@ export const productModel = {
       short_description_en: (v) => (v ? String(v).trim().slice(0, 500) : null),
       description_id: (v) => v || null,
       description_en: (v) => v || null,
-      material_specs: (v) => v ? (typeof v === 'object' ? JSON.stringify(v) : JSON.stringify({ note: String(v) })) : null,
-      technical_specs: (v) => v ? (typeof v === 'object' ? JSON.stringify(v) : JSON.stringify({ note: String(v) })) : null,
+      cta_text_id: (v) => (v ? String(v).trim().slice(0, 50) : null),
+      cta_text_en: (v) => (v ? String(v).trim().slice(0, 50) : null),
       main_image: (v) => v || null,
       gallery_images: (v) => {
         if (!v) return null;
@@ -440,20 +435,6 @@ export const productModel = {
   _parseJsonFields(product) {
     if (!product) return null;
     const copy = { ...product };
-    if (copy.material_specs && typeof copy.material_specs === 'string') {
-      try {
-        copy.material_specs = JSON.parse(copy.material_specs);
-      } catch {
-        copy.material_specs = { note: copy.material_specs };
-      }
-    }
-    if (copy.technical_specs && typeof copy.technical_specs === 'string') {
-      try {
-        copy.technical_specs = JSON.parse(copy.technical_specs);
-      } catch {
-        copy.technical_specs = {};
-      }
-    }
     const galleryRaw = copy.gallery_images || copy.gallery;
     if (galleryRaw && typeof galleryRaw === 'string') {
       try {

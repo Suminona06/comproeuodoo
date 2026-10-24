@@ -59,7 +59,7 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 
 ---
 
-## 5. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery
+## 5. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery [PENDING T-207-T-209]
 
 1. **Komponen Form Produk (`views/admin/products/create.ejs` & `edit.ejs`):**
    - **Thumbnail Utama:** Input hidden `image_url` terhubung ke single-select Universal Media Picker (dipertahankan).
@@ -67,12 +67,16 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
    - **Pengurutan (Reorder) & Hapus Galeri:** Setiap kartu thumbnail memiliki tombol panah geser (`btn-move-left` / `btn-move-right`) dan tombol silang (×) untuk menghapus. Setiap aksi memicu re-index array URL ke input hidden.
    - **Short Description ID & EN:** Textarea dengan atribut `maxlength="200"` dan elemen counter `.char-counter` yang ter-update via event `input`.
    - **Deskripsi Lengkap TinyMCE:** Memuat script `/tinymce/tinymce.min.js` dan inisialisasi pada `#description_id` dan `#description_en` konsisten dengan modul artikel/posts.
+   - **Kustomisasi Tombol CTA Produk:** Input `#cta_text_id` dan `#cta_text_en` (`maxlength="50"`). Dilengkapi petunjuk fallback ke teks default bila dikosongkan ("Minta Penawaran via WhatsApp" / "Request Quote via WhatsApp"). Nomor WhatsApp tujuan menggunakan konfigurasi terpusat di Site Settings (`settings.whatsapp_number`).
    - **Varian Ukuran Dinamis:** Kontainer `#variantsContainer`, tombol `#btnAddVariant` menyisipkan baris `<input name="variant_labels[]">`, tombol `.btn-remove-variant` menghapus baris. Serialisasi ke JSON array string di controller.
    - **Tabel Ukuran Dinamis:** Kontainer `#sizeTableContainer`, tombol `#btnAddSizeRow` menyisipkan baris dengan 6 input: `size_code[]`, `size_width[]`, `size_length[]`, `size_thickness[]`, `size_capacity[]`, `size_material[]`. Serialisasi ke JSON array of objects di controller.
+   - **Pembersihan Elemen Legacy:** Elemen `#material_specs` dan seluruh card dynamic parameter specs (`#specsContainer`, `#btnAddSpecRow`) beserta skrip pendukungnya dihapus bersih.
    - **Layout Responsif Modal & Form:** Header form sticky, area form scrollable, action buttons (Batal/Simpan) selalu terlihat di viewport pada zoom 100%, 125%, 150%.
 
 2. **Validasi Server-Side Controller (`controllers/admin/productController.js`):**
-   - Sanitasi input dan batas maksimal 500 karakter untuk `short_description_id` dan `short_description_en`.
+   - Sanitasi input dan batas maksimal 200 karakter untuk `short_description_id` dan `short_description_en`.
    - Validasi struktur JSON array of strings untuk `variants`.
    - Validasi whitelist keys: `['product_code', 'width', 'length', 'thickness', 'capacity', 'material']` untuk setiap objek pada `size_table`.
    - Validasi format URL untuk `gallery_images`.
+   - Validasi teks CTA: `cta_text_id` dan `cta_text_en` string maksimal 50 karakter, dipangkas (trim), disanitasi bebas tag HTML.
+   - Eliminasi helper `parseTechnicalSpecs` dan pembacaan `material_specs` dari body request.

@@ -28,19 +28,17 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - **Breadcrumb Semantik:** Beranda (`/`) > Produk (`/products`) > [Kategori] (`/products?category=:slug`) > [Nama Produk].
 - **Judul & Short Description:** Judul responsif `clamp(26px, 3.6vw, 38px)` bobot 800 `var(--color-text-main)`; deskripsi singkat tepat di bawah judul max `56ch`, ukuran 15.5px, warna `var(--color-text-muted)` dari kolom `short_description_id/en`.
 - **Pil Varian Ukuran:** Tombol pil border netral, radius penuh `999px` (`var(--r-full)`), terpilih berganti latar `var(--color-primary)` teks putih `var(--color-on-primary)` (`aria-pressed="true"`), data dari array JSON `variants`. Sembunyi jika kolom kosong/null.
-- **Baris Aksi CTA (52px):** Tombol WhatsApp latar `var(--color-primary)` pesan pre-filled ke `settings.whatsapp_number`, dan tombol "Submit RFQ Form" outline latar putih `var(--color-surface)` border `var(--color-border)`. Mobile <= 560px full-width.
+- **Baris Aksi CTA (52px) [PENDING T-210]:** Tombol WhatsApp latar `var(--color-primary)` dengan label dinamis dari `cta_text_id` (ID) / `cta_text_en` (EN) atau fallback ke teks default dwibahasa ("Minta Penawaran via WhatsApp" / "Request Quote via WhatsApp"). Nomor tujuan terhubung otomatis ke nomor telepon resmi perusahaan dari Pengaturan Situs (`settings.whatsapp_number`). Tombol "Submit RFQ Form" outline latar putih `var(--color-surface)` border `var(--color-border)`. Mobile <= 560px full-width.
 - **Bilah Tab & Panel Konten:** Tab "Deskripsi" dan "Tabel Ukuran" dengan underline aktif hijau brand `var(--color-primary)`. Default tab: Deskripsi.
   - Panel Deskripsi: teks kaya TinyMCE (`description_id/en`) max `75ch` warna `var(--color-text-variant)`.
   - Panel Tabel Ukuran: tabel 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dari array JSON `size_table`. Mobile <= 600px: thead sembunyi, setiap baris tampil sebagai card dengan label `data-l`. Jika `size_table` kosong, tab tabel ukuran disembunyikan.
 - **Aksesibilitas & Animasi:** Animasi hanya GPU transform/opacity, `prefers-reduced-motion` statis.
 
-### FR-25: Skema Kolom Baru Database Produk
-- Penambahan kolom nullable pada tabel `products` via migrasi `database/migrations/015_add_product_detail_fields.sql`:
-  - `short_description_id`: VARCHAR(500) NULL
-  - `short_description_en`: VARCHAR(500) NULL
-  - `variants`: JSON NULL (array of strings label ukuran)
-  - `size_table`: JSON NULL (array of objects spesifikasi ukuran)
-  - `gallery_images`: JSON NULL (array of URL foto produk)
+### FR-25: Skema Kolom Baru Database Produk [PENDING T-204-T-205]
+- Pembaruan skema tabel `products` via migrasi terpisah:
+  - Migrasi `016_drop_unused_product_specs.sql`: DROP kolom legacy `material_specs` dan `technical_specs`.
+  - Migrasi `017_add_product_cta_fields.sql`: ADD kolom baru `cta_text_id` (VARCHAR(100) NULL) dan `cta_text_en` (VARCHAR(100) NULL).
+  - Kolom sebelumnya (migrasi `015`): `short_description_id`, `short_description_en`, `variants`, `size_table`, `gallery_images`.
 
 ---
 

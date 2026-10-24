@@ -47,22 +47,30 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   - Jumlah Artikel Berita terpublikasi.
   - Tabel 5 Inquiry terbaru untuk penanganan cepat tim sales.
 
-### FR-26: Formulir Produk Admin Terpadu & Field Dinamis
+### FR-26: Formulir Produk Admin Terpadu & Field Dinamis [PENDING T-207]
 - Pembaruan formulir tambah (`/admin/products/create`) dan ubah (`/admin/products/:id/edit`) dengan komponen terstruktur:
   1. **Thumbnail Utama:** Satu gambar pilihan via Universal Media Picker modal.
-  2. **Galeri Foto Produk (Gallery Multi-Picker):** Membuka media picker dalam mode multi-select untuk memilih banyak gambar sekaligus. Dilengkapi tombol panah geser (atas/bawah atau kiri/kanan) untuk mengatur urutan tampilan dan tombol silang (×) untuk menghapus gambar dari galeri. Disimpan sebagai array JSON string URL (`gallery_images`).
+  2. **Galeri Foto Produk (Gallery Multi-Picker):** Membuka media picker dalam mode multi-select untuk memilih banyak gambar sekaligus. Dilengkapi tombol panah geser untuk mengatur urutan dan tombol silang (×) untuk menghapus. Disimpan sebagai array JSON string URL (`gallery_images`).
   3. **Deskripsi Singkat (Short Description ID & EN):** Textarea dwibahasa maksimal 200 karakter dilengkapi indikator penghitung karakter real-time (*character counter*).
   4. **Deskripsi Lengkap (Full Description ID & EN):** Integrasi editor teks kaya TinyMCE untuk penulisan deskripsi lengkap berformat.
   5. **Variasi Ukuran Produk (Variant Pills):** Baris dinamis dengan tombol "+ Tambah Ukuran" dan tombol hapus baris (×). Disimpan sebagai array JSON of strings (`variants`).
   6. **Tabel Ukuran Dinamis (Size Table):** Tabel baris dinamis 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dengan tombol "+ Tambah Baris" dan tombol hapus baris (×). Disimpan sebagai array JSON of objects (`size_table`).
-  7. **Kepatuhan Tampilan Form Admin:** Header form tetap (*sticky*), area isi form dapat digulir (*scrollable body*), tombol aksi Simpan/Batal selalu terlihat di layar pada tingkat zoom 100%, 125%, 150% dan ketinggian layar 600–768px.
+  7. **Eliminasi Field Legacy:** Kolom "Ringkasan Karakteristik Material" dan card "Tabel Spesifikasi Teknis Parameter" dieliminasi total dari formulir.
+  8. **Kepatuhan Tampilan Form Admin:** Header form tetap (*sticky*), area isi form dapat digulir (*scrollable body*), tombol aksi Simpan/Batal selalu terlihat di layar pada tingkat zoom 100%, 125%, 150% dan ketinggian layar 600–768px.
 
-### FR-27: Validasi Server-Side Data Produk & Whitelist
+### FR-27: Validasi Server-Side Data Produk & Whitelist [PENDING T-209]
 - Validasi ketat pada endpoint simpan/update produk:
-  1. `short_description_id` dan `short_description_en`: string maksimal 500 karakter.
+  1. `short_description_id` dan `short_description_en`: string maksimal 200 karakter.
   2. `variants`: array of strings yang disanitasi dari tag berbahaya.
   3. `size_table`: array of objects yang hanya mengizinkan whitelist keys: `['product_code', 'width', 'length', 'thickness', 'capacity', 'material']`.
   4. `gallery_images`: array of strings URL yang valid.
+  5. `cta_text_id` dan `cta_text_en`: string maksimal 50 karakter, disanitasi bebas dari tag HTML berbahaya.
+
+### FR-28: Kustomisasi Teks Tombol CTA Produk [PENDING T-207-T-209]
+- Form create dan edit produk CMS menyediakan input teks dwibahasa untuk kustomisasi tombol aksi CTA halaman detail produk publik:
+  1. **Teks Tombol CTA ID (`cta_text_id`):** Label tombol aksi utama bahasa Indonesia (maks 50 karakter). Bersifat opsional, fallback ke default "Minta Penawaran via WhatsApp".
+  2. **Teks Tombol CTA EN (`cta_text_en`):** Label tombol aksi utama bahasa Inggris (maks 50 karakter). Bersifat opsional, fallback ke default "Request Quote via WhatsApp".
+  3. **Integrasi Kontak WhatsApp:** Tombol CTA tetap mengarah ke WhatsApp menggunakan nomor telepon resmi yang dikelola terpusat di Pengaturan Situs (`settings.whatsapp_number`).
 
 ---
 
