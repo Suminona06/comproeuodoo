@@ -141,12 +141,12 @@
               <tbody>
                 <% sizeTable.forEach(function(row) { %>
                   <tr>
-                    <td data-l="<%= lang === 'en' ? 'Product Code' : 'Kode Produk' %>"><%= row.product_code || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Width' : 'Lebar' %>"><%= row.width || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Length' : 'Panjang' %>"><%= row.length || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Thickness' : 'Ketebalan' %>"><%= row.thickness || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Capacity' : 'Kapasitas' %>"><%= row.capacity || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Material' : 'Material' %>"><%= row.material || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Product Code' : 'Kode Produk' %>"><%= row.product_code || row.kode_produk || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Width' : 'Lebar' %>"><%= row.width || row.lebar || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Length' : 'Panjang' %>"><%= row.length || row.panjang || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Thickness' : 'Ketebalan' %>"><%= row.thickness || row.tebal_micron || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Capacity' : 'Kapasitas' %>"><%= row.capacity || row.kapasitas || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Material' : 'Material' %>"><%= row.material || row.bahan || '-' %></td>
                   </tr>
                 <% }); %>
               </tbody>

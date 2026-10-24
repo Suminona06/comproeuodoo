@@ -12,6 +12,8 @@
   let currentSearchQuery = '';
   let currentPage = 1;
   let selectedMedia = null;
+  let isMultiple = false;
+  let selectedMediaList = [];
 
   const modal = document.getElementById('universalMediaPickerModal');
   if (!modal) return;
@@ -42,8 +44,10 @@
     currentTargetInputId = options.targetInputId || null;
     currentTargetCallback = options.onSelect || null;
     currentFilterType = options.type || 'all';
+    isMultiple = !!options.multiple;
     currentPage = 1;
     selectedMedia = null;
+    selectedMediaList = [];
     if (selectedInfo) selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
     updateConfirmButton();
 
@@ -70,6 +74,8 @@
     currentTargetInputId = null;
     currentTargetCallback = null;
     selectedMedia = null;
+    selectedMediaList = [];
+    isMultiple = false;
     if (selectedInfo) selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
   }
 
@@ -158,20 +164,36 @@
         `;
       }
 
-      card.innerHTML = `
+      if (isMultiple) {
+        const isSelected = selectedMediaList.some(m => m.id === item.id);
+        if (isSelected) card.classList.add('selected');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'media-picker-checkbox';
+        checkbox.checked = isSelected;
+        checkbox.setAttribute('aria-label', `Pilih ${item.filename || item.original_name}`);
+        card.appendChild(checkbox);
+      }
+
+      card.innerHTML += `
         ${mediaHtml}
         <div class="media-picker-card-name" title="${item.filename || item.original_name}">
           ${item.filename || item.original_name}
         </div>
       `;
 
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        if (isMultiple && e.target.classList.contains('media-picker-checkbox')) {
+          e.stopPropagation();
+        }
         selectCard(card, item);
       });
 
       card.addEventListener('dblclick', () => {
-        selectCard(card, item);
-        confirmSelection();
+        if (!isMultiple) {
+          selectCard(card, item);
+          confirmSelection();
+        }
       });
 
       grid.appendChild(card);
@@ -179,6 +201,23 @@
   }
 
   function selectCard(card, item) {
+    if (isMultiple) {
+      const idx = selectedMediaList.findIndex(m => m.id === item.id);
+      const checkbox = card.querySelector('.media-picker-checkbox');
+      if (idx > -1) {
+        selectedMediaList.splice(idx, 1);
+        card.classList.remove('selected');
+        if (checkbox) checkbox.checked = false;
+      } else {
+        selectedMediaList.push(item);
+        card.classList.add('selected');
+        if (checkbox) checkbox.checked = true;
+      }
+      updateConfirmButton();
+      updateSelectedInfoMultiple();
+      return;
+    }
+
     grid.querySelectorAll('.media-picker-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     selectedMedia = item;
@@ -199,11 +238,42 @@
     `;
   }
 
+  function updateSelectedInfoMultiple() {
+    if (!selectedInfo) return;
+    if (selectedMediaList.length === 0) {
+      selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
+    } else {
+      selectedInfo.innerHTML = `
+        <span style="font-size: 13px; font-weight: 600; color: var(--primary, #00755a);">
+          ${selectedMediaList.length} foto dipilih
+        </span>
+      `;
+    }
+  }
+
   function updateConfirmButton() {
-    confirmBtn.disabled = !selectedMedia;
+    if (isMultiple) {
+      confirmBtn.disabled = selectedMediaList.length === 0;
+      confirmBtn.textContent = selectedMediaList.length > 0 ? `Pilih ${selectedMediaList.length} Foto` : 'Pilih Foto';
+    } else {
+      confirmBtn.disabled = !selectedMedia;
+      confirmBtn.textContent = 'Gunakan Media Ini';
+    }
   }
 
   function confirmSelection() {
+    if (isMultiple) {
+      if (selectedMediaList.length === 0) return;
+      if (typeof currentTargetCallback === 'function') {
+        currentTargetCallback(selectedMediaList);
+      }
+      if (window.adminToast) {
+        window.adminToast('success', `${selectedMediaList.length} foto dipilih.`);
+      }
+      closeModal();
+      return;
+    }
+
     if (!selectedMedia) return;
 
     if (currentTargetInputId) {

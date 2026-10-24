@@ -4,6 +4,7 @@ import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import { sendCsvResponse } from '../../utils/csvExporter.js';
 import { invalidateSitemapCache } from '../../utils/sitemapGenerator.js';
+import { query } from '../../config/database.js';
 import logger from '../../utils/logger.js';
 
 const createSlug = (text) => {
@@ -83,9 +84,21 @@ function parseGalleryImages(body) {
     list = raw;
   }
   return list
-    .filter(item => typeof item === 'string')
-    .map(item => item.trim())
-    .filter(item => item.length > 0 && /^(https?:\/\/|\/)/i.test(item));
+    .map(item => {
+      if (typeof item === 'number' && Number.isInteger(item)) return item;
+      if (typeof item === 'string') {
+        const str = item.trim();
+        if (/^\d+$/.test(str)) return parseInt(str, 10);
+        if (/^(https?:\/\/|\/)/i.test(str)) return str;
+      }
+      if (typeof item === 'object' && item !== null) {
+        if (item.id && (typeof item.id === 'number' || /^\d+$/.test(item.id))) return parseInt(item.id, 10);
+        if (item.url && typeof item.url === 'string') return item.url.trim();
+        if (item.file_url && typeof item.file_url === 'string') return item.file_url.trim();
+      }
+      return null;
+    })
+    .filter(item => item !== null);
 }
 
 function parseVariantLabels(body) {
@@ -121,23 +134,29 @@ function parseVariantLabels(body) {
 }
 
 function parseSizeTable(body) {
-  const ALLOWED_KEYS = ['product_code', 'width', 'length', 'thickness', 'capacity', 'material'];
   const rows = [];
 
-  const hasFormInputs = body.size_code !== undefined
-    || body.size_width !== undefined
-    || body.size_length !== undefined
-    || body.size_thickness !== undefined
-    || body.size_capacity !== undefined
-    || body.size_material !== undefined;
+  const rawCodes = body.kode_produk || body.size_code;
+  const rawWidths = body.lebar || body.size_width;
+  const rawLengths = body.panjang || body.size_length;
+  const rawThicknesses = body.tebal_micron || body.size_thickness;
+  const rawCapacities = body.kapasitas || body.size_capacity;
+  const rawMaterials = body.bahan || body.size_material;
+
+  const hasFormInputs = rawCodes !== undefined
+    || rawWidths !== undefined
+    || rawLengths !== undefined
+    || rawThicknesses !== undefined
+    || rawCapacities !== undefined
+    || rawMaterials !== undefined;
 
   if (hasFormInputs) {
-    const codes = Array.isArray(body.size_code) ? body.size_code : [body.size_code || ''];
-    const widths = Array.isArray(body.size_width) ? body.size_width : [body.size_width || ''];
-    const lengths = Array.isArray(body.size_length) ? body.size_length : [body.size_length || ''];
-    const thicknesses = Array.isArray(body.size_thickness) ? body.size_thickness : [body.size_thickness || ''];
-    const capacities = Array.isArray(body.size_capacity) ? body.size_capacity : [body.size_capacity || ''];
-    const materials = Array.isArray(body.size_material) ? body.size_material : [body.size_material || ''];
+    const codes = Array.isArray(rawCodes) ? rawCodes : [rawCodes || ''];
+    const widths = Array.isArray(rawWidths) ? rawWidths : [rawWidths || ''];
+    const lengths = Array.isArray(rawLengths) ? rawLengths : [rawLengths || ''];
+    const thicknesses = Array.isArray(rawThicknesses) ? rawThicknesses : [rawThicknesses || ''];
+    const capacities = Array.isArray(rawCapacities) ? rawCapacities : [rawCapacities || ''];
+    const materials = Array.isArray(rawMaterials) ? rawMaterials : [rawMaterials || ''];
 
     const maxLen = Math.max(codes.length, widths.length, lengths.length, thicknesses.length, capacities.length, materials.length);
     for (let i = 0; i < maxLen; i++) {
@@ -155,7 +174,13 @@ function parseSizeTable(body) {
           length,
           thickness,
           capacity,
-          material
+          material,
+          kode_produk: code,
+          lebar: width,
+          panjang: length,
+          tebal_micron: thickness,
+          kapasitas: capacity,
+          bahan: material
         });
       }
     }
@@ -174,18 +199,28 @@ function parseSizeTable(body) {
 
     for (const item of rawList) {
       if (typeof item !== 'object' || item === null) continue;
-      const cleaned = {};
-      let hasValue = false;
-      for (const key of ALLOWED_KEYS) {
-        const val = item[key] !== undefined
-          ? item[key]
-          : (key === 'product_code' ? (item.code || item.size_code) : item[`size_${key}`]);
-        const str = typeof val === 'string' ? val.trim() : (val !== undefined && val !== null ? String(val).trim() : '');
-        cleaned[key] = str;
-        if (str) hasValue = true;
-      }
-      if (hasValue) {
-        rows.push(cleaned);
+      const code = (item.product_code || item.kode_produk || item.code || item.size_code || '').trim();
+      const width = (item.width || item.lebar || item.size_width || '').trim();
+      const length = (item.length || item.panjang || item.size_length || '').trim();
+      const thickness = (item.thickness || item.tebal_micron || item.tebal || item.size_thickness || '').trim();
+      const capacity = (item.capacity || item.kapasitas || item.size_capacity || '').trim();
+      const material = (item.material || item.bahan || item.size_material || '').trim();
+
+      if (code || width || length || thickness || capacity || material) {
+        rows.push({
+          product_code: code,
+          width,
+          length,
+          thickness,
+          capacity,
+          material,
+          kode_produk: code,
+          lebar: width,
+          panjang: length,
+          tebal_micron: thickness,
+          kapasitas: capacity,
+          bahan: material
+        });
       }
     }
   }
@@ -267,7 +302,7 @@ export const productController = {
         activeNav: 'products',
         categories,
         error: null,
-        csrfToken: res.locals.csrfToken || ''
+        csrfToken: res.locals?.csrfToken || ''
       });
     } catch (err) {
       logger.error('Product createView error:', { message: err.message });
@@ -294,33 +329,33 @@ export const productController = {
           categories,
           error: 'Nama produk (Bahasa Indonesia) wajib diisi.',
           formData: req.body,
-          csrfToken: res.locals.csrfToken || ''
+          csrfToken: res.locals?.csrfToken || ''
         });
       }
 
-      if (short_description_id && short_description_id.trim().length > 500) {
+      if (short_description_id && short_description_id.trim().length > 200) {
         const categories = await productCategoryModel.findAll({ activeOnly: true });
         return res.status(400).render('admin/products/create', {
           title: 'Tambah Produk Baru',
           pageTitle: 'Tambah Produk',
           activeNav: 'products',
           categories,
-          error: 'Deskripsi singkat (ID) maksimal 500 karakter.',
+          error: 'Deskripsi singkat (ID) maksimal 200 karakter.',
           formData: req.body,
-          csrfToken: res.locals.csrfToken || ''
+          csrfToken: res.locals?.csrfToken || ''
         });
       }
 
-      if (short_description_en && short_description_en.trim().length > 500) {
+      if (short_description_en && short_description_en.trim().length > 200) {
         const categories = await productCategoryModel.findAll({ activeOnly: true });
         return res.status(400).render('admin/products/create', {
           title: 'Tambah Produk Baru',
           pageTitle: 'Tambah Produk',
           activeNav: 'products',
           categories,
-          error: 'Deskripsi singkat (EN) maksimal 500 karakter.',
+          error: 'Deskripsi singkat (EN) maksimal 200 karakter.',
           formData: req.body,
-          csrfToken: res.locals.csrfToken || ''
+          csrfToken: res.locals?.csrfToken || ''
         });
       }
 
@@ -380,6 +415,34 @@ export const productController = {
         return res.redirect('/admin/products?error=' + encodeURIComponent('Produk tidak ditemukan.'));
       }
 
+      let galleryItems = [];
+      if (Array.isArray(product.gallery_images) && product.gallery_images.length > 0) {
+        const ids = product.gallery_images
+          .filter(x => typeof x === 'number' || (typeof x === 'string' && /^\d+$/.test(x.trim())))
+          .map(x => parseInt(x, 10));
+        let mediaMap = {};
+        if (ids.length > 0) {
+          const placeholders = ids.map(() => '?').join(',');
+          const mediaRows = await query(`SELECT id, file_url, filename FROM media WHERE id IN (${placeholders})`, ids);
+          mediaRows.forEach(m => { mediaMap[m.id] = m; });
+        }
+        galleryItems = product.gallery_images.map(item => {
+          if (typeof item === 'number' || (typeof item === 'string' && /^\d+$/.test(item.trim()))) {
+            const id = parseInt(item, 10);
+            const m = mediaMap[id];
+            return { id, url: m ? m.file_url : '', name: m ? m.filename : `Media #${id}` };
+          }
+          if (typeof item === 'string') {
+            return { id: null, url: item, name: item.split('/').pop() || 'Foto Galeri' };
+          }
+          if (typeof item === 'object' && item !== null) {
+            return { id: item.id || null, url: item.url || item.file_url || '', name: item.name || item.filename || 'Foto' };
+          }
+          return null;
+        }).filter(Boolean);
+      }
+      product.gallery_items = galleryItems;
+
       res.render('admin/products/edit', {
         title: 'Edit Produk - ' + product.name_id,
         pageTitle: 'Edit Produk Manufaktur',
@@ -387,7 +450,7 @@ export const productController = {
         product,
         categories,
         error: null,
-        csrfToken: res.locals.csrfToken || ''
+        csrfToken: res.locals?.csrfToken || ''
       });
     } catch (err) {
       logger.error('Product editView error:', { message: err.message });
@@ -411,11 +474,11 @@ export const productController = {
         return res.redirect('/admin/products?error=' + encodeURIComponent('Produk tidak ditemukan.'));
       }
 
-      if (short_description_id && short_description_id.trim().length > 500) {
-        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (ID) maksimal 500 karakter.'));
+      if (short_description_id && short_description_id.trim().length > 200) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (ID) maksimal 200 karakter.'));
       }
-      if (short_description_en && short_description_en.trim().length > 500) {
-        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (EN) maksimal 500 karakter.'));
+      if (short_description_en && short_description_en.trim().length > 200) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (EN) maksimal 200 karakter.'));
       }
 
       const technicalSpecs = parseTechnicalSpecs(req.body);
@@ -427,11 +490,17 @@ export const productController = {
       const hasVariantInput = req.body.variant_labels !== undefined
         || req.body.variants !== undefined
         || req.body.var_size !== undefined;
-      const hasSizeTableInput = req.body.size_code !== undefined
+      const hasSizeTableInput = req.body.kode_produk !== undefined
+        || req.body.size_code !== undefined
+        || req.body.lebar !== undefined
         || req.body.size_width !== undefined
+        || req.body.panjang !== undefined
         || req.body.size_length !== undefined
+        || req.body.tebal_micron !== undefined
         || req.body.size_thickness !== undefined
+        || req.body.kapasitas !== undefined
         || req.body.size_capacity !== undefined
+        || req.body.bahan !== undefined
         || req.body.size_material !== undefined
         || req.body.size_table !== undefined;
       const hasGalleryInput = req.body.gallery_images !== undefined || req.body.gallery !== undefined;

@@ -10,19 +10,18 @@
   </div>
 </div>
 
-<form action="/admin/products?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
-  <!-- Card 1: Informasi Utama -->
+<form action="/admin/products?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" id="productCreateForm">
   <div class="form-card">
     <div class="form-card-title">1. Informasi Pokok Produk</div>
 
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="name_id">Nama Produk (Bahasa Indonesia) *</label>
-        <input type="text" id="name_id" name="name_id" class="form-input" required placeholder="Contoh: Kantong Kresek HDPE Super Tebal">
+        <input type="text" id="name_id" name="name_id" class="form-input" required placeholder="Contoh: Kantong Kresek HDPE Super Tebal" value="<%= typeof formData !== 'undefined' && formData?.name_id ? formData.name_id : '' %>">
       </div>
       <div class="form-group">
         <label class="form-label" for="name_en">Nama Produk (English)</label>
-        <input type="text" id="name_en" name="name_en" class="form-input" placeholder="Example: Heavy Duty HDPE Shopping Bag">
+        <input type="text" id="name_en" name="name_en" class="form-input" placeholder="Example: Heavy Duty HDPE Shopping Bag" value="<%= typeof formData !== 'undefined' && formData?.name_en ? formData.name_en : '' %>">
       </div>
     </div>
 
@@ -32,7 +31,7 @@
         <select id="category_id" name="category_id" class="form-select">
           <option value="">Pilih Kategori...</option>
           <% categories.forEach(function(cat) { %>
-            <option value="<%= cat.id %>"><%= cat.name_id %></option>
+            <option value="<%= cat.id %>" <%= typeof formData !== 'undefined' && String(formData?.category_id) === String(cat.id) ? 'selected' : '' %>><%= cat.name_id %></option>
           <% }); %>
         </select>
       </div>
@@ -48,38 +47,50 @@
 
       <div class="form-group">
         <label class="form-label" for="sort_order">Nomor Urutan Tampil</label>
-        <input type="number" id="sort_order" name="sort_order" class="form-input" value="0" min="0">
+        <input type="number" id="sort_order" name="sort_order" class="form-input" value="<%= typeof formData !== 'undefined' && formData?.sort_order !== undefined ? formData.sort_order : '0' %>" min="0">
       </div>
     </div>
 
     <div class="form-group">
       <label class="form-label" for="material_specs">Ringkasan Karakteristik Material</label>
-      <input type="text" id="material_specs" name="material_specs" class="form-input" placeholder="Contoh: 100% Virgin HDPE Resins &bull; Food Contact Grade &bull; Ekolabel Ramah Lingkungan">
+      <input type="text" id="material_specs" name="material_specs" class="form-input" placeholder="Contoh: 100% Virgin HDPE Resins &bull; Food Contact Grade &bull; Ekolabel Ramah Lingkungan" value="<%= typeof formData !== 'undefined' && formData?.material_specs ? formData.material_specs : '' %>">
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="short_description_id">Deskripsi Singkat (ID)</label>
+        <textarea id="short_description_id" name="short_description_id" class="form-textarea" rows="3" maxlength="200" placeholder="Deskripsi singkat produk, tampil di bawah judul…"><%= typeof formData !== 'undefined' && formData?.short_description_id ? formData.short_description_id : '' %></textarea>
+        <div class="char-counter" id="counter_short_desc_id">0/200</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="short_description_en">Deskripsi Singkat (EN)</label>
+        <textarea id="short_description_en" name="short_description_en" class="form-textarea" rows="3" maxlength="200" placeholder="Deskripsi singkat produk, tampil di bawah judul…"><%= typeof formData !== 'undefined' && formData?.short_description_en ? formData.short_description_en : '' %></textarea>
+        <div class="char-counter" id="counter_short_desc_en">0/200</div>
+      </div>
     </div>
 
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="description_id">Deskripsi Lengkap (Bahasa Indonesia)</label>
-        <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Jelaskan aplikasi penggunaan, ketahanan beban, dan keunggulan produk..."></textarea>
+        <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Jelaskan aplikasi penggunaan, ketahanan beban, dan keunggulan produk..."><%= typeof formData !== 'undefined' && formData?.description_id ? formData.description_id : '' %></textarea>
       </div>
       <div class="form-group">
         <label class="form-label" for="description_en">Deskripsi Lengkap (English)</label>
-        <textarea id="description_en" name="description_en" class="form-textarea" placeholder="Explain product applications, tensile strength, and key features..."></textarea>
+        <textarea id="description_en" name="description_en" class="form-textarea" placeholder="Explain product applications, tensile strength, and key features..."><%= typeof formData !== 'undefined' && formData?.description_en ? formData.description_en : '' %></textarea>
       </div>
     </div>
-
   </div>
 
-  <!-- Card 2: Foto Produk -->
   <div class="form-card">
-    <div class="form-card-title">2. Foto Utama Produk</div>
-    <div class="form-group" style="margin-bottom: 0;">
+    <div class="form-card-title">2. Foto Utama &amp; Galeri Produk</div>
+    
+    <div class="form-group">
       <label class="form-label">Foto Utama Produk (Media Library)</label>
       <div class="media-picker-component">
         <input type="hidden" id="product_image_url" name="image_url" value="<%= typeof formData !== 'undefined' && formData?.image_url ? formData.image_url : '' %>">
         <div class="media-picker-preview-box">
-          <img src="<%= typeof formData !== 'undefined' && formData?.image_url ? formData.image_url : '' %>" alt="Pratinjau Produk" style="<%= typeof formData !== 'undefined' && formData?.image_url ? 'display: block;' : 'display: none;' %>">
-          <div class="media-picker-empty" style="<%= typeof formData !== 'undefined' && formData?.image_url ? 'display: none;' : '' %>">
+          <img src="<%= typeof formData !== 'undefined' && formData?.image_url ? formData.image_url : '' %>" alt="Pratinjau Produk" class="media-picker-preview-img <%= typeof formData !== 'undefined' && formData?.image_url ? '' : 'hidden' %>">
+          <div class="media-picker-empty <%= typeof formData !== 'undefined' && formData?.image_url ? 'hidden' : '' %>">
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <span>Belum ada foto produk dipilih</span>
           </div>
@@ -89,17 +100,31 @@
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             Pilih dari Media Library
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= typeof formData !== 'undefined' && formData?.image_url ? '' : 'display: none;' %>">Hapus</button>
+          <button type="button" class="btn btn-ghost btn-sm btn-clear-media <%= typeof formData !== 'undefined' && formData?.image_url ? '' : 'hidden' %>">Hapus</button>
         </div>
+      </div>
+    </div>
+
+    <div class="form-group prod-gallery-form-group">
+      <label class="form-label">Foto Gallery (ID) / Gallery Photos (EN)</label>
+      <div class="prod-gallery-wrap">
+        <div class="prod-gallery-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnOpenGalleryPicker">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Pilih Foto dari Library
+          </button>
+          <span class="prod-gallery-hint">Pilih beberapa foto sekaligus. Atur urutan dengan tombol ▲ ▼ atau hapus dengan &times;.</span>
+        </div>
+        <input type="hidden" id="gallery_images_input" name="gallery_images" value="<%= typeof formData !== 'undefined' && formData?.gallery_images ? (typeof formData.gallery_images === 'string' ? formData.gallery_images : JSON.stringify(formData.gallery_images)) : '[]' %>">
+        <div class="prod-gallery-strip" id="prodGalleryStrip"></div>
       </div>
     </div>
   </div>
 
-  <!-- Card 3: Spesifikasi Teknis Dinamis -->
   <div class="form-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
-      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">3. Tabel Spesifikasi Teknis (Parameter &amp; Nilai)</div>
-      <button type="button" id="btnAddSpecRow" class="btn-add-row" onclick="addSpecRow()">
+    <div class="admin-card-header-flex">
+      <div class="form-card-title admin-card-title-plain">3. Tabel Spesifikasi Teknis (Parameter &amp; Nilai)</div>
+      <button type="button" id="btnAddSpecRow" class="btn-add-row">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         <span>Tambah Baris Parameter</span>
       </button>
@@ -114,7 +139,7 @@
           <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: High Density Polyethylene)" value="High Density Polyethylene (HDPE)">
         </div>
         <div class="spec-col-action">
-          <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+          <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" title="Hapus baris" aria-label="Hapus baris">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
           </button>
         </div>
@@ -127,20 +152,7 @@
           <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="SNI &amp; ISO 9001:2015">
         </div>
         <div class="spec-col-action">
-          <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-          </button>
-        </div>
-      </div>
-      <div class="spec-item-row">
-        <div class="spec-col-key">
-          <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="Sifat Biodegradable">
-        </div>
-        <div class="spec-col-val">
-          <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="Tersedia varian 100% degradable (Oxo/Bio)">
-        </div>
-        <div class="spec-col-action">
-          <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+          <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" title="Hapus baris" aria-label="Hapus baris">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
           </button>
         </div>
@@ -148,46 +160,63 @@
     </div>
   </div>
 
-  <!-- Card 4: Varian Produk Dinamis -->
   <div class="form-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
-      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">4. Varian Ukuran &amp; Spesifikasi Produk</div>
-      <button type="button" id="btnAddVariantRow" class="btn-add-row" onclick="addVariantRow()">
+    <div class="admin-card-header-flex">
+      <div class="form-card-title admin-card-title-plain">4. Variasi Ukuran (ID) / Size Variants (EN)</div>
+      <button type="button" id="btnAddVariant" class="btn-add-row">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>Tambah Baris Varian</span>
+        <span>+ Tambah Ukuran</span>
       </button>
     </div>
+    <p class="admin-field-hint">Daftar variasi ukuran yang tampil sebagai pil interaktif di halaman publik.</p>
+    <div id="variantsContainer">
+      <div class="prod-variant-row-item">
+        <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="24 x 40 cm (40 Micron)">
+        <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus ukuran" aria-label="Hapus ukuran">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        </button>
+      </div>
+      <div class="prod-variant-row-item">
+        <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 28 x 48 cm (45 Micron)" value="28 x 48 cm (45 Micron)">
+        <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus ukuran" aria-label="Hapus ukuran">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <div class="form-card">
+    <div class="admin-card-header-flex">
+      <div class="form-card-title admin-card-title-plain">5. Tabel Ukuran (ID) / Size Table (EN)</div>
+      <button type="button" id="btnAddSizeRow" class="btn-add-row">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>+ Tambah Baris</span>
+      </button>
+    </div>
+    <p class="admin-field-hint">Tabel dimensi komprehensif produk untuk tab "Tabel Ukuran" / "Size Chart".</p>
     <div class="table-scroll-wrapper">
-      <table class="data-table" id="variantsTable">
+      <table class="data-table" id="sizeTable">
         <thead>
           <tr>
-            <th>Ukuran / Dimensi (cm/inch)</th>
-            <th>Ketebalan (Micron)</th>
-            <th>Pilihan Warna</th>
-            <th>Bahan / Tipe</th>
-            <th style="width: 54px; text-align: center;">Aksi</th>
+            <th>Kode Produk</th>
+            <th>Lebar</th>
+            <th>Panjang</th>
+            <th>Tebal (Micron)</th>
+            <th>Kapasitas</th>
+            <th>Bahan</th>
+            <th class="table-col-action">Aksi</th>
           </tr>
         </thead>
-        <tbody id="variantsBody">
+        <tbody id="sizeTableBody">
           <tr>
-            <td><input type="text" name="var_size[]" class="form-input" placeholder="24 x 40 cm" value="24 x 40 cm"></td>
-            <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.035 mm" value="0.035 mm"></td>
-            <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam, Merah" value="Putih, Merah"></td>
-            <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Standard" value="HDPE Virgin"></td>
-            <td style="text-align: center; vertical-align: middle;">
-              <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td><input type="text" name="var_size[]" class="form-input" placeholder="28 x 48 cm" value="28 x 48 cm"></td>
-            <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.040 mm" value="0.040 mm"></td>
-            <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam" value="Putih, Hitam"></td>
-            <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Standard" value="HDPE Virgin"></td>
-            <td style="text-align: center; vertical-align: middle;">
-              <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
+            <td><input type="text" name="kode_produk[]" class="form-input" placeholder="SL-3040" value="SL-3040"></td>
+            <td><input type="text" name="lebar[]" class="form-input" placeholder="30 cm" value="30 cm"></td>
+            <td><input type="text" name="panjang[]" class="form-input" placeholder="40 cm" value="40 cm"></td>
+            <td><input type="text" name="tebal_micron[]" class="form-input" placeholder="40 micron" value="40 micron"></td>
+            <td><input type="text" name="kapasitas[]" class="form-input" placeholder="5 kg" value="5 kg"></td>
+            <td><input type="text" name="bahan[]" class="form-input" placeholder="HDPE Virgin" value="HDPE Virgin"></td>
+            <td class="table-col-action">
+              <button type="button" class="btn-row-action btn-row-delete btn-remove-size-row" title="Hapus baris" aria-label="Hapus baris">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
               </button>
             </td>
@@ -197,115 +226,292 @@
     </div>
   </div>
 
-  <!-- Card 5: Optimasi SEO -->
   <div class="form-card">
-    <div class="form-card-title">5. Pengaturan Meta SEO (Mesin Pencari Google)</div>
+    <div class="form-card-title">6. Pengaturan Meta SEO (Mesin Pencari Google)</div>
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="meta_title_id">Meta Title (ID)</label>
-        <input type="text" id="meta_title_id" name="meta_title_id" class="form-input" placeholder="Judul pada tab browser &amp; Google">
+        <input type="text" id="meta_title_id" name="meta_title_id" class="form-input" placeholder="Judul pada tab browser &amp; Google" value="<%= typeof formData !== 'undefined' && formData?.meta_title_id ? formData.meta_title_id : '' %>">
       </div>
       <div class="form-group">
         <label class="form-label" for="meta_title_en">Meta Title (EN)</label>
-        <input type="text" id="meta_title_en" name="meta_title_en" class="form-input" placeholder="Browser title for English visitors">
+        <input type="text" id="meta_title_en" name="meta_title_en" class="form-input" placeholder="Browser title for English visitors" value="<%= typeof formData !== 'undefined' && formData?.meta_title_en ? formData.meta_title_en : '' %>">
       </div>
     </div>
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="meta_desc_id">Meta Description (ID)</label>
-        <textarea id="meta_desc_id" name="meta_desc_id" class="form-textarea" placeholder="Ringkasan 1-2 kalimat untuk snippet Google pencarian Indonesia..."></textarea>
+        <textarea id="meta_desc_id" name="meta_desc_id" class="form-textarea" placeholder="Ringkasan 1-2 kalimat untuk snippet Google pencarian Indonesia..."><%= typeof formData !== 'undefined' && formData?.meta_desc_id ? formData.meta_desc_id : '' %></textarea>
       </div>
       <div class="form-group">
         <label class="form-label" for="meta_desc_en">Meta Description (EN)</label>
-        <textarea id="meta_desc_en" name="meta_desc_en" class="form-textarea" placeholder="1-2 sentences summary for Google English snippets..."></textarea>
+        <textarea id="meta_desc_en" name="meta_desc_en" class="form-textarea" placeholder="1-2 sentences summary for Google English snippets..."><%= typeof formData !== 'undefined' && formData?.meta_desc_en ? formData.meta_desc_en : '' %></textarea>
       </div>
     </div>
   </div>
 
-  <div class="form-actions-bar" style="margin-bottom: 2rem;">
+  <div class="form-actions-bar form-actions-sticky">
     <a href="/admin/products" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px;">Simpan Produk Baru</button>
+    <button type="submit" class="btn btn-primary btn-submit-form">Simpan Produk Baru</button>
   </div>
 </form>
 
 <script>
-  function addSpecRow() {
-    const container = document.getElementById('specsContainer');
-    const div = document.createElement('div');
-    div.className = 'spec-item-row';
-    div.innerHTML = `
-      <div class="spec-col-key">
-        <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Warna)">
-      </div>
-      <div class="spec-col-val">
-        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: Transparan / Custom)">
-      </div>
-      <div class="spec-col-action">
-        <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+  (function() {
+    function setupCharCounter(textareaId, counterId, maxLen) {
+      const textarea = document.getElementById(textareaId);
+      const counter = document.getElementById(counterId);
+      if (!textarea || !counter) return;
+
+      function update() {
+        const len = textarea.value.length;
+        counter.textContent = `${len}/${maxLen}`;
+        if (maxLen - len <= 10) {
+          counter.classList.add('text-danger', 'counter-danger');
+        } else {
+          counter.classList.remove('text-danger', 'counter-danger');
+        }
+      }
+
+      textarea.addEventListener('input', update);
+      update();
+    }
+
+    setupCharCounter('short_description_id', 'counter_short_desc_id', 200);
+    setupCharCounter('short_description_en', 'counter_short_desc_en', 200);
+
+    const galleryStrip = document.getElementById('prodGalleryStrip');
+    const galleryInput = document.getElementById('gallery_images_input');
+    const btnOpenGallery = document.getElementById('btnOpenGalleryPicker');
+
+    function updateGalleryInput() {
+      if (!galleryStrip || !galleryInput) return;
+      const items = galleryStrip.querySelectorAll('.prod-gallery-item');
+      const list = [];
+      items.forEach(el => {
+        const id = el.getAttribute('data-id');
+        if (id && /^\d+$/.test(id)) {
+          list.push(parseInt(id, 10));
+        } else if (el.getAttribute('data-url')) {
+          list.push(el.getAttribute('data-url'));
+        }
+      });
+      galleryInput.value = JSON.stringify(list);
+    }
+
+    function createGalleryItem(item) {
+      const id = item.id || '';
+      const url = item.file_url || item.url || '';
+      if (!url) return null;
+
+      const div = document.createElement('div');
+      div.className = 'prod-gallery-item';
+      div.setAttribute('data-id', id);
+      div.setAttribute('data-url', url);
+
+      div.innerHTML = `
+        <div class="prod-gallery-thumb-box">
+          <img src="${url}" alt="" class="prod-gallery-thumb" width="64" height="64" loading="lazy">
+          <button type="button" class="prod-gallery-btn-del" title="Hapus foto" aria-label="Hapus foto">&times;</button>
+        </div>
+        <div class="prod-gallery-reorder">
+          <button type="button" class="prod-gallery-btn-move prod-gallery-btn-up" title="Geser ke kiri / atas" aria-label="Geser ke kiri">&#9650;</button>
+          <button type="button" class="prod-gallery-btn-move prod-gallery-btn-down" title="Geser ke kanan / bawah" aria-label="Geser ke kanan">&#9660;</button>
+        </div>
+      `;
+
+      div.querySelector('.prod-gallery-btn-del').addEventListener('click', () => {
+        div.remove();
+        updateGalleryInput();
+      });
+
+      div.querySelector('.prod-gallery-btn-up').addEventListener('click', () => {
+        const prev = div.previousElementSibling;
+        if (prev) {
+          galleryStrip.insertBefore(div, prev);
+          updateGalleryInput();
+        }
+      });
+
+      div.querySelector('.prod-gallery-btn-down').addEventListener('click', () => {
+        const next = div.nextElementSibling;
+        if (next) {
+          galleryStrip.insertBefore(next, div);
+          updateGalleryInput();
+        }
+      });
+
+      return div;
+    }
+
+    if (btnOpenGallery) {
+      btnOpenGallery.addEventListener('click', () => {
+        if (typeof window.openMediaPicker === 'function') {
+          window.openMediaPicker({
+            multiple: true,
+            type: 'image',
+            onSelect: (selectedList) => {
+              if (Array.isArray(selectedList)) {
+                selectedList.forEach(m => {
+                  const existing = galleryStrip.querySelector(`[data-id="${m.id}"], [data-url="${m.file_url}"]`);
+                  if (!existing) {
+                    const el = createGalleryItem(m);
+                    if (el) galleryStrip.appendChild(el);
+                  }
+                });
+                updateGalleryInput();
+              }
+            }
+          });
+        }
+      });
+    }
+
+    const btnAddVariant = document.getElementById('btnAddVariant');
+    const variantsContainer = document.getElementById('variantsContainer');
+
+    function createVariantRow(val = '') {
+      const div = document.createElement('div');
+      div.className = 'prod-variant-row-item';
+      div.innerHTML = `
+        <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="${val}">
+        <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus varian" aria-label="Hapus varian">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
         </button>
-      </div>
-    `;
-    container.appendChild(div);
-    div.querySelector('input').focus();
-  }
-  window.addSpecRow = addSpecRow;
-
-  function removeSpecRow(btn) {
-    const container = document.getElementById('specsContainer');
-    const rows = container.querySelectorAll('.spec-item-row, .form-row-2');
-    if (rows.length <= 1) {
-      if (typeof showToast === 'function') {
-        showToast('Minimal 1 baris spesifikasi teknis harus tersedia.');
-      } else {
-        alert('Minimal 1 baris spesifikasi teknis harus tersedia.');
-      }
-      return;
+      `;
+      div.querySelector('.btn-remove-variant').addEventListener('click', () => {
+        const rows = variantsContainer.querySelectorAll('.prod-variant-row-item');
+        if (rows.length > 1) {
+          div.remove();
+        } else {
+          div.querySelector('input').value = '';
+        }
+      });
+      return div;
     }
-    const row = btn.closest('.spec-item-row, .form-row-2');
-    if (row) row.remove();
-  }
-  window.removeSpecRow = removeSpecRow;
 
-  function addVariantRow() {
-    const tbody = document.getElementById('variantsBody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="text" name="var_size[]" class="form-input" placeholder="Ukuran"></td>
-      <td><input type="text" name="var_thickness[]" class="form-input" placeholder="Tebal"></td>
-      <td><input type="text" name="var_color[]" class="form-input" placeholder="Warna"></td>
-      <td><input type="text" name="var_material[]" class="form-input" placeholder="Bahan"></td>
-      <td style="text-align: center; vertical-align: middle;">
-        <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-        </button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-    tr.querySelector('input').focus();
-  }
-  window.addVariantRow = addVariantRow;
+    if (btnAddVariant && variantsContainer) {
+      btnAddVariant.addEventListener('click', () => {
+        const row = createVariantRow('');
+        variantsContainer.appendChild(row);
+        row.querySelector('input').focus();
+      });
 
-  function removeVariantRow(btn) {
-    const tbody = document.getElementById('variantsBody');
-    const rows = tbody.querySelectorAll('tr');
-    if (rows.length <= 1) {
-      if (typeof showToast === 'function') {
-        showToast('Minimal 1 baris varian ukuran harus tersedia.');
-      } else {
-        alert('Minimal 1 baris varian ukuran harus tersedia.');
-      }
-      return;
+      variantsContainer.querySelectorAll('.btn-remove-variant').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const row = btn.closest('.prod-variant-row-item');
+          const rows = variantsContainer.querySelectorAll('.prod-variant-row-item');
+          if (rows.length > 1) {
+            row.remove();
+          } else {
+            row.querySelector('input').value = '';
+          }
+        });
+      });
     }
-    const row = btn.closest('tr');
-    if (row) row.remove();
-  }
-  window.removeVariantRow = removeVariantRow;
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btnAddSpecRow')?.addEventListener('click', addSpecRow);
-    document.getElementById('btnAddVariantRow')?.addEventListener('click', addVariantRow);
-  });
+    const btnAddSizeRow = document.getElementById('btnAddSizeRow');
+    const sizeTableBody = document.getElementById('sizeTableBody');
+
+    function createSizeRow(data = {}) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" name="kode_produk[]" class="form-input" placeholder="SL-3040" value="${data.kode_produk || data.product_code || ''}"></td>
+        <td><input type="text" name="lebar[]" class="form-input" placeholder="30 cm" value="${data.lebar || data.width || ''}"></td>
+        <td><input type="text" name="panjang[]" class="form-input" placeholder="40 cm" value="${data.panjang || data.length || ''}"></td>
+        <td><input type="text" name="tebal_micron[]" class="form-input" placeholder="40 micron" value="${data.tebal_micron || data.thickness || ''}"></td>
+        <td><input type="text" name="kapasitas[]" class="form-input" placeholder="5 kg" value="${data.kapasitas || data.capacity || ''}"></td>
+        <td><input type="text" name="bahan[]" class="form-input" placeholder="HDPE Virgin" value="${data.bahan || data.material || ''}"></td>
+        <td class="table-col-action">
+          <button type="button" class="btn-row-action btn-row-delete btn-remove-size-row" title="Hapus baris" aria-label="Hapus baris">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          </button>
+        </td>
+      `;
+      tr.querySelector('.btn-remove-size-row').addEventListener('click', () => {
+        const rows = sizeTableBody.querySelectorAll('tr');
+        if (rows.length > 1) {
+          tr.remove();
+        } else {
+          tr.querySelectorAll('input').forEach(inp => inp.value = '');
+        }
+      });
+      return tr;
+    }
+
+    if (btnAddSizeRow && sizeTableBody) {
+      btnAddSizeRow.addEventListener('click', () => {
+        const row = createSizeRow();
+        sizeTableBody.appendChild(row);
+        row.querySelector('input').focus();
+      });
+
+      sizeTableBody.querySelectorAll('.btn-remove-size-row').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const row = btn.closest('tr');
+          const rows = sizeTableBody.querySelectorAll('tr');
+          if (rows.length > 1) {
+            row.remove();
+          } else {
+            row.querySelectorAll('input').forEach(inp => inp.value = '');
+          }
+        });
+      });
+    }
+
+    const btnAddSpecRow = document.getElementById('btnAddSpecRow');
+    const specsContainer = document.getElementById('specsContainer');
+
+    function createSpecRow() {
+      const div = document.createElement('div');
+      div.className = 'spec-item-row';
+      div.innerHTML = `
+        <div class="spec-col-key">
+          <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Warna)">
+        </div>
+        <div class="spec-col-val">
+          <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: Transparan / Custom)">
+        </div>
+        <div class="spec-col-action">
+          <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" title="Hapus baris" aria-label="Hapus baris">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          </button>
+        </div>
+      `;
+      div.querySelector('.btn-remove-spec').addEventListener('click', () => {
+        const rows = specsContainer.querySelectorAll('.spec-item-row');
+        if (rows.length > 1) {
+          div.remove();
+        } else {
+          div.querySelectorAll('input').forEach(inp => inp.value = '');
+        }
+      });
+      return div;
+    }
+
+    if (btnAddSpecRow && specsContainer) {
+      btnAddSpecRow.addEventListener('click', () => {
+        const row = createSpecRow();
+        specsContainer.appendChild(row);
+        row.querySelector('input').focus();
+      });
+
+      specsContainer.querySelectorAll('.btn-remove-spec').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const row = btn.closest('.spec-item-row');
+          const rows = specsContainer.querySelectorAll('.spec-item-row');
+          if (rows.length > 1) {
+            row.remove();
+          } else {
+            row.querySelectorAll('input').forEach(inp => inp.value = '');
+          }
+        });
+      });
+    }
+  })();
 </script>
+
+<script src="/tinymce/tinymce.min.js"></script>
+<script src="/js/admin-editor.js"></script>
 
 <%- include('../../partials/admin-footer') %>

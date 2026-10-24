@@ -1,6 +1,7 @@
 import productModel from '../../models/productModel.js';
 import productCategoryModel from '../../models/productCategoryModel.js';
 import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
+import { query } from '../../config/database.js';
 import logger from '../../utils/logger.js';
 
 export const productController = {
@@ -181,6 +182,25 @@ export const productController = {
       } else if (mainImage) {
         gallery = [mainImage];
       }
+
+      const idList = gallery.filter(item => typeof item === 'number' || (typeof item === 'string' && /^\d+$/.test(item.trim())));
+      if (idList.length > 0) {
+        const ids = idList.map(x => parseInt(x, 10));
+        const placeholders = ids.map(() => '?').join(',');
+        const mediaRows = await query(`SELECT id, file_url FROM media WHERE id IN (${placeholders})`, ids);
+        const mediaMap = {};
+        mediaRows.forEach(m => { mediaMap[m.id] = m.file_url; });
+        gallery = gallery.map(item => {
+          if (typeof item === 'number' || (typeof item === 'string' && /^\d+$/.test(item.trim()))) {
+            return mediaMap[parseInt(item, 10)] || null;
+          }
+          return item;
+        }).filter(Boolean);
+        if (gallery.length === 0 && mainImage) {
+          gallery = [mainImage];
+        }
+      }
+
       product.gallery_images = gallery;
       product.gallery = gallery;
       product.images = gallery;

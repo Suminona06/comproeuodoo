@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 2 Task (T-202 s/d T-203)
-- **Total Task Selesai:** 201 Task (T-01 s/d T-201)
+- **Task Aktif Terbuka:** 1 Task (T-203)
+- **Total Task Selesai:** 202 Task (T-01 s/d T-202)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-199**.
 
@@ -65,7 +65,7 @@
 
 - **Modul:** Admin CMS & Media Library
 - **Prioritas:** High
-- **Status:** Open
+- **Status:** Done
 - **Deskripsi:** Memperbarui Universal Media Picker untuk mendukung mode multi-select, serta memperbarui formulir tambah dan edit produk di admin (`views/admin/products/create.ejs` dan `edit.ejs`): galeri foto multi-picker dengan tombol pengatur urutan (panah) dan hapus, textarea deskripsi singkat dengan counter 200 karakter, editor TinyMCE untuk deskripsi lengkap, input varian ukuran dinamis, dan tabel ukuran dinamis 6 kolom.
 - **Acceptance Criteria:**
   - Universal Media Picker mendukung opsi `multiple: true` untuk memilih beberapa gambar sekaligus tanpa merusak mode single-select eksisting.
