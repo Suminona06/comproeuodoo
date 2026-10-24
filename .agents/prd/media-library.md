@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/admin/mediaController.js, views/admin/media/, views/partials/media-picker-modal.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: controllers/admin/mediaController.js, views/admin/media/, views/partials/media-picker-modal.ejs
 
 # PRD: Modul Media Library (Media & Storage)
 
@@ -32,7 +32,7 @@ Modul Media Library mengelola penyimpanan, optimasi, dan penggunaan aset visual 
 ### Fleksibilitas Storage Driver
 - Mendukung penyimpanan berkas lokal (`public/uploads/`) untuk lingkungan pengembangan dan penyimpanan awan (Amazon S3 / kompatibel S3) melalui konfigurasi environment `STORAGE_DRIVER`.
 
-### FR-27: Dukungan Mode Multi-Select pada Universal Media Picker [PENDING T-202]
+### FR-27: Dukungan Mode Multi-Select pada Universal Media Picker
 - Universal Media Picker Modal (`views/partials/media-picker-modal.ejs`) mendukung mode seleksi ganda (*multi-select*).
 - Form pemanggil dapat mengaktifkan mode ini melalui konfigurasi opsi: `{ multiple: true }`.
 - Fitur interaksi mode multi-select:

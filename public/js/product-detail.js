@@ -91,33 +91,4 @@
       });
     });
   });
-
-  var stickyBar = document.getElementById('pdStickyCta');
-  var stickyClose = document.getElementById('pdStickyClose');
-  var card = document.querySelector('.pd-card');
-
-  if (stickyBar) {
-    var isClosed = false;
-    try {
-      isClosed = sessionStorage.getItem('pd-sticky-closed') === '1';
-    } catch (err) {}
-
-    if (isClosed) {
-      stickyBar.setAttribute('hidden', '');
-    } else {
-      document.documentElement.classList.add('pd-sticky-active');
-      if (card) card.classList.add('pd-sticky-active');
-    }
-
-    if (stickyClose) {
-      stickyClose.addEventListener('click', function () {
-        stickyBar.setAttribute('hidden', '');
-        document.documentElement.classList.remove('pd-sticky-active');
-        if (card) card.classList.remove('pd-sticky-active');
-        try {
-          sessionStorage.setItem('pd-sticky-closed', '1');
-        } catch (err) {}
-      });
-    }
-  }
 })();

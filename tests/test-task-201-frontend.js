@@ -31,8 +31,7 @@ async function runTests() {
   assert(cssContent.includes('.pd-panel'), 'CSS must include .pd-panel');
   assert(cssContent.includes('.pd-size-scroll'), 'CSS must include .pd-size-scroll');
   assert(cssContent.includes('.pd-size'), 'CSS must include .pd-size');
-  assert(cssContent.includes('.pd-sticky-cta'), 'CSS must include .pd-sticky-cta');
-  assert(cssContent.includes('.pd-sticky-close'), 'CSS must include .pd-sticky-close');
+  assert(!cssContent.includes('.pd-sticky-cta'), 'CSS must NOT include .pd-sticky-cta (distilled)');
   assert(cssContent.includes('attr(data-l)'), 'CSS must include attr(data-l) for mobile table card mode');
   console.log('✓ All CSS classes and required responsive rules found in components.css');
 
@@ -44,8 +43,6 @@ async function runTests() {
   assert(!hasLineComment && !hasBlockComment, 'product-detail.js must contain zero comments');
   assert(jsContent.includes('pd-fade-out'), 'JS must include fade-out class toggle');
   assert(jsContent.includes('decode'), 'JS must include img.decode');
-  assert(jsContent.includes('sessionStorage'), 'JS must handle sessionStorage');
-  assert(jsContent.includes('pd-sticky-closed'), 'JS must store pd-sticky-closed');
   assert(jsContent.includes('prefers-reduced-motion'), 'JS must check prefers-reduced-motion');
   console.log('✓ public/js/product-detail.js is valid and comment-free');
 
@@ -59,7 +56,7 @@ async function runTests() {
 
   // 4. Verify HTTP Response from dev server
   const html = await new Promise((resolve, reject) => {
-    http.get('http://localhost:3000/products/soft-loop-handle-shopping-bag', (res) => {
+    http.get('http://127.0.0.1:3000/products/soft-loop-handle-shopping-bag', (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => resolve(data));
@@ -78,7 +75,7 @@ async function runTests() {
   assert(html.includes('class="pd-tabbar"'), 'Rendered HTML contains .pd-tabbar');
   assert(html.includes('class="pd-size"'), 'Rendered HTML contains .pd-size');
   assert(html.includes('data-l="Kode Produk"'), 'Rendered HTML size table contains data-l="Kode Produk"');
-  assert(html.includes('class="pd-sticky-cta"'), 'Rendered HTML contains .pd-sticky-cta');
+  assert(!html.includes('class="pd-sticky-cta"'), 'Rendered HTML must NOT contain .pd-sticky-cta (distilled)');
   assert(html.includes('href="https://wa.me/'), 'Rendered HTML contains WhatsApp quote link');
   assert(html.includes('Halo%2C%20saya%20tertarik%20dengan%20produk%20Soft%20Loop%20Handle%20Shopping%20Bag'), 'Rendered HTML contains properly encoded WhatsApp message');
   assert(html.includes('<script src="/js/product-detail.js" defer></script>'), 'Rendered HTML includes product-detail.js script tag');

@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-198)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-203)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-10-23  
-**Status Keseluruhan:** Selesai 100% (198 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-10-24  
+**Status Keseluruhan:** Selesai 100% (203 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-198)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-203)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -196,3 +196,14 @@
     - [x] T-196: Tombol "Muat Lebih Banyak" (Progressive Enhancement AJAX & Transisi Halus)
     - [x] T-197: Tata Letak Responsif Multi-Breakpoint & Adaptasi Mobile
     - [x] T-198: Audit Aksesibilitas WCAG AA, Kepatuhan CSP & Uji Regresi Menyeluruh
+
+- **Task Redesain Halaman Detail Produk (PDP) & Admin CMS v1:** [archive/2026-10-23_product-detail-redesign.md](2026-10-23_product-detail-redesign.md)
+  - **Tanggal:** 2026-10-23 s/d 2026-10-24
+  - **Total Task:** 5 Task terperinci (T-199 s/d T-203)
+  - **Status:** Selesai 100% (5/5 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-199: Migrasi Database Skema Kolom Baru Produk
+    - [x] T-200: Backend Model, Controller & Validasi Server-Side
+    - [x] T-201: Frontend Publik Halaman Detail Produk Baru
+    - [x] T-202: Admin CMS Form Produk & Multi-Select Media Picker
+    - [x] T-203: QA, Kepatuhan CSP, Audit Aksesibilitas WCAG AA & Uji Regresi

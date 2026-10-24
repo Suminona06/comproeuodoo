@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/admin/mediaController.js, middleware/uploadMiddleware.js, models/mediaModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: controllers/admin/mediaController.js, middleware/uploadMiddleware.js, models/mediaModel.js
 
 # Tech Spec: Modul Media Library (Media & Storage)
 
@@ -64,7 +64,7 @@ Jika ditemukan referensi aktif, sistem mengembalikan daftar lokasi keterkaitan d
 
 ---
 
-## 6. Integrasi Multi-Select Universal Media Picker [PENDING T-202]
+## 6. Integrasi Multi-Select Universal Media Picker
 1. **Konfigurasi Klien (`public/js/media-picker.js`):**
    - Fungsi `openModal(options)` menerima opsi `multiple: true` (default `false`).
    - Variabel state seleksi:

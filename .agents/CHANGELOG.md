@@ -23,3 +23,4 @@
 - 2026-10-20 | Revisi Homepage CTA & Merek v1: Dual CTA banner hero slider dan strip marquee merek .brand-strip-* | T-182..T-191
 - 2026-10-21 | Refaktor dokumentasi spesifikasi modular per domain, pemangkasan riwayat lama & workflow baru | -
 - 2026-10-23 | Redesain Katalog Produk (PLP): sidebar kategori dinamis, debounced search, pengurutan, kartu potret minimalis .plp-*, load more AJAX | T-192..T-198
+- 2026-10-23 | Redesain halaman detail produk: layout grid, gallery, tab deskripsi+tabel ukuran, admin field baru | T-199–T-203

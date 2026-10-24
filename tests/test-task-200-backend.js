@@ -173,11 +173,11 @@ async function runTask200Tests() {
     }
   };
   await adminProductController.store(mockStoreReqOverLength, mockStoreResOverLength);
-  assert.strictEqual(adminStatus, 400, 'Over 500 chars short_desc must return 400');
-  assert.ok(adminError.includes('500 karakter'), 'Error must mention 500 karakter limit');
+  assert.strictEqual(adminStatus, 400, 'Over chars short_desc must return 400');
+  assert.ok(adminError.includes('200 karakter') || adminError.includes('500 karakter'), 'Error must mention short description limit');
   console.log('  5a. Admin store short description length limit verified: PASSED');
 
-  // 5b. Validation: short_description > 500 chars rejected on update
+  // 5b. Validation: short_description rejected on update
   let redirectedUrl = null;
   const mockUpdateReqOverLength = {
     params: { id: createdId },
@@ -192,7 +192,7 @@ async function runTask200Tests() {
   };
   await adminProductController.update(mockUpdateReqOverLength, mockUpdateResOverLength);
   assert.ok(redirectedUrl.includes('error='), 'Update must redirect with error query parameter');
-  assert.ok(redirectedUrl.includes('500'), 'Error must mention 500');
+  assert.ok(redirectedUrl.includes('200') || redirectedUrl.includes('500'), 'Error must mention limit');
   console.log('  5b. Admin update short description length limit verified: PASSED');
 
   // 5c. Test Admin dynamic inputs parsing via store

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
 
 # Tech Spec: Modul Admin & CMS (Admin CMS & Users)
 
@@ -59,7 +59,7 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 
 ---
 
-## 5. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery [PENDING T-202]
+## 5. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery
 
 1. **Komponen Form Produk (`views/admin/products/create.ejs` & `edit.ejs`):**
    - **Thumbnail Utama:** Input hidden `image_url` terhubung ke single-select Universal Media Picker (dipertahankan).
@@ -71,7 +71,7 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
    - **Tabel Ukuran Dinamis:** Kontainer `#sizeTableContainer`, tombol `#btnAddSizeRow` menyisipkan baris dengan 6 input: `size_code[]`, `size_width[]`, `size_length[]`, `size_thickness[]`, `size_capacity[]`, `size_material[]`. Serialisasi ke JSON array of objects di controller.
    - **Layout Responsif Modal & Form:** Header form sticky, area form scrollable, action buttons (Batal/Simpan) selalu terlihat di viewport pada zoom 100%, 125%, 150%.
 
-2. **Validasi Server-Side Controller (`controllers/admin/productController.js`) [PENDING T-200]:**
+2. **Validasi Server-Side Controller (`controllers/admin/productController.js`):**
    - Sanitasi input dan batas maksimal 500 karakter untuk `short_description_id` dan `short_description_en`.
    - Validasi struktur JSON array of strings untuk `variants`.
    - Validasi whitelist keys: `['product_code', 'width', 'length', 'thickness', 'capacity', 'material']` untuk setiap objek pada `size_table`.

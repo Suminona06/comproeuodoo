@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-23 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
 
 # PRD: Modul Produk & Katalog Manufaktur (Products Catalog)
 
@@ -21,7 +21,7 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - Admin dapat mengunduh seluruh data katalog ke file spreadsheet `.csv` via `/admin/products/export`.
 - Kolom CSV: ID, SKU/Slug, Nama Produk (ID/EN), Kategori, Status Publikasi, Tanggal Dibuat.
 
-### FR-24: Redesain Layout Halaman Detail Produk (PDP) [PENDING T-201]
+### FR-24: Redesain Layout Halaman Detail Produk (PDP)
 - Akses detail melalui URL ramah SEO: `/products/:slug` dengan isolasi gaya prefix `.pd-*`.
 - **Layout Grid 5:6:** 2 kolom berimbang (`minmax(0, 5fr) minmax(0, 6fr)` gap 34px) di desktop (>= 901px), reflow 1 kolom di mobile/tablet (<= 900px).
 - **Galeri Foto Sticky & Thumbnail:** Kolom galeri sticky di desktop (`position: sticky; top: 24px`); foto utama rasio `4 / 3.4`, radius `var(--r-xl)`, border `var(--color-border)`; strip thumbnail `76 x 64 px` border hijau brand `var(--color-primary)` saat aktif (`aria-pressed="true"`) dari array JSON `gallery_images`. Klik thumbnail memicu pergantian gambar dengan transisi opacity 200ms tanpa layout shift.
@@ -32,10 +32,9 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - **Bilah Tab & Panel Konten:** Tab "Deskripsi" dan "Tabel Ukuran" dengan underline aktif hijau brand `var(--color-primary)`. Default tab: Deskripsi.
   - Panel Deskripsi: teks kaya TinyMCE (`description_id/en`) max `75ch` warna `var(--color-text-variant)`.
   - Panel Tabel Ukuran: tabel 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dari array JSON `size_table`. Mobile <= 600px: thead sembunyi, setiap baris tampil sebagai card dengan label `data-l`. Jika `size_table` kosong, tab tabel ukuran disembunyikan.
-- **Sticky CTA Mobile (<= 760px):** Bilah melayang di dasar viewport memuat 2 tombol aksi kompak (48px) dan tombol silang (×) penutup yang menyimpan status tutup di `sessionStorage`.
 - **Aksesibilitas & Animasi:** Animasi hanya GPU transform/opacity, `prefers-reduced-motion` statis.
 
-### FR-25: Skema Kolom Baru Database Produk [PENDING T-199]
+### FR-25: Skema Kolom Baru Database Produk
 - Penambahan kolom nullable pada tabel `products` via migrasi `database/migrations/015_add_product_detail_fields.sql`:
   - `short_description_id`: VARCHAR(500) NULL
   - `short_description_en`: VARCHAR(500) NULL

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
 
 # PRD: Modul Admin & CMS (Admin CMS & Users)
 
@@ -47,7 +47,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   - Jumlah Artikel Berita terpublikasi.
   - Tabel 5 Inquiry terbaru untuk penanganan cepat tim sales.
 
-### FR-26: Formulir Produk Admin Terpadu & Field Dinamis [PENDING T-202]
+### FR-26: Formulir Produk Admin Terpadu & Field Dinamis
 - Pembaruan formulir tambah (`/admin/products/create`) dan ubah (`/admin/products/:id/edit`) dengan komponen terstruktur:
   1. **Thumbnail Utama:** Satu gambar pilihan via Universal Media Picker modal.
   2. **Galeri Foto Produk (Gallery Multi-Picker):** Membuka media picker dalam mode multi-select untuk memilih banyak gambar sekaligus. Dilengkapi tombol panah geser (atas/bawah atau kiri/kanan) untuk mengatur urutan tampilan dan tombol silang (×) untuk menghapus gambar dari galeri. Disimpan sebagai array JSON string URL (`gallery_images`).
@@ -57,7 +57,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   6. **Tabel Ukuran Dinamis (Size Table):** Tabel baris dinamis 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dengan tombol "+ Tambah Baris" dan tombol hapus baris (×). Disimpan sebagai array JSON of objects (`size_table`).
   7. **Kepatuhan Tampilan Form Admin:** Header form tetap (*sticky*), area isi form dapat digulir (*scrollable body*), tombol aksi Simpan/Batal selalu terlihat di layar pada tingkat zoom 100%, 125%, 150% dan ketinggian layar 600–768px.
 
-### FR-27: Validasi Server-Side Data Produk & Whitelist [PENDING T-200]
+### FR-27: Validasi Server-Side Data Produk & Whitelist
 - Validasi ketat pada endpoint simpan/update produk:
   1. `short_description_id` dan `short_description_en`: string maksimal 500 karakter.
   2. `variants`: array of strings yang disanitasi dari tag berbahaya.
