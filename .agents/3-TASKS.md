@@ -17,6 +17,6 @@
 - [x] **T-207**: Pembersihan markup UI form admin `views/admin/products/create.ejs` & `edit.ejs` (hapus input `material_specs`, hapus card 3 dynamic technical specs `#specsContainer` & `#btnAddSpecRow`, dan bersihkan fungsi JS `createSpecRow`).
 - [x] **T-208**: Pembersihan CSS spesifikasi usang di `public/css/admin.css` (`.spec-item-row`, `.spec-col-key`, `.spec-col-val` dihapus, pertahankan `.btn-add-row`).
 - [x] **T-209**: Implementasi field input teks CTA dwibahasa pada form admin `create.ejs` & `edit.ejs`, serta validasi server-side di `controllers/admin/productController.js` (maks 50 char, sanitasi HTML, hapus `parseTechnicalSpecs`).
-- [ ] **T-210**: Integrasi teks CTA dinamis pada `controllers/public/productController.js` & `views/public/product-detail.ejs` (menggunakan nomor WhatsApp resmi dari `settings.whatsapp_number`, render teks kustom produk dengan fallback dwibahasa `product_detail.cta_whatsapp_default` di `locales/id.json` & `locales/en.json`).
-- [ ] **T-211**: Pengujian regresi otomatis end-to-end (`tests/test-product-admin-cta-qa.js`), penyesuaian unit test terdampak, dan verifikasi responsivitas & zero console error.
+- [x] **T-210**: Integrasi teks CTA dinamis pada `controllers/public/productController.js` & `views/public/product-detail.ejs` (menggunakan nomor WhatsApp resmi dari `settings.whatsapp_number`, render teks kustom produk dengan fallback dwibahasa `product_detail.cta_whatsapp_default` di `locales/id.json` & `locales/en.json`).
+- [x] **T-211**: Pengujian regresi otomatis end-to-end (`tests/test-product-admin-cta-qa.js`), penyesuaian unit test terdampak, dan verifikasi responsivitas & zero console error.
 

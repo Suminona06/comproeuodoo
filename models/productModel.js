@@ -167,8 +167,8 @@ export const productModel = {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const ctaTextId = data.cta_text_id ? String(data.cta_text_id).trim().slice(0, 50) : null;
-    const ctaTextEn = data.cta_text_en ? String(data.cta_text_en).trim().slice(0, 50) : null;
+    const ctaTextId = data.cta_text_id && String(data.cta_text_id).trim() ? String(data.cta_text_id).trim().slice(0, 50) : null;
+    const ctaTextEn = data.cta_text_en && String(data.cta_text_en).trim() ? String(data.cta_text_en).trim().slice(0, 50) : null;
 
     const galleryRaw = data.gallery_images || data.gallery;
     let galleryJson = null;
@@ -273,8 +273,8 @@ export const productModel = {
       short_description_en: (v) => (v ? String(v).trim().slice(0, 500) : null),
       description_id: (v) => v || null,
       description_en: (v) => v || null,
-      cta_text_id: (v) => (v ? String(v).trim().slice(0, 50) : null),
-      cta_text_en: (v) => (v ? String(v).trim().slice(0, 50) : null),
+      cta_text_id: (v) => (v && String(v).trim() ? String(v).trim().slice(0, 50) : null),
+      cta_text_en: (v) => (v && String(v).trim() ? String(v).trim().slice(0, 50) : null),
       main_image: (v) => v || null,
       gallery_images: (v) => {
         if (!v) return null;

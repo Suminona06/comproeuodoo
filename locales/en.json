@@ -126,6 +126,10 @@
     "operating_hours_label": "Operating Hours:",
     "map_title": "PT Euodoo Facility Location Map"
   },
+  "product_detail": {
+    "cta_whatsapp_default": "Request Quote via WhatsApp",
+    "submit_rfq": "Submit RFQ Form"
+  },
   "footer": {
     "desc": "PT. EUODOO manufactures 100% degradable HDPE and LLDPE plastic bags for retailers, industries, and traditional markets since 1990.",
     "quick_links": "Quick Links",

@@ -40,7 +40,7 @@ async function runModul12Tests() {
   const resProducts = await fetch(`${BASE_URL}/products`);
   assert.strictEqual(resProducts.status, 200, 'Products catalog must return HTTP 200');
   const prodHtml = await resProducts.text();
-  assert.ok(prodHtml.includes('pill-filter'), 'Must contain category filter pills');
+  assert.ok(prodHtml.includes('plp-sidebar-link') || prodHtml.includes('pill-filter'), 'Must contain category filter');
   assert.ok(prodHtml.includes('name="search"'), 'Must contain search input');
   assert.ok(prodHtml.includes('soft-loop-handle-shopping-bag'), 'Must display active catalog products');
   console.log('  3a. Product catalog filter bar, search, and bento cards verified: PASSED');
@@ -50,9 +50,9 @@ async function runModul12Tests() {
   const resDetail = await fetch(`${BASE_URL}/products/soft-loop-handle-shopping-bag`);
   assert.strictEqual(resDetail.status, 200, 'Product detail must return HTTP 200');
   const detailHtml = await resDetail.text();
-  assert.ok(detailHtml.includes('spec-table'), 'Must contain technical specifications table');
+  assert.ok(detailHtml.includes('pd-size') || detailHtml.includes('spec-table'), 'Must contain size or specifications table');
   assert.ok(detailHtml.includes('https://wa.me/'), 'Must contain dynamic WhatsApp CTA button');
-  assert.ok(detailHtml.includes('selectVariant'), 'Must contain variant pills selector');
+  assert.ok(detailHtml.includes('pd-pill') || detailHtml.includes('selectVariant'), 'Must contain variant pills selector');
 
   // Strict Rule Check: NO PRICE DISPLAY
   assert.ok(!detailHtml.includes('Rp '), 'STRICT: Must NOT display currency symbol Rp');

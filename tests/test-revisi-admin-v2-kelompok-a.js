@@ -159,19 +159,18 @@ async function runKelompokATests() {
   assert.ok(cspHeader.includes("script-src-attr 'self' 'unsafe-inline'"), 'CSP must include script-src-attr allowing inline handlers');
   console.log('  ✓ Helmet CSP script-src-attr verified: inline click handlers permitted\n');
 
-  // Step 4: T-71 & T-72 Test - Form Tambah Produk dengan Baris Dinamis & Aksi Hapus Baris
-  console.log('[4] T-71 & T-72 Test: Form Tambah Produk Dinamis & Aksi Hapus Baris...');
+  // Step 4: Form Tambah Produk dengan Varian Dinamis & Field CTA Baru
+  console.log('[4] Test: Form Tambah Produk Dinamis (Varian & CTA) & Pembersihan Legacy Specs...');
   // 4a. Verify Create Product Form HTML
   const createProdPage = await request('/admin/products/create');
-  assert.ok(createProdPage.body.includes('id="btnAddSpecRow"'), 'Create product must have btnAddSpecRow button');
-  assert.ok(createProdPage.body.includes('id="btnAddVariantRow"'), 'Create product must have btnAddVariantRow button');
-  assert.ok(createProdPage.body.includes('btn-remove-spec'), 'Create product must have btn-remove-spec delete buttons on all spec rows');
-  assert.ok(createProdPage.body.includes('btn-remove-variant'), 'Create product must have btn-remove-variant delete buttons on all variant rows');
-  assert.ok(createProdPage.body.includes('removeSpecRow('), 'Create product script must have removeSpecRow function');
-  assert.ok(createProdPage.body.includes('removeVariantRow('), 'Create product script must have removeVariantRow function');
-  console.log('  ✓ Create product form structure verified: add buttons, delete buttons on all rows, and boundary functions');
+  assert.ok(!createProdPage.body.includes('id="btnAddSpecRow"'), 'Create product must NOT have legacy btnAddSpecRow button');
+  assert.ok(!createProdPage.body.includes('name="material_specs"'), 'Create product must NOT have legacy material_specs input');
+  assert.ok(createProdPage.body.includes('id="btnAddVariant"'), 'Create product must have btnAddVariant button');
+  assert.ok(createProdPage.body.includes('id="cta_text_id"'), 'Create product must have cta_text_id input');
+  assert.ok(createProdPage.body.includes('id="cta_text_en"'), 'Create product must have cta_text_en input');
+  console.log('  ✓ Create product form structure verified: CTA fields present, legacy specs cleaned');
 
-  // 4b. Test Submit Create Product with 3 dynamic technical specs and 2 variants
+  // 4b. Test Submit Create Product with CTA and 2 variants
   const prodSlug = `test-dynamic-product-${Date.now()}`;
   const prodBoundary = '----WebKitFormBoundaryProductTest789';
   const prodMultipart = buildMultipartFormData({
@@ -181,12 +180,9 @@ async function runKelompokATests() {
     category_id: '1',
     status: 'draft',
     slug: prodSlug,
-    'spec_key[]': ['Bahan Baku', 'Kekuatan Tarik', 'Sertifikasi'],
-    'spec_val[]': ['Virgin LDPE Grade A', '28 MPa', 'ISO 9001:2015 & SNI'],
-    'var_size[]': ['35 x 50 cm', '40 x 60 cm'],
-    'var_thickness[]': ['0.045 mm', '0.050 mm'],
-    'var_color[]': ['Biru, Putih', 'Hitam'],
-    'var_material[]': ['LDPE Virgin', 'LDPE Virgin']
+    cta_text_id: 'Konsultasi Sekarang',
+    cta_text_en: 'Consult Now',
+    'variant_labels[]': ['35 x 50 cm', '40 x 60 cm']
   }, prodBoundary);
 
   const postCreateProd = await request(`/admin/products?_csrf=${encodeURIComponent(csrfToken)}`, {
@@ -200,27 +196,21 @@ async function runKelompokATests() {
   const [createdRows] = await pool.query('SELECT * FROM products WHERE name_id = ? ORDER BY id DESC LIMIT 1', ['Produk Uji Baris Dinamis']);
   assert.ok(createdRows.length > 0, 'Created product must exist in database');
   const createdProd = createdRows[0];
-  const specsJson = typeof createdProd.technical_specs === 'string' ? JSON.parse(createdProd.technical_specs) : createdProd.technical_specs;
-  assert.strictEqual(specsJson['Bahan Baku'], 'Virgin LDPE Grade A');
-  assert.strictEqual(specsJson['Kekuatan Tarik'], '28 MPa');
-  assert.strictEqual(specsJson['Sertifikasi'], 'ISO 9001:2015 & SNI');
+  assert.strictEqual(createdProd.cta_text_id, 'Konsultasi Sekarang');
+  assert.strictEqual(createdProd.cta_text_en, 'Consult Now');
 
-  const [createdVariantsRaw] = await pool.query('SELECT * FROM product_variants WHERE product_id = ? ORDER BY id ASC', [createdProd.id]);
-  assert.strictEqual(createdVariantsRaw.length, 2, 'Must have 2 variants in database');
-  const variant1Specs = typeof createdVariantsRaw[0].specs === 'string' ? JSON.parse(createdVariantsRaw[0].specs) : createdVariantsRaw[0].specs;
-  const variant2Specs = typeof createdVariantsRaw[1].specs === 'string' ? JSON.parse(createdVariantsRaw[1].specs) : createdVariantsRaw[1].specs;
-  assert.strictEqual(variant1Specs.size_label, '35 x 50 cm');
-  assert.strictEqual(variant2Specs.size_label, '40 x 60 cm');
-  console.log('  ✓ Product created with multiple dynamic specs and variants successfully verified in database');
+  const createdVariants = typeof createdProd.variants === 'string' ? JSON.parse(createdProd.variants) : (createdProd.variants || []);
+  assert.strictEqual(createdVariants.length, 2, 'Must have 2 variants in product record');
+  console.log('  ✓ Product created with CTA texts and variants successfully verified in database');
 
-  // 4d. Test Edit Product Form HTML and Deleting rows (simulating removal of 1 spec and 1 variant)
+  // 4d. Test Edit Product Form HTML
   const editProdPage = await request(`/admin/products/${createdProd.id}/edit`);
-  assert.ok(editProdPage.body.includes('id="btnAddSpecRow"'), 'Edit product must have btnAddSpecRow button');
-  assert.ok(editProdPage.body.includes('id="btnAddVariantRow"'), 'Edit product must have btnAddVariantRow button');
-  assert.ok(editProdPage.body.includes('btn-remove-spec'), 'Edit product must have btn-remove-spec delete buttons on all spec rows');
-  assert.ok(editProdPage.body.includes('btn-remove-variant'), 'Edit product must have btn-remove-variant delete buttons on all variant rows');
+  assert.ok(!editProdPage.body.includes('id="btnAddSpecRow"'), 'Edit product must NOT have legacy btnAddSpecRow button');
+  assert.ok(!editProdPage.body.includes('name="material_specs"'), 'Edit product must NOT have legacy material_specs input');
+  assert.ok(editProdPage.body.includes('id="btnAddVariant"'), 'Edit product must have btnAddVariant button');
+  assert.ok(editProdPage.body.includes('id="cta_text_id"'), 'Edit product must have cta_text_id input');
 
-  // Submit edit with only 1 spec and 1 variant remaining (boundary condition: minimal 1 baris)
+  // Submit edit with updated CTA and 1 variant
   const editBoundary = '----WebKitFormBoundaryEditProd999';
   const editMultipart = buildMultipartFormData({
     _csrf: csrfToken,
@@ -228,14 +218,9 @@ async function runKelompokATests() {
     name_en: 'Dynamic Rows Test Product (Edited)',
     category_id: '1',
     status: 'draft',
-    // Only 1 spec remaining
-    'spec_key[]': ['Bahan Baku'],
-    'spec_val[]': ['Virgin LDPE Grade A (Single Spec)'],
-    // Only 1 variant remaining
-    'var_size[]': ['50 x 70 cm'],
-    'var_thickness[]': ['0.060 mm'],
-    'var_color[]': ['Merah'],
-    'var_material[]': ['LDPE Virgin Premium']
+    cta_text_id: 'Hubungi Sales via WA',
+    cta_text_en: 'Contact Sales via WA',
+    'variant_labels[]': ['50 x 70 cm']
   }, editBoundary);
 
   const postEditProd = await request(`/admin/products/${createdProd.id}?_csrf=${encodeURIComponent(csrfToken)}`, {
@@ -248,15 +233,12 @@ async function runKelompokATests() {
   // Verify updated data in database
   const [updatedRows] = await pool.query('SELECT * FROM products WHERE id = ?', [createdProd.id]);
   const updatedProd = updatedRows[0];
-  const updatedSpecs = typeof updatedProd.technical_specs === 'string' ? JSON.parse(updatedProd.technical_specs) : updatedProd.technical_specs;
-  assert.strictEqual(Object.keys(updatedSpecs).length, 1, 'Updated specs must have exactly 1 key');
-  assert.strictEqual(updatedSpecs['Bahan Baku'], 'Virgin LDPE Grade A (Single Spec)');
+  assert.strictEqual(updatedProd.cta_text_id, 'Hubungi Sales via WA');
+  assert.strictEqual(updatedProd.cta_text_en, 'Contact Sales via WA');
 
-  const [updatedVariantsRaw] = await pool.query('SELECT * FROM product_variants WHERE product_id = ?', [createdProd.id]);
-  assert.strictEqual(updatedVariantsRaw.length, 1, 'Updated variants must have exactly 1 variant row');
-  const updatedVarSpecs = typeof updatedVariantsRaw[0].specs === 'string' ? JSON.parse(updatedVariantsRaw[0].specs) : updatedVariantsRaw[0].specs;
-  assert.strictEqual(updatedVarSpecs.size_label, '50 x 70 cm');
-  console.log('  ✓ Edit product with reduced row count verified: boundary condition and database sync successful');
+  const updatedVariants = typeof updatedProd.variants === 'string' ? JSON.parse(updatedProd.variants) : (updatedProd.variants || []);
+  assert.strictEqual(updatedVariants.length, 1, 'Updated variants must have exactly 1 variant row');
+  console.log('  ✓ Edit product with updated CTA and reduced variant verified in database');
 
   // Cleanup test product
   await pool.query('DELETE FROM product_variants WHERE product_id = ?', [createdProd.id]);

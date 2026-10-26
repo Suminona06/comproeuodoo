@@ -126,6 +126,10 @@
     "operating_hours_label": "Operasional:",
     "map_title": "Peta Lokasi Fasilitas Pabrik PT Euodoo"
   },
+  "product_detail": {
+    "cta_whatsapp_default": "Minta Penawaran via WhatsApp",
+    "submit_rfq": "Kirim Formulir RFQ"
+  },
   "footer": {
     "desc": "PT. EUODOO memproduksi kantong plastik HDPE dan LLDPE 100% degradable untuk retail modern, sektor industri, dan pasar tradisional sejak 1990.",
     "quick_links": "Tautan Navigasi",
