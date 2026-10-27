@@ -6897,13 +6897,19 @@
 .pd-wrap {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding-top: var(--header-actual-height, 92px);
+  padding-right: 20px;
+  padding-bottom: 24px;
+  padding-left: 20px;
   box-sizing: border-box;
 }
 
 @media (max-width: 720px) {
   .pd-wrap {
-    padding: 0 12px;
+    padding-top: var(--header-actual-height, 88px);
+    padding-right: 12px;
+    padding-bottom: 16px;
+    padding-left: 12px;
   }
 }
 

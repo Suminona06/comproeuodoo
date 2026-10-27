@@ -245,4 +245,13 @@
   --z-modal-backdrop: 1020;
   --z-modal: 1030;
   --z-toast: 1040;
+
+  /* Header Actual Height Fallback */
+  --header-actual-height: 92px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-actual-height: 88px;
+  }
 }

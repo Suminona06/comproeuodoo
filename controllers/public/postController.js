@@ -109,6 +109,7 @@ export const postController = {
       res.render('public/news-detail', {
         title,
         path: '/news',
+        headerSolid: true,
         post,
         recentPosts
       });

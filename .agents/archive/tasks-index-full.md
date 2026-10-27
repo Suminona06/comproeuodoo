@@ -237,4 +237,15 @@
     - [x] T-219: Test Suite Otomatis End-to-End, Uji Isolasi, Uji Salin Kolom, CSV Gabungan & QA
     - [x] T-220: Perbaikan Bug Ikon Tombol Close Modal Salin Kolom Admin (modalCopySizeColumns)
 
+- **Task Perbaikan Header Publik (Transisi Blur, Animasi Mobile Drawer, Header Solid Putih Detail & Spacing Offset):** [archive/2026-10-27_header-fix-blur-mobile-solid.md](2026-10-27_header-fix-blur-mobile-solid.md)
+  - **Tanggal:** 2026-10-27
+  - **Total Task:** 5 Task terperinci (T-221 s/d T-225)
+  - **Status:** Selesai 100% (5/5 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-221: Perbaikan Bug Transisi Backdrop-Filter & Blur Top Bar Saat Scroll (public/css/layout.css)
+    - [x] T-222: Perbaikan Bug Animasi Mobile Navbar Drawer Berbasis Anime.js (public/js/main.js, public/css/layout.css)
+    - [x] T-223: Implementasi Modifier Header Solid Putih pada Halaman Single Product dan Single Article (views/partials/navbar.ejs, views/public/product-detail.ejs, views/public/news-detail.ejs, controllers/public/productController.js, controllers/public/postController.js, public/css/layout.css)
+    - [x] T-224: Penataan Spacing Offset Konten Halaman Detail Produk dan Artikel Bebas Tumpang Tindih (public/js/main.js, public/css/tokens.css, public/css/components.css, public/css/layout.css, views/public/news-detail.ejs)
+    - [x] T-225: Pengujian Regresi Lintas Halaman, Aksesibilitas WCAG, dan Kompatibilitas Responsif
+
 

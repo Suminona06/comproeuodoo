@@ -227,6 +227,7 @@ export const productController = {
       res.render('public/product-detail', {
         title,
         path: '/products',
+        headerSolid: true,
         product,
         canonicalUrl,
         whatsappQuoteUrl,

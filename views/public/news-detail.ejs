@@ -1,5 +1,5 @@
 <%- include('../partials/header') %>
-<%- include('../partials/navbar') %>
+<%- include('../partials/navbar', { headerSolid: true }) %>
 
 <%
   const currentLangCode = currentLang || 'id';
@@ -40,7 +40,7 @@
 }
 </script>
 
-<main id="main-content">
+<main id="main-content" class="news-detail-wrap">
   <!-- Breadcrumb Navigation -->
   <nav aria-label="Breadcrumb" style="background-color: #ffffff; border-bottom: 1px solid var(--border, #e2e8f0); padding: 14px 0;">
     <div class="container">

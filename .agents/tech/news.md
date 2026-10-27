@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/public/postController.js, controllers/admin/postController.js, models/slugRedirectModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: controllers/public/postController.js, controllers/admin/postController.js, models/slugRedirectModel.js
 
 # Tech Spec: Modul Berita & Publikasi (News & Articles)
 
@@ -68,3 +68,9 @@ Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyM
 
 ## 5. Keamanan & Sanitasi HTML
 - Seluruh konten HTML dari TinyMCE disanitasi menggunakan `sanitize-html` di server sebelum disimpan ke database guna mencegah script injection (`<script>`, inline `onload`/`onerror`, dsb.).
+
+---
+
+## 6. Tata Letak Detail Artikel & Header Solid
+- **Header Solid Putih:** Pada `/news/:slug`, modifier `.header-wrap--solid` mengunci bilah navbar dalam mode putih solid `var(--color-surface, #ffffff)` / `rgba(255, 255, 255, 0.96)` berbayangan `var(--shadow-1)` dengan border bawah `1px solid var(--border)`. Top bar berlatar solid hijau signature `var(--surface-dark-footer, #00573f)` selaras warna footer. Teks merek `.brand-name` dan hamburger bernuansa `var(--navy, #071f17)`, link navigasi `.nav-link` berwarna `var(--text-variant)`. Tidak masuk mode transparan di posisi scroll teratas.
+- **Offset Vertikal Konten:** Kontainer utama `<main id="main-content">` atau seksi breadcrumb detail artikel menerima offset atas dinamis `padding-top: var(--header-actual-height, 92px)` (dihitung otomatis via JS saat load/resize dengan fallback CSS statis 92px desktop / 88px mobile), menjaga navigasi breadcrumb dan judul artikel tampil rapi, presisi, dan elegan persis di bawah batas navbar tanpa overlap.

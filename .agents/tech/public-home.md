@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: views/public/index.ejs, controllers/public/homeController.js
 
 # Tech Spec: Modul Beranda Publik (Public Home)
 
@@ -54,6 +54,9 @@ Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands
 
 ## 4. Komponen Antarmuka & Prefix CSS
 
+- **Header & Navigasi Publik:**
+  - Top Bar & Transisi Blur: `.top-bar` menyertakan transisi `backdrop-filter 0.3s ease` dan `-webkit-backdrop-filter 0.3s ease`. Saat `.header-wrap.is-scrolled` aktif, filter memudar bertahap dari `blur(4px)` menuju `blur(0px)` beriringan dengan `opacity: 0` dan penciutan baris grid `.top-bar-wrap`.
+  - Drawer Navigasi Mobile: Panel `.nav-menu` dan `.menu-backdrop` dikendalikan via tweening Anime.js v3.2.2. Buka: `translateY: [-12, 0]` dan `opacity: [0, 1]` dengan cascade staggered link navigasi. Tutup: `translateY: [0, -12]` dan `opacity: [1, 0]` diselesaikan tuntas sebelum status visibilitas dicabut. Mendukung fallback instan pada `prefers-reduced-motion: reduce`.
 - **Hero Slider & Dual CTA:** `.hero.hero-slider`, `.hero-slide`, `.hero-content`, `.hero-actions.hero-cta-wrap`, `.hero-cta-btn--primary`, `.hero-cta-btn--secondary`.
   - Responsive rule: Desktop horizontal flex, Mobile (`< 768px`) stack vertikal 100% width.
 - **4 Panel Kategori Primer:** `.sec-products`, `.hcat-grid`, `.hcat-panel`, `.hcat-img`, `.hcat-scrim`, `.hcat-title`, `.hcat-count`, `.hcat-arrow`.

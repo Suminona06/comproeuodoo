@@ -27,4 +27,5 @@
 - 2026-10-27 | Hapus field spesifikasi usang form admin produk & integrasi teks CTA kustom dwibahasa per produk | T-204..T-211
 - 2026-10-27 | Tabel Ukuran Produk Dinamis: editor builder admin dinamis, migrasi SQL format JSON, API salin kolom, ekspor CSV gabungan, isolasi data, rendering publik responsif, dan QA E2E | T-212..T-219
 - 2026-10-27 | Perbaikan Bug Ikon Tombol Close Modal Salin Kolom Admin: ganti entity &times; ke SVG simetris 14x14px | T-220
+- 2026-10-27 | Perbaikan header: transisi blur top bar, animasi drawer mobile Anime.js, header solid putih detail produk & artikel, dan spacing offset | T-221..T-225
 
