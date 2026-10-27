@@ -4,273 +4,216 @@
 <%
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'id';
   const prodName = lang === 'en' ? (product.name_en || product.name_id) : product.name_id;
-  const prodDesc = lang === 'en' ? (product.description_en || product.description_id) : product.description_id;
-  const catName = lang === 'en' ? (product.category_name_en || product.category_name_id || 'Industrial') : (product.category_name_id || 'Industri');
+  const fullDesc = lang === 'en' ? (product.description_en || product.description_id || '') : (product.description_id || '');
+  const shortDesc = lang === 'en' ? (product.short_description_en || product.short_description_id || '') : (product.short_description_id || '');
+  const catName = lang === 'en' ? (product.category_name_en || product.category_name_id || '') : (product.category_name_id || '');
   const catSlug = product.category_slug || '';
   const mainImage = product.main_image || product.image_url || '/images/products/retail-softloop.webp';
-  
-  // Gallery images array
+
   let gallery = [];
-  if (Array.isArray(product.images) && product.images.length > 0) {
-    gallery = product.images;
+  if (Array.isArray(product.gallery_images) && product.gallery_images.length > 0) {
+    gallery = product.gallery_images;
+  } else if (Array.isArray(product.gallery) && product.gallery.length > 0) {
+    gallery = product.gallery;
   } else if (mainImage) {
     gallery = [mainImage];
   }
 
-  // Variants array
   const variants = Array.isArray(product.variants) ? product.variants : [];
-
-  // Specifications
-  const specs = typeof product.specifications === 'object' && product.specifications !== null ? product.specifications : {};
-
-  // WhatsApp CTA message
-  const waNumber = (typeof settings !== 'undefined' && settings?.whatsapp_formatted_number)
-    ? settings.whatsapp_formatted_number
-    : (settings?.whatsapp_number ? settings.whatsapp_number.replace(/[^0-9]/g, '') : '628123456789');
-  const prodUrl = typeof canonicalUrl !== 'undefined' ? canonicalUrl : `https://euodoo.com/products/${product.slug || product.id}`;
-  const waMessage = `Halo PT Euodoo, saya tertarik dengan produk ${prodName}. Detail: ${prodUrl}`;
-  const waQuoteUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+  const sizeTable = Array.isArray(product.size_table) ? product.size_table : [];
+  const waUrl = typeof whatsappQuoteUrl !== 'undefined' ? whatsappQuoteUrl : (product.whatsapp_quote_url || '#');
+  const defaultCta = typeof t === 'function' ? t('product_detail.cta_whatsapp_default') : (lang === 'en' ? 'Request Quote via WhatsApp' : 'Minta Penawaran via WhatsApp');
+  const ctaText = lang === 'en' ? (product.cta_text_en || defaultCta) : (product.cta_text_id || defaultCta);
+  const rfqText = typeof t === 'function' ? t('product_detail.submit_rfq') : (lang === 'en' ? 'Submit RFQ Form' : 'Kirim Formulir RFQ');
 %>
 
-<main id="main-content">
-  <!-- PAGE HERO BREADCRUMB -->
-  <section class="page-hero" style="padding-bottom: 40px;">
-    <div class="container">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
-        <span class="separator" aria-hidden="true">&rsaquo;</span>
-        <a href="/products"><%= lang === 'en' ? 'Products' : 'Produk' %></a>
-        <% if (catName) { %>
-          <span class="separator" aria-hidden="true">&rsaquo;</span>
-          <a href="/products?category=<%= catSlug %>"><%= catName %></a>
+<main id="main-content" class="pd-wrap">
+  <section class="pd-card">
+    <nav class="pd-crumb" aria-label="Breadcrumb">
+      <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
+      <span class="pd-crumb-sep" aria-hidden="true">&rsaquo;</span>
+      <a href="/products"><%= lang === 'en' ? 'Products' : 'Produk' %></a>
+      <% if (catName) { %>
+        <span class="pd-crumb-sep" aria-hidden="true">&rsaquo;</span>
+        <a href="/products?category=<%= catSlug %>"><%= catName %></a>
+      <% } %>
+      <span class="pd-crumb-sep" aria-hidden="true">&rsaquo;</span>
+      <b class="pd-crumb-current" aria-current="page"><%= prodName %></b>
+    </nav>
+
+    <div class="pd-grid">
+      <div class="pd-gallery" data-gallery>
+        <div class="pd-gallery-main">
+          <img id="pdMainImage"
+               src="<%= mainImage %>"
+               alt="<%= prodName %>"
+               fetchpriority="high"
+               width="560"
+               height="476">
+        </div>
+
+        <% if (gallery && gallery.length > 1) { %>
+          <div class="pd-thumbs" role="region" aria-label="<%= lang === 'en' ? 'Product gallery thumbnails' : 'Galeri thumbnail produk' %>">
+            <% gallery.forEach(function(img, i) { %>
+              <button type="button"
+                      class="pd-thumb-btn"
+                      data-thumb
+                      data-full="<%= img %>"
+                      data-alt="<%= prodName %> - <%= i + 1 %>"
+                      aria-pressed="<%= i === 0 ? 'true' : 'false' %>"
+                      aria-label="<%= (lang === 'en' ? 'Photo ' : 'Foto ') + (i + 1) %>">
+                <img src="<%= img %>" alt="" width="76" height="64" loading="lazy">
+              </button>
+            <% }); %>
+          </div>
         <% } %>
-        <span class="separator" aria-hidden="true">&rsaquo;</span>
-        <span class="current"><%= prodName %></span>
-      </nav>
-
-      <h1 class="page-hero-title" style="margin-bottom: 0;">
-        <%= prodName %>
-      </h1>
-    </div>
-  </section>
-
-  <!-- PRODUCT SHOWCASE SECTION -->
-  <section style="background: var(--bg-subtle, #f8fafc); padding: 56px 0 96px;">
-    <div class="container">
-      <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: start;" class="intro-layout">
-        <!-- LEFT: Media & Photo Gallery -->
-        <div>
-          <div style="background: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: var(--r-xl, 12px); overflow: hidden; box-shadow: var(--shadow-1);">
-            <div style="height: 420px; background: var(--container-light, #f1f5f9); display: flex; align-items: center; justify-content: center; position: relative;">
-              <img id="mainProductPhoto"
-                   src="<%= mainImage %>"
-                   alt="<%= prodName %>"
-                   style="width: 100%; height: 100%; object-fit: contain; padding: 16px;"
-                   fetchpriority="high">
-              <span class="media-overlay-pill" style="top: 16px; left: 16px; bottom: auto; right: auto;">
-                <%= catName %>
-              </span>
-            </div>
-
-            <!-- Thumbnail Selector -->
-            <% if (gallery.length > 1) { %>
-              <div style="display: flex; gap: 10px; padding: 16px; border-top: 1px solid var(--border, #e2e8f0); overflow-x: auto; background: #ffffff;">
-                <% gallery.forEach((img, i) => { %>
-                  <button type="button"
-                          onclick="selectProductImage('<%= img %>')"
-                          style="width: 64px; height: 64px; border: 2px solid var(--border, #e2e8f0); border-radius: var(--r-md, 6px); overflow: hidden; padding: 0; background: #ffffff; cursor: pointer; flex-shrink: 0;"
-                          aria-label="Foto <%= i + 1 %>">
-                    <img src="<%= img %>" alt="Thumbnail <%= i + 1 %>" style="width: 100%; height: 100%; object-fit: cover;">
-                  </button>
-                <% }); %>
-              </div>
-            <% } %>
-          </div>
-        </div>
-
-        <!-- RIGHT: Product Information, Specs & Actions -->
-        <div>
-          <div style="margin-bottom: 24px;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-              <span class="bento-badge bento-badge-blue" style="margin-bottom: 0;">
-                <%= catName %>
-              </span>
-              <span class="brand-reg-tag" style="background: var(--success-bg, #dcfce7); color: var(--success, #16a34a);">
-                SNI &amp; ISO CERTIFIED
-              </span>
-            </div>
-            
-            <h2 style="font-size: clamp(1.75rem, 2.5vw, 2.25rem); font-weight: 800; color: var(--navy, #071f17); line-height: 1.25; margin-bottom: 16px;">
-              <%= prodName %>
-            </h2>
-            
-            <p style="font-size: 15.5px; color: var(--text-variant, #424753); line-height: 1.7; margin-bottom: 28px;">
-              <%= prodDesc || 'Kantong plastik berkualitas tinggi dari lini ekstrusi presisi PT. EUODOO untuk kebutuhan kemasan komersial dan industri.' %>
-            </p>
-          </div>
-
-          <!-- Product Variants Selector (Pills) -->
-          <% if (variants.length > 0) { %>
-            <div style="margin-bottom: 32px; background: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: var(--r-lg, 8px); padding: 20px;">
-              <div style="font-size: 13px; font-weight: 700; color: var(--navy, #071f17); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
-                <%= lang === 'en' ? 'Available Product Variants' : 'Pilihan Varian & Ukuran' %>
-              </div>
-              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <% variants.forEach((v, idx) => { 
-                  const vLabel = v.name || v.size || (typeof v === 'string' ? v : `Varian ${idx + 1}`);
-                  const vSpec = v.thickness ? ` (${v.thickness})` : '';
-                %>
-                  <button type="button"
-                          class="pill-filter <%= idx === 0 ? 'active' : '' %>"
-                          onclick="selectVariant(this, '<%= vLabel %><%= vSpec %>')"
-                          style="cursor: pointer; font-size: 13px;">
-                    <%= vLabel %><%= vSpec %>
-                  </button>
-                <% }); %>
-              </div>
-              <div id="selectedVariantNotice" style="margin-top: 12px; font-size: 12px; color: var(--text-muted, #64748b);">
-                <%= lang === 'en' ? 'Selected variant:' : 'Varian terpilih:' %> <strong style="color: var(--primary, #00755a);"><%= variants[0]?.name || variants[0]?.size || 'Standar Manufaktur' %></strong>
-              </div>
-            </div>
-          <% } %>
-
-          <!-- Technical Specifications Table (.spec-table) -->
-          <div style="margin-bottom: 36px;">
-            <div style="font-size: 13px; font-weight: 700; color: var(--navy, #071f17); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
-              <%= lang === 'en' ? 'Technical Specifications' : 'Spesifikasi Teknis Manufaktur' %>
-            </div>
-            <div class="spec-table-wrap">
-              <table class="spec-table">
-                <tbody>
-                  <tr>
-                    <th style="width: 40%;"><%= lang === 'en' ? 'Material Grade' : 'Material Utama' %></th>
-                    <td><%= specs.material || 'HDPE / LLDPE Virgin Resin Grade' %></td>
-                  </tr>
-                  <tr>
-                    <th><%= lang === 'en' ? 'Degradability Standard' : 'Standar Ramah Lingkungan' %></th>
-                    <td><%= specs.eco || 'OXIUM® Oxo-Biodegradable (SNI 7188.7:2011)' %></td>
-                  </tr>
-                  <tr>
-                    <th><%= lang === 'en' ? 'Thickness Range' : 'Kisaran Ketebalan' %></th>
-                    <td><%= specs.thickness || '15 mikron s/d 100 mikron (Customizable)' %></td>
-                  </tr>
-                  <tr>
-                    <th><%= lang === 'en' ? 'Sealing & Strength' : 'Tipe Segel & Kekuatan' %></th>
-                    <td><%= specs.sealing || 'Star-Seal / Bottom-Seal Anti Bocor (Drop-test teruji)' %></td>
-                  </tr>
-                  <tr>
-                    <th><%= lang === 'en' ? 'Printing Capability' : 'Opsi Cetak Logo' %></th>
-                    <td><%= specs.printing || 'Flexographic Printing s/d 6 warna presisi tinggi' %></td>
-                  </tr>
-                  <tr>
-                    <th><%= lang === 'en' ? 'Minimum Order Quantity (MOQ)' : 'Kuantitas Minimum (MOQ)' %></th>
-                    <td><%= lang === 'en' ? 'Custom B2B wholesale volume based on specification' : 'Sesuai pesanan industri & kesepakatan B2B' %></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- STRICT COMPLIANCE: NO PRICE DISPLAYED -->
-          <!-- Primary CTA: WhatsApp Quote Link & Sales Form Link -->
-          <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
-            <a href="<%= waQuoteUrl %>"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="btn btn-primary btn-lg">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex-shrink: 0;">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-              </svg>
-              <span><%= lang === 'en' ? 'Request Quote via WhatsApp' : 'Minta Penawaran via WhatsApp' %></span>
-            </a>
-
-            <a href="/contact?product=<%= product.id %>"
-               class="btn btn-secondary btn-lg">
-              <%= lang === 'en' ? 'Submit RFQ Form' : 'Kirim Formulir Penawaran' %>
-            </a>
-          </div>
-        </div>
       </div>
 
-      <!-- RELATED PRODUCTS SECTION (Symmetrical Grid) -->
-      <% if (relatedProducts && relatedProducts.length > 0) { %>
-        <div style="margin-top: 80px; padding-top: 56px; border-top: 1px solid var(--border, #e2e8f0);">
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
-            <div>
-              <span class="brands-kicker"><%= lang === 'en' ? 'RELATED PACKAGING' : 'REKOMENDASI PRODUK' %></span>
-              <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--navy, #071f17); margin-top: 4px;">
-                <%= lang === 'en' ? 'Related Products You May Need' : 'Produk Terkait Lainnya' %>
-              </h2>
+      <div>
+        <h1 class="pd-title"><%= prodName %></h1>
+
+        <% if (shortDesc && shortDesc.trim()) { %>
+          <p class="pd-short-desc"><%= shortDesc.trim() %></p>
+        <% } %>
+
+        <% if (variants && variants.length > 0) { %>
+          <div class="pd-variants" data-variants>
+            <div class="pd-v-label"><%= lang === 'en' ? 'AVAILABLE PRODUCT VARIANTS' : 'VARIAN PRODUK YANG TERSEDIA' %></div>
+            <div class="pd-v-pills" role="group" aria-label="<%= lang === 'en' ? 'Available variants' : 'Pilihan varian produk' %>">
+              <% variants.forEach(function(v, idx) { 
+                const vLabel = typeof v === 'string' ? v : (v.size_label || v.name_id || v.name_en || '');
+                if (vLabel) {
+              %>
+                <button type="button"
+                        class="pd-pill"
+                        aria-pressed="<%= idx === 0 ? 'true' : 'false' %>">
+                  <%= vLabel %>
+                </button>
+              <% } }); %>
             </div>
-            <a href="/products?category=<%= catSlug %>" class="btn btn-secondary btn-sm">
-              <%= lang === 'en' ? 'View Full Category' : 'Lihat Seluruh Kategori' %> &rarr;
-            </a>
           </div>
+        <% } %>
 
-          <div class="bento-grid">
-            <% relatedProducts.forEach((rel, idx) => { 
-              const relName = lang === 'en' ? (rel.name_en || rel.name_id) : rel.name_id;
-              const relDesc = lang === 'en' ? (rel.description_en || rel.description_id) : rel.description_id;
-              const relImg = rel.image_url || rel.main_image || `/images/products/prod-${(idx % 4) + 1}.webp`;
-            %>
-              <article class="bento-col-6">
-                <a href="/products/<%= rel.slug || rel.id %>" class="bento-card" aria-label="Lihat detail <%= relName %>">
-                  <div class="bento-split">
-                    <div class="bento-split-content">
-                      <div>
-                        <div class="bento-badge bento-badge-blue">
-                          <%= rel.category_name_id || 'PRODUK TERKAIT' %>
-                        </div>
-                        <h3 class="bento-card-title"><%= relName %></h3>
-                        <p class="bento-card-desc">
-                          <%= relDesc ? (relDesc.length > 100 ? relDesc.substring(0, 100) + '...' : relDesc) : 'Pilihan kemasan berkualitas tinggi bersertifikasi SNI.' %>
-                        </p>
-                      </div>
+        <div class="pd-cta-row">
+          <a class="pd-btn pd-btn-wa" href="<%= waUrl %>" target="_blank" rel="noopener noreferrer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            <span><%= ctaText %></span>
+          </a>
+          <a class="pd-btn pd-btn-outline" href="/contact?product=<%= product.id %>">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+            <span><%= rfqText %></span>
+          </a>
+        </div>
+      </div>
+    </div>
 
-                      <div class="bento-card-footer">
-                        <span class="bento-card-link">
-                          <%= lang === 'en' ? 'Details' : 'Lihat Detail' %>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </span>
-                        <span class="bento-meta-badge">B2B Order</span>
-                      </div>
-                    </div>
+    <div class="pd-tabs" data-tabs>
+      <div class="pd-tabbar" role="tablist" aria-label="<%= lang === 'en' ? 'Product information tabs' : 'Tab informasi produk' %>">
+        <button type="button" class="pd-tab-btn" role="tab" id="pdTabDesc" data-tab="desc" aria-controls="pdPanelDesc" aria-selected="true">
+          <%= lang === 'en' ? 'Overview' : 'Deskripsi' %>
+        </button>
+        <% if (sizeTable && sizeTable.length > 0) { %>
+          <button type="button" class="pd-tab-btn" role="tab" id="pdTabSize" data-tab="size" aria-controls="pdPanelSize" aria-selected="false">
+            <%= lang === 'en' ? 'Size Chart' : 'Tabel Ukuran' %>
+          </button>
+        <% } %>
+      </div>
 
-                    <div class="bento-split-media">
-                      <img src="<%= relImg %>" alt="<%= relName %>" loading="lazy">
-                    </div>
-                  </div>
-                </a>
-              </article>
-            <% }); %>
+      <div class="pd-panel" id="pdPanelDesc" role="tabpanel" aria-labelledby="pdTabDesc" data-panel="desc">
+        <% if (fullDesc) { %>
+          <%- fullDesc %>
+        <% } else { %>
+          <p><%= lang === 'en' ? 'Product description is currently being updated.' : 'Deskripsi produk sedang diperbarui.' %></p>
+        <% } %>
+      </div>
+
+      <% if (sizeTable && sizeTable.length > 0) { %>
+        <div class="pd-panel" id="pdPanelSize" role="tabpanel" aria-labelledby="pdTabSize" data-panel="size" hidden>
+          <div class="pd-size-scroll">
+            <table class="pd-size">
+              <thead>
+                <tr>
+                  <th scope="col"><%= lang === 'en' ? 'Product Code' : 'Kode Produk' %></th>
+                  <th scope="col"><%= lang === 'en' ? 'Width' : 'Lebar' %></th>
+                  <th scope="col"><%= lang === 'en' ? 'Length' : 'Panjang' %></th>
+                  <th scope="col"><%= lang === 'en' ? 'Thickness' : 'Ketebalan' %></th>
+                  <th scope="col"><%= lang === 'en' ? 'Capacity' : 'Kapasitas' %></th>
+                  <th scope="col"><%= lang === 'en' ? 'Material' : 'Material' %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% sizeTable.forEach(function(row) { %>
+                  <tr>
+                    <td data-l="<%= lang === 'en' ? 'Product Code' : 'Kode Produk' %>"><%= row.product_code || row.kode_produk || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Width' : 'Lebar' %>"><%= row.width || row.lebar || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Length' : 'Panjang' %>"><%= row.length || row.panjang || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Thickness' : 'Ketebalan' %>"><%= row.thickness || row.tebal_micron || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Capacity' : 'Kapasitas' %>"><%= row.capacity || row.kapasitas || '-' %></td>
+                    <td data-l="<%= lang === 'en' ? 'Material' : 'Material' %>"><%= row.material || row.bahan || '-' %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
           </div>
         </div>
       <% } %>
     </div>
   </section>
+
+  <% if (typeof relatedProducts !== 'undefined' && relatedProducts && relatedProducts.length > 0) { %>
+    <section class="pd-related">
+      <div class="pd-related-header">
+        <div>
+          <span class="pd-related-kicker">
+            <%= lang === 'en' ? 'RECOMMENDED PRODUCTS' : 'REKOMENDASI PRODUK' %>
+          </span>
+          <h2 class="pd-related-title">
+            <%= lang === 'en' ? 'Related Products You May Need' : 'Produk Terkait Lainnya' %>
+          </h2>
+        </div>
+        <a href="/products?category=<%= catSlug %>" class="pd-btn pd-btn-outline pd-btn-sm">
+          <%= lang === 'en' ? 'View Category' : 'Lihat Kategori' %> &rarr;
+        </a>
+      </div>
+
+      <div class="bento-grid">
+        <% relatedProducts.forEach(function(rel, idx) { 
+          const relName = lang === 'en' ? (rel.name_en || rel.name_id) : rel.name_id;
+          const relDesc = lang === 'en' ? (rel.short_description_en || rel.short_description_id || rel.description_en || rel.description_id || '') : (rel.short_description_id || rel.description_id || '');
+          const relImg = rel.image_url || rel.main_image || `/images/products/prod-${(idx % 4) + 1}.webp`;
+        %>
+          <article class="bento-col-4">
+            <a href="/products/<%= rel.slug || rel.id %>" class="bento-card" aria-label="<%= relName %>">
+              <div class="bento-split">
+                <div class="bento-split-content">
+                  <div>
+                    <span class="bento-badge">
+                      <%= rel.category_name_id || 'PRODUK' %>
+                    </span>
+                    <h3 class="bento-card-title"><%= relName %></h3>
+                    <p class="bento-card-desc">
+                      <%= relDesc ? (relDesc.length > 80 ? relDesc.substring(0, 80) + '...' : relDesc) : 'Pilihan kemasan berkualitas tinggi bersertifikasi SNI.' %>
+                    </p>
+                  </div>
+                  <div class="bento-card-footer">
+                    <span class="bento-card-link">
+                      <%= lang === 'en' ? 'Details' : 'Lihat Detail' %>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </span>
+                  </div>
+                </div>
+                <div class="bento-split-media">
+                  <img src="<%= relImg %>" alt="<%= relName %>" loading="lazy">
+                </div>
+              </div>
+            </a>
+          </article>
+        <% }); %>
+      </div>
+    </section>
+  <% } %>
 </main>
 
-<script>
-  function selectProductImage(url) {
-    var main = document.getElementById('mainProductPhoto');
-    if (main && url) {
-      main.src = url;
-    }
-  }
-
-  function selectVariant(btn, name) {
-    var parent = btn.parentElement;
-    if (parent) {
-      parent.querySelectorAll('.pill-filter').forEach(function(el) {
-        el.classList.remove('active');
-      });
-      btn.classList.add('active');
-    }
-    var notice = document.getElementById('selectedVariantNotice');
-    if (notice) {
-      notice.innerHTML = '<%= lang === "en" ? "Selected variant:" : "Varian terpilih:" %> <strong style="color: var(--primary, #00755a);">' + name + '</strong>';
-    }
-  }
-</script>
+<script src="/js/product-detail.js" defer></script>
 
 <%- include('../partials/footer') %>

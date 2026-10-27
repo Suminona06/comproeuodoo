@@ -200,6 +200,7 @@ function runAudit() {
   console.log('  -> English (EN) contact rendering assertions: PASSED');
 
   console.log('\nALL T-146 I18N CHECKS PASSED SUCCESSFULLY.');
+  process.exit(0);
 }
 
 runAudit();

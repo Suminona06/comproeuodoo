@@ -46,7 +46,17 @@
     "details_btn": "Lihat Rincian Spesifikasi",
     "ask_quote_for_product": "Minta Penawaran untuk Produk Ini",
     "back_to_catalog": "Kembali ke Katalog",
-    "empty_products": "Belum ada produk yang terdaftar pada kategori yang dipilih."
+    "empty_products": "Belum ada produk yang terdaftar pada kategori yang dipilih.",
+    "search_placeholder": "Cari nama atau spesifikasi...",
+    "search_label": "Pencarian Produk",
+    "sort_label": "Urutkan",
+    "sort_newest": "Terbaru",
+    "sort_alpha_asc": "Nama (A - Z)",
+    "sort_alpha_desc": "Nama (Z - A)",
+    "sort_catalog": "Urutan Katalog",
+    "empty_title": "Produk Tidak Ditemukan",
+    "empty_desc": "Tidak ada produk yang cocok dengan kriteria pencarian atau filter yang dipilih.",
+    "reset_filter": "Tampilkan Semua Produk"
   },
   "capabilities": {
     "page_title": "Fasilitas & Kapabilitas Produksi Pabrik",
@@ -115,6 +125,10 @@
     "email_label_short": "Email:",
     "operating_hours_label": "Operasional:",
     "map_title": "Peta Lokasi Fasilitas Pabrik PT Euodoo"
+  },
+  "product_detail": {
+    "cta_whatsapp_default": "Minta Penawaran via WhatsApp",
+    "submit_rfq": "Kirim Formulir RFQ"
   },
   "footer": {
     "desc": "PT. EUODOO memproduksi kantong plastik HDPE dan LLDPE 100% degradable untuk retail modern, sektor industri, dan pasar tradisional sejak 1990.",

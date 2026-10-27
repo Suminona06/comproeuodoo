@@ -75,15 +75,15 @@
       return;
     }
 
-    const contentIdEl = document.getElementById('content_id');
-    const contentEnEl = document.getElementById('content_en');
+    const hasArticleFields = document.getElementById('content_id') || document.getElementById('content_en');
+    const hasProductFields = document.getElementById('description_id') || document.getElementById('description_en');
 
-    if (!contentIdEl && !contentEnEl) {
+    if (!hasArticleFields && !hasProductFields) {
       return;
     }
 
     tinymce.init({
-      selector: '#content_id, #content_en',
+      selector: '#content_id, #content_en, #description_id, #description_en',
       license_key: 'gpl',
       height: 480,
       menubar: false,
@@ -182,8 +182,8 @@
     });
 
     // Ensure all TinyMCE editors sync their content before form submit
-    const postForms = document.querySelectorAll('form[action*="/admin/posts"]');
-    postForms.forEach((form) => {
+    const editorForms = document.querySelectorAll('form[action*="/admin/posts"], form[action*="/admin/products"]');
+    editorForms.forEach((form) => {
       form.addEventListener('submit', () => {
         if (typeof tinymce !== 'undefined') {
           tinymce.triggerSave();

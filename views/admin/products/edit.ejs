@@ -3,15 +3,14 @@
 <div class="content-header">
   <div class="content-title-text">
     <h1>Edit Produk: <%= product.name_id %></h1>
-    <p>Perbarui rincian spesifikasi material, varian ukuran, atau gambar produk.</p>
+    <p>Perbarui rincian spesifikasi material, varian ukuran, atau galeri gambar produk.</p>
   </div>
   <div class="header-actions">
     <a href="/admin/products" class="btn btn-secondary">&larr; Kembali ke Katalog</a>
   </div>
 </div>
 
-<form action="/admin/products/<%= product.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
-  <!-- Card 1: Informasi Pokok -->
+<form action="/admin/products/<%= product.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" id="productEditForm">
   <div class="form-card">
     <div class="form-card-title">1. Informasi Pokok Produk</div>
 
@@ -54,9 +53,30 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="material_specs">Ringkasan Karakteristik Material</label>
-      <input type="text" id="material_specs" name="material_specs" class="form-input" value="<%= product.material_specs || '' %>">
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="cta_text_id">Teks Tombol CTA (ID)</label>
+        <input type="text" id="cta_text_id" name="cta_text_id" class="form-input" maxlength="50" placeholder="Default: Minta Penawaran via WhatsApp" value="<%= product.cta_text_id || '' %>">
+        <p class="admin-field-hint">Kosongkan untuk menggunakan teks default: "Minta Penawaran via WhatsApp". Maksimal 50 karakter.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cta_text_en">Teks Tombol CTA (EN)</label>
+        <input type="text" id="cta_text_en" name="cta_text_en" class="form-input" maxlength="50" placeholder="Default: Request Quote via WhatsApp" value="<%= product.cta_text_en || '' %>">
+        <p class="admin-field-hint">Leave empty to use default: "Request Quote via WhatsApp". Max 50 characters.</p>
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="short_description_id">Deskripsi Singkat (ID)</label>
+        <textarea id="short_description_id" name="short_description_id" class="form-textarea" rows="3" maxlength="200" placeholder="Deskripsi singkat produk, tampil di bawah judul…"><%= product.short_description_id || '' %></textarea>
+        <div class="char-counter" id="counter_short_desc_id">0/200</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="short_description_en">Deskripsi Singkat (EN)</label>
+        <textarea id="short_description_en" name="short_description_en" class="form-textarea" rows="3" maxlength="200" placeholder="Deskripsi singkat produk, tampil di bawah judul…"><%= product.short_description_en || '' %></textarea>
+        <div class="char-counter" id="counter_short_desc_en">0/200</div>
+      </div>
     </div>
 
     <div class="form-row-2">
@@ -69,19 +89,18 @@
         <textarea id="description_en" name="description_en" class="form-textarea"><%= product.description_en || '' %></textarea>
       </div>
     </div>
-
   </div>
 
-  <!-- Card 2: Foto Produk -->
   <div class="form-card">
-    <div class="form-card-title">2. Foto Utama Produk</div>
-    <div class="form-group" style="margin-bottom: 0;">
+    <div class="form-card-title">2. Foto Utama &amp; Galeri Produk</div>
+    
+    <div class="form-group">
       <label class="form-label">Foto Utama Produk (Media Library)</label>
       <div class="media-picker-component">
         <input type="hidden" id="product_image_url" name="image_url" value="<%= product.image_url || '' %>">
         <div class="media-picker-preview-box">
-          <img src="<%= product.image_url || '' %>" alt="Pratinjau Produk" style="<%= product.image_url ? 'display: block;' : 'display: none;' %>">
-          <div class="media-picker-empty" style="<%= product.image_url ? 'display: none;' : '' %>">
+          <img src="<%= product.image_url || '' %>" alt="Pratinjau Produk" class="media-picker-preview-img <%= product.image_url ? '' : 'hidden' %>">
+          <div class="media-picker-empty <%= product.image_url ? 'hidden' : '' %>">
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <span>Belum ada foto produk dipilih</span>
           </div>
@@ -91,90 +110,110 @@
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             Pilih dari Media Library
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= product.image_url ? '' : 'display: none;' %>">Hapus</button>
+          <button type="button" class="btn btn-ghost btn-sm btn-clear-media <%= product.image_url ? '' : 'hidden' %>">Hapus</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group prod-gallery-form-group">
+      <label class="form-label">Foto Gallery (ID) / Gallery Photos (EN)</label>
+      <div class="prod-gallery-wrap">
+        <div class="prod-gallery-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnOpenGalleryPicker">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Pilih Foto dari Library
+          </button>
+          <span class="prod-gallery-hint">Pilih beberapa foto sekaligus. Atur urutan dengan tombol ▲ ▼ atau hapus dengan &times;.</span>
+        </div>
+        <input type="hidden" id="gallery_images_input" name="gallery_images" value="<%= JSON.stringify(product.gallery_images || []) %>">
+        <div class="prod-gallery-strip" id="prodGalleryStrip">
+          <% if (typeof product.gallery_items !== 'undefined' && Array.isArray(product.gallery_items)) { %>
+            <% product.gallery_items.forEach(function(item) { %>
+              <% if (item && item.url) { %>
+                <div class="prod-gallery-item" data-id="<%= item.id || '' %>" data-url="<%= item.url %>">
+                  <div class="prod-gallery-thumb-box">
+                    <img src="<%= item.url %>" alt="" class="prod-gallery-thumb" width="64" height="64" loading="lazy">
+                    <button type="button" class="prod-gallery-btn-del" title="Hapus foto" aria-label="Hapus foto">&times;</button>
+                  </div>
+                  <div class="prod-gallery-reorder">
+                    <button type="button" class="prod-gallery-btn-move prod-gallery-btn-up" title="Geser ke kiri / atas" aria-label="Geser ke kiri">&#9650;</button>
+                    <button type="button" class="prod-gallery-btn-move prod-gallery-btn-down" title="Geser ke kanan / bawah" aria-label="Geser ke kanan">&#9660;</button>
+                  </div>
+                </div>
+              <% } %>
+            <% }); %>
+          <% } %>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Card 3: Spesifikasi Teknis Dinamis -->
   <div class="form-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
-      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">3. Tabel Spesifikasi Teknis (Parameter &amp; Nilai)</div>
-      <button type="button" id="btnAddSpecRow" class="btn-add-row" onclick="addSpecRow()">
+    <div class="admin-card-header-flex">
+      <div class="form-card-title admin-card-title-plain">3. Variasi Ukuran (ID) / Size Variants (EN)</div>
+      <button type="button" id="btnAddVariant" class="btn-add-row">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>Tambah Baris Parameter</span>
+        <span>+ Tambah Ukuran</span>
       </button>
     </div>
-
-    <div id="specsContainer">
-      <% const specs = product.technical_specs || {}; %>
-      <% const specKeys = Object.keys(specs); %>
-      <% if (specKeys.length > 0) { %>
-        <% specKeys.forEach(function(k) { %>
-          <div class="spec-item-row">
-            <div class="spec-col-key">
-              <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter" value="<%= k %>">
-            </div>
-            <div class="spec-col-val">
-              <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="<%= specs[k] %>">
-            </div>
-            <div class="spec-col-action">
-              <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-              </button>
-            </div>
-          </div>
-        <% }); %>
-      <% } else { %>
-        <div class="spec-item-row">
-          <div class="spec-col-key">
-            <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Bahan Baku)" value="Bahan Baku">
-          </div>
-          <div class="spec-col-val">
-            <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai" value="Polyethylene Resins">
-          </div>
-          <div class="spec-col-action">
-            <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+    <p class="admin-field-hint">Daftar variasi ukuran yang tampil sebagai pil interaktif di halaman publik.</p>
+    <div id="variantsContainer">
+      <% if (Array.isArray(product.variants) && product.variants.length > 0) { %>
+        <% product.variants.forEach(function(v) { 
+          const label = typeof v === 'string' ? v : (v.size_label || v.name_id || '');
+        %>
+          <div class="prod-variant-row-item">
+            <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="<%= label %>">
+            <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus ukuran" aria-label="Hapus ukuran">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             </button>
           </div>
+        <% }); %>
+      <% } else { %>
+        <div class="prod-variant-row-item">
+          <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="">
+          <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus ukuran" aria-label="Hapus ukuran">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          </button>
         </div>
       <% } %>
     </div>
   </div>
 
-  <!-- Card 4: Varian Produk Dinamis -->
   <div class="form-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
-      <div class="form-card-title" style="margin-bottom: 0; border: none; padding: 0;">4. Varian Ukuran &amp; Spesifikasi Produk</div>
-      <button type="button" id="btnAddVariantRow" class="btn-add-row" onclick="addVariantRow()">
+    <div class="admin-card-header-flex">
+      <div class="form-card-title admin-card-title-plain">4. Tabel Ukuran (ID) / Size Table (EN)</div>
+      <button type="button" id="btnAddSizeRow" class="btn-add-row">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>Tambah Baris Varian</span>
+        <span>+ Tambah Baris</span>
       </button>
     </div>
-
+    <p class="admin-field-hint">Tabel dimensi komprehensif produk untuk tab "Tabel Ukuran" / "Size Chart".</p>
     <div class="table-scroll-wrapper">
-      <table class="data-table" id="variantsTable">
+      <table class="data-table" id="sizeTable">
         <thead>
           <tr>
-            <th>Ukuran / Dimensi</th>
-            <th>Ketebalan</th>
-            <th>Pilihan Warna</th>
-            <th>Bahan / Tipe</th>
-            <th style="width: 54px; text-align: center;">Aksi</th>
+            <th>Kode Produk</th>
+            <th>Lebar</th>
+            <th>Panjang</th>
+            <th>Tebal (Micron)</th>
+            <th>Kapasitas</th>
+            <th>Bahan</th>
+            <th class="table-col-action">Aksi</th>
           </tr>
         </thead>
-        <tbody id="variantsBody">
-          <% if (product.variants && product.variants.length > 0) { %>
-            <% product.variants.forEach(function(v) { %>
+        <tbody id="sizeTableBody">
+          <% if (Array.isArray(product.size_table) && product.size_table.length > 0) { %>
+            <% product.size_table.forEach(function(row) { %>
               <tr>
-                <td><input type="text" name="var_size[]" class="form-input" value="<%= v.size_label || '' %>"></td>
-                <td><input type="text" name="var_thickness[]" class="form-input" value="<%= v.thickness || '' %>"></td>
-                <td><input type="text" name="var_color[]" class="form-input" value="<%= v.color || '' %>"></td>
-                <td><input type="text" name="var_material[]" class="form-input" value="<%= v.material_type || '' %>"></td>
-                <td style="text-align: center; vertical-align: middle;">
-                  <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
+                <td><input type="text" name="kode_produk[]" class="form-input" placeholder="SL-3040" value="<%= row.kode_produk || row.product_code || '' %>"></td>
+                <td><input type="text" name="lebar[]" class="form-input" placeholder="30 cm" value="<%= row.lebar || row.width || '' %>"></td>
+                <td><input type="text" name="panjang[]" class="form-input" placeholder="40 cm" value="<%= row.panjang || row.length || '' %>"></td>
+                <td><input type="text" name="tebal_micron[]" class="form-input" placeholder="40 micron" value="<%= row.tebal_micron || row.thickness || '' %>"></td>
+                <td><input type="text" name="kapasitas[]" class="form-input" placeholder="5 kg" value="<%= row.kapasitas || row.capacity || '' %>"></td>
+                <td><input type="text" name="bahan[]" class="form-input" placeholder="HDPE Virgin" value="<%= row.bahan || row.material || '' %>"></td>
+                <td class="table-col-action">
+                  <button type="button" class="btn-row-action btn-row-delete btn-remove-size-row" title="Hapus baris" aria-label="Hapus baris">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                   </button>
                 </td>
@@ -182,12 +221,14 @@
             <% }); %>
           <% } else { %>
             <tr>
-              <td><input type="text" name="var_size[]" class="form-input" placeholder="Contoh: 24 x 40 cm"></td>
-              <td><input type="text" name="var_thickness[]" class="form-input" placeholder="0.035 mm"></td>
-              <td><input type="text" name="var_color[]" class="form-input" placeholder="Putih, Hitam"></td>
-              <td><input type="text" name="var_material[]" class="form-input" placeholder="HDPE Virgin"></td>
-              <td style="text-align: center; vertical-align: middle;">
-                <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
+              <td><input type="text" name="kode_produk[]" class="form-input" placeholder="SL-3040" value=""></td>
+              <td><input type="text" name="lebar[]" class="form-input" placeholder="30 cm" value=""></td>
+              <td><input type="text" name="panjang[]" class="form-input" placeholder="40 cm" value=""></td>
+              <td><input type="text" name="tebal_micron[]" class="form-input" placeholder="40 micron" value=""></td>
+              <td><input type="text" name="kapasitas[]" class="form-input" placeholder="5 kg" value=""></td>
+              <td><input type="text" name="bahan[]" class="form-input" placeholder="HDPE Virgin" value=""></td>
+              <td class="table-col-action">
+                <button type="button" class="btn-row-action btn-row-delete btn-remove-size-row" title="Hapus baris" aria-label="Hapus baris">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
               </td>
@@ -198,9 +239,8 @@
     </div>
   </div>
 
-  <!-- Card 5: Meta SEO -->
   <div class="form-card">
-    <div class="form-card-title">5. Pengaturan Meta SEO (Google)</div>
+    <div class="form-card-title">5. Pengaturan Meta SEO (Mesin Pencari Google)</div>
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="meta_title_id">Meta Title (ID)</label>
@@ -223,90 +263,235 @@
     </div>
   </div>
 
-  <div class="form-actions-bar" style="margin-bottom: 2rem;">
+  <div class="form-actions-bar form-actions-sticky">
     <a href="/admin/products" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px;">Simpan Perubahan</button>
+    <button type="submit" class="btn btn-primary btn-submit-form">Perbarui Produk</button>
   </div>
 </form>
 
 <script>
-  function addSpecRow() {
-    const container = document.getElementById('specsContainer');
-    const div = document.createElement('div');
-    div.className = 'spec-item-row';
-    div.innerHTML = `
-      <div class="spec-col-key">
-        <input type="text" name="spec_key[]" class="form-input" placeholder="Parameter (misal: Warna)">
-      </div>
-      <div class="spec-col-val">
-        <input type="text" name="spec_val[]" class="form-input" placeholder="Nilai (misal: Transparan / Custom)">
-      </div>
-      <div class="spec-col-action">
-        <button type="button" class="btn-row-action btn-row-delete btn-remove-spec" onclick="removeSpecRow(this)" title="Hapus baris" aria-label="Hapus baris">
+  (function() {
+    function setupCharCounter(textareaId, counterId, maxLen) {
+      const textarea = document.getElementById(textareaId);
+      const counter = document.getElementById(counterId);
+      if (!textarea || !counter) return;
+
+      function update() {
+        const len = textarea.value.length;
+        counter.textContent = `${len}/${maxLen}`;
+        if (maxLen - len <= 10) {
+          counter.classList.add('text-danger', 'counter-danger');
+        } else {
+          counter.classList.remove('text-danger', 'counter-danger');
+        }
+      }
+
+      textarea.addEventListener('input', update);
+      update();
+    }
+
+    setupCharCounter('short_description_id', 'counter_short_desc_id', 200);
+    setupCharCounter('short_description_en', 'counter_short_desc_en', 200);
+
+    const galleryStrip = document.getElementById('prodGalleryStrip');
+    const galleryInput = document.getElementById('gallery_images_input');
+    const btnOpenGallery = document.getElementById('btnOpenGalleryPicker');
+
+    function updateGalleryInput() {
+      if (!galleryStrip || !galleryInput) return;
+      const items = galleryStrip.querySelectorAll('.prod-gallery-item');
+      const list = [];
+      items.forEach(el => {
+        const id = el.getAttribute('data-id');
+        if (id && /^\d+$/.test(id)) {
+          list.push(parseInt(id, 10));
+        } else if (el.getAttribute('data-url')) {
+          list.push(el.getAttribute('data-url'));
+        }
+      });
+      galleryInput.value = JSON.stringify(list);
+    }
+
+    function bindGalleryItemEvents(div) {
+      const delBtn = div.querySelector('.prod-gallery-btn-del');
+      const upBtn = div.querySelector('.prod-gallery-btn-up');
+      const downBtn = div.querySelector('.prod-gallery-btn-down');
+
+      if (delBtn) {
+        delBtn.addEventListener('click', () => {
+          div.remove();
+          updateGalleryInput();
+        });
+      }
+
+      if (upBtn) {
+        upBtn.addEventListener('click', () => {
+          const prev = div.previousElementSibling;
+          if (prev) {
+            galleryStrip.insertBefore(div, prev);
+            updateGalleryInput();
+          }
+        });
+      }
+
+      if (downBtn) {
+        downBtn.addEventListener('click', () => {
+          const next = div.nextElementSibling;
+          if (next) {
+            galleryStrip.insertBefore(next, div);
+            updateGalleryInput();
+          }
+        });
+      }
+    }
+
+    if (galleryStrip) {
+      galleryStrip.querySelectorAll('.prod-gallery-item').forEach(bindGalleryItemEvents);
+    }
+
+    function createGalleryItem(item) {
+      const id = item.id || '';
+      const url = item.file_url || item.url || '';
+      if (!url) return null;
+
+      const div = document.createElement('div');
+      div.className = 'prod-gallery-item';
+      div.setAttribute('data-id', id);
+      div.setAttribute('data-url', url);
+
+      div.innerHTML = `
+        <div class="prod-gallery-thumb-box">
+          <img src="${url}" alt="" class="prod-gallery-thumb" width="64" height="64" loading="lazy">
+          <button type="button" class="prod-gallery-btn-del" title="Hapus foto" aria-label="Hapus foto">&times;</button>
+        </div>
+        <div class="prod-gallery-reorder">
+          <button type="button" class="prod-gallery-btn-move prod-gallery-btn-up" title="Geser ke kiri / atas" aria-label="Geser ke kiri">&#9650;</button>
+          <button type="button" class="prod-gallery-btn-move prod-gallery-btn-down" title="Geser ke kanan / bawah" aria-label="Geser ke kanan">&#9660;</button>
+        </div>
+      `;
+
+      bindGalleryItemEvents(div);
+      return div;
+    }
+
+    if (btnOpenGallery) {
+      btnOpenGallery.addEventListener('click', () => {
+        if (typeof window.openMediaPicker === 'function') {
+          window.openMediaPicker({
+            multiple: true,
+            type: 'image',
+            onSelect: (selectedList) => {
+              if (Array.isArray(selectedList)) {
+                selectedList.forEach(m => {
+                  const existing = galleryStrip.querySelector(`[data-id="${m.id}"], [data-url="${m.file_url}"]`);
+                  if (!existing) {
+                    const el = createGalleryItem(m);
+                    if (el) galleryStrip.appendChild(el);
+                  }
+                });
+                updateGalleryInput();
+              }
+            }
+          });
+        }
+      });
+    }
+
+    const btnAddVariant = document.getElementById('btnAddVariant');
+    const variantsContainer = document.getElementById('variantsContainer');
+
+    function createVariantRow(val = '') {
+      const div = document.createElement('div');
+      div.className = 'prod-variant-row-item';
+      div.innerHTML = `
+        <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="${val}">
+        <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus varian" aria-label="Hapus varian">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
         </button>
-      </div>
-    `;
-    container.appendChild(div);
-    div.querySelector('input').focus();
-  }
-  window.addSpecRow = addSpecRow;
-
-  function removeSpecRow(btn) {
-    const container = document.getElementById('specsContainer');
-    const rows = container.querySelectorAll('.spec-item-row, .form-row-2');
-    if (rows.length <= 1) {
-      if (typeof showToast === 'function') {
-        showToast('Minimal 1 baris spesifikasi teknis harus tersedia.');
-      } else {
-        alert('Minimal 1 baris spesifikasi teknis harus tersedia.');
-      }
-      return;
+      `;
+      div.querySelector('.btn-remove-variant').addEventListener('click', () => {
+        const rows = variantsContainer.querySelectorAll('.prod-variant-row-item');
+        if (rows.length > 1) {
+          div.remove();
+        } else {
+          div.querySelector('input').value = '';
+        }
+      });
+      return div;
     }
-    const row = btn.closest('.spec-item-row, .form-row-2');
-    if (row) row.remove();
-  }
-  window.removeSpecRow = removeSpecRow;
 
-  function addVariantRow() {
-    const tbody = document.getElementById('variantsBody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="text" name="var_size[]" class="form-input" placeholder="Contoh: 30 x 50 cm"></td>
-      <td><input type="text" name="var_thickness[]" class="form-input" placeholder="Contoh: 0.045 mm"></td>
-      <td><input type="text" name="var_color[]" class="form-input" placeholder="Contoh: Custom Pantone"></td>
-      <td><input type="text" name="var_material[]" class="form-input" placeholder="Contoh: Biodegradable"></td>
-      <td style="text-align: center; vertical-align: middle;">
-        <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" onclick="removeVariantRow(this)" title="Hapus varian" aria-label="Hapus varian">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-        </button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-    tr.querySelector('input').focus();
-  }
-  window.addVariantRow = addVariantRow;
+    if (btnAddVariant && variantsContainer) {
+      btnAddVariant.addEventListener('click', () => {
+        const row = createVariantRow('');
+        variantsContainer.appendChild(row);
+        row.querySelector('input').focus();
+      });
 
-  function removeVariantRow(btn) {
-    const tbody = document.getElementById('variantsBody');
-    const rows = tbody.querySelectorAll('tr');
-    if (rows.length <= 1) {
-      if (typeof showToast === 'function') {
-        showToast('Minimal 1 baris varian ukuran harus tersedia.');
-      } else {
-        alert('Minimal 1 baris varian ukuran harus tersedia.');
-      }
-      return;
+      variantsContainer.querySelectorAll('.btn-remove-variant').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const row = btn.closest('.prod-variant-row-item');
+          const rows = variantsContainer.querySelectorAll('.prod-variant-row-item');
+          if (rows.length > 1) {
+            row.remove();
+          } else {
+            row.querySelector('input').value = '';
+          }
+        });
+      });
     }
-    const row = btn.closest('tr');
-    if (row) row.remove();
-  }
-  window.removeVariantRow = removeVariantRow;
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btnAddSpecRow')?.addEventListener('click', addSpecRow);
-    document.getElementById('btnAddVariantRow')?.addEventListener('click', addVariantRow);
-  });
+    const btnAddSizeRow = document.getElementById('btnAddSizeRow');
+    const sizeTableBody = document.getElementById('sizeTableBody');
+
+    function createSizeRow(data = {}) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" name="kode_produk[]" class="form-input" placeholder="SL-3040" value="${data.kode_produk || data.product_code || ''}"></td>
+        <td><input type="text" name="lebar[]" class="form-input" placeholder="30 cm" value="${data.lebar || data.width || ''}"></td>
+        <td><input type="text" name="panjang[]" class="form-input" placeholder="40 cm" value="${data.panjang || data.length || ''}"></td>
+        <td><input type="text" name="tebal_micron[]" class="form-input" placeholder="40 micron" value="${data.tebal_micron || data.thickness || ''}"></td>
+        <td><input type="text" name="kapasitas[]" class="form-input" placeholder="5 kg" value="${data.kapasitas || data.capacity || ''}"></td>
+        <td><input type="text" name="bahan[]" class="form-input" placeholder="HDPE Virgin" value="${data.bahan || data.material || ''}"></td>
+        <td class="table-col-action">
+          <button type="button" class="btn-row-action btn-row-delete btn-remove-size-row" title="Hapus baris" aria-label="Hapus baris">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          </button>
+        </td>
+      `;
+      tr.querySelector('.btn-remove-size-row').addEventListener('click', () => {
+        const rows = sizeTableBody.querySelectorAll('tr');
+        if (rows.length > 1) {
+          tr.remove();
+        } else {
+          tr.querySelectorAll('input').forEach(inp => inp.value = '');
+        }
+      });
+      return tr;
+    }
+
+    if (btnAddSizeRow && sizeTableBody) {
+      btnAddSizeRow.addEventListener('click', () => {
+        const row = createSizeRow();
+        sizeTableBody.appendChild(row);
+        row.querySelector('input').focus();
+      });
+
+      sizeTableBody.querySelectorAll('.btn-remove-size-row').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const row = btn.closest('tr');
+          const rows = sizeTableBody.querySelectorAll('tr');
+          if (rows.length > 1) {
+            row.remove();
+          } else {
+            row.querySelectorAll('input').forEach(inp => inp.value = '');
+          }
+        });
+      });
+    }
+  })();
 </script>
+
+<script src="/tinymce/tinymce.min.js"></script>
+<script src="/js/admin-editor.js"></script>
 
 <%- include('../../partials/admin-footer') %>

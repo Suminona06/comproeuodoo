@@ -114,8 +114,8 @@ async function runModul11Tests() {
     name_id: 'Produk Kantong Uji Unit',
     name_en: 'Unit Test Bag',
     slug: 'produk-kantong-uji-unit-' + Date.now(),
-    material_specs: '100% Virgin Resins & Food Grade',
-    technical_specs: { 'Tensile Strength': '35 MPa', 'Elongation': '400%' },
+    cta_text_id: 'Konsultasi Sekarang',
+    cta_text_en: 'Consult Now',
     variants: [
       { size_label: '24x40 cm', thickness: '0.035 mm', color: 'Putih', material_type: 'HDPE' },
       { size_label: '28x48 cm', thickness: '0.040 mm', color: 'Merah', material_type: 'HDPE' }
@@ -129,13 +129,13 @@ async function runModul11Tests() {
   if (!fetchedProd || fetchedProd.name_id !== 'Produk Kantong Uji Unit') {
     throw new Error('Product retrieval failed');
   }
-  if (!fetchedProd.technical_specs || fetchedProd.technical_specs['Tensile Strength'] !== '35 MPa') {
-    throw new Error('Product technical_specs JSON was not parsed properly');
+  if (fetchedProd.cta_text_id !== 'Konsultasi Sekarang' || fetchedProd.cta_text_en !== 'Consult Now') {
+    throw new Error('Product CTA texts were not saved or retrieved properly');
   }
   if (!fetchedProd.variants || fetchedProd.variants.length !== 2) {
     throw new Error('Product variants were not saved or retrieved properly');
   }
-  console.log('  5b. Technical specs parsed:', fetchedProd.technical_specs);
+  console.log('  5b. CTA texts verified (ID: ' + fetchedProd.cta_text_id + ', EN: ' + fetchedProd.cta_text_en + '): PASSED');
   console.log('  5c. Product variants loaded (count: ' + fetchedProd.variants.length + '): PASSED');
 
   await productModel.delete(testProdId);

@@ -46,7 +46,17 @@
     "details_btn": "View Specifications",
     "ask_quote_for_product": "Request Quote for this Item",
     "back_to_catalog": "Back to Catalog",
-    "empty_products": "No products are currently registered under the selected category."
+    "empty_products": "No products are currently registered under the selected category.",
+    "search_placeholder": "Search name or specifications...",
+    "search_label": "Product Search",
+    "sort_label": "Sort By",
+    "sort_newest": "Newest",
+    "sort_alpha_asc": "Name (A - Z)",
+    "sort_alpha_desc": "Name (Z - A)",
+    "sort_catalog": "Catalog Order",
+    "empty_title": "No Products Found",
+    "empty_desc": "No products match your search query or selected category.",
+    "reset_filter": "Show All Products"
   },
   "capabilities": {
     "page_title": "Manufacturing Plant Capabilities",
@@ -115,6 +125,10 @@
     "email_label_short": "Email:",
     "operating_hours_label": "Operating Hours:",
     "map_title": "PT Euodoo Facility Location Map"
+  },
+  "product_detail": {
+    "cta_whatsapp_default": "Request Quote via WhatsApp",
+    "submit_rfq": "Submit RFQ Form"
   },
   "footer": {
     "desc": "PT. EUODOO manufactures 100% degradable HDPE and LLDPE plastic bags for retailers, industries, and traditional markets since 1990.",

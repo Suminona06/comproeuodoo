@@ -4,6 +4,7 @@ import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import { sendCsvResponse } from '../../utils/csvExporter.js';
 import { invalidateSitemapCache } from '../../utils/sitemapGenerator.js';
+import { query } from '../../config/database.js';
 import logger from '../../utils/logger.js';
 
 const createSlug = (text) => {
@@ -15,22 +16,6 @@ const createSlug = (text) => {
     .replace(/[^\w\-]+/g, '')
     .replace(/\-\-+/g, '-');
 };
-
-function parseTechnicalSpecs(body) {
-  const specs = {};
-  if (body.spec_key && body.spec_val) {
-    const keys = Array.isArray(body.spec_key) ? body.spec_key : [body.spec_key];
-    const vals = Array.isArray(body.spec_val) ? body.spec_val : [body.spec_val];
-    for (let i = 0; i < keys.length; i++) {
-      const k = keys[i]?.trim();
-      const v = vals[i]?.trim();
-      if (k && v) {
-        specs[k] = v;
-      }
-    }
-  }
-  return specs;
-}
 
 function parseVariants(body) {
   const variants = [];
@@ -59,6 +44,172 @@ function parseVariants(body) {
     }
   }
   return variants;
+}
+
+function parseGalleryImages(body) {
+  const raw = body.gallery_images || body.gallery;
+  if (!raw) return [];
+  let list = [];
+  if (typeof raw === 'string') {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        list = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        list = [];
+      }
+    } else if (trimmed.includes(',')) {
+      list = trimmed.split(',').map(s => s.trim());
+    } else if (trimmed) {
+      list = [trimmed];
+    }
+  } else if (Array.isArray(raw)) {
+    list = raw;
+  }
+  return list
+    .map(item => {
+      if (typeof item === 'number' && Number.isInteger(item)) return item;
+      if (typeof item === 'string') {
+        const str = item.trim();
+        if (/^\d+$/.test(str)) return parseInt(str, 10);
+        if (/^(https?:\/\/|\/)/i.test(str)) return str;
+      }
+      if (typeof item === 'object' && item !== null) {
+        if (item.id && (typeof item.id === 'number' || /^\d+$/.test(item.id))) return parseInt(item.id, 10);
+        if (item.url && typeof item.url === 'string') return item.url.trim();
+        if (item.file_url && typeof item.file_url === 'string') return item.file_url.trim();
+      }
+      return null;
+    })
+    .filter(item => item !== null);
+}
+
+function parseVariantLabels(body) {
+  if (body.variant_labels !== undefined) {
+    const raw = Array.isArray(body.variant_labels) ? body.variant_labels : [body.variant_labels];
+    return raw
+      .map(v => (typeof v === 'string' ? v.trim() : ''))
+      .filter(v => v.length > 0);
+  }
+  if (body.variants !== undefined) {
+    if (typeof body.variants === 'string') {
+      try {
+        const parsed = JSON.parse(body.variants);
+        if (Array.isArray(parsed)) {
+          return parsed.map(v => typeof v === 'string' ? v.trim() : (v.size_label || v.name_id || '')).filter(Boolean);
+        }
+      } catch {
+        if (body.variants.trim()) return [body.variants.trim()];
+      }
+    } else if (Array.isArray(body.variants)) {
+      return body.variants.map(v => typeof v === 'string' ? v.trim() : (v.size_label || v.name_id || '')).filter(Boolean);
+    }
+  }
+  const legacy = parseVariants(body);
+  if (legacy.length > 0) {
+    return legacy.map(v => {
+      const label = v.size_label || '';
+      const extra = v.thickness ? ` (${v.thickness})` : '';
+      return label ? `${label}${extra}` : '';
+    }).filter(Boolean);
+  }
+  return [];
+}
+
+function parseSizeTable(body) {
+  const rows = [];
+
+  const rawCodes = body.kode_produk || body.size_code;
+  const rawWidths = body.lebar || body.size_width;
+  const rawLengths = body.panjang || body.size_length;
+  const rawThicknesses = body.tebal_micron || body.size_thickness;
+  const rawCapacities = body.kapasitas || body.size_capacity;
+  const rawMaterials = body.bahan || body.size_material;
+
+  const hasFormInputs = rawCodes !== undefined
+    || rawWidths !== undefined
+    || rawLengths !== undefined
+    || rawThicknesses !== undefined
+    || rawCapacities !== undefined
+    || rawMaterials !== undefined;
+
+  if (hasFormInputs) {
+    const codes = Array.isArray(rawCodes) ? rawCodes : [rawCodes || ''];
+    const widths = Array.isArray(rawWidths) ? rawWidths : [rawWidths || ''];
+    const lengths = Array.isArray(rawLengths) ? rawLengths : [rawLengths || ''];
+    const thicknesses = Array.isArray(rawThicknesses) ? rawThicknesses : [rawThicknesses || ''];
+    const capacities = Array.isArray(rawCapacities) ? rawCapacities : [rawCapacities || ''];
+    const materials = Array.isArray(rawMaterials) ? rawMaterials : [rawMaterials || ''];
+
+    const maxLen = Math.max(codes.length, widths.length, lengths.length, thicknesses.length, capacities.length, materials.length);
+    for (let i = 0; i < maxLen; i++) {
+      const code = (codes[i] || '').trim();
+      const width = (widths[i] || '').trim();
+      const length = (lengths[i] || '').trim();
+      const thickness = (thicknesses[i] || '').trim();
+      const capacity = (capacities[i] || '').trim();
+      const material = (materials[i] || '').trim();
+
+      if (code || width || length || thickness || capacity || material) {
+        rows.push({
+          product_code: code,
+          width,
+          length,
+          thickness,
+          capacity,
+          material,
+          kode_produk: code,
+          lebar: width,
+          panjang: length,
+          tebal_micron: thickness,
+          kapasitas: capacity,
+          bahan: material
+        });
+      }
+    }
+  } else if (body.size_table !== undefined) {
+    let rawList = [];
+    if (typeof body.size_table === 'string') {
+      try {
+        const parsed = JSON.parse(body.size_table);
+        rawList = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        rawList = [];
+      }
+    } else if (Array.isArray(body.size_table)) {
+      rawList = body.size_table;
+    }
+
+    for (const item of rawList) {
+      if (typeof item !== 'object' || item === null) continue;
+      const code = (item.product_code || item.kode_produk || item.code || item.size_code || '').trim();
+      const width = (item.width || item.lebar || item.size_width || '').trim();
+      const length = (item.length || item.panjang || item.size_length || '').trim();
+      const thickness = (item.thickness || item.tebal_micron || item.tebal || item.size_thickness || '').trim();
+      const capacity = (item.capacity || item.kapasitas || item.size_capacity || '').trim();
+      const material = (item.material || item.bahan || item.size_material || '').trim();
+
+      if (code || width || length || thickness || capacity || material) {
+        rows.push({
+          product_code: code,
+          width,
+          length,
+          thickness,
+          capacity,
+          material,
+          kode_produk: code,
+          lebar: width,
+          panjang: length,
+          tebal_micron: thickness,
+          kapasitas: capacity,
+          bahan: material
+        });
+      }
+    }
+  }
+
+  return rows;
 }
 
 export const productController = {
@@ -112,7 +263,8 @@ export const productController = {
         { label: 'Nama Produk (ID)', key: 'name_id' },
         { label: 'Nama Produk (EN)', key: 'name_en' },
         { label: 'Kategori', key: r => r.category_name_id || 'Tidak Berkategori' },
-        { label: 'Spesifikasi Material', key: 'material_specs' },
+        { label: 'Teks CTA (ID)', key: 'cta_text_id' },
+        { label: 'Teks CTA (EN)', key: 'cta_text_en' },
         { label: 'Status', key: 'status' },
         { label: 'URL Gambar', key: 'image_url' },
         { label: 'Dibuat Pada', key: 'created_at' }
@@ -135,7 +287,7 @@ export const productController = {
         activeNav: 'products',
         categories,
         error: null,
-        csrfToken: res.locals.csrfToken || ''
+        csrfToken: res.locals?.csrfToken || ''
       });
     } catch (err) {
       logger.error('Product createView error:', { message: err.message });
@@ -146,8 +298,11 @@ export const productController = {
   async store(req, res) {
     try {
       const {
-        name_id, name_en, category_id, description_id, description_en,
-        material_specs, status, sort_order,
+        name_id, name_en, category_id,
+        short_description_id, short_description_en,
+        description_id, description_en,
+        cta_text_id, cta_text_en,
+        status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
 
@@ -160,7 +315,62 @@ export const productController = {
           categories,
           error: 'Nama produk (Bahasa Indonesia) wajib diisi.',
           formData: req.body,
-          csrfToken: res.locals.csrfToken || ''
+          csrfToken: res.locals?.csrfToken || ''
+        });
+      }
+
+      if (short_description_id && short_description_id.trim().length > 200) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Deskripsi singkat (ID) maksimal 200 karakter.',
+          formData: req.body,
+          csrfToken: res.locals?.csrfToken || ''
+        });
+      }
+
+      if (short_description_en && short_description_en.trim().length > 200) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Deskripsi singkat (EN) maksimal 200 karakter.',
+          formData: req.body,
+          csrfToken: res.locals?.csrfToken || ''
+        });
+      }
+
+      const cleanCtaId = cta_text_id ? cta_text_id.replace(/<[^>]*>/g, '').trim() : '';
+      const cleanCtaEn = cta_text_en ? cta_text_en.replace(/<[^>]*>/g, '').trim() : '';
+
+      if (cleanCtaId.length > 50) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Teks tombol CTA (ID) maksimal 50 karakter.',
+          formData: req.body,
+          csrfToken: res.locals?.csrfToken || ''
+        });
+      }
+
+      if (cleanCtaEn.length > 50) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          error: 'Teks tombol CTA (EN) maksimal 50 karakter.',
+          formData: req.body,
+          csrfToken: res.locals?.csrfToken || ''
         });
       }
 
@@ -171,8 +381,10 @@ export const productController = {
         imageUrl = req.body.image_url.trim();
       }
 
-      const technicalSpecs = parseTechnicalSpecs(req.body);
-      const variants = parseVariants(req.body);
+      const galleryImages = parseGalleryImages(req.body);
+      const variantLabels = parseVariantLabels(req.body);
+      const sizeTable = parseSizeTable(req.body);
+      const legacyVariants = parseVariants(req.body);
       const slug = createSlug(name_id);
 
       await productModel.create({
@@ -180,12 +392,16 @@ export const productController = {
         name_en: name_en ? name_en.trim() : name_id.trim(),
         slug,
         category_id: category_id ? parseInt(category_id, 10) : null,
+        short_description_id: short_description_id ? short_description_id.trim() : null,
+        short_description_en: short_description_en ? short_description_en.trim() : null,
         description_id: description_id ? description_id.trim() : null,
         description_en: description_en ? description_en.trim() : null,
-        material_specs: material_specs ? material_specs.trim() : null,
-        technical_specs: technicalSpecs,
-        variants,
-        image_url: imageUrl,
+        cta_text_id: cleanCtaId.length > 0 ? cleanCtaId : null,
+        cta_text_en: cleanCtaEn.length > 0 ? cleanCtaEn : null,
+        variants: variantLabels.length > 0 ? variantLabels : (legacyVariants.length > 0 ? legacyVariants : []),
+        size_table: sizeTable,
+        main_image: imageUrl,
+        gallery_images: galleryImages,
         status: status || 'published',
         sort_order: parseInt(sort_order || '0', 10),
         meta_title_id: meta_title_id || null,
@@ -213,6 +429,34 @@ export const productController = {
         return res.redirect('/admin/products?error=' + encodeURIComponent('Produk tidak ditemukan.'));
       }
 
+      let galleryItems = [];
+      if (Array.isArray(product.gallery_images) && product.gallery_images.length > 0) {
+        const ids = product.gallery_images
+          .filter(x => typeof x === 'number' || (typeof x === 'string' && /^\d+$/.test(x.trim())))
+          .map(x => parseInt(x, 10));
+        let mediaMap = {};
+        if (ids.length > 0) {
+          const placeholders = ids.map(() => '?').join(',');
+          const mediaRows = await query(`SELECT id, file_url, filename FROM media WHERE id IN (${placeholders})`, ids);
+          mediaRows.forEach(m => { mediaMap[m.id] = m; });
+        }
+        galleryItems = product.gallery_images.map(item => {
+          if (typeof item === 'number' || (typeof item === 'string' && /^\d+$/.test(item.trim()))) {
+            const id = parseInt(item, 10);
+            const m = mediaMap[id];
+            return { id, url: m ? m.file_url : '', name: m ? m.filename : `Media #${id}` };
+          }
+          if (typeof item === 'string') {
+            return { id: null, url: item, name: item.split('/').pop() || 'Foto Galeri' };
+          }
+          if (typeof item === 'object' && item !== null) {
+            return { id: item.id || null, url: item.url || item.file_url || '', name: item.name || item.filename || 'Foto' };
+          }
+          return null;
+        }).filter(Boolean);
+      }
+      product.gallery_items = galleryItems;
+
       res.render('admin/products/edit', {
         title: 'Edit Produk - ' + product.name_id,
         pageTitle: 'Edit Produk Manufaktur',
@@ -220,7 +464,7 @@ export const productController = {
         product,
         categories,
         error: null,
-        csrfToken: res.locals.csrfToken || ''
+        csrfToken: res.locals?.csrfToken || ''
       });
     } catch (err) {
       logger.error('Product editView error:', { message: err.message });
@@ -232,8 +476,11 @@ export const productController = {
     try {
       const { id } = req.params;
       const {
-        name_id, name_en, category_id, description_id, description_en,
-        material_specs, status, sort_order,
+        name_id, name_en, category_id,
+        short_description_id, short_description_en,
+        description_id, description_en,
+        cta_text_id, cta_text_en,
+        status, sort_order,
         meta_title_id, meta_title_en, meta_desc_id, meta_desc_en
       } = req.body;
 
@@ -242,19 +489,57 @@ export const productController = {
         return res.redirect('/admin/products?error=' + encodeURIComponent('Produk tidak ditemukan.'));
       }
 
-      const technicalSpecs = parseTechnicalSpecs(req.body);
-      const variants = parseVariants(req.body);
+      if (short_description_id && short_description_id.trim().length > 200) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (ID) maksimal 200 karakter.'));
+      }
+      if (short_description_en && short_description_en.trim().length > 200) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Deskripsi singkat (EN) maksimal 200 karakter.'));
+      }
+
+      const cleanCtaId = cta_text_id !== undefined ? (cta_text_id ? cta_text_id.replace(/<[^>]*>/g, '').trim() : '') : null;
+      const cleanCtaEn = cta_text_en !== undefined ? (cta_text_en ? cta_text_en.replace(/<[^>]*>/g, '').trim() : '') : null;
+
+      if (cleanCtaId !== null && cleanCtaId.length > 50) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Teks tombol CTA (ID) maksimal 50 karakter.'));
+      }
+      if (cleanCtaEn !== null && cleanCtaEn.length > 50) {
+        return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent('Teks tombol CTA (EN) maksimal 50 karakter.'));
+      }
+
+      const galleryImages = parseGalleryImages(req.body);
+      const variantLabels = parseVariantLabels(req.body);
+      const sizeTable = parseSizeTable(req.body);
+      const legacyVariants = parseVariants(req.body);
+
+      const hasVariantInput = req.body.variant_labels !== undefined
+        || req.body.variants !== undefined
+        || req.body.var_size !== undefined;
+      const hasSizeTableInput = req.body.kode_produk !== undefined
+        || req.body.size_code !== undefined
+        || req.body.lebar !== undefined
+        || req.body.size_width !== undefined
+        || req.body.panjang !== undefined
+        || req.body.size_length !== undefined
+        || req.body.tebal_micron !== undefined
+        || req.body.size_thickness !== undefined
+        || req.body.kapasitas !== undefined
+        || req.body.size_capacity !== undefined
+        || req.body.bahan !== undefined
+        || req.body.size_material !== undefined
+        || req.body.size_table !== undefined;
+      const hasGalleryInput = req.body.gallery_images !== undefined || req.body.gallery !== undefined;
 
       const updateData = {
         name_id: name_id ? name_id.trim() : product.name_id,
         name_en: name_en ? name_en.trim() : product.name_en,
         slug: name_id ? createSlug(name_id) : product.slug,
         category_id: category_id ? parseInt(category_id, 10) : null,
+        short_description_id: short_description_id !== undefined ? (short_description_id ? short_description_id.trim() : null) : product.short_description_id,
+        short_description_en: short_description_en !== undefined ? (short_description_en ? short_description_en.trim() : null) : product.short_description_en,
         description_id: description_id !== undefined ? description_id.trim() : product.description_id,
         description_en: description_en !== undefined ? description_en.trim() : product.description_en,
-        material_specs: material_specs !== undefined ? material_specs.trim() : product.material_specs,
-        technical_specs: technicalSpecs,
-        variants,
+        cta_text_id: cta_text_id !== undefined ? (cleanCtaId && cleanCtaId.length > 0 ? cleanCtaId : null) : product.cta_text_id,
+        cta_text_en: cta_text_en !== undefined ? (cleanCtaEn && cleanCtaEn.length > 0 ? cleanCtaEn : null) : product.cta_text_en,
         status: status || product.status,
         sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : product.sort_order,
         meta_title_id: meta_title_id || null,
@@ -262,6 +547,16 @@ export const productController = {
         meta_desc_id: meta_desc_id || null,
         meta_desc_en: meta_desc_en || null
       };
+
+      if (hasVariantInput) {
+        updateData.variants = variantLabels.length > 0 ? variantLabels : (legacyVariants.length > 0 ? legacyVariants : []);
+      }
+      if (hasSizeTableInput) {
+        updateData.size_table = sizeTable;
+      }
+      if (hasGalleryInput) {
+        updateData.gallery_images = galleryImages;
+      }
 
       if (req.file) {
         if (product.image_url) {
