@@ -222,3 +222,19 @@
     - [x] T-210: Integrasi teks CTA dinamis pada controllers/public/productController.js & product-detail.ejs
     - [x] T-211: Pengujian regresi otomatis end-to-end, penyesuaian unit test, zero console error
 
+- **Task Tabel Ukuran Produk Dinamis & Perbaikan Ikon Admin:** [archive/2026-10-26_product-size-table-dynamic-columns.md](2026-10-26_product-size-table-dynamic-columns.md)
+  - **Tanggal:** 2026-10-26 s/d 2026-10-27
+  - **Total Task:** 9 Task terperinci (T-212 s/d T-220)
+  - **Status:** Selesai 100% (9/9 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-212: Perbaikan Bug Ikon Ganda pada Tombol Aksi Form Admin Produk (btnAddSizeRow, btnAddVariant, btnOpenGalleryPicker)
+    - [x] T-213: Skrip Backup Database & Migrasi SQL Format Tabel Ukuran Produk (018_migrate_legacy_size_table_format.sql)
+    - [x] T-214: Helper Normalizer & Model Produk untuk Struktur Kolom Dinamis JSON Satu Bahasa
+    - [x] T-215: Antarmuka Editor Dinamis Admin Form + Modal Salin Kolom + Filter Produk Sumber + SweetAlert2
+    - [x] T-216: Endpoint API Salin Kolom & Ekspor CSV Katalog Dinamis Gabungan (Union of Columns)
+    - [x] T-217: Validasi Server-Side, Whitelist Kunci Sel, Batas Karakter & Isolasi Data Per Produk secara Atomik
+    - [x] T-218: Rendering Publik Tabel Ukuran Dinamis Responsif di Halaman Detail Produk
+    - [x] T-219: Test Suite Otomatis End-to-End, Uji Isolasi, Uji Salin Kolom, CSV Gabungan & QA
+    - [x] T-220: Perbaikan Bug Ikon Tombol Close Modal Salin Kolom Admin (modalCopySizeColumns)
+
+

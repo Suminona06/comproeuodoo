@@ -17,7 +17,7 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - **Progressive Enhancement Load More:** Tombol "Muat Lebih Banyak" tampil jika total > 9, memuat 9 kartu via AJAX tanpa reload, animasi transisi transform/opacity (`prefers-reduced-motion` statis).
 - **Tata Letak Mobile & Filter Drawer:** Mobile (< 768px) reflow 2 kolom kompak; filter kategori disajikan via drawer samping (*offcanvas*) dengan target sentuh min 44 x 44 px.
 
-### FR-09: Ekspor Data Produk ke Format CSV (CMS) [PENDING T-216]
+### FR-09: Ekspor Data Produk ke Format CSV (CMS)
 - Admin dapat mengunduh seluruh data katalog ke file spreadsheet `.csv` via `/admin/products/export`.
 - Kolom CSV mencakup metadata produk (ID, SKU/Slug, Nama Produk ID/EN, Kategori, Teks CTA ID/EN, Status Publikasi, Tanggal Dibuat) serta penggabungan dinamis (*union of columns*) dari seluruh kolom tabel ukuran produk aktif. Produk tanpa tabel ukuran atau tanpa kolom tertentu diisi string kosong `""`.
 
@@ -31,26 +31,26 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - **Baris Aksi CTA (52px):** Tombol WhatsApp latar `var(--color-primary)` label dinamis dari `cta_text_id/en` atau fallback dwibahasa ("Minta Penawaran via WhatsApp" / "Request Quote via WhatsApp") ke nomor resmi `settings.whatsapp_number`. Tombol "Submit RFQ Form" outline putih `var(--color-surface)` border `var(--color-border)`. Mobile <= 560px full-width.
 - **Bilah Tab & Panel Konten:** Tab "Deskripsi" dan "Tabel Ukuran" dengan underline aktif `var(--color-primary)`. Default: Deskripsi.
   - Panel Deskripsi: teks kaya TinyMCE (`description_id/en`) max 75ch warna `var(--color-text-variant)`.
-  - Panel Tabel Ukuran: tabel ukuran dinamis per produk dari JSON `size_table` [PENDING T-218]. Header dan kartu mobile merender label kolom produk (teks tunggal, di-escape aman). Desktop: kontainer scroll horizontal `.pd-size-scroll` (halaman bebas horizontal leak). Mobile <= 600px: thead sembunyi, setiap baris tampil sebagai card di mana kolom pertama menjadi judul kartu dan kolom berikutnya baris atribut dengan label `data-l` dinamis. Sembunyi jika baris data kosong.
+  - Panel Tabel Ukuran: tabel ukuran dinamis per produk dari JSON `size_table`. Header dan kartu mobile merender label kolom produk (teks tunggal, di-escape aman). Desktop: kontainer scroll horizontal `.pd-size-scroll` (halaman bebas horizontal leak). Mobile <= 600px: thead sembunyi, setiap baris tampil sebagai card di mana kolom pertama menjadi judul kartu dan kolom berikutnya baris atribut dengan label `data-l` dinamis. Sembunyi jika baris data kosong.
 - **Aksesibilitas & Animasi:** Animasi hanya GPU transform/opacity, `prefers-reduced-motion` statis.
 
 ### FR-25: Skema Kolom Database Produk
-- Skema tabel `products`: `short_description_id/en`, `variants`, `size_table`, `gallery_images`, `cta_text_id/en`. Kolom legacy `material_specs` dan `technical_specs` telah di-drop. Kolom `size_table` (JSON) menyimpan objek dinamis `{ columns, rows }` yang dimigrasi dari format lama via migrasi `018` [PENDING T-213].
+- Skema tabel `products`: `short_description_id/en`, `variants`, `size_table`, `gallery_images`, `cta_text_id/en`. Kolom legacy `material_specs` dan `technical_specs` telah di-drop. Kolom `size_table` (JSON) menyimpan objek dinamis `{ columns, rows }` yang dimigrasi dari format lama via migrasi `018`.
 
-### FR-29: Struktur Tabel Ukuran Dinamis Per Produk (Admin CMS) [PENDING T-214-T-217]
+### FR-29: Struktur Tabel Ukuran Dinamis Per Produk (Admin CMS)
 - Setiap produk memiliki definisi struktur kolom dan baris sendiri (tanpa master kolom global, isolasi data 100%).
 - Form Create (`/admin/products/create`) dan Edit (`/admin/products/:id/edit`) menyediakan builder tabel ukuran dinamis:
   - Form Create memuat 6 kolom default (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) sebagai titik awal yang bisa diedit/ditambah/dihapus.
   - Tambah kolom baru, ubah label kolom (teks tunggal maks 40 char), hapus kolom dengan konfirmasi SweetAlert2 jika ada data teks sel terisi.
   - Tambah baris baru, ubah isi sel (teks polos maks 80 char), hapus baris.
   - Tombol geser urutan kolom (kiri/kanan) dan baris (naik/turun) aksesibel via keyboard dan ramah sentuhan.
-  - Modal "Salin Struktur Kolom": Tombol opsional yang memunculkan daftar produk aktif, menyalin susunan kolom produk terpilih tanpa data sel [PENDING T-215-T-216].
+  - Modal "Salin Struktur Kolom": Tombol opsional yang memunculkan daftar produk aktif, menyalin susunan kolom produk terpilih tanpa data sel.
 - Kolom memakai ID stabil buatan server (`col_1`, `col_2`, dst.) unik per produk agar rename label tidak merusak isi sel.
 - Aturan batas: minimal 1 kolom, maks 8 kolom, maks 30 baris, label kolom maks 40 char, isi sel maks 80 char. Label kosong dilarang.
 - Transisi penambahan/penghapusan kolom dan baris halus (transform & opacity, statis pada `prefers-reduced-motion`).
 - Aksesibilitas: Navigasi keyboard penuh, label aria lengkap, target sentuh minimal 44 x 44 px.
 
-### FR-30: Tampilan Publik Tabel Ukuran Dinamis Responsif (PDP) [PENDING T-218]
+### FR-30: Tampilan Publik Tabel Ukuran Dinamis Responsif (PDP)
 - Tampilan tabel publik di `/products/:slug` merender struktur kolom dinamis produk bersangkutan.
 - Lebar minimum tabel dikendalikan oleh selector scoped berbasis atribut data (`data-cols="1"` s/d `data-cols="8"`), tanpa style inline.
 - Indikator gradien bayangan visual halus pada tepi wadah `.pd-size-scroll` saat tabel meluap di desktop/tablet.
