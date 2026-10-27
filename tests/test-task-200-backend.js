@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import assert from 'assert';
 import productModel from '../models/productModel.js';
 import { productController as publicProductController } from '../controllers/public/productController.js';

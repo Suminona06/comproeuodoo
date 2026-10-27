@@ -1,4 +1,4 @@
-import productModel from '../../models/productModel.js';
+import productModel, { normalizeSizeTable } from '../../models/productModel.js';
 import productCategoryModel from '../../models/productCategoryModel.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
@@ -117,8 +117,10 @@ function parseVariantLabels(body) {
   return [];
 }
 
-function parseSizeTable(body) {
-  const rows = [];
+export function parseDynamicSizeTable(body) {
+  if (!body || typeof body !== 'object') {
+    return null;
+  }
 
   const rawCodes = body.kode_produk || body.size_code;
   const rawWidths = body.lebar || body.size_width;
@@ -134,7 +136,23 @@ function parseSizeTable(body) {
     || rawCapacities !== undefined
     || rawMaterials !== undefined;
 
-  if (hasFormInputs) {
+  let raw = null;
+
+  if (body.size_table !== undefined && body.size_table !== null) {
+    if (typeof body.size_table === 'string') {
+      const trimmed = body.size_table.trim();
+      if (!trimmed || trimmed === 'null' || trimmed === 'undefined') {
+        return null;
+      }
+      try {
+        raw = JSON.parse(trimmed);
+      } catch {
+        throw new Error('Format data tabel ukuran tidak valid (JSON malformed).');
+      }
+    } else if (typeof body.size_table === 'object') {
+      raw = body.size_table;
+    }
+  } else if (hasFormInputs) {
     const codes = Array.isArray(rawCodes) ? rawCodes : [rawCodes || ''];
     const widths = Array.isArray(rawWidths) ? rawWidths : [rawWidths || ''];
     const lengths = Array.isArray(rawLengths) ? rawLengths : [rawLengths || ''];
@@ -142,6 +160,7 @@ function parseSizeTable(body) {
     const capacities = Array.isArray(rawCapacities) ? rawCapacities : [rawCapacities || ''];
     const materials = Array.isArray(rawMaterials) ? rawMaterials : [rawMaterials || ''];
 
+    const legacyRows = [];
     const maxLen = Math.max(codes.length, widths.length, lengths.length, thicknesses.length, capacities.length, materials.length);
     for (let i = 0; i < maxLen; i++) {
       const code = (codes[i] || '').trim();
@@ -152,67 +171,170 @@ function parseSizeTable(body) {
       const material = (materials[i] || '').trim();
 
       if (code || width || length || thickness || capacity || material) {
-        rows.push({
-          product_code: code,
-          width,
-          length,
-          thickness,
-          capacity,
-          material,
-          kode_produk: code,
-          lebar: width,
-          panjang: length,
-          tebal_micron: thickness,
-          kapasitas: capacity,
-          bahan: material
+        legacyRows.push({
+          col_1: code,
+          col_2: width,
+          col_3: length,
+          col_4: thickness,
+          col_5: capacity,
+          col_6: material
         });
       }
     }
-  } else if (body.size_table !== undefined) {
-    let rawList = [];
-    if (typeof body.size_table === 'string') {
-      try {
-        const parsed = JSON.parse(body.size_table);
-        rawList = Array.isArray(parsed) ? parsed : [];
-      } catch {
-        rawList = [];
-      }
-    } else if (Array.isArray(body.size_table)) {
-      rawList = body.size_table;
+
+    if (legacyRows.length === 0) {
+      return null;
     }
 
-    for (const item of rawList) {
-      if (typeof item !== 'object' || item === null) continue;
-      const code = (item.product_code || item.kode_produk || item.code || item.size_code || '').trim();
-      const width = (item.width || item.lebar || item.size_width || '').trim();
-      const length = (item.length || item.panjang || item.size_length || '').trim();
-      const thickness = (item.thickness || item.tebal_micron || item.tebal || item.size_thickness || '').trim();
-      const capacity = (item.capacity || item.kapasitas || item.size_capacity || '').trim();
-      const material = (item.material || item.bahan || item.size_material || '').trim();
-
-      if (code || width || length || thickness || capacity || material) {
-        rows.push({
-          product_code: code,
-          width,
-          length,
-          thickness,
-          capacity,
-          material,
-          kode_produk: code,
-          lebar: width,
-          panjang: length,
-          tebal_micron: thickness,
-          kapasitas: capacity,
-          bahan: material
-        });
-      }
-    }
+    raw = {
+      columns: [
+        { id: 'col_1', label: 'Kode Produk' },
+        { id: 'col_2', label: 'Lebar' },
+        { id: 'col_3', label: 'Panjang' },
+        { id: 'col_4', label: 'Tebal (Micron)' },
+        { id: 'col_5', label: 'Kapasitas' },
+        { id: 'col_6', label: 'Bahan' }
+      ],
+      rows: legacyRows
+    };
   }
 
-  return rows;
+  if (!raw) {
+    return null;
+  }
+
+  if (Array.isArray(raw)) {
+    if (raw.length === 0) return null;
+    raw = {
+      columns: [
+        { id: 'col_1', label: 'Kode Produk' },
+        { id: 'col_2', label: 'Lebar' },
+        { id: 'col_3', label: 'Panjang' },
+        { id: 'col_4', label: 'Tebal (Micron)' },
+        { id: 'col_5', label: 'Kapasitas' },
+        { id: 'col_6', label: 'Bahan' }
+      ],
+      rows: raw
+    };
+  }
+
+  const rawColumns = Array.isArray(raw.columns) ? raw.columns : [];
+  const rawRows = Array.isArray(raw.rows) ? raw.rows : [];
+
+  if (rawColumns.length === 0 && rawRows.length === 0) {
+    return null;
+  }
+
+  if (rawColumns.length === 0 && rawRows.length > 0) {
+    throw new Error('Tabel ukuran minimal memiliki 1 kolom.');
+  }
+
+  if (rawColumns.length < 1) {
+    throw new Error('Tabel ukuran minimal memiliki 1 kolom.');
+  }
+
+  if (rawColumns.length > 8) {
+    throw new Error('Tabel ukuran maksimal memiliki 8 kolom.');
+  }
+
+  if (rawRows.length > 30) {
+    throw new Error('Tabel ukuran maksimal memiliki 30 baris.');
+  }
+
+  const cleanColumns = [];
+  const incomingIdToCanonicalId = {};
+
+  for (let i = 0; i < rawColumns.length; i++) {
+    const col = rawColumns[i];
+    if (!col || typeof col !== 'object') {
+      throw new Error(`Definisi kolom ke-${i + 1} tidak valid.`);
+    }
+
+    const rawLabel = col.label !== undefined ? String(col.label) : '';
+    const cleanLabel = rawLabel.replace(/<[^>]*>/g, '').trim();
+
+    if (cleanLabel.length === 0) {
+      throw new Error('Label kolom tabel ukuran tidak boleh kosong.');
+    }
+
+    if (cleanLabel.length > 40) {
+      throw new Error(`Label kolom "${cleanLabel.slice(0, 20)}..." melebihi batas maksimal 40 karakter.`);
+    }
+
+    const canonicalId = `col_${i + 1}`;
+    cleanColumns.push({
+      id: canonicalId,
+      label: cleanLabel
+    });
+
+    if (col.id) {
+      incomingIdToCanonicalId[String(col.id).trim()] = canonicalId;
+    }
+    incomingIdToCanonicalId[canonicalId] = canonicalId;
+    incomingIdToCanonicalId[cleanLabel] = canonicalId;
+  }
+
+  const cleanRows = [];
+  for (let rIdx = 0; rIdx < rawRows.length; rIdx++) {
+    const row = rawRows[rIdx];
+    if (!row || typeof row !== 'object') continue;
+
+    const cleanRow = {};
+    for (const col of cleanColumns) {
+      const canonicalId = col.id;
+      let val = '';
+
+      if (row[canonicalId] !== undefined) {
+        val = row[canonicalId];
+      } else {
+        for (const [incId, targetCanonId] of Object.entries(incomingIdToCanonicalId)) {
+          if (targetCanonId === canonicalId && row[incId] !== undefined) {
+            val = row[incId];
+            break;
+          }
+        }
+      }
+
+      const cleanCell = String(val !== null && val !== undefined ? val : '')
+        .replace(/<[^>]*>/g, '')
+        .trim();
+
+      if (cleanCell.length > 80) {
+        throw new Error(`Isi sel pada kolom "${col.label}" baris ${rIdx + 1} melebihi batas maksimal 80 karakter.`);
+      }
+
+      cleanRow[canonicalId] = cleanCell;
+    }
+
+    cleanRows.push(cleanRow);
+  }
+
+  return {
+    columns: cleanColumns,
+    rows: cleanRows
+  };
+}
+
+export const parseSizeTable = parseDynamicSizeTable;
+
+export async function getProductsWithSizeTable(excludeId = null) {
+  const sql = `
+    SELECT id, name_id, name_en FROM products
+    WHERE status = "published"
+      ${excludeId ? 'AND id != ?' : ''}
+      AND size_table IS NOT NULL
+      AND JSON_VALID(size_table) = 1
+      AND (
+        JSON_EXTRACT(size_table, '$.columns[0]') IS NOT NULL
+        OR JSON_EXTRACT(size_table, '$[0]') IS NOT NULL
+      )
+    ORDER BY name_id ASC
+  `;
+  return excludeId ? query(sql, [excludeId]) : query(sql);
 }
 
 export const productController = {
+  getProductsWithSizeTable,
   async index(req, res) {
     try {
       const categoryId = req.query.category ? parseInt(req.query.category, 10) : null;
@@ -257,21 +379,97 @@ export const productController = {
   async exportCsv(req, res) {
     try {
       const products = await productModel.findAll();
+
+      const dynamicColumnsMap = new Map();
+      for (const p of products) {
+        const st = normalizeSizeTable(p.size_table);
+        if (st && Array.isArray(st.columns)) {
+          for (const col of st.columns) {
+            const rawLabel = String(col.label || '').trim();
+            if (!rawLabel) continue;
+            const normKey = rawLabel.toLowerCase();
+            if (!dynamicColumnsMap.has(normKey)) {
+              dynamicColumnsMap.set(normKey, {
+                normKey,
+                label: rawLabel
+              });
+            }
+          }
+        }
+      }
+
       const columns = [
         { label: 'ID', key: 'id' },
         { label: 'Slug', key: 'slug' },
         { label: 'Nama Produk (ID)', key: 'name_id' },
         { label: 'Nama Produk (EN)', key: 'name_en' },
         { label: 'Kategori', key: r => r.category_name_id || 'Tidak Berkategori' },
-        { label: 'Teks CTA (ID)', key: 'cta_text_id' },
-        { label: 'Teks CTA (EN)', key: 'cta_text_en' },
+        { label: 'Teks CTA (ID)', key: r => r.cta_text_id || '' },
+        { label: 'Teks CTA (EN)', key: r => r.cta_text_en || '' },
         { label: 'Status', key: 'status' },
-        { label: 'URL Gambar', key: 'image_url' },
-        { label: 'Dibuat Pada', key: 'created_at' }
+        { label: 'URL Gambar', key: r => r.image_url || '' },
+        { label: 'Dibuat Pada', key: r => r.created_at ? (r.created_at instanceof Date ? r.created_at.toISOString() : String(r.created_at)) : '' }
       ];
 
+      for (const dynCol of dynamicColumnsMap.values()) {
+        columns.push({
+          label: dynCol.label,
+          key: '__dyn_' + dynCol.normKey
+        });
+      }
+
+      const exportRows = [];
+      for (const product of products) {
+        const st = normalizeSizeTable(product.size_table);
+        const baseRow = {
+          id: product.id,
+          slug: product.slug,
+          name_id: product.name_id,
+          name_en: product.name_en,
+          category_name_id: product.category_name_id || 'Tidak Berkategori',
+          cta_text_id: product.cta_text_id || '',
+          cta_text_en: product.cta_text_en || '',
+          status: product.status || '',
+          image_url: product.image_url || '',
+          created_at: product.created_at || ''
+        };
+
+        const normKeyToColId = {};
+        if (st && Array.isArray(st.columns)) {
+          for (const c of st.columns) {
+            const k = String(c.label || '').trim().toLowerCase();
+            if (k) {
+              normKeyToColId[k] = c.id;
+            }
+          }
+        }
+
+        const sizeRows = (st && Array.isArray(st.rows)) ? st.rows : [];
+
+        if (sizeRows.length === 0) {
+          const row = { ...baseRow };
+          for (const dynCol of dynamicColumnsMap.values()) {
+            row['__dyn_' + dynCol.normKey] = '';
+          }
+          exportRows.push(row);
+        } else {
+          for (const sRow of sizeRows) {
+            const row = { ...baseRow };
+            for (const dynCol of dynamicColumnsMap.values()) {
+              const colId = normKeyToColId[dynCol.normKey];
+              let cellVal = '';
+              if (colId && sRow[colId] !== undefined && sRow[colId] !== null) {
+                cellVal = String(sRow[colId]);
+              }
+              row['__dyn_' + dynCol.normKey] = cellVal;
+            }
+            exportRows.push(row);
+          }
+        }
+      }
+
       const filename = `katalog-produk-euodoo-${new Date().toISOString().slice(0, 10)}.csv`;
-      sendCsvResponse(res, filename, columns, products);
+      sendCsvResponse(res, filename, columns, exportRows);
     } catch (err) {
       logger.error('Product export CSV error:', err);
       res.redirect('/admin/products?error=' + encodeURIComponent('Gagal mengekspor data produk ke CSV.'));
@@ -281,17 +479,41 @@ export const productController = {
   async createView(req, res) {
     try {
       const categories = await productCategoryModel.findAll({ activeOnly: true });
+      const productsList = await getProductsWithSizeTable();
       res.render('admin/products/create', {
         title: 'Tambah Produk Baru',
         pageTitle: 'Tambah Produk Manufaktur',
         activeNav: 'products',
         categories,
+        productsList: productsList || [],
         error: null,
         csrfToken: res.locals?.csrfToken || ''
       });
     } catch (err) {
       logger.error('Product createView error:', { message: err.message });
       res.redirect('/admin/products?error=' + encodeURIComponent('Gagal membuka form tambah produk.'));
+    }
+  },
+
+  async getSizeTableColumns(req, res) {
+    try {
+      const { id } = req.params;
+      const product = await productModel.findById(id);
+      if (!product) {
+        return res.status(404).json({ success: false, message: 'Produk tidak ditemukan' });
+      }
+      const sizeTable = normalizeSizeTable(product.size_table);
+      const columns = (sizeTable.columns || []).map((c, idx) => ({
+        id: `col_${idx + 1}`,
+        label: c.label || ''
+      }));
+      return res.json({
+        success: true,
+        columns
+      });
+    } catch (err) {
+      logger.error('getSizeTableColumns error:', { message: err.message });
+      return res.status(500).json({ success: false, message: 'Gagal mengambil struktur kolom produk.' });
     }
   },
 
@@ -383,7 +605,23 @@ export const productController = {
 
       const galleryImages = parseGalleryImages(req.body);
       const variantLabels = parseVariantLabels(req.body);
-      const sizeTable = parseSizeTable(req.body);
+      let sizeTable = null;
+      try {
+        sizeTable = parseDynamicSizeTable(req.body);
+      } catch (valErr) {
+        const categories = await productCategoryModel.findAll({ activeOnly: true });
+        const productsList = await getProductsWithSizeTable();
+        return res.status(400).render('admin/products/create', {
+          title: 'Tambah Produk Baru',
+          pageTitle: 'Tambah Produk',
+          activeNav: 'products',
+          categories,
+          productsList: productsList || [],
+          error: valErr.message,
+          formData: req.body,
+          csrfToken: res.locals?.csrfToken || ''
+        });
+      }
       const legacyVariants = parseVariants(req.body);
       const slug = createSlug(name_id);
 
@@ -457,12 +695,15 @@ export const productController = {
       }
       product.gallery_items = galleryItems;
 
+      const productsList = await getProductsWithSizeTable(product.id);
+
       res.render('admin/products/edit', {
         title: 'Edit Produk - ' + product.name_id,
         pageTitle: 'Edit Produk Manufaktur',
         activeNav: 'products',
         product,
         categories,
+        productsList: productsList || [],
         error: null,
         csrfToken: res.locals?.csrfToken || ''
       });
@@ -508,7 +749,6 @@ export const productController = {
 
       const galleryImages = parseGalleryImages(req.body);
       const variantLabels = parseVariantLabels(req.body);
-      const sizeTable = parseSizeTable(req.body);
       const legacyVariants = parseVariants(req.body);
 
       const hasVariantInput = req.body.variant_labels !== undefined
@@ -528,6 +768,15 @@ export const productController = {
         || req.body.size_material !== undefined
         || req.body.size_table !== undefined;
       const hasGalleryInput = req.body.gallery_images !== undefined || req.body.gallery !== undefined;
+
+      let sizeTable = undefined;
+      if (hasSizeTableInput) {
+        try {
+          sizeTable = parseDynamicSizeTable(req.body);
+        } catch (valErr) {
+          return res.redirect(`/admin/products/${id}/edit?error=` + encodeURIComponent(valErr.message));
+        }
+      }
 
       const updateData = {
         name_id: name_id ? name_id.trim() : product.name_id,

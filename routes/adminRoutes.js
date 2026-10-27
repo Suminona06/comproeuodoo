@@ -80,6 +80,7 @@ router.get('/products/export', requireAuth, roleMiddleware(['superadmin', 'admin
 router.get('/products/create', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.createView);
 router.post('/products', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), productController.store);
 router.get('/products/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.editView);
+router.get('/products/:id/size-table-columns', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.getSizeTableColumns);
 router.post('/products/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), productController.update);
 router.post('/products/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.destroy);
 

@@ -1,4 +1,187 @@
-import { query, execute } from '../config/database.js';
+import { query, execute, pool } from '../config/database.js';
+
+export const DEFAULT_SIZE_COLUMNS = [
+  { id: 'col_1', label: 'Kode Produk' },
+  { id: 'col_2', label: 'Lebar' },
+  { id: 'col_3', label: 'Panjang' },
+  { id: 'col_4', label: 'Tebal (Micron)' },
+  { id: 'col_5', label: 'Kapasitas' },
+  { id: 'col_6', label: 'Bahan' }
+];
+
+export function normalizeSizeTable(input) {
+  if (!input) {
+    const empty = [];
+    empty.columns = [];
+    empty.rows = [];
+    empty.toJSON = () => ({ columns: [], rows: [] });
+    return empty;
+  }
+
+  let raw = input;
+  if (typeof raw === 'string') {
+    try {
+      raw = JSON.parse(raw);
+    } catch {
+      raw = null;
+    }
+  }
+
+  if (!raw) {
+    const empty = [];
+    empty.columns = [];
+    empty.rows = [];
+    empty.toJSON = () => ({ columns: [], rows: [] });
+    return empty;
+  }
+
+  let columns = [];
+  let rawRows = [];
+
+  if (raw && typeof raw === 'object' && Array.isArray(raw.columns) && raw.columns.length > 0) {
+    columns = raw.columns.map((c, idx) => ({
+      id: c && c.id ? String(c.id).trim() : `col_${idx + 1}`,
+      label: c && c.label ? String(c.label).trim() : `Kolom ${idx + 1}`
+    }));
+    if (Array.isArray(raw.rows)) {
+      rawRows = raw.rows;
+    } else if (Array.isArray(raw)) {
+      rawRows = raw;
+    }
+  } else if (Array.isArray(raw)) {
+    if (raw.length > 0) {
+      columns = DEFAULT_SIZE_COLUMNS;
+      rawRows = raw;
+    } else {
+      columns = [];
+      rawRows = [];
+    }
+  } else if (typeof raw === 'object') {
+    if (Array.isArray(raw.rows)) {
+      rawRows = raw.rows;
+    }
+  }
+
+  if (rawRows.length > 0 && columns.length === 0) {
+    columns = DEFAULT_SIZE_COLUMNS;
+  }
+
+  const isDefaultColumns = columns.length === 6 &&
+    columns[0].id === 'col_1' && (columns[0].label === 'Kode Produk' || !columns[0].label);
+
+  const cleanRows = [];
+  const mappedRows = rawRows.map(r => {
+    if (!r || typeof r !== 'object') return {};
+    const rowObj = {};
+    const cleanObj = {};
+    columns.forEach(col => {
+      let val = r[col.id] !== undefined ? r[col.id] : (col.label && r[col.label] !== undefined ? r[col.label] : undefined);
+      if (val === undefined) {
+        if (col.id === 'col_1' || col.label === 'Kode Produk') {
+          val = r.kode_produk !== undefined ? r.kode_produk : (r.product_code !== undefined ? r.product_code : (r.code !== undefined ? r.code : r.size_code));
+        } else if (col.id === 'col_2' || col.label === 'Lebar') {
+          val = r.lebar !== undefined ? r.lebar : (r.width !== undefined ? r.width : r.size_width);
+        } else if (col.id === 'col_3' || col.label === 'Panjang') {
+          val = r.panjang !== undefined ? r.panjang : (r.length !== undefined ? r.length : r.size_length);
+        } else if (col.id === 'col_4' || col.label === 'Tebal (Micron)' || col.label === 'Tebal') {
+          val = r.tebal_micron !== undefined ? r.tebal_micron : (r.tebal !== undefined ? r.tebal : (r.thickness !== undefined ? r.thickness : r.size_thickness));
+        } else if (col.id === 'col_5' || col.label === 'Kapasitas') {
+          val = r.kapasitas !== undefined ? r.kapasitas : (r.capacity !== undefined ? r.capacity : r.size_capacity);
+        } else if (col.id === 'col_6' || col.label === 'Bahan') {
+          val = r.bahan !== undefined ? r.bahan : (r.material !== undefined ? r.material : r.size_material);
+        }
+      }
+      const strVal = val !== null && val !== undefined ? String(val) : '';
+      rowObj[col.id] = strVal;
+      cleanObj[col.id] = strVal;
+    });
+
+    cleanRows.push(cleanObj);
+
+    if (isDefaultColumns) {
+      if (rowObj.col_1 !== undefined && rowObj.kode_produk === undefined) {
+        rowObj.kode_produk = rowObj.col_1;
+        rowObj.product_code = rowObj.col_1;
+      }
+      if (rowObj.col_2 !== undefined && rowObj.lebar === undefined) {
+        rowObj.lebar = rowObj.col_2;
+        rowObj.width = rowObj.col_2;
+      }
+      if (rowObj.col_3 !== undefined && rowObj.panjang === undefined) {
+        rowObj.panjang = rowObj.col_3;
+        rowObj.length = rowObj.col_3;
+      }
+      if (rowObj.col_4 !== undefined && rowObj.tebal_micron === undefined) {
+        rowObj.tebal_micron = rowObj.col_4;
+        rowObj.thickness = rowObj.col_4;
+      }
+      if (rowObj.col_5 !== undefined && rowObj.kapasitas === undefined) {
+        rowObj.kapasitas = rowObj.col_5;
+        rowObj.capacity = rowObj.col_5;
+      }
+      if (rowObj.col_6 !== undefined && rowObj.bahan === undefined) {
+        rowObj.bahan = rowObj.col_6;
+        rowObj.material = rowObj.col_6;
+      }
+    }
+    return rowObj;
+  });
+
+  const hybrid = [...mappedRows];
+  hybrid.columns = columns;
+  hybrid.rows = cleanRows;
+  hybrid.toJSON = () => ({ columns, rows: cleanRows });
+  return hybrid;
+}
+
+export function serializeSizeTable(input) {
+  if (!input) return null;
+  const normalized = normalizeSizeTable(input);
+  if (!normalized || (normalized.columns.length === 0 && normalized.rows.length === 0)) {
+    return null;
+  }
+
+  const canonicalCols = normalized.columns.slice(0, 8).map((c, idx) => ({
+    id: `col_${idx + 1}`,
+    label: String(c.label || '').replace(/<[^>]*>/g, '').trim().slice(0, 40)
+  })).filter(c => c.label.length > 0);
+
+  if (canonicalCols.length === 0) {
+    return null;
+  }
+
+  const cleanRows = normalized.rows.slice(0, 30).map(r => {
+    const cleanRow = {};
+    canonicalCols.forEach((col, idx) => {
+      const originalCol = normalized.columns[idx];
+      let val = '';
+      if (originalCol && r[originalCol.id] !== undefined) {
+        val = r[originalCol.id];
+      } else if (r[col.id] !== undefined) {
+        val = r[col.id];
+      } else if (originalCol && r[originalCol.label] !== undefined) {
+        val = r[originalCol.label];
+      }
+      cleanRow[col.id] = String(val !== null && val !== undefined ? val : '')
+        .replace(/<[^>]*>/g, '')
+        .trim()
+        .slice(0, 80);
+    });
+    return cleanRow;
+  });
+
+  const hasAnyData = cleanRows.some(row => Object.values(row).some(v => v.length > 0));
+  if (!hasAnyData && cleanRows.length === 0) {
+    return null;
+  }
+
+  const cleanData = {
+    columns: canonicalCols,
+    rows: cleanRows
+  };
+
+  return JSON.stringify(cleanData);
+}
 
 export const productModel = {
   /**
@@ -202,16 +385,7 @@ export const productModel = {
 
     let sizeTableJson = null;
     if (data.size_table) {
-      if (typeof data.size_table === 'string') {
-        try {
-          const parsed = JSON.parse(data.size_table);
-          sizeTableJson = JSON.stringify(Array.isArray(parsed) ? parsed : []);
-        } catch {
-          sizeTableJson = null;
-        }
-      } else if (Array.isArray(data.size_table)) {
-        sizeTableJson = JSON.stringify(data.size_table);
-      }
+      sizeTableJson = serializeSizeTable(data.size_table);
     }
 
     const shortDescId = data.short_description_id ? String(data.short_description_id).trim().slice(0, 500) : null;
@@ -247,14 +421,25 @@ export const productModel = {
       data.sort_order || 0
     ];
 
-    const result = await execute(sql, params);
-    const productId = result.insertId;
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
 
-    if (Array.isArray(data.variants) && data.variants.length > 0) {
-      await this.saveVariants(productId, data.variants);
+      const [result] = await connection.execute(sql, params);
+      const productId = result.insertId;
+
+      if (Array.isArray(data.variants) && data.variants.length > 0) {
+        await this.saveVariantsWithConnection(connection, productId, data.variants);
+      }
+
+      await connection.commit();
+      return productId;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
     }
-
-    return productId;
   },
 
   /**
@@ -304,21 +489,7 @@ export const productModel = {
         }
         return null;
       },
-      size_table: (v) => {
-        if (!v) return null;
-        if (typeof v === 'string') {
-          try {
-            const parsed = JSON.parse(v);
-            return JSON.stringify(Array.isArray(parsed) ? parsed : []);
-          } catch {
-            return JSON.stringify([]);
-          }
-        }
-        if (Array.isArray(v)) {
-          return JSON.stringify(v);
-        }
-        return null;
-      },
+      size_table: (v) => serializeSizeTable(v),
       status: (v) => v || 'published',
       meta_title_id: (v) => v || null,
       meta_title_en: (v) => v || null,
@@ -353,26 +524,47 @@ export const productModel = {
       }
     }
 
-    if (fields.length > 0) {
-      params.push(id);
-      const sql = `UPDATE products SET ${fields.join(', ')} WHERE id = ?`;
-      await execute(sql, params);
-    }
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
 
-    if (Array.isArray(data.variants)) {
-      await this.saveVariants(id, data.variants);
-    }
+      if (fields.length > 0) {
+        params.push(id);
+        const sql = `UPDATE products SET ${fields.join(', ')} WHERE id = ?`;
+        await connection.execute(sql, params);
+      }
 
-    return true;
+      if (Array.isArray(data.variants)) {
+        await this.saveVariantsWithConnection(connection, id, data.variants);
+      }
+
+      await connection.commit();
+      return true;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
   },
 
   /**
    * Delete product
    */
   async delete(id) {
-    await execute('DELETE FROM product_variants WHERE product_id = ?', [id]);
-    const result = await execute('DELETE FROM products WHERE id = ?', [id]);
-    return result.affectedRows > 0;
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      await connection.execute('DELETE FROM product_variants WHERE product_id = ?', [id]);
+      const [result] = await connection.execute('DELETE FROM products WHERE id = ?', [id]);
+      await connection.commit();
+      return result.affectedRows > 0;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
   },
 
   /**
@@ -401,8 +593,8 @@ export const productModel = {
     });
   },
 
-  async saveVariants(productId, variants) {
-    await execute('DELETE FROM product_variants WHERE product_id = ?', [productId]);
+  async saveVariantsWithConnection(connection, productId, variants) {
+    await connection.execute('DELETE FROM product_variants WHERE product_id = ?', [productId]);
     for (let i = 0; i < variants.length; i++) {
       const v = variants[i];
       if (!v) continue;
@@ -417,7 +609,7 @@ export const productModel = {
         ...(typeof v.specs === 'object' ? v.specs : {})
       } : { size_label: v };
 
-      await execute(
+      await connection.execute(
         `INSERT INTO product_variants (product_id, name_id, name_en, sku, specs, sort_order)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
@@ -429,6 +621,20 @@ export const productModel = {
           (typeof v === 'object' && v.sort_order !== undefined) ? parseInt(v.sort_order, 10) : i
         ]
       );
+    }
+  },
+
+  async saveVariants(productId, variants) {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      await this.saveVariantsWithConnection(connection, productId, variants);
+      await connection.commit();
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
     }
   },
 
@@ -461,18 +667,7 @@ export const productModel = {
       copy.variants = [];
     }
 
-    if (copy.size_table && typeof copy.size_table === 'string') {
-      try {
-        const parsedSize = JSON.parse(copy.size_table);
-        copy.size_table = Array.isArray(parsedSize) ? parsedSize : [];
-      } catch {
-        copy.size_table = [];
-      }
-    } else if (Array.isArray(copy.size_table)) {
-      // keep array
-    } else {
-      copy.size_table = [];
-    }
+    copy.size_table = normalizeSizeTable(copy.size_table);
 
     copy.short_description_id = copy.short_description_id ? String(copy.short_description_id) : null;
     copy.short_description_en = copy.short_description_en ? String(copy.short_description_en) : null;

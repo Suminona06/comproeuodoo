@@ -14,8 +14,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 | `GET` | `/products` | `productController.index` | `seoMiddleware`, `i18nMiddleware` | Render katalog SSR atau fragmen AJAX `[COMPLETED T-192]` |
 | `GET` | `/products/:slug` | `productController.detail` | `seoMiddleware`, `i18nMiddleware` | Render detail spesifikasi produk (Rincian lengkap: `tech/products-detail.md`) |
 | `GET` | `/admin/products` | `admin/productController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS daftar produk |
-| `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV katalog (kolom gabungan dinamis) [PENDING T-216] |
-| `GET` | `/admin/products/:id/size-table-columns` | `admin/productController.getSizeTableColumns` | `requireAuth`, `roleMiddleware` | API ambil kolom ukuran produk [PENDING T-216] |
+| `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV katalog (kolom gabungan dinamis) [COMPLETED T-216] |
+| `GET` | `/admin/products/:id/size-table-columns` | `admin/productController.getSizeTableColumns` | `requireAuth`, `roleMiddleware` | API ambil kolom ukuran produk [COMPLETED T-216] |
 | `POST` | `/admin/products` | `admin/productController.store` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Tambah produk baru |
 | `POST` | `/admin/products/:id` | `admin/productController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Perbarui data produk |
 | `GET/POST`| `/admin/product-categories`| `productCategoryController.*` | `requireAuth`, `roleMiddleware` | Kelola kategori produk aktif |
@@ -39,8 +39,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 | `is_active` | `TINYINT(1)` | NO | `1` | Flag status penayangan |
 
 ### B. Tabel `products` & `product_variants`
-*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Kolom legacy `material_specs` dan `technical_specs` di-drop oleh migrasi `016`. Sistem bebas kolom harga (zero-price). Kolom `cta_text_id` dan `cta_text_en` ditambahkan oleh migrasi `017`. Kolom `size_table` (JSON) menyimpan objek dinamis `{ columns, rows }` yang dimigrasi dari format lama via migrasi `018` [PENDING T-213].
-- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `short_description_id/en`, `description_id/en`, `cta_text_id/en`, `variants` (JSON), `size_table` (JSON objek `{ columns, rows }` [PENDING T-214]), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
+*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Kolom legacy `material_specs` dan `technical_specs` di-drop oleh migrasi `016`. Sistem bebas kolom harga (zero-price). Kolom `cta_text_id` dan `cta_text_en` ditambahkan oleh migrasi `017`. Kolom `size_table` (JSON) menyimpan objek dinamis `{ columns, rows }` yang dimigrasi dari format lama via migrasi `018` [COMPLETED T-213].
+- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `short_description_id/en`, `description_id/en`, `cta_text_id/en`, `variants` (JSON), `size_table` (JSON objek `{ columns, rows }` [COMPLETED T-214]), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
 - `product_variants`: `id`, `product_id` (FK), `name_id`, `name_en`, `sku`, `specs` (JSON dimensi, ketebalan, beban), `sort_order`.
 
 ---

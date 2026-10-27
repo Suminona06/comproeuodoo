@@ -1585,6 +1585,13 @@ body.sidebar-open .admin-backdrop {
   flex-shrink: 0;
   padding: 0;
   box-shadow: var(--shadow-xs);
+  line-height: 1;
+}
+
+.modal-close-btn svg, .admin-modal-close svg {
+  display: block;
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .modal-close-btn:hover, .admin-modal-close:hover {
@@ -2487,4 +2494,200 @@ body.sidebar-open .admin-backdrop {
 .media-picker-preview-box .media-picker-empty.hidden,
 .btn-clear-media.hidden {
   display: none !important;
+}
+
+.prod-size-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prod-size-table {
+  min-width: 600px;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.prod-size-th {
+  padding: 8px 10px;
+  background: var(--bg-surface-elevated, #f8fafc);
+  border-bottom: 2px solid var(--border-main);
+  vertical-align: top;
+  min-width: 140px;
+}
+
+.prod-size-th-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prod-size-col-label {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 10px;
+  height: 34px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  color: var(--text-main);
+  width: 100%;
+}
+
+.prod-size-col-label:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-subtle);
+}
+
+.prod-size-th-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.btn-col-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+
+.btn-col-action:hover:not(:disabled) {
+  background: var(--bg-surface-elevated, #f1f5f9);
+  color: var(--text-main);
+  border-color: var(--border-dark, #cbd5e1);
+}
+
+.btn-col-action.btn-col-delete:hover:not(:disabled) {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+.btn-col-action:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.prod-size-cell {
+  font-size: 13px;
+  padding: 6px 10px;
+  height: 36px;
+  width: 100%;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+}
+
+.prod-size-cell:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-subtle);
+}
+
+.prod-size-col-action {
+  width: 90px;
+  min-width: 90px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 6px 8px;
+}
+
+.prod-size-row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+}
+
+.btn-row-action.btn-row-move {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+
+.btn-row-action.btn-row-move:hover:not(:disabled) {
+  background: var(--bg-surface-elevated, #f1f5f9);
+  color: var(--text-main);
+}
+
+.btn-row-action.btn-row-move:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .prod-size-actions {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .prod-size-actions button {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+.modal-copy-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.modal-copy-label {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.modal-copy-select {
+  width: 100%;
+}
+
+.modal-copy-preview {
+  margin-top: 1rem;
+  display: none;
+}
+
+.modal-copy-preview-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.modal-copy-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.modal-copy-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border-main);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }

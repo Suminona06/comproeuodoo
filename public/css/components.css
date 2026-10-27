@@ -7264,11 +7264,36 @@
 .pd-size-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  background:
+    linear-gradient(to right, var(--color-surface, #ffffff) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(to left, var(--color-surface, #ffffff) 30%, rgba(255, 255, 255, 0)) 100% 0,
+    radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0)) 100% 0;
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+  background-attachment: local, local, scroll, scroll;
 }
 
 @media (min-width: 601px) {
-  .pd-size-scroll table.pd-size {
+  table.pd-size[data-cols="1"],
+  table.pd-size[data-cols="2"],
+  table.pd-size[data-cols="3"] {
+    min-width: 100%;
+  }
+  table.pd-size[data-cols="4"] {
+    min-width: 520px;
+  }
+  table.pd-size[data-cols="5"] {
+    min-width: 680px;
+  }
+  table.pd-size[data-cols="6"] {
     min-width: 820px;
+  }
+  table.pd-size[data-cols="7"] {
+    min-width: 960px;
+  }
+  table.pd-size[data-cols="8"] {
+    min-width: 1100px;
   }
 }
 
@@ -7323,6 +7348,19 @@ table.pd-size td:first-child {
     border-bottom: 1px solid var(--pd-line-soft, #EDEAE0);
     padding: 8px 12px;
     font-size: 13.5px;
+  }
+
+  table.pd-size td:first-child {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--pd-ink, #17251F);
+    background: var(--pd-surface-2, #F6F7F3);
+    border-radius: 8px 8px 0 0;
+    padding: 9px 12px;
+  }
+
+  table.pd-size td:first-child::before {
+    display: none;
   }
 
   table.pd-size td:last-child {

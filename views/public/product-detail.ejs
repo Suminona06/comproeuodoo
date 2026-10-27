@@ -107,14 +107,21 @@
       </div>
     </div>
 
+    <%
+      const sizeTableObj = (product.size_table && typeof product.size_table === 'object') ? product.size_table : { columns: [], rows: [] };
+      const sizeColumns = Array.isArray(sizeTableObj.columns) ? sizeTableObj.columns : [];
+      const sizeRows = Array.isArray(sizeTableObj.rows) ? sizeTableObj.rows : (Array.isArray(product.size_table) ? product.size_table : []);
+      const hasSizeTable = sizeColumns.length > 0 && sizeRows.length > 0;
+    %>
+
     <div class="pd-tabs" data-tabs>
       <div class="pd-tabbar" role="tablist" aria-label="<%= lang === 'en' ? 'Product information tabs' : 'Tab informasi produk' %>">
         <button type="button" class="pd-tab-btn" role="tab" id="pdTabDesc" data-tab="desc" aria-controls="pdPanelDesc" aria-selected="true">
-          <%= lang === 'en' ? 'Overview' : 'Deskripsi' %>
+          <%= typeof t === 'function' ? t('product_detail.tab_overview') : (lang === 'en' ? 'Overview' : 'Deskripsi') %>
         </button>
-        <% if (sizeTable && sizeTable.length > 0) { %>
+        <% if (hasSizeTable) { %>
           <button type="button" class="pd-tab-btn" role="tab" id="pdTabSize" data-tab="size" aria-controls="pdPanelSize" aria-selected="false">
-            <%= lang === 'en' ? 'Size Chart' : 'Tabel Ukuran' %>
+            <%= typeof t === 'function' ? t('product_detail.tab_size_chart') : (lang === 'en' ? 'Size Chart' : 'Tabel Ukuran') %>
           </button>
         <% } %>
       </div>
@@ -127,29 +134,25 @@
         <% } %>
       </div>
 
-      <% if (sizeTable && sizeTable.length > 0) { %>
+      <% if (hasSizeTable) { %>
         <div class="pd-panel" id="pdPanelSize" role="tabpanel" aria-labelledby="pdTabSize" data-panel="size" hidden>
           <div class="pd-size-scroll">
-            <table class="pd-size">
+            <table class="pd-size" data-cols="<%= sizeColumns.length %>">
               <thead>
                 <tr>
-                  <th scope="col"><%= lang === 'en' ? 'Product Code' : 'Kode Produk' %></th>
-                  <th scope="col"><%= lang === 'en' ? 'Width' : 'Lebar' %></th>
-                  <th scope="col"><%= lang === 'en' ? 'Length' : 'Panjang' %></th>
-                  <th scope="col"><%= lang === 'en' ? 'Thickness' : 'Ketebalan' %></th>
-                  <th scope="col"><%= lang === 'en' ? 'Capacity' : 'Kapasitas' %></th>
-                  <th scope="col"><%= lang === 'en' ? 'Material' : 'Material' %></th>
+                  <% sizeColumns.forEach(function(col) { %>
+                    <th scope="col"><%= col.label %></th>
+                  <% }); %>
                 </tr>
               </thead>
               <tbody>
-                <% sizeTable.forEach(function(row) { %>
+                <% sizeRows.forEach(function(row) { %>
                   <tr>
-                    <td data-l="<%= lang === 'en' ? 'Product Code' : 'Kode Produk' %>"><%= row.product_code || row.kode_produk || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Width' : 'Lebar' %>"><%= row.width || row.lebar || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Length' : 'Panjang' %>"><%= row.length || row.panjang || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Thickness' : 'Ketebalan' %>"><%= row.thickness || row.tebal_micron || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Capacity' : 'Kapasitas' %>"><%= row.capacity || row.kapasitas || '-' %></td>
-                    <td data-l="<%= lang === 'en' ? 'Material' : 'Material' %>"><%= row.material || row.bahan || '-' %></td>
+                    <% sizeColumns.forEach(function(col) {
+                         const cellVal = row[col.id] !== undefined ? row[col.id] : '';
+                    %>
+                      <td data-l="<%= col.label %>"><%= cellVal || '-' %></td>
+                    <% }); %>
                   </tr>
                 <% }); %>
               </tbody>
