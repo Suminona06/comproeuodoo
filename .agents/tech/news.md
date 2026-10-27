@@ -3,7 +3,7 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: controllers/public/po
 # Tech Spec: Modul Berita & Publikasi (News & Articles)
 
 ## 1. Arsitektur & Komponen
-Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyMCE, sistem kategorisasi, pemrosesan gambar sampul otomatis, dan sistem penanganan pengalihan tautan otomatis (HTTP 301 Redirect).
+Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyMCE, sistem kategorisasi, pemrosesan gambar sampul otomatis, penanganan pengalihan tautan otomatis (HTTP 301 Redirect), dan penyajian data publik berbasis SSR serta asynchronous Fetch API.
 
 ---
 
@@ -11,13 +11,13 @@ Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyM
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/news` | `postController.index` | `seoMiddleware`, `i18nMiddleware` | Render portal berita & headline |
-| `GET` | `/news/:slug` | `postController.detail` | `seoMiddleware`, `i18nMiddleware` | Render artikel detail / cek redirect 301 |
+| `GET` | `/news` | `postController.index` | `seoMiddleware`, `i18nMiddleware` | Portal berita & headline; JSON jika fetch/ajax [PENDING T-231] |
+| `GET` | `/news/:slug` | `postController.detail` | `seoMiddleware`, `i18nMiddleware` | Detail artikel G2 / cek redirect 301 [PENDING T-226, T-228] |
 | `GET` | `/admin/posts` | `admin/postController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin','editor'])` | Daftar artikel admin |
 | `POST` | `/admin/posts` | `admin/postController.store` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Simpan artikel baru |
 | `POST` | `/admin/posts/:id` | `admin/postController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update artikel & catat slug 301 |
-| `POST` | `/admin/posts/upload-image` | `admin/postController.uploadEditorImage` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Endpoint upload gambar TinyMCE |
-| `GET/POST`| `/admin/post-categories` | `postCategoryController.*`| `requireAuth`, `roleMiddleware` | Kelola 3 kategori berita |
+| `POST` | `/admin/posts/upload-image` | `admin/postController.uploadEditorImage` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Upload gambar TinyMCE |
+| `GET/POST`| `/admin/post-categories` | `postCategoryController.*`| `requireAuth`, `roleMiddleware` | Kelola kategori berita |
 
 ---
 
@@ -25,52 +25,64 @@ Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyM
 
 ### A. Tabel `posts`
 *File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `003_upgrade_v2_schema.sql`
-
-| Kolom | Tipe | Nullable | Default | Keterangan |
-| :--- | :--- | :--- | :--- | :--- |
-| `id` | `INT` | NO | Auto Inc | Primary Key |
-| `category_id` | `INT` | NO | - | Foreign Key ke `post_categories.id` |
-| `title_id` | `VARCHAR(255)` | NO | - | Judul artikel (ID) |
-| `title_en` | `VARCHAR(255)` | YES | NULL | Judul artikel (EN) |
-| `slug` | `VARCHAR(191)` | NO | - | Unique slug artikel |
-| `excerpt_id` | `TEXT` | YES | NULL | Ringkasan singkat (ID) |
-| `excerpt_en` | `TEXT` | YES | NULL | Ringkasan singkat (EN) |
-| `content_id` | `LONGTEXT` | NO | - | Konten HTML artikel (ID) |
-| `content_en` | `LONGTEXT` | YES | NULL | Konten HTML artikel (EN) |
-| `cover_image` | `VARCHAR(500)` | YES | NULL | Gambar sampul utama |
-| `status` | `ENUM('draft','published','archived')` | YES | `'draft'` | Status publikasi |
-| `published_at`| `DATETIME` | YES | NULL | Tanggal resmi rilis publikasi |
-| `meta_*`, `og_image`, `canonical_url`, `robots` | Berbagai | YES | - | Metadata SEO per artikel |
+- Kolom: `id` (INT PK), `category_id` (INT FK), `title_id` / `title_en` (VARCHAR 255), `slug` (VARCHAR 191 UNIQUE), `excerpt_id` / `excerpt_en` (TEXT), `content_id` / `content_en` (LONGTEXT), `cover_image` (VARCHAR 500), `is_headline` (TINYINT(1) DEFAULT 0) [PENDING T-230], `status` (ENUM 'draft','published','archived'), `published_at` (DATETIME), `meta_*`, `og_image`, `canonical_url`, `robots`.
 
 ### B. Tabel `post_categories` & `slug_redirects`
 - `post_categories`: `id`, `name_id`, `name_en`, `slug`, `type` (`news`, `press`, `blog`), `sort_order`.
-- `slug_redirects`:
-  *File Migrasi:* `database/migrations/004_revisi_admin_v1.sql`
-  - `id` (INT PK Auto Inc)
-  - `entity_type` (VARCHAR 50, mis. `'post'`)
-  - `entity_id` (INT, id artikel terkait)
-  - `old_slug` (VARCHAR 191)
-  - `new_slug` (VARCHAR 191)
-  - `created_at` (TIMESTAMP)
+- `slug_redirects`: `id`, `entity_type`, `entity_id`, `old_slug`, `new_slug`, `created_at`.
 
 ---
 
 ## 4. Alur Logika Custom Slug & Auto Redirect 301
-1. Saat artikel diperbarui di `admin/postController.update`:
-   - Jika `slug` baru berbeda dari `slug` lama dan artikel berstatus `published`, sistem memeriksa apakah riwayat redirect sudah ada.
-   - Menyimpan entri baru ke tabel `slug_redirects (entity_type='post', entity_id, old_slug, new_slug)`.
-   - Memperbarui rantai redirect lama agar menunjuk langsung ke `new_slug` untuk mencegah multi-hop redirect.
-2. Saat permintaan publik tiba di `controllers/public/postController.detail`:
-   - Sistem mencari artikel berdasarkan `slug`. Jika tidak ditemukan, sistem memeriksa `slugRedirectModel.findByOldSlug('post', slug)`.
-   - Jika ditemukan, sistem langsung merespons dengan HTTP Status `301 Moved Permanently` ke URL `/news/${redirect.new_slug}`.
+1. Pada `admin/postController.update`: jika `slug` baru berbeda dari yang lama pada artikel `published`, simpan entri baru ke `slug_redirects` dan perbarui rantai redirect lama agar menunjuk langsung ke `new_slug`.
+2. Pada `controllers/public/postController.detail`: jika artikel tidak ditemukan, cek `slugRedirectModel.findByOldSlug('post', slug)`. Jika ada, kirim respon HTTP `301 Moved Permanently` ke `/news/${redirect.new_slug}`.
 
 ---
 
-## 5. Keamanan & Sanitasi HTML
-- Seluruh konten HTML dari TinyMCE disanitasi menggunakan `sanitize-html` di server sebelum disimpan ke database guna mencegah script injection (`<script>`, inline `onload`/`onerror`, dsb.).
+## 5. Keamanan, Sanitasi & Validasi
+- Konten HTML disanitasi menggunakan `sanitize-html` di server sebelum disimpan ke database.
+- Query parameter (`type`, `category`, `search`, `page`) divalidasi whitelist di server [PENDING T-231].
 
 ---
 
-## 6. Tata Letak Detail Artikel & Header Solid
-- **Header Solid Putih:** Pada `/news/:slug`, modifier `.header-wrap--solid` mengunci bilah navbar dalam mode putih solid `var(--color-surface, #ffffff)` / `rgba(255, 255, 255, 0.96)` berbayangan `var(--shadow-1)` dengan border bawah `1px solid var(--border)`. Top bar berlatar solid hijau signature `var(--surface-dark-footer, #00573f)` selaras warna footer. Teks merek `.brand-name` dan hamburger bernuansa `var(--navy, #071f17)`, link navigasi `.nav-link` berwarna `var(--text-variant)`. Tidak masuk mode transparan di posisi scroll teratas.
-- **Offset Vertikal Konten:** Kontainer utama `<main id="main-content">` atau seksi breadcrumb detail artikel menerima offset atas dinamis `padding-top: var(--header-actual-height, 92px)` (dihitung otomatis via JS saat load/resize dengan fallback CSS statis 92px desktop / 88px mobile), menjaga navigasi breadcrumb dan judul artikel tampil rapi, presisi, dan elegan persis di bawah batas navbar tanpa overlap.
+## 6. Tata Letak Detail Artikel & Breadcrumb Mandiri [PENDING T-226, T-228]
+- **Breadcrumb Mandiri (`.nwd-breadcrumb`) [PENDING T-226]:** `<nav aria-label="Breadcrumb">` dengan `<ol class="nwd-breadcrumb">` (reset `list-style: none`, flex wrap). Pemisah chevron CSS `::after ('›')` tanpa `<li>` pemisah di DOM. Item terakhir `aria-current="page"`, elipsis 1 baris. Jalur: `Home > News > [Judul]`.
+- **Hierarki Editorial G2 [PENDING T-228]:** Urutan atas ke bawah:
+  1. Breadcrumb `.nwd-breadcrumb` sejajar kolom artikel.
+  2. Cover image rounded `.nwd-hero-media` selebar kolom artikel rasio tetap tanpa kotak pembungkus gelap.
+  3. Tanggal publikasi abu-abu `.nwd-meta-date`.
+  4. H1 Judul artikel `.nwd-title`.
+  5. Atribusi editorial teks bersih `.nwd-author`: "Oleh Redaksi PT Euodoo" / "By PT Euodoo Editorial Team".
+  6. Isi artikel HTML TinyMCE polos `.nwd-prose` langsung di atas background tanpa kartu pembungkus (tanpa border/shadow).
+  7. Garis pemisah horizontal halus `1px solid var(--color-border)`.
+  8. Seksi bagikan `.nwd-share` dengan 4 tombol sirkular (WhatsApp, Facebook, X, Salin Tautan) berbasis token hijau Euodoo (`var(--color-surface-container)` hover `var(--color-primary)`).
+  9. Seksi rekomendasi artikel terkait `.nwd-related-sec` kontainer lebih lebar berlatar `var(--bg-subtle)`, 3 kartu terbaru selain artikel aktif (sembunyi bila kosong).
+  10. Seluruh elemen G1 yang tidak ada di G2 dihapus dari tampilan publik.
+
+---
+
+## 7. Komponen Kartu Bersama & Token Desain Scoped [PENDING T-229]
+- **Shared Card Component (`.nwl-card` / `.nwd-card`):** Satu komponen terpadu untuk grid `/news` dan related `/news/:slug`. Gambar 16:9 rounded (`var(--r-xl)`), tanggal kecil abu-abu (`var(--color-text-muted)`), judul tebal line-clamp 3 baris, link hijau "Baca Selengkapnya" (`var(--color-primary)`), min target 44px. Grid: 3 col desktop (>=1024px), 2 col tablet (640-1023px), 1 col mobile (<640px).
+- **Isolasi Class:** Prefix scoped `.nwl-*` (listing) dan `.nwd-*` (detail). Homepage (`views/public/index.ejs`) dibekukan. Class lama `.news-card-v2` dialiaskan ke `.nwl-card` demi kompatibilitas `tests/test-modul12-public.js`.
+
+---
+
+## 8. Headline Slider Desktop & Mobile Reference [PENDING T-230]
+- **Controller Data:** `postController.index` mengambil hingga 5 artikel headline aktif (`is_headline = 1` dan `status = 'published'`).
+- **Desktop (1440x900):** Layout asimetris 2 kolom, tinggi maksimal ~420-450px. Kiri gambar 16:9 rounded, kanan tanggal, judul tebal, ringkasan (2-3 baris), link aksi. Indikator garis di kiri bawah, panah melingkar di kanan bawah.
+- **Mobile (<768px):** Mengikuti referensi gambar mobile: Judul "News", gambar 16:9 rounded, tanggal, judul headline, ringkasan, link aksi, indikator garis di tengah, tombol panah sirkular di tengah bawah.
+- **Interaksi:** Headline = 1: statis tanpa kontrol. Headline > 1: autoplay per 6 detik, pause saat hover/fokus, mati bila `prefers-reduced-motion` aktif. Navigasi manual panah, garis, keyboard, dan swipe sentuh.
+
+---
+
+## 9. Endpoint & Sistem Filter Berbasis Fetch API [PENDING T-231]
+- **Endpoint Asynchronous:** `postController.index` merespons JSON bila ada header `Accept: application/json` atau query `ajax=1` berisi `{ success: true, posts: [...], currentPage, totalPages, totalPosts }`.
+- **Klien Script (`public/js/news-filter.js`):** Menangani tab tipe G4 (garis bawah hijau), filter kategori, dan pencarian via `fetch()`. Memperbarui grid kartu dan pagination tanpa reload halaman.
+- **URL & Fallback:** Sinkronisasi URL via `history.pushState(null, '', url)`. Tautan reguler tetap ada sebagai fallback SSR untuk SEO. Empty state rapi berbasis token saat data nihil.
+
+---
+
+## 10. Penanganan Fallback Gambar Netral [PENDING T-227]
+- Mencegah error HTTP 404 ketika berkas fisik hilang atau `cover_image` bernilai `null` di database.
+- Menggunakan placeholder SVG/WebP netral yang terverifikasi di `public/images/` atau kontainer netral `var(--color-surface-container)`.
+- Rasio kartu terkunci 16:9 (CLS = 0). Tanpa inline event handler `onerror` (CSP safe).
