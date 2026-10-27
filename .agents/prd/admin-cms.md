@@ -53,8 +53,8 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   2. **Galeri Foto Produk (Gallery Multi-Picker):** Membuka media picker dalam mode multi-select untuk memilih banyak gambar sekaligus. Dilengkapi tombol panah geser untuk mengatur urutan dan tombol silang (×) untuk menghapus. Disimpan sebagai array JSON string URL (`gallery_images`).
   3. **Deskripsi Singkat (Short Description ID & EN):** Textarea dwibahasa maksimal 200 karakter dilengkapi indikator penghitung karakter real-time (*character counter*).
   4. **Deskripsi Lengkap (Full Description ID & EN):** Integrasi editor teks kaya TinyMCE untuk penulisan deskripsi lengkap berformat.
-  5. **Variasi Ukuran Produk (Variant Pills):** Baris dinamis dengan tombol "+ Tambah Ukuran" dan tombol hapus baris (×). Disimpan sebagai array JSON of strings (`variants`).
-  6. **Tabel Ukuran Dinamis (Size Table):** Tabel baris dinamis 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dengan tombol "+ Tambah Baris" dan tombol hapus baris (×). Disimpan sebagai array JSON of objects (`size_table`).
+  5. **Variasi Ukuran Produk (Variant Pills):** Baris dinamis dengan tombol "Tambah Ukuran" (tepat 1 ikon) dan tombol hapus baris (×) [PENDING T-212]. Disimpan sebagai array JSON of strings (`variants`).
+  6. **Tabel Ukuran Dinamis Per Produk (Size Table) [PENDING T-212, T-214-T-217]:** Builder tabel ukuran dinamis dengan tombol "Tambah Kolom", "Tambah Baris" (tepat 1 ikon), modal "Salin Struktur Kolom dari Produk Lain", reorder kolom/baris, batas 1–8 kolom, 0–30 baris, label maks 40 char, sel maks 80 char, dan SweetAlert2 saat menghapus kolom/baris berisi teks. Disimpan sebagai objek JSON `{ columns, rows }`.
   7. **Eliminasi Field Legacy:** Kolom "Ringkasan Karakteristik Material" dan card "Tabel Spesifikasi Teknis Parameter" dieliminasi total dari formulir.
   8. **Kepatuhan Tampilan Form Admin:** Header form tetap (*sticky*), area isi form dapat digulir (*scrollable body*), tombol aksi Simpan/Batal selalu terlihat di layar pada tingkat zoom 100%, 125%, 150% dan ketinggian layar 600–768px.
 
@@ -62,7 +62,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 - Validasi ketat pada endpoint simpan/update produk:
   1. `short_description_id` dan `short_description_en`: string maksimal 200 karakter.
   2. `variants`: array of strings yang disanitasi dari tag berbahaya.
-  3. `size_table`: array of objects yang hanya mengizinkan whitelist keys: `['product_code', 'width', 'length', 'thickness', 'capacity', 'material']`.
+  3. `size_table`: objek JSON valid `{ columns, rows }` di mana setiap kunci sel diverifikasi terhadap whitelist ID kolom produk bersangkutan (`col_xxxx`). Seluruh label kolom dan nilai sel disanitasi bebas tag HTML dan dipangkas spasi (trim) [PENDING T-217].
   4. `gallery_images`: array of strings URL yang valid.
   5. `cta_text_id` dan `cta_text_en`: string maksimal 50 karakter, disanitasi bebas dari tag HTML berbahaya.
 

@@ -14,7 +14,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 | `GET` | `/products` | `productController.index` | `seoMiddleware`, `i18nMiddleware` | Render katalog SSR atau fragmen AJAX `[COMPLETED T-192]` |
 | `GET` | `/products/:slug` | `productController.detail` | `seoMiddleware`, `i18nMiddleware` | Render detail spesifikasi produk (Rincian lengkap: `tech/products-detail.md`) |
 | `GET` | `/admin/products` | `admin/productController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS daftar produk |
-| `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV katalog produk |
+| `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV katalog (kolom gabungan dinamis) [PENDING T-216] |
+| `GET` | `/admin/products/:id/size-table-columns` | `admin/productController.getSizeTableColumns` | `requireAuth`, `roleMiddleware` | API ambil kolom ukuran produk [PENDING T-216] |
 | `POST` | `/admin/products` | `admin/productController.store` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Tambah produk baru |
 | `POST` | `/admin/products/:id` | `admin/productController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Perbarui data produk |
 | `GET/POST`| `/admin/product-categories`| `productCategoryController.*` | `requireAuth`, `roleMiddleware` | Kelola kategori produk aktif |
@@ -38,8 +39,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 | `is_active` | `TINYINT(1)` | NO | `1` | Flag status penayangan |
 
 ### B. Tabel `products` & `product_variants`
-*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Kolom legacy `material_specs` dan `technical_specs` di-drop oleh migrasi `016`. Sistem bebas kolom harga (zero-price). Kolom baru detail produk ditambahkan oleh migrasi `015` dan `017` (`cta_text_id`, `cta_text_en`).
-- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `short_description_id`, `short_description_en`, `description_id`, `description_en`, `cta_text_id`, `cta_text_en`, `variants` (JSON), `size_table` (JSON), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
+*Catatan:* Kolom `is_featured` dihapus permanen oleh migrasi `011`. Kolom legacy `material_specs` dan `technical_specs` di-drop oleh migrasi `016`. Sistem bebas kolom harga (zero-price). Kolom `cta_text_id` dan `cta_text_en` ditambahkan oleh migrasi `017`. Kolom `size_table` (JSON) menyimpan objek dinamis `{ columns, rows }` yang dimigrasi dari format lama via migrasi `018` [PENDING T-213].
+- `products`: `id`, `category_id` (FK), `name_id`, `name_en`, `slug`, `short_description_id/en`, `description_id/en`, `cta_text_id/en`, `variants` (JSON), `size_table` (JSON objek `{ columns, rows }` [PENDING T-214]), `main_image`, `gallery_images` (JSON), `status`, `is_active`, `sort_order`, field SEO.
 - `product_variants`: `id`, `product_id` (FK), `name_id`, `name_en`, `sku`, `specs` (JSON dimensi, ketebalan, beban), `sort_order`.
 
 ---
@@ -65,11 +66,9 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Pencarian multi-kolom terparameter: `(p.name_id LIKE ? OR p.name_en LIKE ? OR p.slug LIKE ? OR p.description_id LIKE ? OR p.description_en LIKE ?)` dengan binding `%search%`.
 
 ### C. Isolasi Namespace CSS `.plp-*` & Desain Sistem [COMPLETED T-193]
-- Seluruh elemen visual katalog menggunakan prefix unik `.plp-*` pada `components.css` untuk mencegah tabrakan dengan selector `.prod-*` beranda:
-  - Layout: `.plp-section`, `.plp-container`, `.plp-layout`, `.plp-sidebar`, `.plp-main`, `.plp-grid`.
-  - Komponen: `.plp-sidebar-card`, `.plp-filter-title`, `.plp-cat-list`, `.plp-cat-item`, `.plp-cat-link`, `.plp-cat-count`, `.plp-toolbar`, `.plp-search-wrap`, `.plp-search-input`, `.plp-sort-wrap`, `.plp-sort-select`, `.plp-card`, `.plp-card-media`, `.plp-card-img`, `.plp-card-body`, `.plp-card-title`, `.plp-card-btn`, `.plp-more-wrap`, `.plp-more-btn`.
-- Rasio potret kartu dikunci pada `aspect-ratio: 9 / 10` di desktop dan `1 / 1` di mobile (identik referensi visual) dengan `object-fit: cover` (CLS = 0) serta garis pembatas horizontal individual presisi selebar foto kartu (`.plp-card-line`, `width: 100%`) tanpa menyambung antar kolom.
-- Tombol outline selebar kartu: border tipis netral dengan warna font hijau brand `var(--color-primary)` (hover terisi `var(--color-primary)` teks putih `var(--color-on-primary)`), tinggi ultra-kompak 26px (dengan kompensasi hit-target 44px WCAG AA), tipografi nama produk ramping 9px (mobile: 8.5px).
+- Elemen katalog memakai prefix unik `.plp-*` di `components.css` (`.plp-grid`, `.plp-card`, `.plp-sidebar`, `.plp-toolbar`, dll.).
+- Rasio potret kartu: `9 / 10` (desktop), `1 / 1` (mobile) dengan `object-fit: cover` (CLS = 0) serta garis pembatas horizontal individual `.plp-card-line`.
+- Tombol outline: border netral warna font `var(--color-primary)` (hover `var(--color-primary)` teks `var(--color-on-primary)`), hit-target 44px WCAG AA.
 
 ### D. Navigasi Kategori Dinamis & Deep Link Homepage [COMPLETED T-194]
 - `productCategoryModel.findAll({ activeOnly: true })` mengambil kategori aktif dinamis beserta jumlah produk aktif.
