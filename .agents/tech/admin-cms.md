@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
 
 # Tech Spec: Modul Admin & CMS (Admin CMS & Users)
 
@@ -59,7 +59,7 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 
 ---
 
-## 5. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery [PENDING T-207-T-209]
+## 5. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery
 
 1. **Komponen Form Produk (`views/admin/products/create.ejs` & `edit.ejs`):**
    - **Thumbnail Utama:** Input hidden `image_url` terhubung ke single-select Universal Media Picker (dipertahankan).

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
 
 # PRD: Modul Admin & CMS (Admin CMS & Users)
 
@@ -47,7 +47,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   - Jumlah Artikel Berita terpublikasi.
   - Tabel 5 Inquiry terbaru untuk penanganan cepat tim sales.
 
-### FR-26: Formulir Produk Admin Terpadu & Field Dinamis [PENDING T-207]
+### FR-26: Formulir Produk Admin Terpadu & Field Dinamis
 - Pembaruan formulir tambah (`/admin/products/create`) dan ubah (`/admin/products/:id/edit`) dengan komponen terstruktur:
   1. **Thumbnail Utama:** Satu gambar pilihan via Universal Media Picker modal.
   2. **Galeri Foto Produk (Gallery Multi-Picker):** Membuka media picker dalam mode multi-select untuk memilih banyak gambar sekaligus. Dilengkapi tombol panah geser untuk mengatur urutan dan tombol silang (×) untuk menghapus. Disimpan sebagai array JSON string URL (`gallery_images`).
@@ -58,7 +58,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   7. **Eliminasi Field Legacy:** Kolom "Ringkasan Karakteristik Material" dan card "Tabel Spesifikasi Teknis Parameter" dieliminasi total dari formulir.
   8. **Kepatuhan Tampilan Form Admin:** Header form tetap (*sticky*), area isi form dapat digulir (*scrollable body*), tombol aksi Simpan/Batal selalu terlihat di layar pada tingkat zoom 100%, 125%, 150% dan ketinggian layar 600–768px.
 
-### FR-27: Validasi Server-Side Data Produk & Whitelist [PENDING T-209]
+### FR-27: Validasi Server-Side Data Produk & Whitelist
 - Validasi ketat pada endpoint simpan/update produk:
   1. `short_description_id` dan `short_description_en`: string maksimal 200 karakter.
   2. `variants`: array of strings yang disanitasi dari tag berbahaya.
@@ -66,7 +66,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   4. `gallery_images`: array of strings URL yang valid.
   5. `cta_text_id` dan `cta_text_en`: string maksimal 50 karakter, disanitasi bebas dari tag HTML berbahaya.
 
-### FR-28: Kustomisasi Teks Tombol CTA Produk [PENDING T-207-T-209]
+### FR-28: Kustomisasi Teks Tombol CTA Produk
 - Form create dan edit produk CMS menyediakan input teks dwibahasa untuk kustomisasi tombol aksi CTA halaman detail produk publik:
   1. **Teks Tombol CTA ID (`cta_text_id`):** Label tombol aksi utama bahasa Indonesia (maks 50 karakter). Bersifat opsional, fallback ke default "Minta Penawaran via WhatsApp".
   2. **Teks Tombol CTA EN (`cta_text_en`):** Label tombol aksi utama bahasa Inggris (maks 50 karakter). Bersifat opsional, fallback ke default "Request Quote via WhatsApp".

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
 
 # PRD: Modul Produk & Katalog Manufaktur (Products Catalog)
 
@@ -28,13 +28,13 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - **Breadcrumb Semantik:** Beranda (`/`) > Produk (`/products`) > [Kategori] (`/products?category=:slug`) > [Nama Produk].
 - **Judul & Short Description:** Judul responsif `clamp(26px, 3.6vw, 38px)` bobot 800 `var(--color-text-main)`; deskripsi singkat tepat di bawah judul max `56ch`, ukuran 15.5px, warna `var(--color-text-muted)` dari kolom `short_description_id/en`.
 - **Pil Varian Ukuran:** Tombol pil border netral, radius penuh `999px` (`var(--r-full)`), terpilih berganti latar `var(--color-primary)` teks putih `var(--color-on-primary)` (`aria-pressed="true"`), data dari array JSON `variants`. Sembunyi jika kolom kosong/null.
-- **Baris Aksi CTA (52px) [PENDING T-210]:** Tombol WhatsApp latar `var(--color-primary)` dengan label dinamis dari `cta_text_id` (ID) / `cta_text_en` (EN) atau fallback ke teks default dwibahasa ("Minta Penawaran via WhatsApp" / "Request Quote via WhatsApp"). Nomor tujuan terhubung otomatis ke nomor telepon resmi perusahaan dari Pengaturan Situs (`settings.whatsapp_number`). Tombol "Submit RFQ Form" outline latar putih `var(--color-surface)` border `var(--color-border)`. Mobile <= 560px full-width.
+- **Baris Aksi CTA (52px):** Tombol WhatsApp latar `var(--color-primary)` dengan label dinamis dari `cta_text_id` (ID) / `cta_text_en` (EN) atau fallback ke teks default dwibahasa ("Minta Penawaran via WhatsApp" / "Request Quote via WhatsApp"). Nomor tujuan terhubung otomatis ke nomor telepon resmi perusahaan dari Pengaturan Situs (`settings.whatsapp_number`). Tombol "Submit RFQ Form" outline latar putih `var(--color-surface)` border `var(--color-border)`. Mobile <= 560px full-width.
 - **Bilah Tab & Panel Konten:** Tab "Deskripsi" dan "Tabel Ukuran" dengan underline aktif hijau brand `var(--color-primary)`. Default tab: Deskripsi.
   - Panel Deskripsi: teks kaya TinyMCE (`description_id/en`) max `75ch` warna `var(--color-text-variant)`.
   - Panel Tabel Ukuran: tabel 6 kolom (Kode Produk, Lebar, Panjang, Tebal, Kapasitas, Bahan) dari array JSON `size_table`. Mobile <= 600px: thead sembunyi, setiap baris tampil sebagai card dengan label `data-l`. Jika `size_table` kosong, tab tabel ukuran disembunyikan.
 - **Aksesibilitas & Animasi:** Animasi hanya GPU transform/opacity, `prefers-reduced-motion` statis.
 
-### FR-25: Skema Kolom Baru Database Produk [PENDING T-204-T-205]
+### FR-25: Skema Kolom Baru Database Produk
 - Pembaruan skema tabel `products` via migrasi terpisah:
   - Migrasi `016_drop_unused_product_specs.sql`: DROP kolom legacy `material_specs` dan `technical_specs`.
   - Migrasi `017_add_product_cta_fields.sql`: ADD kolom baru `cta_text_id` (VARCHAR(100) NULL) dan `cta_text_en` (VARCHAR(100) NULL).

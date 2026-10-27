@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-203)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-211)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-10-24  
-**Status Keseluruhan:** Selesai 100% (203 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-10-27  
+**Status Keseluruhan:** Selesai 100% (211 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-203)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-211)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -207,3 +207,18 @@
     - [x] T-201: Frontend Publik Halaman Detail Produk Baru
     - [x] T-202: Admin CMS Form Produk & Multi-Select Media Picker
     - [x] T-203: QA, Kepatuhan CSP, Audit Aksesibilitas WCAG AA & Uji Regresi
+
+- **Task Pembersihan Form Admin Produk & CTA Dinamis Dwibahasa:** [archive/2026-10-24_hapus-field-produk-cta-editable.md](2026-10-24_hapus-field-produk-cta-editable.md)
+  - **Tanggal:** 2026-10-24 s/d 2026-10-27
+  - **Total Task:** 8 Task terperinci (T-204 s/d T-211)
+  - **Status:** Selesai 100% (8/8 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-204: Migrasi database drop kolom legacy material_specs dan technical_specs
+    - [x] T-205: Migrasi database add kolom baru cta_text_id dan cta_text_en
+    - [x] T-206: Pembaruan model data produk models/productModel.js skema baru & mapping CTA
+    - [x] T-207: Pembersihan markup UI form admin create.ejs & edit.ejs (hapus material_specs & card technical specs)
+    - [x] T-208: Pembersihan CSS spesifikasi usang di public/css/admin.css
+    - [x] T-209: Implementasi input teks CTA dwibahasa di form admin & validasi server-side
+    - [x] T-210: Integrasi teks CTA dinamis pada controllers/public/productController.js & product-detail.ejs
+    - [x] T-211: Pengujian regresi otomatis end-to-end, penyesuaian unit test, zero console error
+
