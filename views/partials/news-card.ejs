@@ -7,7 +7,7 @@
 %>
 <article class="news-card-v2 nwl-card">
   <div class="news-card-v2-img nwl-card-media<%= isPlaceholder ? ' nwl-card-media-placeholder' : '' %>">
-    <img src="<%= cardImg %>" alt="<%= cardTitle %>" loading="lazy" class="<%= isPlaceholder ? 'nwl-img-placeholder' : '' %>" onerror="this.onerror=null;this.src='/uploads/media/media-1792035656935-732682512.webp';this.classList.add('nwl-img-placeholder');this.parentElement.classList.add('nwl-card-media-placeholder');">
+    <img src="<%= cardImg %>" alt="<%= cardTitle %>" loading="lazy" class="<%= isPlaceholder ? 'nwl-img-placeholder' : '' %>">
   </div>
   <div class="news-card-v2-body nwl-card-body">
     <% if (cardDate) { %>

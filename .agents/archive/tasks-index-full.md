@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-211)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-232)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-10-27  
-**Status Keseluruhan:** Selesai 100% (211 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-10-28  
+**Status Keseluruhan:** Selesai 100% (232 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-211)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-232)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -247,5 +247,19 @@
     - [x] T-223: Implementasi Modifier Header Solid Putih pada Halaman Single Product dan Single Article (views/partials/navbar.ejs, views/public/product-detail.ejs, views/public/news-detail.ejs, controllers/public/productController.js, controllers/public/postController.js, public/css/layout.css)
     - [x] T-224: Penataan Spacing Offset Konten Halaman Detail Produk dan Artikel Bebas Tumpang Tindih (public/js/main.js, public/css/tokens.css, public/css/components.css, public/css/layout.css, views/public/news-detail.ejs)
     - [x] T-225: Pengujian Regresi Lintas Halaman, Aksesibilitas WCAG, dan Kompatibilitas Responsif
+
+- **Task Redesain Modul Berita & Publikasi (News Listing & Detail Identik G2/G4):**
+  - **Tanggal:** 2026-10-27 s/d 2026-10-28
+  - **Total Task:** 7 Task terperinci (T-226 s/d T-232)
+  - **Status:** Selesai 100% (7/7 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-226: [Bug Fix] Perbaikan Breadcrumb Detail Berita & Reset List Style (views/public/news-detail.ejs, public/css/components.css)
+    - [x] T-227: [Bug Fix] Penanganan Gambar Pecah & Fallback Placeholder Kartu Artikel (views/public/news-detail.ejs, views/public/news.ejs, public/css/components.css)
+    - [x] T-228: [Spek B.1] Restrukturisasi Layout Halaman Detail Berita Identik G2 (views/public/news-detail.ejs, public/css/components.css, locales/id.json, locales/en.json)
+    - [x] T-229: [Spek B.2] Standarisasi Komponen Kartu Berita Bersama Identik G4 (views/public/news.ejs, views/public/news-detail.ejs, public/css/components.css, tests/test-modul12-public.js)
+    - [x] T-230: [Spek B.3 / FR-24] Headline Slider Halaman Listing Berita Desktop G3 & Mobile Reference (controllers/public/postController.js, views/public/news.ejs, public/css/components.css, public/js/news-slider.js)
+    - [x] T-231: [Spek B.4 / FR-25] Filter Tipe Tab G4, Kategori, & Pencarian Berbasis Fetch API Tanpa Reload Halaman (controllers/public/postController.js, views/public/news.ejs, public/css/components.css, public/js/news-filter.js)
+    - [x] T-232: [Verifikasi & UI Polish] Audit Responsif, Aksesibilitas, dan Regresi Publik (seluruh file & tests/test-modul12-public.js)
+
 
 

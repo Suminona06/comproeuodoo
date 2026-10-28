@@ -74,7 +74,7 @@
 
     return '<article class="news-card-v2 nwl-card">' +
       '<div class="' + mediaClass + '">' +
-        '<img src="' + escapeHtml(img) + '" alt="' + safeTitle + '" loading="lazy"' + imgClass + ' onerror="this.onerror=null;this.src=\'/uploads/media/media-1792035656935-732682512.webp\';this.classList.add(\'nwl-img-placeholder\');this.parentElement.classList.add(\'nwl-card-media-placeholder\');">' +
+        '<img src="' + escapeHtml(img) + '" alt="' + safeTitle + '" loading="lazy"' + imgClass + '>' +
       '</div>' +
       '<div class="news-card-v2-body nwl-card-body">' +
         dateHtml +

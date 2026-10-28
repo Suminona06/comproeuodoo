@@ -83,7 +83,7 @@
                 <div class="nwl-slide <%= idx === 0 ? 'active' : '' %>" data-slide-index="<%= idx %>" role="group" aria-roledescription="slide" aria-label="<%= (idx + 1) + ' / ' + headlinesList.length %>" <%= idx !== 0 ? 'aria-hidden="true"' : '' %>>
                   <div class="nwl-slide-grid">
                     <div class="nwl-slide-media<%= isHlPlaceholder ? ' nwl-slide-media-placeholder' : '' %>">
-                      <img src="<%= hlImage %>" alt="<%= hlTitle %>" loading="<%= idx === 0 ? 'eager' : 'lazy' %>" class="<%= isHlPlaceholder ? 'nwl-img-placeholder' : '' %>" onerror="this.onerror=null;this.src='/uploads/media/media-1792035656935-732682512.webp';this.classList.add('nwl-img-placeholder');this.parentElement.classList.add('nwl-slide-media-placeholder');">
+                      <img src="<%= hlImage %>" alt="<%= hlTitle %>" loading="<%= idx === 0 ? 'eager' : 'lazy' %>" class="<%= isHlPlaceholder ? 'nwl-img-placeholder' : '' %>">
                     </div>
                     <div class="nwl-slide-content">
                       <% if (hlDate) { %>
