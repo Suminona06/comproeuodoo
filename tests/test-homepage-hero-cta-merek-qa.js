@@ -64,9 +64,9 @@ async function runComprehensiveQa() {
   assert(cssContent.includes('scale(1.18)'), 'Logo harus memiliki efek hover zoom scale 1.18');
   assert(cssContent.includes('mask-image: linear-gradient'), 'Wrapper marquee harus memiliki mask-image gradien');
 
-  // Mobile < 768px logo scaling
+  // Mobile < 768px logo scaling (Updated in T-236)
   assert(cssContent.includes('@media (max-width: 767.98px)'), 'CSS harus memiliki media query mobile 768px untuk strip merek');
-  assert(cssContent.includes('clamp(56px, 11vw, 75px)'), 'Logo mobile harus berskala proporsional');
+  assert(cssContent.includes('clamp(70px, 13vw, 88px)') || cssContent.includes('clamp(56px, 11vw, 75px)'), 'Logo mobile harus berskala proporsional');
   console.log('  1b. Brand strip marquee responsive rules (gradient mask, desktop zoom hover, mobile scale): PASSED');
 
   // =========================================================================

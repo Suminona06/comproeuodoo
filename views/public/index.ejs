@@ -191,23 +191,17 @@
   <section class="sec-products" id="produk">
     <div class="container">
       <div class="prod-header reveal">
-        <div>
-          <% 
-            const catSec = (typeof homeContent !== 'undefined' && homeContent?.categories) ? homeContent.categories : {};
-            const catSecTitle = currentLang === 'en' 
-              ? (catSec.title_en || 'Featured Manufacturing Products') 
-              : (catSec.title_id || 'Produk Unggulan Manufaktur');
-            const catSecSub = currentLang === 'en'
-              ? (catSec.subtitle_en || 'High-grade HDPE, LLDPE, and woven PP plastic bags manufactured to exact customer specifications.')
-              : (catSec.subtitle_id || 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail, industri, dan pasar komersial.');
-          %>
-          <h2 class="prod-title"><%= catSecTitle %></h2>
-          <p class="prod-subtitle"><%= catSecSub %></p>
-        </div>
-        <a href="/products" class="btn btn-primary">
-          <span><%= currentLang === 'en' ? 'View All Catalog' : 'Lihat Seluruh Katalog' %></span>
-          <span aria-hidden="true">&rarr;</span>
-        </a>
+        <% 
+          const catSec = (typeof homeContent !== 'undefined' && homeContent?.categories) ? homeContent.categories : {};
+          const catSecTitle = currentLang === 'en' 
+            ? (catSec.title_en || 'Featured Manufacturing Products') 
+            : (catSec.title_id || 'Produk Unggulan Manufaktur');
+          const catSecSub = currentLang === 'en'
+            ? (catSec.subtitle_en || 'High-grade HDPE, LLDPE, and woven PP plastic bags manufactured to exact customer specifications.')
+            : (catSec.subtitle_id || 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail, industri, dan pasar komersial.');
+        %>
+        <h2 class="prod-title"><%= catSecTitle %></h2>
+        <p class="prod-subtitle"><%= catSecSub %></p>
       </div>
 
       <% 

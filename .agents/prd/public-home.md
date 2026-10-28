@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-28 | Kode: views/public/index.ejs, controllers/public/homeController.js
 
 # PRD: Modul Beranda Publik (Public Home)
 
@@ -29,6 +29,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Setiap slide mendukung tombol utama (Primary CTA: `.hero-cta-btn--primary.btn-pill-solid-white`) dan tombol kedua (Secondary CTA: `.hero-cta-btn--secondary.btn-pill-white`).
 - Format media banner mendukung gambar WebP, file video lokal MP4/WebM, dan embed video YouTube (`media_type`).
 - Di layar mobile (`< 768px`), tata letak tombol CTA bertransisi otomatis ke susunan vertikal (stack 100% width).
+- Kontrol navigasi slider (`.hero-slider-controls`) diposisikan terpusat secara horizontal di area bawah (`left: 50%; transform: translateX(-50%)`) untuk menjamin tata letak simetris dan mencegah tabrakan/tumpang tindih dengan tombol CTA di berbagai ukuran viewport, termasuk layar laptop 14 inci (1920x1080 dengan scaling 125%/150%).
 
 ### FR-11: Pengelolaan Banner Hero (CMS)
 - Admin dapat mengelola slide banner (judul, subtitle, caption, media upload/URL, tombol utama, tombol kedua, status aktif, urutan tampilan).
@@ -38,13 +39,13 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Menampilkan 4 panel kategori produk berukuran besar dalam grid responsif CSS Variable `--hcat-cols`.
 - Setiap panel memuat gambar segmen, scrim overlay gelap, nama kategori, dan jumlah produk terpublikasi.
 - Klik panel mengarahkan pengguna ke katalog dengan deep-link filter: `/products?category=<slug>`.
-- Header seksi menampilkan judul dan deskripsi dengan pemisahan margin vertikal adaptif berbasis token; navigasi katalog tunggal dipusatkan pada tombol bawah seksi (`.prod-more-wrap .btn-see-more`), tanpa tombol redundan di kanan header [PENDING T-233].
+- Header seksi menampilkan judul dan deskripsi dengan pemisahan margin vertikal adaptif berbasis token; navigasi katalog tunggal dipusatkan pada tombol bawah seksi (`.prod-more-wrap .btn-see-more`), tanpa tombol redundan di kanan header.
 
 ### Why Choose Us (`.wcu-*`)
 - Seksi editorial B2B yang menonjolkan inovasi aditif ramah lingkungan (*100% degradable*) dan kepatuhan standar SNI.
 - Terdiri atas header (`.wcu-header`), kicker status chip (`.wcu-kicker`), teks editorial (`.wcu-headline`, `.wcu-desc`), serta ilustrasi SVG statis (`.wcu-artbox`) dengan floating badge (`.wcu-float-card`).
-- Khusus pada viewport mobile (`< 768px`), elemen floating badge (`.wcu-float-card`) dan chip label (`.wcu-art-label`) disembunyikan sehingga ilustrasi daun botani SVG tampil 100% utuh dan leluasa tanpa elemen penutup [PENDING T-235]. Desktop tetap mempertahankan kartu melayang dan chip label.
-- Batas atas dan bawah seksi Why Choose Us menggunakan transisi gradasi lembut berbasis token semantik tanpa garis batas kaku (*hard edge*) [PENDING T-234].
+- Khusus pada viewport mobile (`< 768px`), elemen floating badge (`.wcu-float-card`) dan chip label (`.wcu-art-label`) disembunyikan sehingga ilustrasi daun botani SVG tampil 100% utuh dan leluasa tanpa elemen penutup. Desktop tetap mempertahankan kartu melayang dan chip label.
+- Batas atas dan bawah seksi Why Choose Us menggunakan transisi gradasi lembut berbasis token semantik tanpa garis batas kaku (*hard edge*).
 - Anchor `#pilar` dipertahankan sebagai alias navigasi backward-compatible.
 
 ### Certifications & Accreditations (`.sec-evidence`)
@@ -54,7 +55,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 ### FR-17: Registered Brands Marquee Strip (`.brand-strip-*`)
 - Menampilkan portofolio merek dagang resmi perusahaan dalam bentuk strip horizontal berjalan kontinu (*continuous marquee*).
 - Menggunakan struktur 2 track identik (`.brand-strip-track`) untuk efek looping mulus tanpa celah (*gapless*).
-- Dimensi logo merek pada viewport mobile (`< 768px`) ditingkatkan proporsional (`height: clamp(70px, 13vw, 88px)`) untuk meningkatkan keterbacaan legalitas merek tanpa menyebabkan overflow di 320px [PENDING T-236].
+- Dimensi logo merek pada viewport mobile (`< 768px`) ditingkatkan proporsional (`height: clamp(70px, 13vw, 88px)`) untuk meningkatkan keterbacaan legalitas merek tanpa menyebabkan overflow di 320px.
 - Berhenti bergulir (*pause on hover/focus*) saat kursor diarahkan ke area strip atau logo difokuskan keyboard.
 - Mendukung preferensi aksesibilitas `prefers-reduced-motion` (animasi dinonaktifkan, logo disusun flex-wrap statis rapi).
 - **Modal Zoom Preview Retained:** Klik logo atau tekan Space/Enter membuka dialog modal lightbox preview (`#brandPreviewModal`) untuk melihat logo resolusi tinggi.
@@ -76,7 +77,8 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 | **4 Panel Kategori Primer** | Menggantikan kartu featured produk acak agar calon pembeli B2B dapat langsung memfilter segmen manufaktur yang relevan. | 2026-10-19 |
 | **Why Choose Us menggantikan 3 Pilar** | Memperkuat diferensiasi korporat sebagai pionir aditif plastik ramah lingkungan dengan narasi editorial terarah. | 2026-10-19 |
 | **Pembersihan Rona Biru ke Palet Hijau** | Menyelaraskan seluruh elemen visual beranda dengan identitas merek manufaktur ramah lingkungan di `Design/DESIGN.md`. | 2026-10-17 |
-| **Header Produk Single CTA & Spasi Adaptif** | Menghilangkan duplikasi tombol katalog di header dan merapikan hierarki jarak vertikal judul-deskripsi [PENDING T-233]. | 2026-10-28 |
-| **Why Choose Us Mobile Bersih Tanpa Floating Card & Chip** | Menjaga agar ilustrasi daun botani tampil utuh tanpa tertutup elemen floating card maupun chip label di mobile [PENDING T-235]. | 2026-10-28 |
-| **Transisi Gradasi Halus Latar Seksi Why Choose Us** | Menghilangkan garis batas tegas (hard edge) pada peralihan latar abu-muda dan hijau botani menggunakan token semantik [PENDING T-234]. | 2026-10-28 |
-| **Penskalaan Logo Marquee Mobile** | Memastikan logo merek dagang terdaftar terbaca jelas pada layar ponsel kecil tanpa overflow [PENDING T-236]. | 2026-10-28 |
+| **Header Produk Single CTA & Spasi Adaptif** | Menghilangkan duplikasi tombol katalog di header dan merapikan hierarki jarak vertikal judul-deskripsi. | 2026-10-28 |
+| **Why Choose Us Mobile Bersih Tanpa Floating Card & Chip** | Menjaga agar ilustrasi daun botani tampil utuh tanpa tertutup elemen floating card maupun chip label di mobile. | 2026-10-28 |
+| **Transisi Gradasi Halus Latar Seksi Why Choose Us** | Menghilangkan garis batas tegas (hard edge) pada peralihan latar abu-muda dan hijau botani menggunakan token semantik. | 2026-10-28 |
+| **Penskalaan Logo Marquee Mobile** | Memastikan logo merek dagang terdaftar terbaca jelas pada layar ponsel kecil tanpa overflow. | 2026-10-28 |
+| **Centering Kontrol Slider Hero Banner** | Menempatkan kontrol slider di tengah bawah layar agar bebas tabrakan dengan tombol CTA pada resolusi laptop 14 inci dan desktop. | 2026-10-28 |

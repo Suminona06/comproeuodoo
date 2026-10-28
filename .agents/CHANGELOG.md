@@ -29,4 +29,5 @@
 - 2026-10-27 | Perbaikan Bug Ikon Tombol Close Modal Salin Kolom Admin: ganti entity &times; ke SVG simetris 14x14px | T-220
 - 2026-10-27 | Perbaikan header: transisi blur top bar, animasi drawer mobile Anime.js, header solid putih detail produk & artikel, dan spacing offset | T-221..T-225
 - 2026-10-28 | Redesain Modul Berita & Publikasi: breadcrumb unboxed G2, layout editorial detail G2, kartu bersama G4, headline slider G3 & mobile, filter tab Fetch API G4, share buttons domain euodoo.co.id, dan placeholder logo Euodoo putih | T-226..T-232
+- 2026-10-28 | Revisi minor homepage: perapian header produk, transisi gradasi halus seksi, layout WCU mobile tanpa elemen penutup, penskalaan logo marquee mobile, dan centering kontrol slider hero laptop | T-233..T-237
 

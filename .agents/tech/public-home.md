@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-28 | Kode: views/public/index.ejs, controllers/public/homeController.js
 
 # Tech Spec: Modul Beranda Publik (Public Home)
 
@@ -57,19 +57,20 @@ Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands
 - **Header & Navigasi Publik:**
   - Top Bar & Transisi Blur: `.top-bar` menyertakan transisi `backdrop-filter 0.3s ease` dan `-webkit-backdrop-filter 0.3s ease`. Saat `.header-wrap.is-scrolled` aktif, filter memudar bertahap dari `blur(4px)` menuju `blur(0px)` beriringan dengan `opacity: 0` dan penciutan baris grid `.top-bar-wrap`.
   - Drawer Navigasi Mobile: Panel `.nav-menu` dan `.menu-backdrop` dikendalikan via tweening Anime.js v3.2.2. Buka: `translateY: [-12, 0]` dan `opacity: [0, 1]` dengan cascade staggered link navigasi. Tutup: `translateY: [0, -12]` dan `opacity: [1, 0]` diselesaikan tuntas sebelum status visibilitas dicabut. Mendukung fallback instan pada `prefers-reduced-motion: reduce`.
-- **Hero Slider & Dual CTA:** `.hero.hero-slider`, `.hero-slide`, `.hero-content`, `.hero-actions.hero-cta-wrap`, `.hero-cta-btn--primary`, `.hero-cta-btn--secondary`.
-  - Responsive rule: Desktop horizontal flex, Mobile (`< 768px`) stack vertikal 100% width.
+- **Hero Slider & Dual CTA:** `.hero.hero-slider`, `.hero-slide`, `.hero-content`, `.hero-actions.hero-cta-wrap`, `.hero-cta-btn--primary`, `.hero-cta-btn--secondary`, `.hero-slider-controls`.
+  - Responsive rule: Desktop horizontal flex (`width: fit-content; max-width: 100%`), Mobile (`< 768px`) stack vertikal 100% width. Tombol memiliki `min-height: 48px`, `min-width: 150px`, dan `white-space: nowrap` agar konsisten tanpa deformasi/bantet.
+  - Centering kontrol: `.hero-slider-controls` diposisikan terpusat secara horizontal di area bawah (`left: 50%; transform: translateX(-50%); bottom: clamp(20px, 3.5vh, 36px)`) untuk menjamin bebas tabrakan (*zero overlap*) pada resolusi layar laptop 14 inci (1920x1080 display scale 125%/150%) dan desktop.
 - **4 Panel Kategori Primer:** `.sec-products`, `.prod-header`, `.prod-title`, `.prod-subtitle`, `.hcat-grid`, `.hcat-panel`, `.hcat-img`, `.hcat-scrim`, `.hcat-title`, `.hcat-count`, `.hcat-arrow`, `.prod-more-wrap`, `.btn-see-more`.
   - Grid rule: Menggunakan `--hcat-cols: 4;` responsif.
-  - Spacing & CTA: `.prod-title` memiliki margin bawah berbasis token `--space-sm` hingga `--space-md` untuk memisahkan judul dan deskripsi [PENDING T-233]. Markup tombol kanan di `.prod-header` ditiadakan; CTA diarahkan tunggal via `.prod-more-wrap .btn-see-more` di bawah grid.
+  - Spacing & CTA: `.prod-title` memiliki margin bawah berbasis token `--space-sm` hingga `--space-md` untuk memisahkan judul dan deskripsi. Markup tombol kanan di `.prod-header` ditiadakan; CTA diarahkan tunggal via `.prod-more-wrap .btn-see-more` di bawah grid.
 - **Why Choose Us:** `.sec-why-us.sec-pillars`, `.wcu-card`, `.wcu-header`, `.wcu-layout`, `.wcu-copy`, `.wcu-kicker`, `.wcu-headline`, `.wcu-desc`, `.wcu-artbox`, `.wcu-art`, `.wcu-art-label`, `.wcu-float-card`.
   - Anchor alias: `<span id="pilar" class="sec-pillars" aria-hidden="true"></span>`.
-  - Mobile rule (`< 768px`): `.wcu-float-card { display: none; }` dan `.wcu-art-label { display: none; }` agar ilustrasi SVG daun botani bersih dan utuh [PENDING T-235]. Desktop tetap menampilkan floating card dan chip label.
-  - Token transisi background: Batas atas dan bawah seksi menggunakan token gradasi semantik `--trans-subtle-to-wcu` dan `--trans-wcu-to-subtle` di `tokens.css` tanpa hardcode hex [PENDING T-234].
+  - Mobile rule (`< 768px`): `.wcu-float-card { display: none; }` dan `.wcu-art-label { display: none; }` agar ilustrasi SVG daun botani bersih dan utuh. Desktop tetap menampilkan floating card dan chip label.
+  - Token transisi background: Batas atas dan bawah seksi menggunakan token gradasi semantik `--trans-subtle-to-wcu` dan `--trans-wcu-to-subtle` di `tokens.css` tanpa hardcode hex.
 - **Certifications / Evidence:** `.sec-evidence`, `.ev-layout`, `.cert-grid`, `.cert-item`, `.cert-name`, `.cert-desc`.
 - **Strip Marquee Merek & Modal Zoom:**
   - Strip Marquee: `.sec-brands.brand-strip-sec`, `.brand-strip-wrapper`, `.brand-strip-marquee`, `.brand-strip-track`, `.brand-strip-item`, `.brand-strip-logo-box`, `.brand-strip-logo`, `.brand-zoom-hint`.
-  - Responsive mobile rule (`< 768px`): `.brand-strip-logo` berukuran `height: clamp(70px, 13vw, 88px); max-width: 170px;` dengan `.brand-strip-item` berukuran `min-width: clamp(130px, 20vw, 160px);` [PENDING T-236].
+  - Responsive mobile rule (`< 768px`): `.brand-strip-logo` berukuran `height: clamp(70px, 13vw, 88px); max-width: 170px;` dengan `.brand-strip-item` berukuran `min-width: clamp(130px, 20vw, 160px);`.
   - Lightbox Preview Modal: `#brandPreviewModal.brand-preview-modal`, `.brand-modal-backdrop`, `.brand-modal-dialog`, `.brand-modal-header`, `.brand-modal-close`, `.brand-modal-body`, `.brand-modal-img-wrap`.
   - Script interaktivitas: `public/js/main.js` mengikat `.js-brand-preview-trigger`, Escape key listener, dan backdrop click.
 
