@@ -7,33 +7,33 @@
   const postContent = currentLangCode === 'en' ? (post.content_en || post.content_id) : post.content_id;
   const postExcerpt = currentLangCode === 'en' ? (post.excerpt_en || post.excerpt_id) : post.excerpt_id;
   const pubDate = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
-  const coverImg = post.cover_image || '/images/hero-factory-precision.webp';
+  const isDetailPlaceholder = !(post.cover_image && post.cover_image.trim());
+  const coverImg = isDetailPlaceholder ? '/uploads/media/media-1792035656935-732682512.webp' : post.cover_image.trim();
   const catLabel = currentLangCode === 'en' ? (post.category_name_en || post.category_name_id) : post.category_name_id;
   const readTime = Math.max(2, Math.round(((post.content_id || '').length) / 450)) + ' min baca';
   const typeLabel = post.type === 'pers' ? 'Siaran Pers Resmi' : (post.type === 'blog' ? 'Artikel & Wawasan' : 'Berita Perusahaan');
-  const canonicalUrl = post.canonical_url || `https://euodoo.com/news/${post.slug}`;
+  const canonicalUrl = (post.canonical_url && !post.canonical_url.includes('localhost')) ? post.canonical_url.replace('euodoo.com', 'euodoo.co.id') : `https://euodoo.co.id/news/${post.slug}`;
 %>
 
-<!-- Schema.org Article Structured Data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "<%= (postTitle || '').replace(/"/g, '\\"') %>",
-  "image": ["<%= coverImg.startsWith('http') ? coverImg : 'https://euodoo.com' + coverImg %>"],
+  "image": ["<%= coverImg.startsWith('http') ? coverImg : 'https://euodoo.co.id' + coverImg %>"],
   "datePublished": "<%= post.published_at ? new Date(post.published_at).toISOString() : '' %>",
   "dateModified": "<%= post.updated_at ? new Date(post.updated_at).toISOString() : (post.published_at ? new Date(post.published_at).toISOString() : '') %>",
   "author": {
     "@type": "Organization",
     "name": "PT Euodoo",
-    "url": "https://euodoo.com"
+    "url": "https://euodoo.co.id"
   },
   "publisher": {
     "@type": "Organization",
     "name": "PT Euodoo",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://euodoo.com/images/logo.png"
+      "url": "https://euodoo.co.id/images/logo.png"
     }
   },
   "description": "<%= (postExcerpt || '').replace(/"/g, '\\"') %>"
@@ -41,187 +41,122 @@
 </script>
 
 <main id="main-content" class="news-detail-wrap">
-  <!-- Breadcrumb Navigation -->
-  <nav aria-label="Breadcrumb" style="background-color: #ffffff; border-bottom: 1px solid var(--border, #e2e8f0); padding: 14px 0;">
+  <div class="nwd-breadcrumb-wrap">
     <div class="container">
-      <ol class="breadcrumbs" style="margin: 0;">
-        <li><a href="/"><%= t('nav.home') %></a></li>
-        <li aria-hidden="true">/</li>
-        <li><a href="/news"><%= t('nav.news') %></a></li>
-        <li aria-hidden="true">/</li>
-        <li aria-current="page" style="color: var(--navy, #071f17); font-weight: 600; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= postTitle %></li>
-      </ol>
-    </div>
-  </nav>
-
-  <!-- Article Container -->
-  <article class="section section-bg-workspace" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
-    <div class="container">
-      <div style="max-width: 840px; margin: 0 auto;">
-
-        <!-- Header -->
-        <header style="margin-bottom: 28px;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
-            <span class="badge <%= post.type === 'pers' ? 'badge-primary' : 'badge-info' %>" style="font-size: 12px; padding: 4px 12px;">
-              <%= typeLabel %>
-            </span>
-            <% if (catLabel) { %>
-              <span class="badge" style="background: #e6f7f2; border: 1px solid #a3e0d0; color: var(--primary, #00755a); font-size: 12px; font-weight: 600; padding: 4px 12px;">
-                <%= catLabel %>
-              </span>
-            <% } %>
-            <% if (pubDate) { %>
-              <time datetime="<%= post.published_at %>" style="font-size: 13px; color: var(--color-text-muted);">
-                <%= pubDate %>
-              </time>
-              <span style="font-size: 12px; color: var(--color-text-muted);">•</span>
-            <% } %>
-            <span style="font-size: 13px; color: var(--color-text-muted);"><%= readTime %></span>
-          </div>
-
-          <h1 style="font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 800; color: var(--navy, #071f17); line-height: 1.25; margin-bottom: 16px;">
-            <%= postTitle %>
-          </h1>
-
-          <% if (postExcerpt) { %>
-            <p style="font-size: 1.15rem; color: var(--text-variant, #424753); line-height: 1.6; margin-bottom: 20px; font-weight: 500;">
-              <%= postExcerpt %>
-            </p>
-          <% } %>
-
-          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border, #e2e8f0); flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary, #00755a); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">
-                EU
-              </div>
-              <div>
-                <div style="font-size: 13px; font-weight: 700; color: var(--navy, #071f17);">Redaksi PT Euodoo</div>
-                <div style="font-size: 11.5px; color: var(--color-text-muted);">Divisi Komunikasi Korporat</div>
-              </div>
-            </div>
-
-            <!-- Share Buttons -->
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 12px; font-weight: 600; color: var(--color-text-muted); margin-right: 4px;">Bagikan:</span>
-              <button type="button"
-                      class="share-btn-pill"
-                      id="copyLinkBtn"
-                      onclick="navigator.clipboard.writeText(window.location.href); alert('Tautan artikel berhasil disalin!');"
-                      aria-label="Salin tautan artikel">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                </svg>
-                <span>Salin</span>
-              </button>
-              <a href="https://wa.me/?text=<%= encodeURIComponent(postTitle + ' - ' + canonicalUrl) %>"
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 class="share-btn-pill"
-                 aria-label="Bagikan via WhatsApp">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="#25D366">
-                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
-                </svg>
-                <span>WhatsApp</span>
-              </a>
-            </div>
-          </div>
-        </header>
-
-        <!-- Cover Image -->
-        <div style="border-radius: 20px; overflow: hidden; margin-bottom: 32px; background: #071f17; border: 1px solid var(--border, #e2e8f0); box-shadow: 0 10px 30px -5px rgba(7, 31, 23, 0.1);">
-          <img src="<%= coverImg %>"
-               alt="<%= postTitle %>"
-               style="width: 100%; max-height: 480px; object-fit: cover; display: block;"
-               loading="eager">
-        </div>
-
-        <!-- Content Body -->
-        <div style="background-color: #ffffff; border: 1px solid var(--border, #e2e8f0); border-radius: 20px; padding: 40px; box-shadow: 0 4px 16px -2px rgba(7, 31, 23, 0.05); margin-bottom: 40px;">
-          <% if (postContent) { %>
-            <div class="article-prose">
-              <%
-                let renderedArticleHtml = postContent;
-                if (renderedArticleHtml && !/<[a-z][\s\S]*>/i.test(renderedArticleHtml)) {
-                  renderedArticleHtml = renderedArticleHtml
-                    .split(/\n\s*\n/)
-                    .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
-                    .join('');
-                }
-              %>
-              <%- renderedArticleHtml %>
-            </div>
-          <% } else { %>
-            <p style="color: var(--color-text-muted); font-style: italic; font-size: 15px;">
-              Konten lengkap artikel ini sedang dalam proses pembaruan oleh redaksi PT Euodoo.
-            </p>
-          <% } %>
-        </div>
-
-        <!-- Back Link & CTA Actions -->
-        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border, #e2e8f0); flex-wrap: wrap; gap: 16px;">
-          <a href="/news" class="btn btn-secondary btn-md">
-            <span aria-hidden="true">&larr;</span>
-            <span><%= t('news.back_to_news') %></span>
-          </a>
-          <a href="/contact" class="btn btn-primary btn-md">
-            <span>Konsultasi Kemitraan</span>
-            <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-
+      <div class="nwd-article-col">
+        <nav aria-label="Breadcrumb">
+          <ol class="nwd-breadcrumb">
+            <li class="nwd-breadcrumb-item"><a href="/"><%= currentLangCode === 'en' ? 'Home' : 'Beranda' %></a></li>
+            <li class="nwd-breadcrumb-item"><a href="/news"><%= currentLangCode === 'en' ? 'News' : 'Berita' %></a></li>
+            <li class="nwd-breadcrumb-item nwd-breadcrumb-current" aria-current="page"><%= postTitle %></li>
+          </ol>
+        </nav>
       </div>
+    </div>
+  </div>
 
-      <!-- Related Articles Recommendation -->
-      <% if (recentPosts && recentPosts.length > 0) { %>
-        <div style="margin-top: 64px; max-width: 840px; margin-left: auto; margin-right: auto; padding-top: 40px; border-top: 1px solid var(--border, #e2e8f0);">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-            <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--navy, #071f17); margin: 0;">
-              Publikasi Terkait Lainnya
-            </h2>
-            <a href="/news" style="font-size: 13.5px; font-weight: 600; color: var(--primary, #00755a); text-decoration: none;">
-              Lihat Semua →
-            </a>
-          </div>
-
-          <div class="grid grid-cols-3 gap-lg">
-            <% recentPosts.forEach(rec => { %>
-              <%
-                const recTitle = currentLangCode === 'en' ? (rec.title_en || rec.title_id) : rec.title_id;
-                const recExcerpt = currentLangCode === 'en' ? (rec.excerpt_en || rec.excerpt_id) : rec.excerpt_id;
-                const recDate = rec.published_at ? new Date(rec.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-                const recImg = rec.cover_image || '/images/hero-factory-precision.webp';
-              %>
-              <div class="news-card-v2" style="background: #ffffff;">
-                <div class="news-card-v2-img" style="height: 150px;">
-                  <img src="<%= recImg %>" alt="<%= recTitle %>" loading="lazy">
-                </div>
-                <div class="news-card-v2-body" style="padding: 16px;">
-                  <% if (recDate) { %>
-                    <span style="font-size: 11.5px; color: var(--color-text-muted); display: block; margin-bottom: 6px;">
-                      <%= recDate %>
-                    </span>
-                  <% } %>
-                  <h3 style="font-size: 14.5px; font-weight: 700; color: var(--navy, #071f17); margin-bottom: 10px; line-height: 1.35;">
-                    <a href="/news/<%= rec.slug %>" style="color: inherit; text-decoration: none;">
-                      <%= recTitle %>
-                    </a>
-                  </h3>
-                  <div style="margin-top: auto;">
-                    <a href="/news/<%= rec.slug %>" style="font-size: 12.5px; font-weight: 700; color: var(--primary, #00755a); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; min-height: 44px;">
-                      <span>Baca</span>
-                      <span aria-hidden="true">→</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            <% }); %>
-          </div>
+  <article class="nwd-article-sec">
+    <div class="container">
+      <div class="nwd-article-col">
+        <div class="nwd-hero-media<%= isDetailPlaceholder ? ' nwd-hero-media-placeholder' : '' %>">
+          <img src="<%= coverImg %>" alt="<%= postTitle %>" loading="eager" class="<%= isDetailPlaceholder ? 'nwl-img-placeholder' : '' %>" onerror="this.onerror=null;this.src='/uploads/media/media-1792035656935-732682512.webp';this.classList.add('nwl-img-placeholder');this.parentElement.classList.add('nwd-hero-media-placeholder');">
         </div>
-      <% } %>
 
+        <% if (pubDate) { %>
+          <div class="nwd-meta-date">
+            <time datetime="<%= post.published_at %>"><%= pubDate %></time>
+          </div>
+        <% } %>
+
+        <h1 class="nwd-title"><%= postTitle %></h1>
+
+        <div class="nwd-author">
+          <%= currentLangCode === 'en' ? 'By PT Euodoo Editorial Team' : 'Oleh Redaksi PT Euodoo' %>
+        </div>
+
+        <div class="nwd-prose article-prose">
+          <% if (postContent) { %>
+            <%
+              let renderedArticleHtml = postContent;
+              if (renderedArticleHtml && !/<[a-z][\s\S]*>/i.test(renderedArticleHtml)) {
+                renderedArticleHtml = renderedArticleHtml
+                  .split(/\n\s*\n/)
+                  .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+                  .join('');
+              }
+            %>
+            <%- renderedArticleHtml %>
+          <% } else { %>
+            <p class="nwd-empty-prose">
+              <%= currentLangCode === 'en' ? 'The full content of this article is currently being updated by the editorial team.' : 'Konten lengkap artikel ini sedang dalam proses pembaruan oleh redaksi PT Euodoo.' %>
+            </p>
+          <% } %>
+        </div>
+
+        <hr class="nwd-divider">
+
+        <div class="nwd-share-row">
+          <span class="nwd-share-label"><%= currentLangCode === 'en' ? 'Share :' : 'Bagikan :' %></span>
+          <div class="nwd-share-btns">
+            <a href="https://wa.me/?text=<%= encodeURIComponent(postTitle + ' - ' + canonicalUrl) %>" target="_blank" rel="noopener noreferrer" class="nwd-share-btn" aria-label="WhatsApp" title="WhatsApp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.86.51 3.603 1.398 5.105L2 22l5.02-1.316a9.96 9.96 0 0 0 4.984 1.32c5.524 0 10.004-4.48 10.004-10.004C22.008 6.48 17.528 2 12.004 2zm0 18.256c-1.58 0-3.072-.455-4.34-1.244l-.312-.192-2.972.78.793-2.898-.21-.334A8.204 8.204 0 0 1 3.75 12.004C3.75 7.452 7.452 3.75 12.004 3.75c4.552 0 8.254 3.702 8.254 8.254 0 4.552-3.702 8.252-8.254 8.252zm4.52-6.172c-.248-.124-1.468-.724-1.696-.807-.228-.083-.394-.124-.56.124-.165.248-.642.807-.787.973-.145.166-.29.187-.538.062-.249-.124-1.05-.387-2-1.233-.74-.66-1.24-1.474-1.385-1.722-.145-.248-.015-.383.109-.506.112-.11.249-.29.373-.435.124-.145.166-.248.249-.414.083-.166.041-.311-.021-.435-.062-.124-.56-1.348-.767-1.846-.202-.484-.407-.419-.56-.427-.145-.008-.311-.008-.477-.008-.166 0-.435.062-.663.311-.228.249-.87 0.85-.87 2.074 0 1.224.891 2.406 1.015 2.572.124.166 1.753 2.678 4.246 3.755.593.256 1.056.41 1.417.524.595.19 1.136.163 1.564.099.477-.071 1.468-.6 1.675-1.18.207-.58.207-1.077.145-1.181-.062-.104-.228-.166-.476-.29z"/>
+              </svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(canonicalUrl) %>" target="_blank" rel="noopener noreferrer" class="nwd-share-btn" aria-label="Facebook" title="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(postTitle) %>&url=<%= encodeURIComponent(canonicalUrl) %>" target="_blank" rel="noopener noreferrer" class="nwd-share-btn" aria-label="X (Twitter)" title="X">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+            <button type="button" class="nwd-share-btn" id="copyLinkBtn" aria-label="<%= currentLangCode === 'en' ? 'Copy article link' : 'Salin tautan artikel' %>" title="<%= currentLangCode === 'en' ? 'Copy link' : 'Salin tautan' %>">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+            </button>
+          </div>
+          <script>
+            (function() {
+              var btn = document.getElementById('copyLinkBtn');
+              if (btn) {
+                btn.addEventListener('click', function() {
+                  var shareUrl = '<%= canonicalUrl %>';
+                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(shareUrl).then(function() {
+                      alert('<%= currentLangCode === "en" ? "Article link copied to clipboard!" : "Tautan artikel berhasil disalin!" %>');
+                    });
+                  }
+                });
+              }
+            })();
+          </script>
+        </div>
+      </div>
     </div>
   </article>
+
+  <% if (recentPosts && recentPosts.length > 0) { %>
+    <section class="nwd-related-sec">
+      <div class="container">
+        <div class="nwd-related-head">
+          <h2 class="nwd-related-title">
+            <%= currentLangCode === 'en' ? 'Read Other News' : 'Baca Berita Lainnya' %>
+          </h2>
+        </div>
+
+        <div class="nwd-related-grid">
+          <% recentPosts.forEach(rec => { %>
+            <%- include('../partials/news-card', { post: rec, currentLangCode }) %>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  <% } %>
 </main>
 
 <%- include('../partials/footer') %>
