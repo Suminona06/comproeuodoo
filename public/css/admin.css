@@ -2691,3 +2691,227 @@ body.sidebar-open .admin-backdrop {
   justify-content: flex-end;
   gap: 8px;
 }
+
+/* ========================================================
+   Admin Toggle Switch Component (T-240)
+   ======================================================== */
+.admin-toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  margin: 0;
+}
+
+.admin-toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.admin-toggle-slider {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  background-color: var(--border-main, #cbd5e1);
+  border-radius: var(--radius-pill, 9999px);
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+  flex-shrink: 0;
+}
+
+.admin-toggle-slider::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-toggle-switch input[type="checkbox"]:checked + .admin-toggle-slider {
+  background-color: var(--color-primary, #00755a);
+}
+
+.admin-toggle-switch input[type="checkbox"]:checked + .admin-toggle-slider::after {
+  transform: translateX(16px);
+}
+
+.admin-toggle-switch input[type="checkbox"]:focus-visible + .admin-toggle-slider {
+  outline: 2px solid var(--color-primary-bright, #00906e);
+  outline-offset: 2px;
+}
+
+.admin-toggle-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary, #475569);
+  transition: color 150ms ease;
+}
+
+.admin-toggle-switch input[type="checkbox"]:checked ~ .admin-toggle-label {
+  color: var(--navy, #071f17);
+}
+
+/* ========================================================
+   WhatsApp Multi-Number Repeater Component (T-240)
+   ======================================================== */
+.wa-repeater-wrap {
+  margin-top: 24px;
+  background: #f8fafc;
+  border: 1px solid var(--border-main, #e2e8f0);
+  border-radius: var(--r-lg, 10px);
+  padding: 18px 20px;
+}
+
+.wa-repeater-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.wa-repeater-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--navy, #071f17);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wa-repeater-badge-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill, 9999px);
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.wa-repeater-badge-warn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill, 9999px);
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.wa-repeater-desc {
+  font-size: 13px;
+  color: var(--text-variant, #64748b);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.wa-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--r-md, 8px);
+  background: #ffffff;
+  border: 1px solid var(--border-main, #e2e8f0);
+  margin-bottom: 14px;
+}
+
+.wa-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.wa-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-variant, #64748b);
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border-bottom: 1px solid var(--border-main, #e2e8f0);
+  white-space: nowrap;
+}
+
+.wa-table td {
+  padding: 8px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-main, #e2e8f0);
+}
+
+.wa-table tr:last-child td {
+  border-bottom: none;
+}
+
+.wa-pct-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+}
+
+.wa-pct-wrap input {
+  padding-right: 28px !important;
+}
+
+.wa-pct-suffix {
+  position: absolute;
+  right: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-variant, #64748b);
+  pointer-events: none;
+}
+
+.wa-btn-del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md, 6px);
+  border: 1px solid var(--border-main, #e2e8f0);
+  background: #ffffff;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.wa-btn-del:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.wa-empty-hint {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-variant, #64748b);
+  font-size: 13px;
+  background: #ffffff;
+  border: 1px dashed var(--border-main, #cbd5e1);
+  border-radius: var(--r-md, 8px);
+  margin-bottom: 14px;
+}
+
+.wa-footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}

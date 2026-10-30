@@ -808,10 +808,18 @@
   max-width: 540px;
 }
 
+.ft-desc:last-child {
+  margin-bottom: 0;
+}
+
 .ft-offices {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+
+.ft-offices:has(> :only-child) {
+  grid-template-columns: 1fr;
 }
 
 .ft-office-card {

@@ -48,6 +48,76 @@ export function parseAndValidateGoogleMapsUrl(rawInput) {
   }
 }
 
+/**
+ * Validate and sanitize WhatsApp rolling numbers JSON payload (T-239)
+ * @param {string|Array} rawInput
+ * @returns {string} Sanitized JSON string of array of { number, formatted, label, percentage }
+ */
+export function parseAndValidateWhatsAppNumbers(rawInput) {
+  if (rawInput === undefined || rawInput === null) return '[]';
+
+  let list = rawInput;
+  if (typeof rawInput === 'string') {
+    const trimmed = rawInput.trim();
+    if (!trimmed || trimmed === '[]') return '[]';
+    try {
+      list = JSON.parse(trimmed);
+    } catch (err) {
+      throw new Error('Format data nomor WhatsApp tidak valid: ' + err.message);
+    }
+  }
+
+  if (!Array.isArray(list)) {
+    throw new Error('Data nomor WhatsApp harus berupa array daftar nomor.');
+  }
+
+  if (list.length === 0) {
+    return '[]';
+  }
+
+  let totalPercentage = 0;
+  const sanitizedList = [];
+
+  for (let i = 0; i < list.length; i++) {
+    const item = list[i];
+    if (!item || typeof item !== 'object') {
+      throw new Error(`Data nomor WhatsApp baris ke-${i + 1} tidak valid.`);
+    }
+
+    const rawNum = String(item.number || item.formatted || '').trim();
+    const cleanNum = rawNum.replace(/[^0-9]/g, '');
+
+    if (!cleanNum || cleanNum.length < 9 || cleanNum.length > 16) {
+      throw new Error(`Nomor WhatsApp pada baris ke-${i + 1} wajib berisi 9-16 digit angka yang valid.`);
+    }
+
+    const cleanLabel = String(item.label || '')
+      .replace(/<[^>]*>?/gm, '')
+      .trim()
+      .substring(0, 50);
+
+    const pct = parseInt(item.percentage, 10);
+    if (isNaN(pct) || pct < 1 || pct > 100) {
+      throw new Error(`Persentase bobot nomor pada baris ke-${i + 1} harus berupa angka bulat antara 1% dan 100%.`);
+    }
+
+    totalPercentage += pct;
+
+    sanitizedList.push({
+      number: cleanNum,
+      formatted: cleanNum,
+      label: cleanLabel || `Sales ${i + 1}`,
+      percentage: pct
+    });
+  }
+
+  if (totalPercentage !== 100) {
+    throw new Error(`Total alokasi persentase seluruh nomor WhatsApp wajib tepat 100% (saat ini: ${totalPercentage}%).`);
+  }
+
+  return JSON.stringify(sanitizedList);
+}
+
 export const settingController = {
   async index(req, res) {
     try {
@@ -123,6 +193,18 @@ export const settingController = {
       // Handle WhatsApp number normalization
       if (req.body && req.body.whatsapp_number !== undefined) {
         updates.whatsapp_number = req.body.whatsapp_number.replace(/[^0-9]/g, '');
+        updates.whatsapp_formatted_number = updates.whatsapp_number;
+      }
+
+      // Handle multi-number rolling WhatsApp JSON validation (T-239)
+      if (req.body && req.body.whatsapp_numbers_json !== undefined) {
+        updates.whatsapp_numbers_json = parseAndValidateWhatsAppNumbers(req.body.whatsapp_numbers_json);
+      }
+
+      // Handle dual-location address card visibility toggles (T-239)
+      if (req.body) {
+        updates.office_card_visible = req.body.office_card_visible === '1' ? '1' : '0';
+        updates.factory_card_visible = req.body.factory_card_visible === '1' ? '1' : '0';
       }
 
       // Handle Google Maps embed with validation and iframe parser
