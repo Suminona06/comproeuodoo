@@ -31,3 +31,4 @@
 - 2026-10-28 | Redesain Modul Berita & Publikasi: breadcrumb unboxed G2, layout editorial detail G2, kartu bersama G4, headline slider G3 & mobile, filter tab Fetch API G4, share buttons domain euodoo.co.id, dan placeholder logo Euodoo putih | T-226..T-232
 - 2026-10-28 | Revisi minor homepage: perapian header produk, transisi gradasi halus seksi, layout WCU mobile tanpa elemen penutup, penskalaan logo marquee mobile, dan centering kontrol slider hero laptop | T-233..T-237
 
+- 2026-10-30 | Revisi Footer, WA Filter & Hero Sub-Page: show/hide kartu alamat, SSR rolling WA multi-nomor berbobot, dynamic repeater admin, filter hero sub-page jernih, dan audit Playwright E2E | T-238..T-244

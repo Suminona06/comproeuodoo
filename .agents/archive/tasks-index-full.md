@@ -319,3 +319,85 @@
 - **File Terdampak:** `views/public/index.ejs`, `public/css/components.css`, `public/css/tokens.css`, `tests/test-t237-playwright-verification.js`
 - **Skill:** polish, adapt
 - **Verifikasi:** Click-through test, console log check, dan Playwright test suite `tests/test-t237-playwright-verification.js` lulus 100%. Selesai 2026-10-28.
+
+
+### T-238: Migrasi Skema Pengaturan Visibilitas Alamat, Registri WhatsApp JSON, dan Default Seed Overlay Opacity [DONE]
+- **Deskripsi:** Membuat berkas migrasi SQL `database/migrations/011_revisi_footer_wa_filter_v1.sql` yang mendaftarkan default setting keys baru (`office_card_visible = '1'`, `factory_card_visible = '1'`, `whatsapp_numbers_json = '[]'`) ke tabel `settings`. Memperbarui nilai default seed kolom `overlay_opacity` pada tabel `page_hero_banners` untuk 4 halaman publik (`'about'`, `'products'`, `'news'`, `'contact'`) agar selaras dengan densitas overlay ringan beranda (nilai rekomendasi terkalibrasi: 0.35 - 0.40). Memastikan script migrasi idempotent menggunakan klausa `INSERT IGNORE` atau `ON DUPLICATE KEY UPDATE` tanpa mengubah data live produksi di luar default baru.
+- **Acceptance Criteria:**
+  - [x] File migrasi `011_revisi_footer_wa_filter_v1.sql` berhasil dieksekusi tanpa error syntax.
+  - [x] Setting keys `office_card_visible` dan `factory_card_visible` tercatat dengan nilai default `'1'`.
+  - [x] Setting key `whatsapp_numbers_json` terdaftar sebagai string JSON valid di tabel `settings`.
+  - [x] Seed default `overlay_opacity` pada `page_hero_banners` untuk 4 halaman (`about`, `products`, `news`, `contact`) terdefinisi pada nilai terkalibrasi ringan (0.35 - 0.40).
+- **File Terdampak:** `database/migrations/011_revisi_footer_wa_filter_v1.sql`
+- **Skill:** ponytail
+- **Verifikasi:** Eksekusi migrasi di lingkungan database, query tabel `settings` dan `page_hero_banners` untuk memastikan data terdaftar presisi. Selesai 2026-10-30.
+
+### T-239: Implementasi Controller Admin CMS Settings & Validasi Ketat Server-Side [DONE]
+- **Deskripsi:** Memperbarui `controllers/admin/settingController.js` pada method `update()` untuk menangani penyimpanan `office_card_visible`, `factory_card_visible`, dan `whatsapp_numbers_json`. Menerapkan validasi ketat server-side: memastikan toggle switch visibilitas hanya bernilai `'1'` atau `'0'`, melakukan parsing JSON data multi-nomor WhatsApp (validasi format nomor numerik `/^[0-9+]{9,16}$/`, sanitasi teks label internal maksimal 50 karakter tanpa multi-bahasa, serta persentase integer 1-100), dan validasi matematis wajib: total persentase seluruh nomor aktif harus tepat berjumlah 100%. Melempar error informatif jika persentase kurang atau lebih dari 100%. Mempertahankan fallback transparan ke `whatsapp_number` lama jika data JSON kosong. Mengosongkan cache memory via `clearSettingsCache()`.
+- **Acceptance Criteria:**
+  - [x] Nilai toggle switch `office_card_visible` dan `factory_card_visible` tersimpan akurat ke database saat disubmit dari form admin.
+  - [x] Data multi-nomor WhatsApp tervalidasi dengan aman (submisi dengan total persentase != 100% otomatis ditolak server dengan pesan error yang ramah).
+  - [x] Nomor kosong atau karakter ilegal otomatis ditolak.
+  - [x] Proteksi CSRF, sanitasi input, dan cache invalidation bekerja sempurna.
+- **File Terdampak:** `controllers/admin/settingController.js`
+- **Skill:** security-and-hardening, ponytail
+- **Verifikasi:** Uji pengiriman data via form admin dan automated test suite `tests/test-t239-backend-validation.js` lulus 9/9. Selesai 2026-10-30.
+
+### T-240: Implementasi Formulir Pengaturan Show/Hide Alamat & Dynamic Repeater WhatsApp Multi-Nomor [DONE]
+- **Deskripsi:** Memperbarui tampilan CMS admin `views/admin/settings/index.ejs`. Di kelompok "Kontak & Alamat Dual Lokasi Resmi", tambahkan toggle switch kustom (slider switch) untuk Kartu Kantor Jakarta dan Kartu Pabrik Bandung dengan styling berbasis token yang identik dengan toggle media sosial yang ada. Di kelompok "Pengaturan Layanan WhatsApp", tambahkan komponen interaktif dinamis (*Dynamic Repeater*) untuk menambah, mengedit, dan menghapus baris nomor WhatsApp (kolom: Nomor Telepon, Label Internal Admin, Persentase Bobot %). Sediakan kalkulator akumulasi persentase real-time berbasis vanilla JS murni (kompatibel CSP tanpa inline onclick), badge status berwarna hijau jika total = 100% dan merah/kuning jika total != 100%, serta pencegahan submit sisi klien jika persentase belum seimbang.
+- **Acceptance Criteria:**
+  - [x] Tampilan toggle switch show/hide alamat rapi, mudah dipahami, konsisten dengan gaya toggle media sosial, dan responsif dari ponsel hingga desktop.
+  - [x] Admin dapat menambah baris nomor baru, menghapus baris nomor yang ada, serta mengedit nilai nomor, label internal, dan persentase.
+  - [x] Indikator total persentase berubah secara real-time saat pengguna mengetik angka persentase.
+  - [x] Bebas dari atribut inline JavaScript (`onclick`, `onchange`) untuk menjamin kepatuhan penuh terhadap Content Security Policy (CSP).
+  - [x] Menggunakan token desain admin yang konsisten tanpa warna hex mentah.
+- **File Terdampak:** `views/admin/settings/index.ejs`, `public/js/admin-settings.js`, `public/css/admin.css`
+- **Skill:** frontend-ui-engineering, impeccable
+- **Verifikasi:** Uji interaksi penambahan, penghapusan, dan pengetikan baris nomor pada browser desktop dan mobile; verifikasi konsol browser bersih dari peringatan CSP via `tests/test-t240-admin-ui.js`. Selesai 2026-10-30.
+
+### T-241: Implementasi Logika Show/Hide Kartu Alamat di Footer Global dan Halaman Kontak [DONE]
+- **Deskripsi:** Memperbarui `views/partials/footer.ejs` dan `views/public/contact.ejs` untuk memeriksa status `office_card_visible` dan `factory_card_visible`. Di footer, bungkus masing-masing kartu `.ft-office-card` dengan kondisi if. Jika kedua kartu dinonaktifkan (`'0'`), kontainer pembungkus `.ft-offices` tidak dirender ke DOM untuk mencegah celah kosong atau pergeseran tata letak. Di halaman `/contact`, render kartu Jakarta dan Bandung secara kondisional di kolom kanan; jika kedua kartu dinonaktifkan, sematan Google Maps `.cf-maps-wrap` tetap tampil elegan dan menempati kolom dengan proporsional tanpa kekosongan visual yang janggal.
+- **Acceptance Criteria:**
+  - [x] Saat `office_card_visible = '0'`, kartu Jakarta hilang dari footer dan halaman kontak.
+  - [x] Saat `factory_card_visible = '0'`, kartu Bandung hilang dari footer dan halaman kontak.
+  - [x] Saat kedua kartu disembunyikan, tidak ada elemen pembungkus kosong (*ghost container*) atau celah margin/padding aneh di footer maupun kontak.
+  - [x] Tidak ada layout shift (CLS tetap aman) pada resolusi 320px, 768px, 1024px, hingga 1440px dalam mode Bahasa Indonesia maupun Bahasa Inggris.
+- **File Terdampak:** `views/partials/footer.ejs`, `views/public/contact.ejs`, `public/css/layout.css`, `public/css/components.css`, `middleware/settingsMiddleware.js`
+- **Skill:** antislop-layoutmobile, impeccable
+- **Verifikasi:** Uji permutasi (1,1), (1,0), (0,1), (0,0) di footer dan kontak via `tests/test-t241-public-ui.js` lulus 3/3. Selesai 2026-10-30.
+
+### T-242: Implementasi Server-Side Weighted Rolling WhatsApp Multi-Nomor [DONE]
+- **Deskripsi:** Memperbarui komponen `views/partials/whatsapp-btn.ejs` untuk menerapkan pemilihan nomor berbobot (*weighted random rolling*) berbasis data `whatsapp_numbers_json` langsung di sisi server (SSR). Saat halaman dimuat, server membangkitkan angka acak 1-100 dan memilih 1 nomor yang sesuai dengan distribusi kumulatif persentase. Tautan direct chat dibentuk menggunakan format resmi `https://wa.me/<nomor_terpilih>?text=<pesan_dwibahasa_terenkripsi>`. Hanya nomor yang terpilih yang dirender ke atribut `href` HTML; nomor lain tidak dibocorkan ke DOM browser. Tetap mempertahankan pesan pembuka resmi yang sudah ada (`whatsapp_default_message` / `_en`). Tooltip publik tetap menggunakan teks standar (*"Chat WhatsApp"* / *"Chat on WhatsApp"*). Jika data multi-nomor belum tersedia, sistem transparan melakukan fallback ke nomor tunggal `whatsapp_formatted_number` atau `whatsapp_number`.
+- **Acceptance Criteria:**
+  - [x] Tombol floating WhatsApp di seluruh halaman publik mengarah ke nomor yang dipilih secara berbobot sesuai distribusi persentase di sisi server.
+  - [x] Tidak ada daftar nomor lain yang terekspos di markup HTML publik (*source view*).
+  - [x] Dalam sampel pengujian muat ulang halaman berulang, frekuensi kemunculan nomor mendekati rasio persentase yang ditentukan (misal 40% vs 60%).
+  - [x] Pesan pembuka otomatis dwibahasa (ID/EN) tetap terpasang dengan enkripsi URI yang benar di seluruh nomor rolling.
+  - [x] Fallback ke nomor lama bekerja 100% jika pengaturan multi-nomor dikosongkan.
+  - [x] Desain, animasi hover, posisi fixed, dan aksesibilitas keyboard tombol floating WA tetap utuh.
+- **File Terdampak:** `views/partials/whatsapp-btn.ejs`
+- **Skill:** ponytail, frontend-ui-engineering
+- **Verifikasi:** Simulasi 1.000 iterasi SSR (40.1% vs 59.9%) dan inspeksi zero leak via `tests/test-t242-wa-rolling.js` lulus 5/5. Selesai 2026-10-30.
+
+### T-243: Penyelarasan Filter / Overlay Hero Banner Sub-Page Menyerupai Home Slide 2 Termasuk About [DONE]
+- **Deskripsi:** Memperbarui aturan CSS overlay hero banner sub-page pada `public/css/components.css` (`.page-hero-scrim`) dan seluruh template sub-page view terkait (`views/public/products.ejs`, `views/public/news.ejs`, `views/public/contact.ejs`, dan `views/public/about.ejs`). Menghapus gradasi solid hitam pekat yang menutupi gambar latar belakang dan menggantinya dengan layered directional gradient transparan yang mengadopsi estetika `.hero-slide-image .hero-grad` pada beranda (top ramp, diagonal 105 derajat green accent ramp, bottom grounding ramp). Memastikan nilai perhitungan variabel `--hero-scrim-mid` dan `--hero-scrim-edge` terkalibrasi ringan dan seluruh teks judul, subjudul, dan remah roti memenuhi standar kontras WCAG AA (minimal 4.5:1).
+- **Acceptance Criteria:**
+  - [x] Hero banner pada halaman Products, News, Contact, dan About memiliki tampilan visual yang jernih, foto pabrik terekspos jelas dan elegan menyerupai referensi gambar slide ke-2 beranda.
+  - [x] Aksen hijau korporat Euodoo tetap terasa kuat dan berpadu harmonis dengan gambar latar belakang.
+  - [x] Seluruh teks putih pada hero banner di ke-4 halaman terbukti lulus rasio kontras WCAG AA terhadap latar belakang.
+  - [x] Tidak mengubah kode atau visual pada homepage yang telah dibekukan.
+- **File Terdampak:** `public/css/components.css`, `views/public/products.ejs`, `views/public/news.ejs`, `views/public/contact.ejs`, `views/public/about.ejs`
+- **Skill:** impeccable
+- **Verifikasi:** Uji matematis rasio kontras 17.25:1 dan rendering scrim di 4 sub-page via `tests/test-t243-hero-filter.js` lulus 4/4. Selesai 2026-10-30.
+
+### T-244: Verifikasi Regresi Menyeluruh, Audit Kontras WCAG AA, & Validasi Lintas Perangkat [DONE]
+- **Deskripsi:** Melakukan pengujian regresi komprehensif pada seluruh alur fitur yang terdampak menggunakan Playwright Chromium Headless: pengujian toggle switch show/hide alamat di admin dan dampaknya pada footer serta kontak, pengujian penambahan/penghapusan/validasi 100% multi-nomor WA di admin, pengujian distribusi rolling WA server-side di sisi publik, serta verifikasi tampilan visual hero banner pada 4 sub-page (Products, News, Contact, About). Memastikan pengujian mencakup resolusi ponsel 320px, 375px, tablet 768px, laptop 1024px, dan desktop 1440px dalam mode Bahasa Indonesia (`id`) dan Bahasa Inggris (`en`). Memastikan nol error di konsol browser, tidak ada kebocoran gaya, dan fungsi formulir RFQ kontak serta tombol CTA lainnya tetap beroperasi 100% normal.
+- **Acceptance Criteria:**
+  - [x] Seluruh skenario pengujian fungsional dan visual lulus tanpa cacat.
+  - [x] Teks hero banner pada seluruh 4 sub-page memenuhi rasio kontras WCAG AA.
+  - [x] Tidak ada error JavaScript atau peringatan CSP di konsol browser (termasuk fix CSP Turnstile di `app.js`).
+  - [x] Tampilan responsif mulus dari 320px hingga desktop tanpa horizontal scrollbar yang tidak diinginkan (termasuk fix minmax 0 di `components.css`).
+  - [x] Mode dwibahasa ID dan EN tersaji dengan translasi yang lengkap dan tepat.
+- **File Terdampak:** `app.js`, `public/css/components.css`, `tests/test-t244-playwright-audit.js`
+- **Skill:** test-engineer, code-review-and-quality
+- **Verifikasi:** Pengujian otomatis Playwright E2E lintas 5 viewport, CSP audit, admin E2E via `tests/test-t244-playwright-audit.js` lulus 6/6. Selesai 2026-10-30.

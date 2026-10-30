@@ -19,11 +19,11 @@
 | **Products Detail** | ACTIVE | 2026-10-27 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs` |
 | **Manufacturing Capabilities** | ACTIVE | 2026-10-21 | [prd/capabilities.md](prd/capabilities.md) | [tech/capabilities.md](tech/capabilities.md) | `views/public/capabilities.ejs` |
 | **News & Articles** | ACTIVE | 2026-10-28 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs` |
-| **Contact, Footer & WA** | ACTIVE | 2026-10-21 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs` |
+| **Contact, Footer & WA** | ACTIVE | 2026-10-30 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs` |
 | **Admin CMS & Users** | ACTIVE | 2026-10-27 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
 | **Media Library** | ACTIVE | 2026-10-24 | [prd/media-library.md](prd/media-library.md) | [tech/media-library.md](tech/media-library.md) | `views/admin/media/` |
 | **SEO & Security** | ACTIVE | 2026-10-21 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
-| **Site Settings** | ACTIVE | 2026-10-21 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
+| **Site Settings** | ACTIVE | 2026-10-30 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
 
 ## 3. Direktori Pendukung
 - `changes/`: Proposal perubahan berjalan (dihapus/dipindah ke archive saat close).

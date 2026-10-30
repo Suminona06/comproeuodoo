@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
 
 # Tech Spec: Modul Pengaturan Situs (Site Settings)
 
@@ -19,7 +19,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ## 3. Skema Data Terkait
 
 ### Tabel `settings`
-*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql [PENDING T-238]`
+*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`
 
 | Kolom | Tipe | Nullable | Default | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
@@ -38,8 +38,8 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 - `site_logo_footer`: Path berkas logo footer berkontras tinggi.
 
 ### B. Alamat & Kontak Dual Lokasi Resmi
-- **Head Office Jakarta:** `office_name_id`, `office_name_en`, `office_address`, `office_phone`, `office_fax`, `office_email`, `office_card_visible` [PENDING T-238] (`'1'` atau `'0'`).
-- **Factory Bandung:** `factory_name_id`, `factory_name_en`, `factory_address`, `factory_phone`, `factory_fax`, `factory_email`, `factory_working_hours_id`, `factory_working_hours_en`, `factory_card_visible` [PENDING T-238] (`'1'` atau `'0'`).
+- **Head Office Jakarta:** `office_name_id`, `office_name_en`, `office_address`, `office_phone`, `office_fax`, `office_email`, `office_card_visible` (`'1'` atau `'0'`).
+- **Factory Bandung:** `factory_name_id`, `factory_name_en`, `factory_address`, `factory_phone`, `factory_fax`, `factory_email`, `factory_working_hours_id`, `factory_working_hours_en`, `factory_card_visible` (`'1'` atau `'0'`).
 - **Peta Google Maps:** `google_maps_embed`, `contact_maps_embed_url`.
 
 ### C. Media Sosial & Visibilitas
@@ -51,7 +51,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ### D. Layanan WhatsApp
 - `whatsapp_number`: Nomor telepon resmi (mis. `+628123456789`).
 - `whatsapp_formatted_number`: Nomor format numerik bersih (mis. `628123456789`).
-- `whatsapp_numbers_json` [PENDING T-238]: Format JSON array multi-nomor rolling (`[{"number":"...","formatted":"...","label":"...","percentage":...}]`).
+- `whatsapp_numbers_json`: Format JSON array multi-nomor rolling (`[{"number":"...","formatted":"...","label":"...","percentage":...}]`).
 - `whatsapp_default_message`, `whatsapp_default_message_en`: Teks pembuka chat otomatis.
 - `whatsapp_button_theme`: Variasi styling tema tombol mengambang.
 
@@ -67,7 +67,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 
 ---
 
-## 6. Penanganan Controller & Validasi Server-Side (`settingController.update`) [PENDING T-239]
+## 6. Penanganan Controller & Validasi Server-Side (`settingController.update`)
 - **Validasi Toggle Switch Visibilitas:** Nilai `office_card_visible` dan `factory_card_visible` dipaksa ke format biner string `'1'` atau `'0'`.
 - **Validasi Skema JSON Multi-Nomor WhatsApp:**
   1. Parsing aman payload JSON `whatsapp_numbers_json`.
