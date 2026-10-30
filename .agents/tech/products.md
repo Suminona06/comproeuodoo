@@ -93,3 +93,6 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Tag canonical mengarah ke URL dasar `/products` (atau kategori valid).
 - Paginasi `page > 1`, pencarian, atau pengurutan otomatis menginjeksi tag `<meta name="robots" content="noindex, follow">`.
 - Seluruh event listener dikelola di `public/js/products.js` tanpa inline script/handler (`onclick`, `onchange`), 100% patuh pada CSP Helmet.
+
+### I. Builder Tabel Ukuran Admin CMS
+- Antarmuka builder tabel ukuran di `/admin/products/create` dan `/admin/products/:id/edit` dikelola oleh `public/js/admin-size-table.js` dengan dukungan navigasi keyboard panah 2D dan shortcut Enter tambah baris [PENDING T-248] (Rincian lengkap: `tech/admin-cms.md`).

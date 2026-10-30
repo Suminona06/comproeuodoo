@@ -63,16 +63,20 @@ Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands
 - **4 Panel Kategori Primer:** `.sec-products`, `.prod-header`, `.prod-title`, `.prod-subtitle`, `.hcat-grid`, `.hcat-panel`, `.hcat-img`, `.hcat-scrim`, `.hcat-title`, `.hcat-count`, `.hcat-arrow`, `.prod-more-wrap`, `.btn-see-more`.
   - Grid rule: Menggunakan `--hcat-cols: 4;` responsif.
   - Spacing & CTA: `.prod-title` memiliki margin bawah berbasis token `--space-sm` hingga `--space-md` untuk memisahkan judul dan deskripsi. Markup tombol kanan di `.prod-header` ditiadakan; CTA diarahkan tunggal via `.prod-more-wrap .btn-see-more` di bawah grid.
+  - Kebijakan fallback: Fallback string judul dan subtitle dihapus; jika CMS kosong maka header/seksi ditangani kondisional [PENDING T-249].
 - **Why Choose Us:** `.sec-why-us.sec-pillars`, `.wcu-card`, `.wcu-header`, `.wcu-layout`, `.wcu-copy`, `.wcu-kicker`, `.wcu-headline`, `.wcu-desc`, `.wcu-artbox`, `.wcu-art`, `.wcu-art-label`, `.wcu-float-card`.
   - Anchor alias: `<span id="pilar" class="sec-pillars" aria-hidden="true"></span>`.
   - Mobile rule (`< 768px`): `.wcu-float-card { display: none; }` dan `.wcu-art-label { display: none; }` agar ilustrasi SVG daun botani bersih dan utuh. Desktop tetap menampilkan floating card dan chip label.
   - Token transisi background: Batas atas dan bawah seksi menggunakan token gradasi semantik `--trans-subtle-to-wcu` dan `--trans-wcu-to-subtle` di `tokens.css` tanpa hardcode hex.
+  - Kebijakan fallback: 13 variabel fallback string dihapus; seksi dibungkus kondisional ketat dan tidak dirender jika data CMS kosong atau nonaktif [PENDING T-249].
 - **Certifications / Evidence:** `.sec-evidence`, `.ev-layout`, `.cert-grid`, `.cert-item`, `.cert-name`, `.cert-desc`.
 - **Strip Marquee Merek & Modal Zoom:**
   - Strip Marquee: `.sec-brands.brand-strip-sec`, `.brand-strip-wrapper`, `.brand-strip-marquee`, `.brand-strip-track`, `.brand-strip-item`, `.brand-strip-logo-box`, `.brand-strip-logo`, `.brand-zoom-hint`.
   - Responsive mobile rule (`< 768px`): `.brand-strip-logo` berukuran `height: clamp(70px, 13vw, 88px); max-width: 170px;` dengan `.brand-strip-item` berukuran `min-width: clamp(130px, 20vw, 160px);`.
   - Lightbox Preview Modal: `#brandPreviewModal.brand-preview-modal`, `.brand-modal-backdrop`, `.brand-modal-dialog`, `.brand-modal-header`, `.brand-modal-close`, `.brand-modal-body`, `.brand-modal-img-wrap`.
   - Script interaktivitas: `public/js/main.js` mengikat `.js-brand-preview-trigger`, Escape key listener, dan backdrop click.
+  - Kebijakan fallback: Fallback string judul dihapus; seksi tidak dirender jika `marqueeBrands.length === 0` [PENDING T-249].
+- **Latest News Highlights:** `.sec-news`, `.news-grid`, `.news-card`. Dua kartu berita dummy dengan tanggal statis dieliminasi; jika artikel kosong (`latestPosts.length === 0`), dirender pesan empty-state `.news-empty-state` dengan teks ramah dwibahasa [PENDING T-249].
 
 ---
 

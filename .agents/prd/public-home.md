@@ -19,6 +19,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
   6. Registered Brands Marquee Strip (`.brand-strip-sec`, `.brand-strip-*`)
   7. Latest News Highlights (`.sec-news`)
   8. Global Pre-Footer CTA (`.sec-cta`)
+- **Kebijakan Konten Fallback Beranda:** Seluruh konten fallback statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback [PENDING T-249]. Pada seksi News, jika artikel kosong, judul seksi tetap dirender dan kartu berita dummy statis digantikan pesan empty-state ramah dwibahasa [PENDING T-249].
 
 ### FR-06: Dukungan Dwibahasa (i18n)
 - Setiap komponen beranda mendukung teks dwibahasa (Bahasa Indonesia `id` default & Bahasa Inggris `en`).
@@ -42,7 +43,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Header seksi menampilkan judul dan deskripsi dengan pemisahan margin vertikal adaptif berbasis token; navigasi katalog tunggal dipusatkan pada tombol bawah seksi (`.prod-more-wrap .btn-see-more`), tanpa tombol redundan di kanan header.
 
 ### Why Choose Us (`.wcu-*`)
-- Seksi editorial B2B yang menonjolkan inovasi aditif ramah lingkungan (*100% degradable*) dan kepatuhan standar SNI.
+- Seksi editorial B2B yang menonjolkan inovasi aditif ramah lingkungan (*100% degradable*) dan kepatuhan standar SNI. Seksi ini bersifat kondisional: tampil jika toggle CMS aktif dan data teks terisi; jika kosong atau dinonaktifkan, seksi tidak dirender (zero-render) tanpa fallback teks statis [PENDING T-249].
 - Terdiri atas header (`.wcu-header`), kicker status chip (`.wcu-kicker`), teks editorial (`.wcu-headline`, `.wcu-desc`), serta ilustrasi SVG statis (`.wcu-artbox`) dengan floating badge (`.wcu-float-card`).
 - Khusus pada viewport mobile (`< 768px`), elemen floating badge (`.wcu-float-card`) dan chip label (`.wcu-art-label`) disembunyikan sehingga ilustrasi daun botani SVG tampil 100% utuh dan leluasa tanpa elemen penutup. Desktop tetap mempertahankan kartu melayang dan chip label.
 - Batas atas dan bawah seksi Why Choose Us menggunakan transisi gradasi lembut berbasis token semantik tanpa garis batas kaku (*hard edge*).
@@ -53,7 +54,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Seksi ini bersifat kondisional: tampil pada public view jika toggle CMS `home_cert_is_active` bernilai `1`.
 
 ### FR-17: Registered Brands Marquee Strip (`.brand-strip-*`)
-- Menampilkan portofolio merek dagang resmi perusahaan dalam bentuk strip horizontal berjalan kontinu (*continuous marquee*).
+- Menampilkan portofolio merek dagang resmi perusahaan dalam bentuk strip horizontal berjalan kontinu (*continuous marquee*). Seksi ini bersifat kondisional: tampil jika terdapat data merek aktif; jika kosong, seksi tidak dirender tanpa fallback teks judul statis [PENDING T-249].
 - Menggunakan struktur 2 track identik (`.brand-strip-track`) untuk efek looping mulus tanpa celah (*gapless*).
 - Dimensi logo merek pada viewport mobile (`< 768px`) ditingkatkan proporsional (`height: clamp(70px, 13vw, 88px)`) untuk meningkatkan keterbacaan legalitas merek tanpa menyebabkan overflow di 320px.
 - Berhenti bergulir (*pause on hover/focus*) saat kursor diarahkan ke area strip atau logo difokuskan keyboard.

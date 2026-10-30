@@ -16,7 +16,6 @@
     return '';
   }
 
-  // TinyMCE Promise-based image upload handler
   function uploadImageHandler(blobInfo, progress) {
     return new Promise((resolve, reject) => {
       const csrfToken = getCsrfToken();
@@ -171,17 +170,37 @@
       images_upload_handler: uploadImageHandler,
       automatic_uploads: true,
       file_picker_types: 'image',
+      file_picker_callback: (callback, _value, meta) => {
+        if (meta.filetype !== 'image' || typeof window.openMediaPicker !== 'function') {
+          return;
+        }
+        window.openMediaPicker({
+          type: 'image',
+          onSelect: (selected) => {
+            if (selected && selected.file_url) {
+              const alt = selected.alt_text || selected.original_name || selected.filename || '';
+              callback(selected.file_url, { alt });
+            }
+          }
+        });
+      },
       image_dimensions: false,
       image_description: true,
       setup: (editor) => {
-        // Synchronize textarea content on change to support browser form validations
+        // Synchronize textarea content on change to support browser form validations.
         editor.on('change keyup NodeChange', () => {
           editor.save();
         });
       }
     });
 
-    // Ensure all TinyMCE editors sync their content before form submit
+    // Prevent TinyMCE dialog focus trap from stealing focus inside the Media Picker modal.
+    document.addEventListener('focusin', (e) => {
+      if (e.target && typeof e.target.closest === 'function' && e.target.closest('#universalMediaPickerModal')) {
+        e.stopImmediatePropagation();
+      }
+    });
+
     const editorForms = document.querySelectorAll('form[action*="/admin/posts"], form[action*="/admin/products"]');
     editorForms.forEach((form) => {
       form.addEventListener('submit', () => {

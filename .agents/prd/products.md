@@ -48,7 +48,7 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - Kolom memakai ID stabil buatan server (`col_1`, `col_2`, dst.) unik per produk agar rename label tidak merusak isi sel.
 - Aturan batas: minimal 1 kolom, maks 8 kolom, maks 30 baris, label kolom maks 40 char, isi sel maks 80 char. Label kosong dilarang.
 - Transisi penambahan/penghapusan kolom dan baris halus (transform & opacity, statis pada `prefers-reduced-motion`).
-- Aksesibilitas: Navigasi keyboard penuh, label aria lengkap, target sentuh minimal 44 x 44 px.
+- Aksesibilitas: Navigasi keyboard penuh, label aria lengkap, target sentuh minimal 44 x 44 px. Seluruh sel input builder tabel ukuran (`.prod-size-cell`) mendukung navigasi tombol panah 4 arah serta shortcut Enter pada baris terakhir untuk menambah baris baru otomatis [PENDING T-248].
 
 ### FR-30: Tampilan Publik Tabel Ukuran Dinamis Responsif (PDP)
 - Tampilan tabel publik di `/products/:slug` merender struktur kolom dinamis produk bersangkutan.
