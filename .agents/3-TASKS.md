@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 5 Task (T-250 s/d T-254)
-- **Total Task Selesai:** 249 Task (T-01 s/d T-249)
+- **Task Aktif Terbuka:** 4 Task (T-251 s/d T-254)
+- **Total Task Selesai:** 250 Task (T-01 s/d T-250)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-255**.
 
@@ -11,7 +11,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [ ] T-250: Seragamkan kartu "Produk Terkait Lainnya" (`.pd-related`) di Detail Produk dengan partial kartu katalog
+### [x] T-250: Seragamkan kartu "Produk Terkait Lainnya" (`.pd-related`) di Detail Produk dengan partial kartu katalog
 - **Modul Spec:** `prd/products.md` (FR-24), `tech/products-detail.md`, `tech/products.md`
 - **Deskripsi:** Mengganti markup kartu `.bento-*` pada section `.pd-related` di `views/public/product-detail.ejs` dengan memanggil partial `views/public/partials/product-card-fragment.ejs` di dalam grid `<div class="plp-grid pd-related-grid">`. Memperbarui query `relatedProducts` di `controllers/public/productController.js` dan `models/productModel.js` agar memfilter `is_active = 1` (`activeOnly: true`), mengambil `limit: 5`, lalu memotong `.slice(0, 4)` sehingga tampil maksimal **4 kartu dalam 4 kolom** di desktop dan **2 kolom** di mobile (`>= 360px`, 1 kolom di `< 360px`) sesuai grid katalog (Keputusan #3). Memperbaiki bug bahasa (badge kategori & fallback deskripsi hardcode ID) secara otomatis melalui reuse partial katalog, sambil mempertahankan header section (kicker, judul, tombol "Lihat Kategori").
 - **Acceptance Criteria:**

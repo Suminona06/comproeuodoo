@@ -179,39 +179,8 @@
         </a>
       </div>
 
-      <div class="bento-grid">
-        <% relatedProducts.forEach(function(rel, idx) { 
-          const relName = lang === 'en' ? (rel.name_en || rel.name_id) : rel.name_id;
-          const relDesc = lang === 'en' ? (rel.short_description_en || rel.short_description_id || rel.description_en || rel.description_id || '') : (rel.short_description_id || rel.description_id || '');
-          const relImg = rel.image_url || rel.main_image || `/images/products/prod-${(idx % 4) + 1}.webp`;
-        %>
-          <article class="bento-col-4">
-            <a href="/products/<%= rel.slug || rel.id %>" class="bento-card" aria-label="<%= relName %>">
-              <div class="bento-split">
-                <div class="bento-split-content">
-                  <div>
-                    <span class="bento-badge">
-                      <%= rel.category_name_id || 'PRODUK' %>
-                    </span>
-                    <h3 class="bento-card-title"><%= relName %></h3>
-                    <p class="bento-card-desc">
-                      <%= relDesc ? (relDesc.length > 80 ? relDesc.substring(0, 80) + '...' : relDesc) : 'Pilihan kemasan berkualitas tinggi bersertifikasi SNI.' %>
-                    </p>
-                  </div>
-                  <div class="bento-card-footer">
-                    <span class="bento-card-link">
-                      <%= lang === 'en' ? 'Details' : 'Lihat Detail' %>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </span>
-                  </div>
-                </div>
-                <div class="bento-split-media">
-                  <img src="<%= relImg %>" alt="<%= relName %>" loading="lazy">
-                </div>
-              </div>
-            </a>
-          </article>
-        <% }); %>
+      <div class="plp-grid pd-related-grid">
+        <%- include('partials/product-card-fragment', { products: relatedProducts, currentLang: lang }) %>
       </div>
     </section>
   <% } %>

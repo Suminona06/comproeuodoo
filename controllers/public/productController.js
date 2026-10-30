@@ -217,11 +217,11 @@ export const productController = {
       const whatsappQuoteUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
       product.whatsapp_quote_url = whatsappQuoteUrl;
 
-      // Fetch related products in the same category
       const relatedProducts = await productModel.findAll({
         categoryId: product.category_id,
         status: 'published',
-        limit: 4
+        activeOnly: true,
+        limit: 5
       });
 
       res.render('public/product-detail', {
@@ -231,7 +231,7 @@ export const productController = {
         product,
         canonicalUrl,
         whatsappQuoteUrl,
-        relatedProducts: (relatedProducts || []).filter(p => p.id !== product.id).slice(0, 3)
+        relatedProducts: (relatedProducts || []).filter(p => p.id !== product.id && p.is_active !== 0).slice(0, 4)
       });
     } catch (err) {
       logger.error('Public productController.detail error:', { message: err.message, stack: err.stack });
