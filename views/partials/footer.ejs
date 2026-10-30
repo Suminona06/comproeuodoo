@@ -26,7 +26,13 @@
                   : 'PT. EUODOO adalah perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE bersertifikasi ramah lingkungan. Didirikan tahun 1990, kami melayani retail modern, sektor industri, dan pasar tradisional dari fasilitas produksi di Bandung, Jawa Barat.') %>
         </p>
 
+        <%
+          const showOfficeCard = typeof settings !== 'undefined' && settings ? (settings.office_card_visible !== '0' && settings.office_card_visible !== 0) : true;
+          const showFactoryCard = typeof settings !== 'undefined' && settings ? (settings.factory_card_visible !== '0' && settings.factory_card_visible !== 0) : true;
+        %>
+        <% if (showOfficeCard || showFactoryCard) { %>
         <div class="ft-offices">
+          <% if (showOfficeCard) { %>
           <div class="ft-office-card">
             <div class="ft-office-label">
               <span class="ft-office-dot"></span>
@@ -57,7 +63,9 @@
               <% } %>
             </div>
           </div>
+          <% } %>
 
+          <% if (showFactoryCard) { %>
           <div class="ft-office-card">
             <div class="ft-office-label">
               <span class="ft-office-dot"></span>
@@ -85,7 +93,9 @@
               <% } %>
             </div>
           </div>
+          <% } %>
         </div>
+        <% } %>
       </div>
 
       <div class="ft-nav">

@@ -25,6 +25,8 @@
   /* Section Transition Gradients */
   --trans-base-to-subtle: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
   --trans-subtle-to-base: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+  --trans-subtle-to-wcu: linear-gradient(to bottom, rgba(248, 250, 252, 0) 0%, #f4fbf6 100%);
+  --trans-wcu-to-subtle: linear-gradient(to bottom, #def0e6 0%, rgba(248, 250, 252, 0) 100%);
 
   /* Typography / Text Neutrals */
   --color-text-main: #0f172a;
@@ -245,4 +247,13 @@
   --z-modal-backdrop: 1020;
   --z-modal: 1030;
   --z-toast: 1040;
+
+  /* Header Actual Height Fallback */
+  --header-actual-height: 92px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-actual-height: 88px;
+  }
 }

@@ -13,10 +13,10 @@ export function escapeCsvValue(val) {
     return '""';
   }
   let str = String(val);
-  if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
-    str = str.replace(/"/g, '""');
-    return `"${str}"`;
+  if (/^[\s]*[=+\-@\t\r]/.test(str)) {
+    str = "'" + str;
   }
+  str = str.replace(/"/g, '""');
   return `"${str}"`;
 }
 

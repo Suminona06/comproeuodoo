@@ -452,13 +452,23 @@
   font-size: 11.5px;
   padding: 5px 0;
   border: none;
-  transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
+  transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
+              backdrop-filter 0.3s ease,
+              -webkit-backdrop-filter 0.3s ease;
+}
+
+.header-wrap--solid .top-bar {
+  background: var(--surface-dark-footer, #00573f);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .header-wrap.is-scrolled .top-bar {
   opacity: 0;
   padding: 0;
   pointer-events: none;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }
 
 .top-bar-inner {
@@ -521,12 +531,24 @@
               backdrop-filter var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.header-wrap.is-scrolled .site-header {
+.header-wrap.is-scrolled .site-header,
+.header-wrap--solid .site-header {
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border, #e2e8f0);
   box-shadow: var(--shadow-1, 0 1px 3px rgba(7, 31, 23, 0.06));
+}
+
+/* Detail Page Content Offset for Solid Fixed Header */
+.news-detail-wrap {
+  padding-top: var(--header-actual-height, 92px);
+}
+
+@media (max-width: 768px) {
+  .news-detail-wrap {
+    padding-top: var(--header-actual-height, 88px);
+  }
 }
 
 .navbar {
@@ -551,7 +573,8 @@
   transition: color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.header-wrap.is-scrolled .brand-name {
+.header-wrap.is-scrolled .brand-name,
+.header-wrap--solid .brand-name {
   color: var(--navy, #071f17);
 }
 
@@ -566,7 +589,8 @@
   transition: all var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.header-wrap.is-scrolled .brand-badge {
+.header-wrap.is-scrolled .brand-badge,
+.header-wrap--solid .brand-badge {
   background: var(--navy, #071f17);
   color: #ffffff;
 }
@@ -601,16 +625,19 @@
   font-weight: 600;
 }
 
-.header-wrap.is-scrolled .nav-link {
+.header-wrap.is-scrolled .nav-link,
+.header-wrap--solid .nav-link {
   color: var(--text-variant, #424753);
 }
 
-.header-wrap.is-scrolled .nav-link:hover {
+.header-wrap.is-scrolled .nav-link:hover,
+.header-wrap--solid .nav-link:hover {
   color: var(--primary, #00755a);
   background: var(--primary-subtle, #e6f7f2);
 }
 
-.header-wrap.is-scrolled .nav-link.active {
+.header-wrap.is-scrolled .nav-link.active,
+.header-wrap--solid .nav-link.active {
   color: var(--primary, #00755a);
   background: var(--primary-subtle, #e6f7f2);
   font-weight: 600;
@@ -644,7 +671,8 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-.header-wrap.is-scrolled .mobile-toggle:hover {
+.header-wrap.is-scrolled .mobile-toggle:hover,
+.header-wrap--solid .mobile-toggle:hover {
   background: var(--surface-container, #f1f5f9);
 }
 
@@ -660,7 +688,8 @@
   transform-origin: center;
 }
 
-.header-wrap.is-scrolled .mobile-toggle span {
+.header-wrap.is-scrolled .mobile-toggle span,
+.header-wrap--solid .mobile-toggle span {
   background: var(--navy, #071f17);
 }
 
@@ -722,14 +751,15 @@
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   opacity: 0;
-  transition: opacity 250ms ease;
   z-index: calc(var(--z-header, 1000) - 1);
   pointer-events: none;
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .menu-backdrop.open {
   display: block;
-  opacity: 1;
   pointer-events: auto;
 }
 
@@ -778,10 +808,18 @@
   max-width: 540px;
 }
 
+.ft-desc:last-child {
+  margin-bottom: 0;
+}
+
 .ft-offices {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+
+.ft-offices:has(> :only-child) {
+  grid-template-columns: 1fr;
 }
 
 .ft-office-card {
@@ -1050,20 +1088,12 @@
     gap: 4px;
     box-sizing: border-box;
     z-index: var(--z-header, 1000);
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   .nav-menu.open {
     display: flex !important;
-    animation: drawerSlideDown 250ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  @keyframes drawerSlideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
   .nav-menu li {
     width: 100% !important;

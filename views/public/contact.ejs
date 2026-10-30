@@ -6,6 +6,9 @@
   const isEn = currentLangCode === 'en';
   const settingsObj = typeof settings !== 'undefined' && settings ? settings : {};
 
+  const showOfficeCard = settingsObj.office_card_visible !== '0' && settingsObj.office_card_visible !== 0;
+  const showFactoryCard = settingsObj.factory_card_visible !== '0' && settingsObj.factory_card_visible !== 0;
+
   const cleanTel = (phoneStr) => String(phoneStr || '').replace(/[^0-9+]/g, '');
 
   const officeName = isEn
@@ -35,9 +38,9 @@
     : (settingsObj.contact_form_subtitle_id || t('contact.form_subheading'));
 
   const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
-  const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.50;
-  const midOpacity = Math.min(0.72, 0.35 + (userOpacity * 0.40)).toFixed(2);
-  const edgeOpacity = Math.max(0.08, (userOpacity * 0.35)).toFixed(2);
+  const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.35;
+  const midOpacity = Math.min(0.85, Math.max(0.40, (userOpacity * 1.85))).toFixed(2);
+  const edgeOpacity = Math.min(0.60, Math.max(0.15, (userOpacity * 1.00))).toFixed(2);
   const heroBg = heroObj && heroObj.image_url 
     ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
     : '';
@@ -275,6 +278,7 @@
         <!-- Column 2: Dual Office Locations & Google Maps -->
         <div>
           <!-- Jakarta Palmerah Head Office Card -->
+          <% if (showOfficeCard) { %>
           <div class="cf-office-card">
             <div class="cf-office-header">
               <div class="cf-office-icon cf-office-icon-primary">
@@ -301,8 +305,10 @@
               <% } %>
             </div>
           </div>
+          <% } %>
 
           <!-- Bandung Cigondewah Factory Card -->
+          <% if (showFactoryCard) { %>
           <div class="cf-office-card">
             <div class="cf-office-header">
               <div class="cf-office-icon cf-office-icon-success">
@@ -330,6 +336,7 @@
               <div><strong><%= t('contact.operating_hours_label') %></strong> <%= factoryWorkingHours %></div>
             </div>
           </div>
+          <% } %>
 
           <!-- Google Maps Responsive Embed -->
           <div class="cf-maps-wrap">

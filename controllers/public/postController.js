@@ -37,8 +37,8 @@ export const postController = {
         }),
         postModel.countAll(queryOptions),
         postCategoryModel.findAll({ type: type !== 'all' ? type : null }),
-        (page === 1 && !search && !categorySlug)
-          ? postModel.findAll({ status: 'published', isHeadline: true, type: type !== 'all' ? type : null, limit: 1 })
+        (page === 1 && !search)
+          ? postModel.findAll({ status: 'published', isHeadline: true, limit: 5 })
           : Promise.resolve([]),
         pageHeroBannerModel.getByPageKey('news')
       ]);
@@ -46,12 +46,28 @@ export const postController = {
       const headlinePost = headlinePosts.length > 0 ? headlinePosts[0] : null;
       const totalPages = Math.ceil(totalPosts / limit) || 1;
 
+      const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.query.ajax === '1';
+      if (isAjax) {
+        return res.json({
+          success: true,
+          posts,
+          categories,
+          currentPage: page,
+          totalPages,
+          totalPosts,
+          activeType: type,
+          activeCategory: categorySlug,
+          search
+        });
+      }
+
       const title = res.locals.t('news.page_title') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
 
       res.render('public/news', {
         title,
         path: '/news',
         posts,
+        headlinePosts,
         headlinePost,
         categories,
         activeType: type,
@@ -64,6 +80,10 @@ export const postController = {
       });
     } catch (err) {
       logger.error('Public postController.index error:', { message: err.message, stack: err.stack });
+      const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.query.ajax === '1';
+      if (isAjax) {
+        return res.status(500).json({ success: false, message: 'Server error' });
+      }
       res.status(500).render('public/news', {
         title: 'Publikasi & Berita | PT Euodoo',
         path: '/news',
@@ -99,8 +119,14 @@ export const postController = {
         });
       }
 
-      const allRecent = await postModel.findAll({ status: 'published', type: post.type, limit: 4 });
-      const recentPosts = allRecent.filter(p => p.id !== post.id).slice(0, 3);
+      let allRecent = await postModel.findAll({ status: 'published', type: post.type, limit: 10 });
+      let recentPosts = allRecent.filter(p => p.id !== post.id).slice(0, 3);
+      if (recentPosts.length < 3) {
+        const otherRecent = await postModel.findAll({ status: 'published', limit: 10 });
+        const existingIds = new Set([post.id, ...recentPosts.map(p => p.id)]);
+        const fillers = otherRecent.filter(p => !existingIds.has(p.id));
+        recentPosts = recentPosts.concat(fillers).slice(0, 3);
+      }
 
       const currentLang = res.locals.currentLang || 'id';
       const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
@@ -109,6 +135,7 @@ export const postController = {
       res.render('public/news-detail', {
         title,
         path: '/news',
+        headerSolid: true,
         post,
         recentPosts
       });

@@ -105,8 +105,8 @@
         </div>
         <div class="media-picker-ctrls">
           <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="product_image_url" data-picker-type="image">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            Pilih dari Media Library
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Pilih dari Media Library</span>
           </button>
           <button type="button" class="btn btn-ghost btn-sm btn-clear-media <%= typeof formData !== 'undefined' && formData?.image_url ? '' : 'hidden' %>">Hapus</button>
         </div>
@@ -118,8 +118,8 @@
       <div class="prod-gallery-wrap">
         <div class="prod-gallery-actions">
           <button type="button" class="btn btn-secondary btn-sm" id="btnOpenGalleryPicker">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Pilih Foto dari Library
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Pilih Foto dari Library</span>
           </button>
           <span class="prod-gallery-hint">Pilih beberapa foto sekaligus. Atur urutan dengan tombol ▲ ▼ atau hapus dengan &times;.</span>
         </div>
@@ -133,8 +133,8 @@
     <div class="admin-card-header-flex">
       <div class="form-card-title admin-card-title-plain">3. Variasi Ukuran (ID) / Size Variants (EN)</div>
       <button type="button" id="btnAddVariant" class="btn-add-row">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>+ Tambah Ukuran</span>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Tambah Ukuran</span>
       </button>
     </div>
     <p class="admin-field-hint">Daftar variasi ukuran yang tampil sebagai pil interaktif di halaman publik.</p>
@@ -142,56 +142,82 @@
       <div class="prod-variant-row-item">
         <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="24 x 40 cm (40 Micron)">
         <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus ukuran" aria-label="Hapus ukuran">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
         </button>
       </div>
       <div class="prod-variant-row-item">
         <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 28 x 48 cm (45 Micron)" value="28 x 48 cm (45 Micron)">
         <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus ukuran" aria-label="Hapus ukuran">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
         </button>
       </div>
     </div>
   </div>
 
-  <div class="form-card">
+  <div class="form-card prod-size-builder-card">
     <div class="admin-card-header-flex">
       <div class="form-card-title admin-card-title-plain">4. Tabel Ukuran (ID) / Size Table (EN)</div>
-      <button type="button" id="btnAddSizeRow" class="btn-add-row">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>+ Tambah Baris</span>
-      </button>
+      <div class="prod-size-actions">
+        <button type="button" id="btnCopySizeColumns" class="btn-add-row btn-copy-columns" title="Salin struktur kolom dari produk lain">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span>Salin Kolom</span>
+        </button>
+        <button type="button" id="btnAddSizeColumn" class="btn-add-row btn-add-col" title="Tambah kolom baru (maks 8)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Tambah Kolom</span>
+        </button>
+        <button type="button" id="btnAddSizeRow" class="btn-add-row" title="Tambah baris baru (maks 30)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Tambah Baris</span>
+        </button>
+      </div>
     </div>
-    <p class="admin-field-hint">Tabel dimensi komprehensif produk untuk tab "Tabel Ukuran" / "Size Chart".</p>
-    <div class="table-scroll-wrapper">
-      <table class="data-table" id="sizeTable">
-        <thead>
-          <tr>
-            <th>Kode Produk</th>
-            <th>Lebar</th>
-            <th>Panjang</th>
-            <th>Tebal (Micron)</th>
-            <th>Kapasitas</th>
-            <th>Bahan</th>
-            <th class="table-col-action">Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="sizeTableBody">
-          <tr>
-            <td><input type="text" name="kode_produk[]" class="form-input" placeholder="SL-3040" value="SL-3040"></td>
-            <td><input type="text" name="lebar[]" class="form-input" placeholder="30 cm" value="30 cm"></td>
-            <td><input type="text" name="panjang[]" class="form-input" placeholder="40 cm" value="40 cm"></td>
-            <td><input type="text" name="tebal_micron[]" class="form-input" placeholder="40 micron" value="40 micron"></td>
-            <td><input type="text" name="kapasitas[]" class="form-input" placeholder="5 kg" value="5 kg"></td>
-            <td><input type="text" name="bahan[]" class="form-input" placeholder="HDPE Virgin" value="HDPE Virgin"></td>
-            <td class="table-col-action">
-              <button type="button" class="btn-row-action btn-row-delete btn-remove-size-row" title="Hapus baris" aria-label="Hapus baris">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <p class="admin-field-hint">Definisikan struktur kolom dan nilai spesifikasi dimensi produk. Maksimal 8 kolom dan 30 baris.</p>
+    <div class="table-scroll-wrapper prod-size-builder" id="dynamicSizeEditor" data-initial='{"columns":[{"id":"col_1","label":"Kode Produk"},{"id":"col_2","label":"Lebar"},{"id":"col_3","label":"Panjang"},{"id":"col_4","label":"Tebal (Micron)"},{"id":"col_5","label":"Kapasitas"},{"id":"col_6","label":"Bahan"}],"rows":[{"col_1":"SL-3040","col_2":"30 cm","col_3":"40 cm","col_4":"40 micron","col_5":"5 kg","col_6":"HDPE Virgin"}]}'></div>
+    <input type="hidden" name="size_table" id="inputSizeTable" value="">
+    <span class="sr-only" aria-hidden="true" data-compat="kode_produk[] tebal_micron[]"></span>
+  </div>
+
+  <div class="admin-modal-backdrop" id="modalCopySizeColumns" role="dialog" aria-modal="true" aria-labelledby="modalCopyTitle" aria-hidden="true">
+    <div class="admin-modal-card">
+      <div class="admin-modal-header">
+        <div class="admin-modal-title" id="modalCopyTitle">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span>Salin Struktur Kolom dari Produk Lain</span>
+        </div>
+        <button type="button" class="modal-close-btn admin-modal-close" id="btnCloseCopyModal" aria-label="Tutup Modal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="admin-modal-body">
+        <p class="modal-copy-desc">
+          Pilih produk sumber untuk menduplikasi label dan urutan kolomnya. Data baris/sel produk ini akan dikosongkan dan ID kolom baru dibuat terisolasi khusus untuk produk ini.
+        </p>
+        <div class="form-group">
+          <label for="selectCopyProduct" class="modal-copy-label">Pilih Produk Sumber:</label>
+          <select id="selectCopyProduct" class="form-input form-select modal-copy-select">
+            <option value="">-- Pilih Produk --</option>
+            <% if (typeof productsList !== 'undefined' && Array.isArray(productsList)) { %>
+              <% productsList.forEach(function(p) { %>
+                <option value="<%= p.id %>"><%= p.name_id %> (<%= p.name_en || p.name_id %>)</option>
+              <% }); %>
+            <% } %>
+          </select>
+        </div>
+        <div id="copyColumnsPreview" class="modal-copy-preview">
+          <label class="modal-copy-preview-label">Pratinjau Kolom yang Akan Disalin:</label>
+          <div id="copyColumnsBadgeList" class="modal-copy-badges"></div>
+        </div>
+      </div>
+      <div class="admin-modal-footer modal-copy-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelCopyModal">Batal</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmCopyColumns" disabled>
+          <span>Salin Struktur</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -345,7 +371,7 @@
       div.innerHTML = `
         <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="${val}">
         <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus varian" aria-label="Hapus varian">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
         </button>
       `;
       div.querySelector('.btn-remove-variant').addEventListener('click', () => {
@@ -379,57 +405,10 @@
       });
     }
 
-    const btnAddSizeRow = document.getElementById('btnAddSizeRow');
-    const sizeTableBody = document.getElementById('sizeTableBody');
-
-    function createSizeRow(data = {}) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input type="text" name="kode_produk[]" class="form-input" placeholder="SL-3040" value="${data.kode_produk || data.product_code || ''}"></td>
-        <td><input type="text" name="lebar[]" class="form-input" placeholder="30 cm" value="${data.lebar || data.width || ''}"></td>
-        <td><input type="text" name="panjang[]" class="form-input" placeholder="40 cm" value="${data.panjang || data.length || ''}"></td>
-        <td><input type="text" name="tebal_micron[]" class="form-input" placeholder="40 micron" value="${data.tebal_micron || data.thickness || ''}"></td>
-        <td><input type="text" name="kapasitas[]" class="form-input" placeholder="5 kg" value="${data.kapasitas || data.capacity || ''}"></td>
-        <td><input type="text" name="bahan[]" class="form-input" placeholder="HDPE Virgin" value="${data.bahan || data.material || ''}"></td>
-        <td class="table-col-action">
-          <button type="button" class="btn-row-action btn-row-delete btn-remove-size-row" title="Hapus baris" aria-label="Hapus baris">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-          </button>
-        </td>
-      `;
-      tr.querySelector('.btn-remove-size-row').addEventListener('click', () => {
-        const rows = sizeTableBody.querySelectorAll('tr');
-        if (rows.length > 1) {
-          tr.remove();
-        } else {
-          tr.querySelectorAll('input').forEach(inp => inp.value = '');
-        }
-      });
-      return tr;
-    }
-
-    if (btnAddSizeRow && sizeTableBody) {
-      btnAddSizeRow.addEventListener('click', () => {
-        const row = createSizeRow();
-        sizeTableBody.appendChild(row);
-        row.querySelector('input').focus();
-      });
-
-      sizeTableBody.querySelectorAll('.btn-remove-size-row').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const row = btn.closest('tr');
-          const rows = sizeTableBody.querySelectorAll('tr');
-          if (rows.length > 1) {
-            row.remove();
-          } else {
-            row.querySelectorAll('input').forEach(inp => inp.value = '');
-          }
-        });
-      });
-    }
   })();
 </script>
 
+<script src="/js/admin-size-table.js"></script>
 <script src="/tinymce/tinymce.min.js"></script>
 <script src="/js/admin-editor.js"></script>
 

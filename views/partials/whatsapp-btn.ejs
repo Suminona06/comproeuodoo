@@ -1,12 +1,62 @@
 <% 
 if (typeof settings !== 'undefined' && settings) {
-  const waNum = settings.whatsapp_formatted_number || (settings.whatsapp_number ? settings.whatsapp_number.replace(/[^0-9]/g, '') : '');
-  if (waNum) {
-    const waMsg = (typeof currentLang !== 'undefined' && currentLang === 'en' && settings.whatsapp_default_message_en)
+  let chosenNumber = '';
+
+  // 1. Server-side weighted rolling from multi-number registry (SSR, T-242)
+  if (settings.whatsapp_numbers_json) {
+    try {
+      const numbersList = typeof settings.whatsapp_numbers_json === 'string'
+        ? JSON.parse(settings.whatsapp_numbers_json)
+        : settings.whatsapp_numbers_json;
+
+      if (Array.isArray(numbersList) && numbersList.length > 0) {
+        let totalPct = 0;
+        const validList = [];
+        for (const item of numbersList) {
+          const pct = parseInt(item.percentage, 10);
+          const num = String(item.formatted || item.number || '').replace(/[^0-9]/g, '');
+          if (num && !isNaN(pct) && pct > 0) {
+            totalPct += pct;
+            validList.push({ ...item, number: num, percentage: pct });
+          }
+        }
+
+        if (totalPct === 100 && validList.length > 0) {
+          const roll = Math.floor(Math.random() * 100) + 1; // Integer 1 - 100
+          let cumulative = 0;
+          for (const item of validList) {
+            cumulative += item.percentage;
+            if (roll <= cumulative) {
+              chosenNumber = item.number;
+              break;
+            }
+          }
+          if (!chosenNumber && validList.length > 0) {
+            chosenNumber = validList[validList.length - 1].number;
+          }
+        }
+      }
+    } catch {
+      // Fallback silently if JSON payload fails to parse
+    }
+  }
+
+  // 2. Transparent fallback to legacy single number configuration
+  if (!chosenNumber) {
+    chosenNumber = settings.whatsapp_formatted_number || (settings.whatsapp_number ? String(settings.whatsapp_number).replace(/[^0-9]/g, '') : '');
+  }
+
+  // 3. Format and render floating button if active number exists
+  if (chosenNumber) {
+    if (chosenNumber.startsWith('0')) {
+      chosenNumber = '62' + chosenNumber.slice(1);
+    }
+
+    const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+    const waMsg = (isEn && settings.whatsapp_default_message_en)
       ? settings.whatsapp_default_message_en
       : (settings.whatsapp_default_message || 'Halo PT Euodoo, saya ingin berkonsultasi mengenai permintaan penawaran produk kantong plastik ramah lingkungan.');
-    const waUrl = settings.whatsapp_url || `https://wa.me/${waNum}?text=${encodeURIComponent(waMsg)}`;
-    const isEn = typeof currentLang !== 'undefined' && currentLang === 'en';
+    const waUrl = `https://wa.me/${chosenNumber}?text=${encodeURIComponent(waMsg)}`;
     const waAriaLabel = isEn ? 'Chat WhatsApp' : 'Chat WhatsApp';
     const waTooltipText = isEn ? 'Chat on WhatsApp' : 'Chat WhatsApp';
 %>

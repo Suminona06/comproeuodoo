@@ -1,0 +1,30 @@
+<%
+  const cardLang = typeof currentLangCode !== 'undefined' ? currentLangCode : (typeof currentLang !== 'undefined' ? currentLang : 'id');
+  const cardTitle = cardLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
+  const cardDate = post.published_at ? new Date(post.published_at).toLocaleDateString(cardLang === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+  const isPlaceholder = !(post.cover_image && post.cover_image.trim());
+  const cardImg = isPlaceholder ? '/uploads/media/media-1792035656935-732682512.webp' : post.cover_image.trim();
+%>
+<article class="news-card-v2 nwl-card">
+  <div class="news-card-v2-img nwl-card-media<%= isPlaceholder ? ' nwl-card-media-placeholder' : '' %>">
+    <img src="<%= cardImg %>" alt="<%= cardTitle %>" loading="lazy" class="<%= isPlaceholder ? 'nwl-img-placeholder' : '' %>">
+  </div>
+  <div class="news-card-v2-body nwl-card-body">
+    <% if (cardDate) { %>
+      <time datetime="<%= post.published_at %>" class="nwl-card-date">
+        <%= cardDate %>
+      </time>
+    <% } %>
+    <h3 class="news-card-v2-title nwl-card-title">
+      <a href="/news/<%= post.slug %>" class="nwl-card-title-link">
+        <%= cardTitle %>
+      </a>
+    </h3>
+    <div class="nwl-card-action">
+      <span class="nwl-card-link" aria-hidden="true">
+        <span><%= cardLang === 'en' ? 'Read More' : 'Baca Selengkapnya' %></span>
+        <span aria-hidden="true">&rarr;</span>
+      </span>
+    </div>
+  </div>
+</article>

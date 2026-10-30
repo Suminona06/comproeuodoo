@@ -83,6 +83,10 @@ export const settingsMiddleware = async (req, res, next) => {
   settings.social_facebook_visible = settings.social_facebook_visible !== undefined ? String(settings.social_facebook_visible) : '1';
   settings.social_youtube_visible = settings.social_youtube_visible !== undefined ? String(settings.social_youtube_visible) : '1';
 
+  // Dual location card visibility toggles (default to '1' if unset)
+  settings.office_card_visible = settings.office_card_visible !== undefined ? String(settings.office_card_visible) : '1';
+  settings.factory_card_visible = settings.factory_card_visible !== undefined ? String(settings.factory_card_visible) : '1';
+
   // Default corporate identity, dual location and contact fallbacks
   settings.company_name = settings.company_name || 'PT. EUODOO';
   settings.office_name_id = settings.office_name_id || 'Kantor Pusat (Jakarta)';

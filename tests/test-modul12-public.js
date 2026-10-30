@@ -59,26 +59,58 @@ async function runModul12Tests() {
   assert.ok(!detailHtml.includes('Harga:'), 'STRICT: Must NOT display Harga label');
   console.log('  4a. Product detail specs, WhatsApp CTA, and strict price absence verified: PASSED');
 
-  // Test 5: News 3-Tabs Page
-  console.log('\n[TEST 5] Testing News 3-Tabs (/news) SSR...');
+  // Test 5: News 3-Tabs Page & Features (T-229, T-230, T-231)
+  console.log('\n[TEST 5] Testing News Listing (/news) SSR & Fetch API...');
   const resNews = await fetch(`${BASE_URL}/news`);
   assert.strictEqual(resNews.status, 200, 'News page must return HTTP 200');
   const newsHtml = await resNews.text();
   assert.ok(newsHtml.includes('Berita Perusahaan'), 'Must contain Berita tab');
   assert.ok(newsHtml.includes('Siaran Pers'), 'Must contain Siaran Pers tab');
   assert.ok(newsHtml.includes('Artikel & Blog'), 'Must contain Artikel & Blog tab');
-  assert.ok(newsHtml.includes('news-card-v2') || newsHtml.includes('news-headline-card'), 'Must contain news cards');
-  console.log('  5a. News 3-tab layout, headline hero, and cards verified: PASSED');
+  assert.ok(newsHtml.includes('nwl-tab-bar') && newsHtml.includes('nwl-tab-item'), 'Must contain G4 underline tab bar');
+  assert.ok(newsHtml.includes('nwl-cat-pills') && newsHtml.includes('nwl-search-input'), 'Must contain category pills and search input');
+  assert.ok(newsHtml.includes('news-card-v2') || newsHtml.includes('nwl-card'), 'Must contain shared news cards');
+  assert.ok(newsHtml.includes('media-1792035656935-732682512.webp'), 'Must render white Euodoo logo placeholder for articles without cover');
+  console.log('  5a. News G4 tabs, filter pills, search input, and shared cards verified: PASSED');
 
-  // Test 6: News Article Detail Page
+  // Test 5b: Asynchronous Fetch API endpoint (T-231)
+  console.log('  Testing AJAX Fetch API endpoint (/news?ajax=1)...');
+  const resAjax = await fetch(`${BASE_URL}/news?ajax=1`, {
+    headers: { 'Accept': 'application/json' }
+  });
+  assert.strictEqual(resAjax.status, 200, 'AJAX news endpoint must return HTTP 200');
+  const ajaxData = await resAjax.json();
+  assert.strictEqual(ajaxData.success, true, 'AJAX payload must indicate success: true');
+  assert.ok(Array.isArray(ajaxData.posts), 'AJAX payload must include posts array');
+  assert.ok(typeof ajaxData.currentPage === 'number', 'AJAX payload must include currentPage number');
+  assert.ok(typeof ajaxData.totalPages === 'number', 'AJAX payload must include totalPages number');
+  console.log('  5b. News AJAX Fetch API JSON payload verified: PASSED');
+
+  // Test 6: News Article Detail Page (T-226, T-227, T-228, T-229)
   console.log('\n[TEST 6] Testing News Detail (/news/mengenal-teknologi-oxium-plastik-biodegradable) SSR...');
   const resNewsDetail = await fetch(`${BASE_URL}/news/mengenal-teknologi-oxium-plastik-biodegradable`);
   assert.strictEqual(resNewsDetail.status, 200, 'News detail must return HTTP 200');
   const newsDetailHtml = await resNewsDetail.text();
+  assert.ok(newsDetailHtml.includes('nwd-breadcrumb'), 'Must contain unboxed breadcrumb');
+  assert.ok(newsDetailHtml.includes('aria-label="Breadcrumb"'), 'Breadcrumb must have aria-label');
+  assert.ok(newsDetailHtml.includes('nwd-hero-media'), 'Must contain hero media');
+  assert.ok(newsDetailHtml.includes('nwd-title'), 'Must contain article title');
+  assert.ok(newsDetailHtml.includes('nwd-author'), 'Must contain clean author attribution');
   assert.ok(newsDetailHtml.includes('article-prose'), 'Must contain structured article prose');
   assert.ok(newsDetailHtml.includes('application/ld+json'), 'Must contain JSON-LD article schema');
   assert.ok(newsDetailHtml.includes('copyLinkBtn'), 'Must contain interactive share buttons');
-  console.log('  6a. News detail typography, schema, and share controls verified: PASSED');
+  assert.ok(newsDetailHtml.includes('euodoo.co.id'), 'Share URLs and canonical links must reference euodoo.co.id domain');
+  assert.ok(!newsDetailHtml.includes('euodoo.com/news'), 'Must NOT reference outdated euodoo.com domain');
+  console.log('  6a. News detail G2 editorial layout, breadcrumb, domain euodoo.co.id, and share controls verified: PASSED');
+
+  // Test 6b: News Detail Placeholder Fallback (T-227)
+  console.log('  Testing News Detail with null cover image fallback...');
+  const resDetailNullCover = await fetch(`${BASE_URL}/news/penerapan-injeksi-presisi-mikro-komponen-medis`);
+  assert.strictEqual(resDetailNullCover.status, 200, 'Detail with null cover must return HTTP 200');
+  const detailNullHtml = await resDetailNullCover.text();
+  assert.ok(detailNullHtml.includes('nwd-hero-media-placeholder'), 'Must contain placeholder container class');
+  assert.ok(detailNullHtml.includes('media-1792035656935-732682512.webp'), 'Must render white Euodoo logo placeholder');
+  console.log('  6b. News detail null cover placeholder fallback verified: PASSED');
 
   // Test 7: Contact Page
   console.log('\n[TEST 7] Testing Contact Page (/contact) SSR...');

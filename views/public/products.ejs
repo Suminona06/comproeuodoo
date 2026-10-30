@@ -4,9 +4,9 @@
 <% const lang = typeof currentLang !== 'undefined' ? currentLang : 'id'; %>
 <% 
   const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
-  const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.50;
-  const midOpacity = Math.min(0.72, 0.35 + (userOpacity * 0.40)).toFixed(2);
-  const edgeOpacity = Math.max(0.08, (userOpacity * 0.35)).toFixed(2);
+  const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.35;
+  const midOpacity = Math.min(0.85, Math.max(0.40, (userOpacity * 1.85))).toFixed(2);
+  const edgeOpacity = Math.min(0.60, Math.max(0.15, (userOpacity * 1.00))).toFixed(2);
   const heroBg = heroObj && heroObj.image_url 
     ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
     : '';

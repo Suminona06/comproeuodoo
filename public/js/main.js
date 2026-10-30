@@ -17,29 +17,174 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // Mobile Menu Toggle & Drawer
+  // Dynamic Header Height Offset calculation (T-224)
+  function updateHeaderOffset() {
+    if (!headerWrap) return;
+    if (!headerWrap.classList.contains('is-scrolled')) {
+      const height = headerWrap.offsetHeight;
+      if (height > 0) {
+        document.documentElement.style.setProperty('--header-actual-height', `${height}px`);
+      }
+    } else {
+      const topBar = headerWrap.querySelector('.top-bar-inner');
+      const siteHeader = headerWrap.querySelector('.site-header');
+      const topBarH = topBar ? (topBar.offsetHeight || 28) : (window.innerWidth <= 768 ? 24 : 28);
+      const siteH = siteHeader ? siteHeader.offsetHeight : 64;
+      const totalH = topBarH + siteH;
+      if (totalH > 0) {
+        document.documentElement.style.setProperty('--header-actual-height', `${totalH}px`);
+      }
+    }
+  }
+  updateHeaderOffset();
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(updateHeaderOffset, 100);
+  }, { passive: true });
+  window.addEventListener('load', updateHeaderOffset, { passive: true, once: true });
+
+  // Mobile Menu Toggle & Drawer (Anime.js driven)
   const toggle = document.getElementById('mobileToggle');
   const menu = document.getElementById('navMenu');
   const menuBackdrop = document.getElementById('menuBackdrop');
+  let isMenuAnimating = false;
 
   function openMobileMenu() {
-    if (!menu || !toggle) return;
-    menu.classList.add('open');
-    toggle.classList.add('active');
-    toggle.setAttribute('aria-expanded', 'true');
-    if (headerWrap) headerWrap.classList.add('menu-open');
-    if (menuBackdrop) menuBackdrop.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    if (!menu || !toggle || isMenuAnimating) return;
+    if (menu.classList.contains('open')) return;
+
+    isMenuAnimating = true;
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const animeLib = typeof anime !== 'undefined' ? anime : (typeof window !== 'undefined' ? window.anime : null);
+
+    if (animeLib && !prefersReducedMotion) {
+      animeLib.remove([menu, menuBackdrop]);
+      const navItems = menu.querySelectorAll('li');
+      if (navItems.length > 0) animeLib.remove(navItems);
+
+      // Inisialisasi posisi dan transparansi sebelum display:flex aktif agar bebas flash/jitter
+      menu.style.opacity = '0';
+      menu.style.transform = 'translateY(-10px)';
+      if (menuBackdrop) menuBackdrop.style.opacity = '0';
+
+      menu.classList.add('open');
+      toggle.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+      if (headerWrap) headerWrap.classList.add('menu-open');
+      if (menuBackdrop) menuBackdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      if (menuBackdrop) {
+        animeLib({
+          targets: menuBackdrop,
+          opacity: [0, 1],
+          duration: 240,
+          easing: 'easeOutQuad'
+        });
+      }
+
+      animeLib({
+        targets: menu,
+        translateY: [-10, 0],
+        opacity: [0, 1],
+        duration: 280,
+        easing: 'cubicBezier(0.16, 1, 0.3, 1)',
+        complete: () => {
+          menu.style.transform = '';
+          menu.style.opacity = '';
+          isMenuAnimating = false;
+        }
+      });
+
+      if (navItems.length > 0) {
+        animeLib({
+          targets: navItems,
+          opacity: [0, 1],
+          translateY: [-4, 0],
+          delay: animeLib.stagger(20, { start: 50 }),
+          duration: 200,
+          easing: 'easeOutQuad',
+          complete: () => {
+            navItems.forEach((li) => {
+              li.style.transform = '';
+              li.style.opacity = '';
+            });
+          }
+        });
+      }
+    } else {
+      menu.classList.add('open');
+      toggle.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+      if (headerWrap) headerWrap.classList.add('menu-open');
+      if (menuBackdrop) {
+        menuBackdrop.classList.add('open');
+        menuBackdrop.style.opacity = '1';
+      }
+      menu.style.opacity = '1';
+      menu.style.transform = 'none';
+      document.body.style.overflow = 'hidden';
+      isMenuAnimating = false;
+    }
   }
 
-  function closeMobileMenu() {
+  function closeMobileMenu(onComplete) {
     if (!menu || !toggle) return;
-    menu.classList.remove('open');
+    if (!menu.classList.contains('open')) return;
+
     toggle.classList.remove('active');
     toggle.setAttribute('aria-expanded', 'false');
-    if (headerWrap) headerWrap.classList.remove('menu-open');
-    if (menuBackdrop) menuBackdrop.classList.remove('open');
-    document.body.style.overflow = '';
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const animeLib = typeof anime !== 'undefined' ? anime : (typeof window !== 'undefined' ? window.anime : null);
+
+    function finalizeClose() {
+      menu.classList.remove('open');
+      if (headerWrap) headerWrap.classList.remove('menu-open');
+      if (menuBackdrop) {
+        menuBackdrop.classList.remove('open');
+        menuBackdrop.style.opacity = '';
+      }
+      menu.style.opacity = '';
+      menu.style.transform = '';
+      const navItems = menu.querySelectorAll('li');
+      navItems.forEach((li) => {
+        li.style.opacity = '';
+        li.style.transform = '';
+      });
+      document.body.style.overflow = '';
+      isMenuAnimating = false;
+      if (typeof onComplete === 'function') onComplete();
+    }
+
+    if (animeLib && !prefersReducedMotion) {
+      isMenuAnimating = true;
+      animeLib.remove([menu, menuBackdrop]);
+      const navItems = menu.querySelectorAll('li');
+      if (navItems.length > 0) animeLib.remove(navItems);
+
+      if (menuBackdrop) {
+        animeLib({
+          targets: menuBackdrop,
+          opacity: [1, 0],
+          duration: 180,
+          easing: 'easeInQuad'
+        });
+      }
+
+      animeLib({
+        targets: menu,
+        translateY: [0, -10],
+        opacity: [1, 0],
+        duration: 200,
+        easing: 'cubicBezier(0.4, 0, 1, 1)',
+        complete: finalizeClose
+      });
+    } else {
+      finalizeClose();
+    }
   }
 
   if (toggle && menu) {
@@ -61,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (menuBackdrop) {
-      menuBackdrop.addEventListener('click', closeMobileMenu);
+      menuBackdrop.addEventListener('click', () => closeMobileMenu());
     }
   }
 
@@ -75,8 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Keyboard accessibility: Escape key closes menu
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && menu && menu.classList.contains('open')) {
-      closeMobileMenu();
-      if (toggle) toggle.focus();
+      closeMobileMenu(() => {
+        if (toggle) toggle.focus();
+      });
     }
   });
 

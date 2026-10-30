@@ -128,7 +128,9 @@
   },
   "product_detail": {
     "cta_whatsapp_default": "Request Quote via WhatsApp",
-    "submit_rfq": "Submit RFQ Form"
+    "submit_rfq": "Submit RFQ Form",
+    "tab_overview": "Overview",
+    "tab_size_chart": "Size Chart"
   },
   "footer": {
     "desc": "PT. EUODOO manufactures 100% degradable HDPE and LLDPE plastic bags for retailers, industries, and traditional markets since 1990.",
@@ -138,5 +140,19 @@
     "jakarta_office": "Jakarta Office: Karindra Building Jl. Palmerah Selatan 30 A Suite 02-07, Central Jakarta 10270 (Phone: +6221-53668626)",
     "bandung_factory": "Bandung Factory: Jl. Paralon II No. 21 Cijerah Bandung 40214 (Phone: +6222-6012519)",
     "all_rights_reserved": "All Rights Reserved."
+  },
+  "admin_products": {
+    "size_table_title": "Size Table",
+    "add_column": "Add Column",
+    "add_row": "Add Row",
+    "copy_columns": "Copy Column Structure",
+    "copy_modal_title": "Copy Column Structure from Another Product",
+    "copy_modal_select_label": "Select Source Product:",
+    "copy_modal_confirm": "Copy Structure",
+    "copy_modal_cancel": "Cancel",
+    "confirm_delete_column_title": "Delete Column?",
+    "confirm_delete_column_text": "This column contains text data that will be removed. Proceed?",
+    "confirm_delete_row_title": "Delete Row?",
+    "confirm_delete_row_text": "This row contains text data that will be removed. Proceed?"
   }
 }

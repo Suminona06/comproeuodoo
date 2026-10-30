@@ -1,4 +1,4 @@
-import productModel from '../../models/productModel.js';
+import productModel, { normalizeSizeTable } from '../../models/productModel.js';
 import productCategoryModel from '../../models/productCategoryModel.js';
 import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import { query } from '../../config/database.js';
@@ -171,7 +171,7 @@ export const productController = {
       product.short_description_id = product.short_description_id || null;
       product.short_description_en = product.short_description_en || null;
       product.variants = Array.isArray(product.variants) ? product.variants : [];
-      product.size_table = Array.isArray(product.size_table) ? product.size_table : [];
+      product.size_table = normalizeSizeTable(product.size_table);
 
       const mainImage = product.main_image || product.image_url || null;
       let gallery = [];
@@ -227,6 +227,7 @@ export const productController = {
       res.render('public/product-detail', {
         title,
         path: '/products',
+        headerSolid: true,
         product,
         canonicalUrl,
         whatsappQuoteUrl,

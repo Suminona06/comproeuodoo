@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-211)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-232)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-10-27  
-**Status Keseluruhan:** Selesai 100% (211 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-10-28  
+**Status Keseluruhan:** Selesai 100% (232 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-211)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-232)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -222,3 +222,100 @@
     - [x] T-210: Integrasi teks CTA dinamis pada controllers/public/productController.js & product-detail.ejs
     - [x] T-211: Pengujian regresi otomatis end-to-end, penyesuaian unit test, zero console error
 
+- **Task Tabel Ukuran Produk Dinamis & Perbaikan Ikon Admin:** [archive/2026-10-26_product-size-table-dynamic-columns.md](2026-10-26_product-size-table-dynamic-columns.md)
+  - **Tanggal:** 2026-10-26 s/d 2026-10-27
+  - **Total Task:** 9 Task terperinci (T-212 s/d T-220)
+  - **Status:** Selesai 100% (9/9 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-212: Perbaikan Bug Ikon Ganda pada Tombol Aksi Form Admin Produk (btnAddSizeRow, btnAddVariant, btnOpenGalleryPicker)
+    - [x] T-213: Skrip Backup Database & Migrasi SQL Format Tabel Ukuran Produk (018_migrate_legacy_size_table_format.sql)
+    - [x] T-214: Helper Normalizer & Model Produk untuk Struktur Kolom Dinamis JSON Satu Bahasa
+    - [x] T-215: Antarmuka Editor Dinamis Admin Form + Modal Salin Kolom + Filter Produk Sumber + SweetAlert2
+    - [x] T-216: Endpoint API Salin Kolom & Ekspor CSV Katalog Dinamis Gabungan (Union of Columns)
+    - [x] T-217: Validasi Server-Side, Whitelist Kunci Sel, Batas Karakter & Isolasi Data Per Produk secara Atomik
+    - [x] T-218: Rendering Publik Tabel Ukuran Dinamis Responsif di Halaman Detail Produk
+    - [x] T-219: Test Suite Otomatis End-to-End, Uji Isolasi, Uji Salin Kolom, CSV Gabungan & QA
+    - [x] T-220: Perbaikan Bug Ikon Tombol Close Modal Salin Kolom Admin (modalCopySizeColumns)
+
+- **Task Perbaikan Header Publik (Transisi Blur, Animasi Mobile Drawer, Header Solid Putih Detail & Spacing Offset):** [archive/2026-10-27_header-fix-blur-mobile-solid.md](2026-10-27_header-fix-blur-mobile-solid.md)
+  - **Tanggal:** 2026-10-27
+  - **Total Task:** 5 Task terperinci (T-221 s/d T-225)
+  - **Status:** Selesai 100% (5/5 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-221: Perbaikan Bug Transisi Backdrop-Filter & Blur Top Bar Saat Scroll (public/css/layout.css)
+    - [x] T-222: Perbaikan Bug Animasi Mobile Navbar Drawer Berbasis Anime.js (public/js/main.js, public/css/layout.css)
+    - [x] T-223: Implementasi Modifier Header Solid Putih pada Halaman Single Product dan Single Article (views/partials/navbar.ejs, views/public/product-detail.ejs, views/public/news-detail.ejs, controllers/public/productController.js, controllers/public/postController.js, public/css/layout.css)
+    - [x] T-224: Penataan Spacing Offset Konten Halaman Detail Produk dan Artikel Bebas Tumpang Tindih (public/js/main.js, public/css/tokens.css, public/css/components.css, public/css/layout.css, views/public/news-detail.ejs)
+    - [x] T-225: Pengujian Regresi Lintas Halaman, Aksesibilitas WCAG, dan Kompatibilitas Responsif
+
+- **Task Redesain Modul Berita & Publikasi (News Listing & Detail Identik G2/G4):**
+  - **Tanggal:** 2026-10-27 s/d 2026-10-28
+  - **Total Task:** 7 Task terperinci (T-226 s/d T-232)
+  - **Status:** Selesai 100% (7/7 Task Done)
+  - **Cakupan Modul & Fitur:**
+    - [x] T-226: [Bug Fix] Perbaikan Breadcrumb Detail Berita & Reset List Style (views/public/news-detail.ejs, public/css/components.css)
+    - [x] T-227: [Bug Fix] Penanganan Gambar Pecah & Fallback Placeholder Kartu Artikel (views/public/news-detail.ejs, views/public/news.ejs, public/css/components.css)
+    - [x] T-228: [Spek B.1] Restrukturisasi Layout Halaman Detail Berita Identik G2 (views/public/news-detail.ejs, public/css/components.css, locales/id.json, locales/en.json)
+    - [x] T-229: [Spek B.2] Standarisasi Komponen Kartu Berita Bersama Identik G4 (views/public/news.ejs, views/public/news-detail.ejs, public/css/components.css, tests/test-modul12-public.js)
+    - [x] T-230: [Spek B.3 / FR-24] Headline Slider Halaman Listing Berita Desktop G3 & Mobile Reference (controllers/public/postController.js, views/public/news.ejs, public/css/components.css, public/js/news-slider.js)
+    - [x] T-231: [Spek B.4 / FR-25] Filter Tipe Tab G4, Kategori, & Pencarian Berbasis Fetch API Tanpa Reload Halaman (controllers/public/postController.js, views/public/news.ejs, public/css/components.css, public/js/news-filter.js)
+    - [x] T-232: [Verifikasi & UI Polish] Audit Responsif, Aksesibilitas, dan Regresi Publik (seluruh file & tests/test-modul12-public.js)
+
+
+
+
+
+### T-233: Penyesuaian Spasi Header & Eliminasi Tombol Redundan Produk Unggulan [DONE]
+- **Deskripsi:** Merapikan tata letak `.prod-header` pada seksi Produk Unggulan Manufaktur dengan memberikan margin pemisah vertikal proporsional antara judul `.prod-title` dan subjudul `.prod-subtitle` (Opsi A), serta menghapus tombol kanan *"Lihat Seluruh Katalog →"* dari markup dan CSS terkait karena navigasi utama katalog telah diakomodasi tombol bawah.
+- **Acceptance Criteria:**
+  - [x] Jarak antara `.prod-title` dan `.prod-subtitle` bertambah proporsional (menggunakan token spasi `--space-sm`/`--space-md`, tanpa teks menempel) di resolusi desktop dan mobile.
+  - [x] Markup tombol kanan `<a href="/products" class="btn btn-primary">` di dalam `.prod-header` dihapus bersih dari `views/public/index.ejs`.
+  - [x] Tombol bawah *"Jelajahi Seluruh Katalog Produk →"* (`.btn-see-more`) tetap utuh dan berfungsi normal mengarahkan ke `/products`.
+  - [x] Struktur `.prod-header` tetap rapi, seimbang, dan tidak menghasilkan pergeseran layout (*layout shift*).
+- **File Terdampak:** `views/public/index.ejs`, `public/css/components.css`
+- **Skill:** polish
+- **Verifikasi:** Manual inspect pada 320px, 375px, 768px, 1024px, 1440px; klik navigasi `/products`. Selesai 2026-10-28.
+
+### T-234: Penerapan Token Transisi Gradasi Halus Latar Seksi Why Choose Us [DONE]
+- **Deskripsi:** Mengganti batas latar belakang kaku (*hard edge*) pada peralihan seksi Produk Unggulan (`var(--bg-subtle)`), seksi Why Choose Us (hijau lembut), dan seksi Sertifikasi (`var(--bg-subtle)`) dengan transisi gradasi halus di kedua batas (Opsi B) berbasis token semantik baru tanpa nilai hex keras di CSS komponen.
+- **Acceptance Criteria:**
+  - [x] Token gradasi semantik terdaftar resmi di `public/css/tokens.css`: `--trans-subtle-to-wcu` dan `--trans-wcu-to-subtle`.
+  - [x] Pseudo-elemen pemisah di atas seksi Why Choose Us menyatu mulus tanpa garis putih atau tepi patah.
+  - [x] Pseudo-elemen pemisah di bawah seksi Why Choose Us (menuju seksi Sertifikasi) menyatu mulus tanpa patahan visual.
+  - [x] Tidak ada nilai hex baru yang di-hardcode langsung pada berkas komponen CSS.
+- **File Terdampak:** `public/css/tokens.css`, `public/css/components.css`
+- **Skill:** polish
+- **Verifikasi:** Inspeksi visual batas atas dan batas bawah Why Choose Us pada 1440px dan 375px. Selesai 2026-10-28.
+
+### T-235: Optimasi Layout Visual Why Choose Us Mobile, Pelepasan Floating Card & Chip [DONE]
+- **Deskripsi:** Merestrukturisasi tampilan kolom visual `.wcu-artbox` pada seksi Why Choose Us khusus untuk viewport mobile (`< 768px`) dengan menyembunyikan *floating card* *"Better by design."* dan menyembunyikan chip label *"MATERIAL · ALAM · MASA DEPAN"* (Opsi C), sehingga ilustrasi daun botani SVG tampil 100% bersih, terpusat, dan utuh tanpa elemen yang menutupi.
+- **Acceptance Criteria:**
+  - [x] Elemen `.wcu-float-card` tidak tampil di viewport mobile (`< 768px`).
+  - [x] Elemen `.wcu-art-label` tidak tampil di viewport mobile (`< 768px`).
+  - [x] Tampilan desktop Why Choose Us tetap 100% identik dengan kondisi saat ini (floating card, chip label, dan animasi tetap aktif di desktop).
+  - [x] Ilustrasi daun botani (`.wcu-art`) pada mobile tampil utuh, berada di tengah visual box, dan tidak terpotong tepi canvas.
+- **File Terdampak:** `public/css/components.css`, `views/public/index.ejs`
+- **Skill:** adapt
+- **Verifikasi:** Uji viewport 320px, 375px, 480px, 768px (daun bersih 100%) dan desktop 1024px, 1440px (tidak ada regresi). Selesai 2026-10-28.
+
+### T-236: Penskalaan Ukuran Logo Marquee Merek pada Viewport Mobile [DONE]
+- **Deskripsi:** Memperbesar ukuran logo merek pada marquee strip Merek Paten Terdaftar khusus pada viewport mobile (Opsi B) agar detail grafis dan nama merek (misal "PB", "ANUGERAH MULIA") tampil jelas dan terbaca sesuai referensi visual, dengan target sentuh aman dan bebas overflow horizontal pada 320px.
+- **Acceptance Criteria:**
+  - [x] Logo pada marquee strip merek terdaftar (`.brand-strip-logo`) memiliki dimensi lebih jelas di mobile (`height: clamp(70px, 13vw, 88px)` dan `min-width: clamp(130px, 20vw, 160px)`).
+  - [x] Logo tidak pecah/buram dan tidak menabrak batas padding marquee.
+  - [x] Tidak terjadi *horizontal scroll leak* pada seluruh lebar viewport mobile mulai 320px.
+- **File Terdampak:** `public/css/components.css`
+- **Skill:** adapt
+- **Verifikasi:** Inspeksi visual marquee dan horizontal scroll test di 320px. Selesai 2026-10-28.
+
+### T-237: Verifikasi Lintas Viewport, Validasi Dwibahasa (ID & EN), dan Uji Regresi [DONE]
+- **Deskripsi:** Melakukan pengujian holistik dan regresi visual pada seluruh halaman beranda dari resolusi 320px hingga 1440px dalam Bahasa Indonesia (`id`) dan Bahasa Inggris (`en`), memastikan tidak ada error console JavaScript, tidak merusak seksi beranda lainnya, serta memverifikasi centering kontrol navigasi slider hero banner bebas tabrakan pada laptop 14 inci (1920x1080).
+- **Acceptance Criteria:**
+  - [x] Tampilan beranda terverifikasi rapi pada resolusi 320px, 375px, 480px, 768px, 1024px, dan 1440px.
+  - [x] Switch bahasa `id` dan `en` berfungsi mulus tanpa ada teks yang hilang atau key mati.
+  - [x] Tidak ada error console baru pada browser runtime (0 unhandled page error, 0 console error).
+  - [x] Seluruh seksi di luar target perubahan (Hero, Intro, Certifications, News, Footer) tetap utuh dan beku.
+  - [x] Kontrol slider hero terpusat sempurna dan tombol aksi hero memiliki jarak bebas > 150px tanpa deformasi atau tumpang tindih pada layar laptop 14 inci.
+- **File Terdampak:** `views/public/index.ejs`, `public/css/components.css`, `public/css/tokens.css`, `tests/test-t237-playwright-verification.js`
+- **Skill:** polish, adapt
+- **Verifikasi:** Click-through test, console log check, dan Playwright test suite `tests/test-t237-playwright-verification.js` lulus 100%. Selesai 2026-10-28.

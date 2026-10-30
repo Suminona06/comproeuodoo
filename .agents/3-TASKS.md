@@ -2,60 +2,60 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 8 Task (T-212 s/d T-219)
-- **Total Task Selesai:** 211 Task (T-01 s/d T-211)
+- **Task Aktif Terbuka:** 7 Task (T-238 s/d T-244)
+- **Total Task Selesai:** 237 Task (T-01 s/d T-237)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
-- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-220**.
+- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-245**.
 
 ---
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-- [ ] **T-212**: Perbaikan Bug Ikon Ganda pada Tombol Aksi Form Admin Produk (`btnAddSizeRow`, `btnAddVariant`, `btnOpenGalleryPicker`).
-  - *Deskripsi:* Eliminasi karakter literal `+ ` pada teks span tombol aksi di form create dan edit produk, tambahkan `aria-hidden="true"` pada elemen SVG dekoratif, dan pastikan inisialisasi tombol idempoten.
-  - *Acceptance Criteria:* Tepat 1 ikon per tombol, bebas duplikasi simbol plus, atribut aksesibilitas lengkap, tetap konsisten setelah aksi berulang dan switch ID/EN.
-  - *File Terdampak:* `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `public/css/admin.css`.
-  - *Skill:* Impeccable (`$polish`), `antislop-code`.
+- [x] **[T-238] [Database & Skema] Migrasi Skema Pengaturan Visibilitas Alamat, Registri WhatsApp JSON, dan Default Seed Overlay Opacity**
+  - **Deskripsi:** Membuat berkas migrasi SQL `database/migrations/011_revisi_footer_wa_filter_v1.sql` yang mendaftarkan default setting keys baru (`office_card_visible = '1'`, `factory_card_visible = '1'`, `whatsapp_numbers_json = '[]'`) ke tabel `settings`. Memperbarui nilai default seed kolom `overlay_opacity` pada tabel `page_hero_banners` untuk 4 halaman publik (`'about'`, `'products'`, `'news'`, `'contact'`) agar selaras dengan densitas overlay ringan beranda (nilai rekomendasi terkalibrasi: 0.35 - 0.40). Memastikan script migrasi idempotent menggunakan klausa `INSERT IGNORE` atau `ON DUPLICATE KEY UPDATE` tanpa mengubah data live produksi di luar default baru.
+  - **Acceptance Criteria:** File migrasi `011_revisi_footer_wa_filter_v1.sql` berhasil dieksekusi tanpa error syntax; setting keys `office_card_visible` dan `factory_card_visible` tercatat dengan nilai default `'1'`; setting key `whatsapp_numbers_json` terdaftar sebagai string JSON valid di tabel `settings`; seed default `overlay_opacity` pada `page_hero_banners` untuk 4 halaman (`about`, `products`, `news`, `contact`) terdefinisi pada nilai terkalibrasi ringan (0.35 - 0.40).
+  - **File Terdampak:** `database/migrations/011_revisi_footer_wa_filter_v1.sql`.
+  - **Skill:** `ponytail`.
+  - **Verifikasi:** Eksekusi migrasi di lingkungan database, query tabel `settings` dan `page_hero_banners` untuk memastikan data terdaftar presisi.
 
-- [ ] **T-213**: Skrip Backup Database & Migrasi SQL Format Tabel Ukuran Produk (`018_migrate_legacy_size_table_format.sql`).
-  - *Deskripsi:* Membuat skrip migrasi SQL batch untuk mentransformasi data 3 produk lama di database (ID 92, 215, 218) ke format JSON dinamis standar `{ columns: [{ id, label }], rows: [{ [id]: val }] }` dengan backup aman sebelum eksekusi.
-  - *Acceptance Criteria:* Data legacy terkonversi presisi ke 6 kolom default, produk null/kosong tidak error, skrip migrasi idempotent dan aman dijalankan.
-  - *File Terdampak:* `database/migrations/018_migrate_legacy_size_table_format.sql`.
-  - *Skill:* `implement-task`.
+- [x] **[T-239] [Backend & Validasi] Implementasi Controller Admin CMS Settings & Validasi Ketat Server-Side**
+  - **Deskripsi:** Memperbarui `controllers/admin/settingController.js` pada method `update()` untuk menangani penyimpanan `office_card_visible`, `factory_card_visible`, dan `whatsapp_numbers_json`. Menerapkan validasi ketat server-side: memastikan toggle switch visibilitas hanya bernilai `'1'` atau `'0'`, melakukan parsing JSON data multi-nomor WhatsApp (validasi format nomor numerik `/^[0-9+]{9,16}$/`, sanitasi teks label internal maksimal 50 karakter tanpa multi-bahasa, serta persentase integer 1-100), dan validasi matematis wajib: total persentase seluruh nomor aktif harus tepat berjumlah 100%. Melempar error informatif jika persentase kurang atau lebih dari 100%. Mempertahankan fallback transparan ke `whatsapp_number` lama jika data JSON kosong. Mengosongkan cache memory via `clearSettingsCache()`.
+  - **Acceptance Criteria:** Nilai toggle switch `office_card_visible` dan `factory_card_visible` tersimpan akurat ke database saat disubmit dari form admin; data multi-nomor WhatsApp tervalidasi dengan aman (submisi dengan total persentase $\ne 100\%$ otomatis ditolak server dengan pesan error yang ramah); nomor kosong atau karakter ilegal otomatis ditolak; proteksi CSRF, sanitasi input, dan cache invalidation bekerja sempurna.
+  - **File Terdampak:** `controllers/admin/settingController.js`.
+  - **Skill:** `security-and-hardening`, `ponytail`.
+  - **Verifikasi:** Uji pengiriman data via form admin dengan skenario: total persentase 90% (wajib gagal), 110% (wajib gagal), tepat 100% (berhasil), dan karakter nomor tidak valid (wajib gagal).
 
-- [ ] **T-214**: Helper Normalizer & Model Produk untuk Struktur Kolom Dinamis JSON Satu Bahasa.
-  - *Deskripsi:* Memperbarui `models/productModel.js` dan controller agar menangani pembacaan dan penyimpanan `size_table` format dinamis `{ columns: Array, rows: Array }` dengan fallback aman bila kosong/malformed.
-  - *Acceptance Criteria:* Pembacaan `size_table` selalu menghasilkan objek valid `{ columns, rows }`, serialisasi aman, CRUD model produk lulus tes.
-  - *File Terdampak:* `models/productModel.js`, `controllers/public/productController.js`.
-  - *Skill:* `implement-task`.
+- [x] **[T-240] [Admin UI & UX] Implementasi Formulir Pengaturan Show/Hide Alamat & Dynamic Repeater WhatsApp Multi-Nomor**
+  - **Deskripsi:** Memperbarui tampilan CMS admin `views/admin/settings/index.ejs`. Di kelompok "Kontak & Alamat Dual Lokasi Resmi", tambahkan toggle switch kustom (slider switch) untuk Kartu Kantor Jakarta dan Kartu Pabrik Bandung dengan styling berbasis token yang identik dengan toggle media sosial yang ada. Di kelompok "Pengaturan Layanan WhatsApp", tambahkan komponen interaktif dinamis (*Dynamic Repeater*) untuk menambah, mengedit, dan menghapus baris nomor WhatsApp (kolom: Nomor Telepon, Label Internal Admin, Persentase Bobot %). Sediakan kalkulator akumulasi persentase real-time berbasis vanilla JS murni (kompatibel CSP tanpa inline onclick), badge status berwarna hijau jika total = 100% dan merah/kuning jika total $\ne 100\%$, serta pencegahan submit sisi klien jika persentase belum seimbang.
+  - **Acceptance Criteria:** Tampilan toggle switch show/hide alamat rapi, mudah dipahami, konsisten dengan gaya toggle media sosial, dan responsif dari ponsel hingga desktop; admin dapat menambah baris nomor baru, menghapus baris nomor yang ada, serta mengedit nilai nomor, label internal, dan persentase; indikator total persentase berubah secara real-time saat pengguna mengetik angka persentase; bebas dari atribut inline JavaScript (`onclick`, `onchange`) untuk menjamin kepatuhan penuh terhadap Content Security Policy (CSP); menggunakan token desain admin yang konsisten tanpa warna hex mentah.
+  - **File Terdampak:** `views/admin/settings/index.ejs`, `public/js/admin-settings.js` (atau modul JS admin terkait).
+  - **Skill:** `frontend-ui-engineering`, `impeccable`.
+  - **Verifikasi:** Uji interaksi penambahan, penghapusan, dan pengetikan baris nomor pada browser desktop dan mobile; verifikasi konsol browser bersih dari peringatan CSP.
 
-- [ ] **T-215**: Antarmuka Editor Dinamis Admin Form (Create & Edit) + Modal "Salin Struktur Kolom dari Produk Lain" + SweetAlert2 + Pembersihan Komentar Frontend.
-  - *Deskripsi:* Membangun UI builder tabel ukuran per produk di form create/edit produk: tambah/ubah/hapus kolom (SweetAlert2 jika ada data teks), tambah/hapus baris, tombol reorder, modal salin struktur kolom dari produk lain, template awal 6 kolom pada create, serta pembersihan total komentar frontend.
-  - *Acceptance Criteria:* Builder interaktif berfungsi mulus, konfirmasi hapus SweetAlert2 hanya jika ada data teks, modal salin kolom menduplikasi kolom tanpa isi data sel, 320px–desktop responsive, zero comments di frontend.
-  - *File Terdampak:* `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `public/js/admin-size-table.js`, `public/css/admin.css`, `locales/id.json`, `locales/en.json`.
-  - *Skill:* Impeccable (`$layout`, `$adapt`, `$animate`, `$polish`), `antislop-ui`, `antislop-layoutmobile`, `antislop-human`, `antislop-code`.
+- [x] **[T-241] [Publik UI & Layout] Implementasi Logika Show/Hide Kartu Alamat di Footer Global dan Halaman Kontak**
+  - **Deskripsi:** Memperbarui `views/partials/footer.ejs` dan `views/public/contact.ejs` untuk memeriksa status `office_card_visible` dan `factory_card_visible`. Di footer, bungkus masing-masing kartu `.ft-office-card` dengan kondisi if. Jika kedua kartu dinonaktifkan (`'0'`), kontainer pembungkus `.ft-offices` tidak dirender ke DOM untuk mencegah celah kosong atau pergeseran tata letak. Di halaman `/contact`, render kartu Jakarta dan Bandung secara kondisional di kolom kanan; jika kedua kartu dinonaktifkan, sematan Google Maps `.cf-maps-wrap` tetap tampil elegan dan menempati kolom dengan proporsional tanpa kekosongan visual yang janggal.
+  - **Acceptance Criteria:** Saat `office_card_visible = '0'`, kartu Jakarta hilang dari footer dan halaman kontak; saat `factory_card_visible = '0'`, kartu Bandung hilang dari footer dan halaman kontak; saat kedua kartu disembunyikan, tidak ada elemen pembungkus kosong (*ghost container*) atau celah margin/padding aneh di footer maupun kontak; tidak ada layout shift (CLS tetap aman) pada resolusi 320px, 768px, 1024px, hingga 1440px dalam mode Bahasa Indonesia maupun Bahasa Inggris.
+  - **File Terdampak:** `views/partials/footer.ejs`, `views/public/contact.ejs`, `public/css/components.css`.
+  - **Skill:** `antislop-layoutmobile`, `impeccable`.
+  - **Verifikasi:** Ubah pengaturan toggle di admin menjadi (1, 1), (1, 0), (0, 1), dan (0, 0); periksa tampilan footer dan halaman kontak di browser pada setiap kombinasi konfigurasi.
 
-- [ ] **T-216**: Endpoint API Salin Kolom (`GET /admin/products/:id/size-table-columns`) & Ekspor CSV Katalog Dinamis Gabungan (*Union of Columns*).
-  - *Deskripsi:* Menyediakan endpoint AJAX untuk mengambil definisi kolom produk tertentu, serta memperbarui helper `exportCsv` agar menggabungkan seluruh kolom unik tabel ukuran produk aktif sebagai kolom tambahan CSV.
-  - *Acceptance Criteria:* Endpoint API merespons JSON `{ success: true, columns }` dengan proteksi RBAC, ekspor CSV memuat kolom gabungan dinamis, produk tanpa tabel ukuran terisi string kosong `""`.
-  - *File Terdampak:* `routes/admin/productRoutes.js`, `controllers/admin/productController.js`.
-  - *Skill:* `implement-task`.
+- [x] **[T-242] [Publik Interaksi & Algoritma] Implementasi Server-Side Weighted Rolling WhatsApp Multi-Nomor**
+  - **Deskripsi:** Memperbarui komponen `views/partials/whatsapp-btn.ejs` untuk menerapkan pemilihan nomor berbobot (*weighted random rolling*) berbasis data `whatsapp_numbers_json` langsung di sisi server (SSR). Saat halaman dimuat, server membangkitkan angka acak 1-100 dan memilih 1 nomor yang sesuai dengan distribusi kumulatif persentase. Tautan direct chat dibentuk menggunakan format resmi `https://wa.me/<nomor_terpilih>?text=<pesan_dwibahasa_terenkripsi>`. Hanya nomor yang terpilih yang dirender ke atribut `href` HTML; nomor lain tidak dibocorkan ke DOM browser. Tetap mempertahankan pesan pembuka resmi yang sudah ada (`whatsapp_default_message` / `_en`). Tooltip publik tetap menggunakan teks standar (*"Chat WhatsApp"* / *"Chat on WhatsApp"*). Jika data multi-nomor belum tersedia, sistem transparan melakukan fallback ke nomor tunggal `whatsapp_formatted_number` atau `whatsapp_number`.
+  - **Acceptance Criteria:** Tombol floating WhatsApp di seluruh halaman publik mengarah ke nomor yang dipilih secara berbobot sesuai distribusi persentase di sisi server; tidak ada daftar nomor lain yang terekspos di markup HTML publik (*source view*); dalam sampel pengujian muat ulang halaman berulang, frekuensi kemunculan nomor mendekati rasio persentase yang ditentukan (misal 40% vs 60%); pesan pembuka otomatis dwibahasa (ID/EN) tetap terpasang dengan enkripsi URI yang benar di seluruh nomor rolling; fallback ke nomor lama bekerja 100% jika pengaturan multi-nomor dikosongkan; desain, animasi hover, posisi fixed, dan aksesibilitas keyboard tombol floating WA tetap utuh.
+  - **File Terdampak:** `views/partials/whatsapp-btn.ejs`.
+  - **Skill:** `ponytail`, `frontend-ui-engineering`.
+  - **Verifikasi:** Lakukan pengujian simulasi permintaan berulang (misal 50-100 reload) untuk memverifikasi distribusi probabilitas kedua nomor, serta inspeksi elemen DOM untuk memastikan hanya 1 nomor aktif yang ada di markup HTML.
 
-- [ ] **T-217**: Validasi Server-Side, Whitelist Kunci Sel, Batas Karakter & Isolasi Data Per Produk secara Atomik.
-  - *Deskripsi:* Mengimplementasikan `parseDynamicSizeTable` di controller admin untuk memvalidasi kunci sel terhadap whitelist kolom aktif produk, sanitasi HTML, pemangkasan spasi (trim), pembatasan 1–8 kolom, 0–30 baris, label maks 40 char, sel maks 80 char, dan penjaminan isolasi antar produk.
-  - *Acceptance Criteria:* Kunci liar dibuang, label kosong ditolak, tag HTML disanitasi, simpan atomik dalam 1 transaksi SQL, edit Produk A terbukti tidak mengubah data Produk B.
-  - *File Terdampak:* `controllers/admin/productController.js`.
-  - *Skill:* `implement-task`.
+- [x] **[T-243] [Desain & Visual Tokens] Penyelarasan Filter / Overlay Hero Banner Sub-Page Menyerupai Home Slide 2 Termasuk About**
+  - **Deskripsi:** Memperbarui aturan CSS overlay hero banner sub-page pada `public/css/components.css` (`.page-hero-scrim`) dan seluruh template sub-page view terkait (`views/public/products.ejs`, `views/public/news.ejs`, `views/public/contact.ejs`, dan `views/public/about.ejs`). Menghapus gradasi solid hitam pekat yang menutupi gambar latar belakang dan menggantinya dengan layered directional gradient transparan yang mengadopsi estetika `.hero-slide-image .hero-grad` pada beranda (top ramp, diagonal 105 derajat green accent ramp, bottom grounding ramp). Memastikan nilai perhitungan variabel `--hero-scrim-mid` dan `--hero-scrim-edge` terkalibrasi ringan dan seluruh teks judul, subjudul, dan remah roti memenuhi standar kontras WCAG AA (minimal 4.5:1).
+  - **Acceptance Criteria:** Hero banner pada halaman Products, News, Contact, dan About memiliki tampilan visual yang jernih, foto pabrik terekspos jelas dan elegan menyerupai referensi gambar slide ke-2 beranda; aksen hijau korporat Euodoo tetap terasa kuat dan berpadu harmonis dengan gambar latar belakang; seluruh teks putih pada hero banner di ke-4 halaman terbukti lulus rasio kontras WCAG AA terhadap latar belakang; tidak mengubah kode atau visual pada homepage yang telah dibekukan.
+  - **File Terdampak:** `public/css/components.css`, `views/public/products.ejs`, `views/public/news.ejs`, `views/public/contact.ejs`, `views/public/about.ejs`.
+  - **Skill:** `impeccable`.
+  - **Verifikasi:** Inspeksi visual perbandingan berdampingan (*side-by-side*) antara home slide 2 dengan hero banner ke-4 sub-page di browser desktop dan ponsel; jalankan uji audit kontras WCAG.
 
-- [ ] **T-218**: Rendering Publik Tabel Ukuran Dinamis Responsif di Halaman Detail Produk (PDP `/products/:slug`).
-  - *Deskripsi:* Merender header dan sel tabel ukuran sesuai struktur kolom dinamis produk di `views/public/product-detail.ejs`, mengimplementasikan lebar minimal scoped `.pd-size[data-cols="N"]`, scroll horizontal dengan bayangan visual di desktop, mobile stacked cards (kolom pertama sebagai judul kartu), dan auto-hide jika tabel kosong.
-  - *Acceptance Criteria:* Responsif 320px s/d 1440px tanpa horizontal leak di body, kontras AA, zero comments frontend, escape aman bebas XSS.
-  - *File Terdampak:* `views/public/product-detail.ejs`, `public/css/components.css`, `locales/id.json`, `locales/en.json`.
-  - *Skill:* Impeccable (`$layout`, `$adapt`, `$animate`, `$polish`), `antislop-human`, `antislop-layoutmobile`.
-
-- [ ] **T-219**: Test Suite Otomatis End-to-End (`tests/test-product-dynamic-size-table-qa.js`), Uji Isolasi Produk A vs B, Uji Salin Kolom, Uji CSV Gabungan, Audit XSS, Regresi & Zero Comments Frontend.
-  - *Deskripsi:* Membangun test suite QA otomatis yang memvalidasi seluruh alur tabel ukuran dinamis, isolasi data produk, API salin kolom, ekspor CSV gabungan, keamanan sanitasi XSS, verifikasi bug ikon ganda teratasi, penyesuaian unit test terdampak, dan audit nol komentar frontend.
-  - *Acceptance Criteria:* Seluruh suite tes berjalan dengan status 100% PASS, zero console errors, nol pelanggaran CSP, view-source bebas `<!--`.
-  - *File Terdampak:* `tests/test-product-dynamic-size-table-qa.js`, `tests/test-task-200-backend.js`, `tests/test-task-202-admin-form.js`, `tests/test-task-201-frontend.js`.
-  - *Skill:* `implement-task`, `antislop-code`.
-
+- [x] **[T-244] [QA & Audit Aksesibilitas] Verifikasi Regresi Menyeluruh, Audit Kontras WCAG AA, & Validasi Lintas Perangkat**
+  - **Deskripsi:** Melakukan pengujian regresi komprehensif pada seluruh alur fitur yang terdampak: pengujian toggle switch show/hide alamat di admin dan dampaknya pada footer serta kontak, pengujian penambahan/penghapusan/validasi 100% multi-nomor WA di admin, pengujian distribusi rolling WA server-side di sisi publik, serta verifikasi tampilan visual hero banner pada 4 sub-page (Products, News, Contact, About). Memastikan pengujian mencakup resolusi ponsel 320px, tablet 768px, laptop 1024px, dan desktop 1440px dalam mode Bahasa Indonesia (`id`) dan Bahasa Inggris (`en`). Memastikan nol error di konsol browser, tidak ada kebocoran gaya, dan fungsi formulir RFQ kontak serta tombol CTA lainnya tetap beroperasi 100% normal.
+  - **Acceptance Criteria:** Seluruh skenario pengujian fungsional dan visual lulus tanpa cacat; teks hero banner pada seluruh 4 sub-page memenuhi rasio kontras WCAG AA; tidak ada error JavaScript atau peringatan CSP di konsol browser; tampilan responsif mulus dari 320px hingga desktop tanpa horizontal scrollbar yang tidak diinginkan; mode dwibahasa ID dan EN tersaji dengan translasi yang lengkap dan tepat.
+  - **File Terdampak:** Seluruh file yang diubah pada T-238 s/d T-243.
+  - **Skill:** `test-engineer`, `code-review-and-quality`.
+  - **Verifikasi:** Laporan checklist verifikasi lintas viewport dan bahasa disertakan lengkap sebelum pengajuan penutupan task.

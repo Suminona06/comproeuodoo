@@ -128,7 +128,9 @@
   },
   "product_detail": {
     "cta_whatsapp_default": "Minta Penawaran via WhatsApp",
-    "submit_rfq": "Kirim Formulir RFQ"
+    "submit_rfq": "Kirim Formulir RFQ",
+    "tab_overview": "Deskripsi",
+    "tab_size_chart": "Tabel Ukuran"
   },
   "footer": {
     "desc": "PT. EUODOO memproduksi kantong plastik HDPE dan LLDPE 100% degradable untuk retail modern, sektor industri, dan pasar tradisional sejak 1990.",
@@ -138,5 +140,19 @@
     "jakarta_office": "Kantor Pusat Jakarta: Karindra Building Jl. Palmerah Selatan 30 A Suite 02-07, Jakarta Pusat 10270 (Telp: +6221-53668626)",
     "bandung_factory": "Pabrik Bandung: Jl. Paralon II No. 21 Cijerah Bandung 40214 (Telp: +6222-6012519)",
     "all_rights_reserved": "Hak Cipta Dilindungi Undang-Undang."
+  },
+  "admin_products": {
+    "size_table_title": "Tabel Ukuran",
+    "add_column": "Tambah Kolom",
+    "add_row": "Tambah Baris",
+    "copy_columns": "Salin Struktur Kolom",
+    "copy_modal_title": "Salin Struktur Kolom dari Produk Lain",
+    "copy_modal_select_label": "Pilih Produk Sumber:",
+    "copy_modal_confirm": "Salin Struktur",
+    "copy_modal_cancel": "Batal",
+    "confirm_delete_column_title": "Hapus Kolom?",
+    "confirm_delete_column_text": "Kolom ini memiliki data teks yang akan ikut terhapus. Lanjutkan?",
+    "confirm_delete_row_title": "Hapus Baris?",
+    "confirm_delete_row_text": "Baris ini memiliki data teks yang akan ikut terhapus. Lanjutkan?"
   }
 }

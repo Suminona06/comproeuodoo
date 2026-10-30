@@ -1,4 +1,5 @@
-<div class="header-wrap" id="headerWrap">
+<% const isSolidHeader = (typeof headerSolid !== 'undefined' && Boolean(headerSolid)) || (typeof isHeaderSolid !== 'undefined' && Boolean(isHeaderSolid)) || (typeof locals !== 'undefined' && (locals.headerSolid || locals.isHeaderSolid)); %>
+<div class="header-wrap<%= isSolidHeader ? ' header-wrap--solid' : '' %>" id="headerWrap">
   <div class="top-bar-wrap">
     <div class="top-bar">
       <div class="container top-bar-inner">
