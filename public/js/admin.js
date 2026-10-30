@@ -80,31 +80,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Table status tabs and live search
   const tabButtons = document.querySelectorAll('.filter-tabs-wrap .tab-btn');
   const liveSearch = document.getElementById('liveSearchInput');
-  const tableRows = document.querySelectorAll('.data-table tbody tr[data-status], .admin-table tbody tr[data-status]');
+  const tableRows = document.querySelectorAll('.data-table tbody tr, .admin-table tbody tr');
 
   let currentFilter = 'all';
   let searchQuery = '';
 
   function filterRows() {
     tableRows.forEach(row => {
+      if (row.querySelector('td[colspan]')) return;
       const rowStatus = row.getAttribute('data-status') || '';
       const text = row.textContent.toLowerCase();
-      const matchFilter = (currentFilter === 'all' || rowStatus === currentFilter);
+      const matchFilter = (currentFilter === 'all' || !rowStatus || rowStatus === currentFilter);
       const matchSearch = (!searchQuery || text.includes(searchQuery));
 
-      if (matchFilter && matchSearch) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+      row.style.display = (matchFilter && matchSearch) ? '' : 'none';
     });
   }
 
   if (tabButtons.length > 0) {
     tabButtons.forEach(btn => {
+      if (!btn.hasAttribute('data-filter')) return;
       btn.addEventListener('click', () => {
         tabButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');

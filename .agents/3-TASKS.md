@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 4 Task (T-246 s/d T-249)
-- **Total Task Selesai:** 245 Task (T-01 s/d T-245)
+- **Task Aktif Terbuka:** 3 Task (T-247 s/d T-249)
+- **Total Task Selesai:** 246 Task (T-01 s/d T-246)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-250**.
 
@@ -40,7 +40,7 @@
 
 ### T-246: Fix Live Search Produk pada Tabel Admin
 
-- **Status:** Open (Todo)
+- **Status:** Done
 - **Prioritas:** High
 - **Modul:** Products Catalog / Admin CMS
 - **Tanggal:** 2026-10-30
@@ -50,11 +50,11 @@
 - **Akar Masalah Dugaan:**
   `public/js/admin.js` L86 menyeleksi baris menggunakan `.data-table tbody tr[data-status], .admin-table tbody tr[data-status]`. Pada `views/admin/products/index.ejs` L65, tag `<tr>` tidak menyertakan atribut `data-status`. Hal ini menyebabkan variabel `tableRows` menghasilkan `NodeList(0)`, sehingga fungsi `filterRows()` tidak mengeksekusi penyaringan baris produk saat user mengetik di `#liveSearchInput`.
 - **Acceptance Criteria:**
-  - [ ] Elemen `<tr>` di `views/admin/products/index.ejs` memiliki atribut `data-status="<%= p.status %>"`.
-  - [ ] Selector baris tabel di `public/js/admin.js` mencakup seluruh baris data pada `.data-table tbody tr`.
-  - [ ] Mengetik nama produk atau slug pada `#liveSearchInput` menyaring baris secara instan (case-insensitive) di sisi klien tanpa reload halaman.
-  - [ ] Baris yang tidak cocok disembunyikan (`display: none`), baris yang cocok ditampilkan kembali.
-  - [ ] Integrasi filter status tab dan live search berjalan selaras tanpa memicu konflik tampilan.
+  - [x] Elemen `<tr>` di `views/admin/products/index.ejs` memiliki atribut `data-status="<%= p.status %>"`.
+  - [x] Selector baris tabel di `public/js/admin.js` mencakup seluruh baris data pada `.data-table tbody tr`.
+  - [x] Mengetik nama produk atau slug pada `#liveSearchInput` menyaring baris secara instan (case-insensitive) di sisi klien tanpa reload halaman.
+  - [x] Baris yang tidak cocok disembunyikan (`display: none`), baris yang cocok ditampilkan kembali.
+  - [x] Integrasi filter status tab dan live search berjalan selaras tanpa memicu konflik tampilan.
 - **File Terdampak:**
   - `views/admin/products/index.ejs`
   - `public/js/admin.js`
