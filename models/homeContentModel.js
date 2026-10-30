@@ -179,14 +179,14 @@ export const homeContentModel = {
       };
 
       const intro = {
-        eyebrow_id: allSettings.home_intro_eyebrow_id ?? defaults.intro.eyebrow_id,
-        eyebrow_en: allSettings.home_intro_eyebrow_en ?? defaults.intro.eyebrow_en,
-        title_id: allSettings.home_intro_title_id || defaults.intro.title_id,
-        title_en: allSettings.home_intro_title_en || defaults.intro.title_en,
-        paragraph_1_id: allSettings.home_intro_paragraph_1_id || defaults.intro.paragraph_1_id,
-        paragraph_1_en: allSettings.home_intro_paragraph_1_en || defaults.intro.paragraph_1_en,
-        paragraph_2_id: allSettings.home_intro_paragraph_2_id || defaults.intro.paragraph_2_id,
-        paragraph_2_en: allSettings.home_intro_paragraph_2_en || defaults.intro.paragraph_2_en,
+        eyebrow_id: allSettings.home_intro_eyebrow_id ?? '',
+        eyebrow_en: allSettings.home_intro_eyebrow_en ?? '',
+        title_id: allSettings.home_intro_title_id ?? '',
+        title_en: allSettings.home_intro_title_en ?? '',
+        paragraph_1_id: allSettings.home_intro_paragraph_1_id ?? '',
+        paragraph_1_en: allSettings.home_intro_paragraph_1_en ?? '',
+        paragraph_2_id: allSettings.home_intro_paragraph_2_id ?? '',
+        paragraph_2_en: allSettings.home_intro_paragraph_2_en ?? '',
         image_url: allSettings.home_intro_image_url || '',
         is_active: allSettings.home_intro_is_active !== undefined ? Number(allSettings.home_intro_is_active) : defaults.intro.is_active
       };
@@ -201,42 +201,42 @@ export const homeContentModel = {
       };
 
       const certifications = {
-        title_id: allSettings.home_cert_title_id || defaults.certifications.title_id,
-        title_en: allSettings.home_cert_title_en || defaults.certifications.title_en,
-        body_id: allSettings.home_cert_body_id || defaults.certifications.body_id,
-        body_en: allSettings.home_cert_body_en || defaults.certifications.body_en,
-        btn_text_id: allSettings.home_cert_btn_text_id ?? defaults.certifications.btn_text_id,
-        btn_text_en: allSettings.home_cert_btn_text_en ?? defaults.certifications.btn_text_en,
-        btn_url: allSettings.home_cert_btn_url || defaults.certifications.btn_url,
+        title_id: allSettings.home_cert_title_id ?? '',
+        title_en: allSettings.home_cert_title_en ?? '',
+        body_id: allSettings.home_cert_body_id ?? '',
+        body_en: allSettings.home_cert_body_en ?? '',
+        btn_text_id: allSettings.home_cert_btn_text_id ?? '',
+        btn_text_en: allSettings.home_cert_btn_text_en ?? '',
+        btn_url: allSettings.home_cert_btn_url ?? '',
         show_btn: allSettings.home_cert_show_btn !== undefined ? Number(allSettings.home_cert_show_btn) : defaults.certifications.show_btn,
         is_active: allSettings.home_cert_is_active !== undefined ? Number(allSettings.home_cert_is_active) : defaults.certifications.is_active,
-        items: parseJsonSafe(allSettings.home_cert_items_json, defaults.certifications.items)
+        items: parseJsonSafe(allSettings.home_cert_items_json, [])
       };
 
       const cta = {
-        title_id: allSettings.global_cta_title_id || defaults.cta.title_id,
-        title_en: allSettings.global_cta_title_en || defaults.cta.title_en,
-        subtitle_id: allSettings.global_cta_subtitle_id || defaults.cta.subtitle_id,
-        subtitle_en: allSettings.global_cta_subtitle_en || defaults.cta.subtitle_en,
-        btn1_title_id: allSettings.global_cta_btn1_title_id || defaults.cta.btn1_title_id,
-        btn1_title_en: allSettings.global_cta_btn1_title_en || defaults.cta.btn1_title_en,
-        btn1_sub_id: allSettings.global_cta_btn1_sub_id || defaults.cta.btn1_sub_id,
-        btn1_sub_en: allSettings.global_cta_btn1_sub_en || defaults.cta.btn1_sub_en,
-        btn1_url: allSettings.global_cta_btn1_url || defaults.cta.btn1_url,
-        btn2_title_id: allSettings.global_cta_btn2_title_id || defaults.cta.btn2_title_id,
-        btn2_title_en: allSettings.global_cta_btn2_title_en || defaults.cta.btn2_title_en,
-        btn2_sub_id: allSettings.global_cta_btn2_sub_id || defaults.cta.btn2_sub_id,
-        btn2_sub_en: allSettings.global_cta_btn2_sub_en || defaults.cta.btn2_sub_en,
+        title_id: allSettings.global_cta_title_id ?? '',
+        title_en: allSettings.global_cta_title_en ?? '',
+        subtitle_id: allSettings.global_cta_subtitle_id ?? '',
+        subtitle_en: allSettings.global_cta_subtitle_en ?? '',
+        btn1_title_id: allSettings.global_cta_btn1_title_id ?? '',
+        btn1_title_en: allSettings.global_cta_btn1_title_en ?? '',
+        btn1_sub_id: allSettings.global_cta_btn1_sub_id ?? '',
+        btn1_sub_en: allSettings.global_cta_btn1_sub_en ?? '',
+        btn1_url: allSettings.global_cta_btn1_url ?? '',
+        btn2_title_id: allSettings.global_cta_btn2_title_id ?? '',
+        btn2_title_en: allSettings.global_cta_btn2_title_en ?? '',
+        btn2_sub_id: allSettings.global_cta_btn2_sub_id ?? '',
+        btn2_sub_en: allSettings.global_cta_btn2_sub_en ?? '',
         btn2_url: allSettings.global_cta_btn2_url || '',
         pages: parseJsonSafe(allSettings.global_cta_pages_json, defaults.cta.pages),
         is_active: allSettings.global_cta_is_active !== undefined ? Number(allSettings.global_cta_is_active) : defaults.cta.is_active
       };
 
       const categories = {
-        title_id: allSettings.home_cat_title_id || defaults.categories.title_id,
-        title_en: allSettings.home_cat_title_en || defaults.categories.title_en,
-        subtitle_id: allSettings.home_cat_subtitle_id || defaults.categories.subtitle_id,
-        subtitle_en: allSettings.home_cat_subtitle_en || defaults.categories.subtitle_en
+        title_id: allSettings.home_cat_title_id ?? '',
+        title_en: allSettings.home_cat_title_en ?? '',
+        subtitle_id: allSettings.home_cat_subtitle_id ?? '',
+        subtitle_en: allSettings.home_cat_subtitle_en ?? ''
       };
 
       const homepage_categories = parseJsonSafe(allSettings.home_categories_json, [
@@ -248,31 +248,31 @@ export const homeContentModel = {
 
       const why_choose_us = {
         is_active: allSettings.home_wcu_is_active !== undefined ? Number(allSettings.home_wcu_is_active) : defaults.why_choose_us.is_active,
-        eyebrow_id: allSettings.home_wcu_eyebrow_id || defaults.why_choose_us.eyebrow_id,
-        eyebrow_en: allSettings.home_wcu_eyebrow_en || defaults.why_choose_us.eyebrow_en,
-        title_id: allSettings.home_wcu_title_id || defaults.why_choose_us.title_id,
-        title_en: allSettings.home_wcu_title_en || defaults.why_choose_us.title_en,
-        chip_label_id: allSettings.home_wcu_chip_label_id || defaults.why_choose_us.chip_label_id,
-        chip_label_en: allSettings.home_wcu_chip_label_en || defaults.why_choose_us.chip_label_en,
+        eyebrow_id: allSettings.home_wcu_eyebrow_id ?? '',
+        eyebrow_en: allSettings.home_wcu_eyebrow_en ?? '',
+        title_id: allSettings.home_wcu_title_id ?? '',
+        title_en: allSettings.home_wcu_title_en ?? '',
+        chip_label_id: allSettings.home_wcu_chip_label_id ?? '',
+        chip_label_en: allSettings.home_wcu_chip_label_en ?? '',
         chip_icon: allSettings.home_wcu_chip_icon || defaults.why_choose_us.chip_icon,
-        headline_id: allSettings.home_wcu_headline_id || defaults.why_choose_us.headline_id,
-        headline_en: allSettings.home_wcu_headline_en || defaults.why_choose_us.headline_en,
-        desc_id: allSettings.home_wcu_desc_id || defaults.why_choose_us.desc_id,
-        desc_en: allSettings.home_wcu_desc_en || defaults.why_choose_us.desc_en,
-        callout_lead_id: allSettings.home_wcu_callout_lead_id || defaults.why_choose_us.callout_lead_id,
-        callout_lead_en: allSettings.home_wcu_callout_lead_en || defaults.why_choose_us.callout_lead_en,
-        callout_body_id: allSettings.home_wcu_callout_body_id || defaults.why_choose_us.callout_body_id,
-        callout_body_en: allSettings.home_wcu_callout_body_en || defaults.why_choose_us.callout_body_en,
-        note_id: allSettings.home_wcu_note_id || defaults.why_choose_us.note_id,
-        note_en: allSettings.home_wcu_note_en || defaults.why_choose_us.note_en,
-        art_label_id: allSettings.home_wcu_art_label_id || defaults.why_choose_us.art_label_id,
-        art_label_en: allSettings.home_wcu_art_label_en || defaults.why_choose_us.art_label_en,
-        float_eyebrow_id: allSettings.home_wcu_float_eyebrow_id || defaults.why_choose_us.float_eyebrow_id,
-        float_eyebrow_en: allSettings.home_wcu_float_eyebrow_en || defaults.why_choose_us.float_eyebrow_en,
-        float_title_id: allSettings.home_wcu_float_title_id || defaults.why_choose_us.float_title_id,
-        float_title_en: allSettings.home_wcu_float_title_en || defaults.why_choose_us.float_title_en,
-        float_desc_id: allSettings.home_wcu_float_desc_id || defaults.why_choose_us.float_desc_id,
-        float_desc_en: allSettings.home_wcu_float_desc_en || defaults.why_choose_us.float_desc_en
+        headline_id: allSettings.home_wcu_headline_id ?? '',
+        headline_en: allSettings.home_wcu_headline_en ?? '',
+        desc_id: allSettings.home_wcu_desc_id ?? '',
+        desc_en: allSettings.home_wcu_desc_en ?? '',
+        callout_lead_id: allSettings.home_wcu_callout_lead_id ?? '',
+        callout_lead_en: allSettings.home_wcu_callout_lead_en ?? '',
+        callout_body_id: allSettings.home_wcu_callout_body_id ?? '',
+        callout_body_en: allSettings.home_wcu_callout_body_en ?? '',
+        note_id: allSettings.home_wcu_note_id ?? '',
+        note_en: allSettings.home_wcu_note_en ?? '',
+        art_label_id: allSettings.home_wcu_art_label_id ?? '',
+        art_label_en: allSettings.home_wcu_art_label_en ?? '',
+        float_eyebrow_id: allSettings.home_wcu_float_eyebrow_id ?? '',
+        float_eyebrow_en: allSettings.home_wcu_float_eyebrow_en ?? '',
+        float_title_id: allSettings.home_wcu_float_title_id ?? '',
+        float_title_en: allSettings.home_wcu_float_title_en ?? '',
+        float_desc_id: allSettings.home_wcu_float_desc_id ?? '',
+        float_desc_en: allSettings.home_wcu_float_desc_en ?? ''
       };
 
       return { intro, categories, homepage_categories, pillars, why_choose_us, certifications, cta };

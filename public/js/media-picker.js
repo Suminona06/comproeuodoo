@@ -282,7 +282,6 @@
         input.value = selectedMedia.file_url;
         input.dispatchEvent(new Event('change', { bubbles: true }));
 
-        // Check if there is a preview box attached to this input
         const container = input.closest('.media-picker-component, .form-group');
         if (container) {
           const img = container.querySelector('.media-picker-preview-box img');
@@ -292,21 +291,42 @@
 
           if (selectedMedia.media_type === 'image' && img) {
             img.src = selectedMedia.file_url;
+            img.classList.remove('hidden');
             img.style.display = 'block';
-            if (video) video.style.display = 'none';
-            if (emptyPlaceholder) emptyPlaceholder.style.display = 'none';
+            if (video) {
+              video.classList.add('hidden');
+              video.style.display = 'none';
+            }
+            if (emptyPlaceholder) {
+              emptyPlaceholder.classList.add('hidden');
+              emptyPlaceholder.style.display = 'none';
+            }
           } else if (selectedMedia.media_type === 'video' && video) {
             video.src = selectedMedia.file_url;
+            video.classList.remove('hidden');
             video.style.display = 'block';
-            if (img) img.style.display = 'none';
-            if (emptyPlaceholder) emptyPlaceholder.style.display = 'none';
+            if (img) {
+              img.classList.add('hidden');
+              img.style.display = 'none';
+            }
+            if (emptyPlaceholder) {
+              emptyPlaceholder.classList.add('hidden');
+              emptyPlaceholder.style.display = 'none';
+            }
           } else if (img) {
             img.src = selectedMedia.file_url;
+            img.classList.remove('hidden');
             img.style.display = 'block';
-            if (emptyPlaceholder) emptyPlaceholder.style.display = 'none';
+            if (emptyPlaceholder) {
+              emptyPlaceholder.classList.add('hidden');
+              emptyPlaceholder.style.display = 'none';
+            }
           }
 
-          if (clearBtn) clearBtn.style.display = 'inline-flex';
+          if (clearBtn) {
+            clearBtn.classList.remove('hidden');
+            clearBtn.style.display = 'inline-flex';
+          }
         }
       }
     }
@@ -502,13 +522,19 @@
         }
         if (img) {
           img.src = '';
+          img.classList.add('hidden');
           img.style.display = 'none';
         }
         if (video) {
           video.src = '';
+          video.classList.add('hidden');
           video.style.display = 'none';
         }
-        if (emptyPlaceholder) emptyPlaceholder.style.display = 'flex';
+        if (emptyPlaceholder) {
+          emptyPlaceholder.classList.remove('hidden');
+          emptyPlaceholder.style.display = 'flex';
+        }
+        clearBtn.classList.add('hidden');
         clearBtn.style.display = 'none';
       }
     }

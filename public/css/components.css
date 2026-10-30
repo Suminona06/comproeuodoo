@@ -4182,6 +4182,29 @@
   font-size: 20px;
 }
 
+.sec-news .news-grid:has(.news-empty-state) {
+  min-height: 0;
+}
+
+.sec-news .news-empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl, 48px) var(--space-xl, 24px);
+  border-radius: var(--r-xl, 12px);
+  background: var(--bg-base);
+  border: 1px dashed var(--border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body, 15px);
+  line-height: 1.6;
+}
+
+.sec-news .news-empty-state p {
+  margin: 0;
+}
+
 /* ═══ CONTACT CTA BANNER ═══ */
 .sec-cta {
   padding: 80px 0;

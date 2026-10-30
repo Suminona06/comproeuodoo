@@ -168,7 +168,7 @@
     rows.forEach((row, rowIdx) => {
       const tr = document.createElement('tr');
 
-      columns.forEach((col) => {
+      columns.forEach((col, colIdx) => {
         const td = document.createElement('td');
         const input = document.createElement('input');
         input.type = 'text';
@@ -176,6 +176,8 @@
         input.value = row[col.id] || '';
         input.maxLength = 80;
         input.placeholder = 'Nilai...';
+        input.dataset.rowIdx = String(rowIdx);
+        input.dataset.colIdx = String(colIdx);
         input.setAttribute('aria-label', `${col.label || 'Kolom'} baris ${rowIdx + 1}`);
         input.addEventListener('input', (e) => {
           row[col.id] = e.target.value;
@@ -371,6 +373,62 @@
       }
     });
   }
+
+  container.addEventListener('keydown', (e) => {
+    const cell = e.target.closest('.prod-size-cell');
+    if (!cell) return;
+
+    const rowIdx = Number(cell.dataset.rowIdx);
+    const colIdx = Number(cell.dataset.colIdx);
+    if (Number.isNaN(rowIdx) || Number.isNaN(colIdx)) return;
+
+    const focusCell = (r, c) => {
+      const target = container.querySelector(`.prod-size-cell[data-row-idx="${r}"][data-col-idx="${c}"]`);
+      if (target) {
+        target.focus();
+        target.select();
+      }
+    };
+
+    if (e.key === 'ArrowLeft') {
+      if (colIdx > 0) {
+        e.preventDefault();
+        focusCell(rowIdx, colIdx - 1);
+      }
+    } else if (e.key === 'ArrowRight') {
+      if (colIdx < columns.length - 1) {
+        e.preventDefault();
+        focusCell(rowIdx, colIdx + 1);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (rowIdx > 0) {
+        focusCell(rowIdx - 1, colIdx);
+      } else {
+        const headers = container.querySelectorAll('.prod-size-col-label');
+        if (headers[colIdx]) {
+          headers[colIdx].focus();
+          headers[colIdx].select();
+        }
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (rowIdx < rows.length - 1) {
+        e.preventDefault();
+        focusCell(rowIdx + 1, colIdx);
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (rowIdx < rows.length - 1) {
+        focusCell(rowIdx + 1, colIdx);
+      } else if (rows.length < 30) {
+        const newRow = {};
+        columns.forEach(c => { newRow[c.id] = ''; });
+        rows.push(newRow);
+        render();
+        focusCell(rows.length - 1, 0);
+      }
+    }
+  });
 
   let selectedSourceColumns = [];
 

@@ -401,3 +401,70 @@
 - **File Terdampak:** `app.js`, `public/css/components.css`, `tests/test-t244-playwright-audit.js`
 - **Skill:** test-engineer, code-review-and-quality
 - **Verifikasi:** Pengujian otomatis Playwright E2E lintas 5 viewport, CSP audit, admin E2E via `tests/test-t244-playwright-audit.js` lulus 6/6. Selesai 2026-10-30.
+
+### T-245: Fix Integrasi TinyMCE Image Dialog dengan Universal Media Picker [DONE]
+- **Deskripsi:** Tambahkan konfigurasi `file_picker_callback` pada inisialisasi TinyMCE di `public/js/admin-editor.js` yang membuka `window.openMediaPicker({ type: 'image' })` saat tombol browse ditekan di dialog "Insert/Edit Image", serta mengembalikan URL gambar dan deskripsi alternatif ke dialog TinyMCE. Dilengkapi pencegahan focus-trap dialog TinyMCE via event guard `focusin` pada modal `#universalMediaPickerModal` dan penyesuaian z-index CSS modal backdrop (`1400`) serta toast (`1500`).
+- **Acceptance Criteria:**
+  - [x] Opsi `file_picker_callback` terpasang pada `tinymce.init` di `public/js/admin-editor.js`.
+  - [x] Menekan tombol browse di dialog "Insert/Edit Image" TinyMCE membuka modal Universal Media Picker dengan filter gambar aktif.
+  - [x] Memilih gambar dari pustaka media dan menekan konfirmasi mengisi URL gambar (`selected.file_url`) dan alt text ke dialog TinyMCE.
+  - [x] Berfungsi pada form artikel (`#content_id`, `#content_en`) dan form produk (`#description_id`, `#description_en`).
+  - [x] Tanpa script inline, bebas error CSP Helmet, dan tanpa error pada console browser.
+- **File Terdampak:** `public/js/admin-editor.js`, `public/css/admin.css`
+- **Skill:** debugging-and-error-recovery, antislop-code
+- **Verifikasi:** Uji buka dialog Insert Image di `/admin/posts/create` dan `/admin/products/create`, klik browse, modal Media Library terbuka dan input URL terisi rapi; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-246: Fix Live Search Produk pada Tabel Admin [DONE]
+- **Deskripsi:** Perbaiki live search client-side instan dengan menambahkan atribut `data-status="<%= p.status %>"` pada setiap elemen `<tr>` di `views/admin/products/index.ejs`, dan perbaiki logika selector di `public/js/admin.js` agar mencakup baris tabel secara andal tanpa reload halaman. Sesuai Keputusan 1 (Opsi A), backend search query dan form GET tidak diubah.
+- **Acceptance Criteria:**
+  - [x] Elemen `<tr>` di `views/admin/products/index.ejs` memiliki atribut `data-status="<%= p.status %>"`.
+  - [x] Selector baris tabel di `public/js/admin.js` mencakup seluruh baris data pada `.data-table tbody tr`.
+  - [x] Mengetik nama produk atau slug pada `#liveSearchInput` menyaring baris secara instan (case-insensitive) di sisi klien tanpa reload halaman.
+  - [x] Baris yang tidak cocok disembunyikan (`display: none`), baris yang cocok ditampilkan kembali.
+  - [x] Integrasi filter status tab dan live search berjalan selaras tanpa memicu konflik tampilan.
+- **File Terdampak:** `views/admin/products/index.ejs`, `public/js/admin.js`
+- **Skill:** debugging-and-error-recovery, antislop-code
+- **Verifikasi:** Uji live filter di `/admin/products`, baris menyaring instan saat mengetik; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-247: Fix Pratinjau Foto Produk Utama saat Create Product (Sinkronisasi Class Hidden) [DONE]
+- **Deskripsi:** Perbaiki fungsi `confirmSelection` dan event listener clear di `public/js/media-picker.js` agar memanipulasi class `.hidden` secara konsisten via `classList.remove('hidden')` dan `classList.add('hidden')` bersamaan dengan pengaturan display style.
+- **Acceptance Criteria:**
+  - [x] Pada `confirmSelection` di `public/js/media-picker.js`: `img.classList.remove('hidden')` & `img.style.display = 'block'`; `emptyPlaceholder.classList.add('hidden')` & `emptyPlaceholder.style.display = 'none'`; `clearBtn.classList.remove('hidden')` & `clearBtn.style.display = 'inline-flex'`.
+  - [x] Pada handler `.btn-clear-media`: `img.classList.add('hidden')` & `img.style.display = 'none'`; `emptyPlaceholder.classList.remove('hidden')` & `emptyPlaceholder.style.display = 'flex'`; `clearBtn.classList.add('hidden')` & `clearBtn.style.display = 'none'`.
+  - [x] Pratinjau foto langsung muncul saat foto pertama kali dipilih di form `/admin/products/create`.
+  - [x] Kompatibilitas mundur terjaga penuh untuk pemanggil picker di form lain (Edit Product, Banner, Settings, dll.).
+- **File Terdampak:** `public/js/media-picker.js`
+- **Skill:** debugging-and-error-recovery, antislop-human
+- **Verifikasi:** Uji pilih media di seksi Foto Utama `/admin/products/create`, gambar langsung tampil tanpa blank abu-abu; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-248: Implementasi Navigasi Tombol Panah (Arrow Keys) pada Builder Tabel Ukuran Produk [DONE]
+- **Deskripsi:** Tambahkan dukungan navigasi keyboard menggunakan tombol panah (ArrowUp, ArrowDown, ArrowLeft, ArrowRight) antar sel input data (`.prod-size-cell`) pada dynamic size table builder di form create dan edit produk CMS. Sesuai Keputusan 2 (Opsi A), cakupan dibatasi khusus pada tabel ukuran (tidak pada varian). Sesuai Keputusan 3 (Opsi A), menekan tombol Enter pada baris terakhir otomatis menyisipkan 1 baris baru.
+- **Acceptance Criteria:**
+  - [x] Event listener `keydown` terpasang pada kontainer tabel ukuran `#dynamicSizeEditor` di `public/js/admin-size-table.js`.
+  - [x] Navigasi tombol panah berlaku khusus untuk sel input `.prod-size-cell` pada `#dynamicSizeEditor`.
+  - [x] Menekan `ArrowLeft`: memindahkan fokus ke sel kolom sebelumnya pada baris yang sama.
+  - [x] Menekan `ArrowRight`: memindahkan fokus ke sel kolom berikutnya pada baris yang sama.
+  - [x] Menekan `ArrowUp`: memindahkan fokus ke sel baris sebelumnya pada kolom yang sama (atau ke input label kolom jika di baris pertama).
+  - [x] Menekan `ArrowDown`: memindahkan fokus ke sel baris berikutnya pada kolom yang sama.
+  - [x] Menekan `Enter` pada sel baris terakhir: otomatis menambahkan 1 baris baru (jika baris < 30), menyinkronkan hidden input JSON, dan memindahkan fokus ke sel kolom pertama pada baris baru tersebut.
+  - [x] Menekan `Enter` pada sel bukan baris terakhir: memindahkan fokus ke sel baris di bawahnya pada kolom yang sama.
+  - [x] Navigasi keyboard Tab / Shift+Tab bawaan browser tetap berfungsi normal.
+  - [x] Tanpa handler inline, 100% patuh CSP Helmet dan antislop R-32 (Keyboard Accessibility).
+- **File Terdampak:** `public/js/admin-size-table.js`
+- **Skill:** frontend-ui-engineering, antislop-human
+- **Verifikasi:** Navigasi 4 arah tombol panah dan Enter append baris teruji pada form create/edit produk; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-249: Eliminasi Fallback Konten Hardcoded pada Halaman Beranda Publik [DONE]
+- **Deskripsi:** Hapus seluruh konten fallback statis yang di-hardcode pada `views/public/index.ejs`, model `models/homeContentModel.js`, controller `controllers/admin/homeContentController.js` & `controllers/admin/brandController.js`, middleware `middleware/settingsMiddleware.js`, dan view admin/partials. Sesuai Keputusan 4 (Opsi B), hero banner tetap mempertahankan safety net fallback agar tidak kosong. Sesuai Keputusan 5 (Opsi B), seksi News tetap merender judul seksi namun kartu placeholder statis digantikan dengan pesan empty-state ramah. Seksi Products, Why Choose Us, dan Brand Strip dibersihkan dari fallback hardcoded (zero-render jika CMS kosong).
+- **Acceptance Criteria:**
+  - [x] Hero Banner: Objek fallback banner default di `views/public/index.ejs` L10-24 DIPERTAHANKAN sebagai safety net beranda (Keputusan 4).
+  - [x] Seksi Produk: Fallback teks hardcoded judul dan subtitle kategori dihapus. Jika judul kosong atau kategori kosong, render ditangani secara kondisional.
+  - [x] Seksi Why Choose Us: 13 variabel fallback string dihapus total. Jika data WCU di CMS kosong atau `is_active` bernilai `0`, seksi Why Choose Us tidak dirender sama sekali.
+  - [x] Seksi Brand Strip: Fallback string judul merek terdaftar dihapus. Jika `marqueeBrands.length === 0`, seksi merek tidak dirender.
+  - [x] Seksi Berita (News): Kartu placeholder statis dengan tanggal palsu "25 SEP 2026" dan "18 SEP 2026" dihapus total (Keputusan 5). Jika `latestPosts.length === 0`, tampilkan pesan empty-state ramah dwibahasa: `<div class="news-empty-state"><p><%= currentLang === 'en' ? 'No recent articles available at this time.' : 'Belum ada artikel berita terbaru saat ini.' %></p></div>`.
+  - [x] Homepage dibekukan KECUALI seksi-seksi yang mengalami pembersihan fallback ini.
+  - [x] Styling empty-state seksi berita scoped dan menggunakan token desain (`var(--color-text-muted)`, tanpa hardcode hex).
+  - [x] Tampilan halaman beranda tetap responsif dan estetis pada breakpoint 320px hingga desktop tanpa celah/jarak visual janggal.
+- **File Terdampak:** `views/public/index.ejs`, `views/partials/cta-global.ejs`, `views/admin/home-content/index.ejs`, `views/admin/brands/index.ejs`, `models/homeContentModel.js`, `controllers/admin/homeContentController.js`, `controllers/admin/brandController.js`, `middleware/settingsMiddleware.js`, `public/css/components.css`
+- **Skill:** frontend-ui-engineering, antislop-layoutmobile, antislop-ui
+- **Verifikasi:** Kompilasi seluruh template EJS (`ejs.compile`) dan sintaks model/controller lulus tanpa error; form CMS diuji menyimpan nilai string kosong tanpa diisi ulang otomatis. Selesai 2026-10-30.

@@ -32,3 +32,4 @@
 - 2026-10-28 | Revisi minor homepage: perapian header produk, transisi gradasi halus seksi, layout WCU mobile tanpa elemen penutup, penskalaan logo marquee mobile, dan centering kontrol slider hero laptop | T-233..T-237
 
 - 2026-10-30 | Revisi Footer, WA Filter & Hero Sub-Page: show/hide kartu alamat, SSR rolling WA multi-nomor berbobot, dynamic repeater admin, filter hero sub-page jernih, dan audit Playwright E2E | T-238..T-244
+- 2026-10-30 | Revisi bug CMS & Beranda v1: fix TinyMCE media picker, live search admin, preview hidden class, arrow nav size table, dan eliminasi fallback beranda | T-245..T-249

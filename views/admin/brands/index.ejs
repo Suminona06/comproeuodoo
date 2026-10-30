@@ -24,14 +24,14 @@
       <div class="form-group" style="margin-bottom: 0;">
         <label class="form-label" for="home_brand_title_id">Judul Section (ID)</label>
         <input type="text" id="home_brand_title_id" name="home_brand_title_id" class="form-input" maxlength="150" 
-               value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_id) ? settings.home_brand_title_id : 'Merek Paten & Terdaftar' %>" 
-               placeholder="Contoh: Merek Paten & Terdaftar" required>
+               value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_id !== undefined) ? settings.home_brand_title_id : '' %>" 
+               placeholder="Contoh: Merek Paten & Terdaftar">
       </div>
       <div class="form-group" style="margin-bottom: 0;">
         <label class="form-label" for="home_brand_title_en">Judul Section (EN)</label>
         <input type="text" id="home_brand_title_en" name="home_brand_title_en" class="form-input" maxlength="150" 
-               value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_en) ? settings.home_brand_title_en : 'Registered Trademarks' %>" 
-               placeholder="Example: Registered Trademarks" required>
+               value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_en !== undefined) ? settings.home_brand_title_en : '' %>" 
+               placeholder="Example: Registered Trademarks">
       </div>
     </div>
     <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">

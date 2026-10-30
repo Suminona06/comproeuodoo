@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: controllers/admin/mediaController.js, views/admin/media/, views/partials/media-picker-modal.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: controllers/admin/mediaController.js, views/admin/media/, views/partials/media-picker-modal.ejs
 
 # PRD: Modul Media Library (Media & Storage)
 

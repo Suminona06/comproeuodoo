@@ -158,12 +158,14 @@
   </section>
 
 
-  <% if (typeof homeContent !== 'undefined' && homeContent?.intro && (homeContent.intro.is_active === 1 || homeContent.intro.is_active === '1' || homeContent.intro.is_active === true)) { 
-    const intro = homeContent.intro;
-    const introTitle = currentLang === 'en' ? (intro.title_en || intro.title_id) : intro.title_id;
-    const introP1 = currentLang === 'en' ? (intro.paragraph_1_en || intro.paragraph_1_id) : intro.paragraph_1_id;
-    const introP2 = currentLang === 'en' ? (intro.paragraph_2_en || intro.paragraph_2_id) : intro.paragraph_2_id;
-    const introEyebrow = currentLang === 'en' ? (intro.eyebrow_en || intro.eyebrow_id) : intro.eyebrow_id;
+  <% 
+    const intro = homeContent?.intro || {};
+    const isIntroActive = Boolean(intro.is_active === 1 || intro.is_active === '1' || intro.is_active === true);
+    const introTitle = (currentLang === 'en' ? intro.title_en : intro.title_id) || '';
+    const introP1 = (currentLang === 'en' ? intro.paragraph_1_en : intro.paragraph_1_id) || '';
+    const introP2 = (currentLang === 'en' ? intro.paragraph_2_en : intro.paragraph_2_id) || '';
+    const introEyebrow = (currentLang === 'en' ? intro.eyebrow_en : intro.eyebrow_id) || '';
+    if (typeof homeContent !== 'undefined' && isIntroActive && (introTitle || introP1 || introP2 || intro.image_url)) { 
   %>
   <section class="sec-intro" id="intro">
     <div class="container">
@@ -172,7 +174,7 @@
           <% if (introEyebrow) { %>
             <span class="intro-eyebrow" style="display:inline-block; font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--primary, #00755a); margin-bottom:8px; text-transform:uppercase;"><%= introEyebrow %></span>
           <% } %>
-          <h2><%= introTitle %></h2>
+          <% if (introTitle) { %><h2><%= introTitle %></h2><% } %>
           <% if (intro.image_url) { %>
             <div class="intro-media-wrap" style="margin-top:20px; border-radius:var(--r-xl, 1rem); overflow:hidden; border:1px solid var(--border, #e2e8f0); box-shadow:var(--shadow-sm, 0 1px 3px rgba(7,31,23,0.06));">
               <img src="<%= intro.image_url %>" alt="<%= introTitle %>" loading="lazy" style="width:100%; height:auto; display:block; object-fit:cover;">
@@ -180,61 +182,62 @@
           <% } %>
         </div>
         <div>
-          <p style="margin-bottom: 16px;"><%= introP1 %></p>
-          <p><%= introP2 %></p>
+          <% if (introP1) { %><p style="margin-bottom: 16px;"><%= introP1 %></p><% } %>
+          <% if (introP2) { %><p><%= introP2 %></p><% } %>
         </div>
       </div>
     </div>
   </section>
   <% } %>
 
+  <% 
+    const catSec = (typeof homeContent !== 'undefined' && homeContent?.categories) ? homeContent.categories : {};
+    const catSecTitle = currentLang === 'en' 
+      ? (catSec.title_en || '') 
+      : (catSec.title_id || '');
+    const catSecSub = currentLang === 'en'
+      ? (catSec.subtitle_en || '')
+      : (catSec.subtitle_id || '');
+    const catsToDisplay = (typeof homepageCategories !== 'undefined' && Array.isArray(homepageCategories)) 
+      ? homepageCategories 
+      : []; 
+  %>
+  <% if (catsToDisplay.length > 0 || catSecTitle || catSecSub) { %>
   <section class="sec-products" id="produk">
     <div class="container">
+      <% if (catSecTitle || catSecSub) { %>
       <div class="prod-header reveal">
-        <% 
-          const catSec = (typeof homeContent !== 'undefined' && homeContent?.categories) ? homeContent.categories : {};
-          const catSecTitle = currentLang === 'en' 
-            ? (catSec.title_en || 'Featured Manufacturing Products') 
-            : (catSec.title_id || 'Produk Unggulan Manufaktur');
-          const catSecSub = currentLang === 'en'
-            ? (catSec.subtitle_en || 'High-grade HDPE, LLDPE, and woven PP plastic bags manufactured to exact customer specifications.')
-            : (catSec.subtitle_id || 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail, industri, dan pasar komersial.');
-        %>
-        <h2 class="prod-title"><%= catSecTitle %></h2>
-        <p class="prod-subtitle"><%= catSecSub %></p>
+        <% if (catSecTitle) { %><h2 class="prod-title"><%= catSecTitle %></h2><% } %>
+        <% if (catSecSub) { %><p class="prod-subtitle"><%= catSecSub %></p><% } %>
       </div>
+      <% } %>
 
-      <% 
-        const catsToDisplay = (typeof homepageCategories !== 'undefined' && homepageCategories && homepageCategories.length > 0) 
-          ? homepageCategories 
-          : []; 
-      %>
-      <div class="hcat-grid reveal" style="--hcat-cols: <%= catsToDisplay.length || 4 %>;">
-        <% if (catsToDisplay.length > 0) { %>
-          <% catsToDisplay.forEach((cat, idx) => { 
-            const catName = currentLang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id;
-            const catCount = typeof cat.published_product_count !== 'undefined' ? parseInt(cat.published_product_count, 10) : 0;
-            const segmentKeys = ['retail', 'industrial', 'traditional', 'sustainability'];
-            const catImg = cat.image_url || `/images/segment-${segmentKeys[idx % 4]}.jpg`;
-            const countLabel = currentLang === 'en' ? `${catCount} ${catCount === 1 ? 'Product' : 'Products'}` : `${catCount} Produk`;
-          %>
-            <a href="/products?category=<%= cat.slug %>" class="hcat-panel" aria-label="<%= catName %> (<%= countLabel %>)">
-              <img class="hcat-img" src="<%= catImg %>" alt="<%= catName %>" loading="lazy" width="600" height="800">
-              <div class="hcat-scrim" aria-hidden="true"></div>
-              <div class="hcat-content">
-                <h3 class="hcat-title"><%= catName %></h3>
-                <div class="hcat-count">
-                  <span><%= countLabel %></span>
-                  <svg class="hcat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </div>
+      <% if (catsToDisplay.length > 0) { %>
+      <div class="hcat-grid reveal" style="--hcat-cols: <%= catsToDisplay.length %>;">
+        <% catsToDisplay.forEach((cat, idx) => { 
+          const catName = currentLang === 'en' ? (cat.name_en || cat.name_id) : cat.name_id;
+          const catCount = typeof cat.published_product_count !== 'undefined' ? parseInt(cat.published_product_count, 10) : 0;
+          const segmentKeys = ['retail', 'industrial', 'traditional', 'sustainability'];
+          const catImg = cat.image_url || `/images/segment-${segmentKeys[idx % 4]}.jpg`;
+          const countLabel = currentLang === 'en' ? `${catCount} ${catCount === 1 ? 'Product' : 'Products'}` : `${catCount} Produk`;
+        %>
+          <a href="/products?category=<%= cat.slug %>" class="hcat-panel" aria-label="<%= catName %> (<%= countLabel %>)">
+            <img class="hcat-img" src="<%= catImg %>" alt="<%= catName %>" loading="lazy" width="600" height="800">
+            <div class="hcat-scrim" aria-hidden="true"></div>
+            <div class="hcat-content">
+              <h3 class="hcat-title"><%= catName %></h3>
+              <div class="hcat-count">
+                <span><%= countLabel %></span>
+                <svg class="hcat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
               </div>
-            </a>
-          <% }); %>
-        <% } %>
+            </div>
+          </a>
+        <% }); %>
       </div>
+      <% } %>
 
       <div class="prod-more-wrap reveal">
         <a href="/products" class="btn-see-more">
@@ -244,40 +247,41 @@
       </div>
     </div>
   </section>
+  <% } %>
 
   <% 
     const wcuData = homeContent?.why_choose_us;
-    const isWcuActive = wcuData ? (wcuData.is_active === 1 || wcuData.is_active === '1' || wcuData.is_active === true) : true;
-    if (typeof homeContent !== 'undefined' && isWcuActive) { 
-      const wcu = wcuData || {};
-      const isEn = currentLang === 'en';
-      const wcuEyebrow = isEn ? (wcu.eyebrow_en || wcu.eyebrow_id || 'Innovation for the future') : (wcu.eyebrow_id || 'Inovasi untuk masa depan');
-      const wcuTitle = isEn ? (wcu.title_en || wcu.title_id || 'Why choose us[accent]?[/accent]') : (wcu.title_id || 'Why choose us[accent]?[/accent]');
-      const wcuChipLabel = isEn ? (wcu.chip_label_en || wcu.chip_label_id || 'Eco-friendly solutions') : (wcu.chip_label_id || 'Solusi ramah lingkungan');
-      const wcuChipIcon = wcu.chip_icon || 'asterisk';
-      const wcuHeadline = isEn ? (wcu.headline_en || wcu.headline_id || 'Material innovation, with [mark]better impact.[/mark]') : (wcu.headline_id || 'Inovasi material, dengan [mark]dampak yang lebih baik.[/mark]');
-      const wcuDesc = isEn ? (wcu.desc_en || wcu.desc_id || 'As a [strong]pioneer in eco-friendly additives[/strong], we deliver solutions designed to help reduce plastic waste impact.') : (wcu.desc_id || 'Sebagai [strong]pionir penerapan aditif ramah lingkungan[/strong], kami menghadirkan solusi yang dirancang untuk membantu mengurangi dampak sampah plastik. Didukung formula aditif degradable yang telah teruji serta mengacu pada standar resmi [strong]SNI[/strong] untuk kemasan ramah lingkungan.');
-      const wcuCalloutLead = isEn ? (wcu.callout_lead_en || wcu.callout_lead_id || 'Designed with care.') : (wcu.callout_lead_id || 'Dirancang dengan kepedulian.');
-      const wcuCalloutBody = isEn ? (wcu.callout_body_en || wcu.callout_body_id || 'We prioritize eco-friendly additive innovations as part of our commitment to reducing environmental impact.') : (wcu.callout_body_id || 'Kami mengedepankan inovasi aditif ramah lingkungan sebagai bagian dari pendekatan untuk membantu mengurangi dampak lingkungan.');
-      const wcuNote = isEn ? (wcu.note_en || wcu.note_id || 'Our commitment: innovation grounded in rigorous testing and environmental responsibility.') : (wcu.note_id || 'Komitmen kami: inovasi yang berpijak pada pengujian dan tanggung jawab lingkungan.');
-      const wcuArtLabel = isEn ? (wcu.art_label_en || wcu.art_label_id || 'Material · Nature · Future') : (wcu.art_label_id || 'Material · Alam · Masa depan');
-      const wcuFloatEyebrow = isEn ? (wcu.float_eyebrow_en || wcu.float_eyebrow_id || 'Future-oriented') : (wcu.float_eyebrow_id || 'Berorientasi masa depan');
-      const wcuFloatTitle = isEn ? (wcu.float_title_en || wcu.float_title_id || 'Better by design.') : (wcu.float_title_id || 'Better by design.');
-      const wcuFloatDesc = isEn ? (wcu.float_desc_en || wcu.float_desc_id || 'Material innovation for a more responsible path.') : (wcu.float_desc_id || 'Inovasi material untuk langkah yang lebih bertanggung jawab.');
+    const isWcuActive = Boolean(wcuData && (wcuData.is_active === 1 || wcuData.is_active === '1' || wcuData.is_active === true));
+    const wcu = wcuData || {};
+    const isEn = currentLang === 'en';
+    const wcuEyebrow = isEn ? (wcu.eyebrow_en || '') : (wcu.eyebrow_id || '');
+    const wcuTitle = isEn ? (wcu.title_en || '') : (wcu.title_id || '');
+    const wcuChipLabel = isEn ? (wcu.chip_label_en || '') : (wcu.chip_label_id || '');
+    const wcuChipIcon = wcu.chip_icon || 'asterisk';
+    const wcuHeadline = isEn ? (wcu.headline_en || '') : (wcu.headline_id || '');
+    const wcuDesc = isEn ? (wcu.desc_en || '') : (wcu.desc_id || '');
+    const wcuArtLabel = isEn ? (wcu.art_label_en || '') : (wcu.art_label_id || '');
+    const wcuFloatEyebrow = isEn ? (wcu.float_eyebrow_en || '') : (wcu.float_eyebrow_id || '');
+    const wcuFloatTitle = isEn ? (wcu.float_title_en || '') : (wcu.float_title_id || '');
+    const wcuFloatDesc = isEn ? (wcu.float_desc_en || '') : (wcu.float_desc_id || '');
+    const hasWcuContent = Boolean(wcuTitle || wcuHeadline || wcuDesc);
+    if (typeof homeContent !== 'undefined' && isWcuActive && hasWcuContent) { 
       const fmt = typeof formatInlineText === 'function' ? formatInlineText : (t) => t;
   %>
   <section class="sec-why-us sec-pillars" id="why-us">
     <span id="pilar" class="sec-pillars" aria-hidden="true"></span>
     <div class="container">
       <div class="wcu-card reveal">
+        <% if (wcuEyebrow || wcuTitle) { %>
         <div class="wcu-header">
-          <div class="wcu-eyebrow"><%= wcuEyebrow %></div>
-          <h2 class="wcu-title"><%- fmt(wcuTitle) %></h2>
+          <% if (wcuEyebrow) { %><div class="wcu-eyebrow"><%= wcuEyebrow %></div><% } %>
+          <% if (wcuTitle) { %><h2 class="wcu-title"><%- fmt(wcuTitle) %></h2><% } %>
         </div>
+        <% } %>
 
         <div class="wcu-layout">
-          <!-- Kolom Kiri: Narasi Editorial B2B -->
           <div class="wcu-copy">
+            <% if (wcuChipLabel) { %>
             <div class="wcu-kicker" tabindex="0" role="status" aria-label="<%= wcuChipLabel %>">
               <span class="wcu-kicker-icon" aria-hidden="true">
                 <% if (wcuChipIcon === 'leaf') { %>
@@ -285,7 +289,6 @@
                 <% } else if (wcuChipIcon === 'sparkle') { %>
                   <svg class="wcu-kicker-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                 <% } else { %>
-                  <!-- Icon Pohon Botani Ramah Lingkungan -->
                   <svg class="wcu-kicker-svg wcu-tree-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M8 19h8a4 4 0 0 0 3.8-2.8 4 4 0 0 0-1.6-4.5A4 4 0 0 0 16 4a4 4 0 0 0-8 0 4 4 0 0 0-2.2 7.7 4 4 0 0 0-1.6 4.5A4 4 0 0 0 8 19Z" fill="currentColor" fill-opacity="0.18"/>
                     <path d="M12 19v3"/>
@@ -297,15 +300,15 @@
               </span>
               <span class="wcu-kicker-text"><%= wcuChipLabel %></span>
             </div>
+            <% } %>
 
-            <h3 class="wcu-headline"><%- fmt(wcuHeadline) %></h3>
+            <% if (wcuHeadline) { %><h3 class="wcu-headline"><%- fmt(wcuHeadline) %></h3><% } %>
 
-            <p class="wcu-desc"><%- fmt(wcuDesc) %></p>
+            <% if (wcuDesc) { %><p class="wcu-desc"><%- fmt(wcuDesc) %></p><% } %>
           </div>
 
-          <!-- Kolom Kanan: Visual Artbox & Floating Badge -->
           <div class="wcu-artbox" aria-label="<%= isEn ? 'Conceptual illustration of sustainable packaging material' : 'Ilustrasi konseptual material ramah lingkungan' %>">
-            <div class="wcu-art-label"><%= wcuArtLabel %></div>
+            <% if (wcuArtLabel) { %><div class="wcu-art-label"><%= wcuArtLabel %></div><% } %>
             <svg class="wcu-art" viewBox="0 0 500 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
               <defs>
                 <linearGradient id="wcu-grad-a" x1="110" y1="90" x2="340" y2="330" gradientUnits="userSpaceOnUse">
@@ -337,14 +340,18 @@
               <circle cx="126" cy="287" r="7" fill="#00906E" opacity=".65"/>
               <circle cx="350" cy="325" r="4" fill="#7CBE38"/>
             </svg>
+            <% if (wcuFloatEyebrow || wcuFloatTitle || wcuFloatDesc) { %>
             <div class="wcu-float-card">
+              <% if (wcuFloatEyebrow) { %>
               <small class="wcu-float-eyebrow">
                 <span class="wcu-float-dot" aria-hidden="true"></span>
                 <%= wcuFloatEyebrow %>
               </small>
-              <strong class="wcu-float-title"><%= wcuFloatTitle %></strong>
-              <span class="wcu-float-desc"><%= wcuFloatDesc %></span>
+              <% } %>
+              <% if (wcuFloatTitle) { %><strong class="wcu-float-title"><%= wcuFloatTitle %></strong><% } %>
+              <% if (wcuFloatDesc) { %><span class="wcu-float-desc"><%= wcuFloatDesc %></span><% } %>
             </div>
+            <% } %>
           </div>
         </div>
       </div>
@@ -352,19 +359,21 @@
   </section>
   <% } %>
 
-  <% if (typeof homeContent !== 'undefined' && homeContent?.certifications && (homeContent.certifications.is_active === 1 || homeContent.certifications.is_active === '1' || homeContent.certifications.is_active === true)) { 
-    const cert = homeContent.certifications;
-    const certTitle = currentLang === 'en' ? (cert.title_en || cert.title_id) : cert.title_id;
-    const certBody = currentLang === 'en' ? (cert.body_en || cert.body_id) : cert.body_id;
-    const certBtnText = currentLang === 'en' ? (cert.btn_text_en || cert.btn_text_id) : cert.btn_text_id;
+  <% 
+    const cert = homeContent?.certifications || {};
+    const isCertActive = Boolean(cert.is_active === 1 || cert.is_active === '1' || cert.is_active === true);
+    const certTitle = (currentLang === 'en' ? cert.title_en : cert.title_id) || '';
+    const certBody = (currentLang === 'en' ? cert.body_en : cert.body_id) || '';
+    const certBtnText = (currentLang === 'en' ? cert.btn_text_en : cert.btn_text_id) || '';
     const certItems = (cert.items || []).filter(i => i.is_active === 1 || i.is_active === '1' || i.is_active === true).sort((a,b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+    if (typeof homeContent !== 'undefined' && isCertActive && (certTitle || certBody || certItems.length > 0)) { 
   %>
   <section class="sec-evidence" id="sertifikasi">
     <div class="container">
       <div class="ev-layout">
         <div class="reveal">
-          <h2><%= certTitle %></h2>
-          <p class="ev-body"><%= certBody %></p>
+          <% if (certTitle) { %><h2><%= certTitle %></h2><% } %>
+          <% if (certBody) { %><p class="ev-body"><%= certBody %></p><% } %>
           <% if ((cert.show_btn === 1 || cert.show_btn === '1' || cert.show_btn === true) && certBtnText) { %>
             <a href="<%= cert.btn_url || '/about#sertifikasi' %>" class="btn btn-primary">
               <span><%= certBtnText %></span>
@@ -373,9 +382,10 @@
           <% } %>
         </div>
 
+        <% if (certItems.length > 0) { %>
         <div class="cert-grid reveal">
           <% certItems.forEach(item => { 
-            const itemDesc = currentLang === 'en' ? (item.desc_en || item.desc_id) : item.desc_id;
+            const itemDesc = (currentLang === 'en' ? item.desc_en : item.desc_id) || '';
           %>
             <div class="cert-item">
               <% if (item.logo_url) { %>
@@ -385,11 +395,12 @@
               <% } %>
               <div>
                 <div class="cert-name"><%= item.name %></div>
-                <div class="cert-desc"><%= itemDesc %></div>
+                <% if (itemDesc) { %><div class="cert-desc"><%= itemDesc %></div><% } %>
               </div>
             </div>
           <% }); %>
         </div>
+        <% } %>
       </div>
     </div>
   </section>
@@ -400,7 +411,6 @@
       ? brands.filter(b => b.is_active !== 0 && b.is_active !== false) 
       : [];
     
-    // Duplikasi otomatis jika kurang dari 8 item agar continuous marquee loop mulus tanpa celah
     let marqueeBrands = [...activeBrandList];
     if (marqueeBrands.length > 0 && marqueeBrands.length < 8) {
       const originalBrands = [...marqueeBrands];
@@ -408,15 +418,16 @@
         marqueeBrands = marqueeBrands.concat(originalBrands);
       }
     }
-    const brandSectionTitle = (currentLang === 'en' ? settings?.home_brand_title_en : settings?.home_brand_title_id) 
-      || (currentLang === 'en' ? 'Registered Trademarks' : 'Merek Paten & Terdaftar');
+    const brandSectionTitle = (currentLang === 'en' ? settings?.home_brand_title_en : settings?.home_brand_title_id) || '';
   %>
   <% if (marqueeBrands.length > 0) { %>
-  <section class="sec-brands brand-strip-sec" id="merek" aria-label="<%= brandSectionTitle %>">
+  <section class="sec-brands brand-strip-sec" id="merek" aria-label="<%= brandSectionTitle || (currentLang === 'en' ? 'Brand Portfolio' : 'Portofolio Merek') %>">
     <div class="brand-strip-container">
+      <% if (brandSectionTitle) { %>
       <div class="brand-strip-header">
         <h2 class="brand-strip-title"><%= brandSectionTitle %></h2>
       </div>
+      <% } %>
 
       <div class="brand-strip-wrapper" tabindex="0" role="region" aria-label="<%= currentLang === 'en' ? 'Scrolling list of registered trademark logos' : 'Daftar logo merek terdaftar yang bergulir' %>">
         <div class="brand-strip-marquee">
@@ -558,22 +569,9 @@
             });
           } else { 
         %>
-          <a href="/news" class="news-card">
-            <div class="bg"><img src="/images/post-eco-community.jpg" alt="Berita lingkungan" loading="lazy"></div>
-            <div class="ov"></div>
-            <div class="ct">
-              <div class="news-date">25 SEP 2026</div>
-              <div class="news-title"><%= currentLang === 'en' ? '[Main news title from CMS will appear here]' : '[Judul berita utama dari CMS akan tampil di sini]' %></div>
-            </div>
-          </a>
-          <a href="/news" class="news-card">
-            <div class="bg"><img src="/images/post-school-recycling.jpg" alt="Berita daur ulang" loading="lazy"></div>
-            <div class="ov"></div>
-            <div class="ct">
-              <div class="news-date">18 SEP 2026</div>
-              <div class="news-title"><%= currentLang === 'en' ? '[Second news title from CMS]' : '[Judul berita kedua dari CMS]' %></div>
-            </div>
-          </a>
+          <div class="news-empty-state" role="status">
+            <p><%= currentLang === 'en' ? 'No recent articles available at this time.' : 'Belum ada artikel berita terbaru saat ini.' %></p>
+          </div>
         <% } %>
       </div>
     </div>
