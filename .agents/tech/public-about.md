@@ -1,9 +1,9 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: views/public/about.ejs, controllers/public/pageController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: views/public/about.ejs, controllers/public/pageController.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
 ## 1. Arsitektur & Komponen
-Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel `settings` bersama data relasional galeri, statistik, dan lini masa sejarah dari tabel-tabel terdedikasi (`about_*`).
+Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel `settings` bersama data relasional galeri (dengan paginasi sisi klien dan Lightbox Zoom layar penuh bersama `.lbx-*` `[PENDING T-253]`), statistik, dan lini masa sejarah dari tabel-tabel terdedikasi (`about_*`).
 
 ---
 
@@ -51,12 +51,16 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 
 ## 4. Komponen Antarmuka & Prefix CSS
 
-- **Galeri Mosaik Bento:**
-  - Prefix Class: `.sec-gallery`, `.abt-gal-container`, `.abt-gal-viewport`, `.abt-gal-grid`, `.abt-gal-tile`.
+- **Galeri Mosaik Bento & Integrasi Lightbox (`.abt-gal-*` & `.lbx-*`):**
+  - Prefix Class: `.sec-gallery`, `.abt-gal-container`, `.abt-gal-viewport`, `.abt-gal-grid`, `.abt-gal-tile`, serta `.bento-grid` dan `.sec-gallery .bento-*`.
   - Varian Posisi Tile: `.abt-gal-tile--pos-1` s/d `.abt-gal-tile--pos-6`, `.abt-gal-tile--tall`, `.abt-gal-tile--wide`.
   - Varian Grid Dinamis Halaman: `.abt-gal-grid--6`, `.abt-gal-grid--5`, `.abt-gal-grid--4`, `.abt-gal-grid--3`, `.abt-gal-grid--2`, `.abt-gal-grid--1`.
   - Kontrol Paginasi: `.abt-gal-pager`, `.abt-gal-pager-count`, `.abt-gal-pager-btn`.
-  - Animasi Engine: Anime.js v3 Shutter Wipe di `public/js/main.js:469-580`.
+  - Animasi Engine: Anime.js v3 Shutter Wipe di `public/js/main.js`.
+  - **Integrasi Lightbox Lintas Halaman Pager (`[PENDING T-253, T-254]`):**
+    - Baik render awal SSR di `views/public/about.ejs` maupun fungsi `createSingleTile(item, idx, globalIdx)` di `public/js/main.js` menyematkan atribut `data-slide-index="<globalIndex>"`, `tabindex="0"`, `role="button"`, dan `aria-label` dwibahasa (ID/EN) pada setiap `.abt-gal-tile`.
+    - Listener menggunakan *event delegation* pada kontainer `#bentoGalleryGrid` untuk menangkap klik dan `keydown` (`Enter`/`Space`) pada `.abt-gal-tile`, lalu memanggil `window.EuodooLightbox.open(slidesData, globalIndex, tileEl)` menggunakan array penuh dari `#bentoGalleryData` (bukan hanya 6 tile halaman aktif).
+    - Komponen bersama Lightbox dimuat dari PhotoSwipe v5 *self-hosted* (`public/vendor/photoswipe/`) bersama `public/css/lightbox.css` dan `public/js/lightbox.js` berprefix `.lbx-*` (detail penuh pada `tech/products-detail.md` Bagian 6.2), menampilkan *caption* kategori (`category`) dan judul (`title`), penghitung `"3 / 12"`, kontrol *zoom* klik + tombol `+`/`-` di desktop, serta *double-tap* + *pinch-to-zoom* + *swipe* di perangkat sentuh.
 - **Nilai Inti Perusahaan:** `.sec-values`, `.value-card.pillar-card`, `.value-letter`.
 - **Statistik & Timeline:** `.sec-stats`, `.stat-num` (count-up target), `.timeline-card`, `.timeline-node`.
 
