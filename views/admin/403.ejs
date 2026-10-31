@@ -51,7 +51,10 @@
         <%= typeof message !== 'undefined' ? message : 'Role akun Anda tidak memiliki hak akses untuk membuka halaman ini.' %>
       </p>
       <div style="display: flex; gap: var(--space-sm); justify-content: center;">
-        <a href="/admin/dashboard" class="btn btn-primary" style="padding: 10px 24px;">Kembali ke Dashboard</a>
+        <a href="/admin/dashboard" class="adm-btn adm-btn-neutral" aria-label="Kembali ke Dashboard">
+          <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Kembali</span>
+        </a>
       </div>
     </div>
   </main>

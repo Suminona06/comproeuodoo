@@ -101,8 +101,9 @@
       <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-main);">
         <form action="/admin/inquiries/<%= inquiry.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus permanen inquiry ini?" data-confirm-title="Hapus Pesan Masuk">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">
-            Hapus Inquiry Ini
+          <button type="submit" class="adm-btn adm-btn-danger adm-btn-block adm-btn-sm" aria-label="Hapus pesan masuk ini">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
           </button>
         </form>
       </div>

@@ -6,13 +6,13 @@
     <p>Penyimpanan aset terpusat untuk gambar WebP terkompresi, video MP4/WebM, dokumen PDF, dan video YouTube.</p>
   </div>
   <div class="header-actions">
-    <button type="button" class="btn btn-secondary" onclick="openAdminModal('youtubeModal')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-      <span>Tautan YouTube</span>
+    <button type="button" class="adm-btn adm-btn-secondary" onclick="openAdminModal('youtubeModal')" aria-label="Tautkan video YouTube">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+      <span>YouTube</span>
     </button>
-    <button type="button" class="btn btn-primary" onclick="openAdminModal('uploadModal')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-      <span>Unggah Berkas</span>
+    <button type="button" class="adm-btn adm-btn-primary" onclick="openAdminModal('uploadModal')" aria-label="Unggah berkas baru">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+      <span>Unggah</span>
     </button>
   </div>
 </div>
@@ -105,7 +105,7 @@
         <div style="display: flex; justify-content: center; gap: 6px; margin-top: 1.5rem;">
           <% for (let p = 1; p <= totalPages; p++) { %>
             <a href="/admin/media?type=<%= currentType %>&search=<%= searchQuery %>&page=<%= p %>"
-               class="btn btn-sm <%= p === currentPage ? 'btn-primary' : 'btn-secondary' %>">
+               class="adm-btn adm-btn-sm <%= p === currentPage ? 'adm-btn-primary' : 'adm-btn-neutral' %>">
               <%= p %>
             </a>
           <% } %>
@@ -168,8 +168,14 @@
         </div>
       </div>
       <div class="admin-modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeAdminModal('uploadModal')">Batal</button>
-        <button type="submit" class="btn btn-primary">Unggah Sekarang</button>
+        <button type="button" class="adm-btn adm-btn-neutral" onclick="closeAdminModal('uploadModal')" aria-label="Batalkan pengunggahan berkas">
+          <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Batal</span>
+        </button>
+        <button type="submit" class="adm-btn adm-btn-primary" aria-label="Unggah berkas sekarang">
+          <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <span>Unggah</span>
+        </button>
       </div>
     </form>
   </div>
@@ -207,8 +213,14 @@
         </div>
       </div>
       <div class="admin-modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeAdminModal('youtubeModal')">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan Tautan YouTube</button>
+        <button type="button" class="adm-btn adm-btn-neutral" onclick="closeAdminModal('youtubeModal')" aria-label="Batalkan tautan video YouTube">
+          <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Batal</span>
+        </button>
+        <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan tautan video YouTube">
+          <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Simpan</span>
+        </button>
       </div>
     </form>
   </div>

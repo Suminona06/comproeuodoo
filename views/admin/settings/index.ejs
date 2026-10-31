@@ -30,11 +30,13 @@
             </div>
           </div>
           <div class="media-picker-ctrls">
-            <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="setting_site_favicon" data-picker-type="image">
-              Pilih dari Media Library
+            <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="setting_site_favicon" data-picker-type="image" aria-label="Pilih favicon khusus dari Media Library">
+              <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Pilih Media</span>
             </button>
-            <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= (settings.site_favicon || settings.site_favicon_source) ? '' : 'display: none;' %>" title="Hapus untuk menggunakan fallback otomatis logo">
-              Reset ke Fallback Logo
+            <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= (settings.site_favicon || settings.site_favicon_source) ? '' : 'display: none;' %>" title="Hapus untuk menggunakan fallback otomatis logo" aria-label="Reset favicon ke fallback logo">
+              <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span>Reset</span>
             </button>
           </div>
         </div>
@@ -58,10 +60,14 @@
             </div>
           </div>
           <div class="media-picker-ctrls">
-            <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="setting_site_logo_header" data-picker-type="image">
-              Pilih Logo Header
+            <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="setting_site_logo_header" data-picker-type="image" aria-label="Pilih logo header navbar dari Media Library">
+              <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Pilih Media</span>
             </button>
-            <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= settings.site_logo_header ? '' : 'display: none;' %>">Hapus</button>
+            <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= settings.site_logo_header ? '' : 'display: none;' %>" aria-label="Hapus logo header">
+              <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span>Hapus</span>
+            </button>
           </div>
         </div>
       </div>
@@ -79,10 +85,14 @@
             </div>
           </div>
           <div class="media-picker-ctrls">
-            <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="setting_site_logo_footer" data-picker-type="image">
-              Pilih Logo Footer
+            <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="setting_site_logo_footer" data-picker-type="image" aria-label="Pilih logo footer dari Media Library">
+              <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Pilih Media</span>
             </button>
-            <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= settings.site_logo_footer ? '' : 'display: none;' %>">Hapus</button>
+            <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= settings.site_logo_footer ? '' : 'display: none;' %>" aria-label="Hapus logo footer">
+              <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span>Hapus</span>
+            </button>
           </div>
         </div>
       </div>
@@ -303,9 +313,9 @@
       </div>
 
       <div class="wa-footer-actions">
-        <button type="button" class="btn btn-secondary btn-sm" id="btnAddWaRow">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          <span>Tambah Nomor WhatsApp</span>
+        <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" id="btnAddWaRow" aria-label="Tambah nomor WhatsApp CS baru">
+          <svg class="adm-btn-icon adm-btn-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Tambah</span>
         </button>
         <span style="font-size: 12px; color: var(--text-variant, #64748b);">
           * Label hanya untuk identifikasi internal di admin, tidak tampil ke publik.
@@ -387,12 +397,13 @@
       </span>
     </div>
     <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">
-      <a href="/admin/dashboard" class="btn btn-secondary">
-        Batal
+      <a href="/admin/dashboard" class="adm-btn adm-btn-neutral" aria-label="Batalkan perubahan pengaturan">
+        <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>Batal</span>
       </a>
-      <button type="submit" class="btn btn-primary" style="min-width: 220px;">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-        <span>Simpan Semua Pengaturan</span>
+      <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan seluruh pengaturan situs">
+        <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Simpan</span>
       </button>
     </div>
   </div>

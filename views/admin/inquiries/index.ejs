@@ -150,7 +150,7 @@
     <div style="display: flex; justify-content: center; gap: 6px; padding: 1rem; border-top: 1px solid var(--border-main);">
       <% for (let p = 1; p <= totalPages; p++) { %>
         <a href="/admin/inquiries?status=<%= currentStatus %>&search=<%= searchQuery %>&page=<%= p %>"
-           class="btn btn-sm <%= p === currentPage ? 'btn-primary' : 'btn-secondary' %>">
+           class="adm-btn adm-btn-sm <%= p === currentPage ? 'adm-btn-primary' : 'adm-btn-neutral' %>">
           <%= p %>
         </a>
       <% } %>
@@ -199,8 +199,13 @@
           <textarea id="mAdminNotes" class="form-textarea" placeholder="Tuliskan catatan tindak lanjut, estimasi kebutuhan, atau kontak follow-up..."></textarea>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="closeAdminModal('inquiryDetailModal')">Tutup</button>
-          <button type="submit" class="btn btn-primary btn-sm">Simpan Catatan</button>
+          <button type="button" class="adm-btn adm-btn-neutral adm-btn-sm" onclick="closeAdminModal('inquiryDetailModal')" aria-label="Tutup jendela rincian pesan">
+            <span>Tutup</span>
+          </button>
+          <button type="submit" class="adm-btn adm-btn-primary adm-btn-sm" aria-label="Simpan catatan tindak lanjut">
+            <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Simpan</span>
+          </button>
         </div>
       </form>
     </div>

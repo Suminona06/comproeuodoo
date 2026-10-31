@@ -6,14 +6,14 @@
     <p>Pantau metrik harian, kelola antrean inquiry RFQ, dan tinjau status portal perusahaan.</p>
   </div>
   <div class="header-actions">
-    <a href="/admin/inquiries/export" class="btn btn-secondary">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      <span>Ekspor CSV</span>
+    <a href="/admin/inquiries/export" class="adm-btn adm-btn-secondary" aria-label="Ekspor data RFQ ke CSV">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Ekspor</span>
     </a>
     <% if (typeof user !== 'undefined' && user && ['superadmin', 'admin'].includes(user.role)) { %>
-      <a href="/admin/products/create" class="btn btn-primary">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        <span>Tambah Produk</span>
+      <a href="/admin/products/create" class="adm-btn adm-btn-primary" aria-label="Tambah produk baru">
+        <svg class="adm-btn-icon adm-btn-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Tambah</span>
       </a>
     <% } %>
   </div>
@@ -189,8 +189,13 @@
           <textarea id="modalAdminNotes" class="form-textarea" placeholder="Tuliskan catatan tindak lanjut, kesepakatan harga, atau jadwal meeting dengan klien..."></textarea>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="closeAdminModal('inquiryDetailModal')">Tutup</button>
-          <button type="submit" class="btn btn-primary btn-sm">Simpan Catatan</button>
+          <button type="button" class="adm-btn adm-btn-neutral adm-btn-sm" onclick="closeAdminModal('inquiryDetailModal')" aria-label="Tutup jendela rincian pesan">
+            <span>Tutup</span>
+          </button>
+          <button type="submit" class="adm-btn adm-btn-primary adm-btn-sm" aria-label="Simpan catatan tindak lanjut">
+            <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Simpan</span>
+          </button>
         </div>
       </form>
     </div>

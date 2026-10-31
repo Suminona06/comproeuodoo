@@ -107,11 +107,14 @@
           </div>
         </div>
         <div class="media-picker-ctrls">
-          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="product_image_url" data-picker-type="image">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <span>Pilih dari Media Library</span>
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="product_image_url" data-picker-type="image" aria-label="Pilih foto produk dari Media Library">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Pilih Media</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media <%= typeof formData !== 'undefined' && formData?.image_url ? '' : 'hidden' %>">Hapus</button>
+          <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media <%= typeof formData !== 'undefined' && formData?.image_url ? '' : 'hidden' %>" aria-label="Hapus foto produk">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
+          </button>
         </div>
       </div>
     </div>
@@ -120,9 +123,9 @@
       <label class="form-label">Foto Gallery (ID) / Gallery Photos (EN)</label>
       <div class="prod-gallery-wrap">
         <div class="prod-gallery-actions">
-          <button type="button" class="btn btn-secondary btn-sm" id="btnOpenGalleryPicker">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>Pilih Foto dari Library</span>
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" id="btnOpenGalleryPicker" aria-label="Pilih foto galeri dari Media Library">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Pilih Foto</span>
           </button>
           <span class="prod-gallery-hint">Pilih beberapa foto sekaligus. Atur urutan dengan tombol ▲ ▼ atau hapus dengan &times;.</span>
         </div>

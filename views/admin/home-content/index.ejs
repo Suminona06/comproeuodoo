@@ -6,9 +6,9 @@
     <p>Kelola narasi intro pabrik, 3 pilar keunggulan, sertifikasi mutu, dan banner CTA global pre-footer.</p>
   </div>
   <div class="header-actions">
-    <a href="/" target="_blank" class="btn btn-secondary" title="Lihat Halaman Beranda Publik">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-      <span>Pratinjau Beranda</span>
+    <a href="/" target="_blank" class="adm-btn adm-btn-secondary" aria-label="Buka halaman beranda publik">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      <span>Pratinjau</span>
     </a>
   </div>
 </div>
@@ -107,11 +107,14 @@
             </div>
           </div>
           <div class="media-picker-ctrls">
-            <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="home_intro_image_url" data-picker-type="image">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-              Pilih dari Media Library
+            <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="home_intro_image_url" data-picker-type="image" aria-label="Pilih foto intro beranda dari Media Library">
+              <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Pilih Media</span>
             </button>
-            <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= homeContent.intro.image_url ? '' : 'display: none;' %>">Hapus</button>
+            <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= homeContent.intro.image_url ? '' : 'display: none;' %>" aria-label="Hapus foto intro beranda">
+              <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span>Hapus</span>
+            </button>
           </div>
         </div>
       </div>
@@ -353,11 +356,14 @@
                     </div>
                   </div>
                   <div class="media-picker-ctrls">
-                    <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="home_cat_<%= idx %>_image_url" data-picker-type="image">
-                      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                      Pilih dari Media Library
+                    <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="home_cat_<%= idx %>_image_url" data-picker-type="image" aria-label="Pilih foto kategori dari Media Library">
+                      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                      <span>Pilih Media</span>
                     </button>
-                    <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= catItem.image_url ? '' : 'display: none;' %>">Hapus</button>
+                    <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= catItem.image_url ? '' : 'display: none;' %>" aria-label="Hapus foto kategori">
+                      <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      <span>Hapus</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -486,10 +492,14 @@
                   </div>
                 </div>
                 <div class="media-picker-ctrls">
-                  <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="cert_logo_<%= idx %>" data-picker-type="image">
-                    Pilih Logo
+                  <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="cert_logo_<%= idx %>" data-picker-type="image" aria-label="Pilih logo sertifikat dari Media Library">
+                    <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <span>Pilih Media</span>
                   </button>
-                  <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= item.logo_url ? '' : 'display: none;' %>">Hapus</button>
+                  <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= item.logo_url ? '' : 'display: none;' %>" aria-label="Hapus logo sertifikat">
+                    <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Hapus</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -655,12 +665,13 @@
       </span>
     </div>
     <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">
-      <a href="/admin/dashboard" class="btn btn-secondary">
-        Batal
+      <a href="/admin/dashboard" class="adm-btn adm-btn-neutral" aria-label="Batalkan perubahan beranda">
+        <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>Batal</span>
       </a>
-      <button type="submit" class="btn btn-primary" style="min-width: 220px;">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-        <span>Simpan Perubahan</span>
+      <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan perubahan konten beranda">
+        <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Simpan</span>
       </button>
     </div>
   </div>

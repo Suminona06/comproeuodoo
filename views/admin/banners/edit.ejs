@@ -73,11 +73,14 @@
           <% } %>
         </div>
         <div class="media-picker-ctrls">
-          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="banner_file_url" data-picker-type="<%= banner.media_type === 'video' ? 'video' : 'image' %>" id="btnBannerOpenPicker">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            Pilih dari Media Library
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="banner_file_url" data-picker-type="<%= banner.media_type === 'video' ? 'video' : 'image' %>" id="btnBannerOpenPicker" aria-label="Pilih aset media banner dari Media Library">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Pilih Media</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= (banner.file_url || banner.image_url) ? '' : 'display: none;' %>">Hapus</button>
+          <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= (banner.file_url || banner.image_url) ? '' : 'display: none;' %>" aria-label="Hapus aset media banner">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
+          </button>
         </div>
       </div>
     </div>
@@ -110,10 +113,14 @@
           <% } %>
         </div>
         <div class="media-picker-ctrls">
-          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="banner_poster_url" data-picker-type="image">
-            Pilih Poster
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="banner_poster_url" data-picker-type="image" aria-label="Pilih gambar poster fallback dari Media Library">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Pilih Poster</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= banner.poster_url ? '' : 'display: none;' %>">Hapus</button>
+          <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= banner.poster_url ? '' : 'display: none;' %>" aria-label="Hapus poster fallback">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
+          </button>
         </div>
       </div>
     </div>

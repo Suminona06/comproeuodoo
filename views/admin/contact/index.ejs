@@ -6,9 +6,9 @@
     <p>Kelola jam kerja operasional dwibahasa serta teks judul dan pengantar formulir konsultasi penawaran.</p>
   </div>
   <div class="header-actions">
-    <a href="/contact" target="_blank" class="btn btn-secondary" title="Buka Halaman Kontak Publik">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-      <span>Lihat Halaman Publik</span>
+    <a href="/contact" target="_blank" class="adm-btn adm-btn-secondary" aria-label="Buka halaman kontak publik">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      <span>Pratinjau</span>
     </a>
   </div>
 </div>
@@ -21,7 +21,7 @@
       <span style="font-size: 12.5px; color: var(--text-variant, #424753);">Alamat kantor, pabrik, telepon, email, dan peta Google Maps dikelola secara terpusat di Pengaturan Umum.</span>
     </div>
   </div>
-  <a href="/admin/settings" class="btn btn-outline btn-sm" style="flex-shrink: 0;">Buka Pengaturan</a>
+  <a href="/admin/settings" class="adm-btn adm-btn-secondary adm-btn-sm" style="flex-shrink: 0;" aria-label="Buka halaman pengaturan umum">Buka Pengaturan</a>
 </div>
 
 <form action="/admin/contact?_csrf=<%= csrfToken %>" method="POST">
@@ -82,12 +82,13 @@
       </span>
     </div>
     <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">
-      <a href="/admin/dashboard" class="btn btn-secondary">
-        Batal
+      <a href="/admin/dashboard" class="adm-btn adm-btn-neutral" aria-label="Batalkan pengeditan konten kontak">
+        <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>Batal</span>
       </a>
-      <button type="submit" class="btn btn-primary" style="min-width: 220px;">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-        <span>Simpan Konten Kontak</span>
+      <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan konten kontak">
+        <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Simpan</span>
       </button>
     </div>
   </div>
