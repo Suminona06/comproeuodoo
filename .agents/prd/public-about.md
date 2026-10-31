@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-21 | Kode: views/public/about.ejs, controllers/public/pageController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-31 | Kode: views/public/about.ejs, controllers/public/pageController.js
 
 # PRD: Modul Tentang Kami (Public About)
 
@@ -27,9 +27,9 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
 - Navigasi paginasi interaktif: tombol panah sebelumnya/berikutnya (`.abt-gal-pager-btn`) dan indikator counter halaman aktif (`.abt-gal-pager-count`).
 - Transisi antar halaman menggunakan engine animasi simetris Anime.js (Shutter Wipe) disertai mekanisme image pre-decode sebelum render.
 - Caption dan judul foto bersifat opsional (kontrak `title_id` nullable), dengan fallback aksesibilitas otomatis ke `alt` dan `aria-label`.
-- Setiap tile bento bersifat interaktif (klik maupun aktivasi keyboard `Enter`/`Space`) untuk membuka foto dalam mode Lightbox layar penuh `[PENDING T-253]`.
+- Setiap tile bento bersifat interaktif (klik maupun aktivasi keyboard `Enter`/`Space`) untuk membuka foto dalam mode Lightbox layar penuh.
 
-### FR-24: Lightbox Zoom Galeri Tentang Kami [PENDING T-253, T-254]
+### FR-24: Lightbox Zoom Galeri Tentang Kami
 - **Pemicu & Cakupan Seluruh Slide:** Mengklik atau menekan `Enter`/`Space` pada tile mana pun di Bento Gallery (`.abt-gal-tile`, baik hasil render awal SSR maupun tile hasil paginasi JS) membuka komponen **Lightbox Layar Penuh** bersama (`.lbx-*`, berbagi spesifikasi dengan `FR-31` pada `prd/products.md`) tepat pada foto tersebut. Navigasi di dalam lightbox mencakup **seluruh foto galeri** dari dataset `#bentoGalleryData` (mis. `"3 / 12"`), bukan hanya 6 tile pada halaman bento aktif.
 - **Zoom, Pan & Navigasi:** Menggunakan komponen bersama berbasis PhotoSwipe v5 *self-hosted* di atas backdrop `var(--surface-dark-deep)` dengan teks/ikon `var(--color-on-primary)`. Di desktop mendukung klik/*double-click* untuk *zoom* ke titik klik + *drag* untuk geser (*pan*) serta tombol `+`/`-` pada toolbar; di perangkat sentuh mendukung *double-tap* zoom, *pinch-to-zoom* 2 jari, *pan*, dan *swipe* kiri/kanan antar-foto termasuk saat sedang di-zoom.
 - **Aksesibilitas & i18n:** Dialog modal (`role="dialog"`, `aria-modal="true"`) dengan fokus terkunci (*focus trap*), tutup via tombol atau `Escape`, pengembalian fokus ke tile pemicu, penguncian scroll body saat terbuka, penghitung posisi `"3 / 12"`, *caption* kategori dan judul foto sesuai bahasa aktif (`ID`/`EN`), serta label tombol dwibahasa. Animasi hanya `transform` dan `opacity` (`prefers-reduced-motion` tanpa animasi; hover di dalam `@media (hover: hover)`).

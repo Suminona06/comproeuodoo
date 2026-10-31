@@ -14,9 +14,9 @@
 | Modul | Status | Verifikasi | Spesifikasi PRD | Spesifikasi Teknis | Path Kode Utama |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Public Home** | ACTIVE | 2026-10-30 | [prd/public-home.md](prd/public-home.md) | [tech/public-home.md](tech/public-home.md) | `views/public/index.ejs` |
-| **Public About** | ACTIVE | 2026-10-21 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs` |
-| **Products Catalog** | ACTIVE | 2026-10-30 | [prd/products.md](prd/products.md) | [tech/products.md](tech/products.md) | `views/public/products.ejs` |
-| **Products Detail** | ACTIVE | 2026-10-30 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs` |
+| **Public About** | ACTIVE | 2026-10-31 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs` |
+| **Products Catalog** | ACTIVE | 2026-10-31 | [prd/products.md](prd/products.md) | [tech/products.md](tech/products.md) | `views/public/products.ejs` |
+| **Products Detail** | ACTIVE | 2026-10-31 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs` |
 | **Manufacturing Capabilities** | ACTIVE | 2026-10-21 | [prd/capabilities.md](prd/capabilities.md) | [tech/capabilities.md](tech/capabilities.md) | `views/public/capabilities.ejs` |
 | **News & Articles** | ACTIVE | 2026-10-28 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs` |
 | **Contact, Footer & WA** | ACTIVE | 2026-10-30 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs` |
