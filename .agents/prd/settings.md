@@ -14,7 +14,7 @@ Modul Pengaturan Situs berfungsi sebagai pusat kendali variabel global aplikasi 
 - Fitur konfigurasi terbagi dalam 4 kelompok:
   1. **Identitas & Branding Perusahaan:**
      - Nama Perusahaan (`company_name`), Tagline Perusahaan dwibahasa (`company_tagline_id`, `company_tagline_en`).
-     - Unggah Favicon Web (`site_favicon`): berkas ikon browser `.ico` atau `.webp`.
+     - Unggah/Pilih Favicon Situs (`site_favicon`) `[PENDING T-256]`: kolom unggah/pilih khusus **simbol logo persegi `1:1` tanpa teks** yang terpisah dari Logo Utama, dengan fallback otomatis ke Logo Utama bila Favicon khusus dikosongkan. Sistem wajib mempertahankan proporsi asli simbol (`fit: 'contain'`, latar transparan, padding seimbang) tanpa distorsi/gepeng, serta menghasilkan paket ukuran ikon standar (`16x16`, `32x32`, `180x180` Apple Touch Icon, `192x192`, dan `512x512` PNG) untuk halaman publik maupun dashboard admin.
      - Unggah Logo Header (`site_logo_header`): logo berlatar transparan untuk bilah navigasi atas.
      - Unggah Logo Footer (`site_logo_footer`): logo dengan kontras tinggi untuk latar belakang hijau gelap footer.
   2. **Kontak & Alamat Dual Lokasi Resmi:**
@@ -36,6 +36,7 @@ Modul Pengaturan Situs berfungsi sebagai pusat kendali variabel global aplikasi 
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
+| **Favicon Simbol Logo Persegi 1:1 & Fallback Otomatis `[PENDING T-256]`** | Memastikan ikon tab browser tampil tajam dan proporsional tanpa terdistorsi oleh teks logo horizontal. | 2026-10-31 |
 | **Pemisahan Berkas Logo Header & Logo Footer** | Menjamin keterbacaan logo di atas bilah navigasi terang maupun di atas permukaan footer hijau gelap. | 2026-10-06 |
 | **Toggle Visibilitas Media Sosial per Akun** | Memungkinkan penyembunyian tautan akun media sosial yang sedang dalam tahap kurasi konten tanpa menghapus URL yang tersimpan. | 2026-10-15 |
 | **Akses Terbatas Khusus Superadmin** | Melindungi integritas legalitas kontak korporat dari modifikasi yang tidak diotorisasi. | 2026-10-05 |

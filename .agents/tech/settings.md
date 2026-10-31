@@ -33,7 +33,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ### A. Identitas & Branding
 - `company_name`: Nama resmi korporat (`PT. EUODOO`).
 - `company_tagline_id`, `company_tagline_en`: Slogan resmi korporat.
-- `site_favicon`: Path berkas WebP/ICO ikon browser.
+- `site_favicon` `[PENDING T-256]`: Path berkas utama ikon browser persegi (simbol logo saja tanpa teks), disertai kunci ukuran turunan `site_favicon_16`, `site_favicon_32`, `site_favicon_180`, `site_favicon_192`, dan `site_favicon_512` di tabel `settings` (tanpa migrasi DDL baru).
 - `site_logo_header`: Path berkas logo header navigasi atas.
 - `site_logo_footer`: Path berkas logo footer berkontras tinggi.
 
@@ -74,4 +74,8 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
   2. Setiap baris wajib memiliki `number` (hanya karakter angka dan simbol plus dengan panjang 9-16 digit), `label` (string internal yang ditrim dan disanitasi dari tag HTML, maks 50 karakter), dan `percentage` (integer 1-100).
   3. Validasi akumulasi matematis: $\sum \text{percentage} === 100$. Jika tidak sama dengan 100, lempar error validasi dan batalkan penyimpanan.
   4. Fallback transparan: Jika payload tidak disertakan / kosong, nilai legacy `whatsapp_number` tetap dipertahankan.
+- **Pipeline Generator Multi-Ukuran Favicon (`generateFaviconSet`) `[PENDING T-256]`:**
+  1. Disediakan fungsi `generateFaviconSet(sourcePath)` di `middleware/uploadMiddleware.js` berbasis Sharp menggunakan `fit: 'contain'`, latar transparan (`background: { r: 0, g: 0, b: 0, alpha: 0 }`), dan padding seimbang sehingga simbol logo selalu ditempatkan proporsional di tengah kanvas persegi `16x16`, `32x32`, `180x180`, `192x192`, dan `512x512` PNG di `public/uploads/settings/`.
+  2. Saat pengaturan disimpan di `settingController.update`, jika `site_favicon` diisi/diunggah, `generateFaviconSet` memproses sumber `site_favicon`; jika `site_favicon` dikosongkan, sistem otomatis menjalankan fallback dari `site_logo_header` / `site_logo` dan menyimpan path turunan ke `site_favicon_16`, `site_favicon_32`, `site_favicon_180`, `site_favicon_192`, serta `site_favicon_512`.
+  3. Seluruh layout publik dan admin (`views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, dan `views/admin/403.ejs`) merender tag `<link rel="icon" type="image/png" sizes="32x32">`, `<link rel="icon" type="image/png" sizes="16x16">`, `<link rel="apple-touch-icon" sizes="180x180">`, dan `<link rel="icon" type="image/png" sizes="192x192">`.
 - **Cache Invalidation:** Memanggil `clearSettingsCache()` untuk membersihkan memory cache segera setelah update berhasil dieksekusi.

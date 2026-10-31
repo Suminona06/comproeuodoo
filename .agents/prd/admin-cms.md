@@ -72,12 +72,33 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   2. **Teks Tombol CTA EN (`cta_text_en`):** Label tombol aksi utama bahasa Inggris (maks 50 karakter). Bersifat opsional, fallback ke default "Request Quote via WhatsApp".
   3. **Integrasi Kontak WhatsApp:** Tombol CTA tetap mengarah ke WhatsApp menggunakan nomor telepon resmi yang dikelola terpusat di Pengaturan Situs (`settings.whatsapp_number`).
 
+### FR-29: Komponen Tombol Admin Terpadu & Format Slug Ringkas `[PENDING T-255, T-257, T-258]`
+- Seluruh tombol di panel Admin wajib menggunakan komponen tombol admin terpadu berprefix unik `.adm-btn` (mengacu pada gaya tombol editor tabel ukuran produk) agar terisolasi dari tombol halaman publik:
+  1. **Anatomi & Aksesibilitas Seragam:** Tinggi, radius (`var(--r-md)`), padding, jarak ikon, focus ring (`var(--focus-ring)`), state `disabled`, dan state loading (`.is-loading`) saat submit seragam; target sentuh minimal `44px` pada layar mobile (`<= 768px`); ikon SVG inline di sisi kiri selaras makna; label ringkas dwibahasa (ID dan EN) yang telah dikunci disertai `aria-label` deskriptif.
+  2. **Empat Varian Resmi Berbasis Token:**
+     - `primary` (Simpan/aksi komit utama): latar solid hijau lembut daun dari token (`var(--adm-btn-primary-bg)` / `var(--color-leaf-soft)`), teks & ikon gelap kontras tinggi (`var(--surface-dark-deep)` / `var(--text-main)`, rasio kontras WCAG AAA), border tipis (`var(--adm-btn-primary-border)`).
+     - `secondary` (aksi umum/tambah baris/salin/ekspor/pratinjau): outline tipis seperti tombol tabel ukuran (`var(--bg-surface)`, border `var(--border-main)`, teks & ikon `var(--primary)`).
+     - `neutral`/`ghost` (batal/kembali/reset): abu-abu netral (`var(--bg-surface)`, border `var(--border-main)`, teks & ikon `var(--text-secondary)`).
+     - `danger` (hapus di halaman, tabel, Media Library/Picker, dan modal konfirmasi): latar `var(--st-ditolak-bg)`, border `var(--st-ditolak-border)`, teks & ikon `var(--st-ditolak-text)`.
+  3. **Animasi Mikro:** Hanya menggunakan properti `transform` dan `opacity`, efek hover dibungkus `@media (hover: hover)`, state `:active` untuk layar sentuh, dan dinonaktifkan pada `@media (prefers-reduced-motion: reduce)`.
+  4. **Format Tampilan Slug Ringkas `[PENDING T-255]`:** Tampilan slug pada tabel daftar admin (Produk, Artikel Berita, Merek, Kategori) serta pratinjau/input di form tambah/edit hanya merender **1 baris slug tunggal** dengan tipografi monospace kecil (`var(--font-mono)`), warna `var(--text-muted)`, dan pemotongan `text-overflow: ellipsis` tanpa bullet (`&bull;`), tanpa pengulangan judul bahasa Inggris (`name_en`/`title_en`), dan tanpa prefix teks `slug:`. Perilaku pembuatan slug otomatis dan redirect 301 tetap dipertahankan.
+
+### FR-30: Standar Validasi Formulir & Dialog Admin Bertema `[PENDING T-259, T-260, T-261]`
+- Seluruh form di panel Admin wajib menggunakan atribut `novalidate` dan divalidasi oleh modul JS terpusat tanpa handler inline untuk menggantikan tooltip validasi bawaan browser:
+  1. **Validasi Berbasis Atribut Markup & Kontrol Kustom:** Membaca atribut HTML (`required`, `maxlength`, `minlength`, `pattern`, `type`, `min`, `max`) serta memvalidasi komponen kustom (TinyMCE, Media Picker, `select`, repeater WhatsApp, dan editor tabel ukuran).
+  2. **Siklus Pemicu Validasi:** Validasi dijalankan saat tombol **Submit** ditekan, lalu berjalan secara *live* (`input`/`change`) per field setelah field tersebut pernah mengalami error agar pesan dan border merah langsung hilang begitu diperbaiki.
+  3. **Tampilan Error Inline & Navigasi Tab Otomatis:** Error ditampilkan di bawah field menggunakan warna token error (`var(--color-error)`, `var(--color-error-bg)`), ikon peringatan kecil, border merah token, `aria-invalid="true"`, dan `aria-describedby` dalam bahasa aktif (ID/EN), selaras dengan error validasi server-side. Jika field error berada di dalam tab/panel yang tersembunyi, tab tersebut otomatis dibuka lalu halaman menggulir dan memfokuskan ke field error pertama.
+  4. **Dialog SweetAlert2 Bertema (Pengganti `alert`/`confirm` Native):** Seluruh pemanggilan `alert()` dan `confirm()` native di area admin diganti dengan modal SweetAlert2 bertema token Euodoo, menggunakan tombol `.adm-btn-danger` untuk konfirmasi hapus dan `.adm-btn-neutral` untuk batal.
+
 ---
 
 ## 3. Keputusan Desain & Fungsional Terkunci
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
+| **Komponen Tombol Admin Terpadu `.adm-btn-*` `[PENDING T-257, T-258]`** | Menyeragamkan hierarki aksi admin (primary hijau lembut daun `--color-leaf-soft` berteks gelap kontras AAA, secondary hijau outline, neutral abu, danger merah) tanpa merusak class `.btn-*` halaman publik. | 2026-10-31 |
+| **Validasi Form Submit + Live Pasca-Error & SweetAlert2 `[PENDING T-259, T-260]`** | Menggantikan tooltip validasi bawaan browser dan `alert`/`confirm` native dengan umpan balik bertema dwibahasa ID/EN yang aksesibel. | 2026-10-31 |
+| **Tampilan Slug Admin 1 Baris Tanpa Bullet & Tanpa Judul EN `[PENDING T-255]`** | Menghilangkan duplikasi visual antara judul bahasa Inggris dan kode slug di tabel daftar serta form admin. | 2026-10-31 |
 | **Pengurutan Galeri via Tombol Panah** | Menghindari dependensi drag-and-drop eksternal, 100% aman CSP, dan ramah aksesibilitas. | 2026-10-23 |
 | **Validasi Whitelist Kolom JSON Produk** | Mencegah injeksi payload data tak terduga pada kolom varian dan tabel ukuran produk. | 2026-10-23 |
 | **Pemisahan Peran 3 Tingkat (Superadmin/Admin/Editor)** | Mencegah staf konten mengubah pengaturan sensitif dan memastikan privasi data kontak prospek terjaga. | 2026-10-05 |

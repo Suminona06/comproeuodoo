@@ -80,3 +80,8 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
    - Endpoint API `GET /admin/products/:id/size-table-columns` untuk kebutuhan modal salin struktur kolom [COMPLETED T-216].
    - Validasi format URL untuk `gallery_images`.
    - Validasi teks CTA: `cta_text_id` dan `cta_text_en` string maksimal 50 karakter, dipangkas (trim), disanitasi bebas tag HTML.
+
+---
+
+## 6. Standar Komponen UI, Tombol & Validasi Form Admin `[PENDING T-255, T-257 s/d T-261]`
+Spesifikasi teknis lengkap mengenai sistem komponen tombol admin terpadu (`.adm-btn-primary` dengan token `--color-leaf-soft` / `--adm-btn-primary-bg`, `.adm-btn-secondary`, `.adm-btn-neutral`, `.adm-btn-danger`), matriks kontras WCAG AA/AAA, animasi mikro, format tampilan slug 1 baris (`.adm-slug-text`), modul validasi form terpusat (`public/js/admin-form-validation.js`), serta dialog SweetAlert2 bertema didokumentasikan secara terpisah pada sub-modul [tech/admin-ui.md](admin-ui.md).
