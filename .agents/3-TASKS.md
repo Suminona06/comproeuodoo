@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 4 Task (T-258 s/d T-261)
-- **Total Task Selesai:** 257 Task (T-01 s/d T-257)
+- **Task Aktif Terbuka:** 3 Task (T-259 s/d T-261)
+- **Total Task Selesai:** 258 Task (T-01 s/d T-258)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-262**.
 
@@ -54,7 +54,7 @@
   4. Target sentuh memiliki tinggi minimal `44px` pada mobile (`<= 768px`).
   5. Class `.btn-secondary` di `public/css/components.css` untuk halaman publik tetap utuh 100%.
 
-### [ ] T-258: Migrasi Seluruh Tombol Halaman Admin, Modal, Tabel & Pemendekan Label ID/EN ke `.adm-btn-*` _(diperbarui sesuai jawaban Q1, Q2, Q4, Q7)_
+### [x] T-258: Migrasi Seluruh Tombol Halaman Admin, Modal, Tabel & Pemendekan Label ID/EN ke `.adm-btn-*` _(diperbarui sesuai jawaban Q1, Q2, Q4, Q7)_
 
 - **Ukuran**: M | **Skill Terkait**: `polish`, `adapt`
 - **Deskripsi**: Mengganti seluruh pemakaian tombol lama (`.btn`, `.btn-primary`, `.btn-secondary`, `.btn-outline`, `.btn-ghost`, `.btn-action-*`, `.btn-add-row`) di seluruh view EJS admin dan script pembentuk tombol dinamis (`admin-size-table.js`, `admin-settings.js`, `media-picker.js`) ke `.adm-btn-*` sesuai pemetaan varian Q1 (`primary`), Q2 (`neutral`), dan Q7 (`danger`). Memasang set ikon SVG inline yang seragam di sisi kiri serta menerapkan daftar 31 label pendek dwibahasa ID/EN dan `aria-label` yang telah disetujui pada Q4.
