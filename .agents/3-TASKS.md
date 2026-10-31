@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 4 Task (T-251 s/d T-254)
-- **Total Task Selesai:** 250 Task (T-01 s/d T-250)
+- **Task Aktif Terbuka:** 1 Task (T-254)
+- **Total Task Selesai:** 253 Task (T-01 s/d T-253)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-255**.
 
@@ -27,7 +27,7 @@
 
 ---
 
-### [ ] T-251: Sembunyikan tab Deskripsi, tampilkan Tabel Ukuran langsung dengan judul section biasa, & perkuat SEO meta description
+### [x] T-251: Sembunyikan tab Deskripsi, tampilkan Tabel Ukuran langsung dengan judul section biasa, & perkuat SEO meta description
 - **Modul Spec:** `prd/products.md` (FR-24), `tech/products-detail.md`
 - **Deskripsi:** Menghapus markup tab `Deskripsi` (`#pdTabDesc`, `#pdPanelDesc`) dan sistem `role="tablist"` dari `views/public/product-detail.ejs`. Membungkus seluruh section tabel ukuran dengan kondisi `<% if (hasSizeTable) { %>` sehingga bila produk tidak memiliki tabel ukuran, section dihilangkan seluruhnya (Keputusan #4). Saat produk memiliki tabel ukuran, tampilkan judul section biasa (`<h2 class="pd-size-heading">Tabel Ukuran</h2>` / `"Size Chart"`) tanpa tab (Keputusan #5) dan tampilkan `.pd-table-wrap` secara langsung tanpa atribut `hidden`. Menghapus kode JS pengendali tab (`[data-tabs]`) yang jadi mati di `public/js/product-detail.js`. Memastikan `controllers/public/productController.js` mengisi `res.locals.seo.description` dan `res.locals.seo.ogDescription` menggunakan rantai fallback `meta_description_<lang>` -> `short_description_<lang>` -> plain text `description_<lang>` agar SEO halaman produk tidak kosong. Membiarkan form Admin Produk apa adanya tanpa perubahan (Keputusan #6).
 - **Acceptance Criteria:**
@@ -43,7 +43,7 @@
 
 ---
 
-### [ ] T-252: Bangun komponen bersama Lightbox (`.lbx-*`) berbasis PhotoSwipe v5 self-hosted dan integrasikan ke galeri Detail Produk
+### [x] T-252: Bangun komponen bersama Lightbox (`.lbx-*`) berbasis PhotoSwipe v5 self-hosted dan integrasikan ke galeri Detail Produk
 - **Modul Spec:** `prd/products.md` (FR-31), `tech/products-detail.md`
 - **Deskripsi:** Menyimpan aset PhotoSwipe v5 (lisensi MIT) secara lokal di `public/vendor/photoswipe/` (`photoswipe.umd.min.js`, `photoswipe-lightbox.umd.min.js`, dan `photoswipe.css`) sesuai Keputusan #1, lalu membangun komponen pembungkus bersama `public/css/lightbox.css` dan `public/js/lightbox.js` dengan prefix class unik `.lbx-*`. Mengonfigurasi cara zoom di desktop menggunakan kombinasi klik/*double-click* pada foto untuk *zoom* ke titik klik + *drag* untuk geser **serta** tombol kontrol `+` / `-` pada toolbar (Keputusan #2). Mengintegrasikan lightbox pada galeri Detail Produk (`views/public/product-detail.ejs` & `public/js/product-detail.js`) di mana klik/Enter pada **gambar utama** (`#pdMainImage` / wrapper `.pd-main-media`) membuka lightbox mulai dari foto yang sedang aktif, sedangkan klik pada **thumbnail** (`.pd-thumb-btn`) tetap hanya menukar gambar utama (Keputusan #7).
 - **Acceptance Criteria:**
@@ -59,7 +59,7 @@
 
 ---
 
-### [ ] T-253: Integrasikan komponen bersama Lightbox (`.lbx-*`) ke Bento Gallery halaman Tentang Kami
+### [x] T-253: Integrasikan komponen bersama Lightbox (`.lbx-*`) ke Bento Gallery halaman Tentang Kami
 - **Modul Spec:** `prd/public-about.md` (FR-24), `tech/public-about.md`
 - **Deskripsi:** Mengintegrasikan komponen bersama Lightbox `.lbx-*` (`window.EuodooLightbox` berbasis PhotoSwipe v5 lokal dari T-252, dengan kontrol zoom klik + tombol `+`/`-` sesuai Keputusan #1 dan #2) ke section Bento Gallery (`#bentoGallery`) pada `views/public/about.ejs` dan `public/js/main.js`. Menyematkan atribut `data-slide-index` global, `role="button"`, `tabindex="0"`, dan `aria-label` dwibahasa pada setiap `.abt-gal-tile` baik saat render awal (SSR) maupun saat fungsi `createSingleTile` membangun ulang DOM ketika paginasi `Prev`/`Next` diklik. Menggunakan *event delegation* pada `#bentoGalleryGrid` sehingga navigasi di dalam lightbox mencakup **seluruh** foto dari `#bentoGalleryData` (bukan hanya 6 tile halaman aktif).
 - **Acceptance Criteria:**

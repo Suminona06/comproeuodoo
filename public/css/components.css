@@ -5925,7 +5925,7 @@
   border: 1px solid var(--border, #e2e8f0);
   box-shadow: var(--shadow-1, 0 1px 3px rgba(7, 31, 23, 0.06));
   outline: none;
-  cursor: default;
+  cursor: zoom-in;
   transition: border-color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               box-shadow var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               transform 150ms ease;
@@ -6813,12 +6813,48 @@
   }
 }
 
-.pd-gallery-main {
-  border: 1px solid var(--pd-line, #E4E1D6);
-  border-radius: var(--pd-radius-lg, 20px);
+.pd-gallery-main,
+.pd-main-media {
+  border: 1px solid var(--pd-line);
+  border-radius: var(--pd-radius-lg);
   overflow: hidden;
-  background: var(--pd-surface-2, #F6F7F3);
+  background: var(--pd-surface-2);
   position: relative;
+  cursor: zoom-in;
+}
+
+.pd-gallery-main:focus-visible,
+.pd-main-media:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.pd-zoom-hint {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-full, var(--radius-pill));
+  background: rgba(7, 31, 23, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-on-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.9;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .pd-gallery-main:hover .pd-zoom-hint,
+  .pd-main-media:hover .pd-zoom-hint {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    opacity: 1;
+    transform: scale(1.06);
+  }
 }
 
 .pd-gallery-main img {
@@ -7016,66 +7052,19 @@
   outline-offset: 2px;
 }
 
-.pd-tabs {
+.pd-size-sec {
   margin-top: 38px;
+  padding-top: 24px;
   border-top: 1px solid var(--pd-line, #E4E1D6);
 }
 
-.pd-tabbar {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-
-.pd-tab-btn {
-  border: 0;
-  background: transparent;
-  padding: 14px 16px;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--pd-ink-3, #71817A);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: color 180ms ease, border-bottom-color 180ms ease;
-}
-
-.pd-tab-btn[aria-selected="true"] {
-  color: var(--pd-green, #00755A);
-  border-bottom-color: var(--pd-green, #00755A);
-}
-
-.pd-tab-btn:focus-visible {
-  outline: 2px solid var(--pd-green, #00755A);
-  outline-offset: -2px;
-}
-
-.pd-panel {
-  padding: 22px 2px 4px;
-}
-
-.pd-panel p,
-.pd-panel li {
-  color: var(--pd-ink-2, #43534B);
-  font-size: 15px;
-  max-width: 75ch;
-  line-height: 1.65;
-}
-
-.pd-panel ul {
-  color: var(--pd-ink-2, #43534B);
-  font-size: 15px;
-  padding-left: 20px;
-  margin: 12px 0;
-}
-
-.pd-panel li {
-  margin-bottom: 6px;
-}
-
-.pd-panel[hidden] {
-  display: none !important;
+.pd-size-heading {
+  font-size: clamp(18px, 2.2vw, 22px);
+  font-weight: 800;
+  color: var(--pd-ink, #17251F);
+  letter-spacing: -0.015em;
+  margin: 0 0 16px;
+  line-height: 1.25;
 }
 
 .pd-size-scroll {
@@ -7261,10 +7250,10 @@ table.pd-size td:first-child {
 
 @media (prefers-reduced-motion: reduce) {
   .pd-gallery-main img,
+  .pd-zoom-hint,
   .pd-btn,
   .pd-pill,
-  .pd-thumb-btn,
-  .pd-tab-btn {
+  .pd-thumb-btn {
     transition: none !important;
     animation: none !important;
     transform: none !important;

@@ -174,11 +174,13 @@ export const productController = {
       product.size_table = normalizeSizeTable(product.size_table);
 
       const mainImage = product.main_image || product.image_url || null;
+      let rawGallery = product.gallery_images || product.gallery || null;
+      if (typeof rawGallery === 'string') {
+        try { rawGallery = JSON.parse(rawGallery); } catch { rawGallery = null; }
+      }
       let gallery = [];
-      if (Array.isArray(product.gallery_images) && product.gallery_images.length > 0) {
-        gallery = product.gallery_images;
-      } else if (Array.isArray(product.gallery) && product.gallery.length > 0) {
-        gallery = product.gallery;
+      if (Array.isArray(rawGallery) && rawGallery.length > 0) {
+        gallery = rawGallery;
       } else if (mainImage) {
         gallery = [mainImage];
       }
@@ -209,6 +211,15 @@ export const productController = {
       const prodName = lang === 'en' ? (product.name_en || product.name_id) : product.name_id;
       const title = prodName + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
 
+      const rawMetaDesc = lang === 'en'
+        ? (product.meta_description_en || product.meta_description_id || product.short_description_en || product.short_description_id || product.description_en || product.description_id || '')
+        : (product.meta_description_id || product.short_description_id || product.description_id || '');
+      const cleanMetaDesc = String(rawMetaDesc).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+      if (cleanMetaDesc && res.locals?.seo) {
+        res.locals.seo.description = cleanMetaDesc;
+        res.locals.seo.ogDescription = cleanMetaDesc;
+      }
+
       const settings = res.locals.settings || {};
       const waNumber = settings.whatsapp_formatted_number
         || (settings.whatsapp_number ? String(settings.whatsapp_number).replace(/[^0-9]/g, '') : '6281234567890');
@@ -226,6 +237,7 @@ export const productController = {
 
       res.render('public/product-detail', {
         title,
+        metaDescription: cleanMetaDesc || undefined,
         path: '/products',
         headerSolid: true,
         product,

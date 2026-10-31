@@ -4,11 +4,10 @@
 <%
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'id';
   const prodName = lang === 'en' ? (product.name_en || product.name_id) : product.name_id;
-  const fullDesc = lang === 'en' ? (product.description_en || product.description_id || '') : (product.description_id || '');
   const shortDesc = lang === 'en' ? (product.short_description_en || product.short_description_id || '') : (product.short_description_id || '');
   const catName = lang === 'en' ? (product.category_name_en || product.category_name_id || '') : (product.category_name_id || '');
   const catSlug = product.category_slug || '';
-  const mainImage = product.main_image || product.image_url || '/images/products/retail-softloop.webp';
+  const mainImage = product.main_image || product.image_url || '/images/segment-retail.jpg';
 
   let gallery = [];
   if (Array.isArray(product.gallery_images) && product.gallery_images.length > 0) {
@@ -43,13 +42,27 @@
 
     <div class="pd-grid">
       <div class="pd-gallery" data-gallery>
-        <div class="pd-gallery-main">
+        <div class="pd-gallery-main pd-main-media"
+             role="button"
+             tabindex="0"
+             data-main-trigger
+             data-active-index="0"
+             data-caption="<%= prodName %>"
+             aria-label="<%= (lang === 'en' ? 'Enlarge product photo: ' : 'Perbesar foto produk: ') + prodName %>">
           <img id="pdMainImage"
                src="<%= mainImage %>"
                alt="<%= prodName %>"
                fetchpriority="high"
                width="560"
                height="476">
+          <span class="pd-zoom-hint" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="7"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </span>
         </div>
 
         <% if (gallery && gallery.length > 1) { %>
@@ -58,6 +71,7 @@
               <button type="button"
                       class="pd-thumb-btn"
                       data-thumb
+                      data-index="<%= i %>"
                       data-full="<%= img %>"
                       data-alt="<%= prodName %> - <%= i + 1 %>"
                       aria-pressed="<%= i === 0 ? 'true' : 'false' %>"
@@ -114,53 +128,35 @@
       const hasSizeTable = sizeColumns.length > 0 && sizeRows.length > 0;
     %>
 
-    <div class="pd-tabs" data-tabs>
-      <div class="pd-tabbar" role="tablist" aria-label="<%= lang === 'en' ? 'Product information tabs' : 'Tab informasi produk' %>">
-        <button type="button" class="pd-tab-btn" role="tab" id="pdTabDesc" data-tab="desc" aria-controls="pdPanelDesc" aria-selected="true">
-          <%= typeof t === 'function' ? t('product_detail.tab_overview') : (lang === 'en' ? 'Overview' : 'Deskripsi') %>
-        </button>
-        <% if (hasSizeTable) { %>
-          <button type="button" class="pd-tab-btn" role="tab" id="pdTabSize" data-tab="size" aria-controls="pdPanelSize" aria-selected="false">
-            <%= typeof t === 'function' ? t('product_detail.tab_size_chart') : (lang === 'en' ? 'Size Chart' : 'Tabel Ukuran') %>
-          </button>
-        <% } %>
-      </div>
-
-      <div class="pd-panel" id="pdPanelDesc" role="tabpanel" aria-labelledby="pdTabDesc" data-panel="desc">
-        <% if (fullDesc) { %>
-          <%- fullDesc %>
-        <% } else { %>
-          <p><%= lang === 'en' ? 'Product description is currently being updated.' : 'Deskripsi produk sedang diperbarui.' %></p>
-        <% } %>
-      </div>
-
-      <% if (hasSizeTable) { %>
-        <div class="pd-panel" id="pdPanelSize" role="tabpanel" aria-labelledby="pdTabSize" data-panel="size" hidden>
-          <div class="pd-size-scroll">
-            <table class="pd-size" data-cols="<%= sizeColumns.length %>">
-              <thead>
+    <% if (hasSizeTable) { %>
+      <div class="pd-size-sec" id="pdPanelSize">
+        <h2 class="pd-size-heading">
+          <%= typeof t === 'function' ? t('product_detail.tab_size_chart') : (lang === 'en' ? 'Size Chart' : 'Tabel Ukuran') %>
+        </h2>
+        <div class="pd-table-wrap pd-size-scroll">
+          <table class="pd-size" data-cols="<%= sizeColumns.length %>">
+            <thead>
+              <tr>
+                <% sizeColumns.forEach(function(col) { %>
+                  <th scope="col"><%= col.label %></th>
+                <% }); %>
+              </tr>
+            </thead>
+            <tbody>
+              <% sizeRows.forEach(function(row) { %>
                 <tr>
-                  <% sizeColumns.forEach(function(col) { %>
-                    <th scope="col"><%= col.label %></th>
+                  <% sizeColumns.forEach(function(col) {
+                       const cellVal = row[col.id] !== undefined ? row[col.id] : '';
+                  %>
+                    <td data-l="<%= col.label %>"><%= cellVal || '-' %></td>
                   <% }); %>
                 </tr>
-              </thead>
-              <tbody>
-                <% sizeRows.forEach(function(row) { %>
-                  <tr>
-                    <% sizeColumns.forEach(function(col) {
-                         const cellVal = row[col.id] !== undefined ? row[col.id] : '';
-                    %>
-                      <td data-l="<%= col.label %>"><%= cellVal || '-' %></td>
-                    <% }); %>
-                  </tr>
-                <% }); %>
-              </tbody>
-            </table>
-          </div>
+              <% }); %>
+            </tbody>
+          </table>
         </div>
-      <% } %>
-    </div>
+      </div>
+    <% } %>
   </section>
 
   <% if (typeof relatedProducts !== 'undefined' && relatedProducts && relatedProducts.length > 0) { %>

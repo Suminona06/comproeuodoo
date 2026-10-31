@@ -230,7 +230,7 @@
                    const altText = cleanTitle || cleanTag || fallbackLabel;
                    const hasCaption = Boolean(cleanTag || cleanTitle);
               %>
-                <div class="bento-tile abt-gal-tile <%= posClass %>" tabindex="0" style="--tile-i: <%= idx %>;" aria-label="<%= altText %>">
+                <div class="bento-tile abt-gal-tile <%= posClass %>" role="button" tabindex="0" data-slide-index="<%= idx %>" style="--tile-i: <%= idx %>;" aria-label="<%= altText %>">
                   <img 
                     src="<%= slide.image_url %>" 
                     alt="<%= altText %>"
