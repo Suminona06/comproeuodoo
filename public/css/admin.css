@@ -3272,3 +3272,52 @@ body.sidebar-open .admin-backdrop {
   flex-wrap: wrap;
   gap: 10px;
 }
+
+/* ==========================================================================
+   Admin Form Validation Engine (.is-invalid, .adm-field-error)
+   T-259: Validasi Form Admin Terpusat & Error Inline Berbasis Token
+   ========================================================================== */
+.form-input.is-invalid,
+.form-textarea.is-invalid,
+.form-select.is-invalid,
+.tox.tox-tinymce.is-invalid,
+.media-picker-component.is-invalid .media-picker-preview-box {
+  border-color: var(--color-error, #ba1a1a) !important;
+  box-shadow: 0 0 0 1px var(--color-error, #ba1a1a) !important;
+}
+
+.adm-field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--color-error, #ba1a1a);
+  font-weight: 500;
+  animation: admErrorFadeIn 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.adm-field-error-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  stroke: var(--color-error, #ba1a1a);
+}
+
+@keyframes admErrorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-field-error {
+    animation: none !important;
+  }
+}
