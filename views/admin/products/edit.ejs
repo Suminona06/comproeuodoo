@@ -6,7 +6,10 @@
     <p>Perbarui rincian spesifikasi material, varian ukuran, atau galeri gambar produk.</p>
   </div>
   <div class="header-actions">
-    <a href="/admin/products" class="btn btn-secondary">&larr; Kembali ke Katalog</a>
+    <a href="/admin/products" class="adm-btn adm-btn-neutral" aria-label="Kembali ke daftar produk">
+      <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>Kembali</span>
+    </a>
   </div>
 </div>
 
@@ -23,6 +26,15 @@
         <label class="form-label" for="name_en">Nama Produk (English)</label>
         <input type="text" id="name_en" name="name_en" class="form-input" value="<%= product.name_en || '' %>">
       </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">URL Slug Kanonik Produk</label>
+      <div class="adm-slug-box">
+        <span class="adm-slug-prefix">/products/</span>
+        <span class="adm-slug-val" title="<%= product.slug %>"><%= product.slug %></span>
+      </div>
+      <p class="admin-field-hint">Slug dibuat otomatis dari Nama Produk dan memiliki redirect 301 permanen saat nama diubah.</p>
     </div>
 
     <div class="form-row-3">
@@ -239,9 +251,13 @@
         </div>
       </div>
       <div class="admin-modal-footer modal-copy-footer">
-        <button type="button" class="btn btn-secondary" id="btnCancelCopyModal">Batal</button>
-        <button type="button" class="btn btn-primary" id="btnConfirmCopyColumns" disabled>
-          <span>Salin Struktur</span>
+        <button type="button" class="adm-btn adm-btn-neutral" id="btnCancelCopyModal" aria-label="Batalkan salin kolom">
+          <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <span>Batal</span>
+        </button>
+        <button type="button" class="adm-btn adm-btn-primary" id="btnConfirmCopyColumns" disabled aria-label="Konfirmasi salin struktur kolom">
+          <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Salin</span>
         </button>
       </div>
     </div>
@@ -272,8 +288,14 @@
   </div>
 
   <div class="form-actions-bar form-actions-sticky">
-    <a href="/admin/products" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary btn-submit-form">Perbarui Produk</button>
+    <a href="/admin/products" class="adm-btn adm-btn-neutral" aria-label="Batalkan perubahan produk">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      <span>Batal</span>
+    </a>
+    <button type="submit" class="adm-btn adm-btn-primary btn-submit-form" aria-label="Simpan perubahan produk">
+      <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+      <span>Simpan</span>
+    </button>
   </div>
 </form>
 

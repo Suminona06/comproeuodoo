@@ -10,7 +10,7 @@ const rootDir = path.resolve(__dirname, '..');
 const STORAGE_DRIVER = process.env.STORAGE_DRIVER || 'local';
 
 // Subdirectories to ensure on local filesystem
-const subFolders = ['banners', 'products', 'posts', 'brands', 'pages', 'media'];
+const subFolders = ['banners', 'products', 'posts', 'brands', 'pages', 'media', 'settings'];
 subFolders.forEach((folder) => {
   const dirPath = path.join(rootDir, 'public', 'uploads', folder);
   if (!fs.existsSync(dirPath)) {

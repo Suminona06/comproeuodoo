@@ -6,10 +6,13 @@
     <p>Kelola publikasi korporasi, berita CSR, siaran pers resmi, dan artikel blog edukasi kemasan.</p>
   </div>
   <div class="header-actions">
-    <a href="/admin/post-categories" class="btn btn-secondary">Kategori Artikel &rarr;</a>
-    <a href="/admin/posts/create" class="btn btn-primary">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      <span>Tulis Artikel Baru</span>
+    <a href="/admin/post-categories" class="adm-btn adm-btn-secondary" aria-label="Buka daftar kategori berita">
+      <svg class="adm-btn-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      <span>Kategori</span>
+    </a>
+    <a href="/admin/posts/create" class="adm-btn adm-btn-primary" aria-label="Tulis artikel berita baru">
+      <svg class="adm-btn-icon adm-btn-icon-plus" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tambah</span>
     </a>
   </div>
 </div>
@@ -57,7 +60,7 @@
               </td>
               <td>
                 <div class="td-client-title"><%= post.title_id %></div>
-                <div class="td-client-sub"><%= post.title_en || '-' %> &bull; <code><%= post.slug %></code></div>
+                <div class="adm-slug-text" title="<%= post.slug %>"><%= post.slug %></div>
               </td>
               <td>
                 <span class="badge-role <%= post.type === 'berita' ? 'admin' : (post.type === 'pers' ? 'superadmin' : 'editor') %>" style="font-size: 11px;">

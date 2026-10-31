@@ -1,6 +1,7 @@
 import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
+import fs from 'fs';
 import storage from '../config/storage.js';
 import logger from '../utils/logger.js';
 
@@ -210,11 +211,86 @@ export const saveSettingUpload = async (file, prefix = 'setting') => {
   return await processAndSaveWebP(file.buffer, 'settings', { maxWidth: 800, maxHeight: 800, quality: 90 });
 };
 
+/**
+ * Generate multi-size square favicon package (16, 32, 180, 192, 512)
+ * Preserves transparency and uses Sharp fit: 'contain' with balanced optical padding
+ * @param {Buffer|string} source Buffer or file path / URL
+ * @returns {Promise<{ favicon: string, sizes: Object }>}
+ */
+export const generateFaviconSet = async (source) => {
+  let inputBuffer;
+  if (Buffer.isBuffer(source)) {
+    inputBuffer = source;
+  } else if (typeof source === 'string' && source.trim()) {
+    let cleanPath = source.trim();
+    if (cleanPath.startsWith('/')) cleanPath = cleanPath.slice(1);
+    const resolvedPath = path.isAbsolute(cleanPath)
+      ? cleanPath
+      : path.join(process.cwd(), 'public', cleanPath);
+
+    if (fs.existsSync(resolvedPath)) {
+      inputBuffer = await fs.promises.readFile(resolvedPath);
+    } else {
+      const altPath = path.join(process.cwd(), cleanPath);
+      if (fs.existsSync(altPath)) {
+        inputBuffer = await fs.promises.readFile(altPath);
+      } else {
+        throw new Error(`Berkas sumber favicon tidak ditemukan di: ${resolvedPath}`);
+      }
+    }
+  } else {
+    throw new Error('Sumber berkas favicon tidak valid.');
+  }
+
+  const sizes = [16, 32, 180, 192, 512];
+  const results = {};
+
+  // Trim transparent padding from source image so symbol fills canvas properly (similar to standard browser favicons)
+  let sourceToProcess = inputBuffer;
+  try {
+    sourceToProcess = await sharp(inputBuffer).trim().toBuffer();
+  } catch (trimErr) {
+    sourceToProcess = inputBuffer;
+  }
+
+  for (const size of sizes) {
+    // Proportional contain resize: symbol scales to max boundary without distortion, centered on transparent canvas
+    const finalBuffer = await sharp(sourceToProcess)
+      .resize(size, size, {
+        fit: 'contain',
+        background: { r: 0, g: 0, b: 0, alpha: 0 }
+      })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+
+    const filename = `favicon-${size}x${size}.png`;
+    const saved = await storage.save(finalBuffer, filename, 'image/png', 'settings');
+    results[size] = saved.url;
+
+    // Fallback synchronization for root /favicon.ico (size 32)
+    if (size === 32) {
+      try {
+        const rootFaviconPath = path.join(process.cwd(), 'public', 'favicon.ico');
+        await fs.promises.writeFile(rootFaviconPath, finalBuffer);
+      } catch (err) {
+        logger.warn(`Could not sync public/favicon.ico: ${err.message}`);
+      }
+    }
+  }
+
+  logger.info(`Generated multi-size favicon package: ${Object.values(results).join(', ')}`);
+  return {
+    favicon: results[32],
+    sizes: results
+  };
+};
+
 export default {
   uploadMedia,
   processAndSaveWebP,
   processAndSaveImage,
   saveSettingUpload,
+  generateFaviconSet,
   saveVideoFile,
   saveDocumentFile,
   deleteUploadedFile

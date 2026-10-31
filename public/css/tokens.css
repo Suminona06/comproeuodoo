@@ -43,6 +43,7 @@
   --color-primary-hover: #009476;
   --color-primary-bright: #00906e;
   --color-leaf: #7cbe38;
+  --color-leaf-soft: #d1ecb9;
   --color-on-primary: #ffffff;
   --color-primary-container: #00755a;
   --color-on-primary-container: #e6f7f2;
@@ -53,6 +54,12 @@
   --primary-border: #a3e0d0;
   --shadow-primary: 0 2px 6px rgba(0, 117, 90, 0.20);
   --trans-cta-gradient: linear-gradient(135deg, #00573f 0%, #00755a 60%, #009476 100%);
+
+  /* Admin Button Tokens (T-257) */
+  --adm-btn-primary-bg: var(--color-leaf-soft);
+  --adm-btn-primary-hover-bg: #c3e5a5;
+  --adm-btn-primary-border: #b8de96;
+  --adm-btn-primary-text: #071f17;
 
   /* Dark & Transparent Surfaces (Keputusan Terkunci 2026-10-17) */
   --surface-dark-deep: #071f17;
@@ -103,6 +110,7 @@
 
   /* Typography Tokens (Plus Jakarta Sans) */
   --font-family-base: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
   /* Headings */
   --font-size-headline-xl: 2.75rem;   /* 44px */

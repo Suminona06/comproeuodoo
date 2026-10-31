@@ -42,9 +42,9 @@
           <div style="font-size: 12px; color: var(--text-muted, #64748b); margin-top: 4px;"><%= cfg.desc %></div>
         </div>
         <div>
-          <a href="<%= cfg.route %>" target="_blank" class="btn btn-secondary" style="font-size: 12px; padding: 5px 12px; display: inline-flex; align-items: center; gap: 4px;">
-            <span>Lihat Halaman</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <a href="<%= cfg.route %>" target="_blank" class="adm-btn adm-btn-secondary adm-btn-sm" aria-label="Lihat halaman <%= cfg.label %> di publik">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Pratinjau</span>
           </a>
         </div>
       </div>
@@ -141,7 +141,10 @@
             <input type="checkbox" id="is_active_<%= cfg.key %>" name="is_active" value="1" <%= banner.is_active ? 'checked' : '' %>>
             <label for="is_active_<%= cfg.key %>" style="font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-color, #334155);">Aktifkan Hero Banner pada Halaman</label>
           </div>
-          <button type="submit" class="btn btn-primary" style="padding: 7px 20px; font-size: 13px;">Simpan Banner <%= cfg.label %></button>
+          <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan banner <%= cfg.label %>">
+            <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Simpan</span>
+          </button>
         </div>
       </form>
     </div>

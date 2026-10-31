@@ -7,7 +7,10 @@
     <p>Publikasikan berita resmi perusahaan, siaran pers, atau artikel blog edukasi kemasan.</p>
   </div>
   <div class="header-actions">
-    <a href="/admin/posts" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+    <a href="/admin/posts" class="adm-btn adm-btn-neutral" aria-label="Kembali ke daftar artikel">
+      <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>Kembali</span>
+    </a>
   </div>
 </div>
 
@@ -79,11 +82,11 @@
 
     <div class="form-group">
       <label class="form-label" for="slug">URL Slug Kustom *</label>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 13px; color: var(--text-muted, #64748b); background: #f1f5f9; padding: 7px 12px; border: 1px solid var(--border-color, #cbd5e1); border-radius: 6px; font-family: monospace;">/news/</span>
-        <input type="text" id="slug" name="slug" class="form-input" style="flex: 1;" placeholder="judul-artikel-kustom" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" required value="<%= typeof formData !== 'undefined' && formData?.slug ? formData.slug : '' %>">
+      <div class="adm-slug-input-group">
+        <span class="adm-slug-prefix">/news/</span>
+        <input type="text" id="slug" name="slug" class="form-input" maxlength="191" placeholder="judul-artikel-kustom" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" required value="<%= typeof formData !== 'undefined' && formData?.slug ? formData.slug : '' %>">
       </div>
-      <div class="form-hint" style="font-size: 11.5px; margin-top: 4px;">Otomatis dibuat dari Judul Indonesia, atau tentukan slug kustom Anda sendiri (huruf kecil, angka, dan tanda hubung).</div>
+      <div class="form-hint">Otomatis dibuat dari Judul Indonesia, atau tentukan slug kustom Anda sendiri (huruf kecil, angka, dan tanda hubung).</div>
     </div>
 
     <div class="form-group">
@@ -144,8 +147,14 @@
   </div>
 
   <div class="form-actions-bar" style="margin-bottom: 2rem;">
-    <a href="/admin/posts" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px;">Simpan &amp; Publikasikan</button>
+    <a href="/admin/posts" class="adm-btn adm-btn-neutral" aria-label="Batalkan perubahan">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      <span>Batal</span>
+    </a>
+    <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan dan publikasikan artikel">
+      <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Simpan</span>
+    </button>
   </div>
 </form>
 
