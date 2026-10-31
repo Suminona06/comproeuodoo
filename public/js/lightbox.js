@@ -670,6 +670,19 @@
       syncZoomButtonState(pswp, zoomInBtn, zoomOutBtn);
     });
 
+    pswp.on('beforeZoomTo', function (e) {
+      if (e && typeof e.destZoomLevel === 'number' && pswp.currSlide && pswp.currSlide.zoomLevels) {
+        var isZoomed = e.destZoomLevel > pswp.currSlide.zoomLevels.initial + 0.01;
+        if (pswp.element) {
+          pswp.element.classList.toggle('pswp--zoomed-in', isZoomed);
+        }
+        if (zoomOutBtn) {
+          zoomOutBtn.disabled = !isZoomed;
+          zoomOutBtn.setAttribute('aria-disabled', !isZoomed ? 'true' : 'false');
+        }
+      }
+    });
+
     pswp.on('zoomPanUpdate', function () {
       syncZoomButtonState(pswp, zoomInBtn, zoomOutBtn);
     });

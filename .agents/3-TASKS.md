@@ -75,7 +75,7 @@
 
 ---
 
-### [ ] T-254: Audit regresi lintas halaman, verifikasi responsif (320px-1440px), i18n, dan kepatuhan CSP
+### [x] T-254: Audit regresi lintas halaman, verifikasi responsif (320px-1440px), i18n, dan kepatuhan CSP
 - **Modul Spec:** `prd/products.md`, `tech/products-detail.md`, `prd/public-about.md`, `tech/public-about.md`
 - **Deskripsi:** Melakukan pengujian regresi menyeluruh dan polesan akhir pada halaman Katalog Produk (`/products`), Detail Produk (`/products/:slug`), dan Tentang Kami (`/about`), memastikan seluruh Keputusan #1 s/d #7 berjalan konsisten tanpa efek samping pada komponen bersama (navbar, modal brand preview `#brandPreviewModal` di About, tombol WhatsApp/RFQ, filter katalog, dan Homepage yang dibekukan).
 - **Acceptance Criteria:**
