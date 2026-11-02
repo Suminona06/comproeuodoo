@@ -173,42 +173,42 @@
         </svg>
       </button>
     </div>
-    <div class="admin-modal-body">
-      <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 1rem;">
-        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Informasi Klien</div>
-        <div id="mClientCompany" style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">-</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12.5px;">
-          <div><span style="color: var(--text-muted);">PIC:</span> <strong id="mClientName">-</strong></div>
-          <div><span style="color: var(--text-muted);">Telepon:</span> <strong id="mClientPhone">-</strong></div>
-          <div><span style="color: var(--text-muted);">Email:</span> <span id="mClientEmail">-</span></div>
-          <div><span style="color: var(--text-muted);">Produk Terkait:</span> <span id="mClientProduct">-</span></div>
+    <form id="mNotesForm">
+      <input type="hidden" id="mInquiryId" name="inquiryId">
+      <div class="admin-modal-body">
+        <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 1rem;">
+          <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Informasi Klien</div>
+          <div id="mClientCompany" style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">-</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12.5px;">
+            <div><span style="color: var(--text-muted);">PIC:</span> <strong id="mClientName">-</strong></div>
+            <div><span style="color: var(--text-muted);">Telepon:</span> <strong id="mClientPhone">-</strong></div>
+            <div><span style="color: var(--text-muted);">Email:</span> <span id="mClientEmail">-</span></div>
+            <div><span style="color: var(--text-muted);">Produk Terkait:</span> <span id="mClientProduct">-</span></div>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label class="form-label">Rincian Kebutuhan / Pesan Masuk:</label>
-        <div id="mClientMessage" style="background: var(--bg-surface); border: 1px solid var(--border-main); border-left: 3px solid var(--primary); border-radius: var(--r-sm); padding: 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); max-height: 140px; overflow-y: auto;">
-          -
+        <div>
+          <label class="form-label">Rincian Kebutuhan / Pesan Masuk:</label>
+          <div id="mClientMessage" style="background: var(--bg-surface); border: 1px solid var(--border-main); border-left: 3px solid var(--primary); border-radius: var(--r-sm); padding: 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); max-height: 140px; overflow-y: auto;">
+            -
+          </div>
         </div>
-      </div>
 
-      <form id="mNotesForm">
-        <input type="hidden" id="mInquiryId" name="inquiryId">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 0;">
           <label class="form-label" for="mAdminNotes">Catatan Internal Sales / Admin:</label>
           <textarea id="mAdminNotes" class="form-textarea" placeholder="Tuliskan catatan tindak lanjut, estimasi kebutuhan, atau kontak follow-up..."></textarea>
         </div>
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-          <button type="button" class="adm-btn adm-btn-neutral adm-btn-sm" data-modal-close="inquiryDetailModal" aria-label="Tutup jendela rincian pesan">
-            <span>Tutup</span>
-          </button>
-          <button type="submit" class="adm-btn adm-btn-primary adm-btn-sm" aria-label="Simpan catatan tindak lanjut">
-            <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            <span>Simpan</span>
-          </button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div class="admin-modal-footer">
+        <button type="button" class="adm-btn adm-btn-neutral adm-btn-sm" data-modal-close="inquiryDetailModal" aria-label="Tutup jendela rincian pesan">
+          <span>Tutup</span>
+        </button>
+        <button type="submit" class="adm-btn adm-btn-primary adm-btn-sm" aria-label="Simpan catatan tindak lanjut">
+          <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Simpan</span>
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 

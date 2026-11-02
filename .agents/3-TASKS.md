@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 1 Task (T-261)
-- **Total Task Selesai:** 260 Task (T-01 s/d T-260)
+- **Task Aktif Terbuka:** 0 Task
+- **Total Task Selesai:** 261 Task (T-01 s/d T-261)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-262**.
 
@@ -87,7 +87,7 @@
   2. Seluruh dialog konfirmasi hapus menggunakan SweetAlert2 bertema dengan tombol konfirmasi `.adm-btn .adm-btn-danger` dan tombol batal `.adm-btn .adm-btn-neutral` (Q7).
   3. Tidak ada lagi penambahan atau ketergantungan pada inline style maupun inline event handler (`onclick`, `onchange`, `onsubmit`, `oninput`) di template admin; sepenuhnya kompatibel dengan kebijakan CSP.
 
-### [ ] T-261: UI Polish, Adaptasi Mobile (320px-Desktop, Zoom 100/125/150%, Tinggi 600-768px) & Pengujian Regresi Menyeluruh (Bagian C) _(diperbarui sesuai jawaban Q1 s/d Q7)_
+### [x] T-261: UI Polish, Adaptasi Mobile (320px-Desktop, Zoom 100/125/150%, Tinggi 600-768px) & Pengujian Regresi Menyeluruh (Bagian C) _(diperbarui sesuai jawaban Q1 s/d Q7)_
 
 - **Ukuran**: S | **Skill Terkait**: `polish`, `adapt`, `animate`
 - **Deskripsi**: Melakukan pengecekan akhir konsistensi visual tombol `.adm-btn-*` (termasuk varian `primary` `#D1ECB9`, `secondary`, `neutral`, `danger`), tampilan slug satu baris, favicon simbol logo persegi, serta validasi form di seluruh menu admin pada level zoom `100%`, `125%`, dan `150%`, tinggi layar pendek `600px`-`768px` (memastikan bagian body modal dapat di-scroll dan footer modal berisi tombol Batal/Simpan selalu terlihat dan tidak terpotong), serta lebar viewport `320px` hingga desktop.

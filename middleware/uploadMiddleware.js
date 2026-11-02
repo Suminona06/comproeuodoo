@@ -254,12 +254,30 @@ export const generateFaviconSet = async (source) => {
   }
 
   for (const size of sizes) {
-    // Proportional contain resize: symbol scales to max boundary without distortion, centered on transparent canvas
-    const finalBuffer = await sharp(sourceToProcess)
-      .resize(size, size, {
+    // White circular badge (diameter = size, 100% proportional, anti-aliased edge)
+    // Matches standard browser tab favicons (like Google) ensuring the logo fills the tab slot
+    // with high contrast on both light and dark themes without distorting or stretching the aspect ratio.
+    const r = (size - 1) / 2;
+    const cx = size / 2;
+    const cy = size / 2;
+    const circleSvg = Buffer.from(`
+      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="#ffffff" />
+      </svg>
+    `);
+
+    // Proportional contain resize: symbol scales to 92% of the circular canvas at 16/32, 88% at larger sizes
+    const logoScale = size <= 32 ? 0.92 : 0.88;
+    const logoDimension = Math.max(1, Math.round(size * logoScale));
+    const resizedLogo = await sharp(sourceToProcess)
+      .resize(logoDimension, logoDimension, {
         fit: 'contain',
         background: { r: 0, g: 0, b: 0, alpha: 0 }
       })
+      .toBuffer();
+
+    const finalBuffer = await sharp(circleSvg)
+      .composite([{ input: resizedLogo, gravity: 'center' }])
       .png({ compressionLevel: 9 })
       .toBuffer();
 
