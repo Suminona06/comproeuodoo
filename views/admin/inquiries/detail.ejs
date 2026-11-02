@@ -50,7 +50,7 @@
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
           <label class="form-label" for="status">Ubah Status</label>
-          <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+          <select id="status" name="status" class="form-select" data-auto-submit="true">
             <option value="baru" <%= inquiry.status === 'baru' ? 'selected' : '' %>>Baru</option>
             <option value="dibaca" <%= inquiry.status === 'dibaca' ? 'selected' : '' %>>Dibaca / Diproses</option>
             <option value="ditindaklanjuti" <%= inquiry.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai / Ditindaklanjuti</option>

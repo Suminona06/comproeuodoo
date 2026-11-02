@@ -111,8 +111,8 @@
                 </div>
               </td>
               <td>
-                <select class="status-select st-<%= item.status === 'ditindaklanjuti' ? 'selesai' : (item.status === 'dibaca' ? 'diproses' : item.status) %>"
-                        onchange="updateInquiryStatus(<%= item.id %>, this.value)" aria-label="Ubah status">
+                <select class="status-select inquiry-status-select st-<%= item.status === 'ditindaklanjuti' ? 'selesai' : (item.status === 'dibaca' ? 'diproses' : item.status) %>"
+                        data-id="<%= item.id %>" aria-label="Ubah status">
                   <option value="baru" <%= item.status === 'baru' ? 'selected' : '' %>>Baru</option>
                   <option value="dibaca" <%= item.status === 'dibaca' ? 'selected' : '' %>>Dibaca</option>
                   <option value="ditindaklanjuti" <%= item.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai</option>
@@ -121,7 +121,7 @@
               </td>
               <td style="text-align: right;">
                 <div class="table-actions">
-                  <button type="button" class="btn-action btn-action-view" data-inquiry-id="<%= item.id %>" onclick="viewInquiryDetail(<%= item.id %>)" title="Tinjau Rincian Permintaan">
+                  <button type="button" class="btn-action btn-action-view" data-inquiry-id="<%= item.id %>" title="Tinjau Rincian Permintaan">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     <span>Tinjau</span>
                   </button>
@@ -156,7 +156,7 @@
         <svg width="18" height="18" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         <span>Detail Permintaan Penawaran RFQ</span>
       </div>
-      <button type="button" class="modal-close-btn admin-modal-close" onclick="closeAdminModal('inquiryDetailModal')" aria-label="Tutup Dialog">
+      <button type="button" class="modal-close-btn admin-modal-close" data-modal-close="inquiryDetailModal" aria-label="Tutup Dialog">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -182,14 +182,14 @@
         </div>
       </div>
 
-      <form id="modalNotesForm" onsubmit="saveInquiryNotes(event)">
+      <form id="modalNotesForm">
         <input type="hidden" id="modalInquiryId" name="inquiryId">
         <div class="form-group">
           <label class="form-label" for="modalAdminNotes">Catatan Internal Sales / Admin:</label>
           <textarea id="modalAdminNotes" class="form-textarea" placeholder="Tuliskan catatan tindak lanjut, kesepakatan harga, atau jadwal meeting dengan klien..."></textarea>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-          <button type="button" class="adm-btn adm-btn-neutral adm-btn-sm" onclick="closeAdminModal('inquiryDetailModal')" aria-label="Tutup jendela rincian pesan">
+          <button type="button" class="adm-btn adm-btn-neutral adm-btn-sm" data-modal-close="inquiryDetailModal" aria-label="Tutup jendela rincian pesan">
             <span>Tutup</span>
           </button>
           <button type="submit" class="adm-btn adm-btn-primary adm-btn-sm" aria-label="Simpan catatan tindak lanjut">
@@ -232,6 +232,14 @@
     }
   });
 
+  document.addEventListener('change', (e) => {
+    const sel = e.target.closest('.inquiry-status-select');
+    if (sel) {
+      const id = sel.getAttribute('data-id');
+      if (id) updateInquiryStatus(id, sel.value);
+    }
+  });
+
   async function updateInquiryStatus(id, newStatus) {
     try {
       const res = await fetch('/admin/inquiries/' + id + '/status', {
@@ -250,43 +258,54 @@
           row.setAttribute('data-status', newStatus);
           const sel = row.querySelector('.status-select');
           if (sel) {
-            sel.className = 'status-select st-' + (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
+            sel.className = 'status-select inquiry-status-select st-' + (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
           }
         }
       } else {
-        alert(data.message || 'Gagal mengubah status.');
+        if (window.showAdminAlert) {
+          window.showAdminAlert('Gagal', data.message || 'Gagal mengubah status.', 'error');
+        }
       }
     } catch (err) {
       console.error(err);
-      alert('Terjadi kesalahan jaringan.');
+      if (window.showAdminAlert) {
+        window.showAdminAlert('Gagal', 'Terjadi kesalahan jaringan.', 'error');
+      }
     }
   }
 
-  async function saveInquiryNotes(e) {
-    e.preventDefault();
-    const id = document.getElementById('modalInquiryId').value;
-    const notes = document.getElementById('modalAdminNotes').value;
+  const modalNotesForm = document.getElementById('modalNotesForm');
+  if (modalNotesForm) {
+    modalNotesForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('modalInquiryId').value;
+      const notes = document.getElementById('modalAdminNotes').value;
 
-    try {
-      const res = await fetch('/admin/inquiries/' + id + '/status', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ admin_notes: notes })
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast('Catatan admin berhasil disimpan!');
-        closeAdminModal('inquiryDetailModal');
-      } else {
-        alert(data.message || 'Gagal menyimpan catatan.');
+      try {
+        const res = await fetch('/admin/inquiries/' + id + '/status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ admin_notes: notes })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Catatan admin berhasil disimpan!');
+          closeAdminModal('inquiryDetailModal');
+        } else {
+          if (window.showAdminAlert) {
+            window.showAdminAlert('Gagal', data.message || 'Gagal menyimpan catatan.', 'error');
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        if (window.showAdminAlert) {
+          window.showAdminAlert('Gagal', 'Gagal menyimpan catatan.', 'error');
+        }
       }
-    } catch (err) {
-      console.error(err);
-      alert('Gagal menyimpan catatan.');
-    }
+    });
   }
 </script>
 

@@ -41,7 +41,7 @@
 
       <div class="form-group">
         <label class="form-label" for="status">Status</label>
-        <select id="status" name="status" class="form-select" onchange="toggleScheduled(this.value)">
+        <select id="status" name="status" class="form-select">
           <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>Published (Tayang)</option>
           <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>Draft (Draf)</option>
           <option value="scheduled" <%= post.status === 'scheduled' ? 'selected' : '' %>>Scheduled (Terjadwal)</option>
@@ -176,6 +176,11 @@
     } else {
       row.style.display = 'none';
     }
+  }
+
+  const statusSelect = document.getElementById('status');
+  if (statusSelect) {
+    statusSelect.addEventListener('change', (e) => toggleScheduled(e.target.value));
   }
 </script>
 

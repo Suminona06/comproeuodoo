@@ -41,7 +41,7 @@
 
       <div class="form-group">
         <label class="form-label" for="status">Status</label>
-        <select id="status" name="status" class="form-select" onchange="toggleScheduled(this.value)">
+        <select id="status" name="status" class="form-select">
           <option value="published" selected>Published (Tayang Langsung)</option>
           <option value="draft">Draft (Draf Penulisan)</option>
           <option value="scheduled">Scheduled (Terjadwal)</option>
@@ -169,6 +169,11 @@
     } else {
       row.style.display = 'none';
     }
+  }
+
+  const statusSelect = document.getElementById('status');
+  if (statusSelect) {
+    statusSelect.addEventListener('change', (e) => toggleScheduled(e.target.value));
   }
 
   const titleInput = document.getElementById('title_id');

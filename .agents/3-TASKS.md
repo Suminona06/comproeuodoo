@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 2 Task (T-260 s/d T-261)
-- **Total Task Selesai:** 259 Task (T-01 s/d T-259)
+- **Task Aktif Terbuka:** 1 Task (T-261)
+- **Total Task Selesai:** 260 Task (T-01 s/d T-260)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-262**.
 
@@ -77,7 +77,7 @@
   5. Mencakup validasi TinyMCE, Media Picker, select, repeater WhatsApp, dan editor tabel ukuran, serta merender error dari server-side dengan gaya visual yang sama.
   6. Tombol submit masuk ke state `.is-loading` (`disabled`) saat form valid dikirim guna mencegah pengiriman ganda.
 
-### [ ] T-260: Penggantian Seluruh Native `alert()`/`confirm()` dengan SweetAlert2 Bertema & Pembersihan Inline Handler Admin _(diperbarui sesuai jawaban Q7)_
+### [x] T-260: Penggantian Seluruh Native `alert()`/`confirm()` dengan SweetAlert2 Bertema & Pembersihan Inline Handler Admin _(diperbarui sesuai jawaban Q7)_
 
 - **Ukuran**: M | **Skill Terkait**: `polish`
 - **Deskripsi**: Mengaudit dan mengganti seluruh pemanggilan `alert()` dan `confirm()` native di script dan view admin (`public/js/admin-settings.js`, `public/js/admin-size-table.js`, `public/js/media-picker.js`, `public/js/admin.js`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`) menjadi dialog SweetAlert2 bertema token Euodoo. Sesuai jawaban Q7, seluruh tombol konfirmasi hapus di dalam popup SweetAlert2 wajib menggunakan komponen `.adm-btn .adm-btn-danger` (dengan ikon tempat sampah) dan tombol batal menggunakan `.adm-btn .adm-btn-neutral` (`buttonsStyling: false`). Sekaligus memindahkan event handler inline (`onclick`, `onchange`, `onsubmit`, `oninput`, `onerror`) pada view admin ke event listener terpusat yang patuh CSP tanpa inline handler baru.

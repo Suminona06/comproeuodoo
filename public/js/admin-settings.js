@@ -169,7 +169,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const total = updateTotal();
       if (total !== 100) {
         e.preventDefault();
-        alert(`Total persentase alokasi WhatsApp harus tepat 100% (saat ini: ${total}%).\nMohon sesuaikan nilai persentase sebelum menyimpan.`);
+        if (window.showAdminAlert) {
+          window.showAdminAlert({
+            title: 'Validasi WhatsApp',
+            text: `Total persentase alokasi WhatsApp harus tepat 100% (saat ini: ${total}%).\nMohon sesuaikan nilai persentase sebelum menyimpan.`,
+            icon: 'warning'
+          });
+        }
         const firstPct = tbody.querySelector('.wa-input-pct');
         if (firstPct) firstPct.focus();
         return false;
@@ -189,7 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!cleanNum || cleanNum.length < 9 || cleanNum.length > 16) {
           e.preventDefault();
-          alert(`Nomor WhatsApp pada baris ke-${i + 1} tidak valid.\nNomor wajib berisi 9–16 digit angka (contoh: 6281234567890).`);
+          if (window.showAdminAlert) {
+            window.showAdminAlert({
+              title: 'Validasi WhatsApp',
+              text: `Nomor WhatsApp pada baris ke-${i + 1} tidak valid.\nNomor wajib berisi 9-16 digit angka (contoh: 6281234567890).`,
+              icon: 'warning'
+            });
+          }
           if (numInput) numInput.focus();
           hasError = true;
           break;
@@ -198,7 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const pct = parseInt(pctInput?.value, 10);
         if (isNaN(pct) || pct < 1 || pct > 100) {
           e.preventDefault();
-          alert(`Persentase pada baris ke-${i + 1} harus antara 1% dan 100%.`);
+          if (window.showAdminAlert) {
+            window.showAdminAlert({
+              title: 'Validasi WhatsApp',
+              text: `Persentase pada baris ke-${i + 1} harus antara 1% dan 100%.`,
+              icon: 'warning'
+            });
+          }
           if (pctInput) pctInput.focus();
           hasError = true;
           break;

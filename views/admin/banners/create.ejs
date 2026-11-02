@@ -42,7 +42,7 @@
     <!-- Pilihan Sumber Media Multi-Sumber (B.2) -->
     <div class="form-group">
       <label class="form-label" for="media_type">Tipe Sumber Media Latar Belakang *</label>
-      <select id="media_type" name="media_type" class="form-select" onchange="toggleBannerSource(this.value)">
+      <select id="media_type" name="media_type" class="form-select">
         <option value="image" <%= (typeof formData !== 'undefined' && formData.media_type === 'image') ? 'selected' : (!typeof formData || !formData.media_type ? 'selected' : '') %>>Gambar Beresolusi Tinggi (WebP / JPG / PNG)</option>
         <option value="video" <%= (typeof formData !== 'undefined' && formData.media_type === 'video') ? 'selected' : '' %>>Berkas Video Lokal (MP4 / WebM)</option>
         <option value="youtube" <%= (typeof formData !== 'undefined' && formData.media_type === 'youtube') ? 'selected' : '' %>>Streaming Video YouTube (URL Embed Resmi)</option>
@@ -78,7 +78,7 @@
     <!-- YouTube Link Input -->
     <div class="form-group" id="groupYouTubeInput" style="display: none;">
       <label class="form-label" for="youtube_url">Tautan / URL Video YouTube *</label>
-      <input type="text" id="youtube_url" name="youtube_url" class="form-input" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ atau https://youtu.be/..." oninput="previewBannerYoutube(this.value)" value="<%= (typeof formData !== 'undefined' && formData.youtube_url) ? formData.youtube_url : '' %>">
+      <input type="text" id="youtube_url" name="youtube_url" class="form-input" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ atau https://youtu.be/..." value="<%= (typeof formData !== 'undefined' && formData.youtube_url) ? formData.youtube_url : '' %>">
       <span style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">Mendukung URL YouTube resmi, tautan pendek youtu.be, shorts, atau ID video 11 karakter.</span>
       <div id="bannerYtPreview" style="display: none; margin-top: 10px;">
         <iframe id="bannerYtIframe" width="100%" height="220" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: var(--r-md); border: 1px solid var(--border-main); max-width: 480px;"></iframe>
@@ -225,6 +225,16 @@
       wrap.style.display = 'none';
       iframe.src = '';
     }
+  }
+
+  const mediaTypeSelect = document.getElementById('media_type');
+  if (mediaTypeSelect) {
+    mediaTypeSelect.addEventListener('change', (e) => toggleBannerSource(e.target.value));
+  }
+
+  const ytInput = document.getElementById('youtube_url');
+  if (ytInput) {
+    ytInput.addEventListener('input', (e) => previewBannerYoutube(e.target.value));
   }
 </script>
 

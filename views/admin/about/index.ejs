@@ -131,7 +131,7 @@
           </span>
         </div>
         <% if (!stats || stats.length < 8) { %>
-          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" onclick="openStatsModal()" aria-label="Tambah data statistik baru">
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" data-action="open-stats-modal" aria-label="Tambah data statistik baru">
             <svg class="adm-btn-icon adm-btn-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             <span>Tambah</span>
           </button>
@@ -182,11 +182,11 @@
                   </td>
                   <td style="text-align: right;">
                     <div class="table-actions">
-                      <button type="button" class="btn-action btn-action-edit" title="Edit Statistik" onclick="openStatsModal(JSON.parse(decodeURIComponent(this.getAttribute('data-stat'))))" data-stat="<%= encodeURIComponent(JSON.stringify(item)) %>">
+                      <button type="button" class="btn-action btn-action-edit" title="Edit Statistik" data-action="edit-stat" data-stat="<%= encodeURIComponent(JSON.stringify(item)) %>">
                         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                         <span>Edit</span>
                       </button>
-                      <button type="button" class="btn-action btn-action-delete" title="Hapus Statistik" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/stats/<%= item.id %>/delete" data-title="<%= item.stat_value %> - <%= item.label_id %>">
+                      <button type="button" class="btn-action btn-action-delete" title="Hapus Statistik" data-action="delete-about-item" data-action-url="/admin/about/stats/<%= item.id %>/delete" data-title="<%= item.stat_value %> - <%= item.label_id %>">
                         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         <span>Hapus</span>
                       </button>
@@ -211,7 +211,7 @@
           <span>Linimasa Jejak Langkah &amp; Milestone Sejarah</span>
           <span class="badge badge-primary" style="font-size: 11px;"><%= (timeline ? timeline.length : 0) %> Milestone</span>
         </div>
-        <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" onclick="openTimelineModal()" aria-label="Tambah linimasa sejarah baru">
+        <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" data-action="open-timeline-modal" aria-label="Tambah linimasa sejarah baru">
           <svg class="adm-btn-icon adm-btn-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           <span>Tambah</span>
         </button>
@@ -271,11 +271,11 @@
                   </td>
                   <td style="text-align: right;">
                     <div class="table-actions">
-                      <button type="button" class="btn-action btn-action-edit" title="Edit Milestone" onclick="openTimelineModal(JSON.parse(decodeURIComponent(this.getAttribute('data-timeline'))))" data-timeline="<%= encodeURIComponent(JSON.stringify(item)) %>">
+                      <button type="button" class="btn-action btn-action-edit" title="Edit Milestone" data-action="edit-timeline" data-timeline="<%= encodeURIComponent(JSON.stringify(item)) %>">
                         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                         <span>Edit</span>
                       </button>
-                      <button type="button" class="btn-action btn-action-delete" title="Hapus Milestone" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/timeline/<%= item.id %>/delete" data-title="<%= item.year_label_id %>">
+                      <button type="button" class="btn-action btn-action-delete" title="Hapus Milestone" data-action="delete-about-item" data-action-url="/admin/about/timeline/<%= item.id %>/delete" data-title="<%= item.year_label_id %>">
                         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         <span>Hapus</span>
                       </button>
@@ -588,7 +588,7 @@
             <%= (gallerySlides ? gallerySlides.length : 0) %> Slide
           </span>
         </div>
-        <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" onclick="openGalleryModal()" aria-label="Tambah slide galeri fasilitas">
+        <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" data-action="open-gallery-modal" aria-label="Tambah slide galeri fasilitas">
           <svg class="adm-btn-icon adm-btn-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           <span>Tambah</span>
         </button>
@@ -619,7 +619,7 @@
                   <td style="text-align: center;">
                     <div style="width: 72px; height: 48px; border-radius: var(--r-sm); overflow: hidden; background: #e2e8f0; border: 1px solid var(--border-main); display: inline-flex; align-items: center; justify-content: center;">
                       <% if (slide.image_url) { %>
-                        <img src="<%= slide.image_url %>" alt="<%= slide.title_id %>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/images/hero-factory.jpg'">
+                        <img src="<%= slide.image_url %>" alt="<%= slide.title_id %>" class="adm-img-fallback" data-fallback="/images/hero-factory.jpg" style="width: 100%; height: 100%; object-fit: cover;">
                       <% } else { %>
                         <span style="font-size: 10px; color: var(--text-muted);">No image</span>
                       <% } %>
@@ -663,11 +663,11 @@
                   </td>
                   <td style="text-align: right;">
                     <div class="table-actions">
-                      <button type="button" class="btn-action btn-action-edit" title="Edit Slide" onclick="openGalleryModal(JSON.parse(decodeURIComponent(this.getAttribute('data-slide'))))" data-slide="<%= encodeURIComponent(JSON.stringify(slide)) %>">
+                      <button type="button" class="btn-action btn-action-edit" title="Edit Slide" data-action="edit-slide" data-slide="<%= encodeURIComponent(JSON.stringify(slide)) %>">
                         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                         <span>Edit</span>
                       </button>
-                      <button type="button" class="btn-action btn-action-delete" title="Hapus Slide" onclick="confirmDeleteAboutItem(this.getAttribute('data-action'), this.getAttribute('data-title'))" data-action="/admin/about/gallery/<%= slide.id %>/delete" data-title="<%= slide.title_id %>">
+                      <button type="button" class="btn-action btn-action-delete" title="Hapus Slide" data-action="delete-about-item" data-action-url="/admin/about/gallery/<%= slide.id %>/delete" data-title="<%= slide.title_id %>">
                         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         <span>Hapus</span>
                       </button>
@@ -717,7 +717,7 @@
   <div class="admin-modal-card" style="max-width: 680px;">
     <div class="admin-modal-header">
       <div class="admin-modal-title" id="galleryModalTitle">Tambah Slide Galeri Baru</div>
-      <button type="button" class="modal-close-btn admin-modal-close" onclick="closeAdminModal('galleryModal')" aria-label="Tutup Dialog">
+      <button type="button" class="modal-close-btn admin-modal-close" data-modal-close="galleryModal" aria-label="Tutup Dialog">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
@@ -807,7 +807,7 @@
       </div>
 
       <div class="admin-modal-footer">
-        <button type="button" class="adm-btn adm-btn-neutral" onclick="closeAdminModal('galleryModal')" aria-label="Batalkan perubahan slide galeri">
+        <button type="button" class="adm-btn adm-btn-neutral" data-modal-close="galleryModal" aria-label="Batalkan perubahan slide galeri">
           <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           <span>Batal</span>
         </button>
@@ -825,7 +825,7 @@
   <div class="admin-modal-card" style="max-width: 520px;">
     <div class="admin-modal-header">
       <div class="admin-modal-title" id="statsModalTitle">Tambah Item Statistik Baru</div>
-      <button type="button" class="modal-close-btn admin-modal-close" onclick="closeAdminModal('statsModal')" aria-label="Tutup Dialog">
+      <button type="button" class="modal-close-btn admin-modal-close" data-modal-close="statsModal" aria-label="Tutup Dialog">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
@@ -867,7 +867,7 @@
       </div>
 
       <div class="admin-modal-footer">
-        <button type="button" class="adm-btn adm-btn-neutral" onclick="closeAdminModal('statsModal')" aria-label="Batalkan perubahan data statistik">
+        <button type="button" class="adm-btn adm-btn-neutral" data-modal-close="statsModal" aria-label="Batalkan perubahan data statistik">
           <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           <span>Batal</span>
         </button>
@@ -885,7 +885,7 @@
   <div class="admin-modal-card" style="max-width: 600px;">
     <div class="admin-modal-header">
       <div class="admin-modal-title" id="timelineModalTitle">Tambah Milestone Linimasa</div>
-      <button type="button" class="modal-close-btn admin-modal-close" onclick="closeAdminModal('timelineModal')" aria-label="Tutup Dialog">
+      <button type="button" class="modal-close-btn admin-modal-close" data-modal-close="timelineModal" aria-label="Tutup Dialog">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
@@ -943,7 +943,7 @@
       </div>
 
       <div class="admin-modal-footer">
-        <button type="button" class="adm-btn adm-btn-neutral" onclick="closeAdminModal('timelineModal')" aria-label="Batalkan perubahan milestone linimasa">
+        <button type="button" class="adm-btn adm-btn-neutral" data-modal-close="timelineModal" aria-label="Batalkan perubahan milestone linimasa">
           <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           <span>Batal</span>
         </button>

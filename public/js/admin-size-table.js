@@ -265,28 +265,17 @@
       return;
     }
 
-    if (typeof Swal !== 'undefined') {
-      Swal.fire({
+    if (window.showAdminConfirm) {
+      window.showAdminConfirm({
         title: 'Hapus Kolom?',
         text: 'Kolom ini memiliki data teks yang akan ikut terhapus. Lanjutkan?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal',
-        customClass: {
-          popup: 'swal2-custom-popup',
-          title: 'swal2-custom-title',
-          confirmButton: 'swal2-custom-confirm-btn',
-          cancelButton: 'swal2-custom-cancel-btn'
-        }
-      }).then(result => {
-        if (result.isConfirmed) {
+        isDanger: true
+      }).then(confirmed => {
+        if (confirmed) {
           deleteColumn(index);
         }
       });
-    } else if (confirm('Kolom ini memiliki data teks yang akan ikut terhapus. Lanjutkan?')) {
+    } else {
       deleteColumn(index);
     }
   }
@@ -315,29 +304,18 @@
       return;
     }
 
-    if (typeof Swal !== 'undefined') {
-      Swal.fire({
+    if (window.showAdminConfirm) {
+      window.showAdminConfirm({
         title: 'Hapus Baris?',
         text: 'Baris ini memiliki data teks yang akan ikut terhapus. Lanjutkan?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal',
-        customClass: {
-          popup: 'swal2-custom-popup',
-          title: 'swal2-custom-title',
-          confirmButton: 'swal2-custom-confirm-btn',
-          cancelButton: 'swal2-custom-cancel-btn'
-        }
-      }).then(result => {
-        if (result.isConfirmed) {
+        isDanger: true
+      }).then(confirmed => {
+        if (confirmed) {
           rows.splice(index, 1);
           render();
         }
       });
-    } else if (confirm('Baris ini memiliki data teks yang akan ikut terhapus. Lanjutkan?')) {
+    } else {
       rows.splice(index, 1);
       render();
     }
@@ -547,26 +525,18 @@
       };
 
       if (hasExistingData) {
-        if (typeof Swal !== 'undefined') {
-          Swal.fire({
-            title: 'Terapkan Struktur Baru?',
-            text: 'Menyalin struktur kolom akan mereset data baris pada tabel saat ini. Lanjutkan?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#00755a',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Ya, Terapkan',
-            cancelButtonText: 'Batal',
-            customClass: {
-              popup: 'swal2-custom-popup',
-              title: 'swal2-custom-title',
-              confirmButton: 'swal2-custom-confirm-btn',
-              cancelButton: 'swal2-custom-cancel-btn'
-            }
-          }).then(result => {
-            if (result.isConfirmed) executeCopy();
+        if (window.showAdminConfirm) {
+          const isEn = (document.documentElement.lang || 'id').toLowerCase() === 'en';
+          window.showAdminConfirm({
+            title: isEn ? 'Apply New Structure?' : 'Terapkan Struktur Baru?',
+            text: isEn ? 'Copying column structure will reset current row data. Continue?' : 'Menyalin struktur kolom akan mereset data baris pada tabel saat ini. Lanjutkan?',
+            isDanger: false,
+            confirmButtonText: `<svg class="adm-btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>${isEn ? 'Apply' : 'Terapkan'}</span>`,
+            icon: 'question'
+          }).then(confirmed => {
+            if (confirmed) executeCopy();
           });
-        } else if (confirm('Menyalin struktur kolom akan mereset data baris pada tabel saat ini. Lanjutkan?')) {
+        } else {
           executeCopy();
         }
       } else {
