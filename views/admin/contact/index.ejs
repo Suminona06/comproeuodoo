@@ -24,7 +24,7 @@
   <a href="/admin/settings" class="adm-btn adm-btn-secondary adm-btn-sm" style="flex-shrink: 0;" aria-label="Buka halaman pengaturan umum">Buka Pengaturan</a>
 </div>
 
-<form action="/admin/contact?_csrf=<%= csrfToken %>" method="POST">
+<form action="/admin/contact?_csrf=<%= csrfToken %>" method="POST" novalidate>
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
   <input type="hidden" name="contact_address_id" value="<%= settings.contact_address_id || settings.factory_address || '' %>">

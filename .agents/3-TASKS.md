@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 3 Task (T-259 s/d T-261)
-- **Total Task Selesai:** 258 Task (T-01 s/d T-258)
+- **Task Aktif Terbuka:** 2 Task (T-260 s/d T-261)
+- **Total Task Selesai:** 259 Task (T-01 s/d T-259)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-262**.
 
@@ -64,7 +64,7 @@
   2. Seluruh tombol Simpan memakai `.adm-btn-primary`, tombol Batal/Kembali/Reset memakai `.adm-btn-neutral`, tombol aksi umum/tambah baris/ekspor/pratinjau memakai `.adm-btn-secondary`, dan tombol Hapus memakai `.adm-btn-danger`.
   3. Seluruh label tombol di halaman, tabel, dan modal admin menggunakan label pendek ID/EN sesuai tabel Q4 dengan `aria-label` deskriptif.
 
-### [ ] T-259: Modul Validasi Formulir Admin Terpusat, Pesan Dwibahasa ID/EN, Auto-Open Tab & Integrasi Kontrol Kustom _(diperbarui sesuai jawaban Q5)_
+### [x] T-259: Modul Validasi Formulir Admin Terpusat, Pesan Dwibahasa ID/EN, Auto-Open Tab & Integrasi Kontrol Kustom _(diperbarui sesuai jawaban Q5)_
 
 - **Ukuran**: M | **Skill Terkait**: `polish`, `adapt`
 - **Deskripsi**: Membangun modul `public/js/admin-form-validation.js` dan menambahkan `novalidate` serta kelengkapan atribut batas karakter (`maxlength` sesuai skema kolom database) pada seluruh form admin untuk menggantikan tooltip validasi bawaan browser. Sesuai jawaban Q5 (Opsi A), validasi dijalankan saat tombol **Submit** ditekan, lalu berjalan secara _live_ (`input`/`change`) per field setelah field tersebut pernah mengalami error. Mencakup validasi kontrol kustom (TinyMCE, Media Picker, select, repeater WhatsApp, dan editor tabel ukuran), membuka tab tersembunyi secara otomatis jika terdapat field error di dalamnya, memfokuskan & menggulir ke field error pertama, menampilkan error server-side dengan gaya yang sama, serta mengaktifkan loading state tombol submit untuk mencegah kirim ganda.
