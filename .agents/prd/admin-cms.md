@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-02 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
 
 # PRD: Modul Admin & CMS (Admin CMS & Users)
 
@@ -40,6 +40,42 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 - Pembuatan akun baru (`/admin/users/create`), daftar pengguna (`/admin/users`), pengeditan peran, dan penonaktifan/penghapusan akun.
 - Pencegahan penghapusan akun diri sendiri yang sedang login.
 
+### FR-24: Komponen Dropdown Kustom Terpadu Multi-Varian (.eu-dd-*) [PENDING T-262 s/d T-265, T-268]
+- Seluruh elemen pemilihan opsi di antarmuka Admin (form tambah/edit, modal salin struktur kolom tabel ukuran, filter toolbar, dan status baris tabel) serta halaman publik terkait menggunakan komponen dropdown kustom terstandarisasi `.eu-dd`:
+  1. **Tiga Varian Resmi Berbasis Token (Seidentik Gambar Referensi):**
+     - Outlined (`.eu-dd--outlined`): Border abu tipis (`var(--color-outline-variant)`), latar putih (`var(--bg-base)`), teks (`var(--color-text-main)`), radius membulat (`var(--radius-lg)`). Digunakan untuk seluruh field form admin dan form kontak publik. Pada form standar, label statis tetap berada di atas field; pada bar filter atau standalone, mendukung label mengambang yang memotong border atas.
+     - Filled (`.eu-dd--filled`): Latar abu muda netral (`var(--color-surface-container)`), tanpa border luar, sudut membulat (`var(--radius-lg)`). Digunakan untuk toolbar filter cepat tabel admin dan status baris tabel.
+     - Elevated (`.eu-dd--elevated`): Latar putih (`var(--bg-base)`), tanpa border, bayangan lembut (`var(--shadow-level-1)` / `var(--shadow-level-2)`), radius membulat (`var(--radius-lg)`), menampilkan format "Prefix: **Nilai Tebal**" (mis. "Urutkan: **Terpopuler**" atau "Kategori: **Semua Kategori**"). Digunakan untuk bar filter katalog publik dan opsi toolbar menonjol.
+  2. **Anatomi Komponen Seidentik Referensi:**
+     - Trigger Box: Tinggi standar 52-56px (target sentuh mobile minimal 44px), padding horizontal proporsional, placeholder teks redup (`var(--color-text-muted)`).
+     - Caret Indikator: Ikon segitiga padat abu gelap (`var(--color-text-muted)` / `var(--color-text-main)`) di sisi kanan, bertransisi rotasi halus 180 derajat ke atas saat panel terbuka (`transform: rotate(180deg)`).
+     - Menu Panel: Latar putih (`var(--bg-base)`), radius (`var(--radius-lg)`), bayangan melayang (`var(--shadow-level-2)`), jarak vertikal ~8px (`var(--space-sm)`) di bawah trigger, lebar 100% mengikuti trigger, z-index (`var(--z-dropdown)`).
+     - Slot Ikon / Skeleton Kiri: Slot lingkaran di sisi kiri teks item yang berfungsi ganda: sebagai indikator skeleton shimmer saat memuat data opsi asinkron dan sebagai slot logo/ikon/thumbnail opsional bila opsi memuat metadata visual (jika tidak ada ikon, teks merapat rapi ke kiri).
+     - Kotak Pencarian Otomatis: Panel otomatis menyediakan kotak input pencarian di bagian atas jika jumlah opsi > 10 item.
+  3. **Matriks State Lengkap:**
+     - Default: Border netral atau latar sesuai varian, teks tajam kontras WCAG AAA.
+     - Hover: Border/latar menggelap halus via `var(--color-primary-hover)` atau `var(--color-outline)`.
+     - Focus-Visible: Ring fokus hijau token resmi (`var(--focus-ring): 0 0 0 3px rgba(0, 117, 90, 0.25)`). Dilarang memakai warna biru atau abu bawaan browser.
+     - Open: Caret berputar 180 derajat ke atas, panel muncul dengan transisi transform dan opacity.
+     - Item Active / Keyboard Highlight: Latar `var(--bg-subtle)`, teks `var(--color-text-main)`.
+     - Item Selected: Latar hijau lembut `var(--primary-subtle)`, teks hijau tegas `var(--color-primary-dark)` dengan indikator centang visual (SVG checkmark).
+     - Disabled: Opacity 0.55, cursor not-allowed, pointer-events none.
+     - Error: Border dan outline `var(--color-error)`, pesan error inline di bawah trigger sesuai standar T-259.
+     - Loading: Skeleton baris lingkaran + batang abu netral beranimasi shimmer.
+     - Empty: Pesan empty-state dwibahasa ("Tidak ada opsi" / "No options available").
+  4. **Aksesibilitas & Kontrak WAI-ARIA:**
+     - Mengikuti pola WAI-ARIA 1.2 Combobox / Listbox Pattern: `role="combobox"`, `aria-haspopup="listbox"`, `aria-expanded="true|false"`, `aria-controls="listbox-id"`, `aria-activedescendant="option-id"`.
+     - Panel listbox memiliki `role="listbox"`, setiap opsi memiliki `role="option"` dan `aria-selected="true|false"`.
+     - Navigasi Keyboard Lengkap: Enter / Space membuka/menutup dan memilih item, ArrowDown / ArrowUp menavigasi opsi aktif, Home / End melompat ke opsi pertama/terakhir, Escape menutup panel dan mengembalikan fokus ke trigger, Tab menutup panel dan memindahkan fokus ke elemen form berikutnya, type-ahead jump mencari opsi berdasarkan huruf pertama yang diketik.
+     - Kontrol Viewport & Flip: Jika ruang bawah layar kurang dari tinggi panel (default max-height 260px-280px), panel otomatis membalik (*flip*) ke atas trigger (`.eu-dd-panel--top`).
+     - Tampilan Mobile (<= 480px): Panel dropdown melayang biasa seperti desktop dengan pembatasan max-height 240px dan scroll vertikal halus.
+     - Isolasi Boundary: Panel tidak terpotong oleh overflow-x/overflow-y container tabel atau modal kartu admin.
+     - Satu Dropdown Terbuka: Membuka satu dropdown otomatis menutup dropdown lain yang sedang aktif di dokumen. Klik di luar (*click outside*) menutup panel.
+  5. **Sinkronisasi Native `<select>`:**
+     - Elemen `<select>` native tetap dipertahankan di dalam markup sebagai kontrol sumber data (fallback non-JS dan submit FormData standar).
+     - Sinkronisasi dwiarah: Pemilihan opsi kustom memperbarui `select.value` dan memicu event `dispatchEvent(new Event('change', { bubbles: true }))`.
+     - Terintegrasi penuh dengan modul `admin-form-validation.js` (T-259) untuk penandaan class `.is-invalid`, `aria-invalid="true"`, auto-open tab tersembunyi, dan auto-scroll/fokus ke trigger error pertama.
+
 ### Dashboard CMS Terpadu (`/admin/dashboard`)
 - Menampilkan ringkasan metrik statistik operasional:
   - Jumlah Inquiry Baru yang belum dibaca.
@@ -72,7 +108,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   2. **Teks Tombol CTA EN (`cta_text_en`):** Label tombol aksi utama bahasa Inggris (maks 50 karakter). Bersifat opsional, fallback ke default "Request Quote via WhatsApp".
   3. **Integrasi Kontak WhatsApp:** Tombol CTA tetap mengarah ke WhatsApp menggunakan nomor telepon resmi yang dikelola terpusat di Pengaturan Situs (`settings.whatsapp_number`).
 
-### FR-29: Komponen Tombol Admin Terpadu & Format Slug Ringkas `[PENDING T-255, T-257, T-258]`
+### FR-29: Komponen Tombol Admin Terpadu & Format Slug Ringkas
 - Seluruh tombol di panel Admin wajib menggunakan komponen tombol admin terpadu berprefix unik `.adm-btn` (mengacu pada gaya tombol editor tabel ukuran produk) agar terisolasi dari tombol halaman publik:
   1. **Anatomi & Aksesibilitas Seragam:** Tinggi, radius (`var(--r-md)`), padding, jarak ikon, focus ring (`var(--focus-ring)`), state `disabled`, dan state loading (`.is-loading`) saat submit seragam; target sentuh minimal `44px` pada layar mobile (`<= 768px`); ikon SVG inline di sisi kiri selaras makna; label ringkas dwibahasa (ID dan EN) yang telah dikunci disertai `aria-label` deskriptif.
   2. **Empat Varian Resmi Berbasis Token:**
@@ -81,9 +117,9 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
      - `neutral`/`ghost` (batal/kembali/reset): abu-abu netral (`var(--bg-surface)`, border `var(--border-main)`, teks & ikon `var(--text-secondary)`).
      - `danger` (hapus di halaman, tabel, Media Library/Picker, dan modal konfirmasi): latar `var(--st-ditolak-bg)`, border `var(--st-ditolak-border)`, teks & ikon `var(--st-ditolak-text)`.
   3. **Animasi Mikro:** Hanya menggunakan properti `transform` dan `opacity`, efek hover dibungkus `@media (hover: hover)`, state `:active` untuk layar sentuh, dan dinonaktifkan pada `@media (prefers-reduced-motion: reduce)`.
-  4. **Format Tampilan Slug Ringkas `[PENDING T-255]`:** Tampilan slug pada tabel daftar admin (Produk, Artikel Berita, Merek, Kategori) serta pratinjau/input di form tambah/edit hanya merender **1 baris slug tunggal** dengan tipografi monospace kecil (`var(--font-mono)`), warna `var(--text-muted)`, dan pemotongan `text-overflow: ellipsis` tanpa bullet (`&bull;`), tanpa pengulangan judul bahasa Inggris (`name_en`/`title_en`), dan tanpa prefix teks `slug:`. Perilaku pembuatan slug otomatis dan redirect 301 tetap dipertahankan.
+  4. **Format Tampilan Slug Ringkas:** Tampilan slug pada tabel daftar admin (Produk, Artikel Berita, Merek, Kategori) serta pratinjau/input di form tambah/edit hanya merender **1 baris slug tunggal** dengan tipografi monospace kecil (`var(--font-mono)`), warna `var(--text-muted)`, dan pemotongan `text-overflow: ellipsis` tanpa bullet (`&bull;`), tanpa pengulangan judul bahasa Inggris (`name_en`/`title_en`), dan tanpa prefix teks `slug:`. Perilaku pembuatan slug otomatis dan redirect 301 tetap dipertahankan.
 
-### FR-30: Standar Validasi Formulir & Dialog Admin Bertema `[PENDING T-259, T-260, T-261]`
+### FR-30: Standar Validasi Formulir & Dialog Admin Bertema
 - Seluruh form di panel Admin wajib menggunakan atribut `novalidate` dan divalidasi oleh modul JS terpusat tanpa handler inline untuk menggantikan tooltip validasi bawaan browser:
   1. **Validasi Berbasis Atribut Markup & Kontrol Kustom:** Membaca atribut HTML (`required`, `maxlength`, `minlength`, `pattern`, `type`, `min`, `max`) serta memvalidasi komponen kustom (TinyMCE, Media Picker, `select`, repeater WhatsApp, dan editor tabel ukuran).
   2. **Siklus Pemicu Validasi:** Validasi dijalankan saat tombol **Submit** ditekan, lalu berjalan secara *live* (`input`/`change`) per field setelah field tersebut pernah mengalami error agar pesan dan border merah langsung hilang begitu diperbaiki.
@@ -96,9 +132,10 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
-| **Komponen Tombol Admin Terpadu `.adm-btn-*` `[PENDING T-257, T-258]`** | Menyeragamkan hierarki aksi admin (primary hijau lembut daun `--color-leaf-soft` berteks gelap kontras AAA, secondary hijau outline, neutral abu, danger merah) tanpa merusak class `.btn-*` halaman publik. | 2026-10-31 |
-| **Validasi Form Submit + Live Pasca-Error & SweetAlert2 `[PENDING T-259, T-260]`** | Menggantikan tooltip validasi bawaan browser dan `alert`/`confirm` native dengan umpan balik bertema dwibahasa ID/EN yang aksesibel. | 2026-10-31 |
-| **Tampilan Slug Admin 1 Baris Tanpa Bullet & Tanpa Judul EN `[PENDING T-255]`** | Menghilangkan duplikasi visual antara judul bahasa Inggris dan kode slug di tabel daftar serta form admin. | 2026-10-31 |
+| **Komponen Dropdown Terpadu `.eu-dd-*` (3 Varian & WAI-ARIA) `[PENDING T-262 s/d T-265]`** | Menyeragamkan antarmuka pemilihan opsi admin dan publik dengan listbox kustom seidentik referensi desain berbasis token hijau Euodoo. | 2026-11-02 |
+| **Komponen Tombol Admin Terpadu `.adm-btn-*`** | Menyeragamkan hierarki aksi admin (primary hijau lembut daun `--color-leaf-soft` berteks gelap kontras AAA, secondary hijau outline, neutral abu, danger merah) tanpa merusak class `.btn-*` halaman publik. | 2026-11-02 |
+| **Validasi Form Submit + Live Pasca-Error & SweetAlert2** | Menggantikan tooltip validasi bawaan browser dan `alert`/`confirm` native dengan umpan balik bertema dwibahasa ID/EN yang aksesibel. | 2026-11-02 |
+| **Tampilan Slug Admin 1 Baris Tanpa Bullet & Tanpa Judul EN** | Menghilangkan duplikasi visual antara judul bahasa Inggris dan kode slug di tabel daftar serta form admin. | 2026-11-02 |
 | **Pengurutan Galeri via Tombol Panah** | Menghindari dependensi drag-and-drop eksternal, 100% aman CSP, dan ramah aksesibilitas. | 2026-10-23 |
 | **Validasi Whitelist Kolom JSON Produk** | Mencegah injeksi payload data tak terduga pada kolom varian dan tabel ukuran produk. | 2026-10-23 |
 | **Pemisahan Peran 3 Tingkat (Superadmin/Admin/Editor)** | Mencegah staf konten mengubah pengaturan sensitif dan memastikan privasi data kontak prospek terjaga. | 2026-10-05 |

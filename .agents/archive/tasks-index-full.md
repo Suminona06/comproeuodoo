@@ -533,3 +533,80 @@
 - **File Terdampak:** `public/css/lightbox.css`, `public/css/components.css`, `public/js/lightbox.js`, `tests/test-modul12-public.js`
 - **Skill:** Impeccable polish + Impeccable adapt
 - **Verifikasi:** Pengujian otomatis Playwright E2E di seluruh viewport (320px, 375px, 768px, 1024px, 1440px) mode ID & EN, verifikasi keyboard accessibility, audit CSP 0 error, dan kelulusan seluruh suite `npm test`. Selesai 2026-10-31.
+
+### T-255: Perbaikan Tampilan Slug di Admin Katalog Produk, Artikel Berita & Merek (Bug A1) [DONE]
+- **Deskripsi**: Membersihkan render slug pada tabel daftar Produk, Artikel Berita, Merek, dan Kategori serta pada form tambah/edit produk dan artikel (sesuai jawaban Q3: Opsi C, 1 baris saja tanpa bullet dan tanpa judul EN). Menggunakan class `.adm-slug-text` (untuk tabel daftar) dan `.adm-slug-input-group` / `.adm-slug-box` (untuk form) dengan tipografi monospace/muted berbasis token (`var(--font-mono)`, `var(--text-muted)`), `max-width` responsif, dan `text-overflow: ellipsis`. Tidak ada migrasi skema database; kolom `slug` (`VARCHAR(191)`) dan perilaku redirect 301 (`slug_redirects`) tetap utuh.
+- **Acceptance Criteria**:
+  - [x] Pada daftar Produk (`products/index.ejs`), Artikel Berita (`posts/index.ejs`), dan Merek (`brands/index.ejs`), hanya tampil 1 baris slug tunggal di bawah judul utama, tanpa bullet (`&bull;`), tanpa judul bahasa Inggris (`name_en`/`title_en`), dan tanpa prefix `slug:`.
+  - [x] Pada form edit Produk (`products/edit.ejs`) tampil informasi slug kanonik satu baris (`.adm-slug-box`), dan pada form tambah/edit Artikel Berita (`posts/{create,edit}.ejs`) field `#slug` (`maxlength="191"`) tampil rapi menggunakan class `.adm-slug-input-group` tanpa inline style.
+  - [x] Teks slug yang panjang otomatis terpotong dengan `text-overflow: ellipsis` (dilengkapi atribut `title` berisi slug penuh) tanpa merusak layout tabel dari viewport 320px sampai desktop.
+  - [x] Mekanisme pembuatan slug otomatis dan redirect 301 (`slug_redirects`) tetap berjalan tanpa perubahan.
+- **File Terdampak**: `public/css/admin.css`, `views/admin/products/index.ejs`, `views/admin/products/edit.ejs`, `views/admin/posts/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `views/admin/brands/index.ejs`, `views/admin/product-categories/index.ejs`, `views/admin/post-categories/index.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t255-slug-playwright.js` (8/8 langkah lulus). Selesai 2026-11-02.
+
+### T-256: Perbaikan Proporsi & Generator Multi-Ukuran Favicon di Pengaturan Situs serta Layout Publik/Admin (Bug A2) [DONE]
+- **Deskripsi**: Memperbaiki pengelolaan dan pemrosesan favicon sesuai jawaban Q6 (Opsi B dengan fallback ke Opsi A, menggunakan simbol logo saja tanpa teks). Menyediakan input khusus Favicon (simbol logo persegi 1:1 tanpa teks) di `views/admin/settings/index.ejs` terpisah dari Logo Utama, dengan opsi upload langsung dan pratinjau persegi 1:1. Menambahkan fungsi generator `generateFaviconSet` di `middleware/uploadMiddleware.js` berbasis Sharp menggunakan *circular badge* berlatar putih bersih dengan tepian *anti-aliased* halus dan penskalaan proporsional (92% diameter kanvas), menjaga proporsi asli simbol tanpa distorsi atau peregangan ("tidak ketarik") pada kanvas persegi 16x16, 32x32, 180x180, 192x192, dan 512x512 PNG di `public/uploads/settings/`, serta sinkronisasi fallback root `/favicon.ico`. Memasang tag `<link rel="icon">` multi-ukuran di seluruh layout publik dan admin.
+- **Acceptance Criteria**:
+  - [x] Pengaturan Situs memiliki input khusus Favicon (simbol logo persegi 1:1 tanpa teks) dan fallback otomatis ke logo situs bila favicon khusus kosong.
+  - [x] Setiap penyimpanan favicon men-generate paket ikon persegi (16x16, 32x32, 180x180, 192x192, 512x512) menggunakan Sharp dengan latar melingkar putih bersih dan padding proporsional sehingga proporsi simbol asli tidak pernah gepeng.
+  - [x] Tag `<link rel="icon" type="image/png" sizes="32x32">`, `<link rel="icon" type="image/png" sizes="16x16">`, `<link rel="apple-touch-icon" sizes="180x180">`, dan `<link rel="icon" type="image/png" sizes="192x192">` terpasang di `head.ejs` (publik), `admin-header.ejs`, `login.ejs`, dan `403.ejs`.
+  - [x] Favicon tampil proporsional, tajam, dan memiliki bobot visual setara favicon standar browser (Google) di tab Chrome maupun Firefox pada mode terang dan gelap, baik di halaman publik maupun admin.
+- **File Terdampak**: `middleware/uploadMiddleware.js`, `controllers/admin/settingController.js`, `views/admin/settings/index.ejs`, `views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, `views/admin/403.ejs`
+- **Skill**: Impeccable polish
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t256-favicon-playwright.js` (6/6 langkah lulus). Selesai 2026-11-02.
+
+### T-257: Fondasi CSS & Standarisasi Komponen Tombol Admin Terpadu `.adm-btn-*` beserta Animasi & Kontras WCAG AA [DONE]
+- **Deskripsi**: Mendaftarkan token warna tombol utama admin `--color-leaf-soft: #d1ecb9` (beserta token turunan `--adm-btn-primary-bg`, `--adm-btn-primary-hover-bg`, `--adm-btn-primary-border`, `--adm-btn-primary-text`) di `Design/DESIGN.md`, `public/css/tokens.css`, dan `public/css/admin.css` sesuai jawaban Q1, lalu membangun sistem komponen tombol admin terpadu berprefix `.adm-btn` di `public/css/admin.css` yang mengadopsi anatomi visual dan animasi `.btn-add-row` (editor tabel ukuran produk) tanpa menyentuh `.btn-secondary` milik halaman publik. Mendukung 4 varian: `primary` (latar hijau daun lembut kontras 13.91:1 AAA), `secondary` (outline hijau kontras 5.66:1 AA), `neutral` (abu-abu kontras 10.36:1 AAA), dan `danger` (merah kontras 7.02:1 AAA).
+- **Acceptance Criteria**:
+  - [x] Tombol `.adm-btn-primary` menggunakan latar hijau lembut daun `var(--adm-btn-primary-bg)` dengan teks/ikon gelap `var(--surface-dark-deep)` / `var(--text-main)` (rasio kontras >= 13.9:1, Lulus WCAG AAA).
+  - [x] Tombol `.adm-btn-secondary` (5.66:1), `.adm-btn-neutral` (10.36:1), dan `.adm-btn-danger` (7.02:1) seluruhnya memakai token resmi tanpa warna biru dan lulus WCAG AA.
+  - [x] Animasi mikro hanya menggunakan properti `transform` dan `opacity`, dibungkus `@media (hover: hover)` untuk hover, memiliki state `:active` untuk layar sentuh, dan dinonaktifkan pada `@media (prefers-reduced-motion: reduce)`.
+  - [x] Target sentuh memiliki tinggi minimal 44px pada mobile (`<= 768px`).
+  - [x] Class `.btn-secondary` di `public/css/components.css` untuk halaman publik tetap utuh 100%.
+- **File Terdampak**: `Design/DESIGN.md`, `public/css/tokens.css`, `public/css/admin.css`
+- **Skill**: Impeccable polish + Impeccable animate + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t257-buttons-playwright.js` (7/7 langkah lulus). Selesai 2026-11-02.
+
+### T-258: Migrasi Seluruh Tombol Halaman Admin, Modal, Tabel & Pemendekan Label ID/EN ke `.adm-btn-*` [DONE]
+- **Deskripsi**: Mengganti seluruh pemakaian tombol lama (`.btn`, `.btn-primary`, `.btn-secondary`, `.btn-outline`, `.btn-ghost`, `.btn-action-*`, `.btn-add-row`) di seluruh view EJS admin dan script pembentuk tombol dinamis (`admin-size-table.js`, `admin-settings.js`, `media-picker.js`) ke `.adm-btn-*` sesuai pemetaan varian Q1 (`primary`), Q2 (`neutral`), dan Q7 (`danger`). Memasang set ikon SVG inline yang seragam di sisi kiri serta menerapkan daftar 31 label pendek dwibahasa ID/EN dan `aria-label` yang telah disetujui pada Q4.
+- **Acceptance Criteria**:
+  - [x] Tidak ada lagi tombol di area admin yang menggunakan `.btn-secondary` lama atau tombol tanpa ikon standar.
+  - [x] Seluruh tombol Simpan memakai `.adm-btn-primary`, tombol Batal/Kembali/Reset memakai `.adm-btn-neutral`, tombol aksi umum/tambah baris/ekspor/pratinjau memakai `.adm-btn-secondary`, dan tombol Hapus memakai `.adm-btn-danger`.
+  - [x] Seluruh label tombol di halaman, tabel, dan modal admin menggunakan label pendek ID/EN sesuai tabel Q4 dengan `aria-label` deskriptif.
+- **File Terdampak**: Seluruh view di `views/admin/**/*.ejs`, `views/partials/media-picker-modal.ejs`, `public/js/admin-size-table.js`, `public/js/admin-settings.js`, `public/js/media-picker.js`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t258-buttons-migration-playwright.js` (7/7 langkah lulus). Selesai 2026-11-02.
+
+### T-259: Modul Validasi Formulir Admin Terpusat, Pesan Dwibahasa ID/EN, Auto-Open Tab & Integrasi Kontrol Kustom [DONE]
+- **Deskripsi**: Membangun modul `public/js/admin-form-validation.js` dan menambahkan `novalidate` serta kelengkapan atribut batas karakter (`maxlength` sesuai skema kolom database) pada seluruh form admin untuk menggantikan tooltip validasi bawaan browser. Validasi dijalankan saat tombol Submit ditekan, lalu berjalan secara *live* (`input`/`change`) per field setelah field tersebut pernah mengalami error. Mencakup validasi kontrol kustom (TinyMCE, Media Picker, select, repeater WhatsApp, dan editor tabel ukuran), membuka tab tersembunyi secara otomatis jika terdapat field error di dalamnya, memfokuskan & menggulir ke field error pertama, menampilkan error server-side dengan gaya yang sama, serta mengaktifkan loading state tombol submit untuk mencegah kirim ganda.
+- **Acceptance Criteria**:
+  - [x] Tidak ada lagi tooltip validasi bawaan browser (*"Please fill out this field."*) di seluruh form admin.
+  - [x] Validasi berjalan tepat saat Submit ditekan, dan setelah suatu field berstatus error, perubahan nilai (`input`/`change`) pada field tersebut langsung memvalidasi ulang dan menghilangkan error seketika saat valid (Q5: Opsi A).
+  - [x] Error tampil inline di bawah field dengan warna `var(--color-error)`, ikon kecil, border field merah dari token, `aria-invalid="true"`, dan `aria-describedby` yang terhubung ke ID elemen pesan error dalam bahasa ID dan EN.
+  - [x] Jika field error berada di dalam tab yang sedang tertutup (`about/index.ejs`, `home-content/index.ejs`, `settings/index.ejs`), tab tersebut otomatis terbuka lalu halaman menggulir dan fokus ke field error pertama.
+  - [x] Mencakup validasi TinyMCE, Media Picker, select, repeater WhatsApp, dan editor tabel ukuran, serta merender error dari server-side dengan gaya visual yang sama.
+  - [x] Tombol submit masuk ke state `.is-loading` (`disabled`) saat form valid dikirim guna mencegah pengiriman ganda.
+- **File Terdampak**: `public/js/admin-form-validation.js`, `public/css/admin.css`, `views/partials/admin-footer.ejs`, `views/admin/login.ejs`, seluruh view form di `views/admin/**/*.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t259-form-validation-playwright.js` (7/7 langkah lulus). Selesai 2026-11-02.
+
+### T-260: Penggantian Seluruh Native `alert()`/`confirm()` dengan SweetAlert2 Bertema & Pembersihan Inline Handler Admin [DONE]
+- **Deskripsi**: Mengaudit dan mengganti seluruh pemanggilan `alert()` dan `confirm()` native di script dan view admin (`public/js/admin-settings.js`, `public/js/admin-size-table.js`, `public/js/media-picker.js`, `public/js/admin.js`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`) menjadi dialog SweetAlert2 bertema token Euodoo. Seluruh tombol konfirmasi hapus di dalam popup SweetAlert2 menggunakan komponen `.adm-btn .adm-btn-danger` (dengan ikon tempat sampah) dan tombol batal menggunakan `.adm-btn .adm-btn-neutral` (`buttonsStyling: false`). Memindahkan seluruh event handler inline (`onclick`, `onchange`, `onsubmit`, `oninput`, `onerror`) pada view admin ke event listener terpusat yang patuh CSP tanpa inline handler baru.
+- **Acceptance Criteria**:
+  - [x] Nol pemanggilan `alert()` atau `confirm()` native di seluruh kode admin.
+  - [x] Seluruh dialog konfirmasi hapus menggunakan SweetAlert2 bertema dengan tombol konfirmasi `.adm-btn .adm-btn-danger` dan tombol batal `.adm-btn .adm-btn-neutral` (Q7).
+  - [x] Tidak ada lagi penambahan atau ketergantungan pada inline style maupun inline event handler (`onclick`, `onchange`, `onsubmit`, `oninput`) di template admin; sepenuhnya kompatibel dengan kebijakan CSP.
+- **File Terdampak**: `public/js/admin.js`, `public/js/admin-settings.js`, `public/js/admin-size-table.js`, `public/js/media-picker.js`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`, `views/admin/inquiries/detail.ejs`, `views/admin/products/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `views/admin/banners/create.ejs`, `views/admin/banners/edit.ejs`, `views/admin/media/index.ejs`, `views/admin/about/index.ejs`
+- **Skill**: Impeccable polish
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t260-sweetalert-csp-playwright.js` (9/9 langkah lulus). Selesai 2026-11-02.
+
+### T-261: UI Polish, Adaptasi Mobile (320px-Desktop, Zoom 100/125/150%, Tinggi 600-768px) & Pengujian Regresi Menyeluruh (Bagian C) [DONE]
+- **Deskripsi**: Melakukan pengecekan akhir konsistensi visual tombol `.adm-btn-*` (termasuk varian `primary` `#D1ECB9`, `secondary`, `neutral`, `danger`), tampilan slug satu baris, favicon simbol logo persegi berlatar circular badge, serta validasi form di seluruh menu admin pada level zoom 100%, 125%, dan 150%, tinggi layar pendek 600px-768px (memastikan bagian body modal dapat di-scroll dan footer modal berisi tombol Batal/Simpan selalu terlihat dan tidak terpotong), serta lebar viewport 320px hingga desktop.
+- **Acceptance Criteria**:
+  - [x] Pada tinggi layar 600px-768px dan zoom 100%/125%/150%, footer modal (`Batal` / `Simpan`) dan sticky action bar tetap terlihat serta dapat diakses tanpa terpotong viewport.
+  - [x] Seluruh fungsi CRUD dan aksi admin (simpan, batal, tambah, hapus, ekspor CSV, unggah media, filter/reset) berjalan lancar dengan token CSRF tetap utuh.
+  - [x] Responsif penuh dari 320px sampai desktop dalam bahasa ID dan EN, favicon tampil proporsional di publik & admin, serta nol error pada console browser.
+- **File Terdampak**: `public/css/admin.css`, `middleware/uploadMiddleware.js`, `views/admin/inquiries/index.ejs`, `views/admin/dashboard.ejs`, `views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, `views/admin/403.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt + Impeccable animate
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t261-responsive-regression-playwright.js` (6/6 langkah lulus) serta pengujian penuh seluruh test suite T-255 s/d T-260 (100% passed). Selesai 2026-11-02.

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-02 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
 
 # Tech Spec: Modul Admin & CMS (Admin CMS & Users)
 
@@ -83,5 +83,5 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 
 ---
 
-## 6. Standar Komponen UI, Tombol & Validasi Form Admin `[PENDING T-255, T-257 s/d T-261]`
+## 6. Standar Komponen UI, Tombol & Validasi Form Admin
 Spesifikasi teknis lengkap mengenai sistem komponen tombol admin terpadu (`.adm-btn-primary` dengan token `--color-leaf-soft` / `--adm-btn-primary-bg`, `.adm-btn-secondary`, `.adm-btn-neutral`, `.adm-btn-danger`), matriks kontras WCAG AA/AAA, animasi mikro, format tampilan slug 1 baris (`.adm-slug-text`), modul validasi form terpusat (`public/js/admin-form-validation.js`), serta dialog SweetAlert2 bertema didokumentasikan secara terpisah pada sub-modul [tech/admin-ui.md](admin-ui.md).
