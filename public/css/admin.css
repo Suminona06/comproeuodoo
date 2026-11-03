@@ -4443,3 +4443,62 @@ body.sidebar-open .admin-backdrop {
   gap: 0.75rem;
 }
 
+/* ==========================================================================
+   Batch 2: Product Categories (.adm-pcat-*) (T-278)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-pcat-form-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Table columns & cells */
+.adm-pcat-th-count {
+  width: 110px;
+  text-align: center;
+}
+
+.adm-pcat-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-pcat-th-status {
+  width: 90px;
+}
+
+.adm-pcat-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+.adm-pcat-td-count {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-pcat-badge-count {
+  font-size: 11px;
+}
+
+.adm-pcat-td-order {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-pcat-toggle-form {
+  display: inline;
+}
+
+.adm-pcat-td-actions {
+  text-align: right;
+}
+
+.adm-pcat-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+
