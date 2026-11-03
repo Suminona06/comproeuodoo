@@ -17,9 +17,7 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
       <!-- Favicon -->
       <div class="form-group" style="padding: 16px; background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px;">
-        <label class="form-label" style="font-weight: 600;">Favicon Situs (Simbol Logo Persegi 1:1 Tanpa Teks)</label>
-        <p class="form-hint" style="font-size: 11px; margin-bottom: 10px;">Gunakan simbol logo saja (tanpa teks nama perusahaan) berformat persegi 1:1. Sistem otomatis men-generate paket ukuran 16x16, 32x32, 180x180 (Apple Touch), 192x192, dan 512x512 PNG proporsional tanpa gepeng. Jika dikosongkan, sistem membuat fallback otomatis dari Logo Header.</p>
-        
+        <label class="form-label" style="font-weight: 600;">Favicon Situs (Simbol Logo Persegi 1:1 Tanpa Teks)</label>        
         <div class="media-picker-component">
           <input type="hidden" id="setting_site_favicon" name="site_favicon" value="<%= settings.site_favicon_source || settings.site_favicon || '' %>">
           <div class="media-picker-preview-box" style="height: 100px; display: flex; align-items: center; justify-content: center; background: #ffffff;">
@@ -39,11 +37,6 @@
               <span>Reset</span>
             </button>
           </div>
-        </div>
-
-        <div style="margin-top: 10px;">
-          <label for="favicon_file" style="font-size: 11px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 3px;">Atau Unggah Langsung (.png, .svg, .ico, .webp):</label>
-          <input type="file" id="favicon_file" name="favicon_file" accept=".png,.ico,.svg,.webp,.jpg,.jpeg" class="form-input" style="font-size: 11.5px; padding: 4px 8px;">
         </div>
       </div>
 
@@ -101,7 +94,7 @@
 
   <!-- Card 1: Identitas Korporat -->
   <div class="form-card">
-    <div class="form-card-title">2. Identitas &amp; Kontak Resmi Korporat</div>
+    <div class="form-card-title">2. Identitas &amp; Kontak Resmi </div>
 
     <div class="form-row-2">
       <div class="form-group">
@@ -128,14 +121,14 @@
 
   <!-- Card 2: Alamat Ganda & Embed Peta -->
   <div class="form-card">
-    <div class="form-card-title">3. Alamat Kantor Jakarta &amp; Pabrik Manufaktur Bandung</div>
+    <div class="form-card-title">3. Alamat Kantor &amp; Pabrik </div>
 
     <!-- Lokasi 1: Jakarta -->
     <div style="background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
         <div style="font-weight: 700; font-size: 14px; color: var(--navy, #071f17); display: flex; align-items: center; gap: 8px;">
           <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary, #00755a);"></span>
-          Lokasi 1: Kantor Pusat (Jakarta)
+          Lokasi 1: Kantor Pusat
         </div>
         <label class="admin-toggle-switch" title="Tampilkan atau sembunyikan kartu alamat Jakarta di footer dan halaman kontak">
           <input type="checkbox" name="office_card_visible" value="1" <%= (settings.office_card_visible !== '0' && settings.office_card_visible !== 0) ? 'checked' : '' %>>
@@ -156,23 +149,23 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="office_address">Alamat Lengkap Kantor Jakarta *</label>
+        <label class="form-label" for="office_address">Alamat Lengkap Kantor *</label>
         <textarea id="office_address" name="office_address" class="form-textarea" rows="2" required><%= settings.office_address || 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02-07, Jakarta Pusat 10270' %></textarea>
       </div>
 
       <div class="form-row-2">
         <div class="form-group">
-          <label class="form-label" for="office_phone">Nomor Telepon Kantor Jakarta *</label>
+          <label class="form-label" for="office_phone">Nomor Telepon Kantor </label>
           <input type="text" id="office_phone" name="office_phone" class="form-input" required value="<%= settings.office_phone || settings.company_phone || '(021) 53668626' %>">
         </div>
         <div class="form-group">
-          <label class="form-label" for="office_fax">Nomor Fax Kantor Jakarta (Opsional)</label>
+          <label class="form-label" for="office_fax">Nomor Fax Kantor </label>
           <input type="text" id="office_fax" name="office_fax" class="form-input" value="<%= settings.office_fax || '+6221-53668648' %>">
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="office_email">Email Kantor Jakarta (Opsional - default: email perusahaan)</label>
+        <label class="form-label" for="office_email">Email Kantor </label>
         <input type="email" id="office_email" name="office_email" class="form-input" value="<%= settings.office_email || '' %>" placeholder="info@euodoo.com">
       </div>
     </div>

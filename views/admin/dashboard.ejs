@@ -77,7 +77,7 @@
           <th style="width: 100px;">Waktu</th>
           <th>Klien / Perusahaan</th>
           <th>Kontak</th>
-          <th>Kebutuhan / Produk</th>
+          <th>Kebutuhan</th>
           <th style="width: 140px;">Status</th>
           <th style="width: 80px; text-align: right;">Aksi</th>
         </tr>
@@ -104,9 +104,6 @@
               </td>
               <td>
                 <div class="td-req-text" title="<%= item.message || '' %>">
-                  <% if (item.product_name_id) { %>
-                    <strong><%= item.product_name_id %></strong> &bull;
-                  <% } %>
                   <%= item.message ? item.message.substring(0, 60) + '...' : 'Tidak ada rincian' %>
                 </div>
               </td>
@@ -258,7 +255,14 @@
           row.setAttribute('data-status', newStatus);
           const sel = row.querySelector('.status-select');
           if (sel) {
-            sel.className = 'status-select inquiry-status-select st-' + (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
+            const statusClass = (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
+            sel.classList.remove('st-baru', 'st-diproses', 'st-selesai', 'st-ditolak');
+            sel.classList.add('st-' + statusClass, 'eu-dd-native', 'sr-only');
+            const dd = sel.closest('.eu-dd');
+            if (dd) {
+              dd.classList.remove('st-baru', 'st-diproses', 'st-selesai', 'st-ditolak');
+              dd.classList.add('st-' + statusClass);
+            }
           }
         }
       } else {

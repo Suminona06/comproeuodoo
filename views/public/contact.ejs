@@ -207,10 +207,9 @@
                       <%
                         const isSel = selectedProduct && (selectedProduct.id === prod.id || selectedProduct.slug === prod.slug);
                         const pName = currentLangCode === 'en' ? (prod.name_en || prod.name_id) : prod.name_id;
-                        const pCat = currentLangCode === 'en' ? (prod.category_name_en || prod.category_name_id) : prod.category_name_id;
                       %>
                       <option value="<%= prod.id %>" <%= isSel ? 'selected' : '' %>>
-                        <%= pName %> <%= pCat ? '(' + pCat + ')' : '' %>
+                        <%= pName %>
                       </option>
                     <% }); %>
                   <% } %>

@@ -2,10 +2,10 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 2 Task (T-267 s/d T-268)
-- **Total Task Selesai:** 266 Task (T-01 s/d T-266)
+- **Task Aktif Terbuka:** 0 Task
+- **Total Task Selesai:** 269 Task (T-01 s/d T-269)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
-- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-269**.
+- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-270**.
 
 ---
 
@@ -68,7 +68,7 @@
   2. Dropdown produk dan tipe inquiry di form kontak menerapkan varian `outlined` dan terhubung rapi dengan validasi client-side, CSRF token, dan Cloudflare Turnstile tanpa konflik. *(sesuai Q1, Q4)*
   3. Aksesibilitas keyboard dan mobile drawer filter katalog tetap berfungsi 100%.
 
-### [ ] T-267: Penskalaan 2x & Harmonisasi Spasi Marquee Section Merek Kami Homepage *(diperbarui sesuai jawaban Q9, Q10)*
+### [x] T-267: Penskalaan 2x & Harmonisasi Spasi Marquee Section Merek Kami Homepage *(diperbarui sesuai jawaban Q9, Q10)*
 - **Ukuran:** S | **Skill Terkait:** `polish`, `adapt`, `animate`
 - **Deskripsi:** Menyesuaikan ukuran logo merek pada `.brand-strip-*` menjadi 2x di desktop (`clamp(168px, 16vw, 220px)`), ~1.5x di mobile (`clamp(90px, 20vw, 120px)`), merapatkan spasi `--brand-gap` menjadi `clamp(1.5rem, 3.5vw, 3rem)`, dan mengkalibrasi durasi animasi marquee dari 32s ke 48s agar kecepatan linier per piksel konstan.
 - **File Terdampak:** `public/css/components.css`.
@@ -80,7 +80,7 @@
   5. Pada viewport mobile 320px, 375px, 480px, dan 768px tidak terjadi horizontal scrollbar (overflow-x bebas bocor).
   6. Modal lightbox zoom preview (`#brandPreviewModal`) dan `prefers-reduced-motion` tetap berfungsi normal.
 
-### [ ] T-268: Pengujian Komprehensif Lintas Browser, Zoom Admin, dan Audit Kontras WCAG AA *(diperbarui sesuai jawaban Q1, Q8)*
+### [x] T-268: Pengujian Komprehensif Lintas Browser, Zoom Admin, dan Audit Kontras WCAG AA *(diperbarui sesuai jawaban Q1, Q8)*
 - **Ukuran:** M | **Skill Terkait:** `polish`
 - **Deskripsi:** Melakukan regresi pengujian menyeluruh pada seluruh form admin dan halaman publik ber-dropdown, marquee beranda, navigasi keyboard-only, emulasi pembaca layar, pengujian zoom antarmuka admin 100%, 125%, 150%, dan verifikasi rasio kontras WCAG AA/AAA.
 - **File Terdampak:** Berkas tes / skrip verifikasi.
@@ -88,3 +88,13 @@
   1. Nol error console pada browser saat membuka, menutup, memfilter, atau mengirimkan form ber-dropdown di admin maupun publik. *(sesuai Q1)*
   2. Seluruh pasangan teks dan latar pada komponen `.eu-dd` memenuhi ambang batas kontras WCAG AA (>= 4.5:1 untuk teks biasa, >= 3:1 untuk non-teks). *(sesuai Q8)*
   3. Tidak ada regresi pada fungsionalitas CRUD admin dan form kontak RFQ.
+
+### [x] T-269: Perbaikan Sinkronisasi Status Inquiry Table Admin, Tampilan Kolom Kebutuhan & Label Produk Form Kontak
+- **Ukuran:** S | **Skill Terkait:** `debugging-and-error-recovery`, `polish`, `antislop-human`
+- **Deskripsi:** Memperbaiki bug status dropdown di tabel RFQ admin (`dashboard.ejs` & `inquiries/index.ejs`) agar tidak merusak class `eu-dd-native sr-only` saat AJAX sukses sehingga tidak muncul dropdown duplikat dan perubahan status berikutnya tersimpan normal; menyelaraskan kolom tabel Kebutuhan agar hanya menampilkan rincian kebutuhan tanpa nama produk; serta menghapus sufiks kategori pada dropdown opsi produk di halaman kontak publik.
+- **File Terdampak:** `public/js/admin-dropdown.js`, `public/css/admin.css`, `public/css/components.css`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`, `views/public/contact.ejs`.
+- **Acceptance Criteria (AC):**
+  1. Penggantian status inquiry di dashboard dan tabel inquiries tidak memunculkan dropdown ganda; perubahan status kedua dan seterusnya tersimpan permanen di database.
+  2. Dropdown trigger pada baris tabel mengadopsi status warna token (`st-baru`, `st-diproses`, `st-selesai`, `st-ditolak`) secara mulus.
+  3. Kolom "Kebutuhan" di dashboard dan tabel inquiries hanya menampilkan teks kebutuhan klien tanpa prefix nama produk.
+  4. Seluruh pilihan produk pada dropdown form kontak `/contact` hanya menampilkan nama produk murni tanpa nama kategori dalam kurung.

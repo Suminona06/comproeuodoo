@@ -187,11 +187,35 @@
     const labelText = item.getAttribute('data-label') || item.querySelector('.eu-dd-item-text')?.textContent.trim() || item.textContent.trim();
 
     // 1. Update native select value
-    const nativeSelect = dd.querySelector('select.eu-dd-native');
+    const nativeSelect = dd.querySelector('select.eu-dd-native') || dd.querySelector('select');
     const prevVal = nativeSelect ? nativeSelect.value : null;
 
     if (nativeSelect) {
       nativeSelect.value = val;
+
+      // Sync status badge classes if present
+      const statusClasses = ['st-baru', 'st-diproses', 'st-selesai', 'st-ditolak'];
+      const hasStatus = statusClasses.some(c => nativeSelect.classList.contains(c) || dd.classList.contains(c));
+      if (hasStatus) {
+        const statusMap = {
+          baru: 'st-baru',
+          dibaca: 'st-diproses',
+          diproses: 'st-diproses',
+          ditindaklanjuti: 'st-selesai',
+          selesai: 'st-selesai',
+          ditolak: 'st-ditolak'
+        };
+        const targetClass = statusMap[val];
+        statusClasses.forEach(c => {
+          nativeSelect.classList.remove(c);
+          dd.classList.remove(c);
+        });
+        if (targetClass) {
+          nativeSelect.classList.add(targetClass);
+          dd.classList.add(targetClass);
+        }
+      }
+
       if (!isInit && prevVal !== val) {
         nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
       }
@@ -270,6 +294,14 @@
     if (isInline && !wrapper.classList.contains('eu-dd--inline')) {
       wrapper.classList.add('eu-dd--inline');
     }
+
+    // Sync initial status classes from native select to wrapper
+    const statusClasses = ['st-baru', 'st-diproses', 'st-selesai', 'st-ditolak'];
+    statusClasses.forEach(c => {
+      if (nativeSelect.classList.contains(c) && !wrapper.classList.contains(c)) {
+        wrapper.classList.add(c);
+      }
+    });
 
     nativeSelect.classList.add('eu-dd-native', 'sr-only');
     nativeSelect.setAttribute('tabindex', '-1');

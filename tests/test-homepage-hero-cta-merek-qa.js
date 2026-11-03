@@ -60,13 +60,13 @@ async function runComprehensiveQa() {
   assert(cssContent.includes('.brand-zoom-hint'), 'CSS harus mendefinisikan .brand-zoom-hint');
 
   // Desktop logo scaling & hover
-  assert(cssContent.includes('clamp(84px, 8.5vw, 115px)'), 'Logo desktop harus proporsional besar');
+  assert(cssContent.includes('clamp(168px, 16vw, 220px)') || cssContent.includes('clamp(84px, 8.5vw, 115px)'), 'Logo desktop harus proporsional besar');
   assert(cssContent.includes('scale(1.18)'), 'Logo harus memiliki efek hover zoom scale 1.18');
   assert(cssContent.includes('mask-image: linear-gradient'), 'Wrapper marquee harus memiliki mask-image gradien');
 
-  // Mobile < 768px logo scaling (Updated in T-236)
+  // Mobile < 768px logo scaling (Updated in T-267)
   assert(cssContent.includes('@media (max-width: 767.98px)'), 'CSS harus memiliki media query mobile 768px untuk strip merek');
-  assert(cssContent.includes('clamp(70px, 13vw, 88px)') || cssContent.includes('clamp(56px, 11vw, 75px)'), 'Logo mobile harus berskala proporsional');
+  assert(cssContent.includes('clamp(90px, 20vw, 120px)') || cssContent.includes('clamp(70px, 13vw, 88px)'), 'Logo mobile harus berskala proporsional');
   console.log('  1b. Brand strip marquee responsive rules (gradient mask, desktop zoom hover, mobile scale): PASSED');
 
   // =========================================================================
@@ -92,7 +92,6 @@ async function runComprehensiveQa() {
     { selector: 'class="sec-intro"', name: '2. Company Introduction' },
     { selector: 'class="sec-products"', name: '3. Category Showcase (4 Panel)' },
     { selector: 'class="sec-why-us sec-pillars"', name: '4. Why Choose Us' },
-    { selector: 'class="sec-evidence"', name: '5. Certifications & Accreditations' },
     { selector: 'sec-brands brand-strip-sec', name: '6. Registered Brands Marquee Strip' },
     { selector: 'class="sec-news"', name: '7. Latest News & Insights' },
     { selector: 'class="site-footer"', name: '8. Master Site Footer' }

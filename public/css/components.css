@@ -3590,7 +3590,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  padding: 2.25rem 0;
+  padding: 2.5rem 0;
   mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
@@ -3598,7 +3598,7 @@
 .brand-strip-marquee {
   display: flex;
   width: max-content;
-  --brand-gap: clamp(3rem, 5vw, 5.5rem);
+  --brand-gap: clamp(1.5rem, 3.5vw, 3rem);
   gap: var(--brand-gap);
 }
 
@@ -3607,7 +3607,7 @@
   align-items: center;
   gap: var(--brand-gap);
   flex-shrink: 0;
-  animation: brandStripScroll 32s linear infinite;
+  animation: brandStripScroll 48s linear infinite;
   will-change: transform;
   padding: 10px 0;
 }
@@ -3631,7 +3631,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  min-width: clamp(170px, 15vw, 230px);
+  min-width: clamp(260px, 24vw, 360px);
   position: relative;
   cursor: pointer;
   user-select: none;
@@ -3648,7 +3648,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 18px;
+  padding: 16px 24px;
   border-radius: var(--r-xl, 14px);
   background: transparent;
   transition: background 250ms ease, box-shadow 250ms ease;
@@ -3660,8 +3660,8 @@
 }
 
 .brand-strip-logo {
-  height: clamp(84px, 8.5vw, 115px);
-  max-width: 220px;
+  height: clamp(168px, 16vw, 220px);
+  max-width: 440px;
   width: auto;
   object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.04));
@@ -3719,11 +3719,11 @@
     padding: clamp(2.5rem, 4vw, 3.5rem) 0;
   }
   .brand-strip-logo {
-    height: clamp(70px, 13vw, 88px);
-    max-width: 170px;
+    height: clamp(90px, 20vw, 120px);
+    max-width: 240px;
   }
   .brand-strip-item {
-    min-width: clamp(130px, 20vw, 160px);
+    min-width: clamp(150px, 32vw, 190px);
   }
   .brand-strip-logo-box {
     padding: 10px 14px;
@@ -8302,11 +8302,12 @@ table.pd-size td:first-child {
 
 /* Screen-reader only hidden native select for form serialization and fallback */
 .eu-dd-native {
+  display: none !important;
   position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
+  width: 0 !important;
+  height: 0 !important;
   padding: 0 !important;
-  margin: -1px !important;
+  margin: 0 !important;
   overflow: hidden !important;
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;

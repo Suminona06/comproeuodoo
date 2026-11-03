@@ -31,7 +31,7 @@
     <div class="form-row-3">
       <div class="form-group">
         <label class="form-label" for="category_id">Kategori Produk *</label>
-        <select id="category_id" name="category_id" class="form-select" data-eu-dropdown="outlined">
+        <select id="category_id" name="category_id" class="form-select" data-eu-dropdown="outlined" required>
           <option value="">Pilih Kategori...</option>
           <% categories.forEach(function(cat) { %>
             <option value="<%= cat.id %>" <%= typeof formData !== 'undefined' && String(formData?.category_id) === String(cat.id) ? 'selected' : '' %>><%= cat.name_id %></option>

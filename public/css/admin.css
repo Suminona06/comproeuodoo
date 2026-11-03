@@ -1302,25 +1302,29 @@ body.sidebar-open .admin-backdrop {
 }
 
 /* Status Selector (Inquiry & Interactive Dropdowns) */
-.status-select.st-baru {
+.status-select.st-baru,
+.eu-dd.st-baru .eu-dd-trigger {
   background-color: #e6f7f2;
   color: #00573f;
   border-color: #a3e0d0;
 }
 
-.status-select.st-diproses {
+.status-select.st-diproses,
+.eu-dd.st-diproses .eu-dd-trigger {
   background-color: #fef3c7;
   color: #92400e;
   border-color: #fde68a;
 }
 
-.status-select.st-selesai {
+.status-select.st-selesai,
+.eu-dd.st-selesai .eu-dd-trigger {
   background-color: #ecfdf5;
   color: #065f46;
   border-color: #a7f3d0;
 }
 
-.status-select.st-ditolak {
+.status-select.st-ditolak,
+.eu-dd.st-ditolak .eu-dd-trigger {
   background-color: #fef2f2;
   color: #991b1b;
   border-color: #fecaca;
@@ -3581,11 +3585,12 @@ body.sidebar-open .admin-backdrop {
 
 /* Screen-reader only hidden native select for form serialization and fallback */
 .eu-dd-native {
+  display: none !important;
   position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
+  width: 0 !important;
+  height: 0 !important;
   padding: 0 !important;
-  margin: -1px !important;
+  margin: 0 !important;
   overflow: hidden !important;
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
