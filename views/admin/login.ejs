@@ -26,31 +26,30 @@
   <link rel="apple-touch-icon" sizes="180x180" href="<%= fav180 %>?v=3">
   <link rel="icon" type="image/png" sizes="192x192" href="<%= fav192 %>?v=3">
 </head>
-<body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--color-workspace-bg); padding: var(--space-md);">
-  <div style="width: 100%; max-width: 420px;">
-    <div style="text-align: center; margin-bottom: var(--space-xl);">
-     <div class="loginForm">
-          <% if (typeof settings !== 'undefined' && settings && settings.site_logo_header && settings.site_logo_header.trim() !== '') { %>
-            <img src="<%= settings.site_logo_header %>" 
-                 alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" 
-                 class="brand-logo-header" 
-                 style="max-height: 38px; width: auto; object-fit: contain; display: block;">
-            <span class="brand-text-fallback" style="display: none; align-items: center; gap: 8px;">
-              <span class="brand-name">PT EUODOO</span>
-              <span class="brand-badge">MANUFACTURING</span>
-            </span>
-          <% } else { %>
+<body class="adm-login-body">
+  <div class="adm-login-wrapper">
+    <div class="adm-login-header">
+      <div class="loginForm">
+        <% if (typeof settings !== 'undefined' && settings && settings.site_logo_header && settings.site_logo_header.trim() !== '') { %>
+          <img src="<%= settings.site_logo_header %>" 
+               alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" 
+               class="brand-logo-header adm-login-logo">
+          <span class="brand-text-fallback adm-login-fallback">
             <span class="brand-name">PT EUODOO</span>
             <span class="brand-badge">MANUFACTURING</span>
-          <% } %>
-      <h1 style="font-size: 1.75rem; color: var(--color-secondary-navy); margin-bottom: var(--space-xs);">PT EUODOO</h1>
-     </div>
-      <p style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">Content Management System (CMS)</p>
+          </span>
+        <% } else { %>
+          <span class="brand-name">PT EUODOO</span>
+          <span class="brand-badge">MANUFACTURING</span>
+        <% } %>
+        <h1 class="adm-login-title">PT EUODOO</h1>
+      </div>
+      <p class="adm-login-subtitle">Content Management System (CMS)</p>
     </div>
 
-    <div class="card" style="box-shadow: var(--shadow-level-2);">
+    <div class="card adm-login-card">
       <div class="card-body">
-        <h2 style="font-size: 1.25rem; margin-bottom: var(--space-md); color: var(--color-text-navy);">Masuk ke Portal Admin</h2>
+        <h2 class="adm-login-card-title">Masuk ke Portal Admin</h2>
 
         <% if (typeof error !== 'undefined' && error) { %>
           <div class="alert alert-error" role="alert">
@@ -71,33 +70,22 @@
             <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
           </div>
 
-          <button type="submit" class="adm-btn adm-btn-primary adm-btn-block" style="margin-top: var(--space-lg);" aria-label="Masuk ke Sistem">
+          <button type="submit" class="adm-btn adm-btn-primary adm-btn-block adm-login-btn-submit" aria-label="Masuk ke Sistem">
             <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
             <span>Masuk</span>
           </button>
         </form>
       </div>
-      <div class="card-footer text-center" style="font-size: var(--font-size-label-sm); color: var(--color-text-muted);">
+      <div class="card-footer text-center adm-login-card-footer">
         Akses khusus staf internal berwenang PT Euodoo
       </div>
     </div>
 
-    <div class="text-center" style="margin-top: var(--space-lg);">
-      <a href="/" style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">&larr; Kembali ke Website Publik</a>
+    <div class="text-center adm-login-back-wrapper">
+      <a href="/" class="adm-login-back-link">&larr; Kembali ke Website Publik</a>
     </div>
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const logoImg = document.querySelector('.brand-logo-header');
-      if (logoImg) {
-        logoImg.addEventListener('error', () => {
-          logoImg.style.display = 'none';
-          const fallback = logoImg.nextElementSibling;
-          if (fallback) fallback.style.display = 'inline-flex';
-        });
-      }
-    });
-  </script>
+  <script src="/js/admin-login.js?v=1.0"></script>
   <script src="/js/admin-form-validation.js?v=1.0"></script>
 </body>
 </html>

@@ -8,7 +8,10 @@ const rootDir = path.resolve(__dirname, '..');
 
 // File atau direktori hasil refaktor yang wajib zero-error
 const DEFAULT_STRICT_PATHS = [
-  'views/admin/settings/'
+  'views/admin/settings/',
+  'views/admin/403.ejs',
+  'views/admin/login.ejs',
+  'views/admin/change-password.ejs'
 ];
 
 function getFiles(dir, ext) {

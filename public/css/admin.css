@@ -4249,3 +4249,197 @@ body.sidebar-open .admin-backdrop {
   align-items: center;
   gap: 10px;
 }
+
+/* ==========================================================================
+   Batch 1: Auth & Error Pages (.err403-*, .adm-login-*, .chpwd-*) (T-277)
+   ========================================================================== */
+
+/* Error 403 Page */
+.err403-body {
+  background-color: var(--color-workspace-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.err403-header {
+  background-color: var(--color-navy-deep);
+  color: var(--color-text-inverse);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.err403-brand-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.err403-badge {
+  font-size: 11px;
+}
+
+.err403-user-meta {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-surface-container-highest);
+}
+
+.err403-logout-link {
+  color: var(--color-error-bg);
+  font-size: var(--font-size-body-sm);
+  text-decoration: none;
+}
+
+.err403-logout-link:hover {
+  text-decoration: underline;
+}
+
+.err403-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl) var(--space-md);
+}
+
+.err403-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-level-1);
+}
+
+.err403-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 auto var(--space-md);
+}
+
+.err403-title {
+  font-size: var(--font-size-headline-md);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-xs);
+}
+
+.err403-desc {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-md);
+  margin-bottom: var(--space-lg);
+  line-height: 1.6;
+}
+
+.err403-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+/* Admin Login Page */
+.adm-login-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-workspace-bg);
+  padding: var(--space-md);
+}
+
+.adm-login-wrapper {
+  width: 100%;
+  max-width: 420px;
+}
+
+.adm-login-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.adm-login-logo {
+  max-height: 38px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.adm-login-logo.is-hidden {
+  display: none !important;
+}
+
+.adm-login-fallback {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-login-fallback.is-visible {
+  display: inline-flex !important;
+}
+
+.adm-login-title {
+  font-size: 1.75rem;
+  color: var(--color-secondary-navy);
+  margin-bottom: var(--space-xs);
+}
+
+.adm-login-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-muted);
+}
+
+.adm-login-card {
+  box-shadow: var(--shadow-level-2);
+}
+
+.adm-login-card-title {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-md);
+  color: var(--color-text-navy);
+}
+
+.adm-login-btn-submit {
+  margin-top: var(--space-lg);
+}
+
+.adm-login-card-footer {
+  font-size: var(--font-size-label-sm);
+  color: var(--color-text-muted);
+}
+
+.adm-login-back-wrapper {
+  margin-top: var(--space-lg);
+}
+
+.adm-login-back-link {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.adm-login-back-link:hover {
+  color: var(--color-text-main);
+  text-decoration: underline;
+}
+
+/* Change Password Page */
+.chpwd-card {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.chpwd-actions {
+  margin-top: var(--space-lg);
+  display: flex;
+  gap: 0.75rem;
+}
+
