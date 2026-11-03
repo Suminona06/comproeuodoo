@@ -34,9 +34,9 @@
           <th>Nama Kategori (EN)</th>
           <th>Tipe Konten</th>
           <th>Slug</th>
-          <th style="width: 100px; text-align: center;">Jumlah Artikel</th>
-          <th style="width: 80px; text-align: center;">Urutan</th>
-          <th style="text-align: right; width: 120px;">Aksi</th>
+          <th class="adm-postcat-th-count">Jumlah Artikel</th>
+          <th class="adm-postcat-th-order">Urutan</th>
+          <th class="adm-postcat-th-actions">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -50,20 +50,20 @@
                 <div class="td-muted-text"><%= cat.name_en || '-' %></div>
               </td>
               <td>
-                <span class="badge-role <%= cat.type === 'berita' ? 'admin' : 'editor' %>" style="font-size: 11px;">
+                <span class="badge-role <%= cat.type === 'berita' ? 'admin' : 'editor' %> adm-postcat-badge">
                   <%= cat.type.toUpperCase() %>
                 </span>
               </td>
               <td>
                 <div class="adm-slug-text" title="<%= cat.slug %>"><%= cat.slug %></div>
               </td>
-              <td style="text-align: center; font-weight: 600;">
+              <td class="adm-postcat-td-count">
                 <%= cat.post_count || 0 %>
               </td>
-              <td style="text-align: center; font-weight: 600;">
+              <td class="adm-postcat-td-order">
                 <%= cat.sort_order %>
               </td>
-              <td style="text-align: right;">
+              <td class="adm-postcat-td-actions">
                 <div class="table-actions">
                   <a href="/admin/post-categories/<%= cat.id %>/edit" class="btn-action btn-action-edit" title="Edit Kategori">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -82,7 +82,7 @@
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <td colspan="7" class="adm-postcat-empty-cell">
               Belum ada kategori berita.
             </td>
           </tr>

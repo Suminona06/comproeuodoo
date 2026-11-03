@@ -29,10 +29,10 @@
           <th>Nama Kategori (ID)</th>
           <th>Nama Kategori (EN)</th>
           <th>Slug URL</th>
-          <th style="width: 110px; text-align: center;">Jumlah Produk</th>
-          <th style="width: 80px; text-align: center;">Urutan</th>
-          <th style="width: 90px;">Status</th>
-          <th style="text-align: right; width: 120px;">Aksi</th>
+          <th class="adm-pcat-th-count">Jumlah Produk</th>
+          <th class="adm-pcat-th-order">Urutan</th>
+          <th class="adm-pcat-th-status">Status</th>
+          <th class="adm-pcat-th-actions">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -48,23 +48,23 @@
               <td>
                 <div class="adm-slug-text" title="<%= cat.slug %>"><%= cat.slug %></div>
               </td>
-              <td style="text-align: center; font-weight: 600;">
-                <span class="badge-role editor" style="font-size: 11px;">
+              <td class="adm-pcat-td-count">
+                <span class="badge-role editor adm-pcat-badge-count">
                   <%= cat.product_count || 0 %> produk
                 </span>
               </td>
-              <td style="text-align: center; font-weight: 600;">
+              <td class="adm-pcat-td-order">
                 <%= cat.sort_order %>
               </td>
               <td>
-                <form action="/admin/product-categories/<%= cat.id %>/toggle?_csrf=<%= csrfToken %>" method="POST" style="display: inline;">
+                <form action="/admin/product-categories/<%= cat.id %>/toggle?_csrf=<%= csrfToken %>" method="POST" class="adm-pcat-toggle-form">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn-action btn-action-status <%= cat.is_active ? 'active' : 'inactive' %>" title="Ubah Status Kategori (Aktifkan / Nonaktifkan)">
                     <%= cat.is_active ? 'Aktif' : 'Nonaktif' %>
                   </button>
                 </form>
               </td>
-              <td style="text-align: right;">
+              <td class="adm-pcat-td-actions">
                 <div class="table-actions">
                   <a href="/admin/product-categories/<%= cat.id %>/edit" class="btn-action btn-action-edit" title="Edit Kategori">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -83,7 +83,7 @@
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <td colspan="7" class="adm-pcat-empty-cell">
               Belum ada kategori produk.
             </td>
           </tr>

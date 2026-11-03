@@ -13,14 +13,14 @@
   </div>
 </div>
 
-<div class="form-card" style="max-width: 600px; margin: 0 auto;">
+<div class="form-card adm-postcat-form-card">
   <div class="form-card-title">Perbarui Kategori</div>
 
   <form action="/admin/post-categories/<%= category.id %>?_csrf=<%= csrfToken %>" method="POST" novalidate>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="form-group">
       <label class="form-label" for="type">Tipe Artikel *</label>
-      <select id="type" name="type" class="form-select" required>
+      <select id="type" name="type" class="form-select" data-eu-dropdown="outlined" required>
         <option value="berita" <%= category.type === 'berita' ? 'selected' : '' %>>Berita Perusahaan &amp; CSR</option>
         <option value="blog" <%= category.type === 'blog' ? 'selected' : '' %>>Blog &amp; Edukasi Industri</option>
       </select>

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js
 
 # Tech Spec: Modul Beranda Publik (Public Home)
 
@@ -70,7 +70,7 @@ Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands
   - Token transisi background: Batas atas dan bawah seksi menggunakan token gradasi semantik `--trans-subtle-to-wcu` dan `--trans-wcu-to-subtle` di `tokens.css` tanpa hardcode hex.
   - Kebijakan fallback: 13 variabel fallback string dihapus; seksi dibungkus kondisional ketat dan tidak dirender jika data CMS kosong atau nonaktif.
 - **Certifications / Evidence:** `.sec-evidence`, `.ev-layout`, `.cert-grid`, `.cert-item`, `.cert-name`, `.cert-desc`.
-- **Strip Marquee Merek & Modal Zoom `[PENDING T-267]`:**
+- **Strip Marquee Merek & Modal Zoom:**
   - Strip Marquee: `.sec-brands.brand-strip-sec`, `.brand-strip-wrapper`, `.brand-strip-marquee`, `.brand-strip-track`, `.brand-strip-item`, `.brand-strip-logo-box`, `.brand-strip-logo`, `.brand-zoom-hint`.
   - Penskalaan Desktop (2x): `.brand-strip-logo` berukuran `height: clamp(168px, 16vw, 220px); max-width: 440px;` dengan `.brand-strip-item` berukuran `min-width: clamp(260px, 24vw, 360px);`.
   - Responsive mobile rule (`<= 768px`): `.brand-strip-logo` berukuran `height: clamp(90px, 20vw, 120px); max-width: 240px;` dengan `.brand-strip-item` berukuran `min-width: clamp(150px, 32vw, 190px);` (~1.5x proporsional).

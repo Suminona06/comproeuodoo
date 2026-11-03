@@ -22,7 +22,7 @@
     <div class="form-row-3">
       <div class="form-group">
         <label class="form-label" for="type">Tipe Konten *</label>
-        <select id="type" name="type" class="form-select" required>
+        <select id="type" name="type" class="form-select" data-eu-dropdown="outlined" required>
           <option value="berita" <%= post.type === 'berita' ? 'selected' : '' %>>Berita Perusahaan &amp; CSR</option>
           <option value="pers" <%= post.type === 'pers' ? 'selected' : '' %>>Siaran Pers Resmi</option>
           <option value="blog" <%= post.type === 'blog' ? 'selected' : '' %>>Blog &amp; Edukasi Industri</option>
@@ -31,7 +31,7 @@
 
       <div class="form-group">
         <label class="form-label" for="category_id">Kategori Artikel</label>
-        <select id="category_id" name="category_id" class="form-select">
+        <select id="category_id" name="category_id" class="form-select" data-eu-dropdown="outlined">
           <option value="">Pilih Kategori...</option>
           <% categories.forEach(function(cat) { %>
             <option value="<%= cat.id %>" <%= post.category_id === cat.id ? 'selected' : '' %>><%= cat.name_id %> (<%= cat.type %>)</option>
@@ -41,7 +41,7 @@
 
       <div class="form-group">
         <label class="form-label" for="status">Status</label>
-        <select id="status" name="status" class="form-select">
+        <select id="status" name="status" class="form-select" data-eu-dropdown="outlined">
           <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>Published (Tayang)</option>
           <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>Draft (Draf)</option>
           <option value="scheduled" <%= post.status === 'scheduled' ? 'selected' : '' %>>Scheduled (Terjadwal)</option>

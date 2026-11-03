@@ -17,7 +17,7 @@
 <div class="form-card" style="margin-bottom: 1.5rem; padding: 1rem 1.25rem;">
   <form action="/admin/leads" method="GET" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
     <div style="min-width: 180px;">
-      <select name="status" class="form-select">
+      <select name="status" class="form-select" data-eu-dropdown="filled" data-eu-size="sm">
         <option value="">Semua Status</option>
         <option value="baru" <%= selectedStatus === 'baru' ? 'selected' : '' %>>Baru (Pending)</option>
         <option value="diproses" <%= selectedStatus === 'diproses' ? 'selected' : '' %>>Sedang Diproses</option>
@@ -26,7 +26,7 @@
       </select>
     </div>
     <div style="min-width: 180px;">
-      <select name="type" class="form-select">
+      <select name="type" class="form-select" data-eu-dropdown="filled" data-eu-size="sm">
         <option value="">Semua Tipe</option>
         <option value="inquiry" <%= selectedType === 'inquiry' ? 'selected' : '' %>>Penawaran (RFQ)</option>
         <option value="partnership" <%= selectedType === 'partnership' ? 'selected' : '' %>>Kemitraan</option>
@@ -117,8 +117,8 @@
               <td>
                 <form action="/admin/leads/<%= lead.id %>/status?_csrf=<%= csrfToken %>" method="POST" style="display: flex; flex-direction: column; gap: 4px; margin: 0;">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <div style="display: flex; gap: 4px;">
-                    <select name="status" class="form-select" style="min-height: 32px; font-size: 12px; padding: 2px 6px;">
+                  <div style="display: flex; gap: 4px; align-items: center;">
+                    <select name="status" class="form-select" data-eu-dropdown="filled" data-eu-size="sm" style="min-width: 105px;">
                       <option value="baru" <%= lead.status === 'baru' ? 'selected' : '' %>>Baru</option>
                       <option value="diproses" <%= lead.status === 'diproses' ? 'selected' : '' %>>Diproses</option>
                       <option value="selesai" <%= lead.status === 'selesai' ? 'selected' : '' %>>Selesai</option>

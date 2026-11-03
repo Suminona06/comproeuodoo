@@ -26,31 +26,30 @@
   <link rel="apple-touch-icon" sizes="180x180" href="<%= fav180 %>?v=3">
   <link rel="icon" type="image/png" sizes="192x192" href="<%= fav192 %>?v=3">
 </head>
-<body style="background-color: var(--color-workspace-bg); min-height: 100vh; display: flex; flex-direction: column;">
-  <!-- Admin Top Bar -->
-  <header style="background-color: var(--color-navy-deep); color: #ffffff; padding: var(--space-sm) 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+<body class="err403-body">
+  <header class="err403-header">
     <div class="container flex items-center justify-between">
       <div class="flex items-center gap-md">
-        <span style="font-weight: 700; letter-spacing: -0.02em;">PT EUODOO CMS</span>
-        <span class="badge badge-info" style="font-size: 11px;">Admin Panel</span>
+        <span class="err403-brand-title">PT EUODOO CMS</span>
+        <span class="badge badge-info err403-badge">Admin Panel</span>
       </div>
       <div class="flex items-center gap-md">
-        <span style="font-size: var(--font-size-body-sm); color: #cbd5e1;"><%= user ? (user.name || user.email) : 'User' %> (<%= user ? user.role : 'Guest' %>)</span>
-        <a href="/admin/logout" style="color: #fca5a5; font-size: var(--font-size-body-sm);">Keluar</a>
+        <span class="err403-user-meta"><%= user ? (user.name || user.email) : 'User' %> (<%= user ? user.role : 'Guest' %>)</span>
+        <a href="/admin/logout" class="err403-logout-link">Keluar</a>
       </div>
     </div>
   </header>
 
-  <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: var(--space-2xl) var(--space-md);">
-    <div style="background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-2xl); max-width: 520px; width: 100%; text-align: center; box-shadow: var(--shadow-level-1);">
-      <div style="width: 64px; height: 64px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; margin: 0 auto var(--space-md);">
+  <main class="err403-main">
+    <div class="err403-card">
+      <div class="err403-icon">
         !
       </div>
-      <h1 style="font-size: var(--font-size-h3); color: var(--color-text-main); margin-bottom: var(--space-xs);">403 - Akses Ditolak</h1>
-      <p style="color: var(--color-text-muted); font-size: var(--font-size-body-md); margin-bottom: var(--space-lg); line-height: 1.6;">
+      <h1 class="err403-title">403 - Akses Ditolak</h1>
+      <p class="err403-desc">
         <%= typeof message !== 'undefined' ? message : 'Role akun Anda tidak memiliki hak akses untuk membuka halaman ini.' %>
       </p>
-      <div style="display: flex; gap: var(--space-sm); justify-content: center;">
+      <div class="err403-actions">
         <a href="/admin/dashboard" class="adm-btn adm-btn-neutral" aria-label="Kembali ke Dashboard">
           <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           <span>Kembali</span>

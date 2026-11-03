@@ -1302,25 +1302,29 @@ body.sidebar-open .admin-backdrop {
 }
 
 /* Status Selector (Inquiry & Interactive Dropdowns) */
-.status-select.st-baru {
+.status-select.st-baru,
+.eu-dd.st-baru .eu-dd-trigger {
   background-color: #e6f7f2;
   color: #00573f;
   border-color: #a3e0d0;
 }
 
-.status-select.st-diproses {
+.status-select.st-diproses,
+.eu-dd.st-diproses .eu-dd-trigger {
   background-color: #fef3c7;
   color: #92400e;
   border-color: #fde68a;
 }
 
-.status-select.st-selesai {
+.status-select.st-selesai,
+.eu-dd.st-selesai .eu-dd-trigger {
   background-color: #ecfdf5;
   color: #065f46;
   border-color: #a7f3d0;
 }
 
-.status-select.st-ditolak {
+.status-select.st-ditolak,
+.eu-dd.st-ditolak .eu-dd-trigger {
   background-color: #fef2f2;
   color: #991b1b;
   border-color: #fecaca;
@@ -2836,10 +2840,10 @@ body.sidebar-open .admin-backdrop {
 }
 
 .admin-field-hint {
-  font-size: 12.5px;
+  font-size: 11px;
   color: #64748b;
-  margin-top: -0.5rem;
-  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+
 }
 
 .prod-gallery-form-group {
@@ -3573,13 +3577,20 @@ body.sidebar-open .admin-backdrop {
   display: inline-block;
 }
 
+.table-card:has(.eu-dd.is-open),
+.table-scroll-wrapper:has(.eu-dd.is-open),
+.table-responsive:has(.eu-dd.is-open) {
+  overflow: visible !important;
+}
+
 /* Screen-reader only hidden native select for form serialization and fallback */
 .eu-dd-native {
+  display: none !important;
   position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
+  width: 0 !important;
+  height: 0 !important;
   padding: 0 !important;
-  margin: -1px !important;
+  margin: 0 !important;
   overflow: hidden !important;
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
@@ -3611,6 +3622,7 @@ body.sidebar-open .admin-backdrop {
   box-sizing: border-box;
 }
 
+.eu-dd-trigger:focus,
 .eu-dd-trigger:focus-visible,
 .eu-dd-trigger.is-focused {
   outline: none;
@@ -3711,6 +3723,7 @@ body.sidebar-open .admin-backdrop {
   background-color: var(--bg-surface, #ffffff);
 }
 
+.eu-dd-trigger:focus .eu-dd-floating-label,
 .eu-dd-trigger:focus-visible .eu-dd-floating-label,
 .eu-dd.is-open .eu-dd-floating-label {
   color: var(--color-primary, var(--primary, #00755a));
@@ -3757,7 +3770,7 @@ body.sidebar-open .admin-backdrop {
   width: 12px;
   height: 12px;
   color: var(--color-text-muted, var(--text-muted, #64748b));
-  transition: transform var(--ease, 180ms ease), color var(--ease, 180ms ease);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), color 150ms ease;
   transform-origin: center center;
 }
 
@@ -3793,8 +3806,8 @@ body.sidebar-open .admin-backdrop {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(-6px);
-  transition: opacity var(--ease, 180ms ease), transform var(--ease, 180ms ease), visibility var(--ease, 180ms ease);
+  transform: translateY(-8px);
+  transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 180ms cubic-bezier(0.16, 1, 0.3, 1), visibility 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .eu-dd.is-open .eu-dd-panel {
@@ -3810,7 +3823,7 @@ body.sidebar-open .admin-backdrop {
   bottom: 100%;
   margin-top: 0;
   margin-bottom: var(--space-sm, 8px);
-  transform: translateY(6px);
+  transform: translateY(8px);
 }
 
 .eu-dd.is-open .eu-dd-panel.eu-dd-panel--top {
@@ -3938,11 +3951,31 @@ body.sidebar-open .admin-backdrop {
   object-fit: cover;
 }
 
+.eu-dd-skeleton {
+  padding: 4px;
+}
+
 .eu-dd-skeleton-row {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
+}
+
+.eu-dd-skeleton-row:nth-child(1) .eu-dd-skeleton-bar { width: 68%; }
+.eu-dd-skeleton-row:nth-child(2) .eu-dd-skeleton-bar { width: 48%; }
+.eu-dd-skeleton-row:nth-child(3) .eu-dd-skeleton-bar { width: 82%; }
+.eu-dd-skeleton-row:nth-child(4) .eu-dd-skeleton-bar { width: 64%; }
+.eu-dd-skeleton-row:nth-child(5) .eu-dd-skeleton-bar { width: 72%; }
+.eu-dd-skeleton-row:nth-child(6) .eu-dd-skeleton-bar { width: 56%; }
+
+.eu-dd.is-loading .eu-dd-options,
+.eu-dd.is-loading .eu-dd-search-wrap {
+  display: none !important;
+}
+
+.eu-dd:not(.is-loading) .eu-dd-skeleton {
+  display: none !important;
 }
 
 .eu-dd-skeleton-circle {
@@ -4023,6 +4056,500 @@ body.sidebar-open .admin-backdrop {
   .eu-dd-skeleton-bar {
     transition: none !important;
     animation: none !important;
-    transform: none !important;
   }
 }
+
+/* ==========================================================================
+   Modul Pengaturan Situs (.stg-*) - T-275
+   ========================================================================== */
+.stg-d-none {
+  display: none !important;
+}
+
+.stg-d-block {
+  display: block !important;
+}
+
+.stg-d-flex {
+  display: flex !important;
+}
+
+.stg-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.stg-media-card {
+  padding: 16px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.stg-media-label {
+  font-weight: 600;
+}
+
+.stg-preview-box {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-base);
+}
+
+.stg-preview-box--dark {
+  background: var(--surface-dark-footer);
+  border-color: var(--color-leaf-deep);
+}
+
+.stg-favicon-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  padding: 4px;
+  border: 1px dashed var(--border-main);
+  border-radius: 6px;
+}
+
+.stg-logo-img {
+  max-height: 60px;
+  object-fit: contain;
+}
+
+.stg-empty-muted {
+  color: var(--color-text-muted);
+}
+
+.stg-location-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.stg-location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stg-location-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--surface-dark-deep);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stg-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.stg-status-dot--accent {
+  background: var(--color-leaf);
+}
+
+.stg-status-dot--live {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-leaf);
+}
+
+.stg-map-box {
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 180px;
+  border: 1px solid var(--color-border);
+}
+
+.stg-map-iframe {
+  border: 0;
+  width: 100%;
+  height: 180px;
+}
+
+.stg-col-wa-num,
+.stg-col-wa-label {
+  min-width: 180px;
+}
+
+.stg-col-wa-pct {
+  width: 140px;
+}
+
+.stg-col-wa-act {
+  width: 48px;
+  text-align: center;
+}
+
+.stg-wa-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.stg-sosmed-desc {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.stg-sosmed-card {
+  padding: 14px 16px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 0;
+}
+
+.stg-sosmed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.stg-sosmed-label {
+  font-weight: 700;
+  color: var(--surface-dark-deep);
+  margin-bottom: 0;
+}
+
+.stg-sosmed-row-spacing {
+  margin-top: 1rem;
+}
+
+.stg-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stg-actions-text {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.stg-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Batch 1: Auth & Error Pages (.err403-*, .adm-login-*, .chpwd-*) (T-277)
+   ========================================================================== */
+
+/* Error 403 Page */
+.err403-body {
+  background-color: var(--color-workspace-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.err403-header {
+  background-color: var(--color-navy-deep);
+  color: var(--color-text-inverse);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.err403-brand-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.err403-badge {
+  font-size: 11px;
+}
+
+.err403-user-meta {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-surface-container-highest);
+}
+
+.err403-logout-link {
+  color: var(--color-error-bg);
+  font-size: var(--font-size-body-sm);
+  text-decoration: none;
+}
+
+.err403-logout-link:hover {
+  text-decoration: underline;
+}
+
+.err403-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl) var(--space-md);
+}
+
+.err403-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-level-1);
+}
+
+.err403-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 auto var(--space-md);
+}
+
+.err403-title {
+  font-size: var(--font-size-headline-md);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-xs);
+}
+
+.err403-desc {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-md);
+  margin-bottom: var(--space-lg);
+  line-height: 1.6;
+}
+
+.err403-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+/* Admin Login Page */
+.adm-login-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-workspace-bg);
+  padding: var(--space-md);
+}
+
+.adm-login-wrapper {
+  width: 100%;
+  max-width: 420px;
+}
+
+.adm-login-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.adm-login-logo {
+  max-height: 38px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.adm-login-logo.is-hidden {
+  display: none !important;
+}
+
+.adm-login-fallback {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-login-fallback.is-visible {
+  display: inline-flex !important;
+}
+
+.adm-login-title {
+  font-size: 1.75rem;
+  color: var(--color-secondary-navy);
+  margin-bottom: var(--space-xs);
+}
+
+.adm-login-subtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-muted);
+}
+
+.adm-login-card {
+  box-shadow: var(--shadow-level-2);
+}
+
+.adm-login-card-title {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-md);
+  color: var(--color-text-navy);
+}
+
+.adm-login-btn-submit {
+  margin-top: var(--space-lg);
+}
+
+.adm-login-card-footer {
+  font-size: var(--font-size-label-sm);
+  color: var(--color-text-muted);
+}
+
+.adm-login-back-wrapper {
+  margin-top: var(--space-lg);
+}
+
+.adm-login-back-link {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.adm-login-back-link:hover {
+  color: var(--color-text-main);
+  text-decoration: underline;
+}
+
+/* Change Password Page */
+.chpwd-card {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.chpwd-actions {
+  margin-top: var(--space-lg);
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   Batch 2: Product Categories (.adm-pcat-*) (T-278)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-pcat-form-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Table columns & cells */
+.adm-pcat-th-count {
+  width: 110px;
+  text-align: center;
+}
+
+.adm-pcat-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-pcat-th-status {
+  width: 90px;
+}
+
+.adm-pcat-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+.adm-pcat-td-count {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-pcat-badge-count {
+  font-size: 11px;
+}
+
+.adm-pcat-td-order {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-pcat-toggle-form {
+  display: inline;
+}
+
+.adm-pcat-td-actions {
+  text-align: right;
+}
+
+.adm-pcat-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Batch 3: Post Categories (.adm-postcat-*) (T-279)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-postcat-form-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Table columns & cells */
+.adm-postcat-th-count {
+  width: 100px;
+  text-align: center;
+}
+
+.adm-postcat-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-postcat-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+.adm-postcat-badge {
+  font-size: 11px;
+}
+
+.adm-postcat-td-count {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-postcat-td-order {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-postcat-td-actions {
+  text-align: right;
+}
+
+.adm-postcat-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+
+

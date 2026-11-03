@@ -1,0 +1,26 @@
+<div class="form-card">
+  <div class="form-card-title">2. Identitas &amp; Kontak Resmi</div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="company_name">Nama Resmi Perusahaan *</label>
+      <input type="text" id="company_name" name="company_name" class="form-input" required value="<%= settings.company_name || 'PT Euodoo Presisi Indonesia' %>">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="company_email">Email Kontak Utama *</label>
+      <input type="email" id="company_email" name="company_email" class="form-input" required value="<%= settings.company_email || 'info@euodoo.com' %>">
+    </div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="company_tagline_id">Slogan Perusahaan (Bahasa Indonesia)</label>
+      <input type="text" id="company_tagline_id" name="company_tagline_id" class="form-input" value="<%= settings.company_tagline_id || 'Pabrik & Manufaktur Kantong Plastik Ramah Lingkungan' %>">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="company_phone">Nomor Telepon Kantor</label>
+      <input type="text" id="company_phone" name="company_phone" class="form-input" value="<%= settings.company_phone || '(021) 5366-0000' %>">
+    </div>
+  </div>
+</div>
+

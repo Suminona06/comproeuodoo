@@ -610,3 +610,139 @@
 - **File Terdampak**: `public/css/admin.css`, `middleware/uploadMiddleware.js`, `views/admin/inquiries/index.ejs`, `views/admin/dashboard.ejs`, `views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, `views/admin/403.ejs`
 - **Skill**: Impeccable polish + Impeccable adapt + Impeccable animate
 - **Verifikasi**: Pengujian Playwright E2E `tests/test-t261-responsive-regression-playwright.js` (6/6 langkah lulus) serta pengujian penuh seluruh test suite T-255 s/d T-260 (100% passed). Selesai 2026-11-02.
+
+
+### T-262: Fondasi Komponen Dropdown Terpadu (.eu-dd-*) & Arsitektur WAI-ARIA [DONE]
+- **Deskripsi**: Membangun modul CSS terisolasi `.eu-dd-*` di `public/css/admin.css` dan `public/css/components.css` yang mencakup 3 varian (outlined, filled, elevated), label mengambang (pada filter/standalone), trigger box, caret SVG padat rotasi 180°, panel popup berbayangan lembut, dan slot skeleton/ikon seidentik Gambar 1 dan Gambar 2 referensi.
+- **Acceptance Criteria**:
+  - [x] Komponen `.eu-dd` mendukung modifier varian `.eu-dd--outlined`, `.eu-dd--filled`, dan `.eu-dd--elevated`.
+  - [x] Dimensi trigger berukuran tinggi 52-56px dengan target sentuh mobile minimal 44px.
+  - [x] Menggunakan 100% token resmi tanpa nilai hex hardcoded.
+  - [x] Caret indikator berbentuk segitiga padat abu gelap berputar halus 180° saat terbuka.
+  - [x] Atribut ARIA (`role="combobox"`, `role="listbox"`, `role="option"`, `aria-expanded`, `aria-activedescendant`) tersusun sesuai spesifikasi WAI-ARIA 1.2.
+- **File Terdampak**: `public/css/tokens.css`, `public/css/admin.css`, `public/css/components.css`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-dropdown-css.js` (4/4 passed). Selesai 2026-11-03.
+
+### T-263: Interaktivitas Keyboard, Type-ahead, Flip Viewport, Auto-Search & Integrasi Validasi T-259 [DONE]
+- **Deskripsi**: Mengembangkan controller JavaScript terpusat `public/js/admin-dropdown.js` untuk mengelola event buka/tutup, navigasi keyboard lengkap (Arrow, Enter, Space, Escape, Tab, Home, End, type-ahead), flip panel vertikal saat ruang bawah sempit, kotak pencarian otomatis jika opsi > 10, pembatasan max-height pada mobile <=480px, klik di luar, serta integrasi dengan `admin-form-validation.js` (T-259).
+- **Acceptance Criteria**:
+  - [x] Dropdown dapat dibuka, dinavigasi, dan dipilih sepenuhnya hanya menggunakan keyboard.
+  - [x] Kotak pencarian otomatis dirender di bagian atas panel jika opsi > 10 item.
+  - [x] Pada viewport mobile <= 480px, panel tampil mengambang biasa dengan `max-height: 240px` dan scroll vertikal.
+  - [x] Saat ruang bawah layar kurang dari tinggi panel, class `.eu-dd-panel--top` otomatis diaktifkan (flip ke atas).
+  - [x] Membuka satu dropdown otomatis menutup dropdown lainnya di dokumen; klik di luar menutup panel.
+  - [x] Pemilihan opsi kustom memperbarui elemen `<select>` native dan memicu event `change`.
+  - [x] State error validasi form admin menampilkan border merah token, pesan inline, dan trigger dapat difokuskan otomatis saat form submit gagal (integrasi T-259).
+- **File Terdampak**: `public/js/admin-dropdown.js`, `public/js/admin-form-validation.js`, `views/partials/admin-footer.ejs`, `views/partials/footer.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-dropdown-interactive.js` (9/9 passed via Playwright). Selesai 2026-11-03.
+
+### T-264: Animasi Mikro, State Lengkap & Variasi Skeleton/Ikon [DONE]
+- **Deskripsi**: Menyempurnakan transisi mikro panel (hanya menggunakan properti `transform` dan `opacity`), rotasi caret 180 derajat, state shimmer skeleton loading (lingkaran + baris abu seidentik Gambar 1), slot ikon/thumbnail opsional saat data tersedia, skema warna hijau token untuk fokus dan terpilih, serta fallback instan pada `prefers-reduced-motion: reduce`.
+- **Acceptance Criteria**:
+  - [x] Panel muncul dan menghilang dengan transisi halus `opacity` dan `transform: translateY()`.
+  - [x] Caret berputar halus 180 derajat saat status `aria-expanded="true"`.
+  - [x] Slot lingkaran kiri berfungsi ganda: skeleton shimmer saat loading, dan slot ikon/thumbnail saat data ada; jika tanpa ikon, teks merapat rapi ke kiri.
+  - [x] State fokus menggunakan focus ring hijau token, item terpilih menggunakan latar hijau lembut `var(--primary-subtle)` dan teks hijau `var(--color-primary-dark)`.
+  - [x] Efek hover dibungkus dalam `@media (hover: hover)`.
+  - [x] Pada preferensi `prefers-reduced-motion: reduce`, transisi dan animasi berjalan instan tanpa motion.
+- **File Terdampak**: `public/css/admin.css`, `public/css/components.css`
+- **Skill**: Impeccable animate + Impeccable polish
+- **Verifikasi**: `node tests/test-dropdown-animations.js` (6/6 passed via Playwright). Selesai 2026-11-03.
+
+### T-265: Migrasi Dropdown Admin CMS (Form Tambah/Edit, Toolbar Table & Modal) [DONE]
+- **Deskripsi**: Menerapkan komponen `.eu-dd` pada 29 titik dropdown di area Admin CMS: form produk (`views/admin/products/{create,edit,index}.ejs`), form artikel/berita (`views/admin/posts/{create,edit}.ejs`), modal salin struktur kolom tabel ukuran, banner media type, dan filter toolbar katalog/leads sesuai pemetaan varian.
+- **Acceptance Criteria**:
+  - [x] Seluruh `<select>` pada form admin termigrasi ke `.eu-dd` varian `outlined` dengan label statis di atas.
+  - [x] Toolbar filter leads dan status tabel admin menggunakan varian `filled`.
+  - [x] Toolbar kategori produk admin menggunakan varian `elevated`.
+  - [x] Modal salin tabel ukuran produk (`#selectCopyProduct`) bekerja normal dan mendukung pencarian produk otomatis.
+  - [x] Filter toolbar tabel admin dengan `data-auto-submit="true"` tetap otomatis mengirim form saat opsi dipilih.
+  - [x] Kompatibel dengan tingkat zoom admin 100%, 125%, 150% pada resolusi 1366x768 hingga 1920x1080.
+- **File Terdampak**: Seluruh view form dan toolbar di `views/admin/**/*.ejs`, `public/js/admin-size-table.js`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-admin-dropdown-migration.js` (5/5 passed). Selesai 2026-11-03.
+
+### T-266: Migrasi Dropdown Halaman Publik: Filter Urutan PLP & Form Kontak RFQ [DONE]
+- **Deskripsi**: Mengintegrasikan komponen `.eu-dd` varian `elevated` pada dropdown urutan katalog produk (`views/public/products.ejs`) dan varian `outlined` pada form kontak RFQ (`views/public/contact.ejs`) sesuai cakupan semua page.
+- **Acceptance Criteria**:
+  - [x] Dropdown urutan produk menampilkan format "Urutkan: **Terpopuler**" (dwibahasa ID: "Urutkan:", EN: "Sort by:") varian `elevated` seidentik Gambar 2 dan memicu AJAX update katalog secara seketika melalui `public/js/products.js`.
+  - [x] Dropdown produk dan tipe inquiry di form kontak menerapkan varian `outlined` dan terhubung rapi dengan validasi client-side, CSRF token, dan Cloudflare Turnstile tanpa konflik.
+  - [x] Aksesibilitas keyboard dan mobile drawer filter katalog tetap berfungsi 100%.
+- **File Terdampak**: `views/public/products.ejs`, `public/js/products.js`, `views/public/contact.ejs`, `views/partials/footer.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-t269-bug-fixes.js` (3/3 passed via Playwright). Selesai 2026-11-03.
+
+### T-270: Perbaikan Sintaks HTML Unescaped Iframe Placeholder pada views/admin/settings/index.ejs [DONE]
+- **Deskripsi**: Memperbaiki karakter tag mentah `<iframe src='...'></iframe>` pada atribut `placeholder` input `#google_maps_embed` di baris 233 menjadi entitas aman `&lt;iframe src='...'&gt;&lt;/iframe&gt;` agar parser HTML dan validator editor tidak mengalami kegagalan hierarki tag penutup.
+- **Acceptance Criteria**:
+  - [x] Karakter di atribut placeholder di-escape dengan benar sebagai entitas HTML.
+  - [x] Tag balance parser untuk `views/admin/settings/index.ejs` menghasilkan 0 error sintaks.
+  - [x] Tampilan visual placeholder pada browser tetap terbaca jelas tanpa distorsi form.
+- **File Terdampak**: `views/admin/settings/index.ejs`, `views/admin/settings/partials/dual-location-card.ejs`
+- **Skill**: Debugging and error recovery
+- **Verifikasi**: Tag balance parser verified 0 errors, browser E2E test. Selesai 2026-11-03.
+
+### T-271: Dokumentasi Spesifikasi tech/conventions.md & Integrasi Proses [DONE]
+- **Deskripsi**: Menyusun dokumen spesifikasi teknis `tech/conventions.md` (ukuran <= 8KB), menautkan dari `INDEX.md`, memperbarui instruksi ringkas pada `AGENTS.md` (<= 30 baris), serta menambahkan gerbang kualitas lint hijau pada Definition of Done di `WORKFLOW.md`.
+- **Acceptance Criteria**:
+  - [x] `tech/conventions.md` aktif dengan batas fungsi <= 40 baris, file <= 300 baris, nesting <= 2, cyclomatic complexity <= 8, partial view <= 100 baris, dan larangan style/hex inline.
+  - [x] `INDEX.md` bertambah tepat 1 baris (total 33 baris <= 60 baris).
+  - [x] `AGENTS.md` bertambah 2 baris (total 22 baris <= 30 baris).
+  - [x] `WORKFLOW.md` memuat klausul lint hijau pada DoD tahap Implement dan Close.
+- **File Terdampak**: `.agents/tech/conventions.md`, `.agents/INDEX.md`, `AGENTS.md`, `.agents/AGENTS.md`, `.agents/WORKFLOW.md`, `.agents/tech/settings.md`
+- **Skill**: documentation-and-adrs + spec-driven-development
+- **Verifikasi**: File size and line limits audit passed. Selesai 2026-11-03.
+
+### T-272: Setup Tooling Flat ESLint Backend & Frontend Script [DONE]
+- **Deskripsi**: Memasang paket linter ke `devDependencies` (`eslint`, `@eslint/js`, `globals`), membuat konfigurasi flat `eslint.config.js` native ESM, mengonfigurasi aturan ukuran/kompleksitas dengan strategi baseline (warning untuk file lama, error untuk file baru/refaktor), dan mendaftarkan script `"lint": "eslint ."` pada `package.json`.
+- **Acceptance Criteria**:
+  - [x] Paket linter terpasang murni pada `devDependencies` (tidak terpasang di deploy produksi cPanel/Passenger).
+  - [x] Berkas `eslint.config.js` memisahkan konfigurasi Node backend dan browser frontend (`public/js/`).
+  - [x] Eksekusi `npm run lint` berjalan valid tanpa crash (0 error).
+- **File Terdampak**: `package.json`, `package-lock.json`, `eslint.config.js`
+- **Skill**: ci-cd-and-automation + code-review-and-quality
+- **Verifikasi**: `npm run lint` (0 error, exit code 0). Selesai 2026-11-03.
+
+### T-273: Pembuatan Skrip Pemeriksa Kepatuhan Template scripts/lint-views.js [DONE]
+- **Deskripsi**: Membuat skrip pemeriksa mandiri ringan tanpa dependensi berat pada `scripts/lint-views.js` untuk memindai berkas `views/**/*.ejs` dan file CSS komponen terhadap `style="..."` inline, warna hex mentah, tag `<script>` inline, komentar HTML `<!-- -->`, dan handler inline `on*=`.
+- **Acceptance Criteria**:
+  - [x] Format output: `file:baris - [LEVEL] (rule) pesan`.
+  - [x] Tingkat penegakan modular (file baru/refaktor berstatus error; file lama berstatus warning).
+  - [x] Didaftarkan pada `package.json` sebagai `"lint:views": "node scripts/lint-views.js"`.
+- **File Terdampak**: `scripts/lint-views.js`, `package.json`
+- **Skill**: ci-cd-and-automation + code-simplification
+- **Verifikasi**: `npm run lint:views` (0 error). Selesai 2026-11-03.
+
+### T-274: Pembuatan Skrip Audit Kamus Bahasa scripts/lint-i18n.js [DONE]
+- **Deskripsi**: Membuat skrip audit kamus bahasa pada `scripts/lint-i18n.js` yang memverifikasi keselarasan kunci secara rekursif antara `locales/id.json` dan `locales/en.json`, serta memvalidasi pemanggilan `t('...')` di view publik.
+- **Acceptance Criteria**:
+  - [x] Skrip mendeteksi keselarasan kunci ID dan EN secara simetris (134 kunci simetris).
+  - [x] Gagal (exit code 1) bila ada asimetri kunci antar kamus bahasa resmi.
+  - [x] Didaftarkan pada `package.json` sebagai `"lint:i18n": "node scripts/lint-i18n.js"`.
+- **File Terdampak**: `scripts/lint-i18n.js`, `package.json`
+- **Skill**: ci-cd-and-automation + debugging-and-error-recovery
+- **Verifikasi**: `npm run lint:i18n` (0 error). Selesai 2026-11-03.
+
+### T-275: Refaktor Modular Percontohan views/admin/settings/index.ejs [DONE]
+- **Deskripsi**: Merefaktor berkas `views/admin/settings/index.ejs` tanpa mengubah visual dan fungsionalitas: memecah halaman menjadi 6 partial modular per kartu section (`visual-identity-card.ejs`, `corporate-identity-card.ejs`, `dual-location-card.ejs`, `whatsapp-service-card.ejs`, `social-media-card.ejs`, `sticky-actions.ejs`) masing-masing <= 100 baris, memindahkan seluruh style inline dan warna hex ke class berprefix `.stg-*` berbasis token di `public/css/admin.css`, serta menghapus seluruh komentar HTML frontend.
+- **Acceptance Criteria**:
+  - [x] `views/admin/settings/index.ejs` menjadi template ramping orkestrator (21 baris < 50 baris).
+  - [x] 100% style inline, warna hex, dan komentar HTML bersih dari template settings.
+  - [x] Seluruh berkas settings lulus murni (0 error, 0 warning) pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/settings/index.ejs`, `views/admin/settings/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+- **Skill**: frontend-ui-engineering + code-simplification + antislop-code
+- **Verifikasi**: `node scripts/lint-views.js views/admin/settings/` (0 error, 0 warning). Selesai 2026-11-03.
+
+### T-276: Verifikasi Visual Lintas Viewport, Uji Fungsional Form & Regresi [DONE]
+- **Deskripsi**: Menjalankan pengujian menyeluruh pada antarmuka Pengaturan Situs dan sistem: visual responsif lintas desktop, tablet, dan mobile tanpa overflow horizontal; fungsionalitas submit form POST, media picker, dual lokasi, WhatsApp rolling, sosial media, dan CSRF; bebas console/page error; serta uji regresi test suite dan integritas Homepage yang dibekukan.
+- **Acceptance Criteria**:
+  - [x] Seluruh test suite eksisting lulus hijau (100% PASS).
+  - [x] Linter hijau tanpa error: `npm run lint`, `npm run lint:views`, `npm run lint:i18n`.
+  - [x] Responsivitas bebas overflow pada viewport Desktop (1440px, 1280px), Tablet (768px), dan Mobile (375px).
+  - [x] Zero browser console errors pada `/admin/settings`.
+  - [x] Homepage `views/public/index.ejs` terverifikasi 100% utuh tanpa modifikasi.
+- **File Terdampak**: `tests/test-t276-conventions-refactor-qa.js`
+- **Skill**: test-driven-development + browser-testing-with-devtools
+- **Verifikasi**: `node tests/test-t276-conventions-refactor-qa.js` (6/6 passed via Playwright). Selesai 2026-11-03.

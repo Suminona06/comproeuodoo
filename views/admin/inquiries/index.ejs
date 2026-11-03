@@ -75,7 +75,7 @@
           <th style="width: 100px;">Waktu</th>
           <th>Klien / Perusahaan</th>
           <th>Kontak</th>
-          <th>Kebutuhan Produk</th>
+          <th>Kebutuhan</th>
           <th style="width: 140px;">Status</th>
           <th style="text-align: right; width: 110px;">Aksi</th>
         </tr>
@@ -106,15 +106,12 @@
               </td>
               <td>
                 <div class="td-req-text" title="<%= item.message || '' %>">
-                  <% if (item.product_name_id) { %>
-                    <strong><%= item.product_name_id %></strong> &bull;
-                  <% } %>
                   <%= item.message ? item.message.substring(0, 70) + '...' : 'Tidak ada rincian.' %>
                 </div>
               </td>
               <td>
                 <select class="status-select inquiry-status-select st-<%= item.status === 'ditindaklanjuti' ? 'selesai' : (item.status === 'dibaca' ? 'diproses' : item.status) %>"
-                        data-id="<%= item.id %>" aria-label="Ubah status">
+                        data-id="<%= item.id %>" data-eu-dropdown="filled" data-eu-size="sm" data-inline="true" aria-label="Ubah status">
                   <option value="baru" <%= item.status === 'baru' ? 'selected' : '' %>>Baru</option>
                   <option value="dibaca" <%= item.status === 'dibaca' ? 'selected' : '' %>>Dibaca</option>
                   <option value="ditindaklanjuti" <%= item.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai</option>
@@ -264,7 +261,14 @@
           row.setAttribute('data-status', newStatus);
           const sel = row.querySelector('.status-select');
           if (sel) {
-            sel.className = 'status-select inquiry-status-select st-' + (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
+            const statusClass = (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
+            sel.classList.remove('st-baru', 'st-diproses', 'st-selesai', 'st-ditolak');
+            sel.classList.add('st-' + statusClass, 'eu-dd-native', 'sr-only');
+            const dd = sel.closest('.eu-dd');
+            if (dd) {
+              dd.classList.remove('st-baru', 'st-diproses', 'st-selesai', 'st-ditolak');
+              dd.classList.add('st-' + statusClass);
+            }
           }
         }
       } else {

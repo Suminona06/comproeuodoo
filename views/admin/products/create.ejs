@@ -31,7 +31,7 @@
     <div class="form-row-3">
       <div class="form-group">
         <label class="form-label" for="category_id">Kategori Produk *</label>
-        <select id="category_id" name="category_id" class="form-select">
+        <select id="category_id" name="category_id" class="form-select" data-eu-dropdown="outlined" required>
           <option value="">Pilih Kategori...</option>
           <% categories.forEach(function(cat) { %>
             <option value="<%= cat.id %>" <%= typeof formData !== 'undefined' && String(formData?.category_id) === String(cat.id) ? 'selected' : '' %>><%= cat.name_id %></option>
@@ -41,7 +41,7 @@
 
       <div class="form-group">
         <label class="form-label" for="status">Status Publikasi</label>
-        <select id="status" name="status" class="form-select">
+        <select id="status" name="status" class="form-select" data-eu-dropdown="outlined">
           <option value="published" selected>Published (Tayang Publik)</option>
           <option value="draft">Draft (Disimpan Sementara)</option>
           <option value="archived">Archived (Diarsipkan)</option>
@@ -204,7 +204,7 @@
         </p>
         <div class="form-group">
           <label for="selectCopyProduct" class="modal-copy-label">Pilih Produk Sumber:</label>
-          <select id="selectCopyProduct" class="form-input form-select modal-copy-select">
+          <select id="selectCopyProduct" class="form-input form-select modal-copy-select" data-eu-dropdown="outlined">
             <option value="">-- Pilih Produk --</option>
             <% if (typeof productsList !== 'undefined' && Array.isArray(productsList)) { %>
               <% productsList.forEach(function(p) { %>

@@ -35,3 +35,5 @@
 - 2026-10-30 | Revisi bug CMS & Beranda v1: fix TinyMCE media picker, live search admin, preview hidden class, arrow nav size table, dan eliminasi fallback beranda | T-245..T-249
 - 2026-10-31 | Revisi Detail Produk & Lightbox Galeri: kartu produk terkait seragam katalog, sembunyikan tab deskripsi, tabel ukuran langsung, lightbox PhotoSwipe v5 self-hosted di PDP & Bento About, fix rasio aspek portrait/landscape, dan audit regresi | T-250..T-254
 - 2026-11-02 | Polish UI Dashboard Admin & Favicon: tombol .adm-btn-*, slug 1 baris, generator favicon circular badge 1:1, validasi form inline, SweetAlert2 bertema, adaptasi viewport pendek/mobile, dan audit regresi Playwright | T-255..T-261
+- 2026-11-03 | Komponen dropdown kustom terpadu .eu-dd-* (3 varian WAI-ARIA), penskalaan 2x marquee merek, audit kontras WCAG AA/AAA, dan perbaikan sinkronisasi status inquiry table | T-262..T-269
+- 2026-11-03 | Konvensi kode terstandarisasi, flat ESLint, skrip lint-views & lint-i18n, perbaikan sintaks HTML, serta refaktor modular view admin settings | T-270..T-276

@@ -207,7 +207,10 @@
           e.preventDefault();
           if (searchInput) searchInput.value = '';
           if (searchClear) searchClear.classList.remove('visible');
-          if (sortSelect) sortSelect.value = 'newest';
+          if (sortSelect) {
+            sortSelect.value = 'newest';
+            sortSelect.dispatchEvent(new Event('change'));
+          }
           applyFilters({ category: '', search: '', sort: 'newest' }, true);
         });
       }
@@ -373,6 +376,7 @@
       }
       if (sortSelect && sortSelect.value !== targetSort) {
         sortSelect.value = targetSort;
+        sortSelect.dispatchEvent(new Event('change'));
       }
       if (searchInput && changes.search !== undefined && searchInput.value !== targetSearch) {
         searchInput.value = targetSearch;

@@ -201,10 +201,10 @@ async function runFaviconAudit() {
     assert.strictEqual(settingsFaviconUI.hasLabel, true, 'Label Favicon Situs harus ada');
     assert.ok(settingsFaviconUI.labelText.includes('1:1'), 'Label harus menyebutkan proporsi 1:1');
     assert.ok(settingsFaviconUI.labelText.includes('Tanpa Teks'), 'Label harus menyebutkan Tanpa Teks');
-    assert.strictEqual(settingsFaviconUI.hasFileInput, true, 'Input upload berkas favicon_file harus ada');
+    assert.strictEqual(settingsFaviconUI.hasFileInput, false, 'Input upload langsung Choose File tidak boleh ada (dikelola via Media Picker)');
     assert.strictEqual(settingsFaviconUI.hasHiddenInput, true, 'Input hidden setting_site_favicon harus ada');
     assert.strictEqual(settingsFaviconUI.previewVisible, true, 'Pratinjau gambar favicon harus tampil');
-    console.log('  ✓ Komponen form Favicon terverifikasi (label spesifik 1:1 tanpa teks, upload langsung, & pratinjau).');
+    console.log('  ✓ Komponen form Favicon terverifikasi (label spesifik 1:1 tanpa teks, Media Picker murni, & pratinjau).');
 
     // ─────────────────────────────────────────────────────────────
     // TEST 5: E2E Setting Update & Fallback Test

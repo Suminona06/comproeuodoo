@@ -416,7 +416,9 @@
     modalCopy.setAttribute('aria-hidden', 'false');
     if (selectCopy) {
       selectCopy.value = '';
-      selectCopy.focus();
+      selectCopy.dispatchEvent(new Event('change', { bubbles: true }));
+      const trigger = selectCopy.closest('.eu-dd')?.querySelector('.eu-dd-trigger') || selectCopy;
+      trigger.focus();
     }
     if (previewWrap) previewWrap.style.display = 'none';
     if (btnConfirmCopy) btnConfirmCopy.disabled = true;
@@ -427,6 +429,9 @@
     if (!modalCopy) return;
     modalCopy.classList.remove('open');
     modalCopy.setAttribute('aria-hidden', 'true');
+    if (window.EuDropdown && typeof window.EuDropdown.closeAll === 'function') {
+      window.EuDropdown.closeAll();
+    }
   }
 
   if (btnOpenCopyModal) {
