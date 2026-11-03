@@ -32,7 +32,7 @@
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="role">Hak Akses (Role) *</label>
-        <select id="role" name="role" class="form-select" required>
+        <select id="role" name="role" class="form-select" data-eu-dropdown="outlined" required>
           <option value="editor" <%= targetUser.role === 'editor' ? 'selected' : '' %>>Editor (Kelola Artikel &amp; Media)</option>
           <option value="admin" <%= targetUser.role === 'admin' ? 'selected' : '' %>>Admin (Kelola Katalog, Banners &amp; Inquiry)</option>
           <option value="superadmin" <%= targetUser.role === 'superadmin' ? 'selected' : '' %>>Superadmin (Akses Penuh Seluruh Sistem)</option>

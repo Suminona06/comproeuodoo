@@ -36,7 +36,7 @@
       </div>
       <div class="form-group">
         <label class="form-label" for="role">Hak Akses (Role) *</label>
-        <select id="role" name="role" class="form-select" required>
+        <select id="role" name="role" class="form-select" data-eu-dropdown="outlined" required>
           <option value="editor" <%= typeof formData !== 'undefined' && formData.role === 'editor' ? 'selected' : '' %>>Editor (Kelola Artikel &amp; Media)</option>
           <option value="admin" <%= typeof formData !== 'undefined' && formData.role === 'admin' ? 'selected' : '' %>>Admin (Kelola Katalog, Banners &amp; Inquiry)</option>
           <option value="superadmin" <%= typeof formData !== 'undefined' && formData.role === 'superadmin' ? 'selected' : '' %>>Superadmin (Akses Penuh Seluruh Sistem)</option>

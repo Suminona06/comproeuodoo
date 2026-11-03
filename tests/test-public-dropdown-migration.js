@@ -145,3 +145,4 @@ console.log('  1. Static audit of public templates & scripts: PASSED');
   await browser.close();
   console.log('ALL T-266 ACCEPTANCE CRITERIA VERIFIED SUCCESSFULLY!');
 })();
+

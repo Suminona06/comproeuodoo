@@ -145,23 +145,24 @@
 
             <div class="plp-sort-wrap">
               <label for="plp-sort-select" class="sr-only"><%= lang === 'en' ? 'Sort By' : 'Urutkan' %></label>
-              <select name="sort" id="plp-sort-select" class="plp-sort-select" aria-label="<%= lang === 'en' ? 'Sort by' : 'Urutkan berdasarkan' %>">
+              <select name="sort" id="plp-sort-select" class="plp-sort-select"
+                      data-eu-dropdown="elevated"
+                      data-prefix="<%= lang === 'en' ? 'Sort by' : 'Urutkan' %>"
+                      data-eu-size="sm"
+                      aria-label="<%= lang === 'en' ? 'Sort by' : 'Urutkan berdasarkan' %>">
                 <option value="newest" <%= (!sort || sort === 'newest') ? 'selected' : '' %>>
-                  <%= lang === 'en' ? 'SORT : NEWEST' : 'URUTKAN : TERBARU' %>
-                </option>
-                <option value="alpha-asc" <%= sort === 'alpha-asc' ? 'selected' : '' %>>
-                  <%= lang === 'en' ? 'SORT : NAME A-Z' : 'URUTKAN : NAMA A-Z' %>
-                </option>
-                <option value="alpha-desc" <%= sort === 'alpha-desc' ? 'selected' : '' %>>
-                  <%= lang === 'en' ? 'SORT : NAME Z-A' : 'URUTKAN : NAMA Z-A' %>
+                  <%= lang === 'en' ? 'Newest' : 'Terbaru' %>
                 </option>
                 <option value="catalog" <%= sort === 'catalog' ? 'selected' : '' %>>
-                  <%= lang === 'en' ? 'SORT : CATALOG' : 'URUTKAN : KATALOG' %>
+                  <%= lang === 'en' ? 'Popularity' : 'Terpopuler' %>
+                </option>
+                <option value="alpha-asc" <%= sort === 'alpha-asc' ? 'selected' : '' %>>
+                  <%= lang === 'en' ? 'Name A-Z' : 'Nama A-Z' %>
+                </option>
+                <option value="alpha-desc" <%= sort === 'alpha-desc' ? 'selected' : '' %>>
+                  <%= lang === 'en' ? 'Name Z-A' : 'Nama Z-A' %>
                 </option>
               </select>
-              <svg class="plp-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
             </div>
           </div>
 

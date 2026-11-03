@@ -42,7 +42,7 @@
     <!-- Pilihan Sumber Media Multi-Sumber (B.2) -->
     <div class="form-group">
       <label class="form-label" for="media_type">Tipe Sumber Media Latar Belakang *</label>
-      <select id="media_type" name="media_type" class="form-select">
+      <select id="media_type" name="media_type" class="form-select" data-eu-dropdown="outlined">
         <option value="image" <%= (typeof formData !== 'undefined' && formData.media_type === 'image') ? 'selected' : (!typeof formData || !formData.media_type ? 'selected' : '') %>>Gambar Beresolusi Tinggi (WebP / JPG / PNG)</option>
         <option value="video" <%= (typeof formData !== 'undefined' && formData.media_type === 'video') ? 'selected' : '' %>>Berkas Video Lokal (MP4 / WebM)</option>
         <option value="youtube" <%= (typeof formData !== 'undefined' && formData.media_type === 'youtube') ? 'selected' : '' %>>Streaming Video YouTube (URL Embed Resmi)</option>

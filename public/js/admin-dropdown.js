@@ -248,13 +248,27 @@
     nativeSelect.dataset.euDdEnhanced = 'true';
     let wrapper = nativeSelect.closest('.eu-dd');
 
+    const rawVariant = nativeSelect.getAttribute('data-eu-dropdown') || nativeSelect.getAttribute('data-eu-variant');
+    const variant = (rawVariant && rawVariant !== 'true') ? rawVariant : 'outlined';
+
     // If native select is standalone, create outer wrapper
     if (!wrapper) {
       wrapper = document.createElement('div');
-      const variant = nativeSelect.getAttribute('data-eu-variant') || 'outlined';
       wrapper.className = `eu-dd eu-dd--${variant}`;
       nativeSelect.parentNode.insertBefore(wrapper, nativeSelect);
       wrapper.appendChild(nativeSelect);
+    } else if (rawVariant && rawVariant !== 'true' && !wrapper.classList.contains(`eu-dd--${rawVariant}`)) {
+      wrapper.classList.add(`eu-dd--${rawVariant}`);
+    }
+
+    const isSm = nativeSelect.getAttribute('data-eu-size') === 'sm' || nativeSelect.hasAttribute('data-sm') || wrapper.classList.contains('eu-dd--sm');
+    if (isSm && !wrapper.classList.contains('eu-dd--sm')) {
+      wrapper.classList.add('eu-dd--sm');
+    }
+
+    const isInline = nativeSelect.hasAttribute('data-inline') || wrapper.classList.contains('eu-dd--inline');
+    if (isInline && !wrapper.classList.contains('eu-dd--inline')) {
+      wrapper.classList.add('eu-dd--inline');
     }
 
     nativeSelect.classList.add('eu-dd-native', 'sr-only');
@@ -325,9 +339,12 @@
         const optId = `eu-opt-${ddId}-${idx}`;
         const isSelected = opt.selected;
         const iconUrl = opt.getAttribute('data-icon') || '';
+        const iconSvg = opt.getAttribute('data-icon-svg') || '';
         let mediaHtml = '';
-        if (iconUrl) {
-          mediaHtml = `<span class="eu-dd-item-media"><img src="${escapeHtml(iconUrl)}" alt="" onerror="this.style.display='none'"></span>`;
+        if (iconSvg) {
+          mediaHtml = `<span class="eu-dd-item-media" aria-hidden="true">${iconSvg}</span>`;
+        } else if (iconUrl) {
+          mediaHtml = `<span class="eu-dd-item-media" aria-hidden="true"><img src="${escapeHtml(iconUrl)}" alt="" onerror="this.style.display='none'"></span>`;
         }
 
         optionsHtml += `
@@ -341,13 +358,30 @@
         `;
       });
 
+      const skeletonHtml = `
+        <div class="eu-dd-skeleton" aria-hidden="true">
+          <div class="eu-dd-skeleton-row"><span class="eu-dd-skeleton-circle"></span><span class="eu-dd-skeleton-bar"></span></div>
+          <div class="eu-dd-skeleton-row"><span class="eu-dd-skeleton-circle"></span><span class="eu-dd-skeleton-bar"></span></div>
+          <div class="eu-dd-skeleton-row"><span class="eu-dd-skeleton-circle"></span><span class="eu-dd-skeleton-bar"></span></div>
+          <div class="eu-dd-skeleton-row"><span class="eu-dd-skeleton-circle"></span><span class="eu-dd-skeleton-bar"></span></div>
+          <div class="eu-dd-skeleton-row"><span class="eu-dd-skeleton-circle"></span><span class="eu-dd-skeleton-bar"></span></div>
+          <div class="eu-dd-skeleton-row"><span class="eu-dd-skeleton-circle"></span><span class="eu-dd-skeleton-bar"></span></div>
+        </div>
+      `;
+
       panel.innerHTML = `
         ${searchHtml}
+        ${skeletonHtml}
         <div class="eu-dd-options" role="presentation">
           ${optionsHtml}
         </div>
       `;
       wrapper.appendChild(panel);
+    }
+
+    if (nativeSelect.dataset.loading === 'true') {
+      wrapper.classList.add('is-loading');
+      if (trigger) trigger.setAttribute('aria-busy', 'true');
     }
 
     // Sync initial selected state
@@ -580,6 +614,17 @@
     });
   }
 
+  function setLoading(target, isLoading) {
+    if (!target) return;
+    const dd = target.classList?.contains('eu-dd') ? target : target.closest?.('.eu-dd');
+    if (!dd) return;
+    dd.classList.toggle('is-loading', !!isLoading);
+    const trigger = dd.querySelector('.eu-dd-trigger');
+    if (trigger) {
+      trigger.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+    }
+  }
+
   // Auto-init on DOMContentLoaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => initAll());
@@ -594,7 +639,8 @@
     open: openDropdown,
     close: closeDropdown,
     closeAll: closeAllDropdowns,
-    select: selectOption
+    select: selectOption,
+    setLoading: setLoading
   };
 
 })(window, document);

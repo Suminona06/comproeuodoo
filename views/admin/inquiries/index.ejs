@@ -114,7 +114,7 @@
               </td>
               <td>
                 <select class="status-select inquiry-status-select st-<%= item.status === 'ditindaklanjuti' ? 'selesai' : (item.status === 'dibaca' ? 'diproses' : item.status) %>"
-                        data-id="<%= item.id %>" aria-label="Ubah status">
+                        data-id="<%= item.id %>" data-eu-dropdown="filled" data-eu-size="sm" data-inline="true" aria-label="Ubah status">
                   <option value="baru" <%= item.status === 'baru' ? 'selected' : '' %>>Baru</option>
                   <option value="dibaca" <%= item.status === 'dibaca' ? 'selected' : '' %>>Dibaca</option>
                   <option value="ditindaklanjuti" <%= item.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai</option>

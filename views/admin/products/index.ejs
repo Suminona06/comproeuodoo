@@ -24,7 +24,7 @@
       
       <!-- Category Filter Dropdown -->
       <form action="/admin/products" method="GET" style="display: flex; gap: 6px; align-items: center;">
-        <select name="category" class="form-select" style="font-size: 11.5px; padding: 4px 8px; height: 30px; width: auto;" data-auto-submit="true">
+        <select name="category" class="form-select" data-eu-dropdown="elevated" data-prefix="Kategori" data-eu-size="sm" data-inline="true" data-auto-submit="true">
           <option value="">Semua Kategori</option>
           <% categories.forEach(function(cat) { %>
             <option value="<%= cat.id %>" <%= selectedCategory === cat.id ? 'selected' : '' %>>

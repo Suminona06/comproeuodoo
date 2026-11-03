@@ -167,7 +167,7 @@
       <div class="form-row-3">
         <div class="form-group">
           <label for="wcu_chip_icon" class="form-label">Ikon Kicker Chip</label>
-          <select id="wcu_chip_icon" name="wcu_chip_icon" class="form-input">
+          <select id="wcu_chip_icon" name="wcu_chip_icon" class="form-input" data-eu-dropdown="outlined">
             <option value="tree" <%= (homeContent.why_choose_us?.chip_icon === 'tree' || !homeContent.why_choose_us?.chip_icon) ? 'selected' : '' %>>Pohon Botani Eco (tree)</option>
             <option value="leaf" <%= homeContent.why_choose_us?.chip_icon === 'leaf' ? 'selected' : '' %>>Daun Hijau (leaf)</option>
             <option value="sparkle" <%= homeContent.why_choose_us?.chip_icon === 'sparkle' ? 'selected' : '' %>>Kilau Inovasi (sparkle)</option>
@@ -333,7 +333,7 @@
             <div class="form-row-2">
               <div class="form-group" style="margin-bottom: 0;">
                 <label for="home_cat_<%= idx %>_id" class="form-label">Kategori Produk Terpilih *</label>
-                <select id="home_cat_<%= idx %>_id" name="home_cat_<%= idx %>_id" class="form-input" required>
+                <select id="home_cat_<%= idx %>_id" name="home_cat_<%= idx %>_id" class="form-input" data-eu-dropdown="outlined" required>
                   <option value="">-- Pilih Kategori --</option>
                   <% (allCategories || []).forEach(function(cat) { %>
                     <option value="<%= cat.id %>" <%= cat.id === selectedCatId ? 'selected' : '' %>>

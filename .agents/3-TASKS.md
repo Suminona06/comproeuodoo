@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 6 Task (T-263 s/d T-268)
-- **Total Task Selesai:** 262 Task (T-01 s/d T-262)
+- **Task Aktif Terbuka:** 2 Task (T-267 s/d T-268)
+- **Total Task Selesai:** 266 Task (T-01 s/d T-266)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-269**.
 
@@ -22,7 +22,7 @@
   4. Caret indikator berbentuk segitiga padat abu gelap (`var(--color-text-muted)`), berputar halus 180° saat terbuka.
   5. Atribut ARIA (`role="combobox"`, `role="listbox"`, `role="option"`, `aria-expanded`, `aria-activedescendant`) tersusun sesuai spesifikasi WAI-ARIA 1.2. *(sesuai Q2)*
 
-### [ ] T-263: Interaktivitas Keyboard, Type-ahead, Flip Viewport, Auto-Search & Integrasi Validasi T-259 *(diperbarui sesuai jawaban Q2, Q3, Q7)*
+### [x] T-263: Interaktivitas Keyboard, Type-ahead, Flip Viewport, Auto-Search & Integrasi Validasi T-259 *(diperbarui sesuai jawaban Q2, Q3, Q7)*
 - **Ukuran:** M | **Skill Terkait:** `polish`, `adapt`
 - **Deskripsi:** Mengembangkan controller JavaScript terpusat `public/js/admin-dropdown.js` untuk mengelola event buka/tutup, navigasi keyboard lengkap (Arrow, Enter, Space, Escape, Tab, Home, End, type-ahead), flip panel vertikal saat ruang bawah sempit, kotak pencarian otomatis jika opsi > 10, pembatasan max-height pada mobile <=480px, klik di luar, serta integrasi dengan `admin-form-validation.js` (T-259).
 - **File Terdampak:** `public/js/admin-dropdown.js`, `public/js/admin-form-validation.js`, `views/admin/layout.ejs`.
@@ -35,7 +35,7 @@
   6. Pemilihan opsi kustom memperbarui elemen `<select>` native dan memicu event `change`. *(sesuai Q2)*
   7. State error validasi form admin menampilkan border merah token, pesan inline, dan trigger dapat difokuskan otomatis saat form submit gagal (integrasi T-259).
 
-### [ ] T-264: Animasi Mikro, State Lengkap & Variasi Skeleton/Ikon *(diperbarui sesuai jawaban Q2, Q6, Q8)*
+### [x] T-264: Animasi Mikro, State Lengkap & Variasi Skeleton/Ikon *(diperbarui sesuai jawaban Q2, Q6, Q8)*
 - **Ukuran:** S | **Skill Terkait:** `animate`, `polish`
 - **Deskripsi:** Menyempurnakan transisi mikro panel (hanya menggunakan properti `transform` dan `opacity`), rotasi caret 180 derajat, state shimmer skeleton loading (lingkaran + baris abu seidentik Gambar 1), slot ikon/thumbnail opsional saat data tersedia, skema warna hijau token untuk fokus dan terpilih, serta fallback instan pada `prefers-reduced-motion: reduce`.
 - **File Terdampak:** `public/css/admin.css`, `public/css/components.css`.
@@ -47,7 +47,7 @@
   5. Efek hover dibungkus dalam `@media (hover: hover)`.
   6. Pada preferensi `prefers-reduced-motion: reduce`, transisi dan animasi berjalan instan tanpa motion.
 
-### [ ] T-265: Migrasi Dropdown Admin CMS (Form Tambah/Edit, Toolbar Table & Modal) *(diperbarui sesuai jawaban Q1, Q4, Q5, Q7)*
+### [x] T-265: Migrasi Dropdown Admin CMS (Form Tambah/Edit, Toolbar Table & Modal) *(diperbarui sesuai jawaban Q1, Q4, Q5, Q7)*
 - **Ukuran:** M | **Skill Terkait:** `polish`, `adapt`
 - **Deskripsi:** Menerapkan komponen `.eu-dd` pada 29 titik dropdown di area Admin CMS: form produk (`views/admin/products/{create,edit}.ejs`), form artikel/berita (`views/admin/posts/{create,edit}.ejs`), modal salin struktur kolom tabel ukuran, banner media type, dan filter toolbar katalog/leads sesuai pemetaan varian.
 - **File Terdampak:** `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `views/admin/banners/create.ejs`, `views/admin/banners/edit.ejs`, `views/admin/products/index.ejs`, `views/admin/leads/index.ejs`, `views/admin/inquiries/index.ejs`.
@@ -59,7 +59,7 @@
   5. Filter toolbar tabel admin dengan `data-auto-submit="true"` tetap otomatis mengirim form saat opsi dipilih.
   6. Kompatibel dengan tingkat zoom admin 100%, 125%, 150% pada resolusi 1366x768 hingga 1920x1080.
 
-### [ ] T-266: Migrasi Dropdown Halaman Publik: Filter Urutan PLP & Form Kontak RFQ *(diperbarui sesuai jawaban Q1, Q4)*
+### [x] T-266: Migrasi Dropdown Halaman Publik: Filter Urutan PLP & Form Kontak RFQ *(diperbarui sesuai jawaban Q1, Q4)*
 - **Ukuran:** S | **Skill Terkait:** `polish`, `adapt`
 - **Deskripsi:** Mengintegrasikan komponen `.eu-dd` varian `elevated` pada dropdown urutan katalog produk (`views/public/products.ejs`) dan varian `outlined` pada form kontak RFQ (`views/public/contact.ejs`) sesuai cakupan semua page.
 - **File Terdampak:** `views/public/products.ejs`, `public/js/products.js`, `views/public/contact.ejs`, `public/js/contact.js`.
