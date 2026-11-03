@@ -170,15 +170,14 @@
       </div>
     </div>
 
-    <!-- Lokasi 2: Bandung -->
     <div style="background: #f8fafc; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
         <div style="font-weight: 700; font-size: 14px; color: var(--navy, #071f17); display: flex; align-items: center; gap: 8px;">
           <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #059669;"></span>
-          Lokasi 2: Pabrik Manufaktur (Bandung)
-        </div>
+          Lokasi 2: Pabrik Manufaktur 
+        </div>  
         <label class="admin-toggle-switch" title="Tampilkan atau sembunyikan kartu alamat Bandung di footer dan halaman kontak">
-          <input type="checkbox" name="factory_card_visible" value="1" <%= (settings.factory_card_visible !== '0' && settings.factory_card_visible !== 0) ? 'checked' : '' %>>
+           <input type="checkbox" name="factory_card_visible" value="1" <%= (settings.factory_card_visible !== '0' && settings.factory_card_visible !== 0) ? 'checked' : '' %>>
           <span class="admin-toggle-slider"></span>
           <span class="admin-toggle-label">Tampilkan di Publik</span>
         </label>
@@ -196,7 +195,7 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="factory_address">Alamat Lengkap Pabrik Bandung *</label>
+        <label class="form-label" for="factory_address">Alamat Lengkap Pabrik *</label>
         <textarea id="factory_address" name="factory_address" class="form-textarea" rows="2" required><%= settings.factory_address || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214' %></textarea>
       </div>
 
@@ -206,13 +205,13 @@
           <input type="text" id="factory_phone" name="factory_phone" class="form-input" required value="<%= settings.factory_phone || '(022) 6012519' %>">
         </div>
         <div class="form-group">
-          <label class="form-label" for="factory_fax">Nomor Fax Pabrik Bandung (Opsional)</label>
+          <label class="form-label" for="factory_fax">Nomor Fax Pabrik </label>
           <input type="text" id="factory_fax" name="factory_fax" class="form-input" value="<%= settings.factory_fax || '' %>" placeholder="+6222-6012519">
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="factory_email">Email Pabrik Bandung (Opsional)</label>
+        <label class="form-label" for="factory_email">Email Pabrik </label>
         <input type="email" id="factory_email" name="factory_email" class="form-input" value="<%= settings.factory_email || '' %>" placeholder="pabrik@euodoo.com">
       </div>
 
