@@ -4,13 +4,19 @@ import jwt from 'jsonwebtoken';
 import assert from 'assert';
 import { execSync } from 'child_process';
 import http from 'http';
+import fs from 'fs';
+import path from 'path';
 import app from '../app.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_change_in_production_min_32_chars';
+const BRAIN_DIR = process.env.ANTIGRAVITY_BRAIN_DIR || '/home/itpc/.gemini/antigravity/brain/6d9ae093-c23e-4715-a0d2-c6b2b82c8d3c';
+const SCREENSHOT_DIR = path.join(BRAIN_DIR, 'screenshots/t277');
 
 console.log('=== TEST SUITE T-277: QA Verifikasi Visual, Fungsional & Regresi (Auth & Error Views) ===\n');
 
 async function runQAVerification() {
+  fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
+
   // [1] TEST 1: Strict Lint Views Verification on Batch 1
   console.log('[1] Memverifikasi kepatuhan Lint Views pada berkas Batch 1 (403, Login, Change Password)...');
   const lintOutput403 = execSync('node scripts/lint-views.js views/admin/403.ejs', { encoding: 'utf-8' });
@@ -78,7 +84,7 @@ async function runQAVerification() {
     for (const vp of viewports) {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto(`${baseUrl}/admin/login`, { waitUntil: 'networkidle' });
-      await page.screenshot({ path: `tests/screenshots/t277/login-${vp.width}.png` });
+      await page.screenshot({ path: path.join(SCREENSHOT_DIR, `login-${vp.width}.png`) });
 
       // Verifikasi ketiadaan horizontal overflow
       const overflow = await page.evaluate(() => {
@@ -120,7 +126,7 @@ async function runQAVerification() {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       const res = await page.goto(`${baseUrl}/admin/settings`, { waitUntil: 'networkidle' });
       assert.strictEqual(res.status(), 403, 'Route /admin/settings harus mengembalikan 403 untuk editor');
-      await page.screenshot({ path: `tests/screenshots/t277/403-${vp.width}.png` });
+      await page.screenshot({ path: path.join(SCREENSHOT_DIR, `403-${vp.width}.png`) });
 
       const overflow = await page.evaluate(() => {
         return document.documentElement.scrollWidth > window.innerWidth;
@@ -149,7 +155,7 @@ async function runQAVerification() {
     for (const vp of viewports) {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto(`${baseUrl}/admin/change-password`, { waitUntil: 'networkidle' });
-      await page.screenshot({ path: `tests/screenshots/t277/change-password-${vp.width}.png` });
+      await page.screenshot({ path: path.join(SCREENSHOT_DIR, `change-password-${vp.width}.png`) });
 
       const overflow = await page.evaluate(() => {
         return document.documentElement.scrollWidth > window.innerWidth;

@@ -170,6 +170,7 @@ Sebelum suatu batch dinyatakan selesai, wajib melewati 5 gerbang tanpa kecuali:
      - Desktop Laptop: `1280x800`
      - Desktop Full: `1440x900`
    - Agent **DILARANG KERAS** mengklaim tampilan "identik" tanpa bukti tangkapan layar dan diff piksel. Hal yang tidak dapat diverifikasi secara otomatis wajib dilaporkan ke user.
+   - **Lokasi Penyimpanan Tangkapan Layar:** Seluruh berkas tangkapan layar Playwright **DILARANG** disimpan di dalam direktori proyek (`tests/screenshots/`). Wajib disimpan di direktori brain Antigravity (`~/.gemini/antigravity/brain/<conversation-id>/screenshots/<batch>/`) agar repositori proyek tetap bersih dan tidak membengkak.
 5. **Gerbang Fungsionalitas & Konsol Browser:**
    - Seluruh aksi form pada halaman batch (simpan data, upload media picker, hapus item, validasi error inline, verifikasi CSRF token, reset button) berfungsi normal.
    - Tidak ada error atau peringatan merah pada konsol JavaScript browser (`console.error`).

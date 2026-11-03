@@ -58,5 +58,10 @@ public/*prototype*
 port-forward.bat
 port-forward*
 scripts/*port-forward*
+
+# Test artifacts & screenshots (stored in agent brain instead)
+tests/screenshots/
+*.png
+
 scripts/setup-port-forward*
 scripts/port-forward*

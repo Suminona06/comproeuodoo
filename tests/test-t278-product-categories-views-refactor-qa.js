@@ -9,11 +9,13 @@ import path from 'path';
 import app from '../app.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_change_in_production_min_32_chars';
+const BRAIN_DIR = process.env.ANTIGRAVITY_BRAIN_DIR || '/home/itpc/.gemini/antigravity/brain/6d9ae093-c23e-4715-a0d2-c6b2b82c8d3c';
+const SCREENSHOT_DIR = path.join(BRAIN_DIR, 'screenshots/t278');
 
 console.log('=== TEST SUITE T-278: QA Verifikasi Visual, Fungsional & Regresi (Product Categories Views) ===\n');
 
 async function runQAVerification() {
-  fs.mkdirSync('tests/screenshots/t278', { recursive: true });
+  fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
 
   // [1] TEST 1: Strict Lint Views Verification on Batch 2
   console.log('[1] Memverifikasi kepatuhan Lint Views pada berkas Batch 2 (index, create, edit)...');
@@ -98,7 +100,7 @@ async function runQAVerification() {
       });
       assert.strictEqual(inlineStyleElements.length, 0, `Tidak boleh ada inline style di dalam tabel kategori pada ${vp.name}`);
 
-      await page.screenshot({ path: `tests/screenshots/t278/index-${vp.width}.png` });
+      await page.screenshot({ path: path.join(SCREENSHOT_DIR, `index-${vp.width}.png`) });
 
       const overflow = await page.evaluate(() => {
         return document.documentElement.scrollWidth > window.innerWidth;
@@ -123,7 +125,7 @@ async function runQAVerification() {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       const res = await page.goto(`${baseUrl}/admin/product-categories/create`, { waitUntil: 'networkidle' });
       assert.strictEqual(res.status(), 200, 'Halaman /admin/product-categories/create harus status 200');
-      await page.screenshot({ path: `tests/screenshots/t278/create-${vp.width}.png` });
+      await page.screenshot({ path: path.join(SCREENSHOT_DIR, `create-${vp.width}.png`) });
 
       const overflow = await page.evaluate(() => {
         return document.documentElement.scrollWidth > window.innerWidth;
@@ -154,7 +156,7 @@ async function runQAVerification() {
         await page.setViewportSize({ width: vp.width, height: vp.height });
         const res = await page.goto(`${baseUrl}${editUrl}`, { waitUntil: 'networkidle' });
         assert.strictEqual(res.status(), 200, `Halaman edit kategori (${editUrl}) harus status 200`);
-        await page.screenshot({ path: `tests/screenshots/t278/edit-${vp.width}.png` });
+        await page.screenshot({ path: path.join(SCREENSHOT_DIR, `edit-${vp.width}.png`) });
 
         const overflow = await page.evaluate(() => {
           return document.documentElement.scrollWidth > window.innerWidth;
