@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 7 Task (T-262 s/d T-268)
-- **Total Task Selesai:** 261 Task (T-01 s/d T-261)
+- **Task Aktif Terbuka:** 6 Task (T-263 s/d T-268)
+- **Total Task Selesai:** 262 Task (T-01 s/d T-262)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-269**.
 
@@ -11,7 +11,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [ ] T-262: Fondasi Komponen Dropdown Terpadu (.eu-dd-*) & Arsitektur WAI-ARIA *(diperbarui sesuai jawaban Q2, Q4, Q5, Q8)*
+### [x] T-262: Fondasi Komponen Dropdown Terpadu (.eu-dd-*) & Arsitektur WAI-ARIA *(diperbarui sesuai jawaban Q2, Q4, Q5, Q8)*
 - **Ukuran:** M | **Skill Terkait:** `polish`, `adapt`
 - **Deskripsi:** Membangun modul CSS terisolasi `.eu-dd-*` di `public/css/admin.css` dan `public/css/components.css` yang mencakup 3 varian (*outlined*, *filled*, *elevated*), label mengambang (pada filter/standalone), trigger box, caret SVG padat rotasi 180°, panel popup berbayangan lembut, dan slot skeleton/ikon seidentik Gambar 1 dan Gambar 2 referensi.
 - **File Terdampak:** `public/css/tokens.css`, `public/css/admin.css`, `public/css/components.css`.

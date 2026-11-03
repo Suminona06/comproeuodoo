@@ -188,6 +188,14 @@
       mediaPicker.classList.add('is-invalid');
     }
 
+    // Handle Custom Dropdown component (.eu-dd)
+    const dd = field.closest('.eu-dd') || (field.id && document.querySelector(`.eu-dd[data-dropdown-id="${field.id}"]`));
+    if (dd) {
+      dd.classList.add('is-invalid');
+      const trigger = dd.querySelector('.eu-dd-trigger');
+      if (trigger) trigger.setAttribute('aria-invalid', 'true');
+    }
+
     // Generate unique error element ID
     const errorId = `err-${field.id || field.name || Math.random().toString(36).substring(2, 9)}`;
     field.setAttribute('aria-describedby', errorId);
@@ -222,6 +230,13 @@
     const mediaPicker = field.closest('.media-picker-component');
     if (mediaPicker) {
       mediaPicker.classList.remove('is-invalid');
+    }
+
+    const dd = field.closest('.eu-dd') || (field.id && document.querySelector(`.eu-dd[data-dropdown-id="${field.id}"]`));
+    if (dd) {
+      dd.classList.remove('is-invalid');
+      const trigger = dd.querySelector('.eu-dd-trigger');
+      if (trigger) trigger.removeAttribute('aria-invalid');
     }
 
     const errorId = field.getAttribute('aria-describedby');
@@ -297,9 +312,13 @@
       ensureFieldVisible(firstErrorField);
       setTimeout(() => {
         try {
-          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          if (typeof firstErrorField.focus === 'function' && firstErrorField.type !== 'hidden') {
-            firstErrorField.focus();
+          const dd = firstErrorField.closest('.eu-dd') || (firstErrorField.id && document.querySelector(`.eu-dd[data-dropdown-id="${firstErrorField.id}"]`));
+          const targetFocus = dd ? dd.querySelector('.eu-dd-trigger') : firstErrorField;
+          if (targetFocus) {
+            targetFocus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (typeof targetFocus.focus === 'function') {
+              targetFocus.focus();
+            }
           }
         } catch (e) {
           // Fallback

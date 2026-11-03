@@ -256,6 +256,12 @@
   --z-modal: 1030;
   --z-toast: 1040;
 
+  /* Unified Dropdown Tokens (.eu-dd-*) */
+  --eu-dd-height: 52px;
+  --eu-dd-height-sm: 36px;
+  --eu-dd-caret-size: 8px;
+  --eu-dd-panel-max-height: 260px;
+
   /* Header Actual Height Fallback */
   --header-actual-height: 92px;
 }
