@@ -7,6 +7,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "lint": "eslint .",
+    "lint:views": "node scripts/lint-views.js",
+    "lint:i18n": "node scripts/lint-i18n.js",
     "migrate": "node database/migrate.js",
     "seed": "node database/seeds/v2_seed.js",
     "seed:v1": "node database/seeds/initial_seed.js",
@@ -53,6 +56,9 @@
     "tinymce": "^8.9.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
     "nodemon": "^3.1.4",
     "playwright": "^1.64.1"
   },

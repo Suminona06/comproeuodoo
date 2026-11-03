@@ -1,0 +1,117 @@
+<div class="form-card">
+  <div class="form-card-title">3. Alamat Kantor &amp; Pabrik</div>
+
+  <div class="stg-location-card">
+    <div class="stg-location-header">
+      <div class="stg-location-title">
+        <span class="stg-status-dot"></span>
+        Lokasi 1: Kantor Pusat
+      </div>
+      <label class="admin-toggle-switch" title="Tampilkan atau sembunyikan kartu alamat Jakarta di footer dan halaman kontak">
+        <input type="checkbox" name="office_card_visible" value="1" <%= (settings.office_card_visible !== '0' && settings.office_card_visible !== 0) ? 'checked' : '' %>>
+        <span class="admin-toggle-slider"></span>
+        <span class="admin-toggle-label">Tampilkan di Publik</span>
+      </label>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="office_name_id">Nama Label Lokasi (Bahasa Indonesia) *</label>
+        <input type="text" id="office_name_id" name="office_name_id" class="form-input" required value="<%= settings.office_name_id || 'Kantor Pusat (Jakarta)' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="office_name_en">Nama Label Lokasi (English) *</label>
+        <input type="text" id="office_name_en" name="office_name_en" class="form-input" required value="<%= settings.office_name_en || 'Head Office (Jakarta)' %>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="office_address">Alamat Lengkap Kantor *</label>
+      <textarea id="office_address" name="office_address" class="form-textarea" rows="2" required><%= settings.office_address || 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02-07, Jakarta Pusat 10270' %></textarea>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="office_phone">Nomor Telepon Kantor</label>
+        <input type="text" id="office_phone" name="office_phone" class="form-input" required value="<%= settings.office_phone || settings.company_phone || '(021) 53668626' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="office_fax">Nomor Fax Kantor</label>
+        <input type="text" id="office_fax" name="office_fax" class="form-input" value="<%= settings.office_fax || '+6221-53668648' %>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="office_email">Email Kantor</label>
+      <input type="email" id="office_email" name="office_email" class="form-input" value="<%= settings.office_email || '' %>" placeholder="info@euodoo.com">
+    </div>
+  </div>
+
+  <div class="stg-location-card">
+    <div class="stg-location-header">
+      <div class="stg-location-title">
+        <span class="stg-status-dot stg-status-dot--accent"></span>
+        Lokasi 2: Pabrik Manufaktur
+      </div>  
+      <label class="admin-toggle-switch" title="Tampilkan atau sembunyikan kartu alamat Bandung di footer dan halaman kontak">
+        <input type="checkbox" name="factory_card_visible" value="1" <%= (settings.factory_card_visible !== '0' && settings.factory_card_visible !== 0) ? 'checked' : '' %>>
+        <span class="admin-toggle-slider"></span>
+        <span class="admin-toggle-label">Tampilkan di Publik</span>
+      </label>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="factory_name_id">Nama Label Lokasi (Bahasa Indonesia) *</label>
+        <input type="text" id="factory_name_id" name="factory_name_id" class="form-input" required value="<%= settings.factory_name_id || 'Pabrik Manufaktur (Bandung)' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="factory_name_en">Nama Label Lokasi (English) *</label>
+        <input type="text" id="factory_name_en" name="factory_name_en" class="form-input" required value="<%= settings.factory_name_en || 'Manufacturing Plant (Bandung)' %>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="factory_address">Alamat Lengkap Pabrik *</label>
+      <textarea id="factory_address" name="factory_address" class="form-textarea" rows="2" required><%= settings.factory_address || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214' %></textarea>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="factory_phone">Nomor Telepon Pabrik / Hotline *</label>
+        <input type="text" id="factory_phone" name="factory_phone" class="form-input" required value="<%= settings.factory_phone || '(022) 6012519' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="factory_fax">Nomor Fax Pabrik</label>
+        <input type="text" id="factory_fax" name="factory_fax" class="form-input" value="<%= settings.factory_fax || '' %>" placeholder="+6222-6012519">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="factory_email">Email Pabrik</label>
+      <input type="email" id="factory_email" name="factory_email" class="form-input" value="<%= settings.factory_email || '' %>" placeholder="pabrik@euodoo.com">
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label class="form-label" for="factory_working_hours_id">Jam Operasional (Bahasa Indonesia)</label>
+        <input type="text" id="factory_working_hours_id" name="factory_working_hours_id" class="form-input" value="<%= settings.factory_working_hours_id || 'Senin - Jumat: 08.00 - 17.00 WIB | Sabtu: 08.00 - 13.00 WIB' %>">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="factory_working_hours_en">Jam Operasional (English)</label>
+        <input type="text" id="factory_working_hours_en" name="factory_working_hours_en" class="form-input" value="<%= settings.factory_working_hours_en || 'Monday - Friday: 08:00 - 17:00 WIB | Saturday: 08:00 - 13:00 WIB' %>">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="google_maps_embed">Kode Embed Google Maps Pabrik Bandung (URL iframe atau kode sematan utuh)</label>
+    <input type="text" id="google_maps_embed" name="google_maps_embed" class="form-input" value="<%= settings.google_maps_embed || '' %>" placeholder="https://www.google.com/maps/embed?pb=... atau &lt;iframe src='...'&gt;&lt;/iframe&gt;">
+    <div class="form-hint">Dapat berupa URL langsung atau seluruh kode tag &lt;iframe&gt; dari Google Maps resmi (sistem akan mengekstrak URL secara otomatis dan aman).</div>
+    <% if (settings.google_maps_embed) { %>
+      <div class="stg-map-box">
+        <iframe src="<%= settings.google_maps_embed %>" class="stg-map-iframe" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    <% } %>
+  </div>
+</div>

@@ -230,7 +230,7 @@
     <!-- Peta Google Maps Terpadu -->
     <div class="form-group">
       <label class="form-label" for="google_maps_embed">Kode Embed Google Maps Pabrik Bandung (URL iframe atau kode sematan utuh)</label>
-      <input type="text" id="google_maps_embed" name="google_maps_embed" class="form-input" value="<%= settings.google_maps_embed || '' %>" placeholder="https://www.google.com/maps/embed?pb=... atau <iframe src='...'></iframe>">
+      <input type="text" id="google_maps_embed" name="google_maps_embed" class="form-input" value="<%= settings.google_maps_embed || '' %>" placeholder="https://www.google.com/maps/embed?pb=... atau &lt;iframe src='...'&gt;&lt;/iframe&gt;">
       <div class="form-hint">Dapat berupa URL langsung atau seluruh kode tag &lt;iframe&gt; dari Google Maps resmi (sistem akan mengekstrak URL secara otomatis dan aman).</div>
       <% if (settings.google_maps_embed) { %>
         <div style="margin-top: 12px; border-radius: 8px; overflow: hidden; height: 180px; border: 1px solid #e2e8f0;">
