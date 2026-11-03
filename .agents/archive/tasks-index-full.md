@@ -672,38 +672,77 @@
   - [x] Aksesibilitas keyboard dan mobile drawer filter katalog tetap berfungsi 100%.
 - **File Terdampak**: `views/public/products.ejs`, `public/js/products.js`, `views/public/contact.ejs`, `views/partials/footer.ejs`
 - **Skill**: Impeccable polish + Impeccable adapt
-- **Verifikasi**: `node tests/test-public-dropdown-migration.js` (4/4 passed). Selesai 2026-11-03.
-
-### T-267: Penskalaan 2x & Harmonisasi Spasi Marquee Section Merek Kami Homepage [DONE]
-- **Deskripsi**: Menyesuaikan ukuran logo merek pada `.brand-strip-*` menjadi 2x di desktop (`clamp(168px, 16vw, 220px)`), ~1.5x di mobile (`clamp(90px, 20vw, 120px)`), merapatkan spasi `--brand-gap` menjadi `clamp(1.5rem, 3.5vw, 3rem)`, dan mengkalibrasi durasi animasi marquee dari 32s ke 48s agar kecepatan linier per piksel konstan.
-- **Acceptance Criteria**:
-  - [x] Logo merek di desktop tampil 2x lebih besar (`clamp(168px, 16vw, 220px)`), tampak proporsional, tajam, dan tidak buram.
-  - [x] Logo merek di mobile tampil ~1.5x (`clamp(90px, 20vw, 120px)`), setidaknya 2 logo terlihat sekaligus pada viewport 320px-375px.
-  - [x] Jarak antar-logo seimbang dan rapat via `--brand-gap: clamp(1.5rem, 3.5vw, 3rem)`.
-  - [x] Durasi animasi marquee dikalibrasi menjadi 48s, pergerakan linier halus dan stabil.
-  - [x] Pada viewport mobile 320px, 375px, 480px, dan 768px tidak terjadi horizontal scrollbar (overflow-x bebas bocor).
-  - [x] Modal lightbox zoom preview (`#brandPreviewModal`) dan `prefers-reduced-motion` tetap berfungsi normal.
-- **File Terdampak**: `public/css/components.css`, `tests/test-homepage-hero-cta-merek-qa.js`
-- **Skill**: Impeccable polish + Impeccable adapt + Impeccable animate
-- **Verifikasi**: `node tests/test-brand-marquee-scaling.js` (4/4 passed via Playwright). Selesai 2026-11-03.
-
-### T-268: Pengujian Komprehensif Lintas Browser, Zoom Admin, dan Audit Kontras WCAG AA [DONE]
-- **Deskripsi**: Melakukan regresi pengujian menyeluruh pada seluruh form admin dan halaman publik ber-dropdown, marquee beranda, navigasi keyboard-only, emulasi pembaca layar, pengujian zoom antarmuka admin 100%, 125%, 150%, dan verifikasi rasio kontras WCAG AA/AAA.
-- **Acceptance Criteria**:
-  - [x] Nol error console pada browser saat membuka, menutup, memfilter, atau mengirimkan form ber-dropdown di admin maupun publik.
-  - [x] Seluruh pasangan teks dan latar pada komponen `.eu-dd` memenuhi ambang batas kontras WCAG AA (>= 4.5:1 untuk teks biasa, >= 3:1 untuk non-teks) dan AAA (7.78:1 pada item terpilih).
-  - [x] Tidak ada regresi pada fungsionalitas CRUD admin dan form kontak RFQ.
-- **File Terdampak**: `tests/test-comprehensive-regression.js`, `views/admin/products/create.ejs`
-- **Skill**: Impeccable polish
-- **Verifikasi**: `node tests/test-comprehensive-regression.js` (4/4 passed). Selesai 2026-11-03.
-
-### T-269: Perbaikan Sinkronisasi Status Inquiry Table Admin, Tampilan Kolom Kebutuhan & Label Produk Form Kontak [DONE]
-- **Deskripsi**: Memperbaiki bug status dropdown di tabel RFQ admin (`dashboard.ejs` & `inquiries/index.ejs`) agar tidak merusak class `eu-dd-native sr-only` saat AJAX sukses sehingga tidak muncul dropdown duplikat dan perubahan status berikutnya tersimpan normal; menyelaraskan kolom tabel Kebutuhan agar hanya menampilkan rincian kebutuhan tanpa nama produk; serta menghapus sufiks kategori pada dropdown opsi produk di halaman kontak publik.
-- **Acceptance Criteria**:
-  - [x] Penggantian status inquiry di dashboard dan tabel inquiries tidak memunculkan dropdown ganda; perubahan status kedua dan seterusnya tersimpan permanen di database.
-  - [x] Dropdown trigger pada baris tabel mengadopsi status warna token (`st-baru`, `st-diproses`, `st-selesai`, `st-ditolak`) secara mulus.
-  - [x] Kolom "Kebutuhan" di dashboard dan tabel inquiries hanya menampilkan teks kebutuhan klien tanpa prefix nama produk.
-  - [x] Seluruh pilihan produk pada dropdown form kontak `/contact` hanya menampilkan nama produk murni tanpa nama kategori dalam kurung.
-- **File Terdampak**: `public/js/admin-dropdown.js`, `public/css/admin.css`, `public/css/components.css`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`, `views/public/contact.ejs`
-- **Skill**: Debugging and error recovery + Impeccable polish + antislop-human
 - **Verifikasi**: `node tests/test-t269-bug-fixes.js` (3/3 passed via Playwright). Selesai 2026-11-03.
+
+### T-270: Perbaikan Sintaks HTML Unescaped Iframe Placeholder pada views/admin/settings/index.ejs [DONE]
+- **Deskripsi**: Memperbaiki karakter tag mentah `<iframe src='...'></iframe>` pada atribut `placeholder` input `#google_maps_embed` di baris 233 menjadi entitas aman `&lt;iframe src='...'&gt;&lt;/iframe&gt;` agar parser HTML dan validator editor tidak mengalami kegagalan hierarki tag penutup.
+- **Acceptance Criteria**:
+  - [x] Karakter di atribut placeholder di-escape dengan benar sebagai entitas HTML.
+  - [x] Tag balance parser untuk `views/admin/settings/index.ejs` menghasilkan 0 error sintaks.
+  - [x] Tampilan visual placeholder pada browser tetap terbaca jelas tanpa distorsi form.
+- **File Terdampak**: `views/admin/settings/index.ejs`, `views/admin/settings/partials/dual-location-card.ejs`
+- **Skill**: Debugging and error recovery
+- **Verifikasi**: Tag balance parser verified 0 errors, browser E2E test. Selesai 2026-11-03.
+
+### T-271: Dokumentasi Spesifikasi tech/conventions.md & Integrasi Proses [DONE]
+- **Deskripsi**: Menyusun dokumen spesifikasi teknis `tech/conventions.md` (ukuran <= 8KB), menautkan dari `INDEX.md`, memperbarui instruksi ringkas pada `AGENTS.md` (<= 30 baris), serta menambahkan gerbang kualitas lint hijau pada Definition of Done di `WORKFLOW.md`.
+- **Acceptance Criteria**:
+  - [x] `tech/conventions.md` aktif dengan batas fungsi <= 40 baris, file <= 300 baris, nesting <= 2, cyclomatic complexity <= 8, partial view <= 100 baris, dan larangan style/hex inline.
+  - [x] `INDEX.md` bertambah tepat 1 baris (total 33 baris <= 60 baris).
+  - [x] `AGENTS.md` bertambah 2 baris (total 22 baris <= 30 baris).
+  - [x] `WORKFLOW.md` memuat klausul lint hijau pada DoD tahap Implement dan Close.
+- **File Terdampak**: `.agents/tech/conventions.md`, `.agents/INDEX.md`, `AGENTS.md`, `.agents/AGENTS.md`, `.agents/WORKFLOW.md`, `.agents/tech/settings.md`
+- **Skill**: documentation-and-adrs + spec-driven-development
+- **Verifikasi**: File size and line limits audit passed. Selesai 2026-11-03.
+
+### T-272: Setup Tooling Flat ESLint Backend & Frontend Script [DONE]
+- **Deskripsi**: Memasang paket linter ke `devDependencies` (`eslint`, `@eslint/js`, `globals`), membuat konfigurasi flat `eslint.config.js` native ESM, mengonfigurasi aturan ukuran/kompleksitas dengan strategi baseline (warning untuk file lama, error untuk file baru/refaktor), dan mendaftarkan script `"lint": "eslint ."` pada `package.json`.
+- **Acceptance Criteria**:
+  - [x] Paket linter terpasang murni pada `devDependencies` (tidak terpasang di deploy produksi cPanel/Passenger).
+  - [x] Berkas `eslint.config.js` memisahkan konfigurasi Node backend dan browser frontend (`public/js/`).
+  - [x] Eksekusi `npm run lint` berjalan valid tanpa crash (0 error).
+- **File Terdampak**: `package.json`, `package-lock.json`, `eslint.config.js`
+- **Skill**: ci-cd-and-automation + code-review-and-quality
+- **Verifikasi**: `npm run lint` (0 error, exit code 0). Selesai 2026-11-03.
+
+### T-273: Pembuatan Skrip Pemeriksa Kepatuhan Template scripts/lint-views.js [DONE]
+- **Deskripsi**: Membuat skrip pemeriksa mandiri ringan tanpa dependensi berat pada `scripts/lint-views.js` untuk memindai berkas `views/**/*.ejs` dan file CSS komponen terhadap `style="..."` inline, warna hex mentah, tag `<script>` inline, komentar HTML `<!-- -->`, dan handler inline `on*=`.
+- **Acceptance Criteria**:
+  - [x] Format output: `file:baris - [LEVEL] (rule) pesan`.
+  - [x] Tingkat penegakan modular (file baru/refaktor berstatus error; file lama berstatus warning).
+  - [x] Didaftarkan pada `package.json` sebagai `"lint:views": "node scripts/lint-views.js"`.
+- **File Terdampak**: `scripts/lint-views.js`, `package.json`
+- **Skill**: ci-cd-and-automation + code-simplification
+- **Verifikasi**: `npm run lint:views` (0 error). Selesai 2026-11-03.
+
+### T-274: Pembuatan Skrip Audit Kamus Bahasa scripts/lint-i18n.js [DONE]
+- **Deskripsi**: Membuat skrip audit kamus bahasa pada `scripts/lint-i18n.js` yang memverifikasi keselarasan kunci secara rekursif antara `locales/id.json` dan `locales/en.json`, serta memvalidasi pemanggilan `t('...')` di view publik.
+- **Acceptance Criteria**:
+  - [x] Skrip mendeteksi keselarasan kunci ID dan EN secara simetris (134 kunci simetris).
+  - [x] Gagal (exit code 1) bila ada asimetri kunci antar kamus bahasa resmi.
+  - [x] Didaftarkan pada `package.json` sebagai `"lint:i18n": "node scripts/lint-i18n.js"`.
+- **File Terdampak**: `scripts/lint-i18n.js`, `package.json`
+- **Skill**: ci-cd-and-automation + debugging-and-error-recovery
+- **Verifikasi**: `npm run lint:i18n` (0 error). Selesai 2026-11-03.
+
+### T-275: Refaktor Modular Percontohan views/admin/settings/index.ejs [DONE]
+- **Deskripsi**: Merefaktor berkas `views/admin/settings/index.ejs` tanpa mengubah visual dan fungsionalitas: memecah halaman menjadi 6 partial modular per kartu section (`visual-identity-card.ejs`, `corporate-identity-card.ejs`, `dual-location-card.ejs`, `whatsapp-service-card.ejs`, `social-media-card.ejs`, `sticky-actions.ejs`) masing-masing <= 100 baris, memindahkan seluruh style inline dan warna hex ke class berprefix `.stg-*` berbasis token di `public/css/admin.css`, serta menghapus seluruh komentar HTML frontend.
+- **Acceptance Criteria**:
+  - [x] `views/admin/settings/index.ejs` menjadi template ramping orkestrator (21 baris < 50 baris).
+  - [x] 100% style inline, warna hex, dan komentar HTML bersih dari template settings.
+  - [x] Seluruh berkas settings lulus murni (0 error, 0 warning) pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/settings/index.ejs`, `views/admin/settings/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+- **Skill**: frontend-ui-engineering + code-simplification + antislop-code
+- **Verifikasi**: `node scripts/lint-views.js views/admin/settings/` (0 error, 0 warning). Selesai 2026-11-03.
+
+### T-276: Verifikasi Visual Lintas Viewport, Uji Fungsional Form & Regresi [DONE]
+- **Deskripsi**: Menjalankan pengujian menyeluruh pada antarmuka Pengaturan Situs dan sistem: visual responsif lintas desktop, tablet, dan mobile tanpa overflow horizontal; fungsionalitas submit form POST, media picker, dual lokasi, WhatsApp rolling, sosial media, dan CSRF; bebas console/page error; serta uji regresi test suite dan integritas Homepage yang dibekukan.
+- **Acceptance Criteria**:
+  - [x] Seluruh test suite eksisting lulus hijau (100% PASS).
+  - [x] Linter hijau tanpa error: `npm run lint`, `npm run lint:views`, `npm run lint:i18n`.
+  - [x] Responsivitas bebas overflow pada viewport Desktop (1440px, 1280px), Tablet (768px), dan Mobile (375px).
+  - [x] Zero browser console errors pada `/admin/settings`.
+  - [x] Homepage `views/public/index.ejs` terverifikasi 100% utuh tanpa modifikasi.
+- **File Terdampak**: `tests/test-t276-conventions-refactor-qa.js`
+- **Skill**: test-driven-development + browser-testing-with-devtools
+- **Verifikasi**: `node tests/test-t276-conventions-refactor-qa.js` (6/6 passed via Playwright). Selesai 2026-11-03.

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-02 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
 
 # Tech Spec: Modul Pengaturan Situs (Site Settings)
 
@@ -75,14 +75,14 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
   3. Validasi akumulasi matematis: $\sum \text{percentage} === 100$. Jika tidak sama dengan 100, lempar error validasi dan batalkan penyimpanan.
   4. Fallback transparan: Jika payload tidak disertakan / kosong, nilai legacy `whatsapp_number` tetap dipertahankan.
 - **Pipeline Generator Multi-Ukuran Favicon (`generateFaviconSet`):**
-  1. Disediakan fungsi `generateFaviconSet(sourcePath)` di `middleware/uploadMiddleware.js` berbasis Sharp menggunakan *circular badge* berlatar putih bersih dengan tepian *anti-aliased* halus dan penskalaan proporsional (92% diameter kanvas), menjaga proporsi asli simbol tanpa distorsi atau peregangan ("tidak ketarik") pada kanvas persegi `16x16`, `32x32`, `180x180`, `192x192`, dan `512x512` PNG di `public/uploads/settings/`, serta sinkronisasi fallback root `/favicon.ico`.
+  1. Disediakan fungsi `generateFaviconSet(sourcePath)` di `middleware/uploadMiddleware.js` berbasis Sharp menggunakan latar transparan murni tanpa background putih dengan penskalaan proporsional terpusat, menjaga proporsi asli simbol tanpa distorsi atau peregangan ("tidak ketarik") pada kanvas persegi `16x16`, `32x32`, `180x180`, `192x192`, dan `512x512` PNG di `public/uploads/settings/`, serta sinkronisasi fallback root `/favicon.ico`.
   2. Saat pengaturan disimpan di `settingController.update`, jika `site_favicon` diisi/diunggah, `generateFaviconSet` memproses sumber `site_favicon`; jika `site_favicon` dikosongkan, sistem otomatis menjalankan fallback dari `site_logo_header` / `site_logo` dan menyimpan path turunan ke `site_favicon_16`, `site_favicon_32`, `site_favicon_180`, `site_favicon_192`, serta `site_favicon_512`.
   3. Seluruh layout publik dan admin (`views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, dan `views/admin/403.ejs`) merender tag `<link rel="icon" type="image/png" sizes="32x32">`, `<link rel="icon" type="image/png" sizes="16x16">`, `<link rel="apple-touch-icon" sizes="180x180">`, dan `<link rel="icon" type="image/png" sizes="192x192">`.
 - **Cache Invalidation:** Memanggil `clearSettingsCache()` untuk membersihkan memory cache segera setelah update berhasil dieksekusi.
 
 ---
 
-## 7. Arsitektur View Admin Settings Modular & Token (.stg-*) [PENDING T-275, T-276]
+## 7. Arsitektur View Admin Settings Modular & Token (.stg-*)
 - **Orkestrator Halaman Ramping:** `views/admin/settings/index.ejs` bertindak sebagai template ramping (<50 baris) yang mengorkestrasikan partial per kartu section.
 - **Daftar Partial Modular (`views/admin/settings/partials/`):**
   1. `visual-identity-card.ejs`: Favicon, logo header navbar, dan logo footer berkontras tinggi (panjang <= 100 baris).

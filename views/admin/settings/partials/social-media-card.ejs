@@ -1,0 +1,59 @@
+<div class="form-card">
+  <div class="form-card-title">5. Akun Media Sosial Resmi Perusahaan</div>
+  <div class="stg-sosmed-desc">
+    Aktifkan atau sembunyikan ikon media sosial di footer publik. Masukkan URL akun dengan awalan protokol <code>https://</code>.
+  </div>
+
+  <div class="form-row-2">
+    <div class="form-group stg-sosmed-card">
+      <div class="stg-sosmed-header">
+        <label class="form-label stg-sosmed-label" for="social_linkedin_url">LinkedIn</label>
+        <label class="admin-toggle-switch">
+          <input type="checkbox" name="social_linkedin_visible" value="1" <%= (settings.social_linkedin_visible !== '0' && settings.social_linkedin_visible !== 0) ? 'checked' : '' %>>
+          <span class="admin-toggle-slider"></span>
+          <span class="admin-toggle-label">Tampilkan</span>
+        </label>
+      </div>
+      <input type="url" id="social_linkedin_url" name="social_linkedin_url" class="form-input" placeholder="https://linkedin.com/company/pt-euodoo" value="<%= settings.social_linkedin_url || settings.linkedin_url || '' %>">
+    </div>
+
+    <div class="form-group stg-sosmed-card">
+      <div class="stg-sosmed-header">
+        <label class="form-label stg-sosmed-label" for="social_instagram_url">Instagram</label>
+        <label class="admin-toggle-switch">
+          <input type="checkbox" name="social_instagram_visible" value="1" <%= (settings.social_instagram_visible !== '0' && settings.social_instagram_visible !== 0) ? 'checked' : '' %>>
+          <span class="admin-toggle-slider"></span>
+          <span class="admin-toggle-label">Tampilkan</span>
+        </label>
+      </div>
+      <input type="url" id="social_instagram_url" name="social_instagram_url" class="form-input" placeholder="https://instagram.com/euodoo.id" value="<%= settings.social_instagram_url || settings.instagram_url || '' %>">
+    </div>
+  </div>
+
+  <div class="form-row-2 stg-sosmed-row-spacing">
+    <div class="form-group stg-sosmed-card">
+      <div class="stg-sosmed-header">
+        <label class="form-label stg-sosmed-label" for="social_facebook_url">Facebook</label>
+        <label class="admin-toggle-switch">
+          <input type="checkbox" name="social_facebook_visible" value="1" <%= (settings.social_facebook_visible !== '0' && settings.social_facebook_visible !== 0) ? 'checked' : '' %>>
+          <span class="admin-toggle-slider"></span>
+          <span class="admin-toggle-label">Tampilkan</span>
+        </label>
+      </div>
+      <input type="url" id="social_facebook_url" name="social_facebook_url" class="form-input" placeholder="https://facebook.com/pteuodoo" value="<%= settings.social_facebook_url || settings.facebook_url || '' %>">
+    </div>
+
+    <div class="form-group stg-sosmed-card">
+      <div class="stg-sosmed-header">
+        <label class="form-label stg-sosmed-label" for="social_youtube_url">YouTube</label>
+        <label class="admin-toggle-switch">
+          <input type="checkbox" name="social_youtube_visible" value="1" <%= (settings.social_youtube_visible !== '0' && settings.social_youtube_visible !== 0) ? 'checked' : '' %>>
+          <span class="admin-toggle-slider"></span>
+          <span class="admin-toggle-label">Tampilkan</span>
+        </label>
+      </div>
+      <input type="url" id="social_youtube_url" name="social_youtube_url" class="form-input" placeholder="https://youtube.com/@pteuodoo" value="<%= settings.social_youtube_url || settings.youtube_url || '' %>">
+    </div>
+  </div>
+</div>
+

@@ -8,7 +8,7 @@ const rootDir = path.resolve(__dirname, '..');
 
 // File atau direktori hasil refaktor yang wajib zero-error
 const DEFAULT_STRICT_PATHS = [
-  'views/admin/settings/partials/'
+  'views/admin/settings/'
 ];
 
 function getFiles(dir, ext) {

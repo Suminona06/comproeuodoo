@@ -1,0 +1,73 @@
+<div class="form-card">
+  <div class="form-card-title">4. Layanan WhatsApp &amp; Tombol Melayang (Floating CTA)</div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="whatsapp_number">Nomor WhatsApp Resmi (Konsultasi Sales) *</label>
+      <input type="text" id="whatsapp_number" name="whatsapp_number" class="form-input" required value="<%= settings.whatsapp_number || '6281234567890' %>" placeholder="081234567890 atau 6281234567890">
+      <div class="form-hint">Otomatis dinormalisasi ke format internasional (misal: 6281234567890).</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="whatsapp_button_theme">Tema Tampilan Tombol Floating</label>
+      <select id="whatsapp_button_theme" name="whatsapp_button_theme" class="form-select" data-eu-dropdown="outlined">
+        <option value="corporate" <%= settings.whatsapp_button_theme === 'corporate' ? 'selected' : '' %>>Corporate (Deep Cobalt Blue)</option>
+        <option value="emerald" <%= settings.whatsapp_button_theme === 'emerald' ? 'selected' : '' %>>Emerald (WhatsApp Brand Green)</option>
+        <option value="dark" <%= settings.whatsapp_button_theme === 'dark' ? 'selected' : '' %>>Dark Mode (Sleek Slate)</option>
+        <option value="minimal" <%= settings.whatsapp_button_theme === 'minimal' ? 'selected' : '' %>>Minimal Outline</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="whatsapp_default_message">Pesan Pembuka Otomatis (Default Greeting Message)</label>
+    <textarea id="whatsapp_default_message" name="whatsapp_default_message" class="form-textarea"><%= settings.whatsapp_default_message || 'Halo PT Euodoo, saya ingin berkonsultasi mengenai pemesanan kantong plastik ramah lingkungan (100% degradable).' %></textarea>
+  </div>
+
+  <div class="wa-repeater-wrap" id="waRepeaterContainer">
+    <input type="hidden" id="whatsapp_numbers_json" name="whatsapp_numbers_json" value="<%= settings.whatsapp_numbers_json || '[]' %>">
+    
+    <div class="wa-repeater-header">
+      <div class="wa-repeater-title">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Rotasi Multi-Nomor WhatsApp (Rolling Persentase)
+      </div>
+      <div id="waTotalBadge" class="wa-repeater-badge-ok">
+        Total: <span id="waTotalDisplay">100</span>%
+      </div>
+    </div>
+
+    <div class="wa-repeater-desc">
+      Tentukan pembagian beban prospek ke beberapa nomor WhatsApp representative sales/CS. Total seluruh bobot persentase wajib berjumlah tepat <strong>100%</strong>. Jika daftar ini dikosongkan, tombol melayang akan otomatis menggunakan Nomor WhatsApp Resmi di atas.
+    </div>
+
+    <div id="waEmptyHint" class="wa-empty-hint stg-d-none">
+      Belum ada nomor dalam rotasi multi-nomor. Klik tombol di bawah untuk menambah nomor rolling, atau biarkan kosong untuk menggunakan nomor utama di atas.
+    </div>
+
+    <div class="wa-table-responsive" id="waTableContainer">
+      <table class="wa-table">
+        <thead>
+          <tr>
+            <th class="stg-col-wa-num">Nomor WhatsApp</th>
+            <th class="stg-col-wa-label">Label Internal Admin</th>
+            <th class="stg-col-wa-pct">Persentase Alokasi</th>
+            <th class="stg-col-wa-act">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="waTableBody">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="wa-footer-actions">
+      <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" id="btnAddWaRow" aria-label="Tambah nomor WhatsApp CS baru">
+        <svg class="adm-btn-icon adm-btn-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Tambah</span>
+      </button>
+      <span class="stg-wa-hint">
+        * Label hanya untuk identifikasi internal di admin, tidak tampil ke publik.
+      </span>
+    </div>
+  </div>
+</div>
+
