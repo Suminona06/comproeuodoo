@@ -3,7 +3,7 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: eslint.config.js, scr
 # Tech Spec: Konvensi Kode & Standar Kualitas (Code Conventions & Standards)
 
 ## 1. Arsitektur & Prinsip Umum
-Dokumen ini mendefinisikan standar mutu teknis terukur dan dapat diverifikasi oleh mesin untuk arsitektur backend Express.js, template frontend EJS, lembar gaya CSS, dan tooling linting otomatis PT Euodoo.
+Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin untuk Express.js backend, template frontend EJS, lembar gaya CSS, dan tooling linting otomatis PT Euodoo.
 
 ---
 
@@ -11,27 +11,27 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan dapat diverifikasi ol
 
 ### A. Pemisahan Perhatian (Separation of Concerns)
 - Template EJS hanya berfungsi sebagai lapisan presentasi murni.
-- Dilarang keras memuat query basis data, manipulasi struktur data mentah, kalkulasi bisnis kompleks, atau mutasi data di dalam template. Seluruh data wajib dipersiapkan secara siap konsumsi oleh Controller atau Service sebelum dikirim ke `res.render()`.
+- Dilarang keras query database, manipulasi struktur data mentah, kalkulasi bisnis kompleks, atau mutasi data di template. Data wajib disiapkan siap konsumsi oleh Controller/Service sebelum ke `res.render()`.
 
 ### B. Halaman Ramping & Partial Modular
-- Template halaman utama wajib berupa berkas ramping (*thin page*) yang mengorkestrasikan partial per section.
-- Konvensi path partial: `views/partials/<nama-halaman>/<nama-section>.ejs` atau `views/admin/<modul>/partials/<nama-section>.ejs`.
+- Template utama wajib berkas ramping (*thin page*) yang mengorkestrasikan partial per section.
+- Konvensi path: `views/partials/<halaman>/<section>.ejs` atau `views/admin/<modul>/partials/<section>.ejs`.
 - Batas ukuran file partial: maksimal **~100 baris**.
-- Blok berulang (seperti baris media picker, form group, atau baris dinamis) wajib diekstraksi menjadi partial mandiri dengan variabel `locals` eksplisit.
+- Blok berulang (baris media picker, form group, baris dinamis) wajib diekstraksi ke partial dengan `locals` eksplisit.
 
 ### C. Larangan Keras Gaya, Warna & Skrip Inline
-- **Dilarang Inline Style Baru:** Atribut `style="..."` dilarang ditambahkan pada elemen markup baru atau yang sedang direfaktor.
-- **Dilarang Warna Hex Langsung:** Dilarang mencantumkan kode warna hex secara langsung pada berkas `.ejs` maupun berkas CSS komponen. Seluruh pewarnaan wajib merujuk ke token desain CSS resmi (`var(--bg-subtle)`, `var(--color-primary)`, `var(--color-border)`, `var(--surface-dark-deep)`, dsb.).
-- **Dilarang Skrip Inline:** Seluruh JavaScript perilaku wajib diletakkan pada berkas `.js` eksternal terpisah di direktori `public/js/`. Tag `<script>` inline dilarang.
-- **Dilarang Handler Event Inline:** Dilarang menggunakan atribut event handler inline HTML (`onclick=`, `onchange=`, `onsubmit=`, `onerror=`). Seluruh interaksi wajib didaftarkan melalui `addEventListener` di berkas JavaScript eksternal.
-- **Eliminasi Komentar HTML Frontend:** Dilarang menyisakan komentar HTML `<!-- ... -->` pada template frontend. Gunakan penamaan class, id, file, dan struktur elemen semantik sebagai pengganti dokumentasi.
+- **Dilarang Inline Style Baru:** Atribut `style="..."` dilarang pada elemen baru atau yang direfaktor.
+- **Dilarang Warna Hex Langsung:** Dilarang warna hex mentah di `.ejs` maupun CSS komponen. Seluruh pewarnaan wajib merujuk ke token desain CSS resmi (`var(--color-primary)`, `var(--color-border)`, dll.).
+- **Dilarang Skrip Inline:** Seluruh JS perilaku wajib di berkas `.js` eksternal di `public/js/`. Tag `<script>` inline dilarang.
+- **Dilarang Handler Inline:** Dilarang event handler inline HTML (`onclick=`, `onchange=`, `onsubmit=`, `onerror=`). Seluruh interaksi wajib melalui `addEventListener` di JS eksternal.
+- **Eliminasi Komentar HTML Frontend:** Dilarang menyisakan komentar HTML `<!-- ... -->`. Gunakan penamaan semantik elemen sebagai pengganti dokumentasi.
 
 ### D. Nesting, Helper, & Batas Lokalisasi (i18n)
-- **Nesting Maksimal 2 Level:** Kedalaman percabangan (`<% if %>`) dan perulangan di template dibatasi maksimal 2 tingkat. Jika lebih, wajib dipecah menjadi partial atau diolah pada controller.
-- **Helper Formatting:** Pemformatan tanggal, mata uang, dan normalisasi URL wajib melalui helper `res.locals` / `app.locals`.
-- **Teks Publik (Keputusan 4):** Seluruh teks yang tampil ke pengunjung publik wajib menggunakan helper terjemahan `t('key')` atau `__('key')` yang terdaftar pada kamus `locales/id.json` dan `locales/en.json`. Konten dwibahasa database di publik wajib dipilih lewat helper terpusat (bukan percabangan inline ternary yang tersebar).
-- **Teks Admin (Keputusan 4):** Antarmuka Admin CMS tetap menggunakan teks literal Bahasa Indonesia baku dan tidak diwajibkan menggunakan helper terjemahan `t()`.
-- **Style Dinamis Database (Keputusan 2):** Pada halaman view yang direfaktor, status tampilan dinamis (seperti preview media picker) dikendalikan melalui penandaan class status semantik (`.is-empty`, `.has-preview`) pada markup dan CSS statis tanpa inline style.
+- **Nesting Maksimal 2 Level:** Kedalaman percabangan (`<% if %>`) dan loop dibatasi maksimal 2 tingkat. Jika lebih, pecah ke partial atau olah di controller.
+- **Helper Formatting:** Format tanggal, mata uang, normalisasi URL wajib via helper `res.locals`.
+- **Teks Publik (Keputusan 4):** Seluruh teks publik wajib menggunakan helper `t('key')` / `__('key')` di `locales/*.json`. Konten dwibahasa DB dipilih via helper terpusat.
+- **Teks Admin (Keputusan 4):** Antarmuka Admin CMS tetap menggunakan teks literal Bahasa Indonesia baku (tanpa `t()`).
+- **Style Dinamis Database (Keputusan 2):** Pada view yang direfaktor, status dinamis (mis. preview media picker) dikendalikan class status semantik (`.is-empty`, `.has-preview`, `.adm-d-none`, `.adm-d-block`) dan CSS statis tanpa inline style.
 
 ---
 
@@ -39,54 +39,50 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan dapat diverifikasi ol
 
 ### A. Alur Arsitektur Berlapis
 - Alur pemrosesan: `Route` &rarr; `Controller` &rarr; `Service` &rarr; `Model`.
-- Controller hanya bertugas mem-parsing dan memvalidasi permintaan (`req.params`, `req.query`, `req.body`), mendelegasikan logika ke Service, serta merender tampilan atau mengembalikan respons JSON.
+- Controller hanya mem-parsing & validasi request (`req.params`, `req.query`, `req.body`), mendelegasikan logika ke Service, merender view, atau mengembalikan JSON.
 - Model bertugas mengelola interaksi query basis data dan skema.
-- *Catatan Transisi:* Penerapan lapisan `Service` diimplementasikan secara bertahap pada fitur baru dan modul yang masuk siklus refaktor.
 
 ### B. Batasan Metrik & Kompleksitas Kode
-- **Panjang Fungsi:** Maksimal **40 baris kode** (tidak termasuk baris komentar).
+- **Panjang Fungsi:** Maksimal **40 baris kode** (tanpa komentar).
 - **Panjang Berkas:** Maksimal **300 baris kode**.
 - **Kedalaman Bersarang (Nesting Depth):** Maksimal **2 level**.
 - **Kompleksitas Siklomatis:** Maksimal **8** per fungsi.
-- **Pola Penulisan:** Wajib menerapkan *early return* (guard clauses) untuk mengeliminasi percabangan bersarang, tanpa angka ajaib (*magic numbers*), dan tanpa kode mati (*dead code*).
+- **Pola Penulisan:** Wajib *early return* (guard clauses) tanpa percabangan bersarang, tanpa *magic numbers*, dan tanpa *dead code*.
 
 ---
 
 ## 4. Tooling Linting & Skrip Otomasi
 
 ### A. Flat ESLint (`eslint.config.js`)
-- Menggunakan ESLint v9 Flat Config native ESM (`"type": "module"`).
-- Dikonfigurasi terpisah untuk lingkungan Node.js backend dan browser frontend (`public/js/`).
-- Paket linter terpasang eksklusif pada `devDependencies` (`eslint`, `@eslint/js`, `globals`) sehingga tidak diinstal pada lingkungan produksi cPanel/Passenger.
-- Dijalankan via `npm run lint`.
+- ESLint v9 Flat Config native ESM terpisah untuk Node backend dan browser frontend (`public/js/`).
+- Terpasang eksklusif pada `devDependencies` (`eslint`, `@eslint/js`, `globals`). Dijalankan via `npm run lint`.
 
 ### B. Skrip Pemeriksa Template (`scripts/lint-views.js`)
-- Memindai seluruh `views/**/*.ejs` dan berkas CSS komponen terhadap pelanggaran:
-  1. Keberadaan atribut `style="..."`.
-  2. Keberadaan warna hex mentah (kecuali pada `public/css/tokens.css`).
-  3. Keberadaan tag `<script>` inline tanpa atribut `src`.
-  4. Keberadaan komentar HTML `<!-- ... -->`.
-  5. Keberadaan atribut handler inline `on*=`.
-  6. Heuristik teks literal pada view publik (sebagai peringatan lunak / warning).
-- Format pelaporan: `file:baris:kolom - pesan pelanggaran`. Dijalankan via `npm run lint:views`.
+- Memindai `views/**/*.ejs` dan CSS komponen terhadap: (1) `style="..."`, (2) warna hex mentah (kecuali `tokens.css`), (3) `<script>` inline tanpa `src`, (4) komentar HTML `<!-- ... -->`, (5) handler inline `on*=`, (6) peringatan teks literal publik.
+- Format: `file:baris:kolom - pesan`. Dijalankan via `npm run lint:views`.
 
 ### C. Skrip Audit Kamus Bahasa (`scripts/lint-i18n.js`)
-- Memverifikasi simetri rekursif pasangan kunci antara `locales/id.json` dan `locales/en.json`.
-- Memverifikasi pemanggilan helper `t('...')` pada view publik terhadap kamus. Dijalankan via `npm run lint:i18n`.
+- Memverifikasi simetri rekursif kunci antara `locales/id.json` dan `locales/en.json`, serta validasi `t('...')`. Dijalankan via `npm run lint:i18n`.
 
 ### D. Strategi Penegakan Baseline Lint (Keputusan 1)
-- **File Lama / Legacy:** Ditandai pada level *warning* (non-blocking) agar tidak menghentikan operasional repo.
-- **File Baru & File Refaktor:** Ditandai pada level *error* ketat (blocking). Perintah `npm run lint` dan `npm run lint:views` wajib lolos hijau tanpa error pada berkas yang disentuh sebelum task dapat ditutup (*Close*).
+- **File Legacy:** Ditandai *warning* (non-blocking).
+- **File Baru & Refaktor:** Ditandai *error* ketat (blocking). Wajib lolos hijau sebelum task *Close*.
 
 ---
 
 ## 5. Hierarki Aturan & Isolasi Komponen
 
 ### A. Hierarki terhadap Skill Otomasi
-- Aturan modularitas struktur view pada dokumen ini **MENANG MUTLAK** atas saran perampingan kode berbasis skill penghemat (seperti `ponytail`). Memecah template besar menjadi partial per section maksimal ~100 baris bukanlah kode berlebih (*bloat*), melainkan keharusan arsitektur.
+- Aturan modularitas view **MENANG MUTLAK** atas saran perampingan berbasis skill penghemat (`ponytail`). Memecah template besar ke partial <=100 baris adalah keharusan arsitektur.
 
 ### B. Isolasi Styling & Konvensi Class (Keputusan 3)
-- Class baru wajib diberi prefix unik yang di-scope ke modul terkait (contoh: `.stg-*` untuk modul Pengaturan Situs).
-- Dilarang memodifikasi class bersama (`.form-card`, `.form-group`, `.form-row-2`, `.adm-btn-*`, `.eu-dd-*`) tanpa izin proposal tersendiri.
-- Nilai spasi dan ukuran komponen diekstraksi ke class komponen berprefix di `public/css/admin.css` dengan nilai tetap identik piksel, tanpa menambah token spasi baru di `tokens.css`.
+- Class baru wajib berprefix unik yang di-scope ke modul (mis. `.stg-*` untuk Settings).
+- Dilarang modifikasi class bersama (`.form-card`, `.form-group`, `.form-row-2`, `.adm-btn-*`, `.eu-dd-*`).
+- Nilai spasi/ukuran diekstraksi ke class komponen di `public/css/admin.css` bernilai tetap piksel tanpa token spasi baru di `tokens.css`.
+
+### C. Refaktor Massal View Admin & Pembersihan Skrip/CSS [PENDING T-277]
+- **Cakupan Bersamaan (Keputusan Opsi B):** Pada setiap modul admin yang direfaktor, selain template `.ejs`, berkas CSS (`public/css/admin.css`) dan skrip (`public/js/admin-*.js`) yang disentuh wajib sekaligus dibersihkan dari komentar tak perlu (`antislop-code`) dan warna hex lama (wajib dipetakan ke token CSS).
+- **Status Tampilan Dinamis:** Seluruh logika toggle tampilan berbasis database menggunakan class status semantik statis (`.adm-d-none` / `.adm-d-block`, `.is-empty` / `.has-preview`) tanpa atribut `style="..."`.
+- **Prefix Unik per Modul:** Auth: `.err403-*`, `.adm-login-*`, `.chpwd-*` | Kategori: `.adm-pcat-*`, `.adm-postcat-*` | Pengguna: `.adm-usr-*` | Merek: `.adm-brd-*` | Kapabilitas & Kontak: `.adm-cap-*`, `.adm-ctc-*` | Hero & Leads: `.adm-hbn-*`, `.adm-leads-*` | Inquiries & Dashboard: `.adm-inq-*`, `.adm-dash-*` | Shell & Partials: `.adm-shell-*`, `.adm-picker-*` | Media & Banner: `.adm-media-*`, `.adm-banner-*` | Artikel & Produk: `.adm-post-*`, `.adm-prod-*` | Home & About: `.adm-home-*`, `.adm-abt-*`.
+- **Strategi Eksekusi:** Satu batch per siklus dengan 5 gerbang verifikasi (lint views zero error/warning, npm run lint hijau, unit tests pass, bukti visual Playwright sebelum vs sesudah, CRUD tanpa error konsol).
 
