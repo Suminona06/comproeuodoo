@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-02 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
 
 # PRD: Modul Admin & CMS (Admin CMS & Users)
 
@@ -40,7 +40,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 - Pembuatan akun baru (`/admin/users/create`), daftar pengguna (`/admin/users`), pengeditan peran, dan penonaktifan/penghapusan akun.
 - Pencegahan penghapusan akun diri sendiri yang sedang login.
 
-### FR-24: Komponen Dropdown Kustom Terpadu Multi-Varian (.eu-dd-*) [PENDING T-262 s/d T-265, T-268]
+### FR-24: Komponen Dropdown Kustom Terpadu Multi-Varian (.eu-dd-*)
 - Seluruh elemen pemilihan opsi di antarmuka Admin (form tambah/edit, modal salin struktur kolom tabel ukuran, filter toolbar, dan status baris tabel) serta halaman publik terkait menggunakan komponen dropdown kustom terstandarisasi `.eu-dd`:
   1. **Tiga Varian Resmi Berbasis Token (Seidentik Gambar Referensi):**
      - Outlined (`.eu-dd--outlined`): Border abu tipis (`var(--color-outline-variant)`), latar putih (`var(--bg-base)`), teks (`var(--color-text-main)`), radius membulat (`var(--radius-lg)`). Digunakan untuk seluruh field form admin dan form kontak publik. Pada form standar, label statis tetap berada di atas field; pada bar filter atau standalone, mendukung label mengambang yang memotong border atas.
@@ -132,7 +132,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
-| **Komponen Dropdown Terpadu `.eu-dd-*` (3 Varian & WAI-ARIA) `[PENDING T-262 s/d T-265]`** | Menyeragamkan antarmuka pemilihan opsi admin dan publik dengan listbox kustom seidentik referensi desain berbasis token hijau Euodoo. | 2026-11-02 |
+| **Komponen Dropdown Terpadu `.eu-dd-*` (3 Varian & WAI-ARIA)** | Menyeragamkan antarmuka pemilihan opsi admin dan publik dengan listbox kustom seidentik referensi desain berbasis token hijau Euodoo. | 2026-11-02 |
 | **Komponen Tombol Admin Terpadu `.adm-btn-*`** | Menyeragamkan hierarki aksi admin (primary hijau lembut daun `--color-leaf-soft` berteks gelap kontras AAA, secondary hijau outline, neutral abu, danger merah) tanpa merusak class `.btn-*` halaman publik. | 2026-11-02 |
 | **Validasi Form Submit + Live Pasca-Error & SweetAlert2** | Menggantikan tooltip validasi bawaan browser dan `alert`/`confirm` native dengan umpan balik bertema dwibahasa ID/EN yang aksesibel. | 2026-11-02 |
 | **Tampilan Slug Admin 1 Baris Tanpa Bullet & Tanpa Judul EN** | Menghilangkan duplikasi visual antara judul bahasa Inggris dan kode slug di tabel daftar serta form admin. | 2026-11-02 |

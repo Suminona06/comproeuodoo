@@ -610,3 +610,100 @@
 - **File Terdampak**: `public/css/admin.css`, `middleware/uploadMiddleware.js`, `views/admin/inquiries/index.ejs`, `views/admin/dashboard.ejs`, `views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, `views/admin/403.ejs`
 - **Skill**: Impeccable polish + Impeccable adapt + Impeccable animate
 - **Verifikasi**: Pengujian Playwright E2E `tests/test-t261-responsive-regression-playwright.js` (6/6 langkah lulus) serta pengujian penuh seluruh test suite T-255 s/d T-260 (100% passed). Selesai 2026-11-02.
+
+
+### T-262: Fondasi Komponen Dropdown Terpadu (.eu-dd-*) & Arsitektur WAI-ARIA [DONE]
+- **Deskripsi**: Membangun modul CSS terisolasi `.eu-dd-*` di `public/css/admin.css` dan `public/css/components.css` yang mencakup 3 varian (outlined, filled, elevated), label mengambang (pada filter/standalone), trigger box, caret SVG padat rotasi 180°, panel popup berbayangan lembut, dan slot skeleton/ikon seidentik Gambar 1 dan Gambar 2 referensi.
+- **Acceptance Criteria**:
+  - [x] Komponen `.eu-dd` mendukung modifier varian `.eu-dd--outlined`, `.eu-dd--filled`, dan `.eu-dd--elevated`.
+  - [x] Dimensi trigger berukuran tinggi 52-56px dengan target sentuh mobile minimal 44px.
+  - [x] Menggunakan 100% token resmi tanpa nilai hex hardcoded.
+  - [x] Caret indikator berbentuk segitiga padat abu gelap berputar halus 180° saat terbuka.
+  - [x] Atribut ARIA (`role="combobox"`, `role="listbox"`, `role="option"`, `aria-expanded`, `aria-activedescendant`) tersusun sesuai spesifikasi WAI-ARIA 1.2.
+- **File Terdampak**: `public/css/tokens.css`, `public/css/admin.css`, `public/css/components.css`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-dropdown-css.js` (4/4 passed). Selesai 2026-11-03.
+
+### T-263: Interaktivitas Keyboard, Type-ahead, Flip Viewport, Auto-Search & Integrasi Validasi T-259 [DONE]
+- **Deskripsi**: Mengembangkan controller JavaScript terpusat `public/js/admin-dropdown.js` untuk mengelola event buka/tutup, navigasi keyboard lengkap (Arrow, Enter, Space, Escape, Tab, Home, End, type-ahead), flip panel vertikal saat ruang bawah sempit, kotak pencarian otomatis jika opsi > 10, pembatasan max-height pada mobile <=480px, klik di luar, serta integrasi dengan `admin-form-validation.js` (T-259).
+- **Acceptance Criteria**:
+  - [x] Dropdown dapat dibuka, dinavigasi, dan dipilih sepenuhnya hanya menggunakan keyboard.
+  - [x] Kotak pencarian otomatis dirender di bagian atas panel jika opsi > 10 item.
+  - [x] Pada viewport mobile <= 480px, panel tampil mengambang biasa dengan `max-height: 240px` dan scroll vertikal.
+  - [x] Saat ruang bawah layar kurang dari tinggi panel, class `.eu-dd-panel--top` otomatis diaktifkan (flip ke atas).
+  - [x] Membuka satu dropdown otomatis menutup dropdown lainnya di dokumen; klik di luar menutup panel.
+  - [x] Pemilihan opsi kustom memperbarui elemen `<select>` native dan memicu event `change`.
+  - [x] State error validasi form admin menampilkan border merah token, pesan inline, dan trigger dapat difokuskan otomatis saat form submit gagal (integrasi T-259).
+- **File Terdampak**: `public/js/admin-dropdown.js`, `public/js/admin-form-validation.js`, `views/partials/admin-footer.ejs`, `views/partials/footer.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-dropdown-interactive.js` (9/9 passed via Playwright). Selesai 2026-11-03.
+
+### T-264: Animasi Mikro, State Lengkap & Variasi Skeleton/Ikon [DONE]
+- **Deskripsi**: Menyempurnakan transisi mikro panel (hanya menggunakan properti `transform` dan `opacity`), rotasi caret 180 derajat, state shimmer skeleton loading (lingkaran + baris abu seidentik Gambar 1), slot ikon/thumbnail opsional saat data tersedia, skema warna hijau token untuk fokus dan terpilih, serta fallback instan pada `prefers-reduced-motion: reduce`.
+- **Acceptance Criteria**:
+  - [x] Panel muncul dan menghilang dengan transisi halus `opacity` dan `transform: translateY()`.
+  - [x] Caret berputar halus 180 derajat saat status `aria-expanded="true"`.
+  - [x] Slot lingkaran kiri berfungsi ganda: skeleton shimmer saat loading, dan slot ikon/thumbnail saat data ada; jika tanpa ikon, teks merapat rapi ke kiri.
+  - [x] State fokus menggunakan focus ring hijau token, item terpilih menggunakan latar hijau lembut `var(--primary-subtle)` dan teks hijau `var(--color-primary-dark)`.
+  - [x] Efek hover dibungkus dalam `@media (hover: hover)`.
+  - [x] Pada preferensi `prefers-reduced-motion: reduce`, transisi dan animasi berjalan instan tanpa motion.
+- **File Terdampak**: `public/css/admin.css`, `public/css/components.css`
+- **Skill**: Impeccable animate + Impeccable polish
+- **Verifikasi**: `node tests/test-dropdown-animations.js` (6/6 passed via Playwright). Selesai 2026-11-03.
+
+### T-265: Migrasi Dropdown Admin CMS (Form Tambah/Edit, Toolbar Table & Modal) [DONE]
+- **Deskripsi**: Menerapkan komponen `.eu-dd` pada 29 titik dropdown di area Admin CMS: form produk (`views/admin/products/{create,edit,index}.ejs`), form artikel/berita (`views/admin/posts/{create,edit}.ejs`), modal salin struktur kolom tabel ukuran, banner media type, dan filter toolbar katalog/leads sesuai pemetaan varian.
+- **Acceptance Criteria**:
+  - [x] Seluruh `<select>` pada form admin termigrasi ke `.eu-dd` varian `outlined` dengan label statis di atas.
+  - [x] Toolbar filter leads dan status tabel admin menggunakan varian `filled`.
+  - [x] Toolbar kategori produk admin menggunakan varian `elevated`.
+  - [x] Modal salin tabel ukuran produk (`#selectCopyProduct`) bekerja normal dan mendukung pencarian produk otomatis.
+  - [x] Filter toolbar tabel admin dengan `data-auto-submit="true"` tetap otomatis mengirim form saat opsi dipilih.
+  - [x] Kompatibel dengan tingkat zoom admin 100%, 125%, 150% pada resolusi 1366x768 hingga 1920x1080.
+- **File Terdampak**: Seluruh view form dan toolbar di `views/admin/**/*.ejs`, `public/js/admin-size-table.js`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-admin-dropdown-migration.js` (5/5 passed). Selesai 2026-11-03.
+
+### T-266: Migrasi Dropdown Halaman Publik: Filter Urutan PLP & Form Kontak RFQ [DONE]
+- **Deskripsi**: Mengintegrasikan komponen `.eu-dd` varian `elevated` pada dropdown urutan katalog produk (`views/public/products.ejs`) dan varian `outlined` pada form kontak RFQ (`views/public/contact.ejs`) sesuai cakupan semua page.
+- **Acceptance Criteria**:
+  - [x] Dropdown urutan produk menampilkan format "Urutkan: **Terpopuler**" (dwibahasa ID: "Urutkan:", EN: "Sort by:") varian `elevated` seidentik Gambar 2 dan memicu AJAX update katalog secara seketika melalui `public/js/products.js`.
+  - [x] Dropdown produk dan tipe inquiry di form kontak menerapkan varian `outlined` dan terhubung rapi dengan validasi client-side, CSRF token, dan Cloudflare Turnstile tanpa konflik.
+  - [x] Aksesibilitas keyboard dan mobile drawer filter katalog tetap berfungsi 100%.
+- **File Terdampak**: `views/public/products.ejs`, `public/js/products.js`, `views/public/contact.ejs`, `views/partials/footer.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: `node tests/test-public-dropdown-migration.js` (4/4 passed). Selesai 2026-11-03.
+
+### T-267: Penskalaan 2x & Harmonisasi Spasi Marquee Section Merek Kami Homepage [DONE]
+- **Deskripsi**: Menyesuaikan ukuran logo merek pada `.brand-strip-*` menjadi 2x di desktop (`clamp(168px, 16vw, 220px)`), ~1.5x di mobile (`clamp(90px, 20vw, 120px)`), merapatkan spasi `--brand-gap` menjadi `clamp(1.5rem, 3.5vw, 3rem)`, dan mengkalibrasi durasi animasi marquee dari 32s ke 48s agar kecepatan linier per piksel konstan.
+- **Acceptance Criteria**:
+  - [x] Logo merek di desktop tampil 2x lebih besar (`clamp(168px, 16vw, 220px)`), tampak proporsional, tajam, dan tidak buram.
+  - [x] Logo merek di mobile tampil ~1.5x (`clamp(90px, 20vw, 120px)`), setidaknya 2 logo terlihat sekaligus pada viewport 320px-375px.
+  - [x] Jarak antar-logo seimbang dan rapat via `--brand-gap: clamp(1.5rem, 3.5vw, 3rem)`.
+  - [x] Durasi animasi marquee dikalibrasi menjadi 48s, pergerakan linier halus dan stabil.
+  - [x] Pada viewport mobile 320px, 375px, 480px, dan 768px tidak terjadi horizontal scrollbar (overflow-x bebas bocor).
+  - [x] Modal lightbox zoom preview (`#brandPreviewModal`) dan `prefers-reduced-motion` tetap berfungsi normal.
+- **File Terdampak**: `public/css/components.css`, `tests/test-homepage-hero-cta-merek-qa.js`
+- **Skill**: Impeccable polish + Impeccable adapt + Impeccable animate
+- **Verifikasi**: `node tests/test-brand-marquee-scaling.js` (4/4 passed via Playwright). Selesai 2026-11-03.
+
+### T-268: Pengujian Komprehensif Lintas Browser, Zoom Admin, dan Audit Kontras WCAG AA [DONE]
+- **Deskripsi**: Melakukan regresi pengujian menyeluruh pada seluruh form admin dan halaman publik ber-dropdown, marquee beranda, navigasi keyboard-only, emulasi pembaca layar, pengujian zoom antarmuka admin 100%, 125%, 150%, dan verifikasi rasio kontras WCAG AA/AAA.
+- **Acceptance Criteria**:
+  - [x] Nol error console pada browser saat membuka, menutup, memfilter, atau mengirimkan form ber-dropdown di admin maupun publik.
+  - [x] Seluruh pasangan teks dan latar pada komponen `.eu-dd` memenuhi ambang batas kontras WCAG AA (>= 4.5:1 untuk teks biasa, >= 3:1 untuk non-teks) dan AAA (7.78:1 pada item terpilih).
+  - [x] Tidak ada regresi pada fungsionalitas CRUD admin dan form kontak RFQ.
+- **File Terdampak**: `tests/test-comprehensive-regression.js`, `views/admin/products/create.ejs`
+- **Skill**: Impeccable polish
+- **Verifikasi**: `node tests/test-comprehensive-regression.js` (4/4 passed). Selesai 2026-11-03.
+
+### T-269: Perbaikan Sinkronisasi Status Inquiry Table Admin, Tampilan Kolom Kebutuhan & Label Produk Form Kontak [DONE]
+- **Deskripsi**: Memperbaiki bug status dropdown di tabel RFQ admin (`dashboard.ejs` & `inquiries/index.ejs`) agar tidak merusak class `eu-dd-native sr-only` saat AJAX sukses sehingga tidak muncul dropdown duplikat dan perubahan status berikutnya tersimpan normal; menyelaraskan kolom tabel Kebutuhan agar hanya menampilkan rincian kebutuhan tanpa nama produk; serta menghapus sufiks kategori pada dropdown opsi produk di halaman kontak publik.
+- **Acceptance Criteria**:
+  - [x] Penggantian status inquiry di dashboard dan tabel inquiries tidak memunculkan dropdown ganda; perubahan status kedua dan seterusnya tersimpan permanen di database.
+  - [x] Dropdown trigger pada baris tabel mengadopsi status warna token (`st-baru`, `st-diproses`, `st-selesai`, `st-ditolak`) secara mulus.
+  - [x] Kolom "Kebutuhan" di dashboard dan tabel inquiries hanya menampilkan teks kebutuhan klien tanpa prefix nama produk.
+  - [x] Seluruh pilihan produk pada dropdown form kontak `/contact` hanya menampilkan nama produk murni tanpa nama kategori dalam kurung.
+- **File Terdampak**: `public/js/admin-dropdown.js`, `public/css/admin.css`, `public/css/components.css`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`, `views/public/contact.ejs`
+- **Skill**: Debugging and error recovery + Impeccable polish + antislop-human
+- **Verifikasi**: `node tests/test-t269-bug-fixes.js` (3/3 passed via Playwright). Selesai 2026-11-03.

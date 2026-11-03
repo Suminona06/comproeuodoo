@@ -1,10 +1,10 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-02 | Kode: public/css/tokens.css, public/css/admin.css, public/js/admin-form-validation.js, public/js/admin.js, views/admin/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: public/css/tokens.css, public/css/admin.css, public/js/admin-form-validation.js, public/js/admin.js, views/admin/
 
 # Tech Spec: Standar Komponen UI, Tombol & Validasi Form Admin (Admin UI)
 
 ## 1. Ruang Lingkup & Isolasi Class
 Sub-modul ini mendefinisikan arsitektur teknis komponen tombol terpadu (`.adm-btn-*`), tampilan slug ringkas (`.adm-slug-text`), modul validasi formulir sisi klien (`public/js/admin-form-validation.js`), serta standarisasi dialog SweetAlert2 di seluruh panel Admin CMS tanpa menyentuh atau mengubah class tombol publik (`.btn`, `.btn-primary`, `.btn-secondary`) di `public/css/components.css`.
-Spesifikasi teknis komponen dropdown kustom terpadu (`.eu-dd-*`) didelegasikan ke sub-modul terpisah [tech/admin-ui-dropdown.md](admin-ui-dropdown.md) `[PENDING T-262 s/d T-265, T-268]`.
+Spesifikasi teknis komponen dropdown kustom terpadu (`.eu-dd-*`) didelegasikan ke sub-modul terpisah [tech/admin-ui-dropdown.md](admin-ui-dropdown.md).
 
 ---
 
@@ -49,7 +49,7 @@ Spesifikasi teknis komponen dropdown kustom terpadu (`.eu-dd-*`) didelegasikan k
 ## 4. Modul Validasi Formulir Terpusat (`public/js/admin-form-validation.js`)
 1. **Inisialisasi:** Mengatur atribut `novalidate` pada seluruh `<form>` di area admin dan mendaftarkan listener `submit` terpusat.
 2. **Siklus Validasi (Mode Submit + Live Pasca-Error):**
-   - Saat tombol Submit ditekan, modul memeriksa seluruh field standar (`required`, `maxlength`, `minlength`, `pattern`, `type="email"`, `type="url"`, `type="number"`, `min`, `max`) dan kontrol kustom (`TinyMCE` via `tinymce.get(id).getContent({ format: 'text' }).trim()`, `.media-picker-component input[type="hidden"][required]`, repeater WhatsApp `total === 100%`, tabel ukuran produk, serta dropdown kustom `.eu-dd` `[PENDING T-263]`).
+   - Saat tombol Submit ditekan, modul memeriksa seluruh field standar (`required`, `maxlength`, `minlength`, `pattern`, `type="email"`, `type="url"`, `type="number"`, `min`, `max`) dan kontrol kustom (`TinyMCE` via `tinymce.get(id).getContent({ format: 'text' }).trim()`, `.media-picker-component input[type="hidden"][required]`, repeater WhatsApp `total === 100%`, tabel ukuran produk, serta dropdown kustom `.eu-dd`).
    - Field yang gagal diberi penanda `data-had-error="true"`, class `.is-invalid`, atribut `aria-invalid="true"`, dan `aria-describedby` yang menunjuk ke elemen `<div class="adm-field-error" role="alert">` berisi ikon SVG peringatan kecil dan pesan sesuai bahasa aktif (`document.documentElement.lang` / `ID` atau `EN`).
    - Begitu sebuah field memiliki `data-had-error="true"`, listener `input` dan `change` pada field tersebut langsung memvalidasi ulang secara *live* dan menghapus state error seketika saat nilai sudah valid.
 3. **Auto-Open Tab & Auto-Scroll:** Jika field error pertama berada di dalam panel tab yang tersembunyi (`.about-tab-pane`, `.settings-tab-pane`, atau panel tab admin lainnya), modul otomatis mengaktifkan tombol tab terkait sebelum memanggil `scrollIntoView({ behavior: 'smooth', block: 'center' })` dan `.focus()`.

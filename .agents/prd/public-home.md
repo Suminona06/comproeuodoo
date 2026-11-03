@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js
 
 # PRD: Modul Beranda Publik (Public Home)
 
@@ -53,10 +53,10 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Menampilkan daftar logo sertifikasi mutu dan akreditasi resmi (mis. SNI 7188.7:2011, OXIUM Technology, InSWA).
 - Seksi ini bersifat kondisional: tampil pada public view jika toggle CMS `home_cert_is_active` bernilai `1`.
 
-### FR-17: Registered Brands Marquee Strip (`.brand-strip-*`) `[PENDING T-267, T-268]`
+### FR-17: Registered Brands Marquee Strip (`.brand-strip-*`)
 - Menampilkan portofolio merek dagang resmi perusahaan dalam bentuk strip horizontal berjalan kontinu (*continuous marquee*). Seksi ini bersifat kondisional: tampil jika terdapat data merek aktif; jika kosong, seksi tidak dirender tanpa fallback teks judul statis.
 - Menggunakan struktur 2 track identik (`.brand-strip-track`) untuk efek looping mulus tanpa celah (*gapless*).
-- **Penskalaan Dimensi Logo & Harmonisasi Spasi `[PENDING T-267]`:**
+- **Penskalaan Dimensi Logo & Harmonisasi Spasi:**
   - Desktop: Tinggi logo diperbesar 2x menjadi `height: clamp(168px, 16vw, 220px)` dengan `max-width: 440px` dan `min-width: clamp(260px, 24vw, 360px)` per item, menjaga `object-fit: contain` (CLS = 0).
   - Mobile (`<= 768px`): Tinggi logo diperbesar proporsional ~1.5x menjadi `height: clamp(90px, 20vw, 120px)` dengan `max-width: 240px` dan `min-width: clamp(150px, 32vw, 190px)`, menjamin 2-3 logo terlihat seimbang pada viewport 320px-375px tanpa overflow.
   - Spasi Antar-Logo: Jarak `--brand-gap` dirapatkan proporsional menjadi `clamp(1.5rem, 3.5vw, 3rem)` (24px s/d 48px) agar komposisi marquee tampak padat, penuh, dan mewah.
@@ -76,7 +76,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
-| **Penskalaan 2x Logo Merek Desktop & Harmonisasi Spasi `[PENDING T-267]`** | Meningkatkan brand authority di desktop (2x) dan mobile (~1.5x) dengan gap rapat agar tampilan marquee padat dan seimbang. | 2026-11-02 |
+| **Penskalaan 2x Logo Merek Desktop & Harmonisasi Spasi** | Meningkatkan brand authority di desktop (2x) dan mobile (~1.5x) dengan gap rapat agar tampilan marquee padat dan seimbang. | 2026-11-02 |
 | **Dual CTA Hero Banner** | Memungkinkan pengunjung memilih langsung antara jelajahi katalog produk atau konsultasi langsung tanpa harus memilih salah satu. | 2026-10-20 |
 | **Marquee Strip Merek Minimalis** | Menghemat ruang vertikal beranda dan menampilkan portofolio merek dagang secara elegan dibanding grid kartu statis. | 2026-10-20 |
 | **Retensi Modal Zoom Preview Merek** | Mempertahankan bukti legalitas resolusi tinggi bagi mitra B2B yang ingin memeriksa detail logo merek terdaftar. | 2026-10-20 |
