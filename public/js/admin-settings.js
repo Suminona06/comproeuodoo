@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </td>
       <td style="width: 48px; text-align: center;">
-        <button type="button" class="wa-btn-del" title="Hapus nomor ini" aria-label="Hapus nomor ini">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        <button type="button" class="adm-btn adm-btn-danger adm-btn-sm wa-btn-del" title="Hapus nomor ini" aria-label="Hapus nomor ini">
+          <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
         </button>
       </td>
     `;
@@ -169,7 +169,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const total = updateTotal();
       if (total !== 100) {
         e.preventDefault();
-        alert(`Total persentase alokasi WhatsApp harus tepat 100% (saat ini: ${total}%).\nMohon sesuaikan nilai persentase sebelum menyimpan.`);
+        if (window.showAdminAlert) {
+          window.showAdminAlert({
+            title: 'Validasi WhatsApp',
+            text: `Total persentase alokasi WhatsApp harus tepat 100% (saat ini: ${total}%).\nMohon sesuaikan nilai persentase sebelum menyimpan.`,
+            icon: 'warning'
+          });
+        }
         const firstPct = tbody.querySelector('.wa-input-pct');
         if (firstPct) firstPct.focus();
         return false;
@@ -189,7 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!cleanNum || cleanNum.length < 9 || cleanNum.length > 16) {
           e.preventDefault();
-          alert(`Nomor WhatsApp pada baris ke-${i + 1} tidak valid.\nNomor wajib berisi 9–16 digit angka (contoh: 6281234567890).`);
+          if (window.showAdminAlert) {
+            window.showAdminAlert({
+              title: 'Validasi WhatsApp',
+              text: `Nomor WhatsApp pada baris ke-${i + 1} tidak valid.\nNomor wajib berisi 9-16 digit angka (contoh: 6281234567890).`,
+              icon: 'warning'
+            });
+          }
           if (numInput) numInput.focus();
           hasError = true;
           break;
@@ -198,7 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const pct = parseInt(pctInput?.value, 10);
         if (isNaN(pct) || pct < 1 || pct > 100) {
           e.preventDefault();
-          alert(`Persentase pada baris ke-${i + 1} harus antara 1% dan 100%.`);
+          if (window.showAdminAlert) {
+            window.showAdminAlert({
+              title: 'Validasi WhatsApp',
+              text: `Persentase pada baris ke-${i + 1} harus antara 1% dan 100%.`,
+              icon: 'warning'
+            });
+          }
           if (pctInput) pctInput.focus();
           hasError = true;
           break;

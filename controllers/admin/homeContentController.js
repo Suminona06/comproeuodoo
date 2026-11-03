@@ -50,16 +50,12 @@ export const homeContentController = {
         is_active: (b.intro_is_active === '1' || b.intro_is_active === 'on') ? 1 : 0
       };
 
-      if (!intro.title_id) {
-        return res.redirect('/admin/home-content?error=Judul+Intro+wajib+diisi.');
-      }
-
       const why_choose_us = {
         is_active: (b.wcu_is_active === '1' || b.wcu_is_active === 'on') ? 1 : 0,
         eyebrow_id: cleanStr(b.wcu_eyebrow_id, 100),
         eyebrow_en: cleanStr(b.wcu_eyebrow_en, 100),
-        title_id: cleanStr(b.wcu_title_id, 255) || 'Why choose us[accent]?[/accent]',
-        title_en: cleanStr(b.wcu_title_en, 255) || 'Why choose us[accent]?[/accent]',
+        title_id: cleanStr(b.wcu_title_id, 255),
+        title_en: cleanStr(b.wcu_title_en, 255),
         chip_label_id: cleanStr(b.wcu_chip_label_id, 100),
         chip_label_en: cleanStr(b.wcu_chip_label_en, 100),
         chip_icon: ALLOWED_KICKER_ICONS.includes(cleanStr(b.wcu_chip_icon)) ? cleanStr(b.wcu_chip_icon) : 'tree',
@@ -84,8 +80,8 @@ export const homeContentController = {
       };
 
       const categories = {
-        title_id: cleanStr(b.cat_title_id, 255) || 'Produk Unggulan Manufaktur',
-        title_en: cleanStr(b.cat_title_en, 255) || 'Featured Manufacturing Products',
+        title_id: cleanStr(b.cat_title_id, 255),
+        title_en: cleanStr(b.cat_title_en, 255),
         subtitle_id: cleanStr(b.cat_subtitle_id, 1000),
         subtitle_en: cleanStr(b.cat_subtitle_en, 1000)
       };

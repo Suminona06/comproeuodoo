@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-28 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/index.ejs, controllers/public/homeController.js
 
 # Tech Spec: Modul Beranda Publik (Public Home)
 
@@ -63,16 +63,22 @@ Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands
 - **4 Panel Kategori Primer:** `.sec-products`, `.prod-header`, `.prod-title`, `.prod-subtitle`, `.hcat-grid`, `.hcat-panel`, `.hcat-img`, `.hcat-scrim`, `.hcat-title`, `.hcat-count`, `.hcat-arrow`, `.prod-more-wrap`, `.btn-see-more`.
   - Grid rule: Menggunakan `--hcat-cols: 4;` responsif.
   - Spacing & CTA: `.prod-title` memiliki margin bawah berbasis token `--space-sm` hingga `--space-md` untuk memisahkan judul dan deskripsi. Markup tombol kanan di `.prod-header` ditiadakan; CTA diarahkan tunggal via `.prod-more-wrap .btn-see-more` di bawah grid.
+  - Kebijakan fallback: Fallback string judul dan subtitle dihapus; jika CMS kosong maka header/seksi ditangani kondisional.
 - **Why Choose Us:** `.sec-why-us.sec-pillars`, `.wcu-card`, `.wcu-header`, `.wcu-layout`, `.wcu-copy`, `.wcu-kicker`, `.wcu-headline`, `.wcu-desc`, `.wcu-artbox`, `.wcu-art`, `.wcu-art-label`, `.wcu-float-card`.
   - Anchor alias: `<span id="pilar" class="sec-pillars" aria-hidden="true"></span>`.
   - Mobile rule (`< 768px`): `.wcu-float-card { display: none; }` dan `.wcu-art-label { display: none; }` agar ilustrasi SVG daun botani bersih dan utuh. Desktop tetap menampilkan floating card dan chip label.
   - Token transisi background: Batas atas dan bawah seksi menggunakan token gradasi semantik `--trans-subtle-to-wcu` dan `--trans-wcu-to-subtle` di `tokens.css` tanpa hardcode hex.
+  - Kebijakan fallback: 13 variabel fallback string dihapus; seksi dibungkus kondisional ketat dan tidak dirender jika data CMS kosong atau nonaktif.
 - **Certifications / Evidence:** `.sec-evidence`, `.ev-layout`, `.cert-grid`, `.cert-item`, `.cert-name`, `.cert-desc`.
-- **Strip Marquee Merek & Modal Zoom:**
+- **Strip Marquee Merek & Modal Zoom `[PENDING T-267]`:**
   - Strip Marquee: `.sec-brands.brand-strip-sec`, `.brand-strip-wrapper`, `.brand-strip-marquee`, `.brand-strip-track`, `.brand-strip-item`, `.brand-strip-logo-box`, `.brand-strip-logo`, `.brand-zoom-hint`.
-  - Responsive mobile rule (`< 768px`): `.brand-strip-logo` berukuran `height: clamp(70px, 13vw, 88px); max-width: 170px;` dengan `.brand-strip-item` berukuran `min-width: clamp(130px, 20vw, 160px);`.
+  - Penskalaan Desktop (2x): `.brand-strip-logo` berukuran `height: clamp(168px, 16vw, 220px); max-width: 440px;` dengan `.brand-strip-item` berukuran `min-width: clamp(260px, 24vw, 360px);`.
+  - Responsive mobile rule (`<= 768px`): `.brand-strip-logo` berukuran `height: clamp(90px, 20vw, 120px); max-width: 240px;` dengan `.brand-strip-item` berukuran `min-width: clamp(150px, 32vw, 190px);` (~1.5x proporsional).
+  - Gap & Kecepatan: `--brand-gap: clamp(1.5rem, 3.5vw, 3rem);` dengan animasi marquee dikalibrasi menjadi `48s linear infinite` agar kecepatan gerak linier konstan.
   - Lightbox Preview Modal: `#brandPreviewModal.brand-preview-modal`, `.brand-modal-backdrop`, `.brand-modal-dialog`, `.brand-modal-header`, `.brand-modal-close`, `.brand-modal-body`, `.brand-modal-img-wrap`.
   - Script interaktivitas: `public/js/main.js` mengikat `.js-brand-preview-trigger`, Escape key listener, dan backdrop click.
+  - Kebijakan fallback: Fallback string judul dihapus; seksi tidak dirender jika `marqueeBrands.length === 0`.
+- **Latest News Highlights:** `.sec-news`, `.news-grid`, `.news-card`. Dua kartu berita dummy dengan tanggal statis dieliminasi; jika artikel kosong (`latestPosts.length === 0`), dirender pesan empty-state `.news-empty-state` dengan teks ramah dwibahasa.
 
 ---
 

@@ -34,44 +34,52 @@
   const isCtaActive = ctaData ? (ctaData.is_active !== 0 && ctaData.is_active !== '0' && ctaData.is_active !== false) : true;
   const shouldShowCta = isCtaActive && isPageEnabled && !(typeof hideGlobalCta !== 'undefined' && hideGlobalCta);
 %>
-<% if (shouldShowCta) { 
-  const ctaTitle = ctaData ? (lang === 'en' ? (ctaData.title_en || ctaData.title_id) : ctaData.title_id) : (lang === 'en' ? 'Start Your Manufacturing Partnership with PT. EUODOO' : 'Mulai Kemitraan Manufaktur Bersama PT. EUODOO');
-  const ctaSub = ctaData ? (lang === 'en' ? (ctaData.subtitle_en || ctaData.subtitle_id) : ctaData.subtitle_id) : (lang === 'en' ? 'Consult with our experienced production and engineering team to develop custom plastic bag packaging tailored to your brand, strength parameters, and delivery schedules.' : 'Konsultasikan kebutuhan spesifikasi kantong plastik, ukuran kustom, dan volume pesanan bisnis Anda bersama tim teknis dan pemasaran kami.');
+<% 
+  const ctaTitle = ctaData ? (lang === 'en' ? ctaData.title_en : ctaData.title_id) : '';
+  const ctaSub = ctaData ? (lang === 'en' ? ctaData.subtitle_en : ctaData.subtitle_id) : '';
   
-  const btn1Title = ctaData ? (lang === 'en' ? (ctaData.btn1_title_en || ctaData.btn1_title_id) : ctaData.btn1_title_id) : (lang === 'en' ? 'Contact Sales & Engineering' : 'Hubungi Tim Pemasaran');
-  const btn1Sub = ctaData ? (lang === 'en' ? (ctaData.btn1_sub_en || ctaData.btn1_sub_id) : ctaData.btn1_sub_id) : (lang === 'en' ? 'Submit RFQ form and technical inquiries' : 'Formulir penawaran harga dan konsultasi');
+  const btn1Title = ctaData ? (lang === 'en' ? ctaData.btn1_title_en : ctaData.btn1_title_id) : '';
+  const btn1Sub = ctaData ? (lang === 'en' ? ctaData.btn1_sub_en : ctaData.btn1_sub_id) : '';
   const btn1Url = (ctaData && ctaData.btn1_url) ? ctaData.btn1_url : '/contact';
 
-  const btn2Title = ctaData ? (lang === 'en' ? (ctaData.btn2_title_en || ctaData.btn2_title_id) : ctaData.btn2_title_id) : (lang === 'en' ? 'Direct WhatsApp Consultation' : 'Kirim Pesan WhatsApp');
-  const btn2Sub = ctaData ? (lang === 'en' ? (ctaData.btn2_sub_en || ctaData.btn2_sub_id) : ctaData.btn2_sub_id) : (lang === 'en' ? 'Fast response from our customer support' : 'Respon cepat dari tim sales kami');
+  const btn2Title = ctaData ? (lang === 'en' ? ctaData.btn2_title_en : ctaData.btn2_title_id) : '';
+  const btn2Sub = ctaData ? (lang === 'en' ? ctaData.btn2_sub_en : ctaData.btn2_sub_id) : '';
   const defaultWa = (typeof settings !== 'undefined' && settings?.whatsapp_url) ? settings.whatsapp_url : 'https://wa.me/628123456789';
   const btn2Url = (ctaData && ctaData.btn2_url) ? ctaData.btn2_url : defaultWa;
+  const hasCtaContent = Boolean(ctaTitle || ctaSub || btn1Title || btn2Title);
 %>
+<% if (shouldShowCta && hasCtaContent) { %>
 <section class="sec-cta" id="global-cta">
   <div class="container">
     <div class="cta-layout reveal">
       <div>
-        <h2><%= ctaTitle %></h2>
-        <p><%= ctaSub %></p>
+        <% if (ctaTitle) { %><h2><%= ctaTitle %></h2><% } %>
+        <% if (ctaSub) { %><p><%= ctaSub %></p><% } %>
       </div>
 
+      <% if (btn1Title || btn2Title) { %>
       <div class="cta-actions">
+        <% if (btn1Title) { %>
         <a href="<%= btn1Url %>" class="cta-card">
           <div>
             <div class="cta-card-title"><%= btn1Title %></div>
-            <div class="cta-card-sub"><%= btn1Sub %></div>
+            <% if (btn1Sub) { %><div class="cta-card-sub"><%= btn1Sub %></div><% } %>
           </div>
           <span class="cta-card-arrow" aria-hidden="true">&#8594;</span>
         </a>
+        <% } %>
 
+        <% if (btn2Title) { %>
         <a href="<%= btn2Url %>" class="cta-card" <%= btn2Url.includes('wa.me') || btn2Url.startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : '' %>>
           <div>
             <div class="cta-card-title"><%= btn2Title %></div>
-            <div class="cta-card-sub"><%= btn2Sub %></div>
+            <% if (btn2Sub) { %><div class="cta-card-sub"><%= btn2Sub %></div><% } %>
           </div>
           <span class="cta-card-arrow" aria-hidden="true">&#8594;</span>
         </a>
+        <% } %>
       </div>
+      <% } %>
     </div>
   </div>
 </section>

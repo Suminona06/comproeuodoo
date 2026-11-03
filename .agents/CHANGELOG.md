@@ -31,3 +31,7 @@
 - 2026-10-28 | Redesain Modul Berita & Publikasi: breadcrumb unboxed G2, layout editorial detail G2, kartu bersama G4, headline slider G3 & mobile, filter tab Fetch API G4, share buttons domain euodoo.co.id, dan placeholder logo Euodoo putih | T-226..T-232
 - 2026-10-28 | Revisi minor homepage: perapian header produk, transisi gradasi halus seksi, layout WCU mobile tanpa elemen penutup, penskalaan logo marquee mobile, dan centering kontrol slider hero laptop | T-233..T-237
 
+- 2026-10-30 | Revisi Footer, WA Filter & Hero Sub-Page: show/hide kartu alamat, SSR rolling WA multi-nomor berbobot, dynamic repeater admin, filter hero sub-page jernih, dan audit Playwright E2E | T-238..T-244
+- 2026-10-30 | Revisi bug CMS & Beranda v1: fix TinyMCE media picker, live search admin, preview hidden class, arrow nav size table, dan eliminasi fallback beranda | T-245..T-249
+- 2026-10-31 | Revisi Detail Produk & Lightbox Galeri: kartu produk terkait seragam katalog, sembunyikan tab deskripsi, tabel ukuran langsung, lightbox PhotoSwipe v5 self-hosted di PDP & Bento About, fix rasio aspek portrait/landscape, dan audit regresi | T-250..T-254
+- 2026-11-02 | Polish UI Dashboard Admin & Favicon: tombol .adm-btn-*, slug 1 baris, generator favicon circular badge 1:1, validasi form inline, SweetAlert2 bertema, adaptasi viewport pendek/mobile, dan audit regresi Playwright | T-255..T-261

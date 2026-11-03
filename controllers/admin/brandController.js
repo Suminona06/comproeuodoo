@@ -36,8 +36,8 @@ export const brandController = {
   async updateSectionTitle(req, res) {
     try {
       const { home_brand_title_id, home_brand_title_en } = req.body;
-      const titleId = (home_brand_title_id && home_brand_title_id.trim()) ? home_brand_title_id.trim() : 'Merek Paten & Terdaftar';
-      const titleEn = (home_brand_title_en && home_brand_title_en.trim()) ? home_brand_title_en.trim() : 'Registered Trademarks';
+      const titleId = home_brand_title_id ? home_brand_title_id.trim() : '';
+      const titleEn = home_brand_title_en ? home_brand_title_en.trim() : '';
 
       if (titleId.length > 150 || titleEn.length > 150) {
         return res.redirect('/admin/brands?error=' + encodeURIComponent('Judul section tidak boleh melebihi 150 karakter.'));

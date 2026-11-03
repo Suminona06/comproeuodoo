@@ -188,7 +188,7 @@ export const productModel = {
    * Find products with v2 filters (category, status, featured, search, sort)
    */
   async findAll(options = {}) {
-    const { categoryId, status, isFeatured, limit, offset, search, sort } = options;
+    const { categoryId, status, isFeatured, activeOnly, limit, offset, search, sort } = options;
     const conditions = [];
     const params = [];
 
@@ -199,6 +199,9 @@ export const productModel = {
     if (status) {
       conditions.push('p.status = ?');
       params.push(status);
+    }
+    if (activeOnly) {
+      conditions.push('p.is_active = 1');
     }
     if (search) {
       conditions.push('(p.name_id LIKE ? OR p.name_en LIKE ? OR p.slug LIKE ? OR p.description_id LIKE ? OR p.description_en LIKE ?)');
@@ -246,7 +249,7 @@ export const productModel = {
    * Count total products with filters
    */
   async countAll(options = {}) {
-    const { categoryId, status, isFeatured, search } = options;
+    const { categoryId, status, isFeatured, activeOnly, search } = options;
     const conditions = [];
     const params = [];
 
@@ -257,6 +260,9 @@ export const productModel = {
     if (status) {
       conditions.push('status = ?');
       params.push(status);
+    }
+    if (activeOnly) {
+      conditions.push('is_active = 1');
     }
     if (search) {
       conditions.push('(name_id LIKE ? OR name_en LIKE ? OR slug LIKE ? OR description_id LIKE ? OR description_en LIKE ?)');

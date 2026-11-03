@@ -42,9 +42,9 @@
           <div style="font-size: 12px; color: var(--text-muted, #64748b); margin-top: 4px;"><%= cfg.desc %></div>
         </div>
         <div>
-          <a href="<%= cfg.route %>" target="_blank" class="btn btn-secondary" style="font-size: 12px; padding: 5px 12px; display: inline-flex; align-items: center; gap: 4px;">
-            <span>Lihat Halaman</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <a href="<%= cfg.route %>" target="_blank" class="adm-btn adm-btn-secondary adm-btn-sm" aria-label="Lihat halaman <%= cfg.label %> di publik">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Pratinjau</span>
           </a>
         </div>
       </div>
@@ -76,11 +76,14 @@
                 </div>
               </div>
               <div class="media-picker-ctrls">
-                <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="hero_image_<%= cfg.key %>" data-picker-type="image">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                  Pilih dari Media Library
+                <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="hero_image_<%= cfg.key %>" data-picker-type="image" aria-label="Pilih foto banner hero dari Media Library">
+                  <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <span>Pilih Media</span>
                 </button>
-                <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= banner.image_url ? '' : 'display: none;' %>">Hapus</button>
+                <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= banner.image_url ? '' : 'display: none;' %>" aria-label="Hapus foto banner hero">
+                  <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  <span>Hapus</span>
+                </button>
               </div>
             </div>
           </div>
@@ -141,7 +144,10 @@
             <input type="checkbox" id="is_active_<%= cfg.key %>" name="is_active" value="1" <%= banner.is_active ? 'checked' : '' %>>
             <label for="is_active_<%= cfg.key %>" style="font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-color, #334155);">Aktifkan Hero Banner pada Halaman</label>
           </div>
-          <button type="submit" class="btn btn-primary" style="padding: 7px 20px; font-size: 13px;">Simpan Banner <%= cfg.label %></button>
+          <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan banner <%= cfg.label %>">
+            <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Simpan</span>
+          </button>
         </div>
       </form>
     </div>

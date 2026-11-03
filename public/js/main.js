@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    function createSingleTile(slide, idx, isMobile, totalTiles = 6, entering = false) {
+    function createSingleTile(slide, idx, isMobile, totalTiles = 6, entering = false, globalIdx = idx) {
       const tile = document.createElement('div');
       let posClass = 'abt-gal-tile--pos-' + (idx + 1) + ' bento-tile--pos-' + (idx + 1);
       if (!isMobile && totalTiles === 6) {
@@ -618,12 +618,14 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (idx === 1 || idx === 4) posClass = 'abt-gal-tile--pos-' + (idx + 1) + ' abt-gal-tile--wide bento-tile--pos-' + (idx + 1) + ' bento-tile--wide';
       }
       tile.className = 'abt-gal-tile bento-tile ' + posClass + (entering ? ' is-entering' : '');
+      tile.setAttribute('role', 'button');
       tile.tabIndex = 0;
+      tile.setAttribute('data-slide-index', String(globalIdx));
       tile.style.setProperty('--tile-i', idx);
 
       const tag = slide.category ? slide.category.trim() : '';
       const titleText = slide.title ? slide.title.trim() : '';
-      const photoNum = pad2(idx + 1);
+      const photoNum = pad2(globalIdx + 1);
       const isEnglish = document.documentElement.lang === 'en';
       const fallbackLabel = isEnglish
         ? ('PT Euodoo Manufacturing & Operations Facility (Photo ' + photoNum + ')')
@@ -688,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
           applyGridModifiers(currentGrid, pageSlides.length, isMobile);
           currentGrid.innerHTML = '';
           pageSlides.forEach((slide, idx) => {
-            currentGrid.appendChild(createSingleTile(slide, idx, isMobile, pageSlides.length, false));
+            currentGrid.appendChild(createSingleTile(slide, idx, isMobile, pageSlides.length, false, start + idx));
           });
         }
         updatePager(totalPages);
@@ -696,6 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       isTransitioning = true;
+      updatePager(totalPages);
       if (bentoPrev) { bentoPrev.disabled = true; bentoPrev.style.pointerEvents = 'none'; }
       if (bentoNext) { bentoNext.disabled = true; bentoNext.style.pointerEvents = 'none'; }
 
@@ -711,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
       incomingGrid.classList.add('is-incoming');
 
       pageSlides.forEach((slide, idx) => {
-        const tile = createSingleTile(slide, idx, isMobile, pageSlides.length, true);
+        const tile = createSingleTile(slide, idx, isMobile, pageSlides.length, true, start + idx);
         tile.style.opacity = '0';
         tile.style.transform = 'scale(0.96)';
         tile.style.clipPath = 'inset(0% 50% 0% 50% round 12px)';
@@ -822,9 +825,40 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    function openBentoSlideLightbox(tileEl) {
+      if (!tileEl || isTransitioning) return;
+      if (!window.EuodooLightbox || typeof window.EuodooLightbox.open !== 'function') return;
+
+      const rawIndex = parseInt(tileEl.getAttribute('data-slide-index') || '0', 10);
+      const globalIndex = Number.isNaN(rawIndex)
+        ? 0
+        : Math.max(0, Math.min(rawIndex, slides.length - 1));
+      const imgEl = tileEl.querySelector('img');
+
+      const lightboxItems = slides.map((s, idx) => ({
+        src: s.image_url || s.src || '',
+        msrc: s.image_url || s.src || '',
+        category: (s.category || '').trim(),
+        title: (s.title || '').trim(),
+        alt: (s.title || s.category || '').trim(),
+        element: idx === globalIndex ? (imgEl || tileEl) : null
+      }));
+
+      window.EuodooLightbox.open(lightboxItems, globalIndex, tileEl);
+    }
+
+    bentoViewport.addEventListener('click', (e) => {
+      const tile = e.target.closest('.abt-gal-tile, .bento-tile');
+      if (!tile || !bentoViewport.contains(tile)) return;
+      e.preventDefault();
+      openBentoSlideLightbox(tile);
+    });
+
     bentoGallery.addEventListener('keydown', (e) => {
-      if ((e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') && (e.target.classList.contains('bento-tile') || e.target.classList.contains('abt-gal-tile'))) {
+      const tile = e.target.closest('.abt-gal-tile, .bento-tile');
+      if ((e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') && tile) {
         e.preventDefault();
+        openBentoSlideLightbox(tile);
         return;
       }
 

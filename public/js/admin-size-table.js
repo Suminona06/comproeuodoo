@@ -168,7 +168,7 @@
     rows.forEach((row, rowIdx) => {
       const tr = document.createElement('tr');
 
-      columns.forEach((col) => {
+      columns.forEach((col, colIdx) => {
         const td = document.createElement('td');
         const input = document.createElement('input');
         input.type = 'text';
@@ -176,6 +176,8 @@
         input.value = row[col.id] || '';
         input.maxLength = 80;
         input.placeholder = 'Nilai...';
+        input.dataset.rowIdx = String(rowIdx);
+        input.dataset.colIdx = String(colIdx);
         input.setAttribute('aria-label', `${col.label || 'Kolom'} baris ${rowIdx + 1}`);
         input.addEventListener('input', (e) => {
           row[col.id] = e.target.value;
@@ -263,28 +265,17 @@
       return;
     }
 
-    if (typeof Swal !== 'undefined') {
-      Swal.fire({
+    if (window.showAdminConfirm) {
+      window.showAdminConfirm({
         title: 'Hapus Kolom?',
         text: 'Kolom ini memiliki data teks yang akan ikut terhapus. Lanjutkan?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal',
-        customClass: {
-          popup: 'swal2-custom-popup',
-          title: 'swal2-custom-title',
-          confirmButton: 'swal2-custom-confirm-btn',
-          cancelButton: 'swal2-custom-cancel-btn'
-        }
-      }).then(result => {
-        if (result.isConfirmed) {
+        isDanger: true
+      }).then(confirmed => {
+        if (confirmed) {
           deleteColumn(index);
         }
       });
-    } else if (confirm('Kolom ini memiliki data teks yang akan ikut terhapus. Lanjutkan?')) {
+    } else {
       deleteColumn(index);
     }
   }
@@ -313,29 +304,18 @@
       return;
     }
 
-    if (typeof Swal !== 'undefined') {
-      Swal.fire({
+    if (window.showAdminConfirm) {
+      window.showAdminConfirm({
         title: 'Hapus Baris?',
         text: 'Baris ini memiliki data teks yang akan ikut terhapus. Lanjutkan?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal',
-        customClass: {
-          popup: 'swal2-custom-popup',
-          title: 'swal2-custom-title',
-          confirmButton: 'swal2-custom-confirm-btn',
-          cancelButton: 'swal2-custom-cancel-btn'
-        }
-      }).then(result => {
-        if (result.isConfirmed) {
+        isDanger: true
+      }).then(confirmed => {
+        if (confirmed) {
           rows.splice(index, 1);
           render();
         }
       });
-    } else if (confirm('Baris ini memiliki data teks yang akan ikut terhapus. Lanjutkan?')) {
+    } else {
       rows.splice(index, 1);
       render();
     }
@@ -371,6 +351,62 @@
       }
     });
   }
+
+  container.addEventListener('keydown', (e) => {
+    const cell = e.target.closest('.prod-size-cell');
+    if (!cell) return;
+
+    const rowIdx = Number(cell.dataset.rowIdx);
+    const colIdx = Number(cell.dataset.colIdx);
+    if (Number.isNaN(rowIdx) || Number.isNaN(colIdx)) return;
+
+    const focusCell = (r, c) => {
+      const target = container.querySelector(`.prod-size-cell[data-row-idx="${r}"][data-col-idx="${c}"]`);
+      if (target) {
+        target.focus();
+        target.select();
+      }
+    };
+
+    if (e.key === 'ArrowLeft') {
+      if (colIdx > 0) {
+        e.preventDefault();
+        focusCell(rowIdx, colIdx - 1);
+      }
+    } else if (e.key === 'ArrowRight') {
+      if (colIdx < columns.length - 1) {
+        e.preventDefault();
+        focusCell(rowIdx, colIdx + 1);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (rowIdx > 0) {
+        focusCell(rowIdx - 1, colIdx);
+      } else {
+        const headers = container.querySelectorAll('.prod-size-col-label');
+        if (headers[colIdx]) {
+          headers[colIdx].focus();
+          headers[colIdx].select();
+        }
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (rowIdx < rows.length - 1) {
+        e.preventDefault();
+        focusCell(rowIdx + 1, colIdx);
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (rowIdx < rows.length - 1) {
+        focusCell(rowIdx + 1, colIdx);
+      } else if (rows.length < 30) {
+        const newRow = {};
+        columns.forEach(c => { newRow[c.id] = ''; });
+        rows.push(newRow);
+        render();
+        focusCell(rows.length - 1, 0);
+      }
+    }
+  });
 
   let selectedSourceColumns = [];
 
@@ -489,26 +525,18 @@
       };
 
       if (hasExistingData) {
-        if (typeof Swal !== 'undefined') {
-          Swal.fire({
-            title: 'Terapkan Struktur Baru?',
-            text: 'Menyalin struktur kolom akan mereset data baris pada tabel saat ini. Lanjutkan?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#00755a',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Ya, Terapkan',
-            cancelButtonText: 'Batal',
-            customClass: {
-              popup: 'swal2-custom-popup',
-              title: 'swal2-custom-title',
-              confirmButton: 'swal2-custom-confirm-btn',
-              cancelButton: 'swal2-custom-cancel-btn'
-            }
-          }).then(result => {
-            if (result.isConfirmed) executeCopy();
+        if (window.showAdminConfirm) {
+          const isEn = (document.documentElement.lang || 'id').toLowerCase() === 'en';
+          window.showAdminConfirm({
+            title: isEn ? 'Apply New Structure?' : 'Terapkan Struktur Baru?',
+            text: isEn ? 'Copying column structure will reset current row data. Continue?' : 'Menyalin struktur kolom akan mereset data baris pada tabel saat ini. Lanjutkan?',
+            isDanger: false,
+            confirmButtonText: `<svg class="adm-btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>${isEn ? 'Apply' : 'Terapkan'}</span>`,
+            icon: 'question'
+          }).then(confirmed => {
+            if (confirmed) executeCopy();
           });
-        } else if (confirm('Menyalin struktur kolom akan mereset data baris pada tabel saat ini. Lanjutkan?')) {
+        } else {
           executeCopy();
         }
       } else {

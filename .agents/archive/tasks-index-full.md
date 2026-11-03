@@ -319,3 +319,294 @@
 - **File Terdampak:** `views/public/index.ejs`, `public/css/components.css`, `public/css/tokens.css`, `tests/test-t237-playwright-verification.js`
 - **Skill:** polish, adapt
 - **Verifikasi:** Click-through test, console log check, dan Playwright test suite `tests/test-t237-playwright-verification.js` lulus 100%. Selesai 2026-10-28.
+
+
+### T-238: Migrasi Skema Pengaturan Visibilitas Alamat, Registri WhatsApp JSON, dan Default Seed Overlay Opacity [DONE]
+- **Deskripsi:** Membuat berkas migrasi SQL `database/migrations/011_revisi_footer_wa_filter_v1.sql` yang mendaftarkan default setting keys baru (`office_card_visible = '1'`, `factory_card_visible = '1'`, `whatsapp_numbers_json = '[]'`) ke tabel `settings`. Memperbarui nilai default seed kolom `overlay_opacity` pada tabel `page_hero_banners` untuk 4 halaman publik (`'about'`, `'products'`, `'news'`, `'contact'`) agar selaras dengan densitas overlay ringan beranda (nilai rekomendasi terkalibrasi: 0.35 - 0.40). Memastikan script migrasi idempotent menggunakan klausa `INSERT IGNORE` atau `ON DUPLICATE KEY UPDATE` tanpa mengubah data live produksi di luar default baru.
+- **Acceptance Criteria:**
+  - [x] File migrasi `011_revisi_footer_wa_filter_v1.sql` berhasil dieksekusi tanpa error syntax.
+  - [x] Setting keys `office_card_visible` dan `factory_card_visible` tercatat dengan nilai default `'1'`.
+  - [x] Setting key `whatsapp_numbers_json` terdaftar sebagai string JSON valid di tabel `settings`.
+  - [x] Seed default `overlay_opacity` pada `page_hero_banners` untuk 4 halaman (`about`, `products`, `news`, `contact`) terdefinisi pada nilai terkalibrasi ringan (0.35 - 0.40).
+- **File Terdampak:** `database/migrations/011_revisi_footer_wa_filter_v1.sql`
+- **Skill:** ponytail
+- **Verifikasi:** Eksekusi migrasi di lingkungan database, query tabel `settings` dan `page_hero_banners` untuk memastikan data terdaftar presisi. Selesai 2026-10-30.
+
+### T-239: Implementasi Controller Admin CMS Settings & Validasi Ketat Server-Side [DONE]
+- **Deskripsi:** Memperbarui `controllers/admin/settingController.js` pada method `update()` untuk menangani penyimpanan `office_card_visible`, `factory_card_visible`, dan `whatsapp_numbers_json`. Menerapkan validasi ketat server-side: memastikan toggle switch visibilitas hanya bernilai `'1'` atau `'0'`, melakukan parsing JSON data multi-nomor WhatsApp (validasi format nomor numerik `/^[0-9+]{9,16}$/`, sanitasi teks label internal maksimal 50 karakter tanpa multi-bahasa, serta persentase integer 1-100), dan validasi matematis wajib: total persentase seluruh nomor aktif harus tepat berjumlah 100%. Melempar error informatif jika persentase kurang atau lebih dari 100%. Mempertahankan fallback transparan ke `whatsapp_number` lama jika data JSON kosong. Mengosongkan cache memory via `clearSettingsCache()`.
+- **Acceptance Criteria:**
+  - [x] Nilai toggle switch `office_card_visible` dan `factory_card_visible` tersimpan akurat ke database saat disubmit dari form admin.
+  - [x] Data multi-nomor WhatsApp tervalidasi dengan aman (submisi dengan total persentase != 100% otomatis ditolak server dengan pesan error yang ramah).
+  - [x] Nomor kosong atau karakter ilegal otomatis ditolak.
+  - [x] Proteksi CSRF, sanitasi input, dan cache invalidation bekerja sempurna.
+- **File Terdampak:** `controllers/admin/settingController.js`
+- **Skill:** security-and-hardening, ponytail
+- **Verifikasi:** Uji pengiriman data via form admin dan automated test suite `tests/test-t239-backend-validation.js` lulus 9/9. Selesai 2026-10-30.
+
+### T-240: Implementasi Formulir Pengaturan Show/Hide Alamat & Dynamic Repeater WhatsApp Multi-Nomor [DONE]
+- **Deskripsi:** Memperbarui tampilan CMS admin `views/admin/settings/index.ejs`. Di kelompok "Kontak & Alamat Dual Lokasi Resmi", tambahkan toggle switch kustom (slider switch) untuk Kartu Kantor Jakarta dan Kartu Pabrik Bandung dengan styling berbasis token yang identik dengan toggle media sosial yang ada. Di kelompok "Pengaturan Layanan WhatsApp", tambahkan komponen interaktif dinamis (*Dynamic Repeater*) untuk menambah, mengedit, dan menghapus baris nomor WhatsApp (kolom: Nomor Telepon, Label Internal Admin, Persentase Bobot %). Sediakan kalkulator akumulasi persentase real-time berbasis vanilla JS murni (kompatibel CSP tanpa inline onclick), badge status berwarna hijau jika total = 100% dan merah/kuning jika total != 100%, serta pencegahan submit sisi klien jika persentase belum seimbang.
+- **Acceptance Criteria:**
+  - [x] Tampilan toggle switch show/hide alamat rapi, mudah dipahami, konsisten dengan gaya toggle media sosial, dan responsif dari ponsel hingga desktop.
+  - [x] Admin dapat menambah baris nomor baru, menghapus baris nomor yang ada, serta mengedit nilai nomor, label internal, dan persentase.
+  - [x] Indikator total persentase berubah secara real-time saat pengguna mengetik angka persentase.
+  - [x] Bebas dari atribut inline JavaScript (`onclick`, `onchange`) untuk menjamin kepatuhan penuh terhadap Content Security Policy (CSP).
+  - [x] Menggunakan token desain admin yang konsisten tanpa warna hex mentah.
+- **File Terdampak:** `views/admin/settings/index.ejs`, `public/js/admin-settings.js`, `public/css/admin.css`
+- **Skill:** frontend-ui-engineering, impeccable
+- **Verifikasi:** Uji interaksi penambahan, penghapusan, dan pengetikan baris nomor pada browser desktop dan mobile; verifikasi konsol browser bersih dari peringatan CSP via `tests/test-t240-admin-ui.js`. Selesai 2026-10-30.
+
+### T-241: Implementasi Logika Show/Hide Kartu Alamat di Footer Global dan Halaman Kontak [DONE]
+- **Deskripsi:** Memperbarui `views/partials/footer.ejs` dan `views/public/contact.ejs` untuk memeriksa status `office_card_visible` dan `factory_card_visible`. Di footer, bungkus masing-masing kartu `.ft-office-card` dengan kondisi if. Jika kedua kartu dinonaktifkan (`'0'`), kontainer pembungkus `.ft-offices` tidak dirender ke DOM untuk mencegah celah kosong atau pergeseran tata letak. Di halaman `/contact`, render kartu Jakarta dan Bandung secara kondisional di kolom kanan; jika kedua kartu dinonaktifkan, sematan Google Maps `.cf-maps-wrap` tetap tampil elegan dan menempati kolom dengan proporsional tanpa kekosongan visual yang janggal.
+- **Acceptance Criteria:**
+  - [x] Saat `office_card_visible = '0'`, kartu Jakarta hilang dari footer dan halaman kontak.
+  - [x] Saat `factory_card_visible = '0'`, kartu Bandung hilang dari footer dan halaman kontak.
+  - [x] Saat kedua kartu disembunyikan, tidak ada elemen pembungkus kosong (*ghost container*) atau celah margin/padding aneh di footer maupun kontak.
+  - [x] Tidak ada layout shift (CLS tetap aman) pada resolusi 320px, 768px, 1024px, hingga 1440px dalam mode Bahasa Indonesia maupun Bahasa Inggris.
+- **File Terdampak:** `views/partials/footer.ejs`, `views/public/contact.ejs`, `public/css/layout.css`, `public/css/components.css`, `middleware/settingsMiddleware.js`
+- **Skill:** antislop-layoutmobile, impeccable
+- **Verifikasi:** Uji permutasi (1,1), (1,0), (0,1), (0,0) di footer dan kontak via `tests/test-t241-public-ui.js` lulus 3/3. Selesai 2026-10-30.
+
+### T-242: Implementasi Server-Side Weighted Rolling WhatsApp Multi-Nomor [DONE]
+- **Deskripsi:** Memperbarui komponen `views/partials/whatsapp-btn.ejs` untuk menerapkan pemilihan nomor berbobot (*weighted random rolling*) berbasis data `whatsapp_numbers_json` langsung di sisi server (SSR). Saat halaman dimuat, server membangkitkan angka acak 1-100 dan memilih 1 nomor yang sesuai dengan distribusi kumulatif persentase. Tautan direct chat dibentuk menggunakan format resmi `https://wa.me/<nomor_terpilih>?text=<pesan_dwibahasa_terenkripsi>`. Hanya nomor yang terpilih yang dirender ke atribut `href` HTML; nomor lain tidak dibocorkan ke DOM browser. Tetap mempertahankan pesan pembuka resmi yang sudah ada (`whatsapp_default_message` / `_en`). Tooltip publik tetap menggunakan teks standar (*"Chat WhatsApp"* / *"Chat on WhatsApp"*). Jika data multi-nomor belum tersedia, sistem transparan melakukan fallback ke nomor tunggal `whatsapp_formatted_number` atau `whatsapp_number`.
+- **Acceptance Criteria:**
+  - [x] Tombol floating WhatsApp di seluruh halaman publik mengarah ke nomor yang dipilih secara berbobot sesuai distribusi persentase di sisi server.
+  - [x] Tidak ada daftar nomor lain yang terekspos di markup HTML publik (*source view*).
+  - [x] Dalam sampel pengujian muat ulang halaman berulang, frekuensi kemunculan nomor mendekati rasio persentase yang ditentukan (misal 40% vs 60%).
+  - [x] Pesan pembuka otomatis dwibahasa (ID/EN) tetap terpasang dengan enkripsi URI yang benar di seluruh nomor rolling.
+  - [x] Fallback ke nomor lama bekerja 100% jika pengaturan multi-nomor dikosongkan.
+  - [x] Desain, animasi hover, posisi fixed, dan aksesibilitas keyboard tombol floating WA tetap utuh.
+- **File Terdampak:** `views/partials/whatsapp-btn.ejs`
+- **Skill:** ponytail, frontend-ui-engineering
+- **Verifikasi:** Simulasi 1.000 iterasi SSR (40.1% vs 59.9%) dan inspeksi zero leak via `tests/test-t242-wa-rolling.js` lulus 5/5. Selesai 2026-10-30.
+
+### T-243: Penyelarasan Filter / Overlay Hero Banner Sub-Page Menyerupai Home Slide 2 Termasuk About [DONE]
+- **Deskripsi:** Memperbarui aturan CSS overlay hero banner sub-page pada `public/css/components.css` (`.page-hero-scrim`) dan seluruh template sub-page view terkait (`views/public/products.ejs`, `views/public/news.ejs`, `views/public/contact.ejs`, dan `views/public/about.ejs`). Menghapus gradasi solid hitam pekat yang menutupi gambar latar belakang dan menggantinya dengan layered directional gradient transparan yang mengadopsi estetika `.hero-slide-image .hero-grad` pada beranda (top ramp, diagonal 105 derajat green accent ramp, bottom grounding ramp). Memastikan nilai perhitungan variabel `--hero-scrim-mid` dan `--hero-scrim-edge` terkalibrasi ringan dan seluruh teks judul, subjudul, dan remah roti memenuhi standar kontras WCAG AA (minimal 4.5:1).
+- **Acceptance Criteria:**
+  - [x] Hero banner pada halaman Products, News, Contact, dan About memiliki tampilan visual yang jernih, foto pabrik terekspos jelas dan elegan menyerupai referensi gambar slide ke-2 beranda.
+  - [x] Aksen hijau korporat Euodoo tetap terasa kuat dan berpadu harmonis dengan gambar latar belakang.
+  - [x] Seluruh teks putih pada hero banner di ke-4 halaman terbukti lulus rasio kontras WCAG AA terhadap latar belakang.
+  - [x] Tidak mengubah kode atau visual pada homepage yang telah dibekukan.
+- **File Terdampak:** `public/css/components.css`, `views/public/products.ejs`, `views/public/news.ejs`, `views/public/contact.ejs`, `views/public/about.ejs`
+- **Skill:** impeccable
+- **Verifikasi:** Uji matematis rasio kontras 17.25:1 dan rendering scrim di 4 sub-page via `tests/test-t243-hero-filter.js` lulus 4/4. Selesai 2026-10-30.
+
+### T-244: Verifikasi Regresi Menyeluruh, Audit Kontras WCAG AA, & Validasi Lintas Perangkat [DONE]
+- **Deskripsi:** Melakukan pengujian regresi komprehensif pada seluruh alur fitur yang terdampak menggunakan Playwright Chromium Headless: pengujian toggle switch show/hide alamat di admin dan dampaknya pada footer serta kontak, pengujian penambahan/penghapusan/validasi 100% multi-nomor WA di admin, pengujian distribusi rolling WA server-side di sisi publik, serta verifikasi tampilan visual hero banner pada 4 sub-page (Products, News, Contact, About). Memastikan pengujian mencakup resolusi ponsel 320px, 375px, tablet 768px, laptop 1024px, dan desktop 1440px dalam mode Bahasa Indonesia (`id`) dan Bahasa Inggris (`en`). Memastikan nol error di konsol browser, tidak ada kebocoran gaya, dan fungsi formulir RFQ kontak serta tombol CTA lainnya tetap beroperasi 100% normal.
+- **Acceptance Criteria:**
+  - [x] Seluruh skenario pengujian fungsional dan visual lulus tanpa cacat.
+  - [x] Teks hero banner pada seluruh 4 sub-page memenuhi rasio kontras WCAG AA.
+  - [x] Tidak ada error JavaScript atau peringatan CSP di konsol browser (termasuk fix CSP Turnstile di `app.js`).
+  - [x] Tampilan responsif mulus dari 320px hingga desktop tanpa horizontal scrollbar yang tidak diinginkan (termasuk fix minmax 0 di `components.css`).
+  - [x] Mode dwibahasa ID dan EN tersaji dengan translasi yang lengkap dan tepat.
+- **File Terdampak:** `app.js`, `public/css/components.css`, `tests/test-t244-playwright-audit.js`
+- **Skill:** test-engineer, code-review-and-quality
+- **Verifikasi:** Pengujian otomatis Playwright E2E lintas 5 viewport, CSP audit, admin E2E via `tests/test-t244-playwright-audit.js` lulus 6/6. Selesai 2026-10-30.
+
+### T-245: Fix Integrasi TinyMCE Image Dialog dengan Universal Media Picker [DONE]
+- **Deskripsi:** Tambahkan konfigurasi `file_picker_callback` pada inisialisasi TinyMCE di `public/js/admin-editor.js` yang membuka `window.openMediaPicker({ type: 'image' })` saat tombol browse ditekan di dialog "Insert/Edit Image", serta mengembalikan URL gambar dan deskripsi alternatif ke dialog TinyMCE. Dilengkapi pencegahan focus-trap dialog TinyMCE via event guard `focusin` pada modal `#universalMediaPickerModal` dan penyesuaian z-index CSS modal backdrop (`1400`) serta toast (`1500`).
+- **Acceptance Criteria:**
+  - [x] Opsi `file_picker_callback` terpasang pada `tinymce.init` di `public/js/admin-editor.js`.
+  - [x] Menekan tombol browse di dialog "Insert/Edit Image" TinyMCE membuka modal Universal Media Picker dengan filter gambar aktif.
+  - [x] Memilih gambar dari pustaka media dan menekan konfirmasi mengisi URL gambar (`selected.file_url`) dan alt text ke dialog TinyMCE.
+  - [x] Berfungsi pada form artikel (`#content_id`, `#content_en`) dan form produk (`#description_id`, `#description_en`).
+  - [x] Tanpa script inline, bebas error CSP Helmet, dan tanpa error pada console browser.
+- **File Terdampak:** `public/js/admin-editor.js`, `public/css/admin.css`
+- **Skill:** debugging-and-error-recovery, antislop-code
+- **Verifikasi:** Uji buka dialog Insert Image di `/admin/posts/create` dan `/admin/products/create`, klik browse, modal Media Library terbuka dan input URL terisi rapi; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-246: Fix Live Search Produk pada Tabel Admin [DONE]
+- **Deskripsi:** Perbaiki live search client-side instan dengan menambahkan atribut `data-status="<%= p.status %>"` pada setiap elemen `<tr>` di `views/admin/products/index.ejs`, dan perbaiki logika selector di `public/js/admin.js` agar mencakup baris tabel secara andal tanpa reload halaman. Sesuai Keputusan 1 (Opsi A), backend search query dan form GET tidak diubah.
+- **Acceptance Criteria:**
+  - [x] Elemen `<tr>` di `views/admin/products/index.ejs` memiliki atribut `data-status="<%= p.status %>"`.
+  - [x] Selector baris tabel di `public/js/admin.js` mencakup seluruh baris data pada `.data-table tbody tr`.
+  - [x] Mengetik nama produk atau slug pada `#liveSearchInput` menyaring baris secara instan (case-insensitive) di sisi klien tanpa reload halaman.
+  - [x] Baris yang tidak cocok disembunyikan (`display: none`), baris yang cocok ditampilkan kembali.
+  - [x] Integrasi filter status tab dan live search berjalan selaras tanpa memicu konflik tampilan.
+- **File Terdampak:** `views/admin/products/index.ejs`, `public/js/admin.js`
+- **Skill:** debugging-and-error-recovery, antislop-code
+- **Verifikasi:** Uji live filter di `/admin/products`, baris menyaring instan saat mengetik; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-247: Fix Pratinjau Foto Produk Utama saat Create Product (Sinkronisasi Class Hidden) [DONE]
+- **Deskripsi:** Perbaiki fungsi `confirmSelection` dan event listener clear di `public/js/media-picker.js` agar memanipulasi class `.hidden` secara konsisten via `classList.remove('hidden')` dan `classList.add('hidden')` bersamaan dengan pengaturan display style.
+- **Acceptance Criteria:**
+  - [x] Pada `confirmSelection` di `public/js/media-picker.js`: `img.classList.remove('hidden')` & `img.style.display = 'block'`; `emptyPlaceholder.classList.add('hidden')` & `emptyPlaceholder.style.display = 'none'`; `clearBtn.classList.remove('hidden')` & `clearBtn.style.display = 'inline-flex'`.
+  - [x] Pada handler `.btn-clear-media`: `img.classList.add('hidden')` & `img.style.display = 'none'`; `emptyPlaceholder.classList.remove('hidden')` & `emptyPlaceholder.style.display = 'flex'`; `clearBtn.classList.add('hidden')` & `clearBtn.style.display = 'none'`.
+  - [x] Pratinjau foto langsung muncul saat foto pertama kali dipilih di form `/admin/products/create`.
+  - [x] Kompatibilitas mundur terjaga penuh untuk pemanggil picker di form lain (Edit Product, Banner, Settings, dll.).
+- **File Terdampak:** `public/js/media-picker.js`
+- **Skill:** debugging-and-error-recovery, antislop-human
+- **Verifikasi:** Uji pilih media di seksi Foto Utama `/admin/products/create`, gambar langsung tampil tanpa blank abu-abu; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-248: Implementasi Navigasi Tombol Panah (Arrow Keys) pada Builder Tabel Ukuran Produk [DONE]
+- **Deskripsi:** Tambahkan dukungan navigasi keyboard menggunakan tombol panah (ArrowUp, ArrowDown, ArrowLeft, ArrowRight) antar sel input data (`.prod-size-cell`) pada dynamic size table builder di form create dan edit produk CMS. Sesuai Keputusan 2 (Opsi A), cakupan dibatasi khusus pada tabel ukuran (tidak pada varian). Sesuai Keputusan 3 (Opsi A), menekan tombol Enter pada baris terakhir otomatis menyisipkan 1 baris baru.
+- **Acceptance Criteria:**
+  - [x] Event listener `keydown` terpasang pada kontainer tabel ukuran `#dynamicSizeEditor` di `public/js/admin-size-table.js`.
+  - [x] Navigasi tombol panah berlaku khusus untuk sel input `.prod-size-cell` pada `#dynamicSizeEditor`.
+  - [x] Menekan `ArrowLeft`: memindahkan fokus ke sel kolom sebelumnya pada baris yang sama.
+  - [x] Menekan `ArrowRight`: memindahkan fokus ke sel kolom berikutnya pada baris yang sama.
+  - [x] Menekan `ArrowUp`: memindahkan fokus ke sel baris sebelumnya pada kolom yang sama (atau ke input label kolom jika di baris pertama).
+  - [x] Menekan `ArrowDown`: memindahkan fokus ke sel baris berikutnya pada kolom yang sama.
+  - [x] Menekan `Enter` pada sel baris terakhir: otomatis menambahkan 1 baris baru (jika baris < 30), menyinkronkan hidden input JSON, dan memindahkan fokus ke sel kolom pertama pada baris baru tersebut.
+  - [x] Menekan `Enter` pada sel bukan baris terakhir: memindahkan fokus ke sel baris di bawahnya pada kolom yang sama.
+  - [x] Navigasi keyboard Tab / Shift+Tab bawaan browser tetap berfungsi normal.
+  - [x] Tanpa handler inline, 100% patuh CSP Helmet dan antislop R-32 (Keyboard Accessibility).
+- **File Terdampak:** `public/js/admin-size-table.js`
+- **Skill:** frontend-ui-engineering, antislop-human
+- **Verifikasi:** Navigasi 4 arah tombol panah dan Enter append baris teruji pada form create/edit produk; verifikasi syntax via `node --check`. Selesai 2026-10-30.
+
+### T-249: Eliminasi Fallback Konten Hardcoded pada Halaman Beranda Publik [DONE]
+- **Deskripsi:** Hapus seluruh konten fallback statis yang di-hardcode pada `views/public/index.ejs`, model `models/homeContentModel.js`, controller `controllers/admin/homeContentController.js` & `controllers/admin/brandController.js`, middleware `middleware/settingsMiddleware.js`, dan view admin/partials. Sesuai Keputusan 4 (Opsi B), hero banner tetap mempertahankan safety net fallback agar tidak kosong. Sesuai Keputusan 5 (Opsi B), seksi News tetap merender judul seksi namun kartu placeholder statis digantikan dengan pesan empty-state ramah. Seksi Products, Why Choose Us, dan Brand Strip dibersihkan dari fallback hardcoded (zero-render jika CMS kosong).
+- **Acceptance Criteria:**
+  - [x] Hero Banner: Objek fallback banner default di `views/public/index.ejs` L10-24 DIPERTAHANKAN sebagai safety net beranda (Keputusan 4).
+  - [x] Seksi Produk: Fallback teks hardcoded judul dan subtitle kategori dihapus. Jika judul kosong atau kategori kosong, render ditangani secara kondisional.
+  - [x] Seksi Why Choose Us: 13 variabel fallback string dihapus total. Jika data WCU di CMS kosong atau `is_active` bernilai `0`, seksi Why Choose Us tidak dirender sama sekali.
+  - [x] Seksi Brand Strip: Fallback string judul merek terdaftar dihapus. Jika `marqueeBrands.length === 0`, seksi merek tidak dirender.
+  - [x] Seksi Berita (News): Kartu placeholder statis dengan tanggal palsu "25 SEP 2026" dan "18 SEP 2026" dihapus total (Keputusan 5). Jika `latestPosts.length === 0`, tampilkan pesan empty-state ramah dwibahasa: `<div class="news-empty-state"><p><%= currentLang === 'en' ? 'No recent articles available at this time.' : 'Belum ada artikel berita terbaru saat ini.' %></p></div>`.
+  - [x] Homepage dibekukan KECUALI seksi-seksi yang mengalami pembersihan fallback ini.
+  - [x] Styling empty-state seksi berita scoped dan menggunakan token desain (`var(--color-text-muted)`, tanpa hardcode hex).
+  - [x] Tampilan halaman beranda tetap responsif dan estetis pada breakpoint 320px hingga desktop tanpa celah/jarak visual janggal.
+- **File Terdampak:** `views/public/index.ejs`, `views/partials/cta-global.ejs`, `views/admin/home-content/index.ejs`, `views/admin/brands/index.ejs`, `models/homeContentModel.js`, `controllers/admin/homeContentController.js`, `controllers/admin/brandController.js`, `middleware/settingsMiddleware.js`, `public/css/components.css`
+- **Skill:** frontend-ui-engineering, antislop-layoutmobile, antislop-ui
+- **Verifikasi:** Kompilasi seluruh template EJS (`ejs.compile`) dan sintaks model/controller lulus tanpa error; form CMS diuji menyimpan nilai string kosong tanpa diisi ulang otomatis. Selesai 2026-10-30.
+
+
+### T-250: Seragamkan kartu "Produk Terkait Lainnya" (.pd-related) di Detail Produk dengan partial kartu katalog [DONE]
+- **Deskripsi:** Mengganti markup kartu `.bento-*` pada section `.pd-related` di `views/public/product-detail.ejs` dengan memanggil partial `views/public/partials/product-card-fragment.ejs` di dalam grid `<div class="plp-grid pd-related-grid">`. Memperbarui query `relatedProducts` di `controllers/public/productController.js` dan `models/productModel.js` agar memfilter `is_active = 1` (`activeOnly: true`), mengambil `limit: 5`, lalu memotong `.slice(0, 4)` sehingga tampil maksimal 4 kartu dalam 4 kolom di desktop dan 2 kolom di mobile (`>= 360px`, 1 kolom di `< 360px`) sesuai grid katalog (Keputusan #3). Memperbaiki bug bahasa (badge kategori & fallback deskripsi hardcode ID) secara otomatis melalui reuse partial katalog, sambil mempertahankan header section (kicker, judul, tombol "Lihat Kategori").
+- **Acceptance Criteria:**
+  - [x] Section `.pd-related` me-reuse `views/public/partials/product-card-fragment.ejs` tanpa menduplikasi markup kartu `.plp-card`.
+  - [x] Controller `productController.detail` mengambil `limit: 5` produk aktif (`status: 'published'`, `is_active = 1`) di kategori yang sama, mengeluarkan produk saat ini, dan memotong `.slice(0, 4)` untuk menampilkan maksimal 4 kartu.
+  - [x] Grid `.plp-grid.pd-related-grid` menampilkan 4 kolom di desktop (`>= 1024px`), 2 kolom di tablet/mobile (`360px - 1023px`), dan 1 kolom di `< 360px`, dengan tampilan kartu (rasio gambar 1:1, permukaan `var(--color-surface-alt)`, tipografi nama produk 2 baris, tombol pill penuh `var(--color-primary)`, state `:hover` di dalam `@media (hover: hover)`, dan `:focus-visible`) 100% identik dengan halaman katalog `/products`.
+  - [x] Teks nama produk dan tombol CTA mengikuti bahasa aktif (`ID` dan `EN`) tanpa teks Bahasa Indonesia yang bocor saat mode `EN`.
+  - [x] Header section `.pd-related-header` (kicker, judul, tombol "Lihat Kategori") tetap tampil dan berfungsi.
+  - [x] Aturan CSS `.bento-card`, `.bento-col-6`, `.bento-split*`, `.bento-badge*`, `.bento-card-*`, `.bento-specs`, `.bento-spec-tag`, `.bento-meta-badge`, dan `.pd-related .bento-badge` yang sudah tidak terpakai dihapus dari `public/css/components.css`; sedangkan `.bento-grid` dasar dan `.sec-gallery .bento-*` (milik halaman Tentang Kami) tetap utuh.
+- **File Terdampak:** `controllers/public/productController.js`, `models/productModel.js`, `views/public/product-detail.ejs`, `public/css/components.css`
+- **Skill:** Impeccable polish + Impeccable adapt
+- **Verifikasi:** Pengujian Playwright E2E pada detail produk mode ID dan EN di lebar 320px, 375px, 768px, 1024px, dan 1440px. Selesai 2026-10-31.
+
+### T-251: Sembunyikan tab Deskripsi, tampilkan Tabel Ukuran langsung dengan judul section biasa, & perkuat SEO meta description [DONE]
+- **Deskripsi:** Menghapus markup tab `Deskripsi` (`#pdTabDesc`, `#pdPanelDesc`) dan sistem `role="tablist"` dari `views/public/product-detail.ejs`. Membungkus seluruh section tabel ukuran dengan kondisi `<% if (hasSizeTable) { %>` sehingga bila produk tidak memiliki tabel ukuran, section dihilangkan seluruhnya (Keputusan #4). Saat produk memiliki tabel ukuran, tampilkan judul section biasa (`<h2 class="pd-size-heading">Tabel Ukuran</h2>` / `"Size Chart"`) tanpa tab (Keputusan #5) dan tampilkan `.pd-table-wrap` secara langsung tanpa atribut `hidden`. Menghapus kode JS pengendali tab (`[data-tabs]`) yang jadi mati di `public/js/product-detail.js`. Memastikan `controllers/public/productController.js` mengisi `res.locals.seo.description` dan `res.locals.seo.ogDescription` menggunakan rantai fallback `meta_description_<lang>` -> `short_description_<lang>` -> plain text `description_<lang>` agar SEO halaman produk tidak kosong. Membiarkan form Admin Produk apa adanya tanpa perubahan (Keputusan #6).
+- **Acceptance Criteria:**
+  - [x] Deskripsi panjang (`description_id` / `description_en`) tidak lagi tampil di halaman publik Detail Produk, sementara kolom database dan form Admin Produk (`views/admin/products/create.ejs` & `edit.ejs`) dibiarkan tetap apa adanya (Keputusan #6).
+  - [x] Pada produk yang memiliki `size_table` (`hasSizeTable === true`), section Tabel Ukuran tampil langsung tanpa klik, diawali judul section biasa `"Tabel Ukuran"` (ID) / `"Size Chart"` (EN) tanpa `role="tablist"` atau tombol tab (Keputusan #5).
+  - [x] Pada produk yang tidak memiliki `size_table` (`hasSizeTable === false`), section ukuran tidak dirender sama sekali di DOM (Keputusan #4).
+  - [x] Tampilan responsif mobile pada tabel ukuran (`td[data-l]` dengan label kolom di sisi kiri) tetap rapi dan terbaca pada layar 320px dan 375px baik dalam bahasa ID maupun EN.
+  - [x] `public/js/product-detail.js` bersih dari listener `[data-tabs]` yang tidak terpakai dan bebas dari error console pada produk dengan maupun tanpa tabel ukuran.
+  - [x] Tag `<meta name="description">` dan `<meta property="og:description">` pada halaman Detail Produk selalu terisi teks yang relevan (mengambil `description_id`/`description_en` yang telah dibersihkan dari tag HTML bila `meta_description` dan `short_description` kosong).
+- **File Terdampak:** `views/public/product-detail.ejs`, `public/js/product-detail.js`, `public/css/components.css`, `controllers/public/productController.js`
+- **Skill:** Impeccable polish + antislop-code
+- **Verifikasi:** Pengujian Playwright E2E pada detail produk dengan dan tanpa size table di mode ID dan EN, serta verifikasi SEO meta description fallback. Selesai 2026-10-31.
+
+### T-252: Bangun komponen bersama Lightbox (.lbx-*) berbasis PhotoSwipe v5 self-hosted dan integrasikan ke galeri Detail Produk [DONE]
+- **Deskripsi:** Menyimpan aset PhotoSwipe v5 (lisensi MIT) secara lokal di `public/vendor/photoswipe/` (`photoswipe.umd.min.js`, `photoswipe-lightbox.umd.min.js`, dan `photoswipe.css`) sesuai Keputusan #1, lalu membangun komponen pembungkus bersama `public/css/lightbox.css` dan `public/js/lightbox.js` dengan prefix class unik `.lbx-*`. Mengonfigurasi cara zoom di desktop menggunakan kombinasi klik/double-click pada foto untuk zoom ke titik klik + drag untuk geser serta tombol kontrol `+` / `-` pada toolbar (Keputusan #2). Mengintegrasikan lightbox pada galeri Detail Produk (`views/public/product-detail.ejs` & `public/js/product-detail.js`) di mana klik/Enter pada gambar utama (`#pdMainImage` / wrapper `.pd-main-media`) membuka lightbox mulai dari foto yang sedang aktif, sedangkan klik pada thumbnail (`.pd-thumb-btn`) tetap hanya menukar gambar utama (Keputusan #7).
+- **Acceptance Criteria:**
+  - [x] File vendor PhotoSwipe v5 di-host secara lokal di `public/vendor/photoswipe/` tanpa CDN eksternal; seluruh kustomisasi UI dan toolbar menggunakan prefix class `.lbx-*` di `public/css/lightbox.css` dengan warna berbasis token (`var(--surface-dark-deep)`, `var(--color-on-primary)`, `var(--color-primary)`, `var(--r-full)`, `var(--z-modal)`), tanpa hardcode hex dan 100% patuh CSP.
+  - [x] Pada Detail Produk, klik atau tekan Enter/Space pada gambar utama (`.pd-main-media` / `#pdMainImage`) membuka lightbox pada foto yang sedang aktif dengan urutan slide mengikuti urutan `.pd-thumb-btn` (tetap berfungsi untuk produk dengan 1 foto), sedangkan klik pada thumbnail (`.pd-thumb-btn`) tetap hanya menukar gambar utama di halaman (Keputusan #7).
+  - [x] Di desktop, pengguna dapat melakukan zoom baik dengan mengklik/double-click foto ke titik klik lalu drag untuk menggeser (pan), maupun dengan menekan tombol `+` (Perbesar / Zoom in) dan `-` (Perkecil / Zoom out) pada toolbar `.lbx-*` (Keputusan #2).
+  - [x] Di perangkat sentuh (mobile/tablet), mendukung double-tap zoom, pinch-to-zoom 2 jari, pan saat di-zoom, dan swipe kiri/kanan untuk berpindah foto termasuk saat sedang di-zoom (Keputusan #1).
+  - [x] Memenuhi aksesibilitas: kontainer menggunakan `role="dialog"` dan `aria-modal="true"`, fokus keyboard terkunci (focus trap) di dalam lightbox saat terbuka, tombol Escape menutup lightbox, fokus dikembalikan ke elemen pemicu saat ditutup, scroll `document.body` terkunci saat terbuka, menampilkan penghitung "1 / N" dan caption nama produk, serta seluruh aria-label tombol (Zoom In, Zoom Out, Sebelumnya, Berikutnya, Tutup) tersedia dalam bahasa ID dan EN.
+  - [x] Animasi buka/tutup dan transisi slide hanya menggunakan `transform` dan `opacity`, mematuhi `@media (prefers-reduced-motion: reduce)` (tanpa animasi), dan efek hover dibungkus dalam `@media (hover: hover)`.
+- **File Terdampak:** `public/vendor/photoswipe/photoswipe.umd.min.js`, `public/vendor/photoswipe/photoswipe-lightbox.umd.min.js`, `public/vendor/photoswipe/photoswipe.css`, `public/css/lightbox.css`, `public/js/lightbox.js`, `views/partials/head.ejs`, `views/partials/footer.ejs`, `views/public/product-detail.ejs`, `public/js/product-detail.js`, `public/css/components.css`
+- **Skill:** Impeccable animate + Impeccable adapt + Impeccable polish + antislop-code
+- **Verifikasi:** Pengujian Playwright E2E galeri detail produk: swap thumbnail, buka lightbox, zoom klik/tombol, keyboard trap, Escape close, dan pengujian rasio aspek portrait/landscape. Selesai 2026-10-31.
+
+### T-253: Integrasikan komponen bersama Lightbox (.lbx-*) ke Bento Gallery halaman Tentang Kami [DONE]
+- **Deskripsi:** Mengintegrasikan komponen bersama Lightbox `.lbx-*` (`window.EuodooLightbox` berbasis PhotoSwipe v5 lokal dari T-252, dengan kontrol zoom klik + tombol `+`/`-` sesuai Keputusan #1 dan #2) ke section Bento Gallery (`#bentoGallery`) pada `views/public/about.ejs` dan `public/js/main.js`. Menyematkan atribut `data-slide-index` global, `role="button"`, `tabindex="0"`, dan `aria-label` dwibahasa pada setiap `.abt-gal-tile` baik saat render awal (SSR) maupun saat fungsi `createSingleTile` membangun ulang DOM ketika paginasi Prev/Next diklik. Menggunakan event delegation pada `#bentoGalleryGrid` sehingga navigasi di dalam lightbox mencakup seluruh foto dari `#bentoGalleryData` (bukan hanya 6 tile halaman aktif).
+- **Acceptance Criteria:**
+  - [x] Klik atau tekan Enter/Space pada tile mana pun di Bento Gallery membuka lightbox `.lbx-*` tepat pada urutan foto tersebut di dalam keseluruhan dataset `#bentoGalleryData`.
+  - [x] Navigasi Prev/Next, tombol panah keyboard, atau swipe di dalam lightbox dapat menjelajahi seluruh foto galeri (mis. "3 / 12"), tidak terbatas pada 6 foto di halaman bento yang sedang aktif.
+  - [x] Di dalam lightbox galeri Tentang Kami, fitur zoom (klik pada foto + drag dan tombol `+`/`-` di desktop; double-tap dan pinch-zoom di perangkat sentuh) berfungsi identik dengan galeri Detail Produk (Keputusan #1 & #2).
+  - [x] Setelah pengguna menekan tombol paginasi bento (`#bentoPrev` / `#bentoNext`), tile baru yang dirender oleh JS (`createSingleTile`) tetap dapat diklik maupun diaktifkan dengan keyboard (Enter/Space) untuk membuka lightbox pada indeks global yang benar.
+  - [x] Lightbox menampilkan caption kategori (category) dan judul foto (title) dari `#bentoGalleryData` sesuai bahasa aktif (ID dan EN), serta mengembalikan fokus ke tile pemicu saat ditutup.
+  - [x] Paginasi bento (01 / 02) di halaman Tentang Kami tetap berjalan mulus tanpa regresi animasi atau konflik event.
+- **File Terdampak:** `views/public/about.ejs`, `public/js/main.js`, `public/css/components.css`
+- **Skill:** Impeccable animate + Impeccable adapt + Impeccable polish + antislop-code
+- **Verifikasi:** Pengujian Playwright E2E bento gallery: klik tile halaman 1, navigasi tembus foto 7..12, bento pager next ke halaman 2, klik tile halaman 2, dan verifikasi rasio aspek portrait/landscape. Selesai 2026-10-31.
+
+### T-254: Audit regresi lintas halaman, verifikasi responsif (320px-1440px), i18n, dan kepatuhan CSP [DONE]
+- **Deskripsi:** Melakukan pengujian regresi menyeluruh dan polesan akhir pada halaman Katalog Produk (`/products`), Detail Produk (`/products/:slug`), dan Tentang Kami (`/about`), memastikan seluruh Keputusan #1 s/d #7 berjalan konsisten tanpa efek samping pada komponen bersama (navbar, modal brand preview `#brandPreviewModal` di About, tombol WhatsApp/RFQ, filter katalog, dan Homepage yang dibekukan).
+- **Acceptance Criteria:**
+  - [x] Halaman Katalog (`/products`): kartu produk, filter kategori, pencarian, dan tombol "Muat Lebih Banyak" berfungsi tanpa regresi.
+  - [x] Halaman Detail Produk (`/products/:slug`): klik thumbnail menukar gambar utama, klik gambar utama membuka lightbox dengan zoom klik + tombol `+`/`-`, Tabel Ukuran tampil langsung dengan judul section biasa (atau section hilang bila produk tanpa tabel ukuran), tombol CTA WhatsApp/RFQ bekerja, dan Produk Terkait menampilkan maksimal 4 kartu dalam 4 kolom desktop / 2 kolom mobile yang identik dengan katalog di 320px, 375px, 768px, 1024px, dan 1440px (ID & EN).
+  - [x] Halaman Tentang Kami (`/about`): modal pratinjau brand (`#brandPreviewModal`), paginasi Bento Gallery, dan lightbox seluruh foto `#bentoGalleryData` berjalan berdampingan tanpa konflik state atau penguncian scroll yang tertinggal.
+  - [x] Homepage (`/`) dan form Admin Produk tidak mengalami perubahan tampilan.
+  - [x] Nol error pada browser console dan nol pelanggaran Content Security Policy (CSP).
+- **File Terdampak:** `public/css/lightbox.css`, `public/css/components.css`, `public/js/lightbox.js`, `tests/test-modul12-public.js`
+- **Skill:** Impeccable polish + Impeccable adapt
+- **Verifikasi:** Pengujian otomatis Playwright E2E di seluruh viewport (320px, 375px, 768px, 1024px, 1440px) mode ID & EN, verifikasi keyboard accessibility, audit CSP 0 error, dan kelulusan seluruh suite `npm test`. Selesai 2026-10-31.
+
+### T-255: Perbaikan Tampilan Slug di Admin Katalog Produk, Artikel Berita & Merek (Bug A1) [DONE]
+- **Deskripsi**: Membersihkan render slug pada tabel daftar Produk, Artikel Berita, Merek, dan Kategori serta pada form tambah/edit produk dan artikel (sesuai jawaban Q3: Opsi C, 1 baris saja tanpa bullet dan tanpa judul EN). Menggunakan class `.adm-slug-text` (untuk tabel daftar) dan `.adm-slug-input-group` / `.adm-slug-box` (untuk form) dengan tipografi monospace/muted berbasis token (`var(--font-mono)`, `var(--text-muted)`), `max-width` responsif, dan `text-overflow: ellipsis`. Tidak ada migrasi skema database; kolom `slug` (`VARCHAR(191)`) dan perilaku redirect 301 (`slug_redirects`) tetap utuh.
+- **Acceptance Criteria**:
+  - [x] Pada daftar Produk (`products/index.ejs`), Artikel Berita (`posts/index.ejs`), dan Merek (`brands/index.ejs`), hanya tampil 1 baris slug tunggal di bawah judul utama, tanpa bullet (`&bull;`), tanpa judul bahasa Inggris (`name_en`/`title_en`), dan tanpa prefix `slug:`.
+  - [x] Pada form edit Produk (`products/edit.ejs`) tampil informasi slug kanonik satu baris (`.adm-slug-box`), dan pada form tambah/edit Artikel Berita (`posts/{create,edit}.ejs`) field `#slug` (`maxlength="191"`) tampil rapi menggunakan class `.adm-slug-input-group` tanpa inline style.
+  - [x] Teks slug yang panjang otomatis terpotong dengan `text-overflow: ellipsis` (dilengkapi atribut `title` berisi slug penuh) tanpa merusak layout tabel dari viewport 320px sampai desktop.
+  - [x] Mekanisme pembuatan slug otomatis dan redirect 301 (`slug_redirects`) tetap berjalan tanpa perubahan.
+- **File Terdampak**: `public/css/admin.css`, `views/admin/products/index.ejs`, `views/admin/products/edit.ejs`, `views/admin/posts/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `views/admin/brands/index.ejs`, `views/admin/product-categories/index.ejs`, `views/admin/post-categories/index.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t255-slug-playwright.js` (8/8 langkah lulus). Selesai 2026-11-02.
+
+### T-256: Perbaikan Proporsi & Generator Multi-Ukuran Favicon di Pengaturan Situs serta Layout Publik/Admin (Bug A2) [DONE]
+- **Deskripsi**: Memperbaiki pengelolaan dan pemrosesan favicon sesuai jawaban Q6 (Opsi B dengan fallback ke Opsi A, menggunakan simbol logo saja tanpa teks). Menyediakan input khusus Favicon (simbol logo persegi 1:1 tanpa teks) di `views/admin/settings/index.ejs` terpisah dari Logo Utama, dengan opsi upload langsung dan pratinjau persegi 1:1. Menambahkan fungsi generator `generateFaviconSet` di `middleware/uploadMiddleware.js` berbasis Sharp menggunakan *circular badge* berlatar putih bersih dengan tepian *anti-aliased* halus dan penskalaan proporsional (92% diameter kanvas), menjaga proporsi asli simbol tanpa distorsi atau peregangan ("tidak ketarik") pada kanvas persegi 16x16, 32x32, 180x180, 192x192, dan 512x512 PNG di `public/uploads/settings/`, serta sinkronisasi fallback root `/favicon.ico`. Memasang tag `<link rel="icon">` multi-ukuran di seluruh layout publik dan admin.
+- **Acceptance Criteria**:
+  - [x] Pengaturan Situs memiliki input khusus Favicon (simbol logo persegi 1:1 tanpa teks) dan fallback otomatis ke logo situs bila favicon khusus kosong.
+  - [x] Setiap penyimpanan favicon men-generate paket ikon persegi (16x16, 32x32, 180x180, 192x192, 512x512) menggunakan Sharp dengan latar melingkar putih bersih dan padding proporsional sehingga proporsi simbol asli tidak pernah gepeng.
+  - [x] Tag `<link rel="icon" type="image/png" sizes="32x32">`, `<link rel="icon" type="image/png" sizes="16x16">`, `<link rel="apple-touch-icon" sizes="180x180">`, dan `<link rel="icon" type="image/png" sizes="192x192">` terpasang di `head.ejs` (publik), `admin-header.ejs`, `login.ejs`, dan `403.ejs`.
+  - [x] Favicon tampil proporsional, tajam, dan memiliki bobot visual setara favicon standar browser (Google) di tab Chrome maupun Firefox pada mode terang dan gelap, baik di halaman publik maupun admin.
+- **File Terdampak**: `middleware/uploadMiddleware.js`, `controllers/admin/settingController.js`, `views/admin/settings/index.ejs`, `views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, `views/admin/403.ejs`
+- **Skill**: Impeccable polish
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t256-favicon-playwright.js` (6/6 langkah lulus). Selesai 2026-11-02.
+
+### T-257: Fondasi CSS & Standarisasi Komponen Tombol Admin Terpadu `.adm-btn-*` beserta Animasi & Kontras WCAG AA [DONE]
+- **Deskripsi**: Mendaftarkan token warna tombol utama admin `--color-leaf-soft: #d1ecb9` (beserta token turunan `--adm-btn-primary-bg`, `--adm-btn-primary-hover-bg`, `--adm-btn-primary-border`, `--adm-btn-primary-text`) di `Design/DESIGN.md`, `public/css/tokens.css`, dan `public/css/admin.css` sesuai jawaban Q1, lalu membangun sistem komponen tombol admin terpadu berprefix `.adm-btn` di `public/css/admin.css` yang mengadopsi anatomi visual dan animasi `.btn-add-row` (editor tabel ukuran produk) tanpa menyentuh `.btn-secondary` milik halaman publik. Mendukung 4 varian: `primary` (latar hijau daun lembut kontras 13.91:1 AAA), `secondary` (outline hijau kontras 5.66:1 AA), `neutral` (abu-abu kontras 10.36:1 AAA), dan `danger` (merah kontras 7.02:1 AAA).
+- **Acceptance Criteria**:
+  - [x] Tombol `.adm-btn-primary` menggunakan latar hijau lembut daun `var(--adm-btn-primary-bg)` dengan teks/ikon gelap `var(--surface-dark-deep)` / `var(--text-main)` (rasio kontras >= 13.9:1, Lulus WCAG AAA).
+  - [x] Tombol `.adm-btn-secondary` (5.66:1), `.adm-btn-neutral` (10.36:1), dan `.adm-btn-danger` (7.02:1) seluruhnya memakai token resmi tanpa warna biru dan lulus WCAG AA.
+  - [x] Animasi mikro hanya menggunakan properti `transform` dan `opacity`, dibungkus `@media (hover: hover)` untuk hover, memiliki state `:active` untuk layar sentuh, dan dinonaktifkan pada `@media (prefers-reduced-motion: reduce)`.
+  - [x] Target sentuh memiliki tinggi minimal 44px pada mobile (`<= 768px`).
+  - [x] Class `.btn-secondary` di `public/css/components.css` untuk halaman publik tetap utuh 100%.
+- **File Terdampak**: `Design/DESIGN.md`, `public/css/tokens.css`, `public/css/admin.css`
+- **Skill**: Impeccable polish + Impeccable animate + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t257-buttons-playwright.js` (7/7 langkah lulus). Selesai 2026-11-02.
+
+### T-258: Migrasi Seluruh Tombol Halaman Admin, Modal, Tabel & Pemendekan Label ID/EN ke `.adm-btn-*` [DONE]
+- **Deskripsi**: Mengganti seluruh pemakaian tombol lama (`.btn`, `.btn-primary`, `.btn-secondary`, `.btn-outline`, `.btn-ghost`, `.btn-action-*`, `.btn-add-row`) di seluruh view EJS admin dan script pembentuk tombol dinamis (`admin-size-table.js`, `admin-settings.js`, `media-picker.js`) ke `.adm-btn-*` sesuai pemetaan varian Q1 (`primary`), Q2 (`neutral`), dan Q7 (`danger`). Memasang set ikon SVG inline yang seragam di sisi kiri serta menerapkan daftar 31 label pendek dwibahasa ID/EN dan `aria-label` yang telah disetujui pada Q4.
+- **Acceptance Criteria**:
+  - [x] Tidak ada lagi tombol di area admin yang menggunakan `.btn-secondary` lama atau tombol tanpa ikon standar.
+  - [x] Seluruh tombol Simpan memakai `.adm-btn-primary`, tombol Batal/Kembali/Reset memakai `.adm-btn-neutral`, tombol aksi umum/tambah baris/ekspor/pratinjau memakai `.adm-btn-secondary`, dan tombol Hapus memakai `.adm-btn-danger`.
+  - [x] Seluruh label tombol di halaman, tabel, dan modal admin menggunakan label pendek ID/EN sesuai tabel Q4 dengan `aria-label` deskriptif.
+- **File Terdampak**: Seluruh view di `views/admin/**/*.ejs`, `views/partials/media-picker-modal.ejs`, `public/js/admin-size-table.js`, `public/js/admin-settings.js`, `public/js/media-picker.js`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t258-buttons-migration-playwright.js` (7/7 langkah lulus). Selesai 2026-11-02.
+
+### T-259: Modul Validasi Formulir Admin Terpusat, Pesan Dwibahasa ID/EN, Auto-Open Tab & Integrasi Kontrol Kustom [DONE]
+- **Deskripsi**: Membangun modul `public/js/admin-form-validation.js` dan menambahkan `novalidate` serta kelengkapan atribut batas karakter (`maxlength` sesuai skema kolom database) pada seluruh form admin untuk menggantikan tooltip validasi bawaan browser. Validasi dijalankan saat tombol Submit ditekan, lalu berjalan secara *live* (`input`/`change`) per field setelah field tersebut pernah mengalami error. Mencakup validasi kontrol kustom (TinyMCE, Media Picker, select, repeater WhatsApp, dan editor tabel ukuran), membuka tab tersembunyi secara otomatis jika terdapat field error di dalamnya, memfokuskan & menggulir ke field error pertama, menampilkan error server-side dengan gaya yang sama, serta mengaktifkan loading state tombol submit untuk mencegah kirim ganda.
+- **Acceptance Criteria**:
+  - [x] Tidak ada lagi tooltip validasi bawaan browser (*"Please fill out this field."*) di seluruh form admin.
+  - [x] Validasi berjalan tepat saat Submit ditekan, dan setelah suatu field berstatus error, perubahan nilai (`input`/`change`) pada field tersebut langsung memvalidasi ulang dan menghilangkan error seketika saat valid (Q5: Opsi A).
+  - [x] Error tampil inline di bawah field dengan warna `var(--color-error)`, ikon kecil, border field merah dari token, `aria-invalid="true"`, dan `aria-describedby` yang terhubung ke ID elemen pesan error dalam bahasa ID dan EN.
+  - [x] Jika field error berada di dalam tab yang sedang tertutup (`about/index.ejs`, `home-content/index.ejs`, `settings/index.ejs`), tab tersebut otomatis terbuka lalu halaman menggulir dan fokus ke field error pertama.
+  - [x] Mencakup validasi TinyMCE, Media Picker, select, repeater WhatsApp, dan editor tabel ukuran, serta merender error dari server-side dengan gaya visual yang sama.
+  - [x] Tombol submit masuk ke state `.is-loading` (`disabled`) saat form valid dikirim guna mencegah pengiriman ganda.
+- **File Terdampak**: `public/js/admin-form-validation.js`, `public/css/admin.css`, `views/partials/admin-footer.ejs`, `views/admin/login.ejs`, seluruh view form di `views/admin/**/*.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t259-form-validation-playwright.js` (7/7 langkah lulus). Selesai 2026-11-02.
+
+### T-260: Penggantian Seluruh Native `alert()`/`confirm()` dengan SweetAlert2 Bertema & Pembersihan Inline Handler Admin [DONE]
+- **Deskripsi**: Mengaudit dan mengganti seluruh pemanggilan `alert()` dan `confirm()` native di script dan view admin (`public/js/admin-settings.js`, `public/js/admin-size-table.js`, `public/js/media-picker.js`, `public/js/admin.js`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`) menjadi dialog SweetAlert2 bertema token Euodoo. Seluruh tombol konfirmasi hapus di dalam popup SweetAlert2 menggunakan komponen `.adm-btn .adm-btn-danger` (dengan ikon tempat sampah) dan tombol batal menggunakan `.adm-btn .adm-btn-neutral` (`buttonsStyling: false`). Memindahkan seluruh event handler inline (`onclick`, `onchange`, `onsubmit`, `oninput`, `onerror`) pada view admin ke event listener terpusat yang patuh CSP tanpa inline handler baru.
+- **Acceptance Criteria**:
+  - [x] Nol pemanggilan `alert()` atau `confirm()` native di seluruh kode admin.
+  - [x] Seluruh dialog konfirmasi hapus menggunakan SweetAlert2 bertema dengan tombol konfirmasi `.adm-btn .adm-btn-danger` dan tombol batal `.adm-btn .adm-btn-neutral` (Q7).
+  - [x] Tidak ada lagi penambahan atau ketergantungan pada inline style maupun inline event handler (`onclick`, `onchange`, `onsubmit`, `oninput`) di template admin; sepenuhnya kompatibel dengan kebijakan CSP.
+- **File Terdampak**: `public/js/admin.js`, `public/js/admin-settings.js`, `public/js/admin-size-table.js`, `public/js/media-picker.js`, `views/admin/dashboard.ejs`, `views/admin/inquiries/index.ejs`, `views/admin/inquiries/detail.ejs`, `views/admin/products/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `views/admin/banners/create.ejs`, `views/admin/banners/edit.ejs`, `views/admin/media/index.ejs`, `views/admin/about/index.ejs`
+- **Skill**: Impeccable polish
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t260-sweetalert-csp-playwright.js` (9/9 langkah lulus). Selesai 2026-11-02.
+
+### T-261: UI Polish, Adaptasi Mobile (320px-Desktop, Zoom 100/125/150%, Tinggi 600-768px) & Pengujian Regresi Menyeluruh (Bagian C) [DONE]
+- **Deskripsi**: Melakukan pengecekan akhir konsistensi visual tombol `.adm-btn-*` (termasuk varian `primary` `#D1ECB9`, `secondary`, `neutral`, `danger`), tampilan slug satu baris, favicon simbol logo persegi berlatar circular badge, serta validasi form di seluruh menu admin pada level zoom 100%, 125%, dan 150%, tinggi layar pendek 600px-768px (memastikan bagian body modal dapat di-scroll dan footer modal berisi tombol Batal/Simpan selalu terlihat dan tidak terpotong), serta lebar viewport 320px hingga desktop.
+- **Acceptance Criteria**:
+  - [x] Pada tinggi layar 600px-768px dan zoom 100%/125%/150%, footer modal (`Batal` / `Simpan`) dan sticky action bar tetap terlihat serta dapat diakses tanpa terpotong viewport.
+  - [x] Seluruh fungsi CRUD dan aksi admin (simpan, batal, tambah, hapus, ekspor CSV, unggah media, filter/reset) berjalan lancar dengan token CSRF tetap utuh.
+  - [x] Responsif penuh dari 320px sampai desktop dalam bahasa ID dan EN, favicon tampil proporsional di publik & admin, serta nol error pada console browser.
+- **File Terdampak**: `public/css/admin.css`, `middleware/uploadMiddleware.js`, `views/admin/inquiries/index.ejs`, `views/admin/dashboard.ejs`, `views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, `views/admin/403.ejs`
+- **Skill**: Impeccable polish + Impeccable adapt + Impeccable animate
+- **Verifikasi**: Pengujian Playwright E2E `tests/test-t261-responsive-regression-playwright.js` (6/6 langkah lulus) serta pengujian penuh seluruh test suite T-255 s/d T-260 (100% passed). Selesai 2026-11-02.

@@ -6,14 +6,17 @@
     <p>Perbarui judul headline, caption, tautan CTA, atau ganti file media/YouTube.</p>
   </div>
   <div class="header-actions">
-    <a href="/admin/banners" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+    <a href="/admin/banners" class="adm-btn adm-btn-neutral" aria-label="Kembali ke daftar banner">
+      <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>Kembali</span>
+    </a>
   </div>
 </div>
 
 <div class="form-card" style="max-width: 740px; margin: 0 auto;">
   <div class="form-card-title">Perbarui Banner Hero</div>
 
-  <form action="/admin/banners/<%= banner.id %>?_csrf=<%= csrfToken %>" method="POST">
+  <form action="/admin/banners/<%= banner.id %>?_csrf=<%= csrfToken %>" method="POST" novalidate>
     <div class="form-row-2">
       <div class="form-group">
         <label class="form-label" for="title_id">Judul Headline (Bahasa Indonesia) *</label>
@@ -39,7 +42,7 @@
     <!-- Pilihan Sumber Media Multi-Sumber (B.2) -->
     <div class="form-group">
       <label class="form-label" for="media_type">Tipe Sumber Media Latar Belakang *</label>
-      <select id="media_type" name="media_type" class="form-select" onchange="toggleBannerSource(this.value)">
+      <select id="media_type" name="media_type" class="form-select">
         <option value="image" <%= banner.media_type === 'image' ? 'selected' : '' %>>Gambar Beresolusi Tinggi (WebP / JPG / PNG)</option>
         <option value="video" <%= banner.media_type === 'video' ? 'selected' : '' %>>Berkas Video Lokal (MP4 / WebM)</option>
         <option value="youtube" <%= banner.media_type === 'youtube' ? 'selected' : '' %>>Streaming Video YouTube (URL Embed Resmi)</option>
@@ -70,11 +73,14 @@
           <% } %>
         </div>
         <div class="media-picker-ctrls">
-          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="banner_file_url" data-picker-type="<%= banner.media_type === 'video' ? 'video' : 'image' %>" id="btnBannerOpenPicker">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            Pilih dari Media Library
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="banner_file_url" data-picker-type="<%= banner.media_type === 'video' ? 'video' : 'image' %>" id="btnBannerOpenPicker" aria-label="Pilih aset media banner dari Media Library">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Pilih Media</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= (banner.file_url || banner.image_url) ? '' : 'display: none;' %>">Hapus</button>
+          <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= (banner.file_url || banner.image_url) ? '' : 'display: none;' %>" aria-label="Hapus aset media banner">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
+          </button>
         </div>
       </div>
     </div>
@@ -82,7 +88,7 @@
     <!-- YouTube Link Input -->
     <div class="form-group" id="groupYouTubeInput" style="<%= banner.media_type === 'youtube' ? '' : 'display: none;' %>">
       <label class="form-label" for="youtube_url">Tautan / URL Video YouTube</label>
-      <input type="text" id="youtube_url" name="youtube_url" class="form-input" value="<%= banner.media_type === 'youtube' ? (banner.file_url?.length === 11 ? 'https://www.youtube.com/watch?v=' + banner.file_url : banner.file_url) : '' %>" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ" oninput="previewBannerYoutube(this.value)">
+      <input type="text" id="youtube_url" name="youtube_url" class="form-input" value="<%= banner.media_type === 'youtube' ? (banner.file_url?.length === 11 ? 'https://www.youtube.com/watch?v=' + banner.file_url : banner.file_url) : '' %>" placeholder="Contoh: https://www.youtube.com/watch?v=dQw4w9WgXcQ">
       <span style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">Mendukung format tautan YouTube reguler, share youtu.be, shorts, atau ID video 11 karakter.</span>
       <div id="bannerYtPreview" style="<%= (banner.media_type === 'youtube' && banner.file_url) ? '' : 'display: none;' %>; margin-top: 10px;">
         <iframe id="bannerYtIframe" width="100%" height="220" src="<%= (banner.media_type === 'youtube' && banner.file_url) ? ('https://www.youtube.com/embed/' + (banner.file_url.includes('embed/') ? banner.file_url.split('embed/')[1] : banner.file_url)) : '' %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: var(--r-md); border: 1px solid var(--border-main); max-width: 480px;"></iframe>
@@ -107,10 +113,14 @@
           <% } %>
         </div>
         <div class="media-picker-ctrls">
-          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="banner_poster_url" data-picker-type="image">
-            Pilih Poster
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="banner_poster_url" data-picker-type="image" aria-label="Pilih gambar poster fallback dari Media Library">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Pilih Poster</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= banner.poster_url ? '' : 'display: none;' %>">Hapus</button>
+          <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= banner.poster_url ? '' : 'display: none;' %>" aria-label="Hapus poster fallback">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
+          </button>
         </div>
       </div>
     </div>
@@ -169,9 +179,15 @@
       </div>
     </div>
 
-    <div class="form-actions">
-      <a href="/admin/banners" class="btn btn-secondary">Batal</a>
-      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    <div class="form-actions-bar">
+      <a href="/admin/banners" class="adm-btn adm-btn-neutral" aria-label="Batalkan perubahan">
+        <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <span>Batal</span>
+      </a>
+      <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan perubahan banner">
+        <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Simpan</span>
+      </button>
     </div>
   </form>
 </div>
@@ -224,6 +240,16 @@
       wrap.style.display = 'none';
       iframe.src = '';
     }
+  }
+
+  const mediaTypeSelect = document.getElementById('media_type');
+  if (mediaTypeSelect) {
+    mediaTypeSelect.addEventListener('change', (e) => toggleBannerSource(e.target.value));
+  }
+
+  const ytInput = document.getElementById('youtube_url');
+  if (ytInput) {
+    ytInput.addEventListener('input', (e) => previewBannerYoutube(e.target.value));
   }
 </script>
 

@@ -1,6 +1,6 @@
 import settingModel from '../../models/settingModel.js';
 import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
-import { saveSettingUpload } from '../../middleware/uploadMiddleware.js';
+import { saveSettingUpload, generateFaviconSet } from '../../middleware/uploadMiddleware.js';
 import logger from '../../utils/logger.js';
 
 /**
@@ -232,15 +232,10 @@ export const settingController = {
         updates[legacyUrlKey] = trimmedUrl;
       }
 
-      // Handle upload favicon file (T-64)
-      if (req.files && req.files.favicon_file && req.files.favicon_file[0]) {
-        const faviconUrl = await saveSettingUpload(req.files.favicon_file[0], 'favicon');
-        if (faviconUrl) {
-          updates.site_favicon = faviconUrl;
-        }
+      // Handle logo header (media picker or direct file upload)
+      if (req.body && req.body.site_logo_header !== undefined) {
+        updates.site_logo_header = req.body.site_logo_header.trim();
       }
-
-      // Handle upload logo header file (T-65)
       if (req.files && req.files.logo_header_file && req.files.logo_header_file[0]) {
         const logoHeaderUrl = await saveSettingUpload(req.files.logo_header_file[0], 'logo-header');
         if (logoHeaderUrl) {
@@ -248,11 +243,56 @@ export const settingController = {
         }
       }
 
-      // Handle upload logo footer file (T-65)
+      // Handle logo footer (media picker or direct file upload)
+      if (req.body && req.body.site_logo_footer !== undefined) {
+        updates.site_logo_footer = req.body.site_logo_footer.trim();
+      }
       if (req.files && req.files.logo_footer_file && req.files.logo_footer_file[0]) {
         const logoFooterUrl = await saveSettingUpload(req.files.logo_footer_file[0], 'logo-footer');
         if (logoFooterUrl) {
           updates.site_logo_footer = logoFooterUrl;
+        }
+      }
+
+      // Handle Favicon generator with multi-size packages & auto fallback (T-256)
+      let faviconSource = null;
+      let hasExplicitFavicon = false;
+
+      // 1. Direct file upload
+      if (req.files && req.files.favicon_file && req.files.favicon_file[0]) {
+        faviconSource = req.files.favicon_file[0].buffer;
+        hasExplicitFavicon = true;
+      } else if (req.body && req.body.site_favicon !== undefined && req.body.site_favicon.trim()) {
+        faviconSource = req.body.site_favicon.trim();
+        hasExplicitFavicon = true;
+      }
+
+      // 2. Fallback when favicon is cleared or empty
+      if (!hasExplicitFavicon && req.body && req.body.site_favicon !== undefined && req.body.site_favicon.trim() === '') {
+        const fallbackLogo = updates.site_logo_header || (await settingModel.get('site_logo_header')) || '';
+        if (fallbackLogo) {
+          faviconSource = fallbackLogo;
+          updates.site_favicon_source = '';
+        }
+      }
+
+      if (faviconSource) {
+        try {
+          const faviconSet = await generateFaviconSet(faviconSource);
+          updates.site_favicon = faviconSet.favicon;
+          updates.site_favicon_16 = faviconSet.sizes[16];
+          updates.site_favicon_32 = faviconSet.sizes[32];
+          updates.site_favicon_180 = faviconSet.sizes[180];
+          updates.site_favicon_192 = faviconSet.sizes[192];
+          updates.site_favicon_512 = faviconSet.sizes[512];
+          if (hasExplicitFavicon && typeof faviconSource === 'string') {
+            updates.site_favicon_source = faviconSource;
+          }
+        } catch (faviconErr) {
+          logger.warn(`Favicon generation error: ${faviconErr.message}`);
+          if (typeof faviconSource === 'string') {
+            updates.site_favicon = faviconSource;
+          }
         }
       }
 

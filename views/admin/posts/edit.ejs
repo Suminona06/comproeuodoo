@@ -7,11 +7,14 @@
     <p>Perbarui konten berita, tanggal jadwal rilis, atau foto sampul.</p>
   </div>
   <div class="header-actions">
-    <a href="/admin/posts" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+    <a href="/admin/posts" class="adm-btn adm-btn-neutral" aria-label="Kembali ke daftar artikel">
+      <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>Kembali</span>
+    </a>
   </div>
 </div>
 
-<form action="/admin/posts/<%= post.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+<form action="/admin/posts/<%= post.id %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" novalidate>
   <!-- Card 1: Pengaturan Artikel -->
   <div class="form-card">
     <div class="form-card-title">1. Kategori &amp; Jadwal Publikasi</div>
@@ -38,7 +41,7 @@
 
       <div class="form-group">
         <label class="form-label" for="status">Status</label>
-        <select id="status" name="status" class="form-select" onchange="toggleScheduled(this.value)">
+        <select id="status" name="status" class="form-select">
           <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>Published (Tayang)</option>
           <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>Draft (Draf)</option>
           <option value="scheduled" <%= post.status === 'scheduled' ? 'selected' : '' %>>Scheduled (Terjadwal)</option>
@@ -86,11 +89,11 @@
 
     <div class="form-group">
       <label class="form-label" for="slug">URL Slug Kustom *</label>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 13px; color: var(--text-muted, #64748b); background: #f1f5f9; padding: 7px 12px; border: 1px solid var(--border-color, #cbd5e1); border-radius: 6px; font-family: monospace;">/news/</span>
-        <input type="text" id="slug" name="slug" class="form-input" style="flex: 1;" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" required value="<%= post.slug %>">
+      <div class="adm-slug-input-group">
+        <span class="adm-slug-prefix">/news/</span>
+        <input type="text" id="slug" name="slug" class="form-input" maxlength="191" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" required value="<%= post.slug %>">
       </div>
-      <div class="form-hint" style="font-size: 11.5px; margin-top: 4px;">Jika slug diubah, sistem otomatis membuat redirect permanen 301 dari slug lama ke slug baru untuk menjaga SEO.</div>
+      <div class="form-hint">Jika slug diubah, sistem otomatis membuat redirect permanen 301 dari slug lama ke slug baru untuk menjaga SEO.</div>
     </div>
 
     <div class="form-group">
@@ -105,11 +108,14 @@
           </div>
         </div>
         <div class="media-picker-ctrls">
-          <button type="button" class="btn btn-secondary btn-sm btn-open-media-picker" data-target="post_image_url" data-picker-type="image">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            Pilih dari Media Library
+          <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="post_image_url" data-picker-type="image" aria-label="Pilih foto sampul artikel dari Media Library">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Pilih Media</span>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm btn-clear-media" style="<%= post.display_image ? '' : 'display: none;' %>">Hapus</button>
+          <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media" style="<%= post.display_image ? '' : 'display: none;' %>" aria-label="Hapus foto sampul artikel">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
+          </button>
         </div>
       </div>
     </div>
@@ -151,8 +157,14 @@
   </div>
 
   <div class="form-actions-bar" style="margin-bottom: 2rem;">
-    <a href="/admin/posts" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary" style="padding: 8px 20px; font-size: 13px;">Simpan Perubahan</button>
+    <a href="/admin/posts" class="adm-btn adm-btn-neutral" aria-label="Batalkan perubahan">
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      <span>Batal</span>
+    </a>
+    <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan perubahan artikel">
+      <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Simpan</span>
+    </button>
   </div>
 </form>
 
@@ -164,6 +176,11 @@
     } else {
       row.style.display = 'none';
     }
+  }
+
+  const statusSelect = document.getElementById('status');
+  if (statusSelect) {
+    statusSelect.addEventListener('change', (e) => toggleScheduled(e.target.value));
   }
 </script>
 

@@ -6,9 +6,9 @@
     <p>Kelola pesan masuk dari calon mitra bisnis, atur status penawaran, dan ekspor arsip data sales.</p>
   </div>
   <div class="header-actions">
-    <a href="/admin/leads/export" class="btn btn-secondary" download>
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      <span>Unduh Laporan CSV</span>
+    <a href="/admin/leads/export" class="adm-btn adm-btn-secondary" aria-label="Unduh laporan leads ke CSV" download>
+      <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Ekspor</span>
     </a>
   </div>
 </div>
@@ -34,12 +34,14 @@
       </select>
     </div>
     <div style="display: flex; gap: 0.5rem;">
-      <button type="submit" class="btn btn-secondary">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-        <span>Filter Data</span>
+      <button type="submit" class="adm-btn adm-btn-secondary" aria-label="Terapkan filter data leads">
+        <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        <span>Filter</span>
       </button>
       <% if (selectedStatus || selectedType) { %>
-        <a href="/admin/leads" class="btn btn-ghost">Reset</a>
+        <a href="/admin/leads" class="adm-btn adm-btn-neutral" aria-label="Reset filter pencarian leads">
+          <span>Reset</span>
+        </a>
       <% } %>
     </div>
   </form>
@@ -122,8 +124,9 @@
                       <option value="selesai" <%= lead.status === 'selesai' ? 'selected' : '' %>>Selesai</option>
                       <option value="ditolak" <%= lead.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
                     </select>
-                    <button type="submit" class="btn btn-secondary" style="min-height: 32px; padding: 4px 10px; font-size: 12px;">
-                      Simpan
+                    <button type="submit" class="adm-btn adm-btn-primary adm-btn-sm" aria-label="Simpan perubahan status lead">
+                      <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span>Simpan</span>
                     </button>
                   </div>
                   <input type="text" name="admin_notes" class="form-input" style="min-height: 28px; font-size: 11.5px; padding: 2px 8px;" placeholder="Catatan sales..." value="<%= lead.admin_notes || '' %>">

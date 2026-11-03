@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-24 | Kode: controllers/admin/mediaController.js, middleware/uploadMiddleware.js, models/mediaModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: controllers/admin/mediaController.js, middleware/uploadMiddleware.js, models/mediaModel.js
 
 # Tech Spec: Modul Media Library (Media & Storage)
 

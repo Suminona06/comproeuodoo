@@ -27,6 +27,13 @@
   --primary-subtle: #e6f7f2;
   --primary-border: #a3e0d0;
 
+  /* Admin Button Primary - Leaf Soft (Keputusan Q1 & T-257) */
+  --color-leaf-soft: #d1ecb9;
+  --adm-btn-primary-bg: var(--color-leaf-soft);
+  --adm-btn-primary-hover-bg: #c3e5a5;
+  --adm-btn-primary-border: #b8de96;
+  --adm-btn-primary-text: #071f17;
+
   /* High-Contrast Status Palette */
   --st-baru-bg: #fef3c7;
   --st-baru-text: #92400e;
@@ -59,9 +66,18 @@
   --shadow-popover: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
 
   --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --ease: 180ms cubic-bezier(0.4, 0, 0.2, 1);
   --sidebar-width: 245px;
   --sidebar-collapsed-width: 68px;
+
+  /* Unified Dropdown Tokens (.eu-dd-*) [T-262] */
+  --eu-dd-height: 52px;
+  --eu-dd-height-sm: 36px;
+  --eu-dd-caret-size: 8px;
+  --eu-dd-panel-max-height: 260px;
+  --focus-ring: 0 0 0 3px rgba(0, 117, 90, 0.25);
+  --z-dropdown: 1010;
 }
 
 *, *::before, *::after {
@@ -696,6 +712,291 @@ body.sidebar-open .admin-backdrop {
   font-size: 11.5px;
 }
 
+/* ========================================================
+   Komponen Tombol Admin Terpadu (.adm-btn-*)
+   Standar UI Admin Baru (T-257, Keputusan Q1, Q2, Q7)
+   Acuan Visual & Animasi: .btn-add-row (Tabel Ukuran Produk)
+   ======================================================== */
+
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.4;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  transition: transform var(--ease, 0.2s ease),
+              opacity var(--ease, 0.2s ease),
+              background-color var(--ease, 0.2s ease),
+              border-color var(--ease, 0.2s ease),
+              color var(--ease, 0.2s ease),
+              box-shadow var(--ease, 0.2s ease);
+}
+
+.adm-btn svg,
+.adm-btn .adm-btn-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+  transition: transform var(--ease, 0.2s ease);
+}
+
+/* Varian 1: Primary - Leaf Soft (Keputusan Q1: Opsi A) */
+.adm-btn-primary {
+  background-color: var(--adm-btn-primary-bg, var(--color-leaf-soft, #d1ecb9));
+  border-color: var(--adm-btn-primary-border, #b8de96);
+  color: var(--adm-btn-primary-text, #071f17);
+}
+
+.adm-btn-primary svg,
+.adm-btn-primary .adm-btn-icon {
+  color: var(--adm-btn-primary-text, #071f17);
+}
+
+.adm-btn-primary:active {
+  background-color: #b8de96;
+  border-color: #a4d27c;
+  color: var(--adm-btn-primary-text, #071f17);
+}
+
+/* Varian 2: Secondary - Outline Hijau (Acuan Tabel Ukuran) */
+.adm-btn-secondary {
+  background-color: var(--bg-surface, #ffffff);
+  border-color: var(--border-main, #e2e8f0);
+  color: var(--primary, #00755a);
+}
+
+.adm-btn-secondary svg,
+.adm-btn-secondary .adm-btn-icon {
+  color: var(--primary, #00755a);
+}
+
+.adm-btn-secondary:active {
+  background-color: #d1f0e7;
+  color: var(--primary-hover, #00573f);
+}
+
+/* Varian 3: Neutral / Ghost - Batal & Navigasi (Keputusan Q2: Opsi A) */
+.adm-btn-neutral,
+.adm-btn-ghost {
+  background-color: var(--bg-surface, #ffffff);
+  border-color: var(--border-main, #e2e8f0);
+  color: var(--text-secondary, #334155);
+}
+
+.adm-btn-neutral svg,
+.adm-btn-neutral .adm-btn-icon,
+.adm-btn-ghost svg,
+.adm-btn-ghost .adm-btn-icon {
+  color: var(--text-secondary, #334155);
+}
+
+.adm-btn-neutral:active,
+.adm-btn-ghost:active {
+  background-color: #e2e8f0;
+  color: var(--text-main, #090d16);
+}
+
+/* Varian 4: Danger - Aksi Destruktif / Hapus (Keputusan Q7) */
+.adm-btn-danger {
+  background-color: var(--st-ditolak-bg, #fee2e2);
+  border-color: var(--st-ditolak-border, #fecaca);
+  color: #7f1d1d;
+}
+
+.adm-btn-danger svg,
+.adm-btn-danger .adm-btn-icon {
+  color: #7f1d1d;
+}
+
+.adm-btn-danger:active {
+  background-color: #fca5a5;
+  color: #7f1d1d;
+}
+
+/* Hover States (Dibungkus @media hover untuk mencegah sticky hover di layar sentuh) */
+@media (hover: hover) {
+  .adm-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .adm-btn-primary:hover {
+    background-color: var(--adm-btn-primary-hover-bg, #c3e5a5);
+    border-color: #a4d27c;
+    color: var(--adm-btn-primary-text, #071f17);
+  }
+
+  .adm-btn-secondary:hover {
+    background-color: var(--primary-subtle, #e6f7f2);
+    border-color: var(--primary-border, #a3e0d0);
+    color: var(--primary-hover, #00573f);
+  }
+
+  .adm-btn-secondary:hover svg,
+  .adm-btn-secondary:hover .adm-btn-icon {
+    color: var(--primary-hover, #00573f);
+  }
+
+  .adm-btn-neutral:hover,
+  .adm-btn-ghost:hover {
+    background-color: var(--bg-subtle, #f1f5f9);
+    border-color: var(--border-hover, #94a3b8);
+    color: var(--text-main, #090d16);
+  }
+
+  .adm-btn-neutral:hover svg,
+  .adm-btn-neutral:hover .adm-btn-icon,
+  .adm-btn-ghost:hover svg,
+  .adm-btn-ghost:hover .adm-btn-icon {
+    color: var(--text-main, #090d16);
+  }
+
+  .adm-btn-danger:hover {
+    background-color: #fecaca;
+    border-color: #fca5a5;
+    color: #7f1d1d;
+  }
+
+  .adm-btn-danger:hover svg,
+  .adm-btn-danger:hover .adm-btn-icon {
+    color: #7f1d1d;
+  }
+
+  /* Animasi Mikro Kontekstual Ikon SVG saat Tombol di-Hover */
+  .adm-btn:hover .adm-btn-icon-plus,
+  .adm-btn:hover svg.adm-btn-icon-plus {
+    transform: rotate(90deg);
+  }
+
+  .adm-btn:hover .adm-btn-icon-back,
+  .adm-btn:hover svg.adm-btn-icon-back {
+    transform: translateX(-2px);
+  }
+
+  .adm-btn:hover .adm-btn-icon-save,
+  .adm-btn:hover .adm-btn-icon-download,
+  .adm-btn:hover .adm-btn-icon-trash,
+  .adm-btn:hover svg.adm-btn-icon-save,
+  .adm-btn:hover svg.adm-btn-icon-download,
+  .adm-btn:hover svg.adm-btn-icon-trash {
+    transform: scale(1.08);
+  }
+}
+
+/* Active State (Sentuh / Klik) */
+.adm-btn:active {
+  transform: translateY(0);
+}
+
+/* Focus Visible State (Aksesibilitas Keyboard & High Contrast Focus Ring) */
+.adm-btn:focus-visible {
+  outline: 2px solid var(--primary, #00755a);
+  outline-offset: 2px;
+}
+
+.adm-btn-danger:focus-visible {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+/* Modifiers Ukuran & Layout */
+.adm-btn-sm {
+  padding: 5px 10px;
+  font-size: 11.5px;
+  gap: 4px;
+}
+
+.adm-btn-sm svg,
+.adm-btn-sm .adm-btn-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.adm-btn-lg {
+  padding: 8px 18px;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.adm-btn-block {
+  width: 100%;
+  display: flex;
+}
+
+/* Disabled & Loading States */
+.adm-btn:disabled,
+.adm-btn[disabled],
+.adm-btn.is-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.adm-btn.is-loading {
+  position: relative;
+  opacity: 0.8;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.adm-btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: admBtnSpin 0.75s linear infinite;
+}
+
+@keyframes admBtnSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsif Mobile & Target Sentuh Minimal 44px */
+@media (max-width: 768px) {
+  .adm-btn {
+    min-height: 44px;
+  }
+
+  .adm-btn-sm {
+    min-height: 38px;
+  }
+}
+
+/* Preferensi Aksesibilitas: Matikan Animasi Mikro Transform */
+@media (prefers-reduced-motion: reduce) {
+  .adm-btn,
+  .adm-btn svg,
+  .adm-btn .adm-btn-icon {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .adm-btn-spinner {
+    animation-duration: 1.5s;
+  }
+}
+
 /* Metrics Row */
 .metrics-row {
   display: grid;
@@ -891,6 +1192,17 @@ body.sidebar-open .admin-backdrop {
 .td-client-sub {
   font-size: 11.5px;
   color: var(--text-muted);
+}
+
+.adm-slug-text {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-muted);
+  max-width: clamp(140px, 28vw, 320px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 
 .td-muted-text {
@@ -1232,6 +1544,58 @@ body.sidebar-open .admin-backdrop {
   color: var(--text-muted);
 }
 
+/* Slug Components */
+.adm-slug-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--bg-subtle, #f8fafc);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  max-width: 100%;
+}
+
+.adm-slug-prefix {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  background: transparent;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.adm-slug-val {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-main);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adm-slug-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.adm-slug-input-group .adm-slug-prefix {
+  background: var(--bg-subtle, #f1f5f9);
+  padding: 7px 12px;
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+}
+
+.adm-slug-input-group .form-input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
 .form-check {
   display: flex;
   align-items: center;
@@ -1528,8 +1892,8 @@ body.sidebar-open .admin-backdrop {
   box-shadow: var(--shadow-popover);
   width: 100%;
   max-width: 580px;
-  max-height: calc(100vh - 2.5rem);
-  max-height: min(88dvh, 720px);
+  max-height: calc(100vh - 24px);
+  max-height: min(calc(100dvh - 24px), 760px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1638,7 +2002,7 @@ body.sidebar-open .admin-backdrop {
   position: fixed;
   bottom: 24px;
   left: 24px;
-  z-index: 1100;
+  z-index: 1500;
   background: #0f172a;
   color: #ffffff;
   padding: 10px 16px;
@@ -1986,6 +2350,11 @@ body.sidebar-open .admin-backdrop {
   gap: 0.75rem !important;
   margin-top: 1.5rem !important;
 }
+.swal2-actions .adm-btn {
+  padding: 8px 18px !important;
+  font-size: 13px !important;
+  min-height: 38px !important;
+}
 .swal2-styled.swal2-custom-confirm-btn {
   font-family: var(--font-main, 'Plus Jakarta Sans', sans-serif) !important;
   font-weight: 600 !important;
@@ -2067,6 +2436,7 @@ body.sidebar-open .admin-backdrop {
 
 /* Media Picker Modal - Liquid Glass & Accessibility Polish (T-95) */
 .media-picker-modal.admin-modal-backdrop {
+  z-index: 1400;
   background: rgba(7, 31, 23, 0.68);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -2077,7 +2447,8 @@ body.sidebar-open .admin-backdrop {
 .media-picker-modal .admin-modal-box {
   max-width: 920px;
   width: 95vw;
-  max-height: 88vh;
+  max-height: calc(100vh - 24px);
+  max-height: min(calc(100dvh - 24px), 820px);
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -2139,8 +2510,8 @@ body.sidebar-open .admin-backdrop {
 .media-picker-body {
   padding: 1.25rem 1.5rem;
   overflow-y: auto;
-  flex: 1;
-  min-height: 240px;
+  flex: 1 1 auto;
+  min-height: 120px;
   background: rgba(255, 255, 255, 0.88);
 }
 
@@ -2217,6 +2588,10 @@ body.sidebar-open .admin-backdrop {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .media-picker-selected-info {
@@ -2914,4 +3289,740 @@ body.sidebar-open .admin-backdrop {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+/* ==========================================================================
+   Admin Form Validation Engine (.is-invalid, .adm-field-error)
+   T-259: Validasi Form Admin Terpusat & Error Inline Berbasis Token
+   ========================================================================== */
+.form-input.is-invalid,
+.form-textarea.is-invalid,
+.form-select.is-invalid,
+.tox.tox-tinymce.is-invalid,
+.media-picker-component.is-invalid .media-picker-preview-box {
+  border-color: var(--color-error, #ba1a1a) !important;
+  box-shadow: 0 0 0 1px var(--color-error, #ba1a1a) !important;
+}
+
+.adm-field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--color-error, #ba1a1a);
+  font-weight: 500;
+  animation: admErrorFadeIn 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.adm-field-error-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  stroke: var(--color-error, #ba1a1a);
+}
+
+@keyframes admErrorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-field-error {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   T-261: UI Polish, Viewport Adaptation (320px - Desktop, Zoom 100/125/150%,
+   Height 600px - 768px, Sticky Footer & Action Bars)
+   ========================================================================== */
+
+/* Short Screen Heights (600px - 768px, or 125% - 150% browser zoom) */
+@media (max-height: 768px) {
+  .admin-modal-backdrop {
+    padding: 0.65rem;
+  }
+  .admin-modal-card {
+    max-height: calc(100vh - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+  }
+  .admin-modal-header {
+    padding: 0.65rem 1rem !important;
+  }
+  .admin-modal-body {
+    padding: 0.75rem 1rem !important;
+    gap: 0.75rem !important;
+  }
+  .admin-modal-footer {
+    padding: 0.55rem 1rem !important;
+  }
+  .media-picker-modal.admin-modal-backdrop {
+    padding: 0.65rem;
+  }
+  .media-picker-modal .admin-modal-box {
+    max-height: calc(100vh - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+  }
+  .media-picker-modal-header {
+    padding: 0.75rem 1.25rem !important;
+  }
+  .media-picker-tabs {
+    padding: 0 1.25rem !important;
+  }
+  .media-picker-body {
+    padding: 0.75rem 1.25rem !important;
+    min-height: 100px !important;
+  }
+  .media-picker-footer {
+    padding: 0.65rem 1.25rem !important;
+  }
+  .settings-sticky-actions,
+  .about-sticky-actions {
+    padding: 0.65rem 1.25rem !important;
+    margin-top: 1rem !important;
+  }
+  .form-actions-sticky {
+    padding: 8px 14px !important;
+    margin-top: 1rem !important;
+  }
+}
+
+/* Extreme Short Heights (520px or 600px screen at 150% zoom) */
+@media (max-height: 520px) {
+  .admin-modal-backdrop {
+    padding: 0.35rem;
+  }
+  .admin-modal-card {
+    max-height: calc(100vh - 8px) !important;
+    max-height: calc(100dvh - 8px) !important;
+    border-radius: var(--r-md) !important;
+  }
+  .admin-modal-header {
+    padding: 0.45rem 0.75rem !important;
+  }
+  .admin-modal-title {
+    font-size: 13px !important;
+  }
+  .modal-close-btn, .admin-modal-close {
+    width: 26px !important;
+    height: 26px !important;
+  }
+  .admin-modal-body {
+    padding: 0.5rem 0.75rem !important;
+  }
+  .admin-modal-footer {
+    padding: 0.45rem 0.75rem !important;
+  }
+  .media-picker-modal .admin-modal-box {
+    max-height: calc(100vh - 8px) !important;
+    max-height: calc(100dvh - 8px) !important;
+    border-radius: var(--r-md) !important;
+  }
+  .media-picker-modal-header {
+    padding: 0.5rem 1rem !important;
+  }
+  .media-picker-body {
+    padding: 0.5rem 1rem !important;
+    min-height: 70px !important;
+  }
+  .media-picker-footer {
+    padding: 0.5rem 1rem !important;
+  }
+}
+
+/* Narrow Mobile Viewports (320px - 480px) */
+@media (max-width: 480px) {
+  .app-layout,
+  .app-main,
+  .app-content {
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    overflow-x: hidden;
+  }
+  .app-topbar {
+    padding: 0 0.65rem !important;
+    gap: 8px !important;
+  }
+  .topbar-left {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+  .topbar-title {
+    font-size: 13px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar-right {
+    gap: 6px !important;
+    flex-shrink: 0;
+  }
+  .btn-topbar-link {
+    padding: 5px 8px !important;
+  }
+  .btn-topbar-link span {
+    display: none;
+  }
+  .badge-role {
+    padding: 2px 6px !important;
+    font-size: 10px !important;
+  }
+  .app-content {
+    padding: 0.85rem 0.65rem !important;
+  }
+  .table-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  .table-scroll-wrapper {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .content-header {
+    margin-bottom: 1rem !important;
+  }
+  .content-title-text h1 {
+    font-size: 1.15rem !important;
+  }
+  .header-actions {
+    width: 100%;
+  }
+  .header-actions .adm-btn {
+    flex: 1 1 auto;
+  }
+  .form-actions-sticky {
+    padding: 10px 12px !important;
+    border-radius: var(--r-md) !important;
+    margin: 1rem 0 0 0 !important;
+    gap: 8px !important;
+  }
+  .settings-sticky-actions,
+  .about-sticky-actions {
+    margin: 1.25rem -0.65rem -0.85rem !important;
+    padding: 0.75rem 0.75rem !important;
+  }
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 10px;
+  }
+  .table-toolbar {
+    padding: 0.75rem;
+    gap: 8px;
+  }
+  .filter-tabs-wrap {
+    gap: 4px;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+  .filter-tabs-wrap .tab-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+}
+
+/* Ultra Narrow Viewports (<= 360px, e.g. 320px iPhone SE) */
+@media (max-width: 360px) {
+  .app-content {
+    padding: 0.75rem 0.5rem !important;
+  }
+  .settings-sticky-actions .actions-right,
+  .about-sticky-actions .actions-right {
+    flex-direction: column;
+    width: 100%;
+  }
+  .settings-sticky-actions .actions-right .adm-btn,
+  .about-sticky-actions .actions-right .adm-btn {
+    width: 100%;
+  }
+  .form-actions-bar {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .form-actions-bar .adm-btn {
+    width: 100%;
+  }
+  .admin-modal-card {
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+/* Unified Dropdown Component (.eu-dd-*) - T-262 */
+.eu-dd {
+  position: relative;
+  width: 100%;
+  font-family: var(--font, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  box-sizing: border-box;
+}
+
+.eu-dd--inline {
+  width: auto;
+  display: inline-block;
+}
+
+/* Screen-reader only hidden native select for form serialization and fallback */
+.eu-dd-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Trigger Box */
+.eu-dd-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: var(--eu-dd-height, 52px);
+  padding: 0 16px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--radius-lg, var(--r-md, 8px));
+  transition: border-color var(--ease, 180ms ease), box-shadow var(--ease, 180ms ease), background-color var(--ease, 180ms ease);
+  position: relative;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-main, var(--text-main, #0f172a));
+  box-sizing: border-box;
+}
+
+.eu-dd-trigger:focus-visible,
+.eu-dd-trigger.is-focused {
+  outline: none;
+  border-color: var(--color-primary, var(--primary, #00755a));
+  box-shadow: var(--focus-ring, 0 0 0 3px rgba(0, 117, 90, 0.25));
+}
+
+/* Varian 1 - Outlined (.eu-dd--outlined) - Ref: Gambar 1 & Gambar 2 Atas */
+.eu-dd--outlined .eu-dd-trigger {
+  background-color: var(--bg-base, var(--bg-surface, #ffffff));
+  border: 1px solid var(--color-outline-variant, var(--border-main, #e2e8f0));
+}
+
+@media (hover: hover) {
+  .eu-dd--outlined .eu-dd-trigger:hover {
+    border-color: var(--color-outline, var(--border-hover, #94a3b8));
+  }
+}
+
+.eu-dd--outlined.is-open .eu-dd-trigger {
+  border-color: var(--color-primary, var(--primary, #00755a));
+}
+
+/* Varian 2 - Filled (.eu-dd--filled) - Ref: Gambar 2 Tengah */
+.eu-dd--filled .eu-dd-trigger {
+  background-color: var(--color-surface-container, var(--bg-subtle, #f1f5f9));
+  border: 1px solid transparent;
+}
+
+@media (hover: hover) {
+  .eu-dd--filled .eu-dd-trigger:hover {
+    background-color: var(--color-surface-container-high, #e2e8f0);
+  }
+}
+
+.eu-dd--filled.is-open .eu-dd-trigger {
+  background-color: var(--bg-surface, #ffffff);
+  border-color: var(--border-main, #e2e8f0);
+}
+
+/* Varian 3 - Elevated (.eu-dd--elevated) - Ref: Gambar 2 Bawah */
+.eu-dd--elevated .eu-dd-trigger {
+  background-color: var(--bg-base, var(--bg-surface, #ffffff));
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-level-1, var(--shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.08)));
+}
+
+@media (hover: hover) {
+  .eu-dd--elevated .eu-dd-trigger:hover {
+    box-shadow: var(--shadow-level-2, var(--shadow-md, 0 4px 12px rgba(15, 23, 42, 0.08)));
+  }
+}
+
+.eu-dd--elevated.is-open .eu-dd-trigger {
+  box-shadow: var(--shadow-level-2, var(--shadow-md, 0 4px 12px rgba(15, 23, 42, 0.08)));
+}
+
+/* Modifier Ukuran Kompak (.eu-dd--sm) */
+.eu-dd--sm .eu-dd-trigger {
+  min-height: var(--eu-dd-height-sm, 36px);
+  padding: 0 10px;
+  font-size: 12px;
+  border-radius: var(--radius-sm, var(--r-sm, 5px));
+}
+
+@media (max-width: 768px) {
+  .eu-dd-trigger {
+    min-height: 44px;
+  }
+  .eu-dd--sm .eu-dd-trigger {
+    min-height: 44px;
+  }
+}
+
+/* Label Mengambang (.eu-dd-floating-label) - Ref: Gambar 1 */
+.eu-dd-floating-label {
+  position: absolute;
+  top: 0;
+  left: 14px;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-text-muted, var(--text-muted, #64748b));
+  background-color: var(--bg-base, var(--bg-surface, #ffffff));
+  padding: 0 4px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 2;
+  transition: color var(--ease, 180ms ease);
+}
+
+.eu-dd--filled .eu-dd-floating-label {
+  background-color: var(--color-surface-container, var(--bg-subtle, #f1f5f9));
+}
+
+.eu-dd--filled.is-open .eu-dd-floating-label {
+  background-color: var(--bg-surface, #ffffff);
+}
+
+.eu-dd-trigger:focus-visible .eu-dd-floating-label,
+.eu-dd.is-open .eu-dd-floating-label {
+  color: var(--color-primary, var(--primary, #00755a));
+  font-weight: 600;
+}
+
+/* Value Display Box */
+.eu-dd-value {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-main, var(--text-main, #0f172a));
+  font-size: 14px;
+}
+
+.eu-dd--sm .eu-dd-value {
+  font-size: 12px;
+}
+
+.eu-dd-value.is-placeholder {
+  color: var(--color-text-muted, var(--text-muted, #64748b));
+}
+
+/* Pattern: Prefix: Nilai Tebal (Ref: Gambar 2 Elevated) */
+.eu-dd-prefix {
+  font-weight: 400;
+  color: var(--color-text-muted, var(--text-muted, #64748b));
+  margin-right: 4px;
+}
+
+.eu-dd-strong {
+  font-weight: 600;
+  color: var(--color-text-main, var(--text-main, #0f172a));
+}
+
+/* Caret Solid Triangle Indikator - Ref: Gambar 1 & 2 */
+.eu-dd-caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  color: var(--color-text-muted, var(--text-muted, #64748b));
+  transition: transform var(--ease, 180ms ease), color var(--ease, 180ms ease);
+  transform-origin: center center;
+}
+
+.eu-dd-caret-icon {
+  width: var(--eu-dd-caret-size, 8px);
+  height: 6px;
+  display: block;
+}
+
+.eu-dd.is-open .eu-dd-caret,
+.eu-dd-trigger[aria-expanded="true"] .eu-dd-caret {
+  transform: rotate(180deg);
+  color: var(--color-text-main, var(--text-main, #0f172a));
+}
+
+/* Menu Panel - Ref: Gambar 1 */
+.eu-dd-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  min-width: 100%;
+  margin-top: var(--space-sm, 8px);
+  background-color: var(--bg-base, var(--bg-surface, #ffffff));
+  border-radius: var(--radius-lg, var(--r-lg, 10px));
+  box-shadow: var(--shadow-level-2, var(--shadow-popover, 0 10px 25px -4px rgba(7, 31, 23, 0.08), 0 4px 10px -2px rgba(7, 31, 23, 0.04)));
+  border: 1px solid var(--color-outline-variant, var(--border-main, #e2e8f0));
+  z-index: var(--z-dropdown, 1010);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity var(--ease, 180ms ease), transform var(--ease, 180ms ease), visibility var(--ease, 180ms ease);
+}
+
+.eu-dd.is-open .eu-dd-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Flip Panel ke Atas bila Ruang Bawah Sempit */
+.eu-dd-panel.eu-dd-panel--top {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: var(--space-sm, 8px);
+  transform: translateY(6px);
+}
+
+.eu-dd.is-open .eu-dd-panel.eu-dd-panel--top {
+  transform: translateY(0);
+}
+
+/* Search Box di dalam Panel */
+.eu-dd-search-wrap {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-outline-variant, var(--border-main, #e2e8f0));
+  background-color: var(--bg-subtle, #f8fafc);
+}
+
+.eu-dd-search-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-family: inherit;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--border-main, #e2e8f0);
+  outline: none;
+  background-color: #ffffff;
+  color: var(--text-main, #0f172a);
+  box-sizing: border-box;
+  transition: border-color var(--ease, 180ms ease), box-shadow var(--ease, 180ms ease);
+}
+
+.eu-dd-search-input:focus {
+  border-color: var(--color-primary, var(--primary, #00755a));
+  box-shadow: var(--focus-ring, 0 0 0 3px rgba(0, 117, 90, 0.25));
+}
+
+/* Options Container */
+.eu-dd-options {
+  max-height: var(--eu-dd-panel-max-height, 260px);
+  overflow-y: auto;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .eu-dd-options {
+    max-height: 240px;
+  }
+}
+
+/* Item Listbox */
+.eu-dd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--color-text-main, var(--text-main, #0f172a));
+  border-radius: var(--radius-md, var(--r-md, 6px));
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  transition: background-color var(--ease, 150ms ease), color var(--ease, 150ms ease);
+  min-height: 40px;
+}
+
+@media (hover: hover) {
+  .eu-dd-item:hover {
+    background-color: var(--bg-subtle, #f1f5f9);
+    color: var(--color-text-main, var(--text-main, #0f172a));
+  }
+}
+
+.eu-dd-item.is-active,
+.eu-dd-item:focus {
+  outline: none;
+  background-color: var(--bg-subtle, #f1f5f9);
+  color: var(--color-text-main, var(--text-main, #0f172a));
+}
+
+.eu-dd-item.is-selected,
+.eu-dd-item[aria-selected="true"] {
+  background-color: var(--primary-subtle, #e6f7f2);
+  color: var(--color-primary-dark, var(--primary, #00573f));
+  font-weight: 600;
+}
+
+.eu-dd-item-text {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Checkmark Icon */
+.eu-dd-check-icon {
+  margin-left: auto;
+  width: 14px;
+  height: 14px;
+  stroke: var(--color-primary-dark, var(--primary, #00573f));
+  fill: none;
+  display: none;
+  flex-shrink: 0;
+}
+
+.eu-dd-item.is-selected .eu-dd-check-icon,
+.eu-dd-item[aria-selected="true"] .eu-dd-check-icon {
+  display: inline-flex;
+}
+
+/* Slot Lingkaran Kiri & Skeleton Shimmer - Ref: Gambar 1 */
+.eu-dd-item-media {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--color-surface-container, var(--bg-subtle, #f1f5f9));
+}
+
+.eu-dd-item-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.eu-dd-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.eu-dd-skeleton-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-surface-container-high, #e2e8f0);
+  flex-shrink: 0;
+  animation: euDdShimmer 1.5s ease-in-out infinite;
+}
+
+.eu-dd-skeleton-bar {
+  height: 14px;
+  border-radius: 4px;
+  background: var(--color-surface-container-high, #e2e8f0);
+  animation: euDdShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes euDdShimmer {
+  0% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.55;
+  }
+}
+
+/* Disabled State */
+.eu-dd.is-disabled .eu-dd-trigger,
+.eu-dd-trigger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.eu-dd-item.is-disabled,
+.eu-dd-item[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Empty State */
+.eu-dd-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted, var(--text-muted, #64748b));
+}
+
+/* Error State (Integrasi T-259) */
+.eu-dd.is-invalid .eu-dd-trigger,
+.eu-dd.has-error .eu-dd-trigger {
+  border-color: var(--color-error, #ba1a1a) !important;
+  box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.15) !important;
+}
+
+.eu-dd-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-error, #ba1a1a);
+}
+
+/* Fallback Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .eu-dd-trigger,
+  .eu-dd-caret,
+  .eu-dd-panel,
+  .eu-dd-item,
+  .eu-dd-skeleton-circle,
+  .eu-dd-skeleton-bar {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
 }

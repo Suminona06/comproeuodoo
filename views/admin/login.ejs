@@ -14,6 +14,17 @@
   <link rel="stylesheet" href="/css/layout.css">
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/admin.css">
+
+  <% 
+    const fav32 = (typeof settings !== 'undefined' && settings && settings.site_favicon_32) ? settings.site_favicon_32 : ((typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/uploads/settings/favicon-32x32.png');
+    const fav16 = (typeof settings !== 'undefined' && settings && settings.site_favicon_16) ? settings.site_favicon_16 : ((typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/uploads/settings/favicon-16x16.png');
+    const fav180 = (typeof settings !== 'undefined' && settings && settings.site_favicon_180) ? settings.site_favicon_180 : ((typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/uploads/settings/favicon-180x180.png');
+    const fav192 = (typeof settings !== 'undefined' && settings && settings.site_favicon_192) ? settings.site_favicon_192 : ((typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/uploads/settings/favicon-192x192.png');
+  %>
+  <link rel="icon" type="image/png" sizes="32x32" href="<%= fav32 %>?v=3">
+  <link rel="icon" type="image/png" sizes="16x16" href="<%= fav16 %>?v=3">
+  <link rel="apple-touch-icon" sizes="180x180" href="<%= fav180 %>?v=3">
+  <link rel="icon" type="image/png" sizes="192x192" href="<%= fav192 %>?v=3">
 </head>
 <body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--color-workspace-bg); padding: var(--space-md);">
   <div style="width: 100%; max-width: 420px;">
@@ -23,8 +34,7 @@
             <img src="<%= settings.site_logo_header %>" 
                  alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" 
                  class="brand-logo-header" 
-                 style="max-height: 38px; width: auto; object-fit: contain; display: block;"
-                 onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';">
+                 style="max-height: 38px; width: auto; object-fit: contain; display: block;">
             <span class="brand-text-fallback" style="display: none; align-items: center; gap: 8px;">
               <span class="brand-name">PT EUODOO</span>
               <span class="brand-badge">MANUFACTURING</span>
@@ -48,7 +58,7 @@
           </div>
         <% } %>
 
-        <form action="/admin/login?_csrf=<%= csrfToken %>" method="POST">
+        <form action="/admin/login?_csrf=<%= csrfToken %>" method="POST" novalidate>
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
           <div class="form-group">
@@ -61,8 +71,9 @@
             <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
           </div>
 
-          <button type="submit" class="btn btn-primary btn-md btn-block" style="margin-top: var(--space-lg);">
-            Masuk ke Sistem
+          <button type="submit" class="adm-btn adm-btn-primary adm-btn-block" style="margin-top: var(--space-lg);" aria-label="Masuk ke Sistem">
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+            <span>Masuk</span>
           </button>
         </form>
       </div>
@@ -75,5 +86,18 @@
       <a href="/" style="font-size: var(--font-size-body-sm); color: var(--color-text-muted);">&larr; Kembali ke Website Publik</a>
     </div>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoImg = document.querySelector('.brand-logo-header');
+      if (logoImg) {
+        logoImg.addEventListener('error', () => {
+          logoImg.style.display = 'none';
+          const fallback = logoImg.nextElementSibling;
+          if (fallback) fallback.style.display = 'inline-flex';
+        });
+      }
+    });
+  </script>
+  <script src="/js/admin-form-validation.js?v=1.0"></script>
 </body>
 </html>

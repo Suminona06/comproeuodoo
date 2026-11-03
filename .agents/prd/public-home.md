@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-28 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/index.ejs, controllers/public/homeController.js
 
 # PRD: Modul Beranda Publik (Public Home)
 
@@ -19,6 +19,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
   6. Registered Brands Marquee Strip (`.brand-strip-sec`, `.brand-strip-*`)
   7. Latest News Highlights (`.sec-news`)
   8. Global Pre-Footer CTA (`.sec-cta`)
+- **Kebijakan Konten Fallback Beranda:** Seluruh konten fallback statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback. Pada seksi News, jika artikel kosong, judul seksi tetap dirender dan kartu berita dummy statis digantikan pesan empty-state ramah dwibahasa.
 
 ### FR-06: Dukungan Dwibahasa (i18n)
 - Setiap komponen beranda mendukung teks dwibahasa (Bahasa Indonesia `id` default & Bahasa Inggris `en`).
@@ -42,7 +43,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Header seksi menampilkan judul dan deskripsi dengan pemisahan margin vertikal adaptif berbasis token; navigasi katalog tunggal dipusatkan pada tombol bawah seksi (`.prod-more-wrap .btn-see-more`), tanpa tombol redundan di kanan header.
 
 ### Why Choose Us (`.wcu-*`)
-- Seksi editorial B2B yang menonjolkan inovasi aditif ramah lingkungan (*100% degradable*) dan kepatuhan standar SNI.
+- Seksi editorial B2B yang menonjolkan inovasi aditif ramah lingkungan (*100% degradable*) dan kepatuhan standar SNI. Seksi ini bersifat kondisional: tampil jika toggle CMS aktif dan data teks terisi; jika kosong atau dinonaktifkan, seksi tidak dirender (zero-render) tanpa fallback teks statis.
 - Terdiri atas header (`.wcu-header`), kicker status chip (`.wcu-kicker`), teks editorial (`.wcu-headline`, `.wcu-desc`), serta ilustrasi SVG statis (`.wcu-artbox`) dengan floating badge (`.wcu-float-card`).
 - Khusus pada viewport mobile (`< 768px`), elemen floating badge (`.wcu-float-card`) dan chip label (`.wcu-art-label`) disembunyikan sehingga ilustrasi daun botani SVG tampil 100% utuh dan leluasa tanpa elemen penutup. Desktop tetap mempertahankan kartu melayang dan chip label.
 - Batas atas dan bawah seksi Why Choose Us menggunakan transisi gradasi lembut berbasis token semantik tanpa garis batas kaku (*hard edge*).
@@ -52,10 +53,14 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Menampilkan daftar logo sertifikasi mutu dan akreditasi resmi (mis. SNI 7188.7:2011, OXIUM Technology, InSWA).
 - Seksi ini bersifat kondisional: tampil pada public view jika toggle CMS `home_cert_is_active` bernilai `1`.
 
-### FR-17: Registered Brands Marquee Strip (`.brand-strip-*`)
-- Menampilkan portofolio merek dagang resmi perusahaan dalam bentuk strip horizontal berjalan kontinu (*continuous marquee*).
+### FR-17: Registered Brands Marquee Strip (`.brand-strip-*`) `[PENDING T-267, T-268]`
+- Menampilkan portofolio merek dagang resmi perusahaan dalam bentuk strip horizontal berjalan kontinu (*continuous marquee*). Seksi ini bersifat kondisional: tampil jika terdapat data merek aktif; jika kosong, seksi tidak dirender tanpa fallback teks judul statis.
 - Menggunakan struktur 2 track identik (`.brand-strip-track`) untuk efek looping mulus tanpa celah (*gapless*).
-- Dimensi logo merek pada viewport mobile (`< 768px`) ditingkatkan proporsional (`height: clamp(70px, 13vw, 88px)`) untuk meningkatkan keterbacaan legalitas merek tanpa menyebabkan overflow di 320px.
+- **Penskalaan Dimensi Logo & Harmonisasi Spasi `[PENDING T-267]`:**
+  - Desktop: Tinggi logo diperbesar 2x menjadi `height: clamp(168px, 16vw, 220px)` dengan `max-width: 440px` dan `min-width: clamp(260px, 24vw, 360px)` per item, menjaga `object-fit: contain` (CLS = 0).
+  - Mobile (`<= 768px`): Tinggi logo diperbesar proporsional ~1.5x menjadi `height: clamp(90px, 20vw, 120px)` dengan `max-width: 240px` dan `min-width: clamp(150px, 32vw, 190px)`, menjamin 2-3 logo terlihat seimbang pada viewport 320px-375px tanpa overflow.
+  - Spasi Antar-Logo: Jarak `--brand-gap` dirapatkan proporsional menjadi `clamp(1.5rem, 3.5vw, 3rem)` (24px s/d 48px) agar komposisi marquee tampak padat, penuh, dan mewah.
+  - Kecepatan Jelajah: Durasi animasi dikalibrasi menjadi `48s` linear infinite agar kecepatan gerak linier per piksel tetap stabil dan nyaman dibaca.
 - Berhenti bergulir (*pause on hover/focus*) saat kursor diarahkan ke area strip atau logo difokuskan keyboard.
 - Mendukung preferensi aksesibilitas `prefers-reduced-motion` (animasi dinonaktifkan, logo disusun flex-wrap statis rapi).
 - **Modal Zoom Preview Retained:** Klik logo atau tekan Space/Enter membuka dialog modal lightbox preview (`#brandPreviewModal`) untuk melihat logo resolusi tinggi.
@@ -71,6 +76,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
+| **Penskalaan 2x Logo Merek Desktop & Harmonisasi Spasi `[PENDING T-267]`** | Meningkatkan brand authority di desktop (2x) dan mobile (~1.5x) dengan gap rapat agar tampilan marquee padat dan seimbang. | 2026-11-02 |
 | **Dual CTA Hero Banner** | Memungkinkan pengunjung memilih langsung antara jelajahi katalog produk atau konsultasi langsung tanpa harus memilih salah satu. | 2026-10-20 |
 | **Marquee Strip Merek Minimalis** | Menghemat ruang vertikal beranda dan menampilkan portofolio merek dagang secara elegan dibanding grid kartu statis. | 2026-10-20 |
 | **Retensi Modal Zoom Preview Merek** | Mempertahankan bukti legalitas resolusi tinggi bagi mitra B2B yang ingin memeriksa detail logo merek terdaftar. | 2026-10-20 |

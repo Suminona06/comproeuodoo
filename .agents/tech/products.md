@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-27 | Kode: controllers/public/productController.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-31 | Kode: controllers/public/productController.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
 
 # Tech Spec: Modul Produk & Katalog Manufaktur (Products Catalog)
 
@@ -69,6 +69,7 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Elemen katalog memakai prefix unik `.plp-*` di `components.css` (`.plp-grid`, `.plp-card`, `.plp-sidebar`, `.plp-toolbar`, dll.).
 - Rasio potret kartu: `9 / 10` (desktop), `1 / 1` (mobile) dengan `object-fit: cover` (CLS = 0) serta garis pembatas horizontal individual `.plp-card-line`.
 - Tombol outline: border netral warna font `var(--color-primary)` (hover `var(--color-primary)` teks `var(--color-on-primary)`), hit-target 44px WCAG AA.
+- **Kontrak Partial Kartu Bersama (`views/public/partials/product-card-fragment.ejs`):** Partial ini bersama class `.plp-grid` dan `.plp-card*` juga di-reuse oleh section Produk Terkait Lainnya (`.pd-related`) di `views/public/product-detail.ejs` dengan kontrak input `{ products: Array<{ id, slug, name_id, name_en, main_image, image_url }>, currentLang: 'id' | 'en' }`.
 
 ### D. Navigasi Kategori Dinamis & Deep Link Homepage [COMPLETED T-194]
 - `productCategoryModel.findAll({ activeOnly: true })` mengambil kategori aktif dinamis beserta jumlah produk aktif.
@@ -93,3 +94,6 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 - Tag canonical mengarah ke URL dasar `/products` (atau kategori valid).
 - Paginasi `page > 1`, pencarian, atau pengurutan otomatis menginjeksi tag `<meta name="robots" content="noindex, follow">`.
 - Seluruh event listener dikelola di `public/js/products.js` tanpa inline script/handler (`onclick`, `onchange`), 100% patuh pada CSP Helmet.
+
+### I. Builder Tabel Ukuran Admin CMS
+- Antarmuka builder tabel ukuran di `/admin/products/create` dan `/admin/products/:id/edit` dikelola oleh `public/js/admin-size-table.js` dengan dukungan navigasi keyboard panah 2D dan shortcut Enter tambah baris [COMPLETED T-248] (Rincian lengkap: `tech/admin-cms.md`).

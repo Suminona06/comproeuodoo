@@ -6,7 +6,10 @@
     <p><%= inquiry.company ? inquiry.company + ' &bull; ' : '' %>Masuk pada <%= new Date(inquiry.created_at).toLocaleString('id-ID') %></p>
   </div>
   <div class="header-actions">
-    <a href="/admin/inquiries" class="btn btn-secondary">&larr; Kembali ke Daftar</a>
+    <a href="/admin/inquiries" class="adm-btn adm-btn-neutral" aria-label="Kembali ke daftar inquiry">
+      <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>Kembali</span>
+    </a>
   </div>
 </div>
 
@@ -29,7 +32,10 @@
         </div>
 
         <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-          <button type="submit" class="btn btn-primary">Simpan Catatan</button>
+          <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan catatan tindak lanjut">
+            <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Simpan</span>
+          </button>
         </div>
       </form>
     </div>
@@ -44,7 +50,7 @@
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
           <label class="form-label" for="status">Ubah Status</label>
-          <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+          <select id="status" name="status" class="form-select" data-auto-submit="true">
             <option value="baru" <%= inquiry.status === 'baru' ? 'selected' : '' %>>Baru</option>
             <option value="dibaca" <%= inquiry.status === 'dibaca' ? 'selected' : '' %>>Dibaca / Diproses</option>
             <option value="ditindaklanjuti" <%= inquiry.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai / Ditindaklanjuti</option>
@@ -66,8 +72,9 @@
         <div>
           <div style="color: var(--text-muted); font-size: 11px;">WHATSAPP / TELEPON</div>
           <div>
-            <a href="https://wa.me/<%= inquiry.phone ? inquiry.phone.replace(/[^0-9]/g, '') : '' %>" target="_blank" class="btn btn-secondary btn-sm" style="display: inline-flex; margin-top: 4px;">
-              Hubungi via WhatsApp &rarr;
+            <a href="https://wa.me/<%= inquiry.phone ? inquiry.phone.replace(/[^0-9]/g, '') : '' %>" target="_blank" class="adm-btn adm-btn-secondary adm-btn-sm" aria-label="Hubungi klien via WhatsApp" style="margin-top: 4px;">
+              <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              <span>WhatsApp</span>
             </a>
           </div>
         </div>
@@ -94,8 +101,9 @@
       <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-main);">
         <form action="/admin/inquiries/<%= inquiry.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus permanen inquiry ini?" data-confirm-title="Hapus Pesan Masuk">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">
-            Hapus Inquiry Ini
+          <button type="submit" class="adm-btn adm-btn-danger adm-btn-block adm-btn-sm" aria-label="Hapus pesan masuk ini">
+            <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Hapus</span>
           </button>
         </form>
       </div>

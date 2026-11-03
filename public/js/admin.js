@@ -80,31 +80,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Table status tabs and live search
   const tabButtons = document.querySelectorAll('.filter-tabs-wrap .tab-btn');
   const liveSearch = document.getElementById('liveSearchInput');
-  const tableRows = document.querySelectorAll('.data-table tbody tr[data-status], .admin-table tbody tr[data-status]');
+  const tableRows = document.querySelectorAll('.data-table tbody tr, .admin-table tbody tr');
 
   let currentFilter = 'all';
   let searchQuery = '';
 
   function filterRows() {
     tableRows.forEach(row => {
+      if (row.querySelector('td[colspan]')) return;
       const rowStatus = row.getAttribute('data-status') || '';
       const text = row.textContent.toLowerCase();
-      const matchFilter = (currentFilter === 'all' || rowStatus === currentFilter);
+      const matchFilter = (currentFilter === 'all' || !rowStatus || rowStatus === currentFilter);
       const matchSearch = (!searchQuery || text.includes(searchQuery));
 
-      if (matchFilter && matchSearch) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+      row.style.display = (matchFilter && matchSearch) ? '' : 'none';
     });
   }
 
   if (tabButtons.length > 0) {
     tabButtons.forEach(btn => {
+      if (!btn.hasAttribute('data-filter')) return;
       btn.addEventListener('click', () => {
         tabButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -392,6 +389,121 @@ function showAdminToast(message, duration = 3000) {
   }, duration);
 }
 
+/**
+ * Helper dialog alert bertema SweetAlert2 (menggantikan alert() native)
+ * @param {string|object} titleOrOptions Judul atau objek opsi
+ * @param {string} [text] Teks pesan
+ * @param {string} [icon='info'] Tipe icon
+ * @returns {Promise<any>}
+ */
+window.showAdminAlert = function(titleOrOptions, text = '', icon = 'info') {
+  let title = '';
+  let msg = '';
+  let alertIcon = icon;
+
+  if (typeof titleOrOptions === 'object' && titleOrOptions !== null) {
+    title = titleOrOptions.title || '';
+    msg = titleOrOptions.text || titleOrOptions.message || '';
+    alertIcon = titleOrOptions.icon || 'info';
+  } else {
+    if (text) {
+      title = String(titleOrOptions);
+      msg = String(text);
+    } else {
+      title = 'Informasi';
+      msg = String(titleOrOptions || '');
+    }
+  }
+
+  const isEn = (document.documentElement.lang || 'id').toLowerCase() === 'en';
+  const closeBtnText = isEn ? 'Close' : 'Tutup';
+
+  if (typeof Swal !== 'undefined') {
+    return Swal.fire({
+      title: title,
+      html: msg.includes('<') ? msg : msg.replace(/\n/g, '<br>'),
+      icon: alertIcon,
+      confirmButtonText: closeBtnText,
+      buttonsStyling: false,
+      customClass: {
+        popup: 'swal2-custom-popup',
+        title: 'swal2-custom-title',
+        htmlContainer: 'swal2-custom-html',
+        confirmButton: 'adm-btn adm-btn-primary',
+        actions: 'swal2-custom-actions'
+      }
+    });
+  } else {
+    console.warn('[showAdminAlert]', title, msg);
+    return Promise.resolve();
+  }
+};
+
+/**
+ * Helper konfirmasi bertema SweetAlert2 (menggantikan confirm() native)
+ * @param {string|object} messageOrOptions
+ * @param {string} [title='Konfirmasi']
+ * @param {object} [extraOptions={}]
+ * @returns {Promise<boolean>}
+ */
+window.showAdminConfirm = function(messageOrOptions, title = 'Konfirmasi', extraOptions = {}) {
+  const isEn = (document.documentElement.lang || 'id').toLowerCase() === 'en';
+  let msg = '';
+  let confirmTitle = title;
+  let isDanger = true;
+  let confirmText = '';
+  let cancelText = `<svg class="adm-btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span>${isEn ? 'Cancel' : 'Batal'}</span>`;
+  let icon = 'warning';
+
+  if (typeof messageOrOptions === 'object' && messageOrOptions !== null) {
+    msg = messageOrOptions.text || messageOrOptions.message || '';
+    confirmTitle = messageOrOptions.title || title;
+    if (messageOrOptions.isDanger !== undefined) isDanger = messageOrOptions.isDanger;
+    if (messageOrOptions.confirmButtonText) confirmText = messageOrOptions.confirmButtonText;
+    if (messageOrOptions.cancelButtonText) cancelText = messageOrOptions.cancelButtonText;
+    if (messageOrOptions.icon) icon = messageOrOptions.icon;
+  } else {
+    msg = String(messageOrOptions || '');
+    if (extraOptions.isDanger !== undefined) isDanger = extraOptions.isDanger;
+    if (extraOptions.confirmButtonText) confirmText = extraOptions.confirmButtonText;
+    if (extraOptions.cancelButtonText) cancelText = extraOptions.cancelButtonText;
+    if (extraOptions.icon) icon = extraOptions.icon;
+  }
+
+  if (!confirmText) {
+    confirmText = isDanger
+      ? `<svg class="adm-btn-icon adm-btn-icon-trash" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> <span>${isEn ? 'Delete' : 'Hapus'}</span>`
+      : `<svg class="adm-btn-icon adm-btn-icon-save" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>${isEn ? 'Confirm' : 'Lanjutkan'}</span>`;
+  }
+
+  if (typeof Swal !== 'undefined') {
+    return Swal.fire({
+      title: confirmTitle,
+      html: msg.includes('<') ? msg : msg.replace(/\n/g, '<br>'),
+      icon: icon,
+      showCancelButton: true,
+      confirmButtonText: confirmText,
+      cancelButtonText: cancelText,
+      reverseButtons: true,
+      focusCancel: true,
+      buttonsStyling: false,
+      customClass: {
+        popup: 'swal2-custom-popup',
+        title: 'swal2-custom-title',
+        htmlContainer: 'swal2-custom-html',
+        confirmButton: isDanger ? 'adm-btn adm-btn-danger' : 'adm-btn adm-btn-primary',
+        cancelButton: 'adm-btn adm-btn-neutral',
+        actions: 'swal2-custom-actions'
+      }
+    }).then((result) => {
+      return Boolean(result.isConfirmed);
+    });
+  } else {
+    console.warn('[showAdminConfirm]', confirmTitle, msg);
+    return Promise.resolve(false);
+  }
+};
+
 // Global SweetAlert2 Delete Confirmation Interceptor
 document.addEventListener('submit', function(e) {
   const form = e.target;
@@ -404,36 +516,16 @@ document.addEventListener('submit', function(e) {
   const message = form.getAttribute('data-confirm-message') || 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini permanen.';
   const title = form.getAttribute('data-confirm-title') || 'Konfirmasi Hapus';
 
-  if (typeof Swal !== 'undefined') {
-    Swal.fire({
-      title: title,
-      text: message,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#DC2626',
-      cancelButtonColor: '#071F17',
-      confirmButtonText: 'Ya, Hapus Data',
-      cancelButtonText: 'Batal',
-      reverseButtons: true,
-      focusCancel: true,
-      customClass: {
-        popup: 'swal2-custom-popup',
-        title: 'swal2-custom-title',
-        confirmButton: 'swal2-custom-confirm-btn',
-        cancelButton: 'swal2-custom-cancel-btn'
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        form.dataset.confirmed = 'true';
-        form.submit();
-      }
-    });
-  } else {
-    if (confirm(message)) {
+  showAdminConfirm({
+    title: title,
+    text: message,
+    isDanger: true
+  }).then((confirmed) => {
+    if (confirmed) {
       form.dataset.confirmed = 'true';
       form.submit();
     }
-  }
+  });
 });
 
 // Flash Message Auto Listener
@@ -591,34 +683,15 @@ window.confirmDeleteAboutItem = function(actionUrl, itemTitle) {
 
   const msg = `Apakah Anda yakin ingin menghapus "${itemTitle}"? Data yang dihapus tidak dapat dipulihkan.`;
 
-  if (typeof Swal !== 'undefined') {
-    Swal.fire({
-      title: 'Konfirmasi Hapus',
-      text: msg,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#DC2626',
-      cancelButtonColor: '#071F17',
-      confirmButtonText: 'Ya, Hapus',
-      cancelButtonText: 'Batal',
-      reverseButtons: true,
-      focusCancel: true,
-      customClass: {
-        popup: 'swal2-custom-popup',
-        title: 'swal2-custom-title',
-        confirmButton: 'swal2-custom-confirm-btn',
-        cancelButton: 'swal2-custom-cancel-btn'
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        form.submit();
-      }
-    });
-  } else {
-    if (confirm(msg)) {
+  showAdminConfirm({
+    title: 'Konfirmasi Hapus',
+    text: msg,
+    isDanger: true
+  }).then((confirmed) => {
+    if (confirmed) {
       form.submit();
     }
-  }
+  });
 };
 
 window.closeAllModals = function() {
@@ -627,18 +700,96 @@ window.closeAllModals = function() {
   document.querySelectorAll('.drawer-backdrop').forEach(b => b.classList.remove('open'));
 };
 
-// Global modal click delegation for close buttons & backdrops
+// Global Central Event Delegation for CSP Compliance (No Inline Handlers)
 document.addEventListener('click', (e) => {
+  // 1. Modal close triggers
   const closeBtn = e.target.closest('.admin-modal-close, .modal-close-btn, [data-modal-close]');
   if (closeBtn) {
-    const targetModal = closeBtn.closest('.admin-modal-backdrop') || document.querySelector('.admin-modal-backdrop.open');
-    if (targetModal) targetModal.classList.remove('open');
+    const modalId = closeBtn.getAttribute('data-modal-close');
+    if (modalId) {
+      closeAdminModal(modalId);
+    } else {
+      const targetModal = closeBtn.closest('.admin-modal-backdrop') || document.querySelector('.admin-modal-backdrop.open');
+      if (targetModal) targetModal.classList.remove('open');
+    }
     return;
   }
+
+  // 2. Backdrop click to close
   if (e.target.classList && e.target.classList.contains('admin-modal-backdrop')) {
     e.target.classList.remove('open');
+    return;
+  }
+
+  // 3. Modal open triggers
+  const openModalBtn = e.target.closest('[data-modal-open]');
+  if (openModalBtn) {
+    const modalId = openModalBtn.getAttribute('data-modal-open');
+    if (modalId) openAdminModal(modalId);
+    return;
+  }
+
+  // 4. Data-action delegation
+  const actionBtn = e.target.closest('[data-action]');
+  if (actionBtn) {
+    const action = actionBtn.getAttribute('data-action');
+    if (action === 'open-stats-modal') {
+      if (typeof openStatsModal === 'function') openStatsModal();
+    } else if (action === 'edit-stat') {
+      const data = actionBtn.getAttribute('data-stat');
+      if (data && typeof openStatsModal === 'function') {
+        try { openStatsModal(JSON.parse(decodeURIComponent(data))); } catch (err) { console.error(err); }
+      }
+    } else if (action === 'open-timeline-modal') {
+      if (typeof openTimelineModal === 'function') openTimelineModal();
+    } else if (action === 'edit-timeline') {
+      const data = actionBtn.getAttribute('data-timeline');
+      if (data && typeof openTimelineModal === 'function') {
+        try { openTimelineModal(JSON.parse(decodeURIComponent(data))); } catch (err) { console.error(err); }
+      }
+    } else if (action === 'open-gallery-modal') {
+      if (typeof openGalleryModal === 'function') openGalleryModal();
+    } else if (action === 'edit-slide') {
+      const data = actionBtn.getAttribute('data-slide');
+      if (data && typeof openGalleryModal === 'function') {
+        try { openGalleryModal(JSON.parse(decodeURIComponent(data))); } catch (err) { console.error(err); }
+      }
+    } else if (action === 'delete-about-item') {
+      const actionUrl = actionBtn.getAttribute('data-action-url') || actionBtn.getAttribute('data-action');
+      const title = actionBtn.getAttribute('data-title') || 'item';
+      if (typeof confirmDeleteAboutItem === 'function') confirmDeleteAboutItem(actionUrl, title);
+    } else if (action === 'copy-url') {
+      const url = actionBtn.getAttribute('data-url');
+      if (url && typeof copyToClipboard === 'function') copyToClipboard(url);
+    }
+    return;
   }
 });
+
+// Auto-submit dropdowns (data-auto-submit="true" / .auto-submit-select)
+document.addEventListener('change', (e) => {
+  const el = e.target;
+  if (el && el.matches && el.matches('[data-auto-submit="true"], .auto-submit-select')) {
+    if (el.form) {
+      if (typeof el.form.requestSubmit === 'function') {
+        el.form.requestSubmit();
+      } else {
+        el.form.submit();
+      }
+    }
+  }
+});
+
+// Fallback image error handler (for CSP compliance, replaces inline onerror)
+document.addEventListener('error', (e) => {
+  const img = e.target;
+  if (img && img.tagName === 'IMG' && img.classList.contains('adm-img-fallback')) {
+    const fallback = img.getAttribute('data-fallback') || '/images/hero-factory.jpg';
+    if (img.src !== fallback) {
+      img.src = fallback;
+    }
+  }
+}, true);
 
 window.showToast = showAdminToast;
 
