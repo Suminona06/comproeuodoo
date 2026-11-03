@@ -42,18 +42,18 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t278-product-categories-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-03.
 
-### T-279: Refaktor View Admin Batch 3 - Kategori Artikel (Post Categories) [TODO]
+### T-279: Refaktor View Admin Batch 3 - Kategori Artikel (Post Categories) [DONE]
 - **Deskripsi**: Merefaktor berkas modul kategori artikel (`views/admin/post-categories/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 10 style inline dan ekstraksi ke class berprefix `.adm-postcat-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/post-categories/`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] CRUD kategori artikel, edit slug, dan validasi form berfungsi normal tanpa error konsol.
-  - [ ] Path `views/admin/post-categories/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/post-categories/index.ejs`, `views/admin/post-categories/create.ejs`, `views/admin/post-categories/edit.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js views/admin/post-categories/`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas 4 resolusi admin (375px, 768px, 1280px, 1440px) (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] CRUD kategori artikel, edit slug, filter tabs, dan validasi form berfungsi normal tanpa error konsol.
+  - [x] Path `views/admin/post-categories/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/post-categories/index.ejs`, `views/admin/post-categories/create.ejs`, `views/admin/post-categories/edit.ejs`, `public/css/admin.css`, `scripts/lint-views.js`, `tests/test-t279-post-categories-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t279-post-categories-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-03.
 
 ### T-280: Refaktor View Admin Batch 4 - Manajemen Pengguna (Users) [TODO]
 - **Deskripsi**: Merefaktor modul pengguna (`views/admin/users/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 10 style inline dan 1 warna hex `#fafbfc` pada box role superadmin. Ekstraksi ke class berprefix `.adm-usr-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.

@@ -4501,4 +4501,55 @@ body.sidebar-open .admin-backdrop {
   color: var(--color-text-muted);
 }
 
+/* ==========================================================================
+   Batch 3: Post Categories (.adm-postcat-*) (T-279)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-postcat-form-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Table columns & cells */
+.adm-postcat-th-count {
+  width: 100px;
+  text-align: center;
+}
+
+.adm-postcat-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-postcat-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+.adm-postcat-badge {
+  font-size: 11px;
+}
+
+.adm-postcat-td-count {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-postcat-td-order {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-postcat-td-actions {
+  text-align: right;
+}
+
+.adm-postcat-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+
 

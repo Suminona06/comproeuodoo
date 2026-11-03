@@ -12,7 +12,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/admin/403.ejs',
   'views/admin/login.ejs',
   'views/admin/change-password.ejs',
-  'views/admin/product-categories/'
+  'views/admin/product-categories/',
+  'views/admin/post-categories/'
 ];
 
 function getFiles(dir, ext) {
