@@ -79,3 +79,19 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
   2. Saat pengaturan disimpan di `settingController.update`, jika `site_favicon` diisi/diunggah, `generateFaviconSet` memproses sumber `site_favicon`; jika `site_favicon` dikosongkan, sistem otomatis menjalankan fallback dari `site_logo_header` / `site_logo` dan menyimpan path turunan ke `site_favicon_16`, `site_favicon_32`, `site_favicon_180`, `site_favicon_192`, serta `site_favicon_512`.
   3. Seluruh layout publik dan admin (`views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, dan `views/admin/403.ejs`) merender tag `<link rel="icon" type="image/png" sizes="32x32">`, `<link rel="icon" type="image/png" sizes="16x16">`, `<link rel="apple-touch-icon" sizes="180x180">`, dan `<link rel="icon" type="image/png" sizes="192x192">`.
 - **Cache Invalidation:** Memanggil `clearSettingsCache()` untuk membersihkan memory cache segera setelah update berhasil dieksekusi.
+
+---
+
+## 7. Arsitektur View Admin Settings Modular & Token (.stg-*) [PENDING T-275, T-276]
+- **Orkestrator Halaman Ramping:** `views/admin/settings/index.ejs` bertindak sebagai template ramping (<50 baris) yang mengorkestrasikan partial per kartu section.
+- **Daftar Partial Modular (`views/admin/settings/partials/`):**
+  1. `visual-identity-card.ejs`: Favicon, logo header navbar, dan logo footer berkontras tinggi (panjang <= 100 baris).
+  2. `corporate-identity-card.ejs`: Nama perusahaan, tagline, email, dan telepon (panjang <= 100 baris).
+  3. `dual-location-card.ejs`: Alamat dual lokasi (Kantor Jakarta & Pabrik Bandung) serta embed Google Maps dengan placeholder aman (panjang <= 100 baris).
+  4. `whatsapp-service-card.ejs`: Nomor resmi, tema tombol floating, salam pembuka, dan repeater rotasi multi-nomor (panjang <= 100 baris).
+  5. `social-media-card.ejs`: Akun LinkedIn, Instagram, Facebook, dan YouTube serta toggle visibilitas (panjang <= 100 baris).
+- **Isolasi Class & Token:**
+  - Seluruh penataan tata letak khusus settings menggunakan class berprefix unik `.stg-*` yang diisolasi pada `public/css/admin.css` (tanpa mengubah class bersama `.form-card`, `.form-group`, `.form-row-2`).
+  - Dilarang keras menggunakan style inline dan warna hex mentah; seluruh styling merujuk ke token desain CSS resmi (`var(--bg-subtle)`, `var(--color-border)`, `var(--color-primary-dark)`, `var(--surface-dark-deep)`, `var(--color-leaf)`).
+  - State preview media picker dikendalikan melalui class status semantik (`.is-empty`, `.has-preview`) tanpa inline style.
+- **Kebersihan Markup:** Zero komentar HTML frontend; seluruh placeholder input di-escape secara aman.

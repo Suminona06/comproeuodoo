@@ -18,3 +18,5 @@ To update antislop later: `npx antislop-ai --update`, or run `npx antislop-ai` a
 - **Wajib mengikuti alur kerja pada `.agents/WORKFLOW.md`** untuk setiap revisi perilaku, perubahan spek, atau penambahan fitur baru.
 - **Dilarang menambah bagian "Revisi vN"** atau menyimpan narasi riwayat di dalam dokumen modul spek. Seluruh perubahan wajib menimpa kondisi lama di tempat (*current state only*).
 - **Batas Ukuran:** Setiap berkas modul maksimal ~8KB, `.agents/INDEX.md` maksimal 60 baris. Jika melebihi batas, wajib dipecah menjadi sub-modul yang lebih spesifik.
+- **Wajib baca `.agents/tech/conventions.md`** sebelum menulis atau merefaktor kode (view EJS, CSS, JS).
+- **Gerbang Kualitas Lint:** `npm run lint` dan `npm run lint:views` wajib hijau tanpa error pada berkas terkait sebelum Close.
