@@ -5580,6 +5580,86 @@ body.sidebar-open .admin-backdrop {
   display: block;
 }
 
+/* Modul Media Library (Batch 11 - T-287) */
+
+.adm-media-body {
+  padding: 1.25rem;
+}
+
+.adm-media-type-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.adm-media-type-yt {
+  color: var(--color-error);
+}
+
+.adm-media-type-video {
+  color: var(--color-primary, var(--primary));
+}
+
+.adm-media-type-doc {
+  color: var(--color-warning, var(--warning));
+}
+
+.adm-media-type-tag {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.adm-media-delete-form {
+  margin: 0;
+  display: inline-flex;
+}
+
+.adm-media-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 1.5rem;
+}
+
+.adm-media-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
+}
+
+.adm-media-empty-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.adm-media-empty-desc {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.adm-media-modal-icon {
+  color: var(--color-primary, var(--primary));
+}
+
+.adm-media-mb-0 {
+  margin-bottom: 0;
+}
+
+.adm-media-yt-modal-icon {
+  color: var(--color-error);
+}
+
+.adm-media-yt-preview {
+  margin-top: 10px;
+}
+
+.adm-media-yt-iframe {
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-main);
+}
+
+
 
 
 

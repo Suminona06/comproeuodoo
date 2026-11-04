@@ -24,7 +24,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/admin/dashboard.ejs',
   'views/partials/admin-header.ejs',
   'views/partials/admin-footer.ejs',
-  'views/partials/media-picker-modal.ejs'
+  'views/partials/media-picker-modal.ejs',
+  'views/admin/media/index.ejs'
 ];
 
 function getFiles(dir, ext) {
