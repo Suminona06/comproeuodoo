@@ -171,8 +171,8 @@ async function runQAVerification() {
     const isDrawerOpen = await page.evaluate(() => document.body.classList.contains('sidebar-open'));
     assert.strictEqual(isDrawerOpen, true, 'Body harus memiliki class sidebar-open saat menu drawer mobile dibuka');
 
-    // Tutup drawer via klik backdrop
-    await page.click('.admin-backdrop');
+    // Tutup drawer via klik area backdrop di luar sidebar (posisi x: 330px pada viewport 375px)
+    await page.click('.admin-backdrop', { position: { x: 330, y: 100 } });
     await page.waitForTimeout(250);
 
     const isDrawerClosed = await page.evaluate(() => !document.body.classList.contains('sidebar-open'));

@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 12 Task (T-286 s/d T-293)
-- **Total Task Selesai:** 281 Task (T-01 s/d T-285)
+- **Task Aktif Terbuka:** 11 Task (T-287 s/d T-293)
+- **Total Task Selesai:** 282 Task (T-01 s/d T-286)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -133,18 +133,18 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t285-dashboard-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-04.
 
-### T-286: Refaktor View Admin Batch 10 - Admin Shell & Universal Partials [TODO]
+### T-286: Refaktor View Admin Batch 10 - Admin Shell & Universal Partials [DONE]
 - **Deskripsi**: Merefaktor partial shell admin (`views/partials/admin-header.ejs`, `views/partials/admin-footer.ejs`, `views/partials/media-picker-modal.ejs`): eliminasi 30 style inline, 18 hex, 1 script inline anti-FOUC sidebar, dan 26 komentar HTML. Ekstraksi ke class `.adm-shell-*` dan `.adm-picker-*` di `public/css/admin.css`. Script init sidebar dipindahkan ke `public/js/admin-header-init.js`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/partials/admin-header.ejs,views/partials/admin-footer.ejs,views/partials/media-picker-modal.ejs`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin bebas FOUC sidebar (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Toggle collapse sidebar desktop, drawer menu mobile, flash alert, dan interaktivitas universal media picker modal berfungsi 100% tanpa error konsol.
-  - [ ] Tiga berkas partials admin ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/partials/admin-header.ejs`, `views/partials/admin-footer.ejs`, `views/partials/media-picker-modal.ejs`, `public/css/admin.css`, `public/js/admin-header-init.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/partials/admin-header.ejs,views/partials/admin-footer.ejs,views/partials/media-picker-modal.ejs`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin bebas FOUC sidebar (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Toggle collapse sidebar desktop, drawer menu mobile, flash alert, dan interaktivitas universal media picker modal berfungsi 100% tanpa error konsol.
+  - [x] Tiga berkas partials admin ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/partials/admin-header.ejs`, `views/partials/admin-footer.ejs`, `views/partials/media-picker-modal.ejs`, `public/css/admin.css`, `public/js/admin-header-init.js`, `scripts/lint-views.js`, `tests/test-t286-admin-shell-partials-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t286-admin-shell-partials-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-04.
 
 ### T-287: Refaktor View Admin Batch 11 - Media Library [TODO]
 - **Deskripsi**: Merefaktor berkas `views/admin/media/index.ejs`: eliminasi 17 style inline, 3 hex (`#dc2626`, `#b45309`), 1 tag `<script>` inline, dan 3 komentar HTML. Ekstraksi ke class berprefix `.adm-media-*` di `public/css/admin.css`. Pindahkan fungsi preview YouTube ke `public/js/admin-media.js`. Bersihkan komentar dan hex lama terkait.
