@@ -4551,5 +4551,66 @@ body.sidebar-open .admin-backdrop {
   color: var(--color-text-muted);
 }
 
+/* ==========================================================================
+   Batch 4: User Management (.adm-usr-*) (T-280)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-usr-form-card {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Role note box in create user form */
+.adm-usr-role-note {
+  background: var(--color-bg-subtle, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+.adm-usr-role-list {
+  margin-left: 18px;
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+/* Table columns & cells */
+.adm-usr-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+.adm-usr-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-usr-avatar-badge {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+.adm-usr-date-cell {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+.adm-usr-td-actions {
+  text-align: right;
+}
+
+.adm-usr-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+
 
 

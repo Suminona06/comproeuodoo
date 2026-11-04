@@ -55,18 +55,18 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t279-post-categories-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-03.
 
-### T-280: Refaktor View Admin Batch 4 - Manajemen Pengguna (Users) [TODO]
+### T-280: Refaktor View Admin Batch 4 - Manajemen Pengguna (Users) [DONE]
 - **Deskripsi**: Merefaktor modul pengguna (`views/admin/users/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 10 style inline dan 1 warna hex `#fafbfc` pada box role superadmin. Ekstraksi ke class berprefix `.adm-usr-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/users/`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Manajemen akun user, hak akses role RBAC, proteksi last superadmin, dan ganti role berfungsi normal tanpa error konsol.
-  - [ ] Path `views/admin/users/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/users/index.ejs`, `views/admin/users/create.ejs`, `views/admin/users/edit.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js views/admin/users/`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas 4 resolusi admin (375px, 768px, 1280px, 1440px) (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Manajemen akun user, hak akses role RBAC, proteksi last superadmin, dan ganti role berfungsi normal tanpa error konsol.
+  - [x] Path `views/admin/users/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/users/index.ejs`, `views/admin/users/create.ejs`, `views/admin/users/edit.ejs`, `public/css/admin.css`, `scripts/lint-views.js`, `tests/test-t280-users-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t280-users-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-04.
 
 ### T-281: Refaktor View Admin Batch 5 - Merek Klien (Brands) [TODO]
 - **Deskripsi**: Merefaktor modul merek (`views/admin/brands/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 29 style inline, 1 hex `#fafbfc`, dan 1 komentar HTML. Ekstraksi ke class berprefix `.adm-brd-*` di `public/css/admin.css`. Pindahkan box thumbnail brand ke class CSS komponen. Bersihkan komentar dan hex lama terkait.

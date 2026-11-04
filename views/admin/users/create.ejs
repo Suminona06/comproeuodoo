@@ -13,7 +13,7 @@
   </div>
 </div>
 
-<div class="form-card" style="max-width: 680px; margin: 0 auto;">
+<div class="form-card adm-usr-form-card">
   <div class="form-card-title">Formulir Pendaftaran Pengguna</div>
 
   <form action="/admin/users?_csrf=<%= csrfToken %>" method="POST" novalidate>
@@ -44,9 +44,9 @@
       </div>
     </div>
 
-    <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 10px 12px; margin-top: 10px; font-size: 11.5px; color: var(--text-secondary);">
+    <div class="adm-usr-role-note">
       <strong>Catatan Hak Akses:</strong>
-      <ul style="margin-left: 18px; margin-top: 4px; line-height: 1.6;">
+      <ul class="adm-usr-role-list">
         <li><strong>Superadmin:</strong> Mengakses seluruh menu, pengaturan situs, dan manajemen pengguna.</li>
         <li><strong>Admin:</strong> Mengelola produk, banner, inquiry, export CSV, berita, dan media library.</li>
         <li><strong>Editor:</strong> Dibatasi hanya untuk mengelola berita, artikel, dan media library.</li>

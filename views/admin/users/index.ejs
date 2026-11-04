@@ -31,7 +31,7 @@
           <th>Hak Akses (Role)</th>
           <th>Status Keamanan</th>
           <th>Terdaftar</th>
-          <th style="text-align: right; width: 120px;">Aksi</th>
+          <th class="adm-usr-th-actions">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -39,9 +39,9 @@
           <% users.forEach(function(u) { %>
             <tr>
               <td>
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="adm-usr-user-info">
                   <% const uName = u.full_name || u.name || u.email || 'User'; %>
-                  <div class="user-avatar-badge" style="width: 28px; height: 28px; font-size: 11px;">
+                  <div class="user-avatar-badge adm-usr-avatar-badge">
                     <%= uName.charAt(0).toUpperCase() %>
                   </div>
                   <div class="td-client-title"><%= uName %></div>
@@ -71,11 +71,11 @@
                 <% } %>
               </td>
               <td>
-                <div style="font-size: 11.5px; color: var(--text-muted);">
+                <div class="adm-usr-date-cell">
                   <%= new Date(u.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %>
                 </div>
               </td>
-              <td style="text-align: right;">
+              <td class="adm-usr-td-actions">
                 <div class="table-actions">
                   <a href="/admin/users/<%= u.id %>/edit" class="btn-action btn-action-edit" title="Edit Akun">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -96,7 +96,7 @@
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <td colspan="6" class="adm-usr-empty-cell">
               Tidak ada data pengguna.
             </td>
           </tr>
