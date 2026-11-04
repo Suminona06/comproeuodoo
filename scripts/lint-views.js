@@ -20,7 +20,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/admin/contact/index.ejs',
   'views/admin/hero-banners/index.ejs',
   'views/admin/leads/index.ejs',
-  'views/admin/inquiries/'
+  'views/admin/inquiries/',
+  'views/admin/dashboard.ejs'
 ];
 
 function getFiles(dir, ext) {

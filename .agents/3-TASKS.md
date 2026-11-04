@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 13 Task (T-285 s/d T-293)
-- **Total Task Selesai:** 280 Task (T-01 s/d T-284)
+- **Task Aktif Terbuka:** 12 Task (T-286 s/d T-293)
+- **Total Task Selesai:** 281 Task (T-01 s/d T-285)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -120,18 +120,18 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t284-inquiries-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-04.
 
-### T-285: Refaktor View Admin Batch 9 - Dashboard Admin [TODO]
+### T-285: Refaktor View Admin Batch 9 - Dashboard Admin [DONE]
 - **Deskripsi**: Merefaktor berkas `views/admin/dashboard.ejs`: eliminasi 18 style inline, 1 hex `#fafbfc`, 1 tag `<script>` inline, dan 3 komentar HTML. Ekstraksi style metrik dan tabel ke class `.adm-dash-*` di `public/css/admin.css`. Pindahkan script slide-over inquiry ke `public/js/admin-dashboard.js`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/dashboard.ejs`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Kartu ringkasan metrik, grafik/tabel RFQ terbaru, dan slide-over panel detail inquiry berfungsi lancar tanpa error konsol.
-  - [ ] Berkas `views/admin/dashboard.ejs` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/dashboard.ejs`, `public/css/admin.css`, `public/js/admin-dashboard.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/dashboard.ejs`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Kartu ringkasan metrik, grafik/tabel RFQ terbaru, dan slide-over panel detail inquiry berfungsi lancar tanpa error konsol.
+  - [x] Berkas `views/admin/dashboard.ejs` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/dashboard.ejs`, `public/css/admin.css`, `public/js/admin-dashboard.js`, `scripts/lint-views.js`, `tests/test-t285-dashboard-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t285-dashboard-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-04.
 
 ### T-286: Refaktor View Admin Batch 10 - Admin Shell & Universal Partials [TODO]
 - **Deskripsi**: Merefaktor partial shell admin (`views/partials/admin-header.ejs`, `views/partials/admin-footer.ejs`, `views/partials/media-picker-modal.ejs`): eliminasi 30 style inline, 18 hex, 1 script inline anti-FOUC sidebar, dan 26 komentar HTML. Ekstraksi ke class `.adm-shell-*` dan `.adm-picker-*` di `public/css/admin.css`. Script init sidebar dipindahkan ke `public/js/admin-header-init.js`. Bersihkan komentar dan hex lama terkait.

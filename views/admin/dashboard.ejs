@@ -19,7 +19,6 @@
   </div>
 </div>
 
-<!-- 1. Key Metrics Cards -->
 <section class="metrics-row" aria-label="Metrik Utama">
   <div class="metric-box">
     <span class="metric-label-txt">Inquiry RFQ Baru</span>
@@ -50,7 +49,6 @@
   </div>
 </section>
 
-<!-- 2. RFQ / Inquiry Table -->
 <section class="table-card" id="tableSection">
   <div class="table-toolbar">
     <h2 class="toolbar-title">Permintaan Penawaran Terkini (RFQ)</h2>
@@ -74,12 +72,12 @@
     <table class="data-table" id="rfqDataTable">
       <thead>
         <tr>
-          <th style="width: 100px;">Waktu</th>
+          <th class="adm-dash-th-time">Waktu</th>
           <th>Klien / Perusahaan</th>
           <th>Kontak</th>
           <th>Kebutuhan</th>
-          <th style="width: 140px;">Status</th>
-          <th style="width: 80px; text-align: right;">Aksi</th>
+          <th class="adm-dash-th-status">Status</th>
+          <th class="adm-dash-th-actions">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -87,10 +85,10 @@
           <% recentInquiries.forEach(function(item) { %>
             <tr data-status="<%= item.status %>" id="row-<%= item.id %>">
               <td>
-                <span style="font-weight: 600; color: var(--text-main);">
+                <span class="adm-dash-time-val">
                   <%= new Date(item.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %>
                 </span>
-                <div style="font-size: 11px; color: var(--text-tertiary);">
+                <div class="adm-dash-date-val">
                   <%= new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) %>
                 </div>
               </td>
@@ -99,7 +97,7 @@
                 <div class="td-client-sub"><%= item.name %></div>
               </td>
               <td>
-                <div style="font-size: 12px; color: var(--text-main);"><%= item.phone %></div>
+                <div class="adm-dash-phone-val"><%= item.phone %></div>
                 <div class="td-muted-text"><%= item.email %></div>
               </td>
               <td>
@@ -116,7 +114,7 @@
                   <option value="ditolak" <%= item.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
                 </select>
               </td>
-              <td style="text-align: right;">
+              <td class="adm-dash-td-actions">
                 <div class="table-actions">
                   <button type="button" class="btn-action btn-action-view" data-inquiry-id="<%= item.id %>" title="Tinjau Rincian Permintaan">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -128,7 +126,7 @@
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <td colspan="6" class="adm-dash-empty-cell">
               Belum ada permintaan penawaran masuk saat ini.
             </td>
           </tr>
@@ -145,7 +143,6 @@
   </div>
 </section>
 
-<!-- Detail Slide-Over Modal / Card -->
 <div class="admin-modal-backdrop" id="inquiryDetailModal">
   <div class="admin-modal-card">
     <div class="admin-modal-header">
@@ -163,25 +160,25 @@
     <form id="modalNotesForm">
       <input type="hidden" id="modalInquiryId" name="inquiryId">
       <div class="admin-modal-body">
-        <div style="background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-md); padding: 1rem;">
-          <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Informasi Klien</div>
-          <div id="modalClientCompany" style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">-</div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12.5px;">
-            <div><span style="color: var(--text-muted);">PIC:</span> <strong id="modalClientName">-</strong></div>
-            <div><span style="color: var(--text-muted);">Telepon:</span> <strong id="modalClientPhone">-</strong></div>
-            <div><span style="color: var(--text-muted);">Email:</span> <span id="modalClientEmail">-</span></div>
-            <div><span style="color: var(--text-muted);">Produk:</span> <span id="modalClientProduct">-</span></div>
+        <div class="adm-dash-modal-card-box">
+          <div class="adm-dash-modal-label">Informasi Klien</div>
+          <div id="modalClientCompany" class="adm-dash-modal-company">-</div>
+          <div class="adm-dash-modal-grid">
+            <div><span class="adm-dash-muted-text">PIC:</span> <strong id="modalClientName">-</strong></div>
+            <div><span class="adm-dash-muted-text">Telepon:</span> <strong id="modalClientPhone">-</strong></div>
+            <div><span class="adm-dash-muted-text">Email:</span> <span id="modalClientEmail">-</span></div>
+            <div><span class="adm-dash-muted-text">Produk:</span> <span id="modalClientProduct">-</span></div>
           </div>
         </div>
 
         <div>
           <label class="form-label">Rincian Kebutuhan / Pesan Konsultasi:</label>
-          <div id="modalClientMessage" style="background: var(--bg-surface); border: 1px solid var(--border-main); border-left: 3px solid var(--primary); border-radius: var(--r-sm); padding: 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); max-height: 140px; overflow-y: auto;">
+          <div id="modalClientMessage" class="adm-dash-modal-message-box">
             -
           </div>
         </div>
 
-        <div class="form-group" style="margin-bottom: 0;">
+        <div class="form-group adm-dash-mb-0">
           <label class="form-label" for="modalAdminNotes">Catatan Internal Sales / Admin:</label>
           <textarea id="modalAdminNotes" class="form-textarea" placeholder="Tuliskan catatan tindak lanjut, kesepakatan harga, atau jadwal meeting dengan klien..."></textarea>
         </div>
@@ -199,118 +196,7 @@
   </div>
 </div>
 
-<script>
-  const dashboardInquiries = <%- JSON.stringify(recentInquiries || []) %>;
-
-  function viewInquiryDetail(itemOrId) {
-    let item = itemOrId;
-    if (typeof itemOrId === 'number' || typeof itemOrId === 'string') {
-      item = dashboardInquiries.find(i => String(i.id) === String(itemOrId));
-    }
-    if (!item) return;
-
-    document.getElementById('modalInquiryId').value = item.id;
-    document.getElementById('modalClientCompany').textContent = item.company || 'Pribadi / Retail';
-    document.getElementById('modalClientName').textContent = item.name;
-    document.getElementById('modalClientPhone').textContent = item.phone;
-    document.getElementById('modalClientEmail').textContent = item.email;
-    document.getElementById('modalClientProduct').textContent = item.product_name_id || 'Umum (Katalog)';
-    document.getElementById('modalClientMessage').textContent = item.message || 'Tidak ada pesan tertulis.';
-    document.getElementById('modalAdminNotes').value = item.admin_notes || '';
-    openAdminModal('inquiryDetailModal');
-  }
-  window.viewInquiryDetail = viewInquiryDetail;
-
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-inquiry-id]');
-    if (btn && btn.classList.contains('btn-action-view')) {
-      const id = btn.getAttribute('data-inquiry-id');
-      viewInquiryDetail(id);
-    }
-  });
-
-  document.addEventListener('change', (e) => {
-    const sel = e.target.closest('.inquiry-status-select');
-    if (sel) {
-      const id = sel.getAttribute('data-id');
-      if (id) updateInquiryStatus(id, sel.value);
-    }
-  });
-
-  async function updateInquiryStatus(id, newStatus) {
-    try {
-      const res = await fetch('/admin/inquiries/' + id + '/status', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast('Status inquiry #' + id + ' berhasil diperbarui ke: ' + newStatus);
-        const row = document.getElementById('row-' + id);
-        if (row) {
-          row.setAttribute('data-status', newStatus);
-          const sel = row.querySelector('.status-select');
-          if (sel) {
-            const statusClass = (newStatus === 'ditindaklanjuti' ? 'selesai' : (newStatus === 'dibaca' ? 'diproses' : newStatus));
-            sel.classList.remove('st-baru', 'st-diproses', 'st-selesai', 'st-ditolak');
-            sel.classList.add('st-' + statusClass, 'eu-dd-native', 'sr-only');
-            const dd = sel.closest('.eu-dd');
-            if (dd) {
-              dd.classList.remove('st-baru', 'st-diproses', 'st-selesai', 'st-ditolak');
-              dd.classList.add('st-' + statusClass);
-            }
-          }
-        }
-      } else {
-        if (window.showAdminAlert) {
-          window.showAdminAlert('Gagal', data.message || 'Gagal mengubah status.', 'error');
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      if (window.showAdminAlert) {
-        window.showAdminAlert('Gagal', 'Terjadi kesalahan jaringan.', 'error');
-      }
-    }
-  }
-
-  const modalNotesForm = document.getElementById('modalNotesForm');
-  if (modalNotesForm) {
-    modalNotesForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const id = document.getElementById('modalInquiryId').value;
-      const notes = document.getElementById('modalAdminNotes').value;
-
-      try {
-        const res = await fetch('/admin/inquiries/' + id + '/status', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({ admin_notes: notes })
-        });
-        const data = await res.json();
-        if (data.success) {
-          showToast('Catatan admin berhasil disimpan!');
-          closeAdminModal('inquiryDetailModal');
-        } else {
-          if (window.showAdminAlert) {
-            window.showAdminAlert('Gagal', data.message || 'Gagal menyimpan catatan.', 'error');
-          }
-        }
-      } catch (err) {
-        console.error(err);
-        if (window.showAdminAlert) {
-          window.showAdminAlert('Gagal', 'Gagal menyimpan catatan.', 'error');
-        }
-      }
-    });
-  }
-</script>
+<script type="application/json" id="dashboardInquiriesJson"><%- JSON.stringify(recentInquiries || []) %></script>
+<script src="/js/admin-dashboard.js" defer></script>
 
 <%- include('../partials/admin-footer') %>

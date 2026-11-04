@@ -5304,6 +5304,103 @@ body.sidebar-open .admin-backdrop {
   border-top: 1px solid var(--border-main);
 }
 
+/* Modul Dashboard Admin (Batch 9 - T-285) */
+
+.adm-dash-th-time {
+  width: 100px;
+}
+
+.adm-dash-th-status {
+  width: 140px;
+}
+
+.adm-dash-th-actions {
+  width: 80px;
+  text-align: right;
+}
+
+.adm-dash-time-val {
+  font-weight: 600;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-dash-date-val {
+  font-size: 11px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+}
+
+.adm-dash-phone-val {
+  font-size: 12px;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-dash-td-actions {
+  text-align: right;
+}
+
+.adm-dash-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+.adm-dash-modal-card-box {
+  background: var(--color-surface-container, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  padding: 1rem;
+}
+
+.adm-dash-modal-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.adm-dash-modal-company {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-main, var(--text-main));
+  margin-bottom: 6px;
+}
+
+.adm-dash-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+@media (max-width: 480px) {
+  .adm-dash-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-dash-muted-text {
+  color: var(--color-text-muted);
+}
+
+.adm-dash-modal-message-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-left: 3px solid var(--color-primary, var(--primary));
+  border-radius: var(--r-sm);
+  padding: 10px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, var(--text-secondary));
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.adm-dash-mb-0 {
+  margin-bottom: 0;
+}
+
+
 
 
 
