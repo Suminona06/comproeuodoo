@@ -36,7 +36,9 @@ async function runQAVerification() {
   console.log(`  ✓ Server pengujian berjalan di ${baseUrl}`);
 
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
+  const context = await browser.newContext({
+    permissions: ['clipboard-read', 'clipboard-write']
+  });
 
   const consoleErrors = [];
   const pageErrors = [];
@@ -204,10 +206,51 @@ async function runQAVerification() {
     }, 'Tombol salin URL harus dapat diklik tanpa exception');
     console.log('  ✓ Tab filter dan aksi salin URL berfungsi tanpa kendala.');
 
-    // [7] TEST 7: Konsol Browser & Page Errors Check
-    console.log('\n[7] Memeriksa integritas konsol JavaScript browser...');
+    // [7] TEST 7: Interaktivitas Pop Up Konfirmasi Hapus Media & SweetAlert2
+    console.log('\n[7] Menguji Pop Up SweetAlert2 & Alur Hapus Media...');
+    await page.goto(`${baseUrl}/admin/media`, { waitUntil: 'networkidle' });
+
+    const deleteBtn = page.locator(`form[action*="${testImageId}/delete"] button[type="submit"]`);
+    await deleteBtn.click();
+    await page.waitForTimeout(500);
+
+    const isSwalVisible = await page.locator('.swal2-container').isVisible();
+    assert.strictEqual(isSwalVisible, true, 'Pop up SweetAlert konfirmasi hapus harus muncul');
+
+    const swalTitle = await page.locator('.swal2-title').textContent();
+    assert.ok(swalTitle.includes('Hapus Media'), 'Judul pop up harus Hapus Media');
+
+    // Uji batal hapus
+    await page.click('.swal2-cancel');
+    await page.waitForTimeout(300);
+
+    const isSwalHidden = await page.locator('.swal2-container').isVisible().catch(() => false);
+    assert.strictEqual(isSwalHidden, false, 'Pop up SweetAlert harus tertutup saat dibatalkan');
+
+    const imageBeforeDelete = await mediaModel.findById(testImageId);
+    assert.ok(imageBeforeDelete, 'Media tidak boleh terhapus jika konfirmasi dibatalkan');
+
+    // Uji konfirmasi hapus permanen
+    await deleteBtn.click();
+    await page.waitForTimeout(500);
+
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle' }),
+      page.click('.swal2-confirm')
+    ]);
+
+    const imageAfterDelete = await mediaModel.findById(testImageId);
+    assert.strictEqual(imageAfterDelete, null, 'Media harus terhapus dari database setelah konfirmasi');
+    testImageId = null;
+    console.log('  ✓ Pop up konfirmasi hapus media & penghapusan database berfungsi sempurna.');
+
+    // [8] TEST 8: Konsol Browser & Page Errors Check
+    console.log('\n[8] Memeriksa integritas konsol JavaScript browser...');
     if (consoleErrors.length > 0) {
       console.error('  Ditemukan console error:', consoleErrors);
+    }
+    if (pageErrors.length > 0) {
+      console.error('  Ditemukan page error:', pageErrors);
     }
     assert.strictEqual(consoleErrors.length, 0, `Harus 0 error konsol browser! Ditemukan: ${consoleErrors.length}`);
     assert.strictEqual(pageErrors.length, 0, `Harus 0 page errors! Ditemukan: ${pageErrors.length}`);

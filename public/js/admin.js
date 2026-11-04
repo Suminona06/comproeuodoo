@@ -521,9 +521,17 @@ document.addEventListener('submit', function(e) {
     text: message,
     isDanger: true
   }).then((confirmed) => {
+    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
     if (confirmed) {
+      if (submitBtn) {
+        submitBtn.classList.add('is-loading');
+        submitBtn.disabled = true;
+      }
       form.dataset.confirmed = 'true';
       form.submit();
+    } else if (submitBtn) {
+      submitBtn.classList.remove('is-loading');
+      submitBtn.disabled = false;
     }
   });
 });

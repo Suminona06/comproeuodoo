@@ -144,7 +144,7 @@ export const mediaModel = {
         UNION ALL
         SELECT 'Hero Banner' as source, page_key as label FROM page_hero_banners WHERE image_url = ?
         UNION ALL
-        SELECT 'Katalog Produk' as source, name_id as label FROM products WHERE image_url = ?
+        SELECT 'Katalog Produk' as source, name_id as label FROM products WHERE main_image = ? OR gallery_images LIKE ?
         UNION ALL
         SELECT 'Artikel Berita' as source, title_id as label FROM posts WHERE cover_image = ?
         UNION ALL
@@ -152,20 +152,19 @@ export const mediaModel = {
         UNION ALL
         SELECT 'Kapabilitas' as source, title_id as label FROM capabilities WHERE image_url = ?
         UNION ALL
-        SELECT 'Pengaturan' as source, 'Logo / Favicon / Dokumentasi' as label FROM settings
-        WHERE site_logo_header = ? OR site_logo_footer = ? OR site_favicon = ? OR about_image_url = ?
+        SELECT 'Pengaturan' as source, setting_key as label FROM settings WHERE setting_value = ?
       `;
       const params = [
         fileUrl, fileUrl,
         fileUrl,
+        fileUrl, `%${fileUrl}%`,
         fileUrl,
         fileUrl,
         fileUrl,
-        fileUrl,
-        fileUrl, fileUrl, fileUrl, fileUrl
+        fileUrl
       ];
       return await query(sql, params);
-    } catch (err) {
+    } catch {
       return [];
     }
   }

@@ -591,22 +591,31 @@
             })
           : false;
 
+        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
         if (confirmed) {
+          if (submitBtn) {
+            submitBtn.classList.add('is-loading');
+            submitBtn.disabled = true;
+          }
           form.dataset.forceConfirmed = 'true';
           let action = form.getAttribute('action') || '';
           action += (action.includes('?') ? '&' : '?') + 'force=true';
           form.setAttribute('action', action);
           form.submit();
+        } else if (submitBtn) {
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
         }
         return;
       }
-    } catch (err) {
+    } catch {
       // Continue to default delete confirm if check fails
     }
 
     // Default confirm if not in use
     form.dataset.forceConfirmed = 'true';
-    form.dispatchEvent(new Event('submit'));
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    delete form.dataset.forceConfirmed;
   }, true);
 
   // Expose global API
