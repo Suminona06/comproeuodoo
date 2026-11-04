@@ -19,7 +19,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/admin/capabilities/index.ejs',
   'views/admin/contact/index.ejs',
   'views/admin/hero-banners/index.ejs',
-  'views/admin/leads/index.ejs'
+  'views/admin/leads/index.ejs',
+  'views/admin/inquiries/'
 ];
 
 function getFiles(dir, ext) {
@@ -53,8 +54,8 @@ function lintLine(filePath, relativePath, line, lineNum, isStrict) {
     issues.push({ line: lineNum, sev, rule: 'no-raw-hex', msg: `Dilarang menggunakan kode warna hex langsung (${hexMatches.join(', ')}). Gunakan token CSS.` });
   }
 
-  // 3. Inline script tag without src
-  if (/<script(?![^>]*\bsrc=)[^>]*>/i.test(line)) {
+  // 3. Inline script tag without src (kecuali type="application/json" untuk data transfer aman)
+  if (/<script(?![^>]*(?:\bsrc=|\btype=["']application\/json["']))[^>]*>/i.test(line)) {
     issues.push({ line: lineNum, sev, rule: 'no-inline-script', msg: 'Dilarang menggunakan tag <script> inline. Pindahkan ke berkas JS eksternal.' });
   }
 

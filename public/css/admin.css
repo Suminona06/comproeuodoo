@@ -5124,6 +5124,187 @@ body.sidebar-open .admin-backdrop {
   color: var(--color-text-muted);
 }
 
+/* Modul Inquiries & RFQ (Batch 8 - T-284) */
+
+.adm-inq-th-time {
+  width: 100px;
+}
+
+.adm-inq-th-status {
+  width: 140px;
+}
+
+.adm-inq-th-actions {
+  text-align: right;
+  width: 110px;
+}
+
+.adm-inq-time-val {
+  font-weight: 600;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-inq-date-val {
+  font-size: 11px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+}
+
+.adm-inq-phone-wrap {
+  font-size: 12px;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-inq-wa-link {
+  color: var(--color-primary, var(--primary));
+  text-decoration: underline;
+}
+
+.adm-inq-td-actions {
+  text-align: right;
+}
+
+.adm-inq-empty-td {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-muted);
+}
+
+.adm-inq-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 1rem;
+  border-top: 1px solid var(--border-main);
+}
+
+.adm-inq-modal-client-card {
+  background: var(--color-surface-container, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  padding: 1rem;
+}
+
+.adm-inq-modal-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.adm-inq-modal-company {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-main, var(--text-main));
+  margin-bottom: 6px;
+}
+
+.adm-inq-modal-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+@media (max-width: 480px) {
+  .adm-inq-modal-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-inq-muted-label {
+  color: var(--color-text-muted);
+}
+
+.adm-inq-modal-message-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-left: 3px solid var(--color-primary, var(--primary));
+  border-radius: var(--r-sm);
+  padding: 10px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, var(--text-secondary));
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.adm-inq-mb-0 {
+  margin-bottom: 0;
+}
+
+.adm-inq-detail-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 860px) {
+  .adm-inq-detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-inq-detail-message-box {
+  background: var(--color-surface-container, var(--bg-subtle));
+  border-left: 3px solid var(--color-primary, var(--primary));
+  padding: 1rem;
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--color-text-main, var(--text-main));
+  margin-bottom: 1.25rem;
+}
+
+.adm-inq-mt-md {
+  margin-top: 1.5rem;
+}
+
+.adm-inq-textarea-tall {
+  min-height: 120px;
+}
+
+.adm-inq-actions-end {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.adm-inq-status-form {
+  margin-bottom: 1.25rem;
+}
+
+.adm-inq-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.adm-inq-info-label {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.adm-inq-info-val {
+  font-weight: 600;
+}
+
+.adm-inq-wa-btn {
+  margin-top: 4px;
+}
+
+.adm-inq-email-link {
+  color: var(--color-primary, var(--primary));
+}
+
+.adm-inq-danger-zone {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-main);
+}
+
+
 
 
 
