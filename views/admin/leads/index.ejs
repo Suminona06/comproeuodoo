@@ -13,10 +13,9 @@
   </div>
 </div>
 
-<!-- Filter Bar -->
-<div class="form-card" style="margin-bottom: 1.5rem; padding: 1rem 1.25rem;">
-  <form action="/admin/leads" method="GET" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
-    <div style="min-width: 180px;">
+<div class="form-card adm-leads-filter-card">
+  <form action="/admin/leads" method="GET" class="adm-leads-filter-form">
+    <div class="adm-leads-filter-select-wrap">
       <select name="status" class="form-select" data-eu-dropdown="filled" data-eu-size="sm">
         <option value="">Semua Status</option>
         <option value="baru" <%= selectedStatus === 'baru' ? 'selected' : '' %>>Baru (Pending)</option>
@@ -25,7 +24,7 @@
         <option value="ditolak" <%= selectedStatus === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
       </select>
     </div>
-    <div style="min-width: 180px;">
+    <div class="adm-leads-filter-select-wrap">
       <select name="type" class="form-select" data-eu-dropdown="filled" data-eu-size="sm">
         <option value="">Semua Tipe</option>
         <option value="inquiry" <%= selectedType === 'inquiry' ? 'selected' : '' %>>Penawaran (RFQ)</option>
@@ -33,7 +32,7 @@
         <option value="general" <%= selectedType === 'general' ? 'selected' : '' %>>Umum</option>
       </select>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
+    <div class="adm-leads-filter-actions">
       <button type="submit" class="adm-btn adm-btn-secondary" aria-label="Terapkan filter data leads">
         <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
         <span>Filter</span>
@@ -47,7 +46,6 @@
   </form>
 </div>
 
-<!-- Leads Table -->
 <div class="table-card">
   <div class="table-toolbar">
     <h2 class="toolbar-title">Daftar Permintaan Masuk</h2>
@@ -57,12 +55,12 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th style="width: 110px;">Tanggal</th>
+          <th class="adm-leads-th-date">Tanggal</th>
           <th>Pengirim &amp; Perusahaan</th>
           <th>Kontak</th>
           <th>Pesan / Spesifikasi</th>
-          <th style="width: 120px;">Status</th>
-          <th style="width: 220px;">Ubah Status &amp; Catatan</th>
+          <th class="adm-leads-th-status">Status</th>
+          <th class="adm-leads-th-actions">Ubah Status &amp; Catatan</th>
         </tr>
       </thead>
       <tbody>
@@ -70,35 +68,35 @@
           <% leads.forEach(function(lead) { %>
             <tr>
               <td>
-                <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">
+                <span class="adm-leads-date-text">
                   <%= new Date(lead.created_at).toLocaleDateString('id-ID') %>
                 </span>
               </td>
               <td>
                 <strong><%= lead.name %></strong>
                 <% if (lead.company) { %>
-                  <div style="color: var(--text-muted); font-size: 12px;"><%= lead.company %></div>
+                  <div class="adm-leads-company-text"><%= lead.company %></div>
                 <% } %>
                 <% if (lead.product_name_id) { %>
-                  <div style="color: var(--primary); font-size: 11.5px; font-weight: 600;">Produk: <%= lead.product_name_id %></div>
+                  <div class="adm-leads-product-text">Produk: <%= lead.product_name_id %></div>
                 <% } %>
               </td>
               <td>
-                <div><a href="mailto:<%= lead.email %>" style="color: var(--primary); font-size: 12.5px;"><%= lead.email %></a></div>
+                <div><a href="mailto:<%= lead.email %>" class="adm-leads-email-link"><%= lead.email %></a></div>
                 <% if (lead.phone) { %>
                   <div>
-                    <a href="https://wa.me/<%= lead.phone.replace(/[^0-9]/g, '') %>" target="_blank" style="color: #16a34a; font-size: 12px; font-weight: 500;">
+                    <a href="https://wa.me/<%= lead.phone.replace(/[^0-9]/g, '') %>" target="_blank" class="adm-leads-wa-link">
                       WA: <%= lead.phone %> &nearr;
                     </a>
                   </div>
                 <% } %>
               </td>
               <td>
-                <p style="font-size: 12.5px; line-height: 1.45; max-width: 320px; margin: 0 0 4px 0; color: var(--text-main);">
+                <p class="adm-leads-message-text">
                   <%= lead.message %>
                 </p>
                 <% if (lead.admin_notes) { %>
-                  <div style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #475569; border: 1px solid #e2e8f0;">
+                  <div class="adm-leads-notes-box">
                     <strong>Catatan Sales:</strong> <%= lead.admin_notes %>
                   </div>
                 <% } %>
@@ -115,10 +113,10 @@
                 <% } %>
               </td>
               <td>
-                <form action="/admin/leads/<%= lead.id %>/status?_csrf=<%= csrfToken %>" method="POST" style="display: flex; flex-direction: column; gap: 4px; margin: 0;">
+                <form action="/admin/leads/<%= lead.id %>/status?_csrf=<%= csrfToken %>" method="POST" class="adm-leads-status-form">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <div style="display: flex; gap: 4px; align-items: center;">
-                    <select name="status" class="form-select" data-eu-dropdown="filled" data-eu-size="sm" style="min-width: 105px;">
+                  <div class="adm-leads-form-row">
+                    <select name="status" class="form-select adm-leads-status-select" data-eu-dropdown="filled" data-eu-size="sm">
                       <option value="baru" <%= lead.status === 'baru' ? 'selected' : '' %>>Baru</option>
                       <option value="diproses" <%= lead.status === 'diproses' ? 'selected' : '' %>>Diproses</option>
                       <option value="selesai" <%= lead.status === 'selesai' ? 'selected' : '' %>>Selesai</option>
@@ -129,14 +127,14 @@
                       <span>Simpan</span>
                     </button>
                   </div>
-                  <input type="text" name="admin_notes" class="form-input" style="min-height: 28px; font-size: 11.5px; padding: 2px 8px;" placeholder="Catatan sales..." value="<%= lead.admin_notes || '' %>">
+                  <input type="text" name="admin_notes" class="form-input adm-leads-notes-input" placeholder="Catatan sales..." value="<%= lead.admin_notes || '' %>">
                 </form>
               </td>
             </tr>
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            <td colspan="6" class="adm-leads-empty-cell">
               Belum ada pesan leads yang cocok dengan kriteria filter.
             </td>
           </tr>

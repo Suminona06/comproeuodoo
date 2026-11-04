@@ -13,15 +13,15 @@
   </div>
 </div>
 
-<div class="alert alert-info" style="margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: rgba(0, 117, 90, 0.08); border: 1px solid rgba(0, 117, 90, 0.2); border-radius: var(--r-md, 8px); padding: 14px 18px;">
-  <div style="display: flex; align-items: center; gap: 12px;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary, #00755a)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+<div class="alert alert-info adm-ctc-info-banner">
+  <div class="adm-ctc-banner-left">
+    <svg class="adm-ctc-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
     <div>
-      <strong style="color: var(--primary, #00755a); display: block; font-size: 13.5px;">Sentralisasi Master Data Kontak</strong>
-      <span style="font-size: 12.5px; color: var(--text-variant, #424753);">Alamat kantor, pabrik, telepon, email, dan peta Google Maps dikelola secara terpusat di Pengaturan Umum.</span>
+      <strong class="adm-ctc-banner-title">Sentralisasi Master Data Kontak</strong>
+      <span class="adm-ctc-banner-text">Alamat kantor, pabrik, telepon, email, dan peta Google Maps dikelola secara terpusat di Pengaturan Umum.</span>
     </div>
   </div>
-  <a href="/admin/settings" class="adm-btn adm-btn-secondary adm-btn-sm" style="flex-shrink: 0;" aria-label="Buka halaman pengaturan umum">Buka Pengaturan</a>
+  <a href="/admin/settings" class="adm-btn adm-btn-secondary adm-btn-sm adm-ctc-banner-btn" aria-label="Buka halaman pengaturan umum">Buka Pengaturan</a>
 </div>
 
 <form action="/admin/contact?_csrf=<%= csrfToken %>" method="POST" novalidate>
@@ -30,7 +30,6 @@
   <input type="hidden" name="contact_address_id" value="<%= settings.contact_address_id || settings.factory_address || '' %>">
   <input type="hidden" name="contact_address_en" value="<%= settings.contact_address_en || settings.factory_address || '' %>">
 
-  <!-- Card 1: Jam Operasional Kerja -->
   <div class="form-card">
     <div class="form-card-title">1. Jam Operasional Kerja (Bilingual)</div>
 
@@ -46,7 +45,6 @@
     </div>
   </div>
 
-  <!-- Card 2: Teks Seksi Formulir Inquiry -->
   <div class="form-card">
     <div class="form-card-title">2. Teks Seksi Formulir Inquiry &amp; Penawaran (Bilingual)</div>
 
@@ -73,15 +71,14 @@
     </div>
   </div>
 
-  <!-- Sticky Actions Bar -->
   <div class="settings-sticky-actions">
-    <div class="actions-left" style="display: flex; align-items: center; gap: 8px;">
-      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
-      <span style="font-size: 13px; color: var(--text-muted, #64748b); font-weight: 500;">
+    <div class="actions-left adm-ctc-actions-left">
+      <span class="adm-ctc-status-dot"></span>
+      <span class="adm-ctc-status-text">
         Perubahan konten langsung diterapkan pada formulir kontak publik.
       </span>
     </div>
-    <div class="actions-right" style="display: flex; align-items: center; gap: 10px;">
+    <div class="actions-right adm-ctc-actions-right">
       <a href="/admin/dashboard" class="adm-btn adm-btn-neutral" aria-label="Batalkan pengeditan konten kontak">
         <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
         <span>Batal</span>

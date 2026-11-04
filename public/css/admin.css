@@ -4611,6 +4611,522 @@ body.sidebar-open .admin-backdrop {
   color: var(--color-text-muted);
 }
 
+/* ==========================================================================
+   Batch 5: Brands Management (.adm-brd-*) (T-281)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-brd-form-card {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Media picker preview box & controls in brands create/edit */
+.adm-brd-preview-box {
+  height: 120px;
+}
+
+.adm-brd-preview-box img {
+  max-height: 80px;
+  object-fit: contain;
+}
+
+/* Section title settings card in brands index */
+.adm-brd-card-section {
+  margin-bottom: 1.5rem;
+}
+
+.adm-brd-section-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-main);
+}
+
+.adm-brd-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.adm-brd-section-desc {
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.adm-brd-section-form {
+  padding: 1.25rem 1.5rem;
+}
+
+.adm-brd-form-group-flush {
+  margin-bottom: 0;
+}
+
+.adm-brd-section-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Table columns & cells */
+.adm-brd-th-logo {
+  width: 80px;
+}
+
+.adm-brd-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-brd-th-status {
+  width: 100px;
+}
+
+.adm-brd-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+/* Brand logo thumbnail container in table */
+.adm-brd-thumb-box {
+  width: 54px;
+  height: 38px;
+  background: var(--color-bg-subtle, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.adm-brd-thumb-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.adm-brd-no-logo {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+}
+
+.adm-brd-td-order {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-brd-toggle-form {
+  display: inline;
+}
+
+.adm-brd-td-actions {
+  text-align: right;
+}
+
+.adm-brd-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Batch 6: Manufacturing Capabilities & Contact (.adm-cap-*, .adm-ctc-*) (T-282)
+   ========================================================================== */
+
+/* Capabilities Layout & Form */
+.adm-cap-grid {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.adm-cap-status-wrapper {
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+
+.adm-cap-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-cap-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-xs, 4px);
+  accent-color: var(--color-primary);
+}
+
+.adm-cap-preview-box {
+  height: 120px;
+}
+
+.adm-cap-preview-box img {
+  max-height: 90px;
+  object-fit: contain;
+}
+
+/* Capabilities Table */
+.adm-cap-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-cap-th-status {
+  width: 100px;
+}
+
+.adm-cap-th-actions {
+  text-align: right;
+  width: 100px;
+}
+
+.adm-cap-subtitle {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.adm-cap-td-order {
+  text-align: center;
+}
+
+.adm-cap-td-actions {
+  text-align: right;
+}
+
+.adm-cap-table-actions {
+  justify-content: flex-end;
+}
+
+.adm-cap-delete-form {
+  display: inline;
+  margin: 0;
+}
+
+.adm-cap-empty-cell {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--color-text-muted);
+}
+
+/* Contact Info Banner */
+.adm-ctc-info-banner {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--color-on-primary-container, rgba(0, 117, 90, 0.08));
+  border: 1px solid rgba(0, 117, 90, 0.2);
+  border-radius: var(--r-md, 8px);
+  padding: 14px 18px;
+}
+
+.adm-ctc-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adm-ctc-banner-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.adm-ctc-banner-title {
+  color: var(--color-primary);
+  display: block;
+  font-size: 13.5px;
+}
+
+.adm-ctc-banner-text {
+  font-size: 12.5px;
+  color: var(--color-text-variant, var(--text-variant));
+}
+
+.adm-ctc-banner-btn {
+  flex-shrink: 0;
+}
+
+/* Contact Sticky Actions Bar */
+.adm-ctc-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-ctc-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-leaf);
+}
+
+.adm-ctc-status-text {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.adm-ctc-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Batch 7: Hero Banners & Leads (.adm-hbn-*, .adm-leads-*) (T-283)
+   ========================================================================== */
+
+/* Hero Banners Layout & Mockup */
+.adm-hbn-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 3rem;
+}
+
+.adm-hbn-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-main);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.adm-hbn-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-hbn-page-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-hbn-route-badge {
+  font-size: 11px;
+  background: var(--color-surface-container, var(--bg-subtle));
+  color: var(--color-text-variant, var(--text-variant));
+  padding: 2px 8px;
+  border-radius: var(--r-xs, 4px);
+  font-family: var(--font-mono, monospace);
+}
+
+.adm-hbn-page-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.adm-hbn-preview-mockup {
+  margin-bottom: 20px;
+  border-radius: var(--r-md, 8px);
+  overflow: hidden;
+  position: relative;
+  height: 160px;
+  background: var(--color-inverse-surface);
+  border: 1px solid var(--border-main);
+}
+
+.adm-hbn-mockup-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adm-hbn-mockup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 87, 63, 0.65);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 24px;
+  color: var(--color-text-inverse, white);
+}
+
+.adm-hbn-mockup-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary-bright);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.adm-hbn-mockup-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.adm-hbn-mockup-subtitle {
+  font-size: 12px;
+  opacity: 0.85;
+  max-width: 80%;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  margin-top: 2px;
+}
+
+.adm-hbn-form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .adm-hbn-form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-hbn-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-main);
+}
+
+.adm-hbn-active-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-hbn-active-label {
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text-variant, var(--text-variant));
+}
+
+/* Leads Filter & Table */
+.adm-leads-filter-card {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+}
+
+.adm-leads-filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adm-leads-filter-select-wrap {
+  min-width: 180px;
+}
+
+.adm-leads-filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.adm-leads-th-date {
+  width: 110px;
+}
+
+.adm-leads-th-status {
+  width: 120px;
+}
+
+.adm-leads-th-actions {
+  width: 220px;
+}
+
+.adm-leads-date-text {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.adm-leads-company-text {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.adm-leads-product-text {
+  color: var(--color-primary);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.adm-leads-email-link {
+  color: var(--color-primary);
+  font-size: 12.5px;
+}
+
+.adm-leads-wa-link {
+  color: var(--color-eco-green, var(--color-success));
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.adm-leads-message-text {
+  font-size: 12.5px;
+  line-height: 1.45;
+  max-width: 320px;
+  margin: 0 0 4px 0;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-leads-notes-box {
+  background: var(--color-surface-container, var(--bg-subtle));
+  padding: 4px 8px;
+  border-radius: var(--r-xs, 4px);
+  font-size: 11px;
+  color: var(--color-text-variant, var(--text-variant));
+  border: 1px solid var(--border-main);
+}
+
+.adm-leads-status-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+
+.adm-leads-form-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.adm-leads-status-select {
+  min-width: 105px;
+}
+
+.adm-leads-notes-input {
+  min-height: 28px;
+  font-size: 11.5px;
+  padding: 2px 8px;
+}
+
+.adm-leads-empty-cell {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--color-text-muted);
+}
+
+
+
+
 
 
 
