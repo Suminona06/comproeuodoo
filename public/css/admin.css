@@ -4551,5 +4551,1041 @@ body.sidebar-open .admin-backdrop {
   color: var(--color-text-muted);
 }
 
+/* ==========================================================================
+   Batch 4: User Management (.adm-usr-*) (T-280)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-usr-form-card {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Role note box in create user form */
+.adm-usr-role-note {
+  background: var(--color-bg-subtle, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+.adm-usr-role-list {
+  margin-left: 18px;
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+/* Table columns & cells */
+.adm-usr-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+.adm-usr-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-usr-avatar-badge {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+.adm-usr-date-cell {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+}
+
+.adm-usr-td-actions {
+  text-align: right;
+}
+
+.adm-usr-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Batch 5: Brands Management (.adm-brd-*) (T-281)
+   ========================================================================== */
+
+/* Form card create/edit */
+.adm-brd-form-card {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Media picker preview box & controls in brands create/edit */
+.adm-brd-preview-box {
+  height: 120px;
+}
+
+.adm-brd-preview-box img {
+  max-height: 80px;
+  object-fit: contain;
+}
+
+/* Section title settings card in brands index */
+.adm-brd-card-section {
+  margin-bottom: 1.5rem;
+}
+
+.adm-brd-section-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-main);
+}
+
+.adm-brd-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.adm-brd-section-desc {
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.adm-brd-section-form {
+  padding: 1.25rem 1.5rem;
+}
+
+.adm-brd-form-group-flush {
+  margin-bottom: 0;
+}
+
+.adm-brd-section-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Table columns & cells */
+.adm-brd-th-logo {
+  width: 80px;
+}
+
+.adm-brd-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-brd-th-status {
+  width: 100px;
+}
+
+.adm-brd-th-actions {
+  text-align: right;
+  width: 120px;
+}
+
+/* Brand logo thumbnail container in table */
+.adm-brd-thumb-box {
+  width: 54px;
+  height: 38px;
+  background: var(--color-bg-subtle, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.adm-brd-thumb-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.adm-brd-no-logo {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+}
+
+.adm-brd-td-order {
+  text-align: center;
+  font-weight: 600;
+}
+
+.adm-brd-toggle-form {
+  display: inline;
+}
+
+.adm-brd-td-actions {
+  text-align: right;
+}
+
+.adm-brd-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Batch 6: Manufacturing Capabilities & Contact (.adm-cap-*, .adm-ctc-*) (T-282)
+   ========================================================================== */
+
+/* Capabilities Layout & Form */
+.adm-cap-grid {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.adm-cap-status-wrapper {
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+
+.adm-cap-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-cap-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-xs, 4px);
+  accent-color: var(--color-primary);
+}
+
+.adm-cap-preview-box {
+  height: 120px;
+}
+
+.adm-cap-preview-box img {
+  max-height: 90px;
+  object-fit: contain;
+}
+
+/* Capabilities Table */
+.adm-cap-th-order {
+  width: 80px;
+  text-align: center;
+}
+
+.adm-cap-th-status {
+  width: 100px;
+}
+
+.adm-cap-th-actions {
+  text-align: right;
+  width: 100px;
+}
+
+.adm-cap-subtitle {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.adm-cap-td-order {
+  text-align: center;
+}
+
+.adm-cap-td-actions {
+  text-align: right;
+}
+
+.adm-cap-table-actions {
+  justify-content: flex-end;
+}
+
+.adm-cap-delete-form {
+  display: inline;
+  margin: 0;
+}
+
+.adm-cap-empty-cell {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--color-text-muted);
+}
+
+/* Contact Info Banner */
+.adm-ctc-info-banner {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--color-on-primary-container, rgba(0, 117, 90, 0.08));
+  border: 1px solid rgba(0, 117, 90, 0.2);
+  border-radius: var(--r-md, 8px);
+  padding: 14px 18px;
+}
+
+.adm-ctc-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adm-ctc-banner-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.adm-ctc-banner-title {
+  color: var(--color-primary);
+  display: block;
+  font-size: 13.5px;
+}
+
+.adm-ctc-banner-text {
+  font-size: 12.5px;
+  color: var(--color-text-variant, var(--text-variant));
+}
+
+.adm-ctc-banner-btn {
+  flex-shrink: 0;
+}
+
+/* Contact Sticky Actions Bar */
+.adm-ctc-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-ctc-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-leaf);
+}
+
+.adm-ctc-status-text {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.adm-ctc-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Batch 7: Hero Banners & Leads (.adm-hbn-*, .adm-leads-*) (T-283)
+   ========================================================================== */
+
+/* Hero Banners Layout & Mockup */
+.adm-hbn-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 3rem;
+}
+
+.adm-hbn-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-main);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.adm-hbn-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-hbn-page-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-hbn-route-badge {
+  font-size: 11px;
+  background: var(--color-surface-container, var(--bg-subtle));
+  color: var(--color-text-variant, var(--text-variant));
+  padding: 2px 8px;
+  border-radius: var(--r-xs, 4px);
+  font-family: var(--font-mono, monospace);
+}
+
+.adm-hbn-page-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.adm-hbn-preview-mockup {
+  margin-bottom: 20px;
+  border-radius: var(--r-md, 8px);
+  overflow: hidden;
+  position: relative;
+  height: 160px;
+  background: var(--color-inverse-surface);
+  border: 1px solid var(--border-main);
+}
+
+.adm-hbn-mockup-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adm-hbn-mockup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 87, 63, 0.65);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 24px;
+  color: var(--color-text-inverse, white);
+}
+
+.adm-hbn-mockup-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary-bright);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.adm-hbn-mockup-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.adm-hbn-mockup-subtitle {
+  font-size: 12px;
+  opacity: 0.85;
+  max-width: 80%;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  margin-top: 2px;
+}
+
+.adm-hbn-form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .adm-hbn-form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-hbn-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-main);
+}
+
+.adm-hbn-active-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-hbn-active-label {
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text-variant, var(--text-variant));
+}
+
+/* Leads Filter & Table */
+.adm-leads-filter-card {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+}
+
+.adm-leads-filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adm-leads-filter-select-wrap {
+  min-width: 180px;
+}
+
+.adm-leads-filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.adm-leads-th-date {
+  width: 110px;
+}
+
+.adm-leads-th-status {
+  width: 120px;
+}
+
+.adm-leads-th-actions {
+  width: 220px;
+}
+
+.adm-leads-date-text {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.adm-leads-company-text {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.adm-leads-product-text {
+  color: var(--color-primary);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.adm-leads-email-link {
+  color: var(--color-primary);
+  font-size: 12.5px;
+}
+
+.adm-leads-wa-link {
+  color: var(--color-eco-green, var(--color-success));
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.adm-leads-message-text {
+  font-size: 12.5px;
+  line-height: 1.45;
+  max-width: 320px;
+  margin: 0 0 4px 0;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-leads-notes-box {
+  background: var(--color-surface-container, var(--bg-subtle));
+  padding: 4px 8px;
+  border-radius: var(--r-xs, 4px);
+  font-size: 11px;
+  color: var(--color-text-variant, var(--text-variant));
+  border: 1px solid var(--border-main);
+}
+
+.adm-leads-status-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+
+.adm-leads-form-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.adm-leads-status-select {
+  min-width: 105px;
+}
+
+.adm-leads-notes-input {
+  min-height: 28px;
+  font-size: 11.5px;
+  padding: 2px 8px;
+}
+
+.adm-leads-empty-cell {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--color-text-muted);
+}
+
+/* Modul Inquiries & RFQ (Batch 8 - T-284) */
+
+.adm-inq-th-time {
+  width: 100px;
+}
+
+.adm-inq-th-status {
+  width: 140px;
+}
+
+.adm-inq-th-actions {
+  text-align: right;
+  width: 110px;
+}
+
+.adm-inq-time-val {
+  font-weight: 600;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-inq-date-val {
+  font-size: 11px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+}
+
+.adm-inq-phone-wrap {
+  font-size: 12px;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-inq-wa-link {
+  color: var(--color-primary, var(--primary));
+  text-decoration: underline;
+}
+
+.adm-inq-td-actions {
+  text-align: right;
+}
+
+.adm-inq-empty-td {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-muted);
+}
+
+.adm-inq-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 1rem;
+  border-top: 1px solid var(--border-main);
+}
+
+.adm-inq-modal-client-card {
+  background: var(--color-surface-container, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  padding: 1rem;
+}
+
+.adm-inq-modal-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.adm-inq-modal-company {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-main, var(--text-main));
+  margin-bottom: 6px;
+}
+
+.adm-inq-modal-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+@media (max-width: 480px) {
+  .adm-inq-modal-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-inq-muted-label {
+  color: var(--color-text-muted);
+}
+
+.adm-inq-modal-message-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-left: 3px solid var(--color-primary, var(--primary));
+  border-radius: var(--r-sm);
+  padding: 10px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, var(--text-secondary));
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.adm-inq-mb-0 {
+  margin-bottom: 0;
+}
+
+.adm-inq-detail-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 860px) {
+  .adm-inq-detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-inq-detail-message-box {
+  background: var(--color-surface-container, var(--bg-subtle));
+  border-left: 3px solid var(--color-primary, var(--primary));
+  padding: 1rem;
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--color-text-main, var(--text-main));
+  margin-bottom: 1.25rem;
+}
+
+.adm-inq-mt-md {
+  margin-top: 1.5rem;
+}
+
+.adm-inq-textarea-tall {
+  min-height: 120px;
+}
+
+.adm-inq-actions-end {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.adm-inq-status-form {
+  margin-bottom: 1.25rem;
+}
+
+.adm-inq-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.adm-inq-info-label {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.adm-inq-info-val {
+  font-weight: 600;
+}
+
+.adm-inq-wa-btn {
+  margin-top: 4px;
+}
+
+.adm-inq-email-link {
+  color: var(--color-primary, var(--primary));
+}
+
+.adm-inq-danger-zone {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-main);
+}
+
+/* Modul Dashboard Admin (Batch 9 - T-285) */
+
+.adm-dash-th-time {
+  width: 100px;
+}
+
+.adm-dash-th-status {
+  width: 140px;
+}
+
+.adm-dash-th-actions {
+  width: 80px;
+  text-align: right;
+}
+
+.adm-dash-time-val {
+  font-weight: 600;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-dash-date-val {
+  font-size: 11px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+}
+
+.adm-dash-phone-val {
+  font-size: 12px;
+  color: var(--color-text-main, var(--text-main));
+}
+
+.adm-dash-td-actions {
+  text-align: right;
+}
+
+.adm-dash-empty-cell {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+.adm-dash-modal-card-box {
+  background: var(--color-surface-container, var(--bg-subtle));
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+  padding: 1rem;
+}
+
+.adm-dash-modal-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.adm-dash-modal-company {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-main, var(--text-main));
+  margin-bottom: 6px;
+}
+
+.adm-dash-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+@media (max-width: 480px) {
+  .adm-dash-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adm-dash-muted-text {
+  color: var(--color-text-muted);
+}
+
+.adm-dash-modal-message-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-left: 3px solid var(--color-primary, var(--primary));
+  border-radius: var(--r-sm);
+  padding: 10px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, var(--text-secondary));
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.adm-dash-mb-0 {
+  margin-bottom: 0;
+}
+
+/* Modul Admin Shell & Universal Partials (Batch 10 - T-286) */
+
+.adm-shell-user-role {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.sidebar-toggle-btn .toggle-icon-expand {
+  display: none;
+}
+
+.adm-picker-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-secondary, var(--surface-dark, var(--text-main)));
+  margin: 0;
+}
+
+.adm-picker-desc {
+  font-size: 12.5px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+  margin: 3px 0 0;
+}
+
+.adm-picker-tab-upload {
+  margin-left: auto;
+  color: var(--color-primary, var(--primary));
+}
+
+.adm-picker-tab-upload-icon {
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+.adm-picker-search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.adm-picker-search-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.adm-picker-search-input {
+  padding-left: 36px;
+  height: 38px;
+  font-size: 13px;
+}
+
+.adm-picker-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 11px;
+  color: var(--color-text-muted);
+}
+
+.adm-picker-loading {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+}
+
+.adm-picker-spinner {
+  margin: 0 auto 0.75rem;
+}
+
+.adm-picker-empty {
+  text-align: center;
+  padding: 3.5rem 1rem;
+  color: var(--color-text-muted);
+}
+
+.adm-picker-empty-icon {
+  margin: 0 auto 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.adm-picker-empty-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-secondary, var(--text-secondary));
+}
+
+.adm-picker-empty-text {
+  font-size: 12.5px;
+  margin-top: 4px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+}
+
+.adm-picker-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-main);
+}
+
+.adm-picker-page-info {
+  font-size: 12px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+}
+
+.adm-picker-pagination-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.adm-picker-dropzone {
+  border: 2px dashed var(--color-primary, var(--primary));
+  background: var(--color-surface-container, var(--bg-subtle));
+  border-radius: var(--r-xl, 12px);
+  padding: 3rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.adm-picker-dropzone-icon {
+  margin: 0 auto 1rem;
+  color: var(--color-primary, var(--primary));
+}
+
+.adm-picker-dropzone-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-secondary, var(--text-main));
+  margin-bottom: 4px;
+}
+
+.adm-picker-dropzone-hint {
+  font-size: 13px;
+  color: var(--color-text-tertiary, var(--text-tertiary));
+  margin-bottom: 1.25rem;
+}
+
+.adm-picker-upload-progress {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.adm-picker-progress-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary, var(--primary));
+  margin-bottom: 6px;
+}
+
+.adm-picker-progress-track {
+  background: var(--color-surface-variant, var(--border-main));
+  border-radius: 9999px;
+  height: 6px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.adm-picker-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--color-primary, var(--primary));
+  transition: width 200ms ease;
+}
+
+.adm-picker-footer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.adm-d-none {
+  display: none;
+}
+
+.adm-d-block {
+  display: block;
+}
+
+
+
+
+
+
+
+
 
 

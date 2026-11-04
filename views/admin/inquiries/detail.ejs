@@ -13,25 +13,24 @@
   </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem;">
+<div class="adm-inq-detail-layout">
   <div>
-    <!-- Card Detail Pesan -->
     <div class="form-card">
       <div class="form-card-title">Rincian Kebutuhan &amp; Konsultasi Klien</div>
       
-      <div style="background: var(--bg-subtle); border-left: 3px solid var(--primary); padding: 1rem; border-radius: var(--r-sm); font-size: 13.5px; line-height: 1.7; color: var(--text-main); margin-bottom: 1.25rem;">
+      <div class="adm-inq-detail-message-box">
         <%= inquiry.message || 'Tidak ada pesan tertulis dari pengirim.' %>
       </div>
 
-      <div class="form-card-title" style="margin-top: 1.5rem;">Catatan Tindak Lanjut Tim Penjualan / Internal</div>
+      <div class="form-card-title adm-inq-mt-md">Catatan Tindak Lanjut Tim Penjualan / Internal</div>
       <form action="/admin/inquiries/<%= inquiry.id %>/status?_csrf=<%= csrfToken %>" method="POST">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
           <label class="form-label" for="admin_notes">Catatan &amp; Riwayat Interaksi</label>
-          <textarea id="admin_notes" name="admin_notes" class="form-textarea" style="min-height: 120px;" placeholder="Tuliskan hasil pembicaraan telepon, negosiasi harga, kuantiti yang disepakati, dll..."><%= inquiry.admin_notes || '' %></textarea>
+          <textarea id="admin_notes" name="admin_notes" class="form-textarea adm-inq-textarea-tall" placeholder="Tuliskan hasil pembicaraan telepon, negosiasi harga, kuantiti yang disepakati, dll..."><%= inquiry.admin_notes || '' %></textarea>
         </div>
 
-        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+        <div class="adm-inq-actions-end">
           <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan catatan tindak lanjut">
             <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
             <span>Simpan</span>
@@ -42,11 +41,10 @@
   </div>
 
   <div>
-    <!-- Card Info Pengirim & Status -->
     <div class="form-card">
       <div class="form-card-title">Status Penanganan</div>
 
-      <form action="/admin/inquiries/<%= inquiry.id %>/status?_csrf=<%= csrfToken %>" method="POST" style="margin-bottom: 1.25rem;">
+      <form action="/admin/inquiries/<%= inquiry.id %>/status?_csrf=<%= csrfToken %>" method="POST" class="adm-inq-status-form">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
           <label class="form-label" for="status">Ubah Status</label>
@@ -59,46 +57,46 @@
         </div>
       </form>
 
-      <div class="form-card-title" style="margin-top: 1.5rem;">Kontak &amp; Identitas Klien</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px;">
+      <div class="form-card-title adm-inq-mt-md">Kontak &amp; Identitas Klien</div>
+      <div class="adm-inq-info-list">
         <div>
-          <div style="color: var(--text-muted); font-size: 11px;">NAMA PIC</div>
-          <div style="font-weight: 600;"><%= inquiry.name %></div>
+          <div class="adm-inq-info-label">NAMA PIC</div>
+          <div class="adm-inq-info-val"><%= inquiry.name %></div>
         </div>
         <div>
-          <div style="color: var(--text-muted); font-size: 11px;">PERUSAHAAN / LEMBAGA</div>
-          <div style="font-weight: 600;"><%= inquiry.company || 'Personal / Tidak disebutkan' %></div>
+          <div class="adm-inq-info-label">PERUSAHAAN / LEMBAGA</div>
+          <div class="adm-inq-info-val"><%= inquiry.company || 'Personal / Tidak disebutkan' %></div>
         </div>
         <div>
-          <div style="color: var(--text-muted); font-size: 11px;">WHATSAPP / TELEPON</div>
+          <div class="adm-inq-info-label">WHATSAPP / TELEPON</div>
           <div>
-            <a href="https://wa.me/<%= inquiry.phone ? inquiry.phone.replace(/[^0-9]/g, '') : '' %>" target="_blank" class="adm-btn adm-btn-secondary adm-btn-sm" aria-label="Hubungi klien via WhatsApp" style="margin-top: 4px;">
+            <a href="https://wa.me/<%= inquiry.phone ? inquiry.phone.replace(/[^0-9]/g, '') : '' %>" target="_blank" class="adm-btn adm-btn-secondary adm-btn-sm adm-inq-wa-btn" aria-label="Hubungi klien via WhatsApp">
               <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
               <span>WhatsApp</span>
             </a>
           </div>
         </div>
         <div>
-          <div style="color: var(--text-muted); font-size: 11px;">EMAIL</div>
-          <div><a href="mailto:<%= inquiry.email %>" style="color: var(--primary);"><%= inquiry.email %></a></div>
+          <div class="adm-inq-info-label">EMAIL</div>
+          <div><a href="mailto:<%= inquiry.email %>" class="adm-inq-email-link"><%= inquiry.email %></a></div>
         </div>
         <div>
-          <div style="color: var(--text-muted); font-size: 11px;">PRODUK TERKAIT</div>
+          <div class="adm-inq-info-label">PRODUK TERKAIT</div>
           <div><%= inquiry.product_name_id || 'Umum (Katalog)' %></div>
         </div>
         <div>
-          <div style="color: var(--text-muted); font-size: 11px;">SUMBER INQUIRY</div>
+          <div class="adm-inq-info-label">SUMBER INQUIRY</div>
           <div><%= inquiry.source || 'Website' %></div>
         </div>
         <% if (inquiry.ip_address) { %>
           <div>
-            <div style="color: var(--text-muted); font-size: 11px;">ALAMAT IP PENGIRIM</div>
+            <div class="adm-inq-info-label">ALAMAT IP PENGIRIM</div>
             <code><%= inquiry.ip_address %></code>
           </div>
         <% } %>
       </div>
 
-      <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-main);">
+      <div class="adm-inq-danger-zone">
         <form action="/admin/inquiries/<%= inquiry.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus permanen inquiry ini?" data-confirm-title="Hapus Pesan Masuk">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit" class="adm-btn adm-btn-danger adm-btn-block adm-btn-sm" aria-label="Hapus pesan masuk ini">

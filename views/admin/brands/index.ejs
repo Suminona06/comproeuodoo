@@ -12,29 +12,29 @@
     </a>
   </div>
 </div>
-<!-- Form Pengaturan Judul Section Merek Beranda -->
-<div class="table-card" style="margin-bottom: 1.5rem;">
-  <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-main);">
-    <h2 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Pengaturan Judul Section Beranda</h2>
-    <p style="font-size: 12.5px; color: var(--text-tertiary); margin: 0;">Atur teks judul section merek terdaftar yang ditampilkan di halaman beranda (Homepage).</p>
+
+<div class="table-card adm-brd-card-section">
+  <div class="adm-brd-section-header">
+    <h2 class="adm-brd-section-title">Pengaturan Judul Section Beranda</h2>
+    <p class="adm-brd-section-desc">Atur teks judul section merek terdaftar yang ditampilkan di halaman beranda (Homepage).</p>
   </div>
-  <form action="/admin/brands/section-title" method="POST" style="padding: 1.25rem 1.5rem;">
+  <form action="/admin/brands/section-title" method="POST" class="adm-brd-section-form">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="form-row-2">
-      <div class="form-group" style="margin-bottom: 0;">
+      <div class="form-group adm-brd-form-group-flush">
         <label class="form-label" for="home_brand_title_id">Judul Section (ID)</label>
         <input type="text" id="home_brand_title_id" name="home_brand_title_id" class="form-input" maxlength="150" 
                value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_id !== undefined) ? settings.home_brand_title_id : '' %>" 
                placeholder="Contoh: Merek Paten & Terdaftar">
       </div>
-      <div class="form-group" style="margin-bottom: 0;">
+      <div class="form-group adm-brd-form-group-flush">
         <label class="form-label" for="home_brand_title_en">Judul Section (EN)</label>
         <input type="text" id="home_brand_title_en" name="home_brand_title_en" class="form-input" maxlength="150" 
                value="<%= (typeof settings !== 'undefined' && settings.home_brand_title_en !== undefined) ? settings.home_brand_title_en : '' %>" 
                placeholder="Example: Registered Trademarks">
       </div>
     </div>
-    <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+    <div class="adm-brd-section-actions">
       <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan judul section merek">
         <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
         <span>Simpan</span>
@@ -56,12 +56,12 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th style="width: 80px;">Logo</th>
+          <th class="adm-brd-th-logo">Logo</th>
           <th>Nama Merek</th>
           <th>Deskripsi (ID / EN)</th>
-          <th style="width: 80px; text-align: center;">Urutan</th>
-          <th style="width: 100px;">Status</th>
-          <th style="text-align: right; width: 120px;">Aksi</th>
+          <th class="adm-brd-th-order">Urutan</th>
+          <th class="adm-brd-th-status">Status</th>
+          <th class="adm-brd-th-actions">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -69,11 +69,11 @@
           <% brands.forEach(function(brand) { %>
             <tr>
               <td>
-                <div style="width: 54px; height: 38px; background: #fafbfc; border: 1px solid var(--border-main); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <div class="adm-brd-thumb-box">
                   <% if (brand.logo_url) { %>
-                    <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    <img src="<%= brand.logo_url %>" alt="<%= brand.name %>" class="adm-brd-thumb-img">
                   <% } else { %>
-                    <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 700;">NO LOGO</span>
+                    <span class="adm-brd-no-logo">NO LOGO</span>
                   <% } %>
                 </div>
               </td>
@@ -88,18 +88,18 @@
                   <%= brand.description_id || '-' %>
                 </div>
               </td>
-              <td style="text-align: center; font-weight: 600;">
+              <td class="adm-brd-td-order">
                 <%= brand.sort_order %>
               </td>
               <td>
-                <form action="/admin/brands/<%= brand.id %>/toggle?_csrf=<%= csrfToken %>" method="POST" style="display: inline;">
+                <form action="/admin/brands/<%= brand.id %>/toggle?_csrf=<%= csrfToken %>" method="POST" class="adm-brd-toggle-form">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn-action btn-action-status <%= brand.is_active ? 'active' : 'inactive' %>" title="Ubah Status Merek">
                     <%= brand.is_active ? 'Aktif' : 'Nonaktif' %>
                   </button>
                 </form>
               </td>
-              <td style="text-align: right;">
+              <td class="adm-brd-td-actions">
                 <div class="table-actions">
                   <a href="/admin/brands/<%= brand.id %>/edit" class="btn-action btn-action-edit" title="Edit Merek">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -118,7 +118,7 @@
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <td colspan="6" class="adm-brd-empty-cell">
               Belum ada merek yang terdaftar.
             </td>
           </tr>
