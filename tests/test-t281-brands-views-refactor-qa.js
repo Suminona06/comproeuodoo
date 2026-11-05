@@ -206,6 +206,9 @@ async function runQAVerification() {
     await page.goto(`${baseUrl}/admin/brands`, { waitUntil: 'networkidle' });
 
     // Update Section Title
+    const initialBrandTitleId = await page.inputValue('#home_brand_title_id');
+    const initialBrandTitleEn = await page.inputValue('#home_brand_title_en');
+
     await page.fill('#home_brand_title_id', 'Merek Resmi Terdaftar QA');
     await page.fill('#home_brand_title_en', 'Official Registered Brands QA');
     await Promise.all([
@@ -214,6 +217,14 @@ async function runQAVerification() {
     ]);
     const valId = await page.inputValue('#home_brand_title_id');
     assert.strictEqual(valId, 'Merek Resmi Terdaftar QA', 'Judul section ID harus tersimpan');
+
+    // Restore original section titles
+    await page.fill('#home_brand_title_id', initialBrandTitleId || 'Portofolio Merek Resmi PT. EUODOO');
+    await page.fill('#home_brand_title_en', initialBrandTitleEn || 'Official Brand Portfolio of PT. EUODOO');
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle' }),
+      page.click('.adm-brd-section-actions button[type="submit"]')
+    ]);
 
     // Toggle status merek yang baru dibuat
     const updatedRow = page.locator('tr:has-text("Merek QA Test Updated")');
@@ -249,7 +260,6 @@ async function runQAVerification() {
     console.log('  ✓ Nol error konsol browser pada seluruh pengujian.');
 
     console.log('\n🎉 SELURUH GERBANG KUALITAS BATCH 5 (T-281) LULUS 100%!');
-    process.exit(0);
   } finally {
     await browser.close();
     await new Promise((resolve) => server.close(resolve));
