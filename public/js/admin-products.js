@@ -169,3 +169,4 @@
     variantsContainer.querySelectorAll('.prod-variant-row-item').forEach(bindVariantRow);
   }
 })();
+
