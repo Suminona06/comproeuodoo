@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 4 Task (T-290 s/d T-293)
-- **Total Task Selesai:** 285 Task (T-01 s/d T-289)
+- **Task Aktif Terbuka:** 3 Task (T-291 s/d T-293)
+- **Total Task Selesai:** 286 Task (T-01 s/d T-290)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -185,19 +185,19 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t289-posts-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-290: Refaktor & Modularisasi View Admin Batch 14 - Katalog Produk (Products) [TODO]
+### T-290: Refaktor & Modularisasi View Admin Batch 14 - Katalog Produk (Products) [DONE]
 - **Deskripsi**: Merefaktor dan modularisasi modul produk (`views/admin/products/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 12 style inline, 1 hex `#fafbfc`, 2 tag `<script>` inline, dan 1 komentar HTML. Pecah form besar (>400 baris) menjadi partials terisolasi (`views/admin/products/partials/basic-info.ejs`, `gallery.ejs`, `size-table.ejs`, `seo.ejs`) masing-masing <=100 baris. Pindahkan counter karakter ke `public/js/admin-products.js`. Ekstraksi style ke `.adm-prod-*`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/products/`.
-  - [ ] Setiap berkas partials produk berukuran <=100 baris.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Editor tabel ukuran produk dinamis, upload galeri multi-foto, debounced filter kategori, dan CRUD produk berfungsi normal tanpa error konsol.
-  - [ ] Path `views/admin/products/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/products/index.ejs`, `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `views/admin/products/partials/*.ejs`, `public/css/admin.css`, `public/js/admin-products.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/products/`.
+  - [x] Setiap berkas partials produk berukuran <=100 baris.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Editor tabel ukuran produk dinamis, upload galeri multi-foto, debounced filter kategori, dan CRUD produk berfungsi normal tanpa error konsol.
+  - [x] Path `views/admin/products/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/products/index.ejs`, `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `views/admin/products/partials/*.ejs`, `public/css/admin.css`, `public/js/admin-products.js`, `scripts/lint-views.js`, `tests/test-t290-products-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t290-products-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
 ### T-291: Refaktor & Modularisasi View Admin Batch 15 - Konten Beranda (Home Content) [TODO]
 - **Deskripsi**: Merefaktor dan modularisasi berkas raksasa `views/admin/home-content/index.ejs` (681 baris): eliminasi 131 style inline, 22 hex, dan 15 komentar HTML. Pecah template menjadi 6 partial modular per tab pane (`views/admin/home-content/partials/tab-intro.ejs`, `tab-wcu.ejs`, `tab-categories.ejs`, `tab-certifications.ejs`, `tab-cta.ejs`, `sticky-actions.ejs`) masing-masing <=100 baris. Konversi 9 kasus style dinamis media picker ke class semantik. Ekstraksi style ke `.adm-home-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.

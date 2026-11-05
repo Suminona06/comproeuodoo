@@ -1,0 +1,26 @@
+<%
+  const p = typeof product !== 'undefined' ? product : (typeof formData !== 'undefined' ? formData : {});
+%>
+<div class="form-card">
+  <div class="form-card-title">5. Pengaturan Meta SEO (Mesin Pencari Google)</div>
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="meta_title_id">Meta Title (ID)</label>
+      <input type="text" id="meta_title_id" name="meta_title_id" class="form-input" placeholder="Judul pada tab browser &amp; Google" value="<%= p.meta_title_id || '' %>">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="meta_title_en">Meta Title (EN)</label>
+      <input type="text" id="meta_title_en" name="meta_title_en" class="form-input" placeholder="Browser title for English visitors" value="<%= p.meta_title_en || '' %>">
+    </div>
+  </div>
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="meta_desc_id">Meta Description (ID)</label>
+      <textarea id="meta_desc_id" name="meta_desc_id" class="form-textarea" placeholder="Ringkasan 1-2 kalimat untuk snippet Google pencarian Indonesia..."><%= p.meta_desc_id || '' %></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="meta_desc_en">Meta Description (EN)</label>
+      <textarea id="meta_desc_en" name="meta_desc_en" class="form-textarea" placeholder="1-2 sentences summary for Google English snippets..."><%= p.meta_desc_en || '' %></textarea>
+    </div>
+  </div>
+</div>

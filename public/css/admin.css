@@ -5911,6 +5911,75 @@ body.sidebar-open .admin-backdrop {
   margin-bottom: 2rem;
 }
 
+.adm-prod-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.adm-prod-toolbar-title {
+  margin-right: 6px;
+}
+
+.adm-prod-filter-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.adm-prod-th-thumb {
+  width: 70px;
+}
+
+.adm-prod-th-status {
+  width: 100px;
+}
+
+.adm-prod-th-action {
+  text-align: right;
+  width: 120px;
+}
+
+.adm-prod-thumb {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.adm-prod-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adm-prod-thumb-empty {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+}
+
+.adm-prod-badge-cat {
+  font-size: 11px;
+}
+
+.adm-prod-td-action {
+  text-align: right;
+}
+
+.adm-prod-empty-td {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--text-muted);
+}
+
+
 
 
 
