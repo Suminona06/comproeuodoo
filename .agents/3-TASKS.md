@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 5 Task (T-289 s/d T-293)
-- **Total Task Selesai:** 284 Task (T-01 s/d T-288)
+- **Task Aktif Terbuka:** 4 Task (T-290 s/d T-293)
+- **Total Task Selesai:** 285 Task (T-01 s/d T-289)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -172,18 +172,18 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t288-banners-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-289: Refaktor View Admin Batch 13 - Artikel Berita & Blog (Posts) [TODO]
+### T-289: Refaktor View Admin Batch 13 - Artikel Berita & Blog (Posts) [DONE]
 - **Deskripsi**: Merefaktor modul artikel (`views/admin/posts/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 30 style inline, 2 hex (`#fafbfc`, `#b45309`), 2 tag `<script>` inline, dan 6 komentar HTML. Ekstraksi ke class berprefix `.adm-post-*` di `public/css/admin.css`. Pindahkan script toggle baris jadwal tayang ke `public/js/admin-posts.js`. Konversi style dinamis media picker ke class semantik (`.adm-d-none` / `.adm-d-block`). Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/posts/`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Integrasi TinyMCE editor, publish/draft/schedule artikel, upload sampul via media picker, dan SEO meta tags berfungsi normal tanpa error konsol.
-  - [ ] Path `views/admin/posts/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/posts/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `public/css/admin.css`, `public/js/admin-posts.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/posts/`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Integrasi TinyMCE editor, publish/draft/schedule artikel, upload sampul via media picker, dan SEO meta tags berfungsi normal tanpa error konsol.
+  - [x] Path `views/admin/posts/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/posts/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `public/css/admin.css`, `public/js/admin-posts.js`, `scripts/lint-views.js`, `tests/test-t289-posts-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t289-posts-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
 ### T-290: Refaktor & Modularisasi View Admin Batch 14 - Katalog Produk (Products) [TODO]
 - **Deskripsi**: Merefaktor dan modularisasi modul produk (`views/admin/products/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 12 style inline, 1 hex `#fafbfc`, 2 tag `<script>` inline, dan 1 komentar HTML. Pecah form besar (>400 baris) menjadi partials terisolasi (`views/admin/products/partials/basic-info.ejs`, `gallery.ejs`, `size-table.ejs`, `seo.ejs`) masing-masing <=100 baris. Pindahkan counter karakter ke `public/js/admin-products.js`. Ekstraksi style ke `.adm-prod-*`. Bersihkan komentar dan hex lama terkait.
