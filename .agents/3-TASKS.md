@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 1 Task (T-293)
-- **Total Task Selesai:** 288 Task (T-01 s/d T-292)
+- **Task Aktif Terbuka:** 0 Task
+- **Total Task Selesai:** 289 Task (T-01 s/d T-293)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -227,14 +227,14 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t292-about-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-293: Enforce 100% Strict Lint Views & QA Regresi Publik Menyeluruh [TODO]
+### T-293: Enforce 100% Strict Lint Views & QA Regresi Publik Menyeluruh [DONE]
 - **Deskripsi**: Memperluas konfigurasi penegakan lint views pada `scripts/lint-views.js` sehingga `DEFAULT_STRICT_PATHS` mencakup 100% direktori `views/admin/` dan partials admin. Menjalankan audit menyeluruh: target 0 error dan 0 warning di seluruh view admin, verifikasi integritas DOM & visual sampel halaman publik (`/`, `/about`, `/products`, `/contact`), dan menjalankan seluruh test suites backend.
 - **Acceptance Criteria**:
-  - [ ] `npm run lint:views` menghasilkan 0 error dan 0 warning di seluruh `views/admin/**` dan partials admin.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites backend dan publik 100% PASS.
-  - [ ] Verifikasi visual halaman publik membuktikan 0 perubahan (tidak ada regresi).
-  - [ ] Laporan akhir penutupan refaktor siap untuk tahap Close.
-- **File Terdampak**: `scripts/lint-views.js`, `tests/test-t293-full-regression-qa.js`
+  - [x] `npm run lint:views` menghasilkan 0 error dan 0 warning di seluruh `views/admin/**` dan partials admin.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites backend dan publik 100% PASS.
+  - [x] Verifikasi visual halaman publik membuktikan 0 perubahan (tidak ada regresi).
+  - [x] Laporan akhir penutupan refaktor siap untuk tahap Close.
+- **File Terdampak**: `scripts/lint-views.js`, `public/js/admin-settings.js`, `tests/test-t293-full-regression-qa.js`
 - **Skill**: `antislop-code` + `ci-cd-and-automation` + `code-review-and-quality`
-- **Verifikasi**: Laporan akhir 0 pelanggaran lint views pada admin dan audit non-regresi publik.
+- **Verifikasi**: `node tests/test-t293-full-regression-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
