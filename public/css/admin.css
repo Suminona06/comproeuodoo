@@ -2187,7 +2187,7 @@ body.sidebar-open .admin-backdrop {
 }
 
 .about-tab-btn.active {
-  background: #ffffff;
+  background: var(--surface-white);
   color: var(--primary);
   border-color: var(--border-main);
   box-shadow: var(--shadow-sm);
@@ -6205,6 +6205,394 @@ body.sidebar-open .admin-backdrop {
   align-items: center;
   gap: 10px;
 }
+
+/* ========================================================
+   C16. Modul Admin Tentang Kami (About View Refactor - T-292)
+   ======================================================== */
+.adm-abt-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.adm-abt-card-title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-abt-badge-xs {
+  font-size: 11px;
+}
+
+.adm-abt-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: -0.5rem 0 1.25rem 0;
+}
+
+.adm-abt-textarea-history {
+  min-height: 120px;
+}
+
+.adm-abt-textarea-vision {
+  min-height: 85px;
+}
+
+.adm-abt-textarea-mission {
+  min-height: 105px;
+}
+
+.adm-abt-textarea-motto {
+  min-height: 80px;
+}
+
+.adm-abt-textarea-eco {
+  min-height: 75px;
+}
+
+.adm-abt-textarea-desc {
+  min-height: 75px;
+}
+
+.adm-abt-textarea-modal-desc {
+  min-height: 70px;
+}
+
+.adm-abt-textarea-sub {
+  min-height: 56px;
+}
+
+.adm-abt-textarea-pill {
+  min-height: 60px;
+  font-size: 12.5px;
+}
+
+.adm-abt-mb-0 {
+  margin-bottom: 0;
+}
+
+.adm-abt-mt-md {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.adm-abt-mt-lg {
+  margin-top: 1.5rem;
+}
+
+.adm-abt-form-label-sm {
+  font-size: 12px;
+}
+
+.adm-abt-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-lg);
+}
+
+.adm-abt-table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.adm-abt-col-center {
+  text-align: center;
+}
+
+.adm-abt-col-right {
+  text-align: right;
+}
+
+.adm-abt-col-order {
+  width: 70px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.adm-abt-col-order-narrow {
+  width: 65px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.adm-abt-col-actions {
+  width: 110px;
+  text-align: right;
+}
+
+.adm-abt-col-status {
+  width: 100px;
+  text-align: center;
+}
+
+.adm-abt-col-status-sm {
+  width: 95px;
+  text-align: center;
+}
+
+.adm-abt-col-thumb {
+  width: 90px;
+  text-align: center;
+}
+
+.adm-abt-col-val {
+  width: 120px;
+}
+
+.adm-abt-col-era {
+  width: 180px;
+}
+
+.adm-abt-col-tag {
+  width: 160px;
+}
+
+.adm-abt-stat-pill {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-primary);
+  background: var(--primary-subtle);
+  padding: 4px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--primary-border);
+}
+
+.adm-abt-stat-label-id {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.adm-abt-stat-label-en {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.adm-abt-stat-limit-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.adm-abt-timeline-era-id {
+  font-weight: 700;
+  color: var(--color-secondary);
+  font-size: 13px;
+  display: block;
+}
+
+.adm-abt-timeline-era-en {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.adm-abt-timeline-title-id {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 13.5px;
+}
+
+.adm-abt-timeline-title-en {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.adm-abt-timeline-desc {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.adm-abt-thumb-box {
+  width: 72px;
+  height: 48px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--color-surface-container);
+  border: 1px solid var(--border-main);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adm-abt-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adm-abt-thumb-empty {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.adm-abt-slide-title-id {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 13.5px;
+  margin-bottom: 2px;
+}
+
+.adm-abt-slide-title-en {
+  font-size: 12px;
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
+.adm-abt-slide-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+  max-width: 380px;
+}
+
+.adm-abt-tag-en {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.adm-abt-text-dash {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.adm-abt-empty-box {
+  text-align: center;
+  padding: 2rem;
+  border: 1px dashed var(--border-main);
+  border-radius: var(--r-lg);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.adm-abt-list-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.adm-abt-val-card {
+  background: var(--surface-white);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.adm-abt-val-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.85rem;
+}
+
+.adm-abt-val-letter {
+  font-size: 14px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 800;
+  background: var(--color-primary);
+  color: var(--surface-white);
+}
+
+.adm-abt-val-title {
+  color: var(--color-secondary);
+  font-size: 14px;
+}
+
+.adm-abt-val-row {
+  margin-bottom: 0.75rem;
+}
+
+.adm-abt-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-abt-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+.adm-abt-status-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.adm-abt-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-abt-modal-gallery {
+  max-width: 680px;
+}
+
+.adm-abt-modal-stats {
+  max-width: 520px;
+}
+
+.adm-abt-modal-timeline {
+  max-width: 600px;
+}
+
+.adm-abt-modal-preview-box {
+  height: 100px;
+}
+
+.adm-abt-modal-preview-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.adm-abt-modal-preview-empty-text {
+  font-size: 12.5px;
+}
+
+.adm-abt-checkbox-wrap {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.adm-abt-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-top: 6px;
+}
+
+.adm-abt-checkbox {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--color-primary);
+}
+
 
 
 

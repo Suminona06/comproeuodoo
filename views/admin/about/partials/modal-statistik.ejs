@@ -1,0 +1,58 @@
+<div class="admin-modal-backdrop" id="statsModal">
+  <div class="admin-modal-card adm-abt-modal-stats">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title" id="statsModalTitle">Tambah Item Statistik Baru</div>
+      <button type="button" class="modal-close-btn admin-modal-close" data-modal-close="statsModal" aria-label="Tutup Dialog">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <form id="statsForm" method="POST" action="/admin/about/stats">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" id="stats_id" name="id" value="">
+
+      <div class="admin-modal-body">
+        <div class="form-group adm-abt-mb-0">
+          <label for="stats_value" class="form-label">Nilai / Angka *</label>
+          <input type="text" id="stats_value" name="stat_value" class="form-input" required placeholder="contoh: 30+, 5, 4, 100%">
+          <div class="form-hint">Format bebas, dapat menyertakan simbol + atau %.</div>
+        </div>
+
+        <div class="form-group adm-abt-mb-0">
+          <label for="stats_label_id" class="form-label">Label Statistik (Indonesia) *</label>
+          <input type="text" id="stats_label_id" name="label_id" class="form-input" required placeholder="contoh: Tahun Pengalaman Manufaktur">
+        </div>
+
+        <div class="form-group adm-abt-mb-0">
+          <label for="stats_label_en" class="form-label">Label Statistik (English)</label>
+          <input type="text" id="stats_label_en" name="label_en" class="form-input" placeholder="contoh: Years Manufacturing Experience">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group adm-abt-mb-0">
+            <label for="stats_sort_order" class="form-label">Urutan</label>
+            <input type="number" id="stats_sort_order" name="sort_order" class="form-input" value="0" min="0" step="1">
+          </div>
+          <div class="form-group adm-abt-checkbox-wrap">
+            <label class="form-label">Status</label>
+            <label class="adm-abt-checkbox-label">
+              <input type="checkbox" id="stats_is_active" name="is_active" value="1" checked class="adm-abt-checkbox">
+              <span>Aktif</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-modal-footer">
+        <button type="button" class="adm-btn adm-btn-neutral" data-modal-close="statsModal" aria-label="Batalkan perubahan data statistik">
+          <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Batal</span>
+        </button>
+        <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan data statistik">
+          <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Simpan</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

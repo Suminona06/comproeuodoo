@@ -29,7 +29,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/admin/banners/',
   'views/admin/posts/',
   'views/admin/products/',
-  'views/admin/home-content/'
+  'views/admin/home-content/',
+  'views/admin/about/'
 ];
 
 function getFiles(dir, ext) {

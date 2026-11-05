@@ -1,0 +1,90 @@
+<div class="about-glass-card adm-abt-mt-lg">
+  <div class="form-card-title adm-abt-card-title">
+    <div class="adm-abt-card-title-left">
+      <span>Daftar Slide Galeri Fasilitas</span>
+      <span class="badge badge-primary adm-abt-badge-xs"><%= (gallerySlides ? gallerySlides.length : 0) %> Slide</span>
+    </div>
+    <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" data-action="open-gallery-modal" aria-label="Tambah slide galeri fasilitas">
+      <svg class="adm-btn-icon adm-btn-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tambah</span>
+    </button>
+  </div>
+  <p class="adm-abt-card-desc">
+    Kelola slide gambar fasilitas manufaktur dan teknologi pabrik yang tampil pada grid mosaik bento berhalaman di halaman Tentang Kami.
+  </p>
+
+  <% if (gallerySlides && gallerySlides.length > 0) { %>
+    <div class="adm-abt-table-wrap">
+      <table class="admin-table adm-abt-table">
+        <thead>
+          <tr>
+            <th class="adm-abt-col-order-narrow">Urutan</th>
+            <th class="adm-abt-col-thumb">Pratinjau</th>
+            <th class="adm-abt-col-tag">Kategori / Tag</th>
+            <th>Judul &amp; Subjudul Slide (ID/EN)</th>
+            <th class="adm-abt-col-status-sm">Status</th>
+            <th class="adm-abt-col-actions">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% gallerySlides.forEach(function(slide) { %>
+            <tr>
+              <td class="adm-abt-col-order-narrow"><%= slide.sort_order %></td>
+              <td class="adm-abt-col-center">
+                <div class="adm-abt-thumb-box">
+                  <% if (slide.image_url) { %>
+                    <img src="<%= slide.image_url %>" alt="<%= slide.title_id %>" class="adm-img-fallback adm-abt-thumb-img" data-fallback="/images/hero-factory.jpg">
+                  <% } else { %>
+                    <span class="adm-abt-thumb-empty">No image</span>
+                  <% } %>
+                </div>
+              </td>
+              <td>
+                <% if (slide.category_id) { %>
+                  <span class="badge-status badge-status--info"><%= slide.category_id %></span>
+                <% } else { %>
+                  <span class="adm-abt-text-dash">-</span>
+                <% } %>
+                <% if (slide.category_en) { %>
+                  <div class="adm-abt-tag-en"><%= slide.category_en %></div>
+                <% } %>
+              </td>
+              <td>
+                <div class="adm-abt-slide-title-id"><%= slide.title_id %></div>
+                <% if (slide.title_en) { %>
+                  <div class="adm-abt-slide-title-en"><%= slide.title_en %></div>
+                <% } %>
+                <% if (slide.subtitle_id) { %>
+                  <div class="adm-abt-slide-subtitle"><%= slide.subtitle_id %></div>
+                <% } %>
+              </td>
+              <td class="adm-abt-col-center">
+                <% if (slide.is_active) { %>
+                  <span class="badge-status active">Aktif</span>
+                <% } else { %>
+                  <span class="badge-status inactive">Nonaktif</span>
+                <% } %>
+              </td>
+              <td class="adm-abt-col-right">
+                <div class="table-actions">
+                  <button type="button" class="btn-action btn-action-edit" title="Edit Slide" data-action="edit-slide" data-slide="<%= encodeURIComponent(JSON.stringify(slide)) %>">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <span>Edit</span>
+                  </button>
+                  <button type="button" class="btn-action btn-action-delete" title="Hapus Slide" data-action="delete-about-item" data-action-url="/admin/about/gallery/<%= slide.id %>/delete" data-title="<%= slide.title_id %>">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Hapus</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <div class="adm-abt-empty-box">
+      Belum ada slide galeri ditambahkan. Klik tombol <strong>Tambah Slide Galeri</strong> di atas untuk menambahkan slide baru.
+    </div>
+  <% } %>
+</div>

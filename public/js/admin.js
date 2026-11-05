@@ -600,13 +600,33 @@ window.openGalleryModal = function(slideData) {
     document.getElementById('gallery_is_active').checked = slideData.is_active !== 0 && slideData.is_active !== false;
 
     if (slideData.image_url) {
-      if (previewImg) { previewImg.src = slideData.image_url; previewImg.style.display = 'block'; }
-      if (emptyPlaceholder) emptyPlaceholder.style.display = 'none';
-      if (clearBtn) clearBtn.style.display = 'inline-flex';
+      if (previewImg) {
+        previewImg.src = slideData.image_url;
+        previewImg.classList.remove('hidden');
+        previewImg.style.display = 'block';
+      }
+      if (emptyPlaceholder) {
+        emptyPlaceholder.classList.add('hidden');
+        emptyPlaceholder.style.display = 'none';
+      }
+      if (clearBtn) {
+        clearBtn.classList.remove('hidden');
+        clearBtn.style.display = 'inline-flex';
+      }
     } else {
-      if (previewImg) { previewImg.src = ''; previewImg.style.display = 'none'; }
-      if (emptyPlaceholder) emptyPlaceholder.style.display = '';
-      if (clearBtn) clearBtn.style.display = 'none';
+      if (previewImg) {
+        previewImg.src = '';
+        previewImg.classList.add('hidden');
+        previewImg.style.display = 'none';
+      }
+      if (emptyPlaceholder) {
+        emptyPlaceholder.classList.remove('hidden');
+        emptyPlaceholder.style.display = '';
+      }
+      if (clearBtn) {
+        clearBtn.classList.add('hidden');
+        clearBtn.style.display = 'none';
+      }
     }
   } else {
     if (titleEl) titleEl.textContent = 'Tambah Slide Galeri Baru';
@@ -618,9 +638,19 @@ window.openGalleryModal = function(slideData) {
     document.getElementById('gallery_image_url').value = '';
     document.getElementById('gallery_sort_order').value = 0;
     document.getElementById('gallery_is_active').checked = true;
-    if (previewImg) { previewImg.src = ''; previewImg.style.display = 'none'; }
-    if (emptyPlaceholder) emptyPlaceholder.style.display = '';
-    if (clearBtn) clearBtn.style.display = 'none';
+    if (previewImg) {
+      previewImg.src = '';
+      previewImg.classList.add('hidden');
+      previewImg.style.display = 'none';
+    }
+    if (emptyPlaceholder) {
+      emptyPlaceholder.classList.remove('hidden');
+      emptyPlaceholder.style.display = '';
+    }
+    if (clearBtn) {
+      clearBtn.classList.add('hidden');
+      clearBtn.style.display = 'none';
+    }
   }
   openAdminModal('galleryModal');
 };

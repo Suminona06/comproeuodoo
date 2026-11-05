@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 2 Task (T-292 s/d T-293)
-- **Total Task Selesai:** 287 Task (T-01 s/d T-291)
+- **Task Aktif Terbuka:** 1 Task (T-293)
+- **Total Task Selesai:** 288 Task (T-01 s/d T-292)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -213,19 +213,19 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t291-home-content-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-292: Refaktor & Modularisasi View Admin Batch 16 - Tentang Kami (About) [TODO]
-- **Deskripsi**: Merefaktor dan modularisasi berkas terbesar `views/admin/about/index.ejs` (960 baris): eliminasi 178 style inline, 5 hex, dan 30 komentar HTML. Pecah template menjadi partials per tab pane dan per modal (`views/admin/about/partials/tab-sejarah.ejs`, `tab-visi-misi.ejs`, `tab-nilai.ejs`, `tab-sertifikasi.ejs`, `tab-galeri.ejs`, `modal-galeri.ejs`, `modal-statistik.ejs`, `modal-timeline.ejs`) masing-masing <=100 baris. Ekstraksi style ke `.adm-abt-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
+### T-292: Refaktor & Modularisasi View Admin Batch 16 - Tentang Kami (About) [DONE]
+- **Deskripsi**: Merefaktor dan modularisasi berkas terbesar `views/admin/about/index.ejs` (960 baris): eliminasi 178 style inline, 5 hex, dan 30 komentar HTML. Pecah template menjadi partials per tab pane dan per modal (`views/admin/about/partials/tab-sejarah.ejs`, `tab-visi-misi.ejs`, `tab-nilai.ejs`, `tab-sertifikasi.ejs`, `tab-galeri.ejs`, `modal-galeri.ejs`, `modal-statistik.ejs`, `modal-timeline.ejs`, `sticky-actions.ejs`, dll.) masing-masing <=100 baris. Ekstraksi style ke `.adm-abt-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/about/`.
-  - [ ] Seluruh berkas partials about berukuran <=100 baris.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Pengelolaan sejarah, statistik pabrik, milestone linimasa, visi misi, dan slide galeri fasilitas berfungsi lancar tanpa error konsol.
-  - [ ] Path `views/admin/about/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/about/index.ejs`, `views/admin/about/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/about/`.
+  - [x] Seluruh berkas partials about berukuran <=100 baris.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Pengelolaan sejarah, statistik pabrik, milestone linimasa, visi misi, dan slide galeri fasilitas berfungsi lancar tanpa error konsol.
+  - [x] Path `views/admin/about/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/about/index.ejs`, `views/admin/about/partials/*.ejs`, `public/css/admin.css`, `public/js/admin.js`, `scripts/lint-views.js`, `tests/test-t292-about-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t292-about-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
 ### T-293: Enforce 100% Strict Lint Views & QA Regresi Publik Menyeluruh [TODO]
 - **Deskripsi**: Memperluas konfigurasi penegakan lint views pada `scripts/lint-views.js` sehingga `DEFAULT_STRICT_PATHS` mencakup 100% direktori `views/admin/` dan partials admin. Menjalankan audit menyeluruh: target 0 error dan 0 warning di seluruh view admin, verifikasi integritas DOM & visual sampel halaman publik (`/`, `/about`, `/products`, `/contact`), dan menjalankan seluruh test suites backend.
