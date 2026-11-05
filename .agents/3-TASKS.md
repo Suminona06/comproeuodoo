@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 3 Task (T-291 s/d T-293)
-- **Total Task Selesai:** 286 Task (T-01 s/d T-290)
+- **Task Aktif Terbuka:** 2 Task (T-292 s/d T-293)
+- **Total Task Selesai:** 287 Task (T-01 s/d T-291)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -199,19 +199,19 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t290-products-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-291: Refaktor & Modularisasi View Admin Batch 15 - Konten Beranda (Home Content) [TODO]
+### T-291: Refaktor & Modularisasi View Admin Batch 15 - Konten Beranda (Home Content) [DONE]
 - **Deskripsi**: Merefaktor dan modularisasi berkas raksasa `views/admin/home-content/index.ejs` (681 baris): eliminasi 131 style inline, 22 hex, dan 15 komentar HTML. Pecah template menjadi 6 partial modular per tab pane (`views/admin/home-content/partials/tab-intro.ejs`, `tab-wcu.ejs`, `tab-categories.ejs`, `tab-certifications.ejs`, `tab-cta.ejs`, `sticky-actions.ejs`) masing-masing <=100 baris. Konversi 9 kasus style dinamis media picker ke class semantik. Ekstraksi style ke `.adm-home-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/home-content/`.
-  - [ ] Seluruh berkas partials home-content berukuran <=100 baris.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Seluruh 5 panel tab beranda (intro, WCU, 4 kategori primer, sertifikasi mutu, pre-footer CTA) tersimpan dan terupdate normal tanpa error konsol.
-  - [ ] Path `views/admin/home-content/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/home-content/index.ejs`, `views/admin/home-content/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/home-content/`.
+  - [x] Seluruh berkas partials home-content berukuran <=100 baris.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Seluruh 5 panel tab beranda (intro, WCU, 4 kategori primer, sertifikasi mutu, pre-footer CTA) tersimpan dan terupdate normal tanpa error konsol.
+  - [x] Path `views/admin/home-content/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/home-content/index.ejs`, `views/admin/home-content/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`, `tests/test-t291-home-content-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t291-home-content-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
 ### T-292: Refaktor & Modularisasi View Admin Batch 16 - Tentang Kami (About) [TODO]
 - **Deskripsi**: Merefaktor dan modularisasi berkas terbesar `views/admin/about/index.ejs` (960 baris): eliminasi 178 style inline, 5 hex, dan 30 komentar HTML. Pecah template menjadi partials per tab pane dan per modal (`views/admin/about/partials/tab-sejarah.ejs`, `tab-visi-misi.ejs`, `tab-nilai.ejs`, `tab-sertifikasi.ejs`, `tab-galeri.ejs`, `modal-galeri.ejs`, `modal-statistik.ejs`, `modal-timeline.ejs`) masing-masing <=100 baris. Ekstraksi style ke `.adm-abt-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.

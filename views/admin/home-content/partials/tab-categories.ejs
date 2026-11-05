@@ -1,0 +1,96 @@
+<%
+  const cats = homeContent.categories || {};
+  const defaultSlotIds = [4, 5, 6, 7];
+  const activeHomeCats = (homeContent.homepage_categories && homeContent.homepage_categories.length > 0)
+    ? homeContent.homepage_categories
+    : [{ category_id: 4, image_url: '/images/segment-retail.jpg' }, { category_id: 5, image_url: '/images/segment-industrial.jpg' }, { category_id: 6, image_url: '/images/segment-traditional.jpg' }, { category_id: 7, image_url: '/images/segment-sustainability.jpg' }];
+%>
+<div class="about-tab-pane" id="tab-home-categories" role="tabpanel">
+  <div class="about-glass-card">
+    <div class="form-card-title"><span>Header Seksi Kategori Produk (#produk)</span></div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="cat_title_id" class="form-label">Judul Seksi (Indonesia)</label>
+        <input type="text" id="cat_title_id" name="cat_title_id" class="form-input" value="<%= cats.title_id || '' %>" placeholder="Produk Unggulan Manufaktur">
+      </div>
+      <div class="form-group">
+        <label for="cat_title_en" class="form-label">Judul Seksi (English)</label>
+        <input type="text" id="cat_title_en" name="cat_title_en" class="form-input" value="<%= cats.title_en || '' %>" placeholder="Featured Manufacturing Products">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group adm-home-mb-0">
+        <label for="cat_subtitle_id" class="form-label">Subtitle Pengantar (Indonesia)</label>
+        <textarea id="cat_subtitle_id" name="cat_subtitle_id" class="form-textarea adm-home-textarea-sm"><%= cats.subtitle_id || '' %></textarea>
+      </div>
+      <div class="form-group adm-home-mb-0">
+        <label for="cat_subtitle_en" class="form-label">Subtitle Pengantar (English)</label>
+        <textarea id="cat_subtitle_en" name="cat_subtitle_en" class="form-textarea adm-home-textarea-sm"><%= cats.subtitle_en || '' %></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-glass-card">
+    <div class="form-card-title adm-home-card-title-flex">
+      <span>Manajemen 4 Panel Kategori Primer Homepage</span>
+      <span class="badge badge-info adm-home-badge-sm">Fixed 4 Slot Panel</span>
+    </div>
+    <p class="adm-home-desc-text">
+      Pilih kategori produk dari database untuk masing-masing slot panel di beranda. Cover image kustom via Media Library (opsional fallback bawaan).
+    </p>
+
+    <div class="adm-home-stack-cards">
+      <% [0, 1, 2, 3].forEach(function(idx) { 
+        const catItem = activeHomeCats[idx] || { category_id: defaultSlotIds[idx], image_url: '' };
+        const selectedCatId = Number(catItem.category_id || defaultSlotIds[idx]);
+      %>
+        <div class="adm-home-slot-card">
+          <div class="adm-home-slot-header">
+            <div class="adm-home-slot-title-wrap">
+              <span class="adm-home-slot-badge">#<%= idx + 1 %></span>
+              <strong class="adm-home-slot-title">Panel Slot <%= idx + 1 %></strong>
+            </div>
+            <span class="badge badge-secondary adm-home-badge-sm">Slot Urutan <%= idx + 1 %></span>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group adm-home-mb-0">
+              <label for="home_cat_<%= idx %>_id" class="form-label">Kategori Produk Terpilih *</label>
+              <select id="home_cat_<%= idx %>_id" name="home_cat_<%= idx %>_id" class="form-input" data-eu-dropdown="outlined" required>
+                <option value="">-- Pilih Kategori --</option>
+                <% (allCategories || []).forEach(function(cat) { %>
+                  <option value="<%= cat.id %>" <%= cat.id === selectedCatId ? 'selected' : '' %>>
+                    <%= cat.name_id %> (<%= cat.slug %>) - <%= cat.product_count || 0 %> Produk
+                  </option>
+                <% }); %>
+              </select>
+              <div class="form-hint">Target link panel di homepage akan mengarah ke <code>/products?category={slug}</code>.</div>
+            </div>
+            <div class="form-group adm-home-mb-0">
+              <label class="form-label">Gambar Cover Panel (Media Library)</label>
+              <div class="media-picker-component">
+                <input type="hidden" id="home_cat_<%= idx %>_image_url" name="home_cat_<%= idx %>_image_url" value="<%= catItem.image_url || '' %>">
+                <div class="media-picker-preview-box">
+                  <img src="<%= catItem.image_url || '' %>" alt="Pratinjau Cover" class="media-picker-preview-img <%= catItem.image_url ? '' : 'hidden' %>">
+                  <div class="media-picker-empty <%= catItem.image_url ? 'hidden' : '' %>">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <span>Gambar cover custom (opsional, jika kosong fallback bawaan)</span>
+                  </div>
+                </div>
+                <div class="media-picker-ctrls">
+                  <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="home_cat_<%= idx %>_image_url" data-picker-type="image" aria-label="Pilih foto kategori dari Media Library">
+                    <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <span>Pilih Media</span>
+                  </button>
+                  <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media <%= catItem.image_url ? '' : 'hidden' %>" aria-label="Hapus foto kategori">
+                    <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Hapus</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
