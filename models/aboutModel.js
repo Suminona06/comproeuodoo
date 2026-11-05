@@ -53,45 +53,68 @@ export const aboutModel = {
           letter: 'T',
           title_id: 'Takut Tuhan',
           title_en: 'Fear of God',
-          desc_id: 'Menjadi dasar moral, etika, dan spiritual dalam setiap keputusan bisnis dan operasional perusahaan.',
-          desc_en: 'The moral and spiritual cornerstone guiding every business decision and daily operation.'
+          desc_id: 'Menjadikan nilai ketuhanan sebagai landasan dalam berpikir, mengambil keputusan, dan bekerja dengan penuh tanggung jawab.',
+          desc_en: 'Making spiritual values the foundation in thinking, decision making, and responsible work.',
+          image_url: '/images/hero-factory.jpg',
+          icon_key: 'praying-hands',
+          sort_order: 1
         },
         {
           letter: 'I',
           title_id: 'Integritas',
           title_en: 'Integrity',
-          desc_id: 'Kejujuran, konsistensi mutu, dan tanggung jawab penuh atas komitmen kepada pelanggan dan mitra.',
-          desc_en: 'Honesty, consistent quality, and total accountability to customers and partners.'
+          desc_id: 'Konsisten antara perkataan dan tindakan. Menjunjung kejujuran, disiplin, serta standar kerja dalam setiap proses.',
+          desc_en: 'Honesty, consistent quality, and total accountability to customers and partners.',
+          image_url: '/images/hero-factory-precision.webp',
+          icon_key: 'shield-check',
+          sort_order: 2
         },
         {
           letter: 'C',
           title_id: 'Komunikasi',
           title_en: 'Communication',
-          desc_id: 'Keterbukaan, respon yang membangun dan cepat, serta budaya mendengarkan tanpa mencari kesalahan.',
-          desc_en: 'Openness, constructive responses, and an open culture of listening without fault-finding.'
+          desc_id: 'Membangun komunikasi yang terbuka, jelas, dan efektif untuk mencapai kerja sama yang lebih baik.',
+          desc_en: 'Openness, constructive responses, and an open culture of listening without fault-finding.',
+          image_url: '/images/segment-sustainability.jpg',
+          icon_key: 'chat-dots',
+          sort_order: 3
         },
         {
           letter: 'K',
           title_id: 'Kasih',
           title_en: 'Love',
-          desc_id: 'Kepedulian tulus terhadap kesejahteraan dan pendidikan karyawan, kepuasan pelanggan, serta kelestarian bumi.',
-          desc_en: 'Genuine care for employee education and well-being, customer satisfaction, and planetary care.'
+          desc_id: 'Menghadirkan kepedulian, empati, dan rasa hormat dalam hubungan kerja dengan rekan, mitra, pelanggan, dan lingkungan.',
+          desc_en: 'Genuine care for employee education and well-being, customer satisfaction, and planetary care.',
+          image_url: '/images/post-eco-community.jpg',
+          icon_key: 'heart',
+          sort_order: 4
         },
         {
           letter: 'E',
           title_id: 'Luar Biasa',
           title_en: 'Excellence',
-          desc_id: 'Dedikasi menghadirkan standar mutu plastik degradable terbaik dengan toleransi presisi tinggi.',
-          desc_en: 'Dedication to delivering peak degradable plastic standards with tight precision tolerance.'
+          desc_id: 'Terus meningkatkan kualitas, ketelitian, dan efisiensi untuk memberikan hasil terbaik serta menciptakan nilai tambah secara berkelanjutan.',
+          desc_en: 'Dedication to delivering peak degradable plastic standards with tight precision tolerance.',
+          image_url: '/images/segment-industrial.jpg',
+          icon_key: 'star',
+          sort_order: 5
         },
         {
           letter: 'T',
           title_id: 'Taat',
           title_en: 'Obedience',
-          desc_id: 'Kepatuhan terhadap standar keamanan, regulasi kelestarian lingkungan, dan sertifikasi resmi.',
-          desc_en: 'Adherence to safety standards, environmental regulations, and official certifications.'
+          desc_id: 'Mematuhi kebijakan, prosedur, dan standar keselamatan dengan konsisten demi terciptanya lingkungan kerja yang tertib dan andal.',
+          desc_en: 'Adherence to safety standards, environmental regulations, and official certifications.',
+          image_url: '/images/segment-retail.jpg',
+          icon_key: 'handshake',
+          sort_order: 6
         }
       ],
+      values_bg_image: '/images/hero-factory.jpg',
+      values_pill_id: 'Budaya Kerja',
+      values_pill_en: 'Corporate Culture',
+      values_subtitle_id: 'Nilai-nilai yang membentuk langkah kami menuju masa depan yang lebih baik',
+      values_subtitle_en: 'The foundational values shaping our steps toward a better future',
       certifications: [
         {
           name: 'SNI 7188.7:2011',
@@ -133,7 +156,19 @@ export const aboutModel = {
             ? JSON.parse(allSettings.about_values_json)
             : allSettings.about_values_json;
           if (Array.isArray(parsed) && parsed.length > 0) {
-            values = parsed;
+            values = parsed.map((item, idx) => {
+              const def = defaults.values[idx] || defaults.values[0];
+              return {
+                letter: item.letter ? String(item.letter).trim().charAt(0).toUpperCase() : def.letter,
+                title_id: item.title_id || def.title_id,
+                title_en: item.title_en || def.title_en,
+                desc_id: item.desc_id || def.desc_id,
+                desc_en: item.desc_en || def.desc_en,
+                image_url: item.image_url || def.image_url,
+                icon_key: item.icon_key || def.icon_key,
+                sort_order: typeof item.sort_order === 'number' ? item.sort_order : (idx + 1)
+              };
+            });
           }
         } catch (e) {
           logger.warn('Failed to parse about_values_json, using defaults:', { error: e.message });
@@ -183,6 +218,11 @@ export const aboutModel = {
         vision_image_url: allSettings.vision_image_url || '',
         mission_image_url: allSettings.mission_image_url || '',
         values,
+        values_bg_image: allSettings.about_values_bg_image || defaults.values_bg_image,
+        values_pill_id: allSettings.about_values_pill_id || defaults.values_pill_id,
+        values_pill_en: allSettings.about_values_pill_en || defaults.values_pill_en,
+        values_subtitle_id: allSettings.about_values_subtitle_id || defaults.values_subtitle_id,
+        values_subtitle_en: allSettings.about_values_subtitle_en || defaults.values_subtitle_en,
         certifications
       };
     } catch (err) {
@@ -297,12 +337,25 @@ export const aboutModel = {
       'about_gallery_body_id',
       'about_gallery_body_en',
       'about_story_kicker_id',
-      'about_story_kicker_en'
+      'about_story_kicker_en',
+      'about_values_bg_image',
+      'about_values_pill_id',
+      'about_values_pill_en',
+      'about_values_subtitle_id',
+      'about_values_subtitle_en'
     ];
 
     directSettingKeys.forEach((key) => {
       if (data[key] !== undefined) {
         updateObj[key] = typeof data[key] === 'string' ? data[key].trim() : String(data[key]);
+      }
+    });
+
+    const valuesAliases = ['values_bg_image', 'values_pill_id', 'values_pill_en', 'values_subtitle_id', 'values_subtitle_en'];
+    valuesAliases.forEach((aliasKey) => {
+      const fullKey = `about_${aliasKey}`;
+      if (data[aliasKey] !== undefined && data[fullKey] === undefined) {
+        updateObj[fullKey] = typeof data[aliasKey] === 'string' ? data[aliasKey].trim() : String(data[aliasKey]);
       }
     });
 

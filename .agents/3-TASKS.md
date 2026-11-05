@@ -11,15 +11,15 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### T-294: Persiapan Whitelist Ikon SVG Identik Desain & Normalizer Data Model
+### T-294: Persiapan Whitelist Ikon SVG Identik Desain & Normalizer Data Model [DONE]
 - **Deskripsi**: Menyiapkan 6 aset SVG garis stroke seragam yang presisi identik dengan gambar desain (`praying-hands`, `shield-check`, `chat-dots`, `heart`, `star`, `handshake`) sebagai partial server-side / helper dictionary, serta memperbarui defaults dan parser fallback `about_values_json` pada `models/aboutModel.js` agar data lama tetap valid dan aman dengan dukungan huruf pilar dinamis.
 - **Acceptance Criteria**:
-  - [ ] 6 SVG garis outline tersimpan rapi tanpa inline style/handler dan tanpa warna hex mentah (`stroke="currentColor"`, `viewBox="0 0 24 24"`), 100% identik dengan motif pada gambar referensi.
-  - [ ] `aboutModel.js` memuat defaults lengkap 6 pilar dengan properti `letter`, `title_id`, `title_en`, `desc_id`, `desc_en`, `image_url`, `icon_key`, dan `sort_order`.
-  - [ ] Fungsi `aboutModel.getAboutData()` melakukan fallback graceful jika ada properti yang belum didefinisikan pada data database lama, serta membaca pengaturan baru `about_values_bg_image`, `about_values_pill_*`, dan `about_values_subtitle_*`.
-- **File Terdampak**: `views/partials/icons/ticket/*.ejs` (atau helper icon dictionary), `models/aboutModel.js`
+  - [x] 6 SVG garis outline tersimpan rapi tanpa inline style/handler dan tanpa warna hex mentah (`stroke="currentColor"`, `viewBox="0 0 24 24"`), 100% identik dengan motif pada gambar referensi.
+  - [x] `aboutModel.js` memuat defaults lengkap 6 pilar dengan properti `letter`, `title_id`, `title_en`, `desc_id`, `desc_en`, `image_url`, `icon_key`, dan `sort_order`.
+  - [x] Fungsi `aboutModel.getAboutData()` melakukan fallback graceful jika ada properti yang belum didefinisikan pada data database lama, serta membaca pengaturan baru `about_values_bg_image`, `about_values_pill_*`, dan `about_values_subtitle_*`.
+- **File Terdampak**: `utils/ticketIcons.js`, `views/partials/icons/ticket/*.ejs`, `models/aboutModel.js`, `tests/test-t294-ticket-icons-normalizer.js`
 - **Skill**: `antislop-code` + `ponytail`
-- **Verifikasi**: Unit test pemanggilan `aboutModel.getAboutData()` mengembalikan 6 pilar lengkap dengan fallback aman dan key header/latar baru.
+- **Verifikasi**: `node --test tests/test-t294-ticket-icons-normalizer.js` (4/4 tests pass, zero errors). Selesai 2026-11-05.
 
 ### T-295: Penyesuaian Antarmuka Admin CMS Tab Nilai Budaya & Validasi Controller
 - **Deskripsi**: Memperbarui form `views/admin/about/partials/tab-nilai.ejs` untuk mendukung pengelolaan foto latar section, input pill dan subjudul dwibahasa ID/EN, serta 6 kartu pilar yang memuat input huruf fleksibel (1 karakter), judul ID/EN, deskripsi ID/EN, foto latar kartu via Universal Media Picker, dan dropdown kustom admin (`.eu-dd-*`) dengan pratinjau SVG untuk 6 pilihan icon whitelist. Memperbarui `aboutController.update` dengan validasi server-side ketat.
