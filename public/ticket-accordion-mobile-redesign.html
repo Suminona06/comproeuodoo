@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budaya Kerja — T-I-C-K-E-T | PT Euodoo</title>
+<style>
+:root{
+  --green:#00755A;--green-bright:#00a77c;--green-deep:#062f2a;
+  --ink:#123b36;--muted:#637c78;--paper:#f4f8f6;
+  --ease:cubic-bezier(.2,.75,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.page{min-height:100vh;position:relative;overflow:hidden;padding:76px 5vw 58px;background:
+ radial-gradient(ellipse at 10% 10%,rgba(0,117,90,.10),transparent 34%),
+ radial-gradient(ellipse at 90% 80%,rgba(124,190,56,.12),transparent 30%),#f4f8f6}
+.page:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(0,70,55,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,70,55,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+.wrap{max-width:1440px;margin:auto;position:relative;z-index:1}
+.intro{text-align:center;margin:0 auto 42px;max-width:760px}
+.eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--green);font-size:12px;font-weight:750;letter-spacing:.18em;text-transform:uppercase}
+.eyebrow:before,.eyebrow:after{content:"";width:38px;height:1px;background:rgba(0,117,90,.35)}
+h1{margin:15px 0 8px;font-size:clamp(38px,5.2vw,68px);line-height:1;letter-spacing:.16em;font-weight:800;color:#0b4038}
+.lead{margin:0;color:#627a75;font-size:clamp(14px,1.5vw,17px);line-height:1.65}
+.accordion{height:510px;display:flex;gap:9px;align-items:stretch}
+.panel{--grow:1;flex:var(--grow) 1 0;min-width:0;position:relative;overflow:hidden;border-radius:15px;background:#183d38;isolation:isolate;cursor:pointer;transition:flex .75s var(--ease),border-color .4s,box-shadow .5s;outline:none;border:1px solid rgba(255,255,255,.65);box-shadow:0 14px 35px rgba(14,55,47,.10)}
+.panel:before{content:"";position:absolute;inset:0;background-image:var(--photo);background-size:cover;background-position:center;transform:scale(1.015);transition:transform 1.1s var(--ease);z-index:-2}
+.panel:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,30,27,.16) 0%,rgba(4,30,27,.34) 42%,rgba(3,30,27,.88) 100%);z-index:-1;transition:background .5s}
+.panel.active{--grow:3.25;box-shadow:0 18px 48px rgba(0,117,90,.20),0 0 0 2px rgba(0,167,124,.68);border-color:rgba(0,167,124,.85)}
+.panel.active:before{transform:scale(1.075)}
+.panel.active:after{background:linear-gradient(180deg,rgba(4,30,27,.05) 0%,rgba(4,30,27,.10) 38%,rgba(3,30,27,.94) 100%)}
+.panel:not(.active):hover:before{transform:scale(1.06)}
+.panel-top{position:absolute;top:25px;left:0;right:0;text-align:center;color:#fff;transition:all .45s var(--ease)}
+ .symbol{width:34px;height:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;opacity:.98}
+.symbol svg{width:34px;height:34px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.letter{font-size:clamp(30px,3.4vw,48px);font-weight:800;line-height:1;letter-spacing:.02em;text-shadow:0 2px 12px #102d28}
+.vertical-name{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);writing-mode:vertical-rl;text-orientation:mixed;color:rgba(255,255,255,.92);font-size:15px;font-weight:650;letter-spacing:.04em;white-space:nowrap;transition:opacity .25s,transform .45s var(--ease)}
+.panel.active .vertical-name{opacity:0;transform:translate(-50%,-40%)}
+.panel-copy{position:absolute;left:clamp(22px,3vw,42px);right:clamp(20px,3vw,38px);bottom:34px;color:white;opacity:0;transform:translateX(20px);transition:opacity .35s .08s,transform .5s var(--ease);pointer-events:none}
+.panel.active .panel-copy{opacity:1;transform:translateX(0);pointer-events:auto}
+.panel-copy .kicker{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#8de2c5;font-weight:750}
+.panel-copy h2{font-size:clamp(24px,3vw,36px);margin:8px 0 9px;line-height:1.1}
+.panel-copy p{max-width:480px;margin:0;color:rgba(255,255,255,.83);font-size:14px;line-height:1.7}
+.learn{display:inline-flex;align-items:center;gap:18px;margin-top:19px;padding:10px 16px;border:1px solid rgba(95,226,183,.65);border-radius:99px;color:#e9fff7;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.02em;transition:background .25s,border-color .25s}
+.learn:hover{background:rgba(0,167,124,.25);border-color:#70e5bf}
+.learn span{font-size:17px;line-height:10px}
+.base-line{position:absolute;bottom:19px;left:50%;transform:translateX(-50%);height:5px;width:42px;border-radius:9px;background:rgba(255,255,255,.42);transition:width .35s,background .35s}
+.panel.active .base-line{width:70px;background:#65dcb2}
+.dots{display:flex;justify-content:center;gap:9px;margin-top:28px}
+.dot{width:7px;height:7px;border:0;padding:0;border-radius:50%;background:#b8c9c4;cursor:pointer;transition:all .25s}
+.dot.active{width:28px;border-radius:9px;background:var(--green)}
+.note{text-align:center;margin:22px auto 0;color:#8a9d98;font-size:11px;letter-spacing:.04em}
+@media(max-width:800px){
+ .page{padding:48px 18px 38px}.intro{margin-bottom:30px}
+ /* Mobile: six stacked horizontal accordion rows, with the active item expanding downward. */
+ .accordion{height:auto;display:flex;flex-direction:column;gap:9px}
+ .panel{height:76px;flex:none;width:100%;border-radius:12px}
+ .panel.active{height:310px;flex:none}
+ .panel:before{background-position:center 42%}
+ .panel:after{background:linear-gradient(90deg,rgba(4,30,27,.78),rgba(4,30,27,.35) 65%,rgba(4,30,27,.55))}
+ .panel.active:after{background:linear-gradient(180deg,rgba(4,30,27,.10) 0%,rgba(4,30,27,.18) 34%,rgba(3,30,27,.94) 100%)}
+ .panel-top{top:50%;left:20px;right:auto;display:flex;align-items:center;gap:16px;text-align:left;transform:translateY(-50%)}
+ .symbol{width:30px;height:30px;display:flex;align-items:center;justify-content:center;margin:0;flex:none}
+ .symbol svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ .letter{font-size:28px;min-width:22px}
+ .vertical-name{position:static;writing-mode:horizontal-tb;transform:none;font-size:14px;letter-spacing:.02em;margin-left:2px}
+ .panel.active .panel-top{top:22px;transform:none}
+ .panel.active .vertical-name{opacity:1;transform:none}
+ .panel-copy{left:22px;right:22px;bottom:25px}
+ .panel-copy h2{font-size:25px;margin:6px 0}
+ .panel-copy p{font-size:13px;line-height:1.6}
+ .panel-copy .kicker{font-size:9px}
+ .learn{margin-top:13px;padding:8px 13px}
+ .base-line{left:auto;right:20px;bottom:50%;transform:translateY(50%);width:24px;height:3px}
+ .panel.active .base-line{right:20px;bottom:15px;transform:none;width:48px}
+ .dots{margin-top:22px}
+ .note{font-size:10px;line-height:1.5}
+}
+@media(max-width:420px){
+ .page{padding:42px 14px 32px}
+ .panel{height:70px}
+ .panel.active{height:325px}
+ .panel-top{left:16px;gap:13px}
+ .symbol{width:27px;height:27px}
+ .symbol svg{width:25px;height:25px}
+ .letter{font-size:25px}
+ .vertical-name{font-size:13px}
+ .panel-copy{left:18px;right:18px;bottom:24px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="page">
+ <div class="wrap">
+  <header class="intro">
+   <div class="eyebrow">Budaya Kerja</div>
+   <h1>T-I-C-K-E-T</h1>
+   <p class="lead">Nilai-nilai yang membentuk langkah kami menuju masa depan yang lebih baik.</p>
+  </header>
+  <section class="accordion" aria-label="Enam nilai budaya kerja T-I-C-K-E-T">
+   <article class="panel" tabindex="0" role="button" aria-expanded="false" style="--photo:url('https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1100&q=85')">
+    <div class="panel-top"><span class="symbol"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m5 23 9-9 8 2 5-3c2-1 4 0 4 2l-5 5"/><path d="m19 25 8 8c2 2 5-1 3-3l-6-6"/><path d="m24 21 10 10c2 2 5-1 3-3l-9-10"/><path d="m31 17 8 8c2 2 5-1 3-3l-9-9c-2-2-5-2-7-1l-4 3"/><path d="m5 23 8 9 5-5"/></svg></span><div class="letter">T</div></div><div class="vertical-name">Takut Tuhan</div>
+    <div class="panel-copy"><div class="kicker">T · Fondasi perilaku</div><h2>Takut Tuhan</h2><p>Menjadikan nilai ketuhanan sebagai landasan dalam berpikir, mengambil keputusan, dan bekerja dengan penuh tanggung jawab.</p><a class="learn" href="#nilai-t">Nilai dalam tindakan <span>→</span></a></div><div class="base-line"></div>
+   </article>
+   <article class="panel" tabindex="0" role="button" aria-expanded="false" style="--photo:url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1100&q=85')">
+    <div class="panel-top"><span class="symbol">◇</span><div class="letter">I</div></div><div class="vertical-name">Integritas</div>
+    <div class="panel-copy"><div class="kicker">I · Dapat dipercaya</div><h2>Integritas</h2><p>Konsisten antara perkataan dan tindakan. Menjunjung kejujuran, disiplin, serta standar kerja dalam setiap proses.</p><a class="learn" href="#nilai-i">Nilai dalam tindakan <span>→</span></a></div><div class="base-line"></div>
+   </article>
+   <article class="panel active" tabindex="0" role="button" aria-expanded="true" style="--photo:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=90')">
+    <div class="panel-top"><span class="symbol">◎</span><div class="letter">C</div></div><div class="vertical-name">Komunikasi</div>
+    <div class="panel-copy"><div class="kicker">C · Bergerak bersama</div><h2>Komunikasi</h2><p>Membangun komunikasi yang terbuka, jelas, dan efektif untuk menyelaraskan tujuan, memperkuat kolaborasi, serta menghasilkan kerja sama yang lebih baik.</p><a class="learn" href="#nilai-c">Nilai dalam tindakan <span>→</span></a></div><div class="base-line"></div>
+   </article>
+   <article class="panel" tabindex="0" role="button" aria-expanded="false" style="--photo:url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1100&q=85')">
+    <div class="panel-top"><span class="symbol">♡</span><div class="letter">K</div></div><div class="vertical-name">Kasih</div>
+    <div class="panel-copy"><div class="kicker">K · Saling menghargai</div><h2>Kasih</h2><p>Menghadirkan kepedulian, empati, dan rasa hormat dalam hubungan kerja dengan rekan, mitra, pelanggan, dan lingkungan.</p><a class="learn" href="#nilai-k">Nilai dalam tindakan <span>→</span></a></div><div class="base-line"></div>
+   </article>
+   <article class="panel" tabindex="0" role="button" aria-expanded="false" style="--photo:url('https://images.unsplash.com/photo-1567789884554-0b844b597180?auto=format&fit=crop&w=1100&q=85')">
+    <div class="panel-top"><span class="symbol">✧</span><div class="letter">E</div></div><div class="vertical-name">Luar Biasa</div>
+    <div class="panel-copy"><div class="kicker">E · Excellence</div><h2>Luar Biasa</h2><p>Terus meningkatkan kualitas, ketelitian, dan efisiensi untuk memberikan hasil terbaik serta menciptakan nilai tambah secara berkelanjutan.</p><a class="learn" href="#nilai-e">Nilai dalam tindakan <span>→</span></a></div><div class="base-line"></div>
+   </article>
+   <article class="panel" tabindex="0" role="button" aria-expanded="false" style="--photo:url('https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1100&q=85')">
+    <div class="panel-top"><span class="symbol">⌁</span><div class="letter">T</div></div><div class="vertical-name">Taat</div>
+    <div class="panel-copy"><div class="kicker">T · Disiplin dan konsisten</div><h2>Taat</h2><p>Mematuhi kebijakan, prosedur, dan standar keselamatan dengan konsisten demi terciptanya lingkungan kerja yang tertib dan andal.</p><a class="learn" href="#nilai-t2">Nilai dalam tindakan <span>→</span></a></div><div class="base-line"></div>
+   </article>
+  </section>
+  <nav class="dots" aria-label="Pilih nilai budaya kerja">
+   <button class="dot" aria-label="Takut Tuhan"></button><button class="dot" aria-label="Integritas"></button><button class="dot active" aria-label="Komunikasi"></button><button class="dot" aria-label="Kasih"></button><button class="dot" aria-label="Luar Biasa"></button><button class="dot" aria-label="Taat"></button>
+  </nav>
+  <p class="note">Pilih setiap panel untuk menjelajahi nilai budaya kerja kami</p>
+ </div>
+</main>
+<script>
+(() => {
+ const panels=[...document.querySelectorAll('.panel')];
+ const dots=[...document.querySelectorAll('.dot')];
+ function activate(index){
+  panels.forEach((panel,i)=>{
+   const active=i===index;
+   panel.classList.toggle('active',active);
+   panel.setAttribute('aria-expanded',String(active));
+  });
+  dots.forEach((dot,i)=>dot.classList.toggle('active',i===index));
+ }
+ panels.forEach((panel,index)=>{
+  panel.addEventListener('mouseenter',()=>activate(index));
+  panel.addEventListener('focus',()=>activate(index));
+  panel.addEventListener('click',e=>{
+   if(e.target.closest('a')) e.preventDefault();
+   activate(index);
+  });
+  panel.addEventListener('keydown',e=>{
+   if(e.key==='Enter'||e.key===' '){e.preventDefault();activate(index)}
+   if(e.key==='ArrowRight'){e.preventDefault();panels[(index+1)%panels.length].focus()}
+   if(e.key==='ArrowLeft'){e.preventDefault();panels[(index+panels.length-1)%panels.length].focus()}
+  });
+ });
+ dots.forEach((dot,index)=>dot.addEventListener('click',()=>activate(index)));
+})();
+</script>
+</body>
+</html>

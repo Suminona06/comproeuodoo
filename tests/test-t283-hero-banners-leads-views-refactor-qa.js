@@ -144,6 +144,9 @@ async function runQAVerification() {
 
     // [4] TEST 4: Uji Pembaruan Hero Banner Sub-Halaman
     console.log('\n[4] Menguji Simpan Hero Banner (/admin/hero-banners/about)...');
+    const initialTitleId = await page.inputValue('#title_id_about');
+    const initialSubtitleId = await page.inputValue('#subtitle_id_about');
+
     await page.fill('#title_id_about', 'Tentang Kami PT Euodoo QA');
     await page.fill('#subtitle_id_about', 'Produsen Plastik Terpercaya Berstandar Global QA');
     const saveBtn = page.locator('#card-about button[type="submit"]');
@@ -154,7 +157,15 @@ async function runQAVerification() {
 
     const updatedTitleId = await page.inputValue('#title_id_about');
     assert.strictEqual(updatedTitleId, 'Tentang Kami PT Euodoo QA', 'Judul banner about harus tersimpan');
-    console.log('  ✓ Pembaruan hero banner berhasil disimpan dan diverifikasi.');
+
+    // Restore original values
+    await page.fill('#title_id_about', initialTitleId || 'Tentang PT Euodoo');
+    await page.fill('#subtitle_id_about', initialSubtitleId || 'Perjalanan dedikasi manufaktur plastik ramah lingkungan terpercaya sejak 1990.');
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle' }),
+      saveBtn.click()
+    ]);
+    console.log('  ✓ Pembaruan hero banner berhasil disimpan, diverifikasi, dan data asli dipulihkan.');
 
     // [5] TEST 5: Halaman WhatsApp Leads (/admin/leads via views/admin/leads/index.ejs)
     console.log('\n[5] Menguji Halaman WhatsApp Leads (views/admin/leads/index.ejs)...');
@@ -217,7 +228,6 @@ async function runQAVerification() {
     console.log('  ✓ Nol error konsol browser pada seluruh pengujian.');
 
     console.log('\n🎉 SELURUH GERBANG KUALITAS BATCH 7 (T-283) LULUS 100%!');
-    process.exit(0);
   } finally {
     await browser.close();
     await new Promise((resolve) => server.close(resolve));

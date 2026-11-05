@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateTotal() {
     const rows = tbody.querySelectorAll('tr.wa-row');
     if (rows.length === 0) {
-      if (emptyHint) emptyHint.style.display = 'block';
-      if (tableContainer) tableContainer.style.display = 'none';
+      if (emptyHint) emptyHint.classList.remove('stg-d-none');
+      if (tableContainer) tableContainer.classList.add('stg-d-none');
       if (badge) {
         badge.className = 'wa-repeater-badge-ok';
         badge.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg> Mode Fallback (1 Nomor Utama)';
@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return 0;
     }
 
-    if (emptyHint) emptyHint.style.display = 'none';
-    if (tableContainer) tableContainer.style.display = 'block';
+    if (emptyHint) emptyHint.classList.add('stg-d-none');
+    if (tableContainer) tableContainer.classList.remove('stg-d-none');
 
     let sum = 0;
     rows.forEach(row => {

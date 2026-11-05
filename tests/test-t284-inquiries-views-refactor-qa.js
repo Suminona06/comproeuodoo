@@ -198,8 +198,12 @@ async function runQAVerification() {
     assert.strictEqual(pageErrors.length, 0, `Harus 0 page errors! Ditemukan: ${pageErrors.length}`);
     console.log('  ✓ Nol error konsol browser pada seluruh pengujian.');
 
+    if (testInquiryId) {
+      await inquiryModel.delete(testInquiryId).catch(() => {});
+      console.log('  ✓ Data inquiry pengujian berhasil dibersihkan.');
+    }
+
     console.log('\n🎉 SELURUH GERBANG KUALITAS BATCH 8 (T-284) LULUS 100%!');
-    process.exit(0);
   } finally {
     if (testInquiryId) {
       await inquiryModel.delete(testInquiryId).catch(() => {});

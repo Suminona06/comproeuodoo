@@ -176,6 +176,11 @@ async function runQAVerification() {
 
     // [6] TEST 6: Uji Pembaruan Form Konten Kontak
     console.log('\n[6] Menguji Pembaruan Konten Kontak...');
+    const initialHoursId = await page.inputValue('#contact_working_hours_id');
+    const initialHoursEn = await page.inputValue('#contact_working_hours_en');
+    const initialTitleId = await page.inputValue('#contact_form_title_id');
+    const initialTitleEn = await page.inputValue('#contact_form_title_en');
+
     await page.fill('#contact_working_hours_id', 'Senin - Jumat: 08.00 - 17.00 WIB (QA Test)');
     await page.fill('#contact_working_hours_en', 'Monday - Friday: 08:00 - 17:00 WIB (QA Test)');
     await page.fill('#contact_form_title_id', 'Konsultasi & Permintaan Penawaran Cepat');
@@ -189,7 +194,17 @@ async function runQAVerification() {
     assert.strictEqual(updatedHoursId, 'Senin - Jumat: 08.00 - 17.00 WIB (QA Test)', 'Jam kerja ID harus terupdate');
     const updatedTitleId = await page.inputValue('#contact_form_title_id');
     assert.strictEqual(updatedTitleId, 'Konsultasi & Permintaan Penawaran Cepat', 'Judul formulir harus terupdate');
-    console.log('  ✓ Formulir konten kontak berhasil disimpan dan diperbarui.');
+
+    // Restore original values
+    await page.fill('#contact_working_hours_id', initialHoursId || 'Senin - Jumat: 08.00 - 17.00 WIB');
+    await page.fill('#contact_working_hours_en', initialHoursEn || 'Monday - Friday: 08:00 - 17:00 WIB');
+    await page.fill('#contact_form_title_id', initialTitleId || 'Konsultasi & Permintaan Penawaran');
+    await page.fill('#contact_form_title_en', initialTitleEn || 'Consultation & Request for Quotation');
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'networkidle' }),
+      page.click('button[type="submit"]')
+    ]);
+    console.log('  ✓ Formulir konten kontak berhasil disimpan, diverifikasi, dan data asli dipulihkan.');
 
     // [7] TEST 7: Konsol Browser & Page Errors Check
     console.log('\n[7] Memeriksa integritas konsol JavaScript browser...');
@@ -201,7 +216,6 @@ async function runQAVerification() {
     console.log('  ✓ Nol error konsol browser pada seluruh pengujian.');
 
     console.log('\n🎉 SELURUH GERBANG KUALITAS BATCH 6 (T-282) LULUS 100%!');
-    process.exit(0);
   } finally {
     await browser.close();
     await new Promise((resolve) => server.close(resolve));

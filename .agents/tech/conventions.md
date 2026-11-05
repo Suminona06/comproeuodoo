@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-05 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
 
 # Tech Spec: Konvensi Kode & Standar Kualitas (Code Conventions & Standards)
 
@@ -80,7 +80,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 - Dilarang modifikasi class bersama (`.form-card`, `.form-group`, `.form-row-2`, `.adm-btn-*`, `.eu-dd-*`).
 - Nilai spasi/ukuran diekstraksi ke class komponen di `public/css/admin.css` bernilai tetap piksel tanpa token spasi baru di `tokens.css`.
 
-### C. Refaktor Massal View Admin & Pembersihan Skrip/CSS [PENDING T-277..T-293]
+### C. Refaktor Massal View Admin & Pembersihan Skrip/CSS
 - **Cakupan Bersamaan (Keputusan Opsi B):** Pada setiap modul admin yang direfaktor, selain template `.ejs`, berkas CSS (`public/css/admin.css`) dan skrip (`public/js/admin-*.js`) yang disentuh wajib sekaligus dibersihkan dari komentar tak perlu (`antislop-code`) dan warna hex lama (wajib dipetakan ke token CSS).
 - **Status Tampilan Dinamis:** Seluruh logika toggle tampilan berbasis database menggunakan class status semantik statis (`.adm-d-none` / `.adm-d-block`, `.is-empty` / `.has-preview`) tanpa atribut `style="..."`.
 - **Prefix Unik per Modul:** Auth: `.err403-*`, `.adm-login-*`, `.chpwd-*` | Kategori: `.adm-pcat-*`, `.adm-postcat-*` | Pengguna: `.adm-usr-*` | Merek: `.adm-brd-*` | Kapabilitas & Kontak: `.adm-cap-*`, `.adm-ctc-*` | Hero & Leads: `.adm-hbn-*`, `.adm-leads-*` | Inquiries & Dashboard: `.adm-inq-*`, `.adm-dash-*` | Shell & Partials: `.adm-shell-*`, `.adm-picker-*` | Media & Banner: `.adm-media-*`, `.adm-banner-*` | Artikel & Produk: `.adm-post-*`, `.adm-prod-*` | Home & About: `.adm-home-*`, `.adm-abt-*`.

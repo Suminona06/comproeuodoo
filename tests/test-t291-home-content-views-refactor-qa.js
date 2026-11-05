@@ -141,6 +141,7 @@ async function runQAVerification() {
 
     // [6] TEST 6: Form Update dan Verifikasi Database
     console.log('\n[6] Menguji Pembaruan Formulir dan Sinkronisasi Basis Data...');
+    const initialHomeData = await homeContentModel.getHomeContentData();
 
     // Tab 1: Update Intro Title
     await page.click('.about-tab-btn[data-tab="tab-home-intro"]');
@@ -182,7 +183,16 @@ async function runQAVerification() {
     assert.strictEqual(freshDbData.certifications.title_id, updatedCertTitle, 'Certifications title_id di database harus terupdate');
     assert.strictEqual(freshDbData.cta.title_id, updatedCtaTitle, 'CTA title_id di database harus terupdate');
 
-    console.log('  ✓ Seluruh 5 panel tab berhasil diperbarui dan sinkron dengan basis data!');
+    // Pulihkan data awal agar database tetap bersih dan otentik
+    await homeContentModel.updateHomeContent({
+      intro: { ...initialHomeData.intro },
+      why_choose_us: { ...initialHomeData.why_choose_us },
+      categories: { ...initialHomeData.categories },
+      certifications: { ...initialHomeData.certifications },
+      cta: { ...initialHomeData.cta }
+    });
+
+    console.log('  ✓ Seluruh 5 panel tab berhasil diperbarui, diverifikasi, dan data asli dipulihkan!');
 
   } finally {
     await browser.close();
@@ -204,8 +214,10 @@ async function runQAVerification() {
   console.log('\n=== SELURUH GERBANG KUALITAS T-291 LULUS 100%! ===');
 }
 
-runQAVerification().catch((err) => {
-  console.error('\n❌ QA Verification GAGAL:', err);
-  process.exit(1);
-});
+runQAVerification()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error('\n❌ QA Verification GAGAL:', err);
+    process.exit(1);
+  });
 

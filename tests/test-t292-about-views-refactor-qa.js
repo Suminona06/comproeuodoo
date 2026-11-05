@@ -183,6 +183,7 @@ async function runQAVerification() {
 
     // [7] TEST 7: Form Update dan Verifikasi Database
     console.log('\n[7] Menguji Pembaruan Formulir dan Sinkronisasi Basis Data...');
+    const initialAboutData = await aboutModel.getAboutData();
 
     // Tab 1: Update Sejarah Title
     await page.click('.about-tab-btn[data-tab="tab-sejarah"]');
@@ -215,7 +216,15 @@ async function runQAVerification() {
     assert.strictEqual(freshDbData.slogan_id, updatedSlogan, 'slogan_id di database harus terupdate');
     assert.strictEqual(freshDbData.eco_statement_id, updatedEco, 'eco_statement_id di database harus terupdate');
 
-    console.log('  ✓ Seluruh panel tab Tentang Kami berhasil diperbarui dan sinkron dengan basis data!');
+    // Pulihkan data awal agar database tetap bersih dan otentik
+    await aboutModel.updateAboutData({
+      history_title_id: initialAboutData.history_title_id,
+      vision_id: initialAboutData.vision_id,
+      slogan_id: initialAboutData.slogan_id,
+      eco_statement_id: initialAboutData.eco_statement_id
+    });
+
+    console.log('  ✓ Seluruh panel tab Tentang Kami berhasil diperbarui, diverifikasi, dan data asli dipulihkan!');
 
   } finally {
     await browser.close();
@@ -237,8 +246,10 @@ async function runQAVerification() {
   console.log('\n=== SELURUH GERBANG KUALITAS T-292 LULUS 100%! ===');
 }
 
-runQAVerification().catch((err) => {
-  console.error('\n❌ QA Verification GAGAL:', err);
-  process.exit(1);
-});
+runQAVerification()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error('\n❌ QA Verification GAGAL:', err);
+    process.exit(1);
+  });
 

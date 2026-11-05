@@ -26,7 +26,7 @@
 | **Media Library** | ACTIVE | 2026-10-30 | [prd/media-library.md](prd/media-library.md) | [tech/media-library.md](tech/media-library.md) | `views/admin/media/` |
 | **SEO & Security** | ACTIVE | 2026-10-21 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
 | **Site Settings** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
-| **Code Conventions & Standards** | ACTIVE | 2026-11-03 | - | [tech/conventions.md](tech/conventions.md) | `eslint.config.js`, `scripts/lint-*.js` |
+| **Code Conventions & Standards** | ACTIVE | 2026-11-05 | - | [tech/conventions.md](tech/conventions.md) | `eslint.config.js`, `scripts/lint-*.js` |
 
 ## 3. Direktori Pendukung
 - `changes/`: Proposal perubahan berjalan (dihapus/dipindah ke archive saat close).

@@ -6,31 +6,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-// File atau direktori hasil refaktor yang wajib zero-error
+// File atau direktori hasil refaktor yang wajib zero-error (100% Admin Views & Admin Partials)
 const DEFAULT_STRICT_PATHS = [
-  'views/admin/settings/',
-  'views/admin/403.ejs',
-  'views/admin/login.ejs',
-  'views/admin/change-password.ejs',
-  'views/admin/product-categories/',
-  'views/admin/post-categories/',
-  'views/admin/users/',
-  'views/admin/brands/',
-  'views/admin/capabilities/index.ejs',
-  'views/admin/contact/index.ejs',
-  'views/admin/hero-banners/index.ejs',
-  'views/admin/leads/index.ejs',
-  'views/admin/inquiries/',
-  'views/admin/dashboard.ejs',
+  'views/admin/',
   'views/partials/admin-header.ejs',
   'views/partials/admin-footer.ejs',
-  'views/partials/media-picker-modal.ejs',
-  'views/admin/media/index.ejs',
-  'views/admin/banners/',
-  'views/admin/posts/',
-  'views/admin/products/',
-  'views/admin/home-content/',
-  'views/admin/about/'
+  'views/partials/media-picker-modal.ejs'
 ];
 
 function getFiles(dir, ext) {
