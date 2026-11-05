@@ -78,7 +78,10 @@
     "mission_2": "Unleash human potential.",
     "mission_3": "Develop professionalism.",
     "standards_title": "Environmental Compliance & Certifications",
-    "standards_desc": "We are committed to manufacturing only degradable bags that meet SNI 7188.7:2011, OXIUM, and InSWA Green Label Indonesia standards."
+    "standards_desc": "We are committed to manufacturing only degradable bags that meet SNI 7188.7:2011, OXIUM, and InSWA Green Label Indonesia standards.",
+    "values_tablist_label": "Corporate culture pillars tab list",
+    "values_dots_label": "Corporate culture pillars navigation",
+    "values_dot_aria": "Select pillar"
   },
   "news": {
     "page_title": "Company Publications & News",

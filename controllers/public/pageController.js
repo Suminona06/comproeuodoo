@@ -31,11 +31,13 @@ export const pageController = {
 
       const lang = res.locals.currentLang || 'id';
       const title = (lang === 'en' ? 'About Us' : 'Tentang Kami') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const ticketAcronym = (about?.values || []).map((v) => v.letter).join(' - ') || 'T - I - C - K - E - T';
 
       res.render('public/about', {
         title,
         path: '/about',
         about,
+        ticketAcronym,
         heroBanner,
         gallerySlides,
         stats,
@@ -51,6 +53,7 @@ export const pageController = {
         title: 'Tentang Kami | PT Euodoo',
         path: '/about',
         about: fallbackAbout,
+        ticketAcronym: (fallbackAbout.values || []).map((v) => v.letter).join(' - ') || 'T - I - C - K - E - T',
         heroBanner: null,
         gallerySlides: [],
         stats: [],

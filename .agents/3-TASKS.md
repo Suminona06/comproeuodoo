@@ -21,33 +21,33 @@
 - **Skill**: `antislop-code` + `ponytail`
 - **Verifikasi**: `node --test tests/test-t294-ticket-icons-normalizer.js` (4/4 tests pass, zero errors). Selesai 2026-11-05.
 
-### T-295: Penyesuaian Antarmuka Admin CMS Tab Nilai Budaya & Validasi Controller
+### T-295: Penyesuaian Antarmuka Admin CMS Tab Nilai Budaya & Validasi Controller [DONE]
 - **Deskripsi**: Memperbarui form `views/admin/about/partials/tab-nilai.ejs` untuk mendukung pengelolaan foto latar section, input pill dan subjudul dwibahasa ID/EN, serta 6 kartu pilar yang memuat input huruf fleksibel (1 karakter), judul ID/EN, deskripsi ID/EN, foto latar kartu via Universal Media Picker, dan dropdown kustom admin (`.eu-dd-*`) dengan pratinjau SVG untuk 6 pilihan icon whitelist. Memperbarui `aboutController.update` dengan validasi server-side ketat.
 - **Acceptance Criteria**:
-  - [ ] Tab 3 ("Nilai Budaya") menampilkan form konfigurasi header seksi (pill ID/EN, subjudul ID/EN, foto latar seksi).
-  - [ ] 6 kartu pilar dapat disunting hurufnya (input `maxlength="1"`, auto-uppercase), judul, deskripsi, foto kartu, dan ikonnya.
-  - [ ] Media picker bekerja mulus untuk memilih foto dari media library lokal tanpa inline style.
-  - [ ] Dropdown ikon menampilkan preview SVG dari whitelist 6 ikon resmi identik gambar.
-  - [ ] Controller memvalidasi whitelist `icon_key`, URL lokal media library, dan batas panjang karakter (huruf 1 char, judul max 50, deskripsi max 250, pill max 50, subjudul max 150).
-  - [ ] Penyimpanan data berhasil memperbarui `about_values_json` dan pengaturan baru tanpa menghapus field lain.
-- **File Terdampak**: `views/admin/about/partials/tab-nilai.ejs`, `controllers/admin/aboutController.js`, `public/css/admin.css`
+  - [x] Tab 3 ("Nilai Budaya") menampilkan form konfigurasi header seksi (pill ID/EN, subjudul ID/EN, foto latar seksi).
+  - [x] 6 kartu pilar dapat disunting hurufnya (input `maxlength="1"`, auto-uppercase), judul, deskripsi, foto kartu, dan ikonnya.
+  - [x] Media picker bekerja mulus untuk memilih foto dari media library lokal tanpa inline style.
+  - [x] Dropdown ikon menampilkan preview SVG dari whitelist 6 ikon resmi identik gambar.
+  - [x] Controller memvalidasi whitelist `icon_key`, URL lokal media library, dan batas panjang karakter (huruf 1 char, judul max 50, deskripsi max 250, pill max 50, subjudul max 150).
+  - [x] Penyimpanan data berhasil memperbarui `about_values_json` dan pengaturan baru tanpa menghapus field lain.
+- **File Terdampak**: `views/admin/about/partials/tab-nilai.ejs`, `views/admin/about/partials/tab-nilai-card.ejs`, `controllers/admin/aboutController.js`, `public/css/admin.css`, `public/js/admin.js`, `tests/test-t295-admin-ticket-form-qa.js`
 - **Skill**: `antislop-code` + `code-review-and-quality`
-- **Verifikasi**: Uji submit form admin, cek integritas JSON di tabel settings, dan verifikasi validasi tolak input di luar whitelist.
+- **Verifikasi**: `node --test tests/test-t295-admin-ticket-form-qa.js` (3/3 tests pass, zero errors; lint views 0 errors). Selesai 2026-11-05.
 
-### T-296: Pembersihan Legacy Inline Styles & Implementasi Markup Accordion Publik
+### T-296: Pembersihan Legacy Inline Styles & Implementasi Markup Accordion Publik [DONE]
 - **Deskripsi**: Membersihkan seluruh inline `style="..."` dan hex code dari section `#core-values` di `views/public/about.ejs`, mengekstrak komponen ke partial modular `views/partials/about/ticket-accordion.ejs`, mengintegrasikan latar foto seksi dengan overlay gradien token, merangkai judul akronim otomatis dari huruf 6 pilar aktif, dan menetapkan panel ke-3 aktif secara default saat render SSR.
 - **Acceptance Criteria**:
-  - [ ] Zero inline style dan zero hex color di section pilar budaya kerja.
-  - [ ] Partial berukuran <= 100 baris sesuai konvensi modularitas EJS.
-  - [ ] Judul section otomatis dirangkai dari gabungan `letter` ke-6 pilar aktif (mis. `T - I - C - K - E - T`).
-  - [ ] Panel ke-3 (indeks 2) otomatis dirender dengan status aktif (`is-active`, `aria-expanded="true"`).
-  - [ ] Markup semantik menggunakan `role="tablist"`, `role="tab"`, `role="tabpanel"`, serta `aria-controls`.
-  - [ ] Tombol "Pelajari Lebih Lanjut", kicker, dan teks note ditiadakan sepenuhnya.
-  - [ ] Foto dimuat menggunakan elemen `<img>` semantik dengan `loading="lazy"` (atau eager untuk panel awal) dan class `.abt-tkt-img` (`object-fit: cover`).
-  - [ ] Kamus bahasa `locales/id.json` dan `locales/en.json` disinkronkan untuk seluruh teks statis.
-- **File Terdampak**: `views/public/about.ejs`, `views/partials/about/ticket-accordion.ejs`, `locales/id.json`, `locales/en.json`
+  - [x] Zero inline style dan zero hex color di section pilar budaya kerja.
+  - [x] Partial berukuran <= 100 baris sesuai konvensi modularitas EJS.
+  - [x] Judul section otomatis dirangkai dari gabungan `letter` ke-6 pilar aktif (mis. `T - I - C - K - E - T`).
+  - [x] Panel ke-3 (indeks 2) otomatis dirender dengan status aktif (`is-active`, `aria-expanded="true"`).
+  - [x] Markup semantik menggunakan `role="tablist"`, `role="tab"`, `role="tabpanel"`, serta `aria-controls`.
+  - [x] Tombol "Pelajari Lebih Lanjut", kicker, dan teks note ditiadakan sepenuhnya.
+  - [x] Foto dimuat menggunakan elemen `<img>` semantik dengan `loading="lazy"` (atau eager untuk panel awal) dan class `.abt-tkt-img` (`object-fit: cover`).
+  - [x] Kamus bahasa `locales/id.json` dan `locales/en.json` disinkronkan untuk seluruh teks statis.
+- **File Terdampak**: `views/public/about.ejs`, `views/partials/about/ticket-accordion.ejs`, `controllers/public/pageController.js`, `locales/id.json`, `locales/en.json`, `tests/test-t296-public-accordion-markup-qa.js`
 - **Skill**: `impeccable` (polish) + `antislop-human` + `antislop-code`
-- **Verifikasi**: `npm run lint:views` dan `npm run lint:i18n` lulus hijau tanpa peringatan pada berkas terkait.
+- **Verifikasi**: `node --test tests/test-t296-public-accordion-markup-qa.js` (4/4 tests pass), `npm run lint:views` (0 errors), `npm run lint:i18n` (0 errors). Selesai 2026-11-05.
 
 ### T-297: Penataan Styling Desktop & Mobile Accordion Berbasis Token Desain
 - **Deskripsi**: Mengimplementasikan styling CSS lengkap untuk `.abt-tkt-*` di `public/css/components.css`: latar section dengan foto pabrik + scrim overlay gradien token, tata letak desktop 6 panel berdampingan dengan border glow lembut, tipografi vertikal diapit garis aksen tipis, styling panel aktif, indikator dots di bawah, serta tata letak mobile bertumpuk vertikal pada breakpoint konsisten `@media (max-width: 768px)` dengan target sentuh min 44px.

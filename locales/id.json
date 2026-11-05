@@ -78,7 +78,10 @@
     "mission_2": "Menggali potensi manusia.",
     "mission_3": "Mengembangkan profesionalisme.",
     "standards_title": "Sertifikasi & Kepatuhan Lingkungan",
-    "standards_desc": "Kami berkomitmen memproduksi hanya kantong plastik ramah lingkungan yang memenuhi standar SNI 7188.7:2011, OXIUM, dan InSWA Green Label Indonesia."
+    "standards_desc": "Kami berkomitmen memproduksi hanya kantong plastik ramah lingkungan yang memenuhi standar SNI 7188.7:2011, OXIUM, dan InSWA Green Label Indonesia.",
+    "values_tablist_label": "Daftar pilar budaya kerja",
+    "values_dots_label": "Navigasi pilar budaya kerja",
+    "values_dot_aria": "Pilih pilar"
   },
   "news": {
     "page_title": "Publikasi & Kabar Perusahaan",

@@ -4,6 +4,48 @@ import aboutStatsModel from '../../models/aboutStatsModel.js';
 import aboutTimelineModel from '../../models/aboutTimelineModel.js';
 import logger from '../../utils/logger.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
+import { TICKET_ICONS, TICKET_ICON_KEYS, isValidTicketIconKey } from '../../utils/ticketIcons.js';
+
+function sanitizeSafePath(val, fallback = '') {
+  if (typeof val !== 'string') return fallback;
+  const trimmed = val.trim();
+  if (/^(\/uploads\/media\/|\/images\/)[a-zA-Z0-9_.\-/]+$/.test(trimmed) && trimmed.length <= 500) {
+    return trimmed;
+  }
+  return fallback;
+}
+
+function getFieldValue(body, formKey, idx, prefix, defVal = '') {
+  const val = body[`${prefix}_${formKey}`] ?? body[`${prefix}_${idx}`];
+  if (val !== undefined && val !== null && String(val).trim() !== '') {
+    return String(val).trim();
+  }
+  return defVal;
+}
+
+function parseSingleValue(body, defLetter, idx, defaultValues) {
+  const formKey = idx === 5 ? 'T_2' : defLetter;
+  const def = defaultValues[idx] || defaultValues[0];
+  const letter = getFieldValue(body, formKey, idx, 'val_letter', defLetter).charAt(0).toUpperCase();
+  const rawIcon = getFieldValue(body, formKey, idx, 'val_icon_key', def.icon_key);
+  const rawImg = getFieldValue(body, formKey, idx, 'val_image_url', def.image_url);
+
+  return {
+    letter: letter || defLetter,
+    title_id: getFieldValue(body, formKey, idx, 'val_title_id', def.title_id).slice(0, 50),
+    title_en: getFieldValue(body, formKey, idx, 'val_title_en', def.title_en).slice(0, 50),
+    desc_id: getFieldValue(body, formKey, idx, 'val_desc_id', def.desc_id).slice(0, 250),
+    desc_en: getFieldValue(body, formKey, idx, 'val_desc_en', def.desc_en).slice(0, 250),
+    image_url: sanitizeSafePath(rawImg, def.image_url),
+    icon_key: isValidTicketIconKey(rawIcon) ? rawIcon : def.icon_key,
+    sort_order: idx + 1
+  };
+}
+
+function parseTicketValues(body, defaultValues) {
+  const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T'];
+  return actualLetters.map((defLetter, idx) => parseSingleValue(body, defLetter, idx, defaultValues));
+}
 
 export const aboutController = {
   async index(req, res) {
@@ -22,6 +64,8 @@ export const aboutController = {
         title: 'Manajemen Halaman Tentang Kami - PT Euodoo CMS',
         activeNav: 'about',
         about,
+        ticketIcons: TICKET_ICONS,
+        ticketIconKeys: TICKET_ICON_KEYS,
         gallerySlides,
         stats,
         timeline,
@@ -71,19 +115,8 @@ export const aboutController = {
         about_story_kicker_en
       } = req.body;
 
-      const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T'];
       const defaultValues = aboutModel.getDefaults().values;
-
-      const values = actualLetters.map((letter, idx) => {
-        const formKey = idx === 5 ? 'T_2' : letter;
-        return {
-          letter,
-          title_id: req.body[`val_title_id_${formKey}`] || defaultValues[idx].title_id,
-          title_en: req.body[`val_title_en_${formKey}`] || defaultValues[idx].title_en,
-          desc_id: req.body[`val_desc_id_${formKey}`] || defaultValues[idx].desc_id,
-          desc_en: req.body[`val_desc_en_${formKey}`] || defaultValues[idx].desc_en
-        };
-      });
+      const values = parseTicketValues(req.body, defaultValues);
 
       const defaultCerts = aboutModel.getDefaults().certifications;
       const certifications = defaultCerts.map((cert, idx) => {
@@ -125,6 +158,11 @@ export const aboutController = {
         about_gallery_body_en: about_gallery_body_en !== undefined ? about_gallery_body_en.trim() : undefined,
         about_story_kicker_id: about_story_kicker_id !== undefined ? about_story_kicker_id.trim() : undefined,
         about_story_kicker_en: about_story_kicker_en !== undefined ? about_story_kicker_en.trim() : undefined,
+        about_values_bg_image: sanitizeSafePath(req.body.about_values_bg_image || req.body.values_bg_image, '/images/hero-factory.jpg'),
+        about_values_pill_id: String(req.body.about_values_pill_id || req.body.values_pill_id || 'Budaya Kerja').trim().slice(0, 50),
+        about_values_pill_en: String(req.body.about_values_pill_en || req.body.values_pill_en || 'Corporate Culture').trim().slice(0, 50),
+        about_values_subtitle_id: String(req.body.about_values_subtitle_id || req.body.values_subtitle_id || '').trim().slice(0, 150),
+        about_values_subtitle_en: String(req.body.about_values_subtitle_en || req.body.values_subtitle_en || '').trim().slice(0, 150),
         values,
         certifications
       };

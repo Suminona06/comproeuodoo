@@ -53,6 +53,7 @@
   --primary-subtle: #e6f7f2;
   --primary-border: #a3e0d0;
   --shadow-primary: 0 2px 6px rgba(0, 117, 90, 0.20);
+  --shadow-glow-primary: 0 0 25px rgba(0, 167, 124, 0.45), 0 18px 48px rgba(0, 117, 90, 0.25);
   --trans-cta-gradient: linear-gradient(135deg, #00573f 0%, #00755a 60%, #009476 100%);
 
   /* Admin Button Tokens (T-257) */

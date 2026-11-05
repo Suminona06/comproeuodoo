@@ -175,6 +175,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Budaya Kerja Ticket Admin Live Updates (Icon & Letter Preview)
+  const tabTicketPane = document.getElementById('tab-ticket');
+  if (tabTicketPane) {
+    tabTicketPane.addEventListener('change', (e) => {
+      const targetSelect = e.target.closest('select[data-preview-target]');
+      if (!targetSelect) return;
+      const targetId = targetSelect.dataset.previewTarget;
+      const box = document.getElementById(targetId);
+      const template = document.getElementById(`ticket-icon-${targetSelect.value}`);
+      if (box && template) {
+        box.replaceChildren(template.content.cloneNode(true));
+      }
+    });
+
+    tabTicketPane.addEventListener('input', (e) => {
+      const targetInput = e.target.closest('input[data-badge-target]');
+      if (!targetInput) return;
+      const targetId = targetInput.dataset.badgeTarget;
+      const badge = document.getElementById(targetId);
+      if (badge) {
+        badge.textContent = targetInput.value.trim().charAt(0).toUpperCase();
+      }
+    });
+  }
+
   // Custom File Upload Component Controller
   function initCustomFileUploads() {
     document.querySelectorAll('.custom-file-upload').forEach(wrapper => {

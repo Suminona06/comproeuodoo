@@ -6513,6 +6513,38 @@ body.sidebar-open .admin-backdrop {
   font-size: 14px;
 }
 
+.adm-abt-val-icon-box {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  color: var(--color-primary);
+}
+
+.adm-abt-val-icon-box svg {
+  width: 20px;
+  height: 20px;
+}
+
+.adm-abt-val-letter-input {
+  max-width: 60px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.adm-abt-sec-config {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
 .adm-abt-val-row {
   margin-bottom: 0.75rem;
 }

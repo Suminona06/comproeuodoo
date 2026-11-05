@@ -153,38 +153,7 @@
     </div>
   </section>
 
-  <!-- 4. NILAI-NILAI INTI BUDAYA KERJA T-I-C-K-E-T -->
-  <section class="sec-values" id="core-values">
-    <div class="container">
-      <div class="values-header pillars-header reveal">
-        <span class="brands-kicker"><%= lang === 'en' ? 'CORE VALUES' : 'NILAI INTI BUDAYA' %></span>
-        <h2>Budaya Kerja T - I - C - K - E - T</h2>
-        <p>
-          <%= lang === 'en'
-            ? 'The six foundational pillars guiding moral integrity, human potential, and manufacturing dedication.'
-            : 'Enam pilar utama yang membina karakter positif, potensi insan, dan profesionalisme di setiap lini kerja.' %>
-        </p>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-        <% (data.values || []).forEach(function(val) { %>
-          <div class="value-card pillar-card reveal" style="padding: 24px;">
-            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
-              <div style="width: 44px; height: 44px; border-radius: var(--r-lg, 8px); background: #e6f7f2; border: 1px solid #a3e0d0; color: var(--primary, #00755a); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 800;">
-                <%= val.letter %>
-              </div>
-              <h3 style="font-size: 1.15rem; color: var(--navy, #071f17); margin: 0; font-weight: 700;">
-                <%= lang === 'en' ? val.title_en : val.title_id %>
-              </h3>
-            </div>
-            <p style="font-size: 13.5px; color: var(--text-variant, #424753); line-height: 1.6; margin: 0;">
-              <%= lang === 'en' ? val.desc_en : val.desc_id %>
-            </p>
-          </div>
-        <% }); %>
-      </div>
-    </div>
-  </section>
+  <%- include('../partials/about/ticket-accordion') %>
 
   <!-- 5. GALERI FASILITAS & OPERASIONAL (Bento Mosaic Grid) -->
   <% if (typeof gallerySlides !== 'undefined' && gallerySlides && gallerySlides.length > 0) { %>
@@ -277,4 +246,5 @@
 
 </main>
 
+<script src="/js/ticket-accordion.js" defer></script>
 <%- include('../partials/footer') %>
