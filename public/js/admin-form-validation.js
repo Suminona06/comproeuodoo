@@ -395,15 +395,21 @@
       if (!valid) {
         e.preventDefault();
         e.stopPropagation();
-      } else {
-        // Prevent double submit by setting submit button to loading state
-        if (submitBtn) {
-          submitBtn.classList.add('is-loading');
-          // Allow small timeout so form submit event finishes firing
-          setTimeout(() => {
-            submitBtn.disabled = true;
-          }, 0);
-        }
+        return;
+      }
+
+      // Do not mark delete-confirmation forms as loading before user confirmation
+      if (form.matches('form[data-confirm-delete]') && form.dataset.confirmed !== 'true') {
+        return;
+      }
+
+      // Prevent double submit by setting submit button to loading state
+      if (submitBtn) {
+        submitBtn.classList.add('is-loading');
+        // Allow small timeout so form submit event finishes firing
+        setTimeout(() => {
+          submitBtn.disabled = true;
+        }, 0);
       }
     });
   }

@@ -1,0 +1,51 @@
+<div class="about-tab-pane" id="tab-ticket" role="tabpanel">
+  <div class="about-glass-card">
+    <div class="form-card-title adm-abt-card-title">
+      <span>Nilai Budaya Kerja: T - I - C - K - E - T</span>
+      <span class="badge badge-primary adm-abt-badge-xs">6 Pilar Utama</span>
+    </div>
+    <p class="adm-abt-card-desc">
+      Nilai fundamental yang menjadi pedoman perilaku seluruh staf PT Euodoo sesuai Company Profile resmi.
+    </p>
+
+    <div class="adm-abt-list-stack">
+      <% const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T']; %>
+      <% (about.values || []).forEach(function(val, idx) { %>
+        <% const formKey = idx === 5 ? 'T_2' : val.letter; %>
+        <div class="adm-abt-val-card">
+          <div class="adm-abt-val-header">
+            <span class="adm-abt-val-letter">
+              <%= val.letter %>
+            </span>
+            <div>
+              <strong class="adm-abt-val-title">Pilar Huruf <%= val.letter %> (<%= idx === 5 ? 'Pilar Ke-6' : 'Pilar Ke-' + (idx + 1) %>)</strong>
+            </div>
+          </div>
+
+          <div class="form-row-2 adm-abt-val-row">
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Nama Nilai (ID)</label>
+              <input type="text" name="val_title_id_<%= formKey %>" class="form-input" value="<%= val.title_id %>">
+            </div>
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Nama Nilai (EN)</label>
+              <input type="text" name="val_title_en_<%= formKey %>" class="form-input" value="<%= val.title_en %>">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Penjelasan / Makna (ID)</label>
+              <textarea name="val_desc_id_<%= formKey %>" class="form-textarea adm-abt-textarea-pill"><%= val.desc_id %></textarea>
+            </div>
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Penjelasan / Makna (EN)</label>
+              <textarea name="val_desc_en_<%= formKey %>" class="form-textarea adm-abt-textarea-pill"><%= val.desc_en %></textarea>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+

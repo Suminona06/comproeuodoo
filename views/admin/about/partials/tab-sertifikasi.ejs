@@ -1,0 +1,58 @@
+<div class="about-tab-pane" id="tab-sertifikasi" role="tabpanel">
+  <div class="about-glass-card">
+    <div class="form-card-title">Komitmen Pelestarian Lingkungan Hidup</div>
+
+    <div class="form-row-2">
+      <div class="form-group adm-abt-mb-0">
+        <label for="eco_statement_id" class="form-label">Pernyataan Komitmen Lingkungan (ID)</label>
+        <textarea id="eco_statement_id" name="eco_statement_id" class="form-textarea adm-abt-textarea-eco"><%= about.eco_statement_id || '' %></textarea>
+        <div class="form-hint">Mari selamatkan bumi kita! Produk 100% degradable.</div>
+      </div>
+      <div class="form-group adm-abt-mb-0">
+        <label for="eco_statement_en" class="form-label">Pernyataan Komitmen Lingkungan (EN)</label>
+        <textarea id="eco_statement_en" name="eco_statement_en" class="form-textarea adm-abt-textarea-eco"><%= about.eco_statement_en || '' %></textarea>
+        <div class="form-hint">Let's save our earth! 100% degradable commitment.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-glass-card adm-abt-mt-lg">
+    <div class="form-card-title adm-abt-card-title">
+      <span>Daftar Sertifikasi Resmi Standar Mutu</span>
+      <span class="badge badge-info adm-abt-badge-xs">SNI, OXIUM, InSWA</span>
+    </div>
+
+    <div class="adm-abt-list-stack">
+      <% (about.certifications || []).forEach(function(cert, idx) { %>
+        <div class="adm-abt-val-card">
+          <div class="form-row-3 adm-abt-val-row">
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Nama Sertifikasi</label>
+              <input type="text" name="cert_name_<%= idx %>" class="form-input" value="<%= cert.name %>">
+            </div>
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Penerbit / Asosiasi</label>
+              <input type="text" name="cert_issuer_<%= idx %>" class="form-input" value="<%= cert.issuer %>">
+            </div>
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Label / Badge</label>
+              <input type="text" name="cert_badge_<%= idx %>" class="form-input" value="<%= cert.badge %>">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Keterangan Standar (ID)</label>
+              <input type="text" name="cert_desc_id_<%= idx %>" class="form-input" value="<%= cert.desc_id %>">
+            </div>
+            <div class="form-group adm-abt-mb-0">
+              <label class="form-label adm-abt-form-label-sm">Keterangan Standar (EN)</label>
+              <input type="text" name="cert_desc_en_<%= idx %>" class="form-input" value="<%= cert.desc_en %>">
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+

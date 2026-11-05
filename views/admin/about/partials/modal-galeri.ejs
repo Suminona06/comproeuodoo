@@ -1,0 +1,94 @@
+<div class="admin-modal-backdrop" id="galleryModal">
+  <div class="admin-modal-card adm-abt-modal-gallery">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title" id="galleryModalTitle">Tambah Slide Galeri Baru</div>
+      <button type="button" class="modal-close-btn admin-modal-close" data-modal-close="galleryModal" aria-label="Tutup Dialog">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <form id="galleryForm" method="POST" action="/admin/about/gallery">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" id="gallery_slide_id" name="slide_id" value="">
+      <div class="admin-modal-body">
+        <div class="form-group adm-abt-mb-0">
+          <label class="form-label">Foto / Gambar Slide *</label>
+          <div class="media-picker-component">
+            <input type="hidden" id="gallery_image_url" name="image_url" value="" required>
+            <div class="media-picker-preview-box adm-abt-modal-preview-box">
+              <img id="gallery_preview_img" src="" alt="Pratinjau Slide" class="adm-abt-modal-preview-img hidden">
+              <div class="media-picker-empty" id="gallery_preview_empty">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span class="adm-abt-modal-preview-empty-text">Pilih gambar dari Media Library</span>
+              </div>
+            </div>
+            <div class="media-picker-ctrls">
+              <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="gallery_image_url" data-picker-type="image" aria-label="Pilih gambar slide dari Media Library">
+                <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span>Pilih Media</span>
+              </button>
+              <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media hidden" id="gallery_btn_clear" aria-label="Hapus gambar slide">
+                <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>Hapus</span>
+              </button>
+            </div>
+          </div>
+          <div class="form-hint">Resolusi minimal 1200x800px landscape 16:9 / 4:3. Format cover otomatis.</div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group adm-abt-mb-0">
+            <label for="gallery_category_id" class="form-label">Kategori / Tag (Indonesia)</label>
+            <input type="text" id="gallery_category_id" name="category_id" class="form-input" placeholder="contoh: TEKNOLOGI EKSTRUSI">
+          </div>
+          <div class="form-group adm-abt-mb-0">
+            <label for="gallery_category_en" class="form-label">Kategori / Tag (English)</label>
+            <input type="text" id="gallery_category_en" name="category_en" class="form-input" placeholder="contoh: EXTRUSION TECHNOLOGY">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group adm-abt-mb-0">
+            <label for="gallery_title_id" class="form-label">Judul Slide (Indonesia)</label>
+            <input type="text" id="gallery_title_id" name="title_id" class="form-input" placeholder="contoh: Ekstrusi Film Presisi Tinggi">
+          </div>
+          <div class="form-group adm-abt-mb-0">
+            <label for="gallery_title_en" class="form-label">Judul Slide (English)</label>
+            <input type="text" id="gallery_title_en" name="title_en" class="form-input" placeholder="contoh: High-Precision Blown Film Extrusion">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group adm-abt-mb-0">
+            <label for="gallery_subtitle_id" class="form-label">Keterangan / Subtitle (Indonesia)</label>
+            <textarea id="gallery_subtitle_id" name="subtitle_id" class="form-textarea adm-abt-textarea-sub" placeholder="Penjelasan singkat fasilitas atau mesin..."></textarea>
+          </div>
+          <div class="form-group adm-abt-mb-0">
+            <label for="gallery_subtitle_en" class="form-label">Keterangan / Subtitle (English)</label>
+            <textarea id="gallery_subtitle_en" name="subtitle_en" class="form-textarea adm-abt-textarea-sub" placeholder="Brief explanation in English..."></textarea>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group adm-abt-mb-0">
+            <label for="gallery_sort_order" class="form-label">Urutan Tampil (Sort Order)</label>
+            <input type="number" id="gallery_sort_order" name="sort_order" class="form-input" value="0" min="0" step="1">
+            <div class="form-hint">Angka lebih kecil tampil lebih awal pada galeri.</div>
+          </div>
+          <div class="form-group adm-abt-checkbox-wrap">
+            <label class="form-label">Status Penayangan</label>
+            <label class="adm-abt-checkbox-label">
+              <input type="checkbox" id="gallery_is_active" name="is_active" value="1" checked class="adm-abt-checkbox">
+              <span>Tampilkan di Galeri Publik</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="admin-modal-footer">
+        <button type="button" class="adm-btn adm-btn-neutral" data-modal-close="galleryModal" aria-label="Batalkan perubahan slide galeri">
+          <svg class="adm-btn-icon adm-btn-icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Batal</span>
+        </button>
+        <button type="submit" class="adm-btn adm-btn-primary" aria-label="Simpan slide galeri">
+          <svg class="adm-btn-icon adm-btn-icon-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Simpan</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

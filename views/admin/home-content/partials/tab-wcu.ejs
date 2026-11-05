@@ -1,0 +1,99 @@
+<% const wcu = homeContent.why_choose_us || {}; %>
+<div class="about-tab-pane" id="tab-home-wcu" role="tabpanel">
+  <div class="about-glass-card">
+    <div class="form-card-title adm-home-card-title-flex">
+      <span>Header &amp; Status Seksi Why Choose Us (#why-us)</span>
+      <label class="adm-home-checkbox-label">
+        <input type="checkbox" name="wcu_is_active" value="1" <%= (wcu.is_active === 1 || wcu.is_active === '1' || wcu.is_active === true) ? 'checked' : '' %>>
+        <span>Tampilkan Seksi Why Choose Us</span>
+      </label>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="wcu_eyebrow_id" class="form-label">Eyebrow / Sub-label (Indonesia)</label>
+        <input type="text" id="wcu_eyebrow_id" name="wcu_eyebrow_id" class="form-input" value="<%= wcu.eyebrow_id || '' %>" placeholder="Inovasi untuk masa depan">
+        <div class="form-hint">Label kecil di atas judul utama seksi.</div>
+      </div>
+      <div class="form-group">
+        <label for="wcu_eyebrow_en" class="form-label">Eyebrow / Sub-label (English)</label>
+        <input type="text" id="wcu_eyebrow_en" name="wcu_eyebrow_en" class="form-input" value="<%= wcu.eyebrow_en || '' %>" placeholder="Innovation for the future">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group adm-home-mb-0">
+        <label for="wcu_title_id" class="form-label">Judul Utama Seksi (Indonesia)</label>
+        <input type="text" id="wcu_title_id" name="wcu_title_id" class="form-input" value="<%= wcu.title_id || '' %>" placeholder="Why choose us[accent]?[/accent]">
+        <div class="form-hint">Dukungan: <code>[accent]?[/accent]</code> untuk aksen hijau.</div>
+      </div>
+      <div class="form-group adm-home-mb-0">
+        <label for="wcu_title_en" class="form-label">Judul Utama Seksi (English)</label>
+        <input type="text" id="wcu_title_en" name="wcu_title_en" class="form-input" value="<%= wcu.title_en || '' %>" placeholder="Why choose us[accent]?[/accent]">
+      </div>
+    </div>
+  </div>
+  <div class="about-glass-card">
+    <div class="form-card-title"><span>Konten Editorial &amp; Narasi Nilai Unggulan (Kolom Kiri)</span></div>
+    <div class="form-row-3">
+      <div class="form-group">
+        <label for="wcu_chip_icon" class="form-label">Ikon Kicker Chip</label>
+        <select id="wcu_chip_icon" name="wcu_chip_icon" class="form-input" data-eu-dropdown="outlined">
+          <option value="tree" <%= (wcu.chip_icon === 'tree' || !wcu.chip_icon) ? 'selected' : '' %>>Pohon Botani Eco (tree)</option>
+          <option value="leaf" <%= wcu.chip_icon === 'leaf' ? 'selected' : '' %>>Daun Hijau (leaf)</option>
+          <option value="sparkle" <%= wcu.chip_icon === 'sparkle' ? 'selected' : '' %>>Kilau Inovasi (sparkle)</option>
+        </select>
+        <div class="form-hint">Ikon interaktif mikro di samping label chip.</div>
+      </div>
+      <div class="form-group">
+        <label for="wcu_chip_label_id" class="form-label">Label Chip Kicker (Indonesia)</label>
+        <input type="text" id="wcu_chip_label_id" name="wcu_chip_label_id" class="form-input" value="<%= wcu.chip_label_id || '' %>" placeholder="Solusi ramah lingkungan">
+      </div>
+      <div class="form-group">
+        <label for="wcu_chip_label_en" class="form-label">Label Chip Kicker (English)</label>
+        <input type="text" id="wcu_chip_label_en" name="wcu_chip_label_en" class="form-input" value="<%= wcu.chip_label_en || '' %>" placeholder="Eco-friendly solutions">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="wcu_headline_id" class="form-label">Headline / Pernyataan Nilai (Indonesia)</label>
+        <input type="text" id="wcu_headline_id" name="wcu_headline_id" class="form-input" value="<%= wcu.headline_id || '' %>" placeholder="Inovasi material, dengan [mark]dampak yang lebih baik.[/mark]">
+        <div class="form-hint">Dukungan: <code>[mark]teks[/mark]</code> atau <code>==teks==</code> untuk highlight hijau.</div>
+      </div>
+      <div class="form-group">
+        <label for="wcu_headline_en" class="form-label">Headline / Pernyataan Nilai (English)</label>
+        <input type="text" id="wcu_headline_en" name="wcu_headline_en" class="form-input" value="<%= wcu.headline_en || '' %>" placeholder="Material innovation, with [mark]better impact.[/mark]">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group adm-home-mb-0">
+        <label for="wcu_desc_id" class="form-label">Paragraf Deskripsi Narasi (Indonesia)</label>
+        <textarea id="wcu_desc_id" name="wcu_desc_id" class="form-textarea adm-home-textarea-md"><%= wcu.desc_id || '' %></textarea>
+        <div class="form-hint">Dukungan: <code>[strong]teks[/strong]</code> atau <code>**teks**</code> untuk teks tebal.</div>
+      </div>
+      <div class="form-group adm-home-mb-0">
+        <label for="wcu_desc_en" class="form-label">Paragraf Deskripsi Narasi (English)</label>
+        <textarea id="wcu_desc_en" name="wcu_desc_en" class="form-textarea adm-home-textarea-md"><%= wcu.desc_en || '' %></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="about-glass-card">
+    <div class="form-card-title"><span>Artbox Ilustrasi &amp; Kartu Mengambang (Kolom Kanan)</span></div>
+    <% [
+      { key: 'art_label', label: 'Label Pita Artbox', phId: 'Material · Alam · Masa depan', phEn: 'Material · Nature · Future', hint: 'Label di wadah ilustrasi SVG.' },
+      { key: 'float_eyebrow', label: 'Floating Card Eyebrow', phId: 'Berorientasi masa depan', phEn: 'Future-oriented' },
+      { key: 'float_title', label: 'Floating Card Judul', phId: 'Better by design.', phEn: 'Better by design.' },
+      { key: 'float_desc', label: 'Floating Card Keterangan', phId: 'Inovasi material untuk langkah bertanggung jawab.', phEn: 'Material innovation for a responsible path.' }
+    ].forEach(function(f, fIdx) { %>
+      <div class="form-row-2">
+        <div class="form-group <%= fIdx === 3 ? 'adm-home-mb-0' : '' %>">
+          <label for="wcu_<%= f.key %>_id" class="form-label"><%= f.label %> (Indonesia)</label>
+          <input type="text" id="wcu_<%= f.key %>_id" name="wcu_<%= f.key %>_id" class="form-input" value="<%= wcu[f.key + '_id'] || '' %>" placeholder="<%= f.phId %>">
+          <% if (f.hint) { %><div class="form-hint"><%= f.hint %></div><% } %>
+        </div>
+        <div class="form-group <%= fIdx === 3 ? 'adm-home-mb-0' : '' %>">
+          <label for="wcu_<%= f.key %>_en" class="form-label"><%= f.label %> (English)</label>
+          <input type="text" id="wcu_<%= f.key %>_en" name="wcu_<%= f.key %>_en" class="form-input" value="<%= wcu[f.key + '_en'] || '' %>" placeholder="<%= f.phEn %>">
+        </div>
+      </div>
+    <% }); %>
+  </div>
+</div>

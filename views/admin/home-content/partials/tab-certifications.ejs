@@ -1,0 +1,90 @@
+<%
+  const certs = homeContent.certifications || {};
+  const cItems = (certs.items && certs.items.length > 0) ? certs.items : [
+    { name: 'SNI 7188.7:2011', sort_order: 1, is_active: 1 }, { name: 'OXIUM® Technology', sort_order: 2, is_active: 1 },
+    { name: 'InSWA Eco Label', sort_order: 3, is_active: 1 }, { name: 'Virgin Food-Grade Contact', sort_order: 4, is_active: 1 }
+  ];
+%>
+<div class="about-tab-pane" id="tab-home-certs" role="tabpanel">
+  <div class="about-glass-card">
+    <div class="form-card-title adm-home-card-title-flex">
+      <span>Header Seksi Sertifikasi Mutu (#sertifikasi)</span>
+      <label class="adm-home-checkbox-label">
+        <input type="checkbox" name="cert_is_active" value="1" <%= (certs.is_active === 1 || certs.is_active === '1' || certs.is_active === true) ? 'checked' : '' %>>
+        <span>Tampilkan Seksi Sertifikasi</span>
+      </label>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="cert_title_id" class="form-label">Judul Seksi (Indonesia)</label>
+        <input type="text" id="cert_title_id" name="cert_title_id" class="form-input" value="<%= certs.title_id || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="cert_title_en" class="form-label">Judul Seksi (English)</label>
+        <input type="text" id="cert_title_en" name="cert_title_en" class="form-input" value="<%= certs.title_en || '' %>">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="cert_body_id" class="form-label">Paragraf Pengantar (Indonesia)</label>
+        <textarea id="cert_body_id" name="cert_body_id" class="form-textarea adm-home-textarea-cert"><%= certs.body_id || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label for="cert_body_en" class="form-label">Paragraf Pengantar (English)</label>
+        <textarea id="cert_body_en" name="cert_body_en" class="form-textarea adm-home-textarea-cert"><%= certs.body_en || '' %></textarea>
+      </div>
+    </div>
+    <div class="form-row-3 adm-home-mb-0">
+      <div class="form-group adm-home-mb-0"><label for="cert_btn_text_id" class="form-label">Teks Tombol CTA (ID)</label><input type="text" id="cert_btn_text_id" name="cert_btn_text_id" class="form-input" value="<%= certs.btn_text_id || '' %>"></div>
+      <div class="form-group adm-home-mb-0"><label for="cert_btn_text_en" class="form-label">Teks Tombol CTA (EN)</label><input type="text" id="cert_btn_text_en" name="cert_btn_text_en" class="form-input" value="<%= certs.btn_text_en || '' %>"></div>
+      <div class="form-group adm-home-mb-0"><label for="cert_btn_url" class="form-label">URL Tombol CTA</label><input type="text" id="cert_btn_url" name="cert_btn_url" class="form-input" value="<%= certs.btn_url || '/about#sertifikasi' %>"></div>
+    </div>
+    <div class="adm-home-mt-4">
+      <label class="adm-home-label-sm">
+        <input type="checkbox" name="cert_show_btn" value="1" <%= (certs.show_btn === 1 || certs.show_btn === '1' || certs.show_btn === true) ? 'checked' : '' %>>
+        <span>Tampilkan Tombol CTA di Seksi Sertifikasi</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="about-glass-card">
+    <div class="form-card-title adm-home-card-title-flex">
+      <span>Daftar Sertifikasi &amp; Standar Mutu Homepage</span>
+      <span class="badge badge-info adm-home-badge-sm">Maksimal 4 Item</span>
+    </div>
+    <div class="adm-home-stack-cards">
+      <% [0, 1, 2, 3].forEach(function(idx) { 
+        const item = cItems[idx] || {};
+      %>
+        <div class="adm-home-slot-card">
+          <div class="adm-home-slot-header">
+            <strong class="adm-home-slot-title">Item Sertifikasi #<%= idx + 1 %></strong>
+            <div class="adm-home-cert-header-right">
+              <label class="adm-home-cert-label"><span>Urutan:</span><input type="number" name="cert_<%= idx %>_sort_order" class="form-input adm-home-cert-sort-input" value="<%= item.sort_order || (idx + 1) %>" min="1" max="10"></label>
+              <label class="adm-home-cert-label"><input type="checkbox" name="cert_<%= idx %>_is_active" value="1" <%= (item.is_active === 1 || item.is_active === '1' || item.is_active === true) ? 'checked' : '' %>><span>Aktif</span></label>
+            </div>
+          </div>
+          <div class="form-row-3 adm-home-cert-row">
+            <div class="form-group adm-home-mb-0"><label class="form-label adm-home-label-xs">Nama Sertifikasi *</label><input type="text" name="cert_<%= idx %>_name" class="form-input" value="<%= item.name || '' %>" placeholder="Mis. SNI 7188.7:2011"></div>
+            <div class="form-group adm-home-mb-0"><label class="form-label adm-home-label-xs">Deskripsi (ID)</label><input type="text" name="cert_<%= idx %>_desc_id" class="form-input" value="<%= item.desc_id || '' %>"></div>
+            <div class="form-group adm-home-mb-0"><label class="form-label adm-home-label-xs">Deskripsi (EN)</label><input type="text" name="cert_<%= idx %>_desc_en" class="form-input" value="<%= item.desc_en || '' %>"></div>
+          </div>
+          <div class="form-group adm-home-cert-logo-group">
+            <label class="form-label adm-home-label-xs">Logo Sertifikasi (Media Library - Kosongkan jika ingin checkmark centang otomatis)</label>
+            <div class="media-picker-component">
+              <input type="hidden" id="cert_logo_<%= idx %>" name="cert_<%= idx %>_logo_url" value="<%= item.logo_url || '' %>">
+              <div class="media-picker-preview-box adm-home-cert-preview-box">
+                <img src="<%= item.logo_url || '' %>" alt="Logo Sertifikasi" class="media-picker-preview-img <%= item.logo_url ? '' : 'hidden' %>">
+                <div class="media-picker-empty <%= item.logo_url ? 'hidden' : '' %>"><span class="adm-home-cert-empty-text">Ikon Centang &#10003;</span></div>
+              </div>
+              <div class="media-picker-ctrls">
+                <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="cert_logo_<%= idx %>" data-picker-type="image" aria-label="Pilih logo sertifikat dari Media Library"><svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg><span>Pilih Media</span></button>
+                <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media <%= item.logo_url ? '' : 'hidden' %>" aria-label="Hapus logo sertifikat"><svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg><span>Hapus</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>

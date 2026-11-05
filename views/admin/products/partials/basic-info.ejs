@@ -1,0 +1,95 @@
+<%
+  const p = typeof product !== 'undefined' ? product : (typeof formData !== 'undefined' ? formData : {});
+  const isEdit = typeof product !== 'undefined' && product && product.id;
+%>
+<div class="form-card">
+  <div class="form-card-title">1. Informasi Pokok Produk</div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="name_id">Nama Produk (Bahasa Indonesia) *</label>
+      <input type="text" id="name_id" name="name_id" class="form-input" required placeholder="Contoh: Kantong Kresek HDPE Super Tebal" value="<%= p.name_id || '' %>">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="name_en">Nama Produk (English)</label>
+      <input type="text" id="name_en" name="name_en" class="form-input" placeholder="Example: Heavy Duty HDPE Shopping Bag" value="<%= p.name_en || '' %>">
+    </div>
+  </div>
+
+  <% if (isEdit) { %>
+    <div class="form-group">
+      <label class="form-label">URL Slug Kanonik Produk</label>
+      <div class="adm-slug-box">
+        <span class="adm-slug-prefix">/products/</span>
+        <span class="adm-slug-val" title="<%= p.slug %>"><%= p.slug %></span>
+      </div>
+      <p class="admin-field-hint">Slug dibuat otomatis dari Nama Produk dan memiliki redirect 301 permanen saat nama diubah.</p>
+    </div>
+  <% } %>
+
+  <div class="form-row-3">
+    <div class="form-group">
+      <label class="form-label" for="category_id">Kategori Produk *</label>
+      <select id="category_id" name="category_id" class="form-select" data-eu-dropdown="outlined" <%= isEdit ? '' : 'required' %>>
+        <option value="">Pilih Kategori...</option>
+        <% categories.forEach(function(cat) { %>
+          <option value="<%= cat.id %>" <%= String(p.category_id || '') === String(cat.id) ? 'selected' : '' %>>
+            <%= cat.name_id %>
+          </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="status">Status Publikasi</label>
+      <select id="status" name="status" class="form-select" data-eu-dropdown="outlined">
+        <option value="published" <%= (p.status === 'published' || !p.status) ? 'selected' : '' %>>Published (Tayang Publik)</option>
+        <option value="draft" <%= p.status === 'draft' ? 'selected' : '' %>>Draft (Disimpan Sementara)</option>
+        <option value="archived" <%= p.status === 'archived' ? 'selected' : '' %>>Archived (Diarsipkan)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="sort_order">Nomor Urutan Tampil</label>
+      <input type="number" id="sort_order" name="sort_order" class="form-input" value="<%= p.sort_order !== undefined ? p.sort_order : 0 %>" min="0">
+    </div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="cta_text_id">Teks Tombol CTA (ID)</label>
+      <input type="text" id="cta_text_id" name="cta_text_id" class="form-input" maxlength="50" placeholder="Default: Minta Penawaran via WhatsApp" value="<%= p.cta_text_id || '' %>">
+      <p class="admin-field-hint">Kosongkan untuk menggunakan teks default: "Minta Penawaran via WhatsApp". Maksimal 50 karakter.</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="cta_text_en">Teks Tombol CTA (EN)</label>
+      <input type="text" id="cta_text_en" name="cta_text_en" class="form-input" maxlength="50" placeholder="Default: Request Quote via WhatsApp" value="<%= p.cta_text_en || '' %>">
+      <p class="admin-field-hint">Leave empty to use default: "Request Quote via WhatsApp". Max 50 characters.</p>
+    </div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="short_description_id">Deskripsi Singkat (ID)</label>
+      <textarea id="short_description_id" name="short_description_id" class="form-textarea" rows="3" maxlength="200" placeholder="Deskripsi singkat produk, tampil di bawah judul…"><%= p.short_description_id || '' %></textarea>
+      <div class="char-counter" id="counter_short_desc_id">0/200</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="short_description_en">Deskripsi Singkat (EN)</label>
+      <textarea id="short_description_en" name="short_description_en" class="form-textarea" rows="3" maxlength="200" placeholder="Deskripsi singkat produk, tampil di bawah judul…"><%= p.short_description_en || '' %></textarea>
+      <div class="char-counter" id="counter_short_desc_en">0/200</div>
+    </div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label class="form-label" for="description_id">Deskripsi Lengkap (Bahasa Indonesia)</label>
+      <textarea id="description_id" name="description_id" class="form-textarea" placeholder="Jelaskan aplikasi penggunaan, ketahanan beban, dan keunggulan produk..."><%= p.description_id || '' %></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="description_en">Deskripsi Lengkap (English)</label>
+      <textarea id="description_en" name="description_en" class="form-textarea" placeholder="Explain product applications, tensile strength, and key features..."><%= p.description_en || '' %></textarea>
+    </div>
+  </div>
+</div>
+

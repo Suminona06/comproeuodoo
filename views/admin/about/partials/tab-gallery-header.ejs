@@ -1,0 +1,41 @@
+<div class="about-glass-card">
+  <div class="form-card-title adm-abt-card-title">
+    <span>Header &amp; Pengantar Section Galeri</span>
+    <span class="badge badge-info adm-abt-badge-xs">Tampilan Publik</span>
+  </div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label for="about_gallery_kicker_id" class="form-label">Label Kicker Galeri (Indonesia)</label>
+      <input type="text" id="about_gallery_kicker_id" name="about_gallery_kicker_id" class="form-input" value="<%= (typeof galleryHeader !== 'undefined' && galleryHeader.kicker_id) || '' %>" placeholder="Galeri Kami">
+      <div class="form-hint">Label kecil di atas judul galeri (contoh: Galeri Kami).</div>
+    </div>
+    <div class="form-group">
+      <label for="about_gallery_kicker_en" class="form-label">Label Kicker Galeri (English)</label>
+      <input type="text" id="about_gallery_kicker_en" name="about_gallery_kicker_en" class="form-input" value="<%= (typeof galleryHeader !== 'undefined' && galleryHeader.kicker_en) || '' %>" placeholder="Our Gallery">
+      <div class="form-hint">English kicker label (e.g. Our Gallery).</div>
+    </div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="form-group">
+      <label for="about_gallery_title_id" class="form-label">Judul Utama Galeri (Indonesia)</label>
+      <input type="text" id="about_gallery_title_id" name="about_gallery_title_id" class="form-input" value="<%= (typeof galleryHeader !== 'undefined' && galleryHeader.title_id) || '' %>" placeholder="Di Dalam Operasional Kami">
+    </div>
+    <div class="form-group">
+      <label for="about_gallery_title_en" class="form-label">Judul Utama Galeri (English)</label>
+      <input type="text" id="about_gallery_title_en" name="about_gallery_title_en" class="form-input" value="<%= (typeof galleryHeader !== 'undefined' && galleryHeader.title_en) || '' %>" placeholder="Inside Our Operations">
+    </div>
+  </div>
+
+  <div class="form-group adm-abt-mb-0">
+    <label for="about_gallery_body_id" class="form-label">Deskripsi Pengantar Galeri (Indonesia)</label>
+    <textarea id="about_gallery_body_id" name="about_gallery_body_id" class="form-textarea adm-abt-textarea-desc" placeholder="Sepintas aktivitas produksi, lini ekstrusi film mutakhir..."><%= (typeof galleryHeader !== 'undefined' && galleryHeader.body_id) || '' %></textarea>
+  </div>
+
+  <div class="form-group adm-abt-mt-md">
+    <label for="about_gallery_body_en" class="form-label">Deskripsi Pengantar Galeri (English)</label>
+    <textarea id="about_gallery_body_en" name="about_gallery_body_en" class="form-textarea adm-abt-textarea-desc" placeholder="A glimpse of our daily manufacturing, modern blown film extrusion..."><%= (typeof galleryHeader !== 'undefined' && galleryHeader.body_en) || '' %></textarea>
+  </div>
+</div>
+

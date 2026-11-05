@@ -22,12 +22,12 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th style="width: 100px;">Media</th>
+          <th class="adm-banner-th-media">Media</th>
           <th>Judul Banner</th>
           <th>Teks Caption &amp; Tombol CTA</th>
-          <th style="width: 80px; text-align: center;">Urutan</th>
-          <th style="width: 100px;">Status</th>
-          <th style="text-align: right; width: 120px;">Aksi</th>
+          <th class="adm-banner-th-order">Urutan</th>
+          <th class="adm-banner-th-status">Status</th>
+          <th class="adm-banner-th-action">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -35,14 +35,14 @@
           <% banners.forEach(function(b) { %>
             <tr>
               <td>
-                <div style="width: 80px; height: 50px; background: #0f172a; border-radius: var(--r-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;">
+                <div class="adm-banner-thumb">
                   <% if (b.media_type === 'video') { %>
-                    <span style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; font-size: 9px; padding: 1px 4px; border-radius: 2px;">VIDEO</span>
-                    <svg width="24" height="24" fill="none" stroke="#ffffff" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span class="adm-banner-video-badge">VIDEO</span>
+                    <svg class="adm-banner-video-icon" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                   <% } else if (b.image_url) { %>
-                    <img src="<%= b.image_url %>" alt="<%= b.title_id %>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="<%= b.image_url %>" alt="<%= b.title_id %>" class="adm-banner-thumb-img">
                   <% } else { %>
-                    <span style="font-size: 10px; color: #fff;">NO MEDIA</span>
+                    <span class="adm-banner-no-media">NO MEDIA</span>
                   <% } %>
                 </div>
               </td>
@@ -55,31 +55,31 @@
                   <%= b.caption_id || '-' %>
                 </div>
                 <% if (b.cta_text_id || b.cta_url) { %>
-                  <div style="font-size: 11px; color: var(--primary); font-weight: 600; margin-top: 4px;">
+                  <div class="adm-banner-cta-primary">
                     CTA 1: "<%= b.cta_text_id || 'Hubungi Kami' %>" &rarr; <%= b.cta_url || '/contact' %>
                   </div>
                 <% } %>
                 <% if (b.cta_secondary_text_id) { %>
-                  <div style="font-size: 11px; color: #475569; font-weight: 600; margin-top: 2px;">
+                  <div class="adm-banner-cta-secondary">
                     CTA 2: "<%= b.cta_secondary_text_id %>" &rarr; <%= b.cta_secondary_url || '-' %>
                   </div>
                 <% } %>
               </td>
-              <td style="text-align: center; font-weight: 600;">
+              <td class="adm-banner-td-order">
                 <%= b.sort_order %>
               </td>
               <td>
-                <form action="/admin/banners/<%= b.id %>/status?_csrf=<%= csrfToken %>" method="POST" style="display: inline;">
+                <form action="/admin/banners/<%= b.id %>/status?_csrf=<%= csrfToken %>" method="POST" class="adm-banner-inline-form">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn-action btn-action-status <%= b.is_active ? 'active' : 'inactive' %>" title="Ubah Status Banner">
                     <%= b.is_active ? 'Aktif' : 'Nonaktif' %>
                   </button>
                 </form>
               </td>
-              <td style="text-align: right;">
+              <td class="adm-banner-td-action">
                 <div class="table-actions">
                   <a href="/admin/banners/<%= b.id %>/edit" class="btn-action btn-action-edit" title="Edit Banner">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 1-2 2v14a2 2 0 0 1 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                     <span>Edit</span>
                   </a>
                   <form action="/admin/banners/<%= b.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus banner ini? Minimal harus ada 1 banner aktif di sistem." data-confirm-title="Hapus Banner">
@@ -95,7 +95,7 @@
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            <td colspan="6" class="adm-banner-empty-td">
               Belum ada banner hero yang terdaftar.
             </td>
           </tr>

@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 11 Task (T-287 s/d T-293)
-- **Total Task Selesai:** 282 Task (T-01 s/d T-286)
+- **Task Aktif Terbuka:** 1 Task (T-293)
+- **Total Task Selesai:** 288 Task (T-01 s/d T-292)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-294**.
 
@@ -146,86 +146,86 @@
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
 - **Verifikasi**: `node tests/test-t286-admin-shell-partials-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-04.
 
-### T-287: Refaktor View Admin Batch 11 - Media Library [TODO]
+### T-287: Refaktor View Admin Batch 11 - Media Library [DONE]
 - **Deskripsi**: Merefaktor berkas `views/admin/media/index.ejs`: eliminasi 17 style inline, 3 hex (`#dc2626`, `#b45309`), 1 tag `<script>` inline, dan 3 komentar HTML. Ekstraksi ke class berprefix `.adm-media-*` di `public/css/admin.css`. Pindahkan fungsi preview YouTube ke `public/js/admin-media.js`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/media/index.ejs`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Upload file media (gambar, video, PDF), integrasi YouTube video modal, filter tipe media, copy link, dan hapus berkas berfungsi lancar tanpa error konsol.
-  - [ ] Berkas `views/admin/media/index.ejs` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/media/index.ejs`, `public/css/admin.css`, `public/js/admin-media.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/media/index.ejs`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Upload file media (gambar, video, PDF), integrasi YouTube video modal, filter tipe media, copy link, dan hapus berkas berfungsi lancar tanpa error konsol.
+  - [x] Berkas `views/admin/media/index.ejs` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/media/index.ejs`, `public/css/admin.css`, `public/js/admin-media.js`, `scripts/lint-views.js`, `tests/test-t287-media-library-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t287-media-library-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-04.
 
-### T-288: Refaktor View Admin Batch 12 - Hero Banner Slider (Banners) [TODO]
+### T-288: Refaktor View Admin Batch 12 - Hero Banner Slider (Banners) [DONE]
 - **Deskripsi**: Merefaktor modul hero banner (`views/admin/banners/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 65 style inline, 7 hex, 2 tag `<script>` inline, dan 10 komentar HTML. Ekstraksi ke class berprefix `.adm-banner-*` di `public/css/admin.css`. Pindahkan script switch sumber banner (upload/library/youtube) ke `public/js/admin-banners.js`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/banners/`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Switch sumber media hero banner, pengaturan dual CTA button, preview banner, dan CRUD banner slider berfungsi lancar tanpa error konsol.
-  - [ ] Path `views/admin/banners/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/banners/index.ejs`, `views/admin/banners/create.ejs`, `views/admin/banners/edit.ejs`, `public/css/admin.css`, `public/js/admin-banners.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/banners/`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Switch sumber media hero banner, pengaturan dual CTA button, preview banner, dan CRUD banner slider berfungsi lancar tanpa error konsol.
+  - [x] Path `views/admin/banners/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/banners/index.ejs`, `views/admin/banners/create.ejs`, `views/admin/banners/edit.ejs`, `public/css/admin.css`, `public/js/admin-banners.js`, `scripts/lint-views.js`, `tests/test-t288-banners-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t288-banners-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-289: Refaktor View Admin Batch 13 - Artikel Berita & Blog (Posts) [TODO]
+### T-289: Refaktor View Admin Batch 13 - Artikel Berita & Blog (Posts) [DONE]
 - **Deskripsi**: Merefaktor modul artikel (`views/admin/posts/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 30 style inline, 2 hex (`#fafbfc`, `#b45309`), 2 tag `<script>` inline, dan 6 komentar HTML. Ekstraksi ke class berprefix `.adm-post-*` di `public/css/admin.css`. Pindahkan script toggle baris jadwal tayang ke `public/js/admin-posts.js`. Konversi style dinamis media picker ke class semantik (`.adm-d-none` / `.adm-d-block`). Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/posts/`.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Integrasi TinyMCE editor, publish/draft/schedule artikel, upload sampul via media picker, dan SEO meta tags berfungsi normal tanpa error konsol.
-  - [ ] Path `views/admin/posts/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/posts/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `public/css/admin.css`, `public/js/admin-posts.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/posts/`.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Integrasi TinyMCE editor, publish/draft/schedule artikel, upload sampul via media picker, dan SEO meta tags berfungsi normal tanpa error konsol.
+  - [x] Path `views/admin/posts/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/posts/index.ejs`, `views/admin/posts/create.ejs`, `views/admin/posts/edit.ejs`, `public/css/admin.css`, `public/js/admin-posts.js`, `scripts/lint-views.js`, `tests/test-t289-posts-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t289-posts-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-290: Refaktor & Modularisasi View Admin Batch 14 - Katalog Produk (Products) [TODO]
+### T-290: Refaktor & Modularisasi View Admin Batch 14 - Katalog Produk (Products) [DONE]
 - **Deskripsi**: Merefaktor dan modularisasi modul produk (`views/admin/products/` `index.ejs`, `create.ejs`, `edit.ejs`): eliminasi 12 style inline, 1 hex `#fafbfc`, 2 tag `<script>` inline, dan 1 komentar HTML. Pecah form besar (>400 baris) menjadi partials terisolasi (`views/admin/products/partials/basic-info.ejs`, `gallery.ejs`, `size-table.ejs`, `seo.ejs`) masing-masing <=100 baris. Pindahkan counter karakter ke `public/js/admin-products.js`. Ekstraksi style ke `.adm-prod-*`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/products/`.
-  - [ ] Setiap berkas partials produk berukuran <=100 baris.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Editor tabel ukuran produk dinamis, upload galeri multi-foto, debounced filter kategori, dan CRUD produk berfungsi normal tanpa error konsol.
-  - [ ] Path `views/admin/products/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/products/index.ejs`, `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `views/admin/products/partials/*.ejs`, `public/css/admin.css`, `public/js/admin-products.js`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/products/`.
+  - [x] Setiap berkas partials produk berukuran <=100 baris.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Editor tabel ukuran produk dinamis, upload galeri multi-foto, debounced filter kategori, dan CRUD produk berfungsi normal tanpa error konsol.
+  - [x] Path `views/admin/products/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/products/index.ejs`, `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `views/admin/products/partials/*.ejs`, `public/css/admin.css`, `public/js/admin-products.js`, `scripts/lint-views.js`, `tests/test-t290-products-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t290-products-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-291: Refaktor & Modularisasi View Admin Batch 15 - Konten Beranda (Home Content) [TODO]
+### T-291: Refaktor & Modularisasi View Admin Batch 15 - Konten Beranda (Home Content) [DONE]
 - **Deskripsi**: Merefaktor dan modularisasi berkas raksasa `views/admin/home-content/index.ejs` (681 baris): eliminasi 131 style inline, 22 hex, dan 15 komentar HTML. Pecah template menjadi 6 partial modular per tab pane (`views/admin/home-content/partials/tab-intro.ejs`, `tab-wcu.ejs`, `tab-categories.ejs`, `tab-certifications.ejs`, `tab-cta.ejs`, `sticky-actions.ejs`) masing-masing <=100 baris. Konversi 9 kasus style dinamis media picker ke class semantik. Ekstraksi style ke `.adm-home-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/home-content/`.
-  - [ ] Seluruh berkas partials home-content berukuran <=100 baris.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Seluruh 5 panel tab beranda (intro, WCU, 4 kategori primer, sertifikasi mutu, pre-footer CTA) tersimpan dan terupdate normal tanpa error konsol.
-  - [ ] Path `views/admin/home-content/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/home-content/index.ejs`, `views/admin/home-content/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/home-content/`.
+  - [x] Seluruh berkas partials home-content berukuran <=100 baris.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Seluruh 5 panel tab beranda (intro, WCU, 4 kategori primer, sertifikasi mutu, pre-footer CTA) tersimpan dan terupdate normal tanpa error konsol.
+  - [x] Path `views/admin/home-content/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/home-content/index.ejs`, `views/admin/home-content/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`, `tests/test-t291-home-content-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t291-home-content-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
-### T-292: Refaktor & Modularisasi View Admin Batch 16 - Tentang Kami (About) [TODO]
-- **Deskripsi**: Merefaktor dan modularisasi berkas terbesar `views/admin/about/index.ejs` (960 baris): eliminasi 178 style inline, 5 hex, dan 30 komentar HTML. Pecah template menjadi partials per tab pane dan per modal (`views/admin/about/partials/tab-sejarah.ejs`, `tab-visi-misi.ejs`, `tab-nilai.ejs`, `tab-sertifikasi.ejs`, `tab-galeri.ejs`, `modal-galeri.ejs`, `modal-statistik.ejs`, `modal-timeline.ejs`) masing-masing <=100 baris. Ekstraksi style ke `.adm-abt-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
+### T-292: Refaktor & Modularisasi View Admin Batch 16 - Tentang Kami (About) [DONE]
+- **Deskripsi**: Merefaktor dan modularisasi berkas terbesar `views/admin/about/index.ejs` (960 baris): eliminasi 178 style inline, 5 hex, dan 30 komentar HTML. Pecah template menjadi partials per tab pane dan per modal (`views/admin/about/partials/tab-sejarah.ejs`, `tab-visi-misi.ejs`, `tab-nilai.ejs`, `tab-sertifikasi.ejs`, `tab-galeri.ejs`, `modal-galeri.ejs`, `modal-statistik.ejs`, `modal-timeline.ejs`, `sticky-actions.ejs`, dll.) masing-masing <=100 baris. Ekstraksi style ke `.adm-abt-*` di `public/css/admin.css`. Bersihkan komentar dan hex lama terkait.
 - **Acceptance Criteria**:
-  - [ ] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/about/`.
-  - [ ] Seluruh berkas partials about berukuran <=100 baris.
-  - [ ] `npm run lint` hijau (0 error).
-  - [ ] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
-  - [ ] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
-  - [ ] Pengelolaan sejarah, statistik pabrik, milestone linimasa, visi misi, dan slide galeri fasilitas berfungsi lancar tanpa error konsol.
-  - [ ] Path `views/admin/about/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
-- **File Terdampak**: `views/admin/about/index.ejs`, `views/admin/about/partials/*.ejs`, `public/css/admin.css`, `scripts/lint-views.js`
+  - [x] 0 error & 0 warning pada `node scripts/lint-views.js --strict views/admin/about/`.
+  - [x] Seluruh berkas partials about berukuran <=100 baris.
+  - [x] `npm run lint` hijau (0 error).
+  - [x] Test suites eksisting lulus (`npm run test:storage && npm run test:security && npm run test:cms`).
+  - [x] Bukti perbandingan visual Playwright sebelum vs sesudah identik lintas resolusi admin (screenshot disimpan di brain Antigravity, bukan di proyek).
+  - [x] Pengelolaan sejarah, statistik pabrik, milestone linimasa, visi misi, dan slide galeri fasilitas berfungsi lancar tanpa error konsol.
+  - [x] Path `views/admin/about/` ditambahkan ke `DEFAULT_STRICT_PATHS` pada `scripts/lint-views.js`.
+- **File Terdampak**: `views/admin/about/index.ejs`, `views/admin/about/partials/*.ejs`, `public/css/admin.css`, `public/js/admin.js`, `scripts/lint-views.js`, `tests/test-t292-about-views-refactor-qa.js`
 - **Skill**: `antislop-code` + `frontend-ui-engineering` + `test-driven-development`
-- **Verifikasi**: Laporan gerbang kualitas (lint, tests, visual diff Playwright, browser console).
+- **Verifikasi**: `node tests/test-t292-about-views-refactor-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
 
 ### T-293: Enforce 100% Strict Lint Views & QA Regresi Publik Menyeluruh [TODO]
 - **Deskripsi**: Memperluas konfigurasi penegakan lint views pada `scripts/lint-views.js` sehingga `DEFAULT_STRICT_PATHS` mencakup 100% direktori `views/admin/` dan partials admin. Menjalankan audit menyeluruh: target 0 error dan 0 warning di seluruh view admin, verifikasi integritas DOM & visual sampel halaman publik (`/`, `/about`, `/products`, `/contact`), dan menjalankan seluruh test suites backend.

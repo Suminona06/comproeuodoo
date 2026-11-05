@@ -1,0 +1,99 @@
+<%
+  const cta = homeContent.cta || {};
+  const pConf = cta.pages || {};
+  const isPageOn = (k) => pConf[k] === 1 || pConf[k] === '1' || pConf[k] === true;
+  const ctaButtons = [
+    { num: 1, title: 'Tombol Utama (Default: Hubungi Tim Pemasaran / Form RFQ)', defaultUrl: '/contact', isLast: false },
+    { num: 2, title: 'Tombol Sekunder (Default: Kirim Pesan WhatsApp)', defaultUrl: '', placeholder: 'Otomatis fallback ke setting whatsapp_url jika kosong', isLast: true }
+  ];
+  const pagesList = [
+    { key: 'home', label: 'Beranda (Homepage)' }, { key: 'about', label: 'Tentang Kami (/about)' },
+    { key: 'products', label: 'Katalog Produk (/products)' }, { key: 'product_detail', label: 'Detail Produk (/products/:slug)' },
+    { key: 'capabilities', label: 'Kapabilitas Mesin (/capabilities)' }, { key: 'news', label: 'Berita & Artikel (/news)' },
+    { key: 'news_detail', label: 'Detail Berita (/news/:slug)' }, { key: 'contact', label: 'Kontak Kami (/contact)' },
+    { key: '404', label: 'Halaman 404 (Not Found)' }
+  ];
+%>
+<div class="about-tab-pane" id="tab-home-cta" role="tabpanel">
+  <div class="about-glass-card">
+    <div class="form-card-title adm-home-card-title-flex">
+      <span>Konten Banner CTA Pre-Footer Terpusat</span>
+      <label class="adm-home-checkbox-label">
+        <input type="checkbox" name="cta_is_active" value="1" <%= (cta.is_active === 1 || cta.is_active === '1' || cta.is_active === true) ? 'checked' : '' %>>
+        <span>Master Aktif CTA Global</span>
+      </label>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="cta_title_id" class="form-label">Judul Banner (Indonesia)</label>
+        <input type="text" id="cta_title_id" name="cta_title_id" class="form-input" value="<%= cta.title_id || '' %>">
+      </div>
+      <div class="form-group">
+        <label for="cta_title_en" class="form-label">Judul Banner (English)</label>
+        <input type="text" id="cta_title_en" name="cta_title_en" class="form-input" value="<%= cta.title_en || '' %>">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="cta_subtitle_id" class="form-label">Subjudul / Penjelasan (Indonesia)</label>
+        <textarea id="cta_subtitle_id" name="cta_subtitle_id" class="form-textarea adm-home-textarea-cert"><%= cta.subtitle_id || '' %></textarea>
+      </div>
+      <div class="form-group">
+        <label for="cta_subtitle_en" class="form-label">Subjudul / Penjelasan (English)</label>
+        <textarea id="cta_subtitle_en" name="cta_subtitle_en" class="form-textarea adm-home-textarea-cert"><%= cta.subtitle_en || '' %></textarea>
+      </div>
+    </div>
+
+    <% ctaButtons.forEach(function(b) { 
+      const bTitleId = cta['btn' + b.num + '_title_id'] || '';
+      const bTitleEn = cta['btn' + b.num + '_title_en'] || '';
+      const bSubId = cta['btn' + b.num + '_sub_id'] || '';
+      const bSubEn = cta['btn' + b.num + '_sub_en'] || '';
+      const bUrl = cta['btn' + b.num + '_url'] || b.defaultUrl;
+    %>
+      <div class="<%= b.isLast ? 'adm-home-cta-box-last' : 'adm-home-cta-box' %>">
+        <strong class="adm-home-cta-box-title"><%= b.title %></strong>
+        <div class="form-row-2 adm-home-row-sm">
+          <div class="form-group adm-home-mb-0">
+            <label class="form-label adm-home-label-xs">Judul Tombol (ID)</label>
+            <input type="text" name="cta_btn<%= b.num %>_title_id" class="form-input" value="<%= bTitleId %>">
+          </div>
+          <div class="form-group adm-home-mb-0">
+            <label class="form-label adm-home-label-xs">Judul Tombol (EN)</label>
+            <input type="text" name="cta_btn<%= b.num %>_title_en" class="form-input" value="<%= bTitleEn %>">
+          </div>
+        </div>
+        <div class="form-row-2 adm-home-row-sm">
+          <div class="form-group adm-home-mb-0">
+            <label class="form-label adm-home-label-xs">Keterangan / Sub-teks (ID)</label>
+            <input type="text" name="cta_btn<%= b.num %>_sub_id" class="form-input" value="<%= bSubId %>">
+          </div>
+          <div class="form-group adm-home-mb-0">
+            <label class="form-label adm-home-label-xs">Keterangan / Sub-teks (EN)</label>
+            <input type="text" name="cta_btn<%= b.num %>_sub_en" class="form-input" value="<%= bSubEn %>">
+          </div>
+        </div>
+        <div class="form-group adm-home-mb-0">
+          <label class="form-label adm-home-label-xs">URL Tujuan Link<%= b.placeholder ? ' (Kosongkan untuk otomatis pakai setting WhatsApp)' : '' %></label>
+          <input type="text" name="cta_btn<%= b.num %>_url" class="form-input" value="<%= bUrl %>" placeholder="<%= b.placeholder || b.defaultUrl %>">
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+  <div class="about-glass-card">
+    <div class="form-card-title adm-home-card-title-flex">
+      <span>Pengaturan Visibilitas Per Halaman Publik (9 Halaman)</span>
+      <span class="badge badge-primary adm-home-badge-sm">Kontrol Admin Penuh</span>
+    </div>
+    <p class="adm-home-page-desc">Pilih halaman yang menampilkan banner CTA Global pre-footer ini:</p>
+    <div class="adm-home-grid-pages">
+      <% pagesList.forEach(function(pg) { %>
+        <label class="adm-home-page-card">
+          <input type="checkbox" name="cta_page_<%= pg.key %>" value="1" <%= isPageOn(pg.key) ? 'checked' : '' %>>
+          <span class="adm-home-page-text"><%= pg.label %></span>
+        </label>
+      <% }); %>
+    </div>
+  </div>
+</div>

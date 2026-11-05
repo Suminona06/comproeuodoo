@@ -1,0 +1,65 @@
+<%
+  const p = typeof product !== 'undefined' ? product : (typeof formData !== 'undefined' ? formData : {});
+  const imgUrl = p.image_url || '';
+  const galleryVal = p.gallery_images ? (typeof p.gallery_images === 'string' ? p.gallery_images : JSON.stringify(p.gallery_images)) : '[]';
+%>
+<div class="form-card">
+  <div class="form-card-title">2. Foto Utama &amp; Galeri Produk</div>
+  
+  <div class="form-group">
+    <label class="form-label">Foto Utama Produk (Media Library)</label>
+    <div class="media-picker-component">
+      <input type="hidden" id="product_image_url" name="image_url" value="<%= imgUrl %>">
+      <div class="media-picker-preview-box">
+        <img src="<%= imgUrl %>" alt="Pratinjau Produk" class="media-picker-preview-img <%= imgUrl ? '' : 'hidden' %>">
+        <div class="media-picker-empty <%= imgUrl ? 'hidden' : '' %>">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span>Belum ada foto produk dipilih</span>
+        </div>
+      </div>
+      <div class="media-picker-ctrls">
+        <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="product_image_url" data-picker-type="image" aria-label="Pilih foto produk dari Media Library">
+          <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span>Pilih Media</span>
+        </button>
+        <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media <%= imgUrl ? '' : 'hidden' %>" aria-label="Hapus foto produk">
+          <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <span>Hapus</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group prod-gallery-form-group">
+    <label class="form-label">Foto Gallery (ID) / Gallery Photos (EN)</label>
+    <div class="prod-gallery-wrap">
+      <div class="prod-gallery-actions">
+        <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm" id="btnOpenGalleryPicker" aria-label="Pilih foto galeri dari Media Library">
+          <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Pilih Foto</span>
+        </button>
+        <span class="prod-gallery-hint">Pilih beberapa foto sekaligus. Atur urutan dengan tombol ▲ ▼ atau hapus dengan &times;.</span>
+      </div>
+      <input type="hidden" id="gallery_images_input" name="gallery_images" value="<%= galleryVal %>">
+      <div class="prod-gallery-strip" id="prodGalleryStrip">
+        <% if (Array.isArray(p.gallery_items)) { %>
+          <% p.gallery_items.forEach(function(item) { %>
+            <% if (item && item.url) { %>
+              <div class="prod-gallery-item" data-id="<%= item.id || '' %>" data-url="<%= item.url %>">
+                <div class="prod-gallery-thumb-box">
+                  <img src="<%= item.url %>" alt="" class="prod-gallery-thumb" width="64" height="64" loading="lazy">
+                  <button type="button" class="prod-gallery-btn-del" title="Hapus foto" aria-label="Hapus foto">&times;</button>
+                </div>
+                <div class="prod-gallery-reorder">
+                  <button type="button" class="prod-gallery-btn-move prod-gallery-btn-up" title="Geser ke kiri / atas" aria-label="Geser ke kiri">▲</button>
+                  <button type="button" class="prod-gallery-btn-move prod-gallery-btn-down" title="Geser ke kanan / bawah" aria-label="Geser ke kanan">▼</button>
+                </div>
+              </div>
+            <% } %>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
