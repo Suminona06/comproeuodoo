@@ -12,7 +12,7 @@
 %>
 <section class="abt-tkt-section" id="core-values" data-active-index="2">
   <div class="abt-tkt-bg-wrap" aria-hidden="true">
-    <img src="<%= bgImg %>" alt="" class="abt-tkt-bg-img" loading="lazy">
+    <img src="<%= bgImg %>" alt="" class="abt-tkt-bg-img" loading="lazy" decoding="async">
     <div class="abt-tkt-bg-scrim"></div>
   </div>
   <div class="container abt-tkt-container">
@@ -46,7 +46,7 @@
           data-index="<%= idx %>"
         >
           <div class="abt-tkt-media-wrap">
-            <img src="<%= val.image_url || '/images/hero-factory.jpg' %>" alt="<%= valTitle %>" class="abt-tkt-img" loading="<%= idx <= 2 ? 'eager' : 'lazy' %>">
+            <img src="<%= val.image_url || '/images/hero-factory.jpg' %>" alt="<%= valTitle %>" class="abt-tkt-img" loading="eager" decoding="async">
             <div class="abt-tkt-overlay"></div>
           </div>
 

@@ -153,5 +153,55 @@ test('T-298: Anime.js v3 Orchestration & Client Interaction Logic QA', async (t)
     assert.strictEqual(state.expanded, 'true');
     await context.close();
   });
+
+  await t.test('mobile (393x851 Redmi Note 14 Pro) animates with zero container height drift and zero image re-crop', async () => {
+    const page = await browser.newPage({ viewport: { width: 393, height: 851 } });
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
+
+    const beforeMetrics = await page.evaluate(() => {
+      const acc = document.querySelector('.abt-tkt-accordion');
+      const wrap0 = document.querySelector('#abt-tkt-tab-0 .abt-tkt-media-wrap');
+      return {
+        accHeight: Math.round(acc.getBoundingClientRect().height),
+        wrap0Height: Math.round(wrap0.getBoundingClientRect().height),
+        wrap0Width: Math.round(wrap0.getBoundingClientRect().width)
+      };
+    });
+
+    assert.strictEqual(beforeMetrics.accHeight, 740, 'Mobile accordion height must be locked at 740px');
+    assert.strictEqual(beforeMetrics.wrap0Height, 336, 'Mobile media wrapper must stay pre-rasterized at 336px height');
+    assert.ok(beforeMetrics.wrap0Width > 300, 'Mobile media wrapper must span full panel width');
+
+    await page.click('#abt-tkt-tab-0');
+    await page.waitForTimeout(180);
+
+    const midMetrics = await page.evaluate(() => {
+      const acc = document.querySelector('.abt-tkt-accordion');
+      const wrap0 = document.querySelector('#abt-tkt-tab-0 .abt-tkt-media-wrap');
+      return {
+        accHeight: Math.round(acc.getBoundingClientRect().height),
+        wrap0Height: Math.round(wrap0.getBoundingClientRect().height)
+      };
+    });
+
+    assert.strictEqual(midMetrics.accHeight, 740, 'Mobile accordion height must not drift mid-animation');
+    assert.strictEqual(midMetrics.wrap0Height, 336, 'Mobile media wrapper height must not resize mid-animation');
+
+    await page.waitForTimeout(400);
+    const afterMetrics = await page.evaluate(() => {
+      const acc = document.querySelector('.abt-tkt-accordion');
+      const p0 = document.getElementById('abt-tkt-tab-0');
+      return {
+        accHeight: Math.round(acc.getBoundingClientRect().height),
+        p0Height: Math.round(p0.getBoundingClientRect().height),
+        inlineFlexGrow: p0.style.flexGrow
+      };
+    });
+
+    assert.strictEqual(afterMetrics.accHeight, 740, 'Mobile accordion height must remain 740px after animation');
+    assert.ok(afterMetrics.p0Height >= 320, `Expanded mobile panel height (${afterMetrics.p0Height}px) must be >= 320px`);
+    assert.strictEqual(afterMetrics.inlineFlexGrow, '', 'Inline flexGrow must be cleaned up on mobile');
+    await page.close();
+  });
 });
 

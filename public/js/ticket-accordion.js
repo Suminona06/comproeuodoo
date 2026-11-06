@@ -1,12 +1,18 @@
 (function () {
   'use strict';
 
+  let activeTween = null;
+
   function isReducedMotion() {
     return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
 
   function isMobileLayout() {
     return Boolean(window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+  }
+
+  function getActiveFlexGrow() {
+    return isMobileLayout() ? 4.5 : 3;
   }
 
   function preDecodeImages(root) {
@@ -45,15 +51,53 @@
     });
   }
 
-  function animatePanelFlex(animeLib, panel, fromGrow, toGrow) {
-    panel.style.flexGrow = String(fromGrow);
-    animeLib({
-      targets: panel,
-      flexGrow: [fromGrow, toGrow],
-      duration: 650,
-      easing: 'cubicBezier(0.2, 0.75, 0.2, 1)',
+  function stopRunningAnimations(animeLib, panels, contents) {
+    if (activeTween && typeof activeTween.pause === 'function') {
+      activeTween.pause();
+      activeTween = null;
+    }
+    animeLib.remove(panels);
+    animeLib.remove(contents);
+    clearInlineStyles(panels, contents);
+  }
+
+  function runSingleTimeline(animeLib, prevPanel, nextPanel, nextContent, targetGrow, mobile) {
+    const proxy = { t: 0 };
+    if (prevPanel && prevPanel !== nextPanel) {
+      prevPanel.style.flexGrow = String(targetGrow);
+    }
+    nextPanel.style.flexGrow = '1';
+    if (nextContent) {
+      nextContent.style.opacity = '0';
+      nextContent.style.transform = 'translate3d(0, 12px, 0)';
+    }
+
+    activeTween = animeLib({
+      targets: proxy,
+      t: 1,
+      duration: mobile ? 400 : 600,
+      easing: 'cubicBezier(0.22, 1, 0.36, 1)',
+      update() {
+        const p = proxy.t;
+        const delta = (targetGrow - 1) * p;
+        if (prevPanel && prevPanel !== nextPanel) {
+          prevPanel.style.flexGrow = (targetGrow - delta).toFixed(4);
+        }
+        nextPanel.style.flexGrow = (1 + delta).toFixed(4);
+        if (nextContent) {
+          const cp = p < 0.15 ? 0 : (p - 0.15) / 0.85;
+          nextContent.style.opacity = cp.toFixed(3);
+          nextContent.style.transform = `translate3d(0, ${((1 - cp) * 12).toFixed(2)}px, 0)`;
+        }
+      },
       complete() {
-        panel.style.flexGrow = '';
+        if (prevPanel) prevPanel.style.flexGrow = '';
+        nextPanel.style.flexGrow = '';
+        if (nextContent) {
+          nextContent.style.opacity = '';
+          nextContent.style.transform = '';
+        }
+        activeTween = null;
       }
     });
   }
@@ -65,31 +109,8 @@
       return;
     }
 
-    animeLib.remove(panels);
-    animeLib.remove(contents);
-    clearInlineStyles(panels, contents);
-
-    if (!isMobileLayout()) {
-      if (prevPanel && prevPanel !== nextPanel) {
-        animatePanelFlex(animeLib, prevPanel, 3, 1);
-      }
-      animatePanelFlex(animeLib, nextPanel, 1, 3);
-    }
-
-    if (nextContent) {
-      animeLib({
-        targets: nextContent,
-        opacity: [0, 1],
-        translateY: [15, 0],
-        duration: 420,
-        delay: 80,
-        easing: 'cubicBezier(0.2, 0.75, 0.2, 1)',
-        complete() {
-          nextContent.style.opacity = '';
-          nextContent.style.transform = '';
-        }
-      });
-    }
+    stopRunningAnimations(animeLib, panels, contents);
+    runSingleTimeline(animeLib, prevPanel, nextPanel, nextContent, getActiveFlexGrow(), isMobileLayout());
   }
 
   function resolveKeyTargetIndex(key, index, total) {
@@ -102,29 +123,29 @@
 
   function bindNavigationEvents(panels, dots, activate) {
     panels.forEach((panel, idx) => {
-      panel.addEventListener('click', () => activate(idx, false));
+      panel.addEventListener('click', () => activate(idx));
       panel.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          activate(idx, false);
+          activate(idx);
           return;
         }
         const nextIdx = resolveKeyTargetIndex(e.key, idx, panels.length);
         if (nextIdx !== -1) {
           e.preventDefault();
-          activate(nextIdx, true);
+          activate(nextIdx);
           panels[nextIdx].focus();
         }
       });
     });
 
     dots.forEach((dot, idx) => {
-      dot.addEventListener('click', () => activate(idx, false));
+      dot.addEventListener('click', () => activate(idx));
       dot.addEventListener('keydown', (e) => {
         const nextIdx = resolveKeyTargetIndex(e.key, idx, dots.length);
         if (nextIdx !== -1) {
           e.preventDefault();
-          activate(nextIdx, true);
+          activate(nextIdx);
           dots[nextIdx].focus();
         }
       });
