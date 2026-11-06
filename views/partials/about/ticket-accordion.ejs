@@ -46,12 +46,7 @@
           data-index="<%= idx %>"
         >
           <div class="abt-tkt-media-wrap">
-            <img
-              src="<%= val.image_url || '/images/hero-factory.jpg' %>"
-              alt="<%= valTitle %>"
-              class="abt-tkt-img"
-              loading="<%= idx <= 2 ? 'eager' : 'lazy' %>"
-            >
+            <img src="<%= val.image_url || '/images/hero-factory.jpg' %>" alt="<%= valTitle %>" class="abt-tkt-img" loading="<%= idx <= 2 ? 'eager' : 'lazy' %>">
             <div class="abt-tkt-overlay"></div>
           </div>
 
@@ -63,8 +58,9 @@
           </div>
 
           <div class="abt-tkt-vertical-name">
-            <span class="abt-tkt-vert-dash">—</span>
+            <span class="abt-tkt-vert-line" aria-hidden="true"></span>
             <span class="abt-tkt-vert-text"><%= valTitle %></span>
+            <span class="abt-tkt-vert-line" aria-hidden="true"></span>
           </div>
 
           <div class="abt-tkt-content" id="<%= panelId %>" role="tabpanel" aria-labelledby="<%= tabId %>">

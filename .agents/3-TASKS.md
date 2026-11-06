@@ -49,17 +49,17 @@
 - **Skill**: `impeccable` (polish) + `antislop-human` + `antislop-code`
 - **Verifikasi**: `node --test tests/test-t296-public-accordion-markup-qa.js` (4/4 tests pass), `npm run lint:views` (0 errors), `npm run lint:i18n` (0 errors). Selesai 2026-11-05.
 
-### T-297: Penataan Styling Desktop & Mobile Accordion Berbasis Token Desain
+### T-297: Penataan Styling Desktop & Mobile Accordion Berbasis Token Desain [DONE]
 - **Deskripsi**: Mengimplementasikan styling CSS lengkap untuk `.abt-tkt-*` di `public/css/components.css`: latar section dengan foto pabrik + scrim overlay gradien token, tata letak desktop 6 panel berdampingan dengan border glow lembut, tipografi vertikal diapit garis aksen tipis, styling panel aktif, indikator dots di bawah, serta tata letak mobile bertumpuk vertikal pada breakpoint konsisten `@media (max-width: 768px)` dengan target sentuh min 44px.
 - **Acceptance Criteria**:
-  - [ ] Seluruh warna, radius sudut, shadow, dan spasi merujuk 100% ke token CSS (`tokens.css`).
-  - [ ] Latar section memadukan foto dan scrim overlay token dengan rasio kontras teks header >= 4.5:1 (WCAG AA).
-  - [ ] Status fokus keyboard (`:focus-visible`) tampak jelas dan kontras.
-  - [ ] Tampilan mobile pada `@media (max-width: 768px)` bertumpuk vertikal rapi, panel aktif membuka ke bawah tanpa overflow scrollbar di 320px.
-  - [ ] Seluruh teks putih di atas overlay foto memenuhi kontras WCAG AA (>= 4.5:1 untuk teks body, >= 3:1 untuk teks besar).
-- **File Terdampak**: `public/css/components.css`
+  - [x] Seluruh warna, radius sudut, shadow, dan spasi merujuk 100% ke token CSS (`tokens.css`).
+  - [x] Latar section memadukan foto dan scrim overlay token dengan rasio kontras teks header >= 4.5:1 (WCAG AA).
+  - [x] Status fokus keyboard (`:focus-visible`) tampak jelas dan kontras.
+  - [x] Tampilan mobile pada `@media (max-width: 768px)` bertumpuk vertikal rapi, panel aktif membuka ke bawah tanpa overflow scrollbar di 320px.
+  - [x] Seluruh teks putih di atas overlay foto memenuhi kontras WCAG AA (>= 4.5:1 untuk teks body, >= 3:1 untuk teks besar).
+- **File Terdampak**: `public/css/tokens.css`, `public/css/components.css`, `tests/test-t297-ticket-accordion-styles-qa.js`
 - **Skill**: `antislop-layoutmobile` + `antislop-human` + `impeccable` (adapt)
-- **Verifikasi**: Uji inspeksi DOM dan verifikasi visual responsif pada 320px, 375px, 768px, 1024px, 1440px.
+- **Verifikasi**: `node --test tests/test-t297-ticket-accordion-styles-qa.js` (4/4 tests pass across 320px, 375px, 768px, 1024px, 1440px in Chromium; WCAG AA contrast verified; 0 lint errors). Selesai 2026-11-06.
 
 ### T-298: Orkestrasi Animasi Anime.js v3 & Logika Interaksi Klien (Klik & Fokus Saja)
 - **Deskripsi**: Membangun skrip eksternal `public/js/ticket-accordion.js` untuk mengelola interaksi klik mouse dan navigasi keyboard saja (tanpa hover), sinkronisasi dots, inisialisasi panel ke-3 aktif saat load, animasi pelebaran `flex-grow` (1 ke 3) via Anime.js v3, pembatalan animasi berjalan saat klik cepat, pre-decode gambar, serta penanganan `prefers-reduced-motion`.

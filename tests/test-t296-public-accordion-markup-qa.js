@@ -22,6 +22,7 @@ test('T-296: Public Ticket Accordion EJS Template & Markup QA', async (t) => {
     assert.strictEqual(/style\s*=\s*["'][^"']*["']/i.test(content), false, 'Should have zero style="..." inline attributes');
     assert.strictEqual(/#[0-9a-fA-F]{3,8}\b/.test(content), false, 'Should have zero raw hex colors');
     assert.strictEqual(/<!--[\s\S]*?-->/.test(content), false, 'Should have zero HTML comments');
+    assert.strictEqual(content.includes('—'), false, 'Should have zero em-dash characters per antislop R-02');
   });
 
   await t.test('about.ejs includes ticket-accordion.ejs and removes legacy inline styles from #core-values', () => {
@@ -62,21 +63,17 @@ test('T-296: Public Ticket Accordion EJS Template & Markup QA', async (t) => {
     assert.ok(renderedHtml.includes('T - I - C - K - E - T'), 'Should render acronym in header');
     assert.ok(renderedHtml.includes('Budaya Kerja'), 'Should render pill in ID');
     assert.ok(renderedHtml.includes('abt-tkt-accordion'), 'Should render accordion container');
+    assert.ok(renderedHtml.includes('class="abt-tkt-vert-line"'), 'Should render vertical lines flanking value title');
 
-    // Panel 3 (idx 2) is-active and aria-expanded
     assert.ok(renderedHtml.includes('id="abt-tkt-tab-2"'), 'Should render tab 2');
     assert.ok(renderedHtml.includes('aria-controls="abt-tkt-panel-2"'), 'Should render aria-controls for panel 2');
     assert.match(renderedHtml, /class="[^"]*abt-tkt-panel\s+is-active[^"]*"\s+id="abt-tkt-tab-2"/, 'Panel index 2 must have is-active class');
 
-    // 6 dots rendered, dot 2 is-active
     assert.match(renderedHtml, /class="[^"]*abt-tkt-dot\s+is-active[^"]*"\s+data-dot-index="2"/, 'Dot index 2 must have is-active class');
 
-    // Zero Pelajari Lebih Lanjut button, zero kicker, zero .note
     assert.strictEqual(renderedHtml.includes('Pelajari Lebih Lanjut'), false, 'Must not contain Pelajari Lebih Lanjut button');
     assert.strictEqual(renderedHtml.includes('abt-tkt-kicker'), false, 'Must not contain kicker');
     assert.strictEqual(renderedHtml.includes('abt-tkt-note'), false, 'Must not contain note');
-
-    // Uses <img> with abt-tkt-img
     assert.ok(renderedHtml.includes('class="abt-tkt-img"'), 'Must contain abt-tkt-img');
   });
 });
