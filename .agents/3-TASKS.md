@@ -74,24 +74,26 @@
 - **Skill**: `impeccable` (animate) + `antislop-code`
 - **Verifikasi**: `node --test tests/test-t298-ticket-accordion-interaction-qa.js` (3/3 tests pass in Chromium, 0 console errors), `npx eslint public/js/ticket-accordion.js` (0 errors, 0 warnings). Selesai 2026-11-06.
 
-### T-299: Uji Regresi, Audit Aksesibilitas WCAG & Gerbang Kualitas Lint
+### T-299: Uji Regresi, Audit Aksesibilitas WCAG & Gerbang Kualitas Lint [DONE]
 - **Deskripsi**: Menjalankan pengujian regresi komprehensif pada halaman Tentang Kami dan panel admin CMS, melakukan audit rasio kontras teks menggunakan `antislop-human` contrast-checker (terutama teks header di atas foto latar ber-scrim), memverifikasi ketiadaan error console, dan memastikan kepatuhan penuh terhadap gerbang linting.
 - **Acceptance Criteria**:
-  - [ ] Section lain di `/about` (Galeri Bento + Lightbox PhotoSwipe, Statistik, Timeline, Visi Misi) tetap berfungsi normal tanpa regresi.
-  - [ ] Tab admin lain di CMS Tentang Kami tetap dapat disimpan dengan normal.
-  - [ ] `npm run lint` menghasilkan 0 error.
-  - [ ] `npm run lint:views` menghasilkan 0 error pada seluruh file yang disentuh.
-  - [ ] Seluruh teks dwibahasa (ID dan EN) tampil benar saat pergantian bahasa.
-- **File Terdampak**: Test suite automatisasi / Playwright QA script
-- **Skill**: `antislop-human` + `code-review-and-quality`
-- **Verifikasi**: Eksekusi skrip verifikasi otomatis dan bukti visual Playwright sebelum vs sesudah.
+  - [x] Section lain di `/about` (Galeri Bento + Lightbox PhotoSwipe, Statistik, Timeline, Visi Misi) tetap berfungsi normal tanpa regresi.
+  - [x] Tab admin lain di CMS Tentang Kami tetap dapat disimpan dengan normal.
+  - [x] `npm run lint` menghasilkan 0 error.
+  - [x] `npm run lint:views` menghasilkan 0 error pada seluruh file yang disentuh.
+  - [x] Seluruh teks dwibahasa (ID dan EN) tampil benar saat pergantian bahasa.
+- **File Terdampak**: `controllers/admin/aboutController.js`, `views/partials/about/ticket-accordion.ejs`, `tests/test-t299-about-ticket-regression-qa.js`
+- **Skill**: `antislop-human` + `code-review-and-quality` + `ponytail-review` + `test-driven-development`
+- **Verifikasi**: `node --test --test-force-exit tests/test-t294-ticket-icons-normalizer.js tests/test-t295-admin-ticket-form-qa.js tests/test-t296-public-accordion-markup-qa.js tests/test-t297-ticket-accordion-styles-qa.js tests/test-t298-ticket-accordion-interaction-qa.js tests/test-t299-about-ticket-regression-qa.js` (21/21 pass), `node tests/test-t292-about-views-refactor-qa.js` (100% pass), `npm run lint` (0 errors), `npm run lint:views` (0 errors), `npm run lint:i18n` (0 errors). Selesai 2026-11-06.
 
-### T-300: Verifikasi Komparasi Screenshot 1440px vs Desain Asli & Finalisasi Dokumentasi
+### T-300: Verifikasi Komparasi Screenshot 1440px vs Desain Asli & Finalisasi Dokumentasi [DONE]
 - **Deskripsi**: Mengambil screenshot tampilan desktop pada viewport 1440px dengan panel ke-3 terbuka, membandingkan secara berdampingan dengan gambar referensi desain asli, mendokumentasikan setiap selisih visual mikro yang tersisa, serta mempersiapkan artefak untuk tahap Close.
 - **Acceptance Criteria**:
-  - [ ] Screenshot 1440px desktop mereplikasi proporsi, kontur, glow hijau, dan tipografi gambar desain secara presisi dengan panel ke-3 terbuka.
-  - [ ] Tabel deviasi visual (jika ada selisih mikro) didokumentasikan secara transparan.
-  - [ ] Seluruh kriteria penerimaan siap diverifikasi oleh Azis.
-- **File Terdampak**: Dokumentasi QA & artifact screenshot
+  - [x] Screenshot 1440px desktop mereplikasi proporsi, kontur, glow hijau, dan tipografi gambar desain secara presisi dengan panel ke-3 terbuka.
+  - [x] Tabel deviasi visual (jika ada selisih mikro) didokumentasikan secara transparan.
+  - [x] Seluruh kriteria penerimaan siap diverifikasi oleh Azis.
+- **File Terdampak**: `public/css/components.css`, `utils/ticketIcons.js`, `views/partials/icons/ticket/*.ejs`, `tests/test-t300-visual-comparison-qa.js`
+- **Skill**: `frontend-ui-engineering` + `impeccable` (polish) + `ponytail`
+- **Verifikasi**: `node --test --test-force-exit tests/test-t300-visual-comparison-qa.js` (1/1 pass), screenshot 1440px & 375px tersimpan dan dibandingkan di artefak `t300-visual-comparison-report.md`. Selesai 2026-11-06.
 - **Skill**: `impeccable` (polish)
 - **Verifikasi**: Laporan komparasi visual berdampingan siap disajikan.

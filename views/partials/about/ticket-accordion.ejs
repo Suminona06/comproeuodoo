@@ -1,7 +1,7 @@
 <%
   const values = (typeof about !== 'undefined' && about && about.values) ? about.values : (typeof data !== 'undefined' && data.values ? data.values : []);
   const acronym = (typeof ticketAcronym !== 'undefined' && ticketAcronym) ? ticketAcronym : (values.length > 0 ? values.map(function(v) { return v.letter; }).join(' - ') : 'T - I - C - K - E - T');
-  const currentLocale = typeof lang !== 'undefined' ? lang : 'id';
+  const currentLocale = typeof lang !== 'undefined' ? lang : (typeof currentLang !== 'undefined' ? currentLang : 'id');
   const pillText = currentLocale === 'en'
     ? ((about && about.values_pill_en) || 'Corporate Culture')
     : ((about && about.values_pill_id) || 'Budaya Kerja');

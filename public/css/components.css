@@ -5635,17 +5635,20 @@
   overflow: hidden;
   isolation: isolate;
   background-color: var(--bg-subtle);
+  scroll-margin-top: 80px;
 }
 
 .abt-tkt-bg-wrap {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: 0;
   pointer-events: none;
   overflow: hidden;
 }
 
 .abt-tkt-bg-img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -5655,13 +5658,13 @@
 .abt-tkt-bg-scrim {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 2;
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.90) 0%, rgba(248, 250, 252, 0.76) 40%, rgba(248, 250, 252, 0.88) 100%);
 }
 
 .abt-tkt-container {
   position: relative;
-  z-index: 1;
+  z-index: 3;
 }
 
 .abt-tkt-header {
@@ -5764,11 +5767,13 @@
 .abt-tkt-media-wrap {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: 0;
   overflow: hidden;
 }
 
 .abt-tkt-img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -5794,7 +5799,7 @@
 .abt-tkt-overlay {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 2;
   background: linear-gradient(180deg, rgba(7, 31, 23, 0.48) 0%, rgba(7, 31, 23, 0.65) 45%, rgba(7, 31, 23, 0.92) 100%);
   transition: background 0.5s ease;
 }
@@ -5814,7 +5819,7 @@
   color: var(--color-text-inverse);
   transition: all 0.45s cubic-bezier(0.2, 0.75, 0.2, 1);
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
 
 .abt-tkt-panel.is-active .abt-tkt-top {
@@ -5866,7 +5871,7 @@
   letter-spacing: 0.06em;
   white-space: nowrap;
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
@@ -5899,7 +5904,7 @@
   opacity: 0;
   transform: translateY(15px);
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
 
 .abt-tkt-panel.is-active .abt-tkt-content {
@@ -5935,14 +5940,13 @@
   width: 36px;
   border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.45);
-  transition: width 0.35s ease, background-color 0.35s ease;
-  z-index: 2;
+  transition: opacity 0.35s ease, width 0.35s ease, background-color 0.35s ease;
+  z-index: 3;
   pointer-events: none;
 }
 
 .abt-tkt-panel.is-active .abt-tkt-baseline {
-  width: 64px;
-  background-color: var(--color-primary-bright);
+  opacity: 0;
 }
 
 .abt-tkt-dots {

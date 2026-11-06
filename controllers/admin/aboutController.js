@@ -43,8 +43,31 @@ function parseSingleValue(body, defLetter, idx, defaultValues) {
 }
 
 function parseTicketValues(body, defaultValues) {
+  const hasAnyValKey = Object.keys(body || {}).some((k) => k.startsWith('val_'));
+  if (!hasAnyValKey) return undefined;
   const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T'];
   return actualLetters.map((defLetter, idx) => parseSingleValue(body, defLetter, idx, defaultValues));
+}
+
+function readRawField(body, primaryKey, aliasKey) {
+  return body[primaryKey] !== undefined ? body[primaryKey] : body[aliasKey];
+}
+
+function trimSliceOptional(val, maxLen, emptyFallback = '') {
+  if (val === undefined) return undefined;
+  const str = String(val || emptyFallback).trim();
+  return str.slice(0, maxLen);
+}
+
+function parseTicketHeader(body) {
+  const rawBg = readRawField(body, 'about_values_bg_image', 'values_bg_image');
+  return {
+    about_values_bg_image: rawBg !== undefined ? sanitizeSafePath(rawBg, '/images/hero-factory.jpg') : undefined,
+    about_values_pill_id: trimSliceOptional(readRawField(body, 'about_values_pill_id', 'values_pill_id'), 50, 'Budaya Kerja'),
+    about_values_pill_en: trimSliceOptional(readRawField(body, 'about_values_pill_en', 'values_pill_en'), 50, 'Corporate Culture'),
+    about_values_subtitle_id: trimSliceOptional(readRawField(body, 'about_values_subtitle_id', 'values_subtitle_id'), 150),
+    about_values_subtitle_en: trimSliceOptional(readRawField(body, 'about_values_subtitle_en', 'values_subtitle_en'), 150)
+  };
 }
 
 export const aboutController = {
@@ -115,8 +138,10 @@ export const aboutController = {
         about_story_kicker_en
       } = req.body;
 
-      const defaultValues = aboutModel.getDefaults().values;
+      const currentAbout = await aboutModel.getAboutData();
+      const defaultValues = currentAbout?.values || aboutModel.getDefaults().values;
       const values = parseTicketValues(req.body, defaultValues);
+      const ticketHeader = parseTicketHeader(req.body);
 
       const defaultCerts = aboutModel.getDefaults().certifications;
       const certifications = defaultCerts.map((cert, idx) => {
@@ -158,11 +183,7 @@ export const aboutController = {
         about_gallery_body_en: about_gallery_body_en !== undefined ? about_gallery_body_en.trim() : undefined,
         about_story_kicker_id: about_story_kicker_id !== undefined ? about_story_kicker_id.trim() : undefined,
         about_story_kicker_en: about_story_kicker_en !== undefined ? about_story_kicker_en.trim() : undefined,
-        about_values_bg_image: sanitizeSafePath(req.body.about_values_bg_image || req.body.values_bg_image, '/images/hero-factory.jpg'),
-        about_values_pill_id: String(req.body.about_values_pill_id || req.body.values_pill_id || 'Budaya Kerja').trim().slice(0, 50),
-        about_values_pill_en: String(req.body.about_values_pill_en || req.body.values_pill_en || 'Corporate Culture').trim().slice(0, 50),
-        about_values_subtitle_id: String(req.body.about_values_subtitle_id || req.body.values_subtitle_id || '').trim().slice(0, 150),
-        about_values_subtitle_en: String(req.body.about_values_subtitle_en || req.body.values_subtitle_en || '').trim().slice(0, 150),
+        ...ticketHeader,
         values,
         certifications
       };

@@ -1,12 +1,16 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { describe, it, after } from 'node:test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { aboutController } from '../controllers/admin/aboutController.js';
 import aboutModel from '../models/aboutModel.js';
-import { TICKET_ICON_KEYS, isValidTicketIconKey } from '../utils/ticketIcons.js';
+import { pool } from '../config/database.js';
+import { isValidTicketIconKey } from '../utils/ticketIcons.js';
 
 describe('T-295: Admin Ticket CMS Form & Controller Validation', () => {
+  after(async () => {
+    await pool.end();
+  });
   it('should verify tab-nilai.ejs and tab-nilai-card.ejs comply with conventions (<100 lines, zero inline styles/hex)', () => {
     const tabNilaiPath = path.resolve('views/admin/about/partials/tab-nilai.ejs');
     const tabCardPath = path.resolve('views/admin/about/partials/tab-nilai-card.ejs');

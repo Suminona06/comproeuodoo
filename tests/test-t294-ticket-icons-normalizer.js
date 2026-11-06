@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { describe, it, after } from 'node:test';
 import { TICKET_ICONS, TICKET_ICON_KEYS, isValidTicketIconKey, getTicketIconSvg } from '../utils/ticketIcons.js';
 import aboutModel from '../models/aboutModel.js';
+import { pool } from '../config/database.js';
 
 describe('T-294: Ticket Icons Whitelist & Data Model Normalizer', () => {
+  after(async () => {
+    await pool.end();
+  });
   it('should provide exactly 6 valid SVG icons matching reference design', () => {
     assert.equal(TICKET_ICON_KEYS.length, 6, 'Must define exactly 6 icon keys');
     const expectedKeys = ['praying-hands', 'shield-check', 'chat-dots', 'heart', 'star', 'handshake'];

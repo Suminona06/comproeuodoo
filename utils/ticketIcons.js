@@ -3,7 +3,7 @@ export const TICKET_ICONS = {
     key: 'praying-hands',
     label_id: 'Takut Tuhan (Tangan Berdoa)',
     label_en: 'Fear of God (Praying Hands)',
-    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c-1.2 2.5-3 5.5-4 8.5-.7 2.1-.5 4.5.5 6.5.6 1.2 1.8 2 3.5 2h0c1.7 0 2.9-.8 3.5-2 1-2 1.2-4.4.5-6.5-1-3-2.8-6-4-8.5z"/><path d="M12 3v17"/><path d="M9.5 14.5c-.8 1.5-.8 3.5-.2 5"/><path d="M14.5 14.5c.8 1.5.8 3.5.2 5"/></svg>`
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 20 3.8 17.2a2.5 2.5 0 0 1-.2-2.2L8.8 4.2a1.4 1.4 0 0 1 2.6.6v9.2l-2.6 2.8"/><path d="M8.8 16.8 6.8 19.5"/><path d="M18.5 20l1.7-2.8a2.5 2.5 0 0 0 .2-2.2L15.2 4.2a1.4 1.4 0 0 0-2.6.6v9.2l2.6 2.8"/><path d="m15.2 16.8 2 2.7"/></svg>`
   },
   'shield-check': {
     key: 'shield-check',
@@ -15,7 +15,7 @@ export const TICKET_ICONS = {
     key: 'chat-dots',
     label_id: 'Komunikasi (Gelembung Dialog Titik)',
     label_en: 'Communication (Chat Dots)',
-    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><circle cx="8.5" cy="11.5" r="0.75" fill="currentColor"/><circle cx="12" cy="11.5" r="0.75" fill="currentColor"/><circle cx="15.5" cy="11.5" r="0.75" fill="currentColor"/></svg>`
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3.5C6.36 3.5 3 6.41 3 10c0 1.63.7 3.12 1.85 4.26L3.5 17.5l3.65-1.15c1.02.42 2.15.65 3.35.65 4.14 0 7.5-2.91 7.5-6.5s-3.36-7-7.5-7z"/><path d="M17.2 10.8c2.2.72 3.8 2.52 3.8 4.7 0 1.18-.52 2.26-1.38 3.1L20.8 21l-2.75-.85c-.75.3-1.6.45-2.55.45-2.6 0-4.82-1.28-5.65-3.1"/><circle cx="7.75" cy="10.25" r="0.7" fill="currentColor"/><circle cx="10.5" cy="10.25" r="0.7" fill="currentColor"/><circle cx="13.25" cy="10.25" r="0.7" fill="currentColor"/></svg>`
   },
   'heart': {
     key: 'heart',
@@ -33,7 +33,7 @@ export const TICKET_ICONS = {
     key: 'handshake',
     label_id: 'Taat (Jabat Tangan)',
     label_en: 'Obedience (Handshake)',
-    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17 2 2a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4l-2-2"/><path d="m13 7-2-2a1 1 0 0 0-1.4 0L5 9.6a1 1 0 0 0 0 1.4l2 2"/><path d="m8.5 13.5 3 3"/><path d="m12.5 9.5 3 3"/><path d="M2 17l4-4"/><path d="M22 7l-4 4"/></svg>`
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>`
   }
 };
 
