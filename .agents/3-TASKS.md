@@ -61,18 +61,18 @@
 - **Skill**: `antislop-layoutmobile` + `antislop-human` + `impeccable` (adapt)
 - **Verifikasi**: `node --test tests/test-t297-ticket-accordion-styles-qa.js` (4/4 tests pass across 320px, 375px, 768px, 1024px, 1440px in Chromium; WCAG AA contrast verified; 0 lint errors). Selesai 2026-11-06.
 
-### T-298: Orkestrasi Animasi Anime.js v3 & Logika Interaksi Klien (Klik & Fokus Saja)
+### T-298: Orkestrasi Animasi Anime.js v3 & Logika Interaksi Klien (Klik & Fokus Saja) [DONE]
 - **Deskripsi**: Membangun skrip eksternal `public/js/ticket-accordion.js` untuk mengelola interaksi klik mouse dan navigasi keyboard saja (tanpa hover), sinkronisasi dots, inisialisasi panel ke-3 aktif saat load, animasi pelebaran `flex-grow` (1 ke 3) via Anime.js v3, pembatalan animasi berjalan saat klik cepat, pre-decode gambar, serta penanganan `prefers-reduced-motion`.
 - **Acceptance Criteria**:
-  - [ ] Pemicu interaksi hanya event `click` dan `keydown` (`Enter`, `Space`, `ArrowLeft`/`ArrowRight`/`ArrowUp`/`ArrowDown`). Event hover kursor mouse tidak memicu perpindahan panel.
-  - [ ] State awal saat load mengaktifkan panel ke-3 (indeks 2) secara mulus.
-  - [ ] Transisi pelebaran panel mengorkestrasikan proxy `flex-grow` (1 ke 3) dan kemunculan teks secara halus via Anime.js v3 (`anime({})`).
-  - [ ] Animasi berjalan dibatalkan seketika (`anime.remove()`) saat pengguna mengklik panel lain secara cepat untuk mencegah glitch layout.
-  - [ ] Pada `prefers-reduced-motion: reduce`, transisi berlangsung instan tanpa animasi interpolasi JS.
-  - [ ] Zero CLS: Tinggi kontainer accordion tetap stabil (510px di desktop) tanpa pergeseran elemen sekitarnya.
-- **File Terdampak**: `public/js/ticket-accordion.js`, `views/public/about.ejs`
+  - [x] Pemicu interaksi hanya event `click` dan `keydown` (`Enter`, `Space`, `ArrowLeft`/`ArrowRight`/`ArrowUp`/`ArrowDown`). Event hover kursor mouse tidak memicu perpindahan panel.
+  - [x] State awal saat load mengaktifkan panel ke-3 (indeks 2) secara mulus.
+  - [x] Transisi pelebaran panel mengorkestrasikan proxy `flex-grow` (1 ke 3) dan kemunculan teks secara halus via Anime.js v3 (`anime({})`).
+  - [x] Animasi berjalan dibatalkan seketika (`anime.remove()`) saat pengguna mengklik panel lain secara cepat untuk mencegah glitch layout.
+  - [x] Pada `prefers-reduced-motion: reduce`, transisi berlangsung instan tanpa animasi interpolasi JS.
+  - [x] Zero CLS: Tinggi kontainer accordion tetap stabil (510px di desktop) tanpa pergeseran elemen sekitarnya.
+- **File Terdampak**: `public/js/ticket-accordion.js`, `public/css/components.css`, `views/public/about.ejs`, `tests/test-t298-ticket-accordion-interaction-qa.js`
 - **Skill**: `impeccable` (animate) + `antislop-code`
-- **Verifikasi**: Uji interaksi klik cepat mouse dan navigasi keyboard di browser; verifikasi ketiadaan error console JavaScript.
+- **Verifikasi**: `node --test tests/test-t298-ticket-accordion-interaction-qa.js` (3/3 tests pass in Chromium, 0 console errors), `npx eslint public/js/ticket-accordion.js` (0 errors, 0 warnings). Selesai 2026-11-06.
 
 ### T-299: Uji Regresi, Audit Aksesibilitas WCAG & Gerbang Kualitas Lint
 - **Deskripsi**: Menjalankan pengujian regresi komprehensif pada halaman Tentang Kami dan panel admin CMS, melakukan audit rasio kontras teks menggunakan `antislop-human` contrast-checker (terutama teks header di atas foto latar ber-scrim), memverifikasi ketiadaan error console, dan memastikan kepatuhan penuh terhadap gerbang linting.
