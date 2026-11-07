@@ -239,5 +239,42 @@ describe('T-299: Regression Suite, Bilingual Sync, Escaping & WCAG Audit', () =>
     }
     await page.close();
   });
+
+  it('should allow changing and deleting (clearing) section background image from Admin Tab 3', async () => {
+    const reqChange = {
+      body: {
+        about_values_bg_image: '/uploads/pages/custom-ticket-bg.webp',
+        about_values_pill_id: 'Budaya Kerja'
+      }
+    };
+    const resMock = { redirect() {} };
+    await aboutController.update(reqChange, resMock);
+
+    const dataAfterChange = await aboutModel.getAboutData();
+    assert.equal(dataAfterChange.values_bg_image, '/uploads/pages/custom-ticket-bg.webp');
+
+    const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+    await page.goto(`${baseUrl}/about?lang=id`, { waitUntil: 'domcontentloaded' });
+    const bgSrc = await page.getAttribute('#core-values .abt-tkt-bg-img', 'src');
+    assert.equal(bgSrc, '/uploads/pages/custom-ticket-bg.webp', 'Public /about must render custom background image');
+
+    const reqDelete = {
+      body: {
+        about_values_bg_image: '',
+        about_values_pill_id: 'Budaya Kerja'
+      }
+    };
+    await aboutController.update(reqDelete, resMock);
+
+    const dataAfterDelete = await aboutModel.getAboutData();
+    assert.equal(dataAfterDelete.values_bg_image, '', 'Deleted background image must remain empty string');
+
+    await page.goto(`${baseUrl}/about?lang=id`, { waitUntil: 'domcontentloaded' });
+    const bgWrapCount = await page.locator('#core-values .abt-tkt-bg-wrap').count();
+    const hasNoBgClass = await page.evaluate(() => document.getElementById('core-values').classList.contains('no-bg-image'));
+    assert.equal(bgWrapCount, 0, 'Public /about must not render .abt-tkt-bg-wrap when background is deleted');
+    assert.equal(hasNoBgClass, true, 'Section must have .no-bg-image class when background is deleted');
+    await page.close();
+  });
 });
 

@@ -9,10 +9,17 @@ import { TICKET_ICONS, TICKET_ICON_KEYS, isValidTicketIconKey } from '../../util
 function sanitizeSafePath(val, fallback = '') {
   if (typeof val !== 'string') return fallback;
   const trimmed = val.trim();
-  if (/^(\/uploads\/media\/|\/images\/)[a-zA-Z0-9_.\-/]+$/.test(trimmed) && trimmed.length <= 500) {
+  if (/^(\/uploads\/|\/images\/)[a-zA-Z0-9_.\-/]+$/.test(trimmed) && trimmed.length <= 500) {
     return trimmed;
   }
   return fallback;
+}
+
+function sanitizeOptionalBgImage(rawBg) {
+  if (rawBg === undefined) return undefined;
+  const trimmed = String(rawBg || '').trim();
+  if (trimmed === '') return '';
+  return sanitizeSafePath(trimmed, '');
 }
 
 function getFieldValue(body, formKey, idx, prefix, defVal = '') {
@@ -62,7 +69,7 @@ function trimSliceOptional(val, maxLen, emptyFallback = '') {
 function parseTicketHeader(body) {
   const rawBg = readRawField(body, 'about_values_bg_image', 'values_bg_image');
   return {
-    about_values_bg_image: rawBg !== undefined ? sanitizeSafePath(rawBg, '/images/hero-factory.jpg') : undefined,
+    about_values_bg_image: sanitizeOptionalBgImage(rawBg),
     about_values_pill_id: trimSliceOptional(readRawField(body, 'about_values_pill_id', 'values_pill_id'), 50, 'Budaya Kerja'),
     about_values_pill_en: trimSliceOptional(readRawField(body, 'about_values_pill_en', 'values_pill_en'), 50, 'Corporate Culture'),
     about_values_subtitle_id: trimSliceOptional(readRawField(body, 'about_values_subtitle_id', 'values_subtitle_id'), 150),

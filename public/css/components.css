@@ -5659,7 +5659,7 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.90) 0%, rgba(248, 250, 252, 0.76) 40%, rgba(248, 250, 252, 0.88) 100%);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.86) 0%, rgba(248, 250, 252, 0.56) 48%, rgba(248, 250, 252, 0.82) 100%);
 }
 
 .abt-tkt-container {

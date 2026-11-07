@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-31 | Kode: views/public/about.ejs, controllers/public/pageController.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-07 | Kode: views/public/about.ejs, controllers/public/pageController.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
@@ -44,7 +44,7 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 ### C. Kunci Pengaturan Tentang Kami (`settings`)
 - `about_founded_year`, `about_former_names`, `about_history_title_*`, `about_history_*`.
 - `about_vision_*`, `about_mission_*`.
-- `about_values_bg_image`, `about_values_pill_*`, `about_values_subtitle_*`, `about_values_json` (6 Pilar Budaya Kerja Interaktif, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)). [PENDING T-294 s/d T-300]
+- `about_values_bg_image`, `about_values_pill_*`, `about_values_subtitle_*`, `about_values_json` (6 Pilar Budaya Kerja Interaktif, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
 - `vision_image_url`, `mission_image_url`.
 - `about_gallery_kicker_*`, `about_gallery_title_*`, `about_story_kicker_*`.
 
@@ -52,7 +52,7 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 
 ## 4. Komponen Antarmuka & Prefix CSS
 
-- **Nilai Inti Budaya Kerja (.abt-tkt-*):** Interactive Expanding Accordion 6 pilar menggantikan `.sec-values` legacy (spesifikasi arsitektur DOM, kontrak SVG whitelist, lifecycle anime.js, dan form admin didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)). [PENDING T-294 s/d T-300]
+- **Nilai Inti Budaya Kerja (.abt-tkt-*):** Interactive Expanding Accordion 6 pilar menggantikan `.sec-values` legacy (spesifikasi arsitektur DOM, kontrak SVG whitelist, lifecycle anime.js, dan form admin didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
 - **Galeri Mosaik Bento & Integrasi Lightbox (`.abt-gal-*` & `.lbx-*`):**
   - Prefix Class: `.sec-gallery`, `.abt-gal-container`, `.abt-gal-viewport`, `.abt-gal-grid`, `.abt-gal-tile`, serta `.bento-grid` dan `.sec-gallery .bento-*`.
   - Varian Posisi Tile: `.abt-gal-tile--pos-1` s/d `.abt-gal-tile--pos-6`, `.abt-gal-tile--tall`, `.abt-gal-tile--wide`.

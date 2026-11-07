@@ -8,13 +8,15 @@
   const subtitleText = currentLocale === 'en'
     ? ((about && about.values_subtitle_en) || 'The values that shape our journey towards a better future')
     : ((about && about.values_subtitle_id) || 'Nilai-nilai yang membentuk langkah kami menuju masa depan yang lebih baik');
-  const bgImg = (about && about.values_bg_image) ? about.values_bg_image : '/images/hero-factory.jpg';
+  const bgImg = (about && about.values_bg_image !== undefined) ? about.values_bg_image : '/images/hero-factory.jpg';
 %>
-<section class="abt-tkt-section" id="core-values" data-active-index="2">
-  <div class="abt-tkt-bg-wrap" aria-hidden="true">
-    <img src="<%= bgImg %>" alt="" class="abt-tkt-bg-img" loading="lazy" decoding="async">
-    <div class="abt-tkt-bg-scrim"></div>
-  </div>
+<section class="abt-tkt-section <%= bgImg ? 'has-bg-image' : 'no-bg-image' %>" id="core-values" data-active-index="2">
+  <% if (bgImg) { %>
+    <div class="abt-tkt-bg-wrap" aria-hidden="true">
+      <img src="<%= bgImg %>" alt="" class="abt-tkt-bg-img" loading="lazy" decoding="async">
+      <div class="abt-tkt-bg-scrim"></div>
+    </div>
+  <% } %>
   <div class="container abt-tkt-container">
     <header class="abt-tkt-header">
       <div class="abt-tkt-pill-wrap">

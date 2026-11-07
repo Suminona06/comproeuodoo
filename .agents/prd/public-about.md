@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-31 | Kode: views/public/about.ejs, controllers/public/pageController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-07 | Kode: views/public/about.ejs, controllers/public/pageController.js
 
 # PRD: Modul Tentang Kami (Public About)
 
@@ -13,7 +13,7 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
 - Sistem merender halaman Tentang Kami secara Server-Side Rendering (SSR) berbasis EJS dengan komponen:
   1. Header Halaman & Breadcrumb navigasi (`nav.breadcrumbs`).
   2. Profil Perusahaan & Latar Belakang (nama terdahulu: PT Sahabat Baru & PT Pelita Baru).
-  3. Nilai-Nilai Inti Budaya Perusahaan: 6 Pilar Budaya Kerja Interaktif (Default T-I-C-K-E-T: Takut Tuhan, Integritas, Komunikasi, Kasih, Luar Biasa, Taat; huruf dan konten dapat disunting fleksibel di CMS). [PENDING T-294 s/d T-300]
+  3. Nilai-Nilai Inti Budaya Perusahaan: 6 Pilar Budaya Kerja Interaktif (Default T-I-C-K-E-T: Takut Tuhan, Integritas, Komunikasi, Kasih, Luar Biasa, Taat; huruf dan konten dapat disunting fleksibel di CMS).
   4. Visi & Misi Korporat dengan media foto representatif pabrik/tim.
   5. Galeri Mosaik Bento Berhalaman (`.sec-gallery`, `.abt-gal-*`).
   6. Statistik Kunci Pencapaian (Tahun Berdiri, Kapasitas Produksi, Luas Fasilitas, Mitra B2B) dengan animasi count-up.
@@ -34,7 +34,7 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
 - **Zoom, Pan & Navigasi:** Menggunakan komponen bersama berbasis PhotoSwipe v5 *self-hosted* di atas backdrop `var(--surface-dark-deep)` dengan teks/ikon `var(--color-on-primary)`. Di desktop mendukung klik/*double-click* untuk *zoom* ke titik klik + *drag* untuk geser (*pan*) serta tombol `+`/`-` pada toolbar; di perangkat sentuh mendukung *double-tap* zoom, *pinch-to-zoom* 2 jari, *pan*, dan *swipe* kiri/kanan antar-foto termasuk saat sedang di-zoom.
 - **Aksesibilitas & i18n:** Dialog modal (`role="dialog"`, `aria-modal="true"`) dengan fokus terkunci (*focus trap*), tutup via tombol atau `Escape`, pengembalian fokus ke tile pemicu, penguncian scroll body saat terbuka, penghitung posisi `"3 / 12"`, *caption* kategori dan judul foto sesuai bahasa aktif (`ID`/`EN`), serta label tombol dwibahasa. Animasi hanya `transform` dan `opacity` (`prefers-reduced-motion` tanpa animasi; hover di dalam `@media (hover: hover)`).
 
-### FR-32: Interactive Expanding Accordion Budaya Kerja [PENDING T-294 s/d T-300]
+### FR-32: Interactive Expanding Accordion Budaya Kerja
 - **Tata Letak Desktop (`>= 769px`):** 6 panel foto vertikal berdampingan (*Interactive Expanding Accordion*).
   - Latar section memadukan foto suasana pabrik (`about_values_bg_image`) dengan scrim gradien token resmi (`var(--bg-overlay-dark)`), kontras teks header/dots WCAG AA.
   - Header terpusat: Pill outline `Budaya Kerja` (editable admin) diapit garis horizontal tipis, judul akronim otomatis dari huruf 6 pilar aktif (mis. `T - I - C - K - E - T`), subjudul filosofis (editable admin).
@@ -63,7 +63,7 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
 | **Lightbox Bento Mencakup Seluruh Slide (`#bentoGalleryData`)** | Memungkinkan penjelajahan seluruh dokumentasi pabrik tanpa harus menutup lightbox untuk mengganti halaman pager bento. | 2026-10-30 |
-| **Interactive Expanding Accordion Menggantikan Grid Kartu Statis** | Memberikan pengalaman interaktif menjelajahi 6 pilar budaya kerja dengan kedalaman visual industrial dan fokus simetris pada panel ke-3. [PENDING T-294 s/d T-300] | 2026-11-05 |
+| **Interactive Expanding Accordion Menggantikan Grid Kartu Statis** | Memberikan pengalaman interaktif menjelajahi 6 pilar budaya kerja dengan kedalaman visual industrial dan fokus simetris pada panel ke-3. | 2026-11-05 |
 | **Bento Mosaic Grid Menggantikan Slider Horizontal** | Memberikan kesan tata letak industrial yang kaya dan kokoh serta menampilkan variasi dokumentasi operasional pabrik lebih baik dibanding carousel slider biasa. | 2026-10-14 |
 | **Kontainer Galeri Ber-Tinggi Tetap & Image Pre-Decode** | Mengeliminasi lonjakan layout (zero CLS) saat transisi halaman galeri berpindah. | 2026-10-14 |
 | **Judul Galeri Bersifat Nullable** | Memberikan keleluasaan bagi kurator foto untuk menampilkan gambar murni tanpa teks judul yang mengganggu komposisi visual. | 2026-10-14 |

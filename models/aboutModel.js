@@ -218,7 +218,7 @@ export const aboutModel = {
         vision_image_url: allSettings.vision_image_url || '',
         mission_image_url: allSettings.mission_image_url || '',
         values,
-        values_bg_image: allSettings.about_values_bg_image || defaults.values_bg_image,
+        values_bg_image: allSettings.about_values_bg_image !== undefined ? allSettings.about_values_bg_image : defaults.values_bg_image,
         values_pill_id: allSettings.about_values_pill_id || defaults.values_pill_id,
         values_pill_en: allSettings.about_values_pill_en || defaults.values_pill_en,
         values_subtitle_id: allSettings.about_values_subtitle_id || defaults.values_subtitle_id,

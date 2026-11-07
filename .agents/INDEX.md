@@ -14,8 +14,8 @@
 | Modul | Status | Verifikasi | Spesifikasi PRD | Spesifikasi Teknis | Path Kode Utama |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Public Home** | ACTIVE | 2026-11-03 | [prd/public-home.md](prd/public-home.md) | [tech/public-home.md](tech/public-home.md) | `views/public/index.ejs` |
-| **Public About** | ACTIVE | 2026-10-31 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs` |
-| **Public About Ticket Accordion** | ACTIVE | 2026-11-05 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |
+| **Public About** | ACTIVE | 2026-11-07 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs` |
+| **Public About Ticket Accordion** | ACTIVE | 2026-11-07 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |
 | **Products Catalog** | ACTIVE | 2026-10-31 | [prd/products.md](prd/products.md) | [tech/products.md](tech/products.md) | `views/public/products.ejs` |
 | **Products Detail** | ACTIVE | 2026-10-31 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs` |
 | **Manufacturing Capabilities** | ACTIVE | 2026-10-21 | [prd/capabilities.md](prd/capabilities.md) | [tech/capabilities.md](tech/capabilities.md) | `views/public/capabilities.ejs` |
