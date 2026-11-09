@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: public/css/tokens.css, public/css/admin.css, public/js/admin-form-validation.js, public/js/admin.js, public/js/pagination.js, views/partials/pagination.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-09 | Kode: public/css/tokens.css, public/css/admin.css, public/js/admin-form-validation.js, public/js/admin.js, public/js/pagination.js, views/partials/pagination.ejs
 
 # Tech Spec: Standar Komponen UI, Tombol, Paginasi & Validasi Form Admin (Admin UI)
 
@@ -47,7 +47,7 @@ Sub-modul ini mendefinisikan arsitektur teknis komponen tombol terpadu (`.adm-bt
 
 ---
 
-## 6. Komponen Paginasi Bersama Varian 1 (`.pgn-*`) `[PENDING T-303, T-306]`
+## 6. Komponen Paginasi Bersama Varian 1 (`.pgn-*`)
 1. **Berkas Komponen Bersama:**
    - Partial EJS: `views/partials/pagination.ejs` (menerima `pagination: { page, perPage, totalRows, totalPages, baseUrl, queryParams }`).
    - Modul Klien: `public/js/pagination.js` (menangani navigasi tanpa reload, `AbortController` pembatal request lama saat klik beruntun, sinkronisasi `history.pushState` & listener `popstate`, validasi input halaman, fokus & pengumuman `aria-live="polite"`).

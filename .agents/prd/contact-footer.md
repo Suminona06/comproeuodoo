@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/contact.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-09 | Kode: views/public/contact.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
 
 # PRD: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
 
@@ -52,7 +52,7 @@ Modul Kontak & Footer menangani saluran komunikasi konversi prospek B2B, penanga
 - Footer global bernuansa hijau gelap (`var(--surface-dark-footer)`) dengan komponen:
   1. Identitas perusahaan, deskripsi singkat, dan logo footer.
   2. Tautan cepat navigasi situs (Beranda, Tentang Kami, Produk, Kapabilitas, Berita, Kontak).
-  3. Informasi kontak dual lokasi (Palmerah & Cigondewah) di dalam kartu `.ft-office-card` yang bersifat statis (tanpa efek hover latar, border, bayangan, atau transformasi posisi) dengan baris alamat, telepon, faks, dan email (`tel:`, `mailto:`) yang mempertahankan warna teks terang footer (`var(--color-text-inverse)`) dan lolos rasio kontras WCAG AA (`>= 4.5:1`) di seluruh state (`normal`, `:hover`, `:focus-visible`, `:active`, `:visited`), serta focus ring keyboard yang jelas `[PENDING T-301]`.
+  3. Informasi kontak dual lokasi (Palmerah & Cigondewah) di dalam kartu `.ft-office-card` yang bersifat statis (tanpa efek hover latar, border, bayangan, atau transformasi posisi) dengan baris alamat, telepon, faks, dan email (`tel:`, `mailto:`) yang mempertahankan warna teks terang footer (`var(--color-text-inverse)`) dan lolos rasio kontras WCAG AA (`>= 4.5:1`) di seluruh state (`normal`, `:hover`, `:focus-visible`, `:active`, `:visited`), serta focus ring keyboard yang jelas.
   4. Deretan ikon media sosial resmi dengan visibilitas dinamis yang dikendalikan dari CMS (Facebook, Instagram, LinkedIn, YouTube).
   5. Hak cipta hukum dan penandaan standar ramah lingkungan.
 
