@@ -157,5 +157,15 @@
     "confirm_delete_column_text": "Kolom ini memiliki data teks yang akan ikut terhapus. Lanjutkan?",
     "confirm_delete_row_title": "Hapus Baris?",
     "confirm_delete_row_text": "Baris ini memiliki data teks yang akan ikut terhapus. Lanjutkan?"
+  },
+  "pagination": {
+    "page": "Halaman",
+    "of": "dari",
+    "rows_per_page": "Baris per halaman",
+    "first": "Halaman pertama",
+    "previous": "Halaman sebelumnya",
+    "next": "Halaman berikutnya",
+    "last": "Halaman terakhir",
+    "go_to_page": "Lompat ke halaman"
   }
 }

@@ -7124,13 +7124,32 @@
   opacity: 0.85;
 }
 
-.cf-link-inherit {
+.cf-link-inherit,
+a.cf-link-inherit {
   color: inherit;
   text-decoration: none;
 }
 
-.cf-link-inherit:hover {
-  text-decoration: underline;
+.cf-link-inherit:visited,
+a.cf-link-inherit:visited,
+.cf-link-inherit:active,
+a.cf-link-inherit:active {
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .cf-link-inherit:hover,
+  a.cf-link-inherit:hover {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+.cf-link-inherit:focus-visible,
+a.cf-link-inherit:focus-visible {
+  color: inherit;
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* Google Maps Container */

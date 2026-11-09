@@ -14,7 +14,7 @@
 ### Batch Revisi Hover Footer, Tabel RFQ Dashboard, & Paginasi Tanpa Reload (T-301 s/d T-306)
 *Referensi Proposal:* [changes/2026-11-09_footer-hover-rfq-pagination.md](changes/2026-11-09_footer-hover-rfq-pagination.md)
 
-- [ ] **T-301: Perbaikan Bug Hover Kartu Alamat Footer & Kontras WCAG AA Tautan Faks/Telp/Email**
+- [x] **T-301: Perbaikan Bug Hover Kartu Alamat Footer & Kontras WCAG AA Tautan Faks/Telp/Email**
   - **Deskripsi:** Menghapus efek hover pada kartu alamat footer (`.ft-office-card`) dan mengunci warna teks seluruh baris alamat, telepon, faks, serta email (`.ft-phone-val`, `a[href^="tel:"]`, `a[href^="mailto:"]`) pada state `normal`, `:hover`, `:focus-visible`, `:active`, dan `:visited` ke token teks terang footer (`var(--color-text-inverse)`) agar lolos kontras WCAG AA (`>= 4.5:1`) dan tidak tertimpa `a:hover` global (`var(--color-primary-dark)`). Memastikan `.cf-link-inherit` pada `/contact` juga mempertahankan `color: inherit` di semua state.
   - **Acceptance Criteria:**
     - `.ft-office-card:hover` dan `transition` pada `.ft-office-card` dihapus sepenuhnya.
@@ -24,7 +24,7 @@
   - **Skill:** `impeccable` (`polish`), `antislop-human`, `antislop-code`
   - **Verifikasi:** Inspeksi computed style state `:hover`, `:focus-visible`, `:visited` pada nomor Faks/Telp/Email di footer & halaman `/contact`; uji kontras WCAG AA; uji navigasi `Tab`.
 
-- [ ] **T-302: Penyederhanaan Tabel Inquiry RFQ Dashboard Admin (`LIMIT 10` & Scroll Hanya di Mobile)** *(Keputusan Q9)*
+- [x] **T-302: Penyederhanaan Tabel Inquiry RFQ Dashboard Admin (`LIMIT 10` & Scroll Hanya di Mobile)** *(Keputusan Q9)*
   - **Deskripsi:** Mengubah query pengambilan data Inquiry RFQ di Dashboard Admin (`/admin/dashboard`) menjadi `LIMIT 10` terbaru (`ORDER BY i.created_at DESC, i.id DESC`), tanpa paginasi, menghapus scroll pada layar desktop (`> 768px`) namun mempertahankan wrapper scroll horizontal (`overflow-x: auto`) pada layar mobile (`<= 768px`), serta mempertahankan tautan "Lihat Seluruh Inquiry".
   - **Acceptance Criteria:**
     - `controllers/admin/dashboardController.js` memanggil `inquiryModel.findAll({ limit: 10 })` di level SQL query.
@@ -34,7 +34,7 @@
   - **Skill:** `impeccable` (`adapt`, `polish`), `antislop-layoutmobile`, `antislop-code`
   - **Verifikasi:** Uji `/admin/dashboard` dengan `0`, `5`, `10`, dan `>10` data; uji viewport `320px` s/d `1440px`.
 
-- [ ] **T-303: Pembuatan Komponen Paginasi Bersama Varian 1 (`.pgn-*`, Partial EJS, Modul JS, & Lokalisasi ID/EN)** *(Keputusan Q1, Q2, Q3, Q7, Q8, Q10)*
+- [x] **T-303: Pembuatan Komponen Paginasi Bersama Varian 1 (`.pgn-*`, Partial EJS, Modul JS, & Lokalisasi ID/EN)** *(Keputusan Q1, Q2, Q3, Q7, Q8, Q10)*
   - **Deskripsi:** Membangun komponen paginasi bersama yang terdiri dari partial `views/partials/pagination.ejs`, styling `.pgn-*` berbasis token CSS di `public/css/admin.css` (tanpa mengubah `.pagination-bar` halaman Berita), modul `public/js/pagination.js`, serta kamus lokalisasi ID/EN di `locales/id.json` dan `locales/en.json`.
   - **Acceptance Criteria:**
     - Identik 1:1 dengan Gambar 2 Varian 1: sisi kiri `Page [input] of <total> | Rows per page [select 10/25/50/100]` menggunakan `<select>` native ter-style (`.pgn-per-page-select`); sisi kanan `<< < 1 2 3 ... 8 9 10 > >>` dengan halaman aktif berlatar abu muda netral (`var(--bg-subtle)`) dan hover hijau token di dalam `@media (hover: hover)`.

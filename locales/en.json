@@ -157,5 +157,15 @@
     "confirm_delete_column_text": "This column contains text data that will be removed. Proceed?",
     "confirm_delete_row_title": "Delete Row?",
     "confirm_delete_row_text": "This row contains text data that will be removed. Proceed?"
+  },
+  "pagination": {
+    "page": "Page",
+    "of": "of",
+    "rows_per_page": "Rows per page",
+    "first": "First page",
+    "previous": "Previous page",
+    "next": "Next page",
+    "last": "Last page",
+    "go_to_page": "Go to page"
   }
 }

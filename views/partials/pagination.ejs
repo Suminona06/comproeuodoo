@@ -1,0 +1,150 @@
+<%
+  const p = typeof pagination !== 'undefined' && pagination ? pagination : {
+    page: 1,
+    perPage: 10,
+    totalRows: 0,
+    totalPages: 1,
+    baseUrl: '',
+    queryParams: {}
+  };
+
+  const currentPage = Math.max(1, parseInt(p.page, 10) || 1);
+  const perPage = [10, 25, 50, 100].includes(parseInt(p.perPage, 10)) ? parseInt(p.perPage, 10) : 10;
+  const totalPages = Math.max(1, parseInt(p.totalPages, 10) || 1);
+  const barId = typeof id !== 'undefined' ? id : 'pgnBar';
+  const selectId = `${barId}PerPageSelect`;
+  const inputId = `${barId}PageInput`;
+  const baseUrl = p.baseUrl || '';
+  const queryParams = p.queryParams || {};
+
+  const pLang = typeof currentLang !== 'undefined' ? currentLang : 'id';
+  const txtPage = typeof t === 'function' ? t('pagination.page') : (pLang === 'en' ? 'Page' : 'Page');
+  const txtOf = typeof t === 'function' ? t('pagination.of') : (pLang === 'en' ? 'of' : 'dari');
+  const txtRowsPerPage = typeof t === 'function' ? t('pagination.rows_per_page') : (pLang === 'en' ? 'Rows per page' : 'Baris per halaman');
+  const txtFirst = typeof t === 'function' ? t('pagination.first') : (pLang === 'en' ? 'First page' : 'Halaman pertama');
+  const txtPrev = typeof t === 'function' ? t('pagination.previous') : (pLang === 'en' ? 'Previous page' : 'Halaman sebelumnya');
+  const txtNext = typeof t === 'function' ? t('pagination.next') : (pLang === 'en' ? 'Next page' : 'Halaman berikutnya');
+  const txtLast = typeof t === 'function' ? t('pagination.last') : (pLang === 'en' ? 'Last page' : 'Halaman terakhir');
+  const txtGoToPage = typeof t === 'function' ? t('pagination.go_to_page') : (pLang === 'en' ? 'Go to page' : 'Lompat ke halaman');
+
+  function buildUrl(targetPage, targetPerPage) {
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(queryParams)) {
+      if (k !== 'page' && k !== 'per_page' && v !== null && v !== undefined && v !== '') {
+        params.set(k, v);
+      }
+    }
+    params.set('page', targetPage);
+    params.set('per_page', targetPerPage || perPage);
+    const qs = params.toString();
+    return qs ? `${baseUrl}?${qs}` : baseUrl;
+  }
+
+  function getPageItems(cur, total) {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    if (cur <= 3) {
+      return [1, 2, 3, '...', total - 2, total - 1, total];
+    }
+    if (cur >= total - 2) {
+      return [1, 2, 3, '...', total - 2, total - 1, total];
+    }
+    return [1, '...', cur - 1, cur, cur + 1, '...', total];
+  }
+
+  const pageItems = getPageItems(currentPage, totalPages);
+  const isFirstDisabled = currentPage <= 1;
+  const isLastDisabled = currentPage >= totalPages;
+%>
+<nav class="pgn-bar" id="<%= barId %>" aria-label="Pagination Navigation" data-current-page="<%= currentPage %>" data-total-pages="<%= totalPages %>" data-per-page="<%= perPage %>" data-base-url="<%= baseUrl %>">
+  <div class="pgn-left">
+    <div class="pgn-page-jump">
+      <span class="pgn-label-txt"><%= txtPage %></span>
+      <input type="number"
+             id="<%= inputId %>"
+             class="pgn-page-input"
+             value="<%= currentPage %>"
+             min="1"
+             max="<%= totalPages %>"
+             aria-label="<%= txtGoToPage %>"
+             data-total-pages="<%= totalPages %>"
+             data-current-page="<%= currentPage %>">
+      <span class="pgn-label-txt"><%= txtOf %> <%= totalPages %></span>
+    </div>
+
+    <div class="pgn-divider" aria-hidden="true"></div>
+
+    <div class="pgn-per-page">
+      <label for="<%= selectId %>" class="pgn-per-page-label"><%= txtRowsPerPage %></label>
+      <div class="pgn-select-wrap">
+        <select id="<%= selectId %>" class="pgn-per-page-select" aria-label="<%= txtRowsPerPage %>">
+          <% [10, 25, 50, 100].forEach(function(val) { %>
+            <option value="<%= val %>" <%= perPage === val ? 'selected' : '' %>><%= val %></option>
+          <% }); %>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pgn-nav" role="navigation" aria-label="Page selection">
+    <% if (isFirstDisabled) { %>
+      <span class="pgn-btn pgn-btn--first is-disabled" aria-disabled="true" title="<%= txtFirst %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
+      </span>
+    <% } else { %>
+      <a href="<%= buildUrl(1, perPage) %>" class="pgn-btn pgn-btn--first" data-page="1" aria-label="<%= txtFirst %>" title="<%= txtFirst %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
+      </a>
+    <% } %>
+
+    <% if (isFirstDisabled) { %>
+      <span class="pgn-btn pgn-btn--prev is-disabled" aria-disabled="true" title="<%= txtPrev %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </span>
+    <% } else { %>
+      <a href="<%= buildUrl(currentPage - 1, perPage) %>" class="pgn-btn pgn-btn--prev" data-page="<%= currentPage - 1 %>" aria-label="<%= txtPrev %>" title="<%= txtPrev %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </a>
+    <% } %>
+
+    <div class="pgn-pages">
+      <% pageItems.forEach(function(item) { %>
+        <% if (item === '...') { %>
+          <span class="pgn-ellipsis" aria-hidden="true">&hellip;</span>
+        <% } else if (item === currentPage) { %>
+          <span class="pgn-num is-active" aria-current="page"><%= item %></span>
+        <% } else { %>
+          <a href="<%= buildUrl(item, perPage) %>" class="pgn-num" data-page="<%= item %>" aria-label="Page <%= item %>"><%= item %></a>
+        <% } %>
+      <% }); %>
+    </div>
+
+    <div class="pgn-mobile-info" aria-hidden="true">
+      <span><%= currentPage %> / <%= totalPages %></span>
+    </div>
+
+    <% if (isLastDisabled) { %>
+      <span class="pgn-btn pgn-btn--next is-disabled" aria-disabled="true" title="<%= txtNext %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </span>
+    <% } else { %>
+      <a href="<%= buildUrl(currentPage + 1, perPage) %>" class="pgn-btn pgn-btn--next" data-page="<%= currentPage + 1 %>" aria-label="<%= txtNext %>" title="<%= txtNext %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </a>
+    <% } %>
+
+    <% if (isLastDisabled) { %>
+      <span class="pgn-btn pgn-btn--last is-disabled" aria-disabled="true" title="<%= txtLast %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+      </span>
+    <% } else { %>
+      <a href="<%= buildUrl(totalPages, perPage) %>" class="pgn-btn pgn-btn--last" data-page="<%= totalPages %>" aria-label="<%= txtLast %>" title="<%= txtLast %>">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+      </a>
+    <% } %>
+  </div>
+
+  <div class="pgn-live-region" aria-live="polite" aria-atomic="true"></div>
+</nav>
+

@@ -21,7 +21,7 @@ export const dashboardController = {
         postModel.countAll({ status: 'published' }),
         bannerModel.countActive(),
         brandModel.findAll({ activeOnly: true }),
-        inquiryModel.findAll({ limit: 15 })
+        inquiryModel.findAll({ limit: 10 })
       ]);
 
       res.render('admin/dashboard', {
