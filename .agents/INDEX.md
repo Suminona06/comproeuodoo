@@ -22,8 +22,8 @@
 | **News & Articles** | ACTIVE | 2026-10-28 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs` |
 | **Contact, Footer & WA** | ACTIVE | 2026-10-30 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs` |
 | **Admin CMS & Users** | ACTIVE | 2026-11-03 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
-| **Admin UI, Buttons & Validation** | ACTIVE | 2026-11-03 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin.css`, `public/js/admin-form-validation.js` |
-| **Admin UI Dropdown Component** | ACTIVE | 2026-11-03 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-ui-dropdown.md](tech/admin-ui-dropdown.md) | `public/css/admin.css`, `public/js/admin-dropdown.js` |
+| **Admin UI, Buttons, Pagination & Validation** | ACTIVE | 2026-11-03 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin.css`, `public/js/pagination.js`, `public/js/admin-form-validation.js` |
+| **Admin UI Dropdown Component** | ACTIVE | 2026-11-03 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui-dropdown.md](tech/admin-ui-dropdown.md) | `public/css/admin.css`, `public/js/admin-dropdown.js` |
 | **Media Library** | ACTIVE | 2026-10-30 | [prd/media-library.md](prd/media-library.md) | [tech/media-library.md](tech/media-library.md) | `views/admin/media/` |
 | **SEO & Security** | ACTIVE | 2026-10-21 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
 | **Site Settings** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
