@@ -99,7 +99,11 @@
     const perPage = targetPerPage || curPerPage;
     const baseUrl = bar.getAttribute('data-base-url') || window.location.pathname;
 
-    const nextUrl = createPaginationUrl(baseUrl, options.queryParams, page, perPage);
+    const queryParams = typeof options.getQueryParams === 'function'
+      ? options.getQueryParams()
+      : (options.queryParams || {});
+
+    const nextUrl = createPaginationUrl(baseUrl, queryParams, page, perPage);
     updateUrlState(nextUrl);
 
     announceToScreenReader(bar, `Halaman ${page}`);
@@ -120,20 +124,23 @@
   }
 
   function bindBarEvents(bar, options) {
+    if (!bar) return;
+    const opts = options || activeOptions || {};
+
     bar.addEventListener('click', (e) => {
       const link = e.target.closest('a.pgn-btn, a.pgn-num');
       if (!link) return;
 
       e.preventDefault();
       const page = parseInt(link.getAttribute('data-page'), 10);
-      if (page) triggerPageChange(bar, page, null, options);
+      if (page) triggerPageChange(bar, page, null, opts);
     });
 
     const perPageSelect = bar.querySelector('.pgn-per-page-select');
     if (perPageSelect) {
       perPageSelect.addEventListener('change', () => {
         const newPerPage = parseInt(perPageSelect.value, 10) || 10;
-        triggerPageChange(bar, 1, newPerPage, options);
+        triggerPageChange(bar, 1, newPerPage, opts);
       });
     }
 
@@ -143,42 +150,61 @@
         if (e.key === 'Enter') {
           e.preventDefault();
           const validPage = normalizePageInput(pageInput);
-          triggerPageChange(bar, validPage, null, options);
+          triggerPageChange(bar, validPage, null, opts);
         }
       });
       pageInput.addEventListener('change', () => {
         const validPage = normalizePageInput(pageInput);
-        triggerPageChange(bar, validPage, null, options);
+        triggerPageChange(bar, validPage, null, opts);
       });
     }
   }
 
+  let activeOptions = null;
+  let popstateHandlerRegistered = false;
+
   function initPagination(options = {}) {
+    activeOptions = options;
     const selector = options.containerSelector || '.pgn-bar';
     const bar = document.querySelector(selector);
-    if (!bar) return;
+    if (bar) {
+      bindBarEvents(bar, options);
+    }
 
-    bindBarEvents(bar, options);
+    if (!popstateHandlerRegistered) {
+      popstateHandlerRegistered = true;
+      window.addEventListener('popstate', () => {
+        if (!activeOptions) return;
+        const params = new URLSearchParams(window.location.search);
+        const popPage = parseInt(params.get('page'), 10) || 1;
+        const popPerPage = parseInt(params.get('per_page'), 10) || 10;
+        if (typeof activeOptions.onPageChange === 'function') {
+          activeOptions.onPageChange({
+            page: popPage,
+            perPage: popPerPage,
+            url: window.location.href,
+            isPopState: true
+          });
+        }
+      });
+    }
+  }
 
-    window.addEventListener('popstate', () => {
-      const params = new URLSearchParams(window.location.search);
-      const popPage = parseInt(params.get('page'), 10) || 1;
-      const popPerPage = parseInt(params.get('per_page'), 10) || 10;
-      if (typeof options.onPageChange === 'function') {
-        options.onPageChange({
-          page: popPage,
-          perPage: popPerPage,
-          url: window.location.href,
-          isPopState: true
-        });
-      }
-    });
+  function navigate(page, perPage, optionsOverride) {
+    const opts = optionsOverride || activeOptions || {};
+    const bar = document.querySelector(opts.containerSelector || '.pgn-bar');
+    if (bar) {
+      triggerPageChange(bar, page, perPage, opts);
+    }
   }
 
   window.EuPagination = {
     init: initPagination,
+    bind: bindBarEvents,
+    navigate,
     fetchPageData,
-    createPaginationUrl
+    createPaginationUrl,
+    updateUrlState
   };
 
 })(window, document);

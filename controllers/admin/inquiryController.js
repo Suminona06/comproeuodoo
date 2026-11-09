@@ -5,15 +5,82 @@ import logger from '../../utils/logger.js';
 export const inquiryController = {
   async index(req, res) {
     try {
-      const { status = 'all', search = '', page = 1 } = req.query;
-      const limit = 30;
-      const offset = (parseInt(page, 10) - 1) * limit;
+      const { status = 'all', search = '' } = req.query;
 
-      const [inquiries, totalCount, stats] = await Promise.all([
-        inquiryModel.findAll({ status, search, limit, offset }),
+      const allowedPerPage = [10, 25, 50, 100];
+      const parsedPerPage = parseInt(req.query.per_page, 10);
+      const perPage = allowedPerPage.includes(parsedPerPage) ? parsedPerPage : 10;
+
+      const [totalCount, stats] = await Promise.all([
         inquiryModel.countAll({ status, search }),
         inquiryModel.getStats()
       ]);
+
+      const totalPages = Math.max(1, Math.ceil(totalCount / perPage));
+
+      const parsedPage = parseInt(req.query.page, 10);
+      let currentPage = isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+      const offset = (currentPage - 1) * perPage;
+
+      const inquiries = await inquiryModel.findAll({ status, search, limit: perPage, offset });
+
+      const isAjax = Boolean(
+        req.xhr ||
+        req.headers.accept?.includes('application/json') ||
+        req.headers['x-requested-with'] === 'fetch' ||
+        req.query.format === 'json'
+      );
+
+      if (isAjax) {
+        const renderLocals = {
+          ...res.locals,
+          inquiries,
+          currentPage,
+          perPage,
+          totalPages,
+          totalCount,
+          currentStatus: status,
+          searchQuery: search,
+          pagination: {
+            page: currentPage,
+            perPage,
+            totalRows: totalCount,
+            totalPages,
+            baseUrl: '/admin/inquiries',
+            queryParams: { status, search }
+          }
+        };
+
+        return req.app.render('admin/inquiries/partials/table-rows', renderLocals, (err, rowsHtml) => {
+          if (err) {
+            logger.error('Inquiry index ajax render rows error:', err);
+            return res.status(500).json({ success: false, message: 'Gagal merender data tabel.' });
+          }
+
+          return req.app.render('partials/pagination', renderLocals, (pErr, paginationHtml) => {
+            if (pErr) {
+              logger.error('Inquiry index ajax render pagination error:', pErr);
+              return res.status(500).json({ success: false, message: 'Gagal merender bar paginasi.' });
+            }
+
+            return res.json({
+              success: true,
+              inquiries,
+              totalCount,
+              totalPages,
+              currentPage,
+              perPage,
+              currentStatus: status,
+              searchQuery: search,
+              rowsHtml,
+              paginationHtml
+            });
+          });
+        });
+      }
 
       res.render('admin/inquiries/index', {
         title: 'Manajemen Permintaan Penawaran (RFQ)',
@@ -24,13 +91,23 @@ export const inquiryController = {
         stats,
         currentStatus: status,
         searchQuery: search,
-        currentPage: parseInt(page, 10),
-        totalPages: Math.ceil(totalCount / limit) || 1,
+        currentPage,
+        perPage,
+        totalPages,
         error: req.query.error || null,
         success: req.query.success || null
       });
     } catch (err) {
       logger.error('Inquiry controller index error:', err);
+      const isAjax = Boolean(
+        req.xhr ||
+        req.headers.accept?.includes('application/json') ||
+        req.headers['x-requested-with'] === 'fetch' ||
+        req.query.format === 'json'
+      );
+      if (isAjax) {
+        return res.status(500).json({ success: false, message: 'Gagal memuat data inquiry.' });
+      }
       res.status(500).render('admin/inquiries/index', {
         title: 'Inquiry Leads',
         pageTitle: 'Inquiry & RFQ',
@@ -41,6 +118,7 @@ export const inquiryController = {
         currentStatus: 'all',
         searchQuery: '',
         currentPage: 1,
+        perPage: 10,
         totalPages: 1,
         error: 'Gagal memuat data inquiry.'
       });

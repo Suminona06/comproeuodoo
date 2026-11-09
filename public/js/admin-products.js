@@ -1,172 +1,224 @@
-(function() {
-  'use strict';
+/**
+ * Interaktivitas Katalog Produk Admin (/admin/products)
+ * Paginasi tanpa reload, sinkronisasi filter kategori & status, serta pencarian instan.
+ */
 
-  function setupCharCounter(textareaId, counterId, maxLen) {
-    const textarea = document.getElementById(textareaId);
-    const counter = document.getElementById(counterId);
-    if (!textarea || !counter) return;
+let selectedCategory = null;
+let selectedStatus = null;
+let searchQuery = '';
+let searchDebounceTimer = null;
 
-    function update() {
-      const len = textarea.value.length;
-      counter.textContent = `${len}/${maxLen}`;
-      if (maxLen - len <= 10) {
-        counter.classList.add('text-danger', 'counter-danger');
-      } else {
-        counter.classList.remove('text-danger', 'counter-danger');
+function getCurrentPerPage() {
+  const bar = document.getElementById('productPaginationBar') || document.querySelector('.pgn-bar');
+  if (bar) {
+    const pp = parseInt(bar.getAttribute('data-per-page'), 10);
+    if (pp) return pp;
+  }
+  const urlParams = new URLSearchParams(window.location.search);
+  return parseInt(urlParams.get('per_page'), 10) || 10;
+}
+
+const paginationOptions = {
+  containerSelector: '#productPaginationBar',
+  scrollToSelector: '.table-card',
+  getQueryParams: () => ({
+    category: selectedCategory,
+    status: selectedStatus,
+    q: searchQuery
+  }),
+  onPageChange: ({ url, isPopState }) => {
+    loadProducts(url, { isPopState });
+  }
+};
+
+function loadProducts(url, opts = {}) {
+  const tbody = document.getElementById('productTableBody');
+  if (tbody) {
+    tbody.style.opacity = '0.5';
+  }
+
+  window.EuPagination.fetchPageData(
+    url,
+    (data) => {
+      if (tbody) {
+        tbody.innerHTML = data.rowsHtml;
+        tbody.style.opacity = '1';
+      }
+
+      const pgnWrap = document.getElementById('productPaginationWrap');
+      if (pgnWrap && data.paginationHtml) {
+        pgnWrap.innerHTML = data.paginationHtml;
+      }
+
+      const newBar = document.getElementById('productPaginationBar') || document.querySelector('.pgn-bar');
+      if (newBar && window.EuPagination) {
+        window.EuPagination.bind(newBar, paginationOptions);
+      }
+
+      // Perbarui tautan ekspor CSV sesuai filter aktif
+      const exportLink = document.querySelector('a[href*="/admin/products/export"]');
+      if (exportLink) {
+        const expParams = new URLSearchParams();
+        if (selectedCategory) expParams.set('category', selectedCategory);
+        if (selectedStatus) expParams.set('status', selectedStatus);
+        const qs = expParams.toString();
+        exportLink.setAttribute('href', qs ? `/admin/products/export?${qs}` : '/admin/products/export');
+      }
+
+      // Mundur otomatis jika halaman aktif menjadi kosong (mis. setelah penghapusan produk terakhir)
+      if (data.products && data.products.length === 0 && data.currentPage > 1) {
+        const prevPage = Math.max(1, data.currentPage - 1);
+        const newUrl = window.EuPagination.createPaginationUrl(
+          '/admin/products',
+          { category: selectedCategory, status: selectedStatus, q: searchQuery },
+          prevPage,
+          data.perPage
+        );
+        window.EuPagination.updateUrlState(newUrl, true);
+        loadProducts(newUrl, { isPopState: false });
+      }
+    },
+    () => {
+      if (tbody) tbody.style.opacity = '1';
+      if (typeof window.showToast === 'function') {
+        window.showToast('Gagal memuat katalog produk.');
       }
     }
+  );
+}
 
-    textarea.addEventListener('input', update);
-    update();
-  }
+function syncFilterAndSearchUI() {
+  const tabs = document.querySelectorAll('#prodFilterTabs .tab-btn');
+  tabs.forEach((tab) => {
+    const tabStatus = tab.getAttribute('data-status') || '';
+    const isActive = selectedStatus ? tabStatus === selectedStatus : tabStatus === '';
+    tab.classList.toggle('active', isActive);
+  });
 
-  setupCharCounter('short_description_id', 'counter_short_desc_id', 200);
-  setupCharCounter('short_description_en', 'counter_short_desc_en', 200);
-
-  const galleryStrip = document.getElementById('prodGalleryStrip');
-  const galleryInput = document.getElementById('gallery_images_input');
-  const btnOpenGallery = document.getElementById('btnOpenGalleryPicker');
-
-  function updateGalleryInput() {
-    if (!galleryStrip || !galleryInput) return;
-    const items = galleryStrip.querySelectorAll('.prod-gallery-item');
-    const list = [];
-    items.forEach(function(el) {
-      const id = el.getAttribute('data-id');
-      if (id && /^\d+$/.test(id)) {
-        list.push(parseInt(id, 10));
-      } else if (el.getAttribute('data-url')) {
-        list.push(el.getAttribute('data-url'));
+  const catSelect = document.getElementById('prodCategorySelect');
+  if (catSelect) {
+    catSelect.value = selectedCategory || '';
+    const ddWrapper = catSelect.closest('.eu-dd');
+    if (ddWrapper) {
+      const selectedOption = catSelect.options[catSelect.selectedIndex];
+      const valEl = ddWrapper.querySelector('.eu-dd-value');
+      if (valEl && selectedOption) {
+        valEl.textContent = selectedOption.textContent.trim();
       }
-    });
-    galleryInput.value = JSON.stringify(list);
-  }
-
-  function bindGalleryItemEvents(div) {
-    const delBtn = div.querySelector('.prod-gallery-btn-del');
-    const upBtn = div.querySelector('.prod-gallery-btn-up');
-    const downBtn = div.querySelector('.prod-gallery-btn-down');
-
-    if (delBtn) {
-      delBtn.addEventListener('click', function() {
-        div.remove();
-        updateGalleryInput();
-      });
-    }
-
-    if (upBtn) {
-      upBtn.addEventListener('click', function() {
-        const prev = div.previousElementSibling;
-        if (prev) {
-          galleryStrip.insertBefore(div, prev);
-          updateGalleryInput();
-        }
-      });
-    }
-
-    if (downBtn) {
-      downBtn.addEventListener('click', function() {
-        const next = div.nextElementSibling;
-        if (next) {
-          galleryStrip.insertBefore(next, div);
-          updateGalleryInput();
-        }
-      });
     }
   }
 
-  if (galleryStrip) {
-    galleryStrip.querySelectorAll('.prod-gallery-item').forEach(bindGalleryItemEvents);
+  const searchInput = document.getElementById('prodSearchInput');
+  if (searchInput) {
+    searchInput.value = searchQuery || '';
+  }
+}
+
+function initProductsEvents() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const rawCat = urlParams.get('category') || urlParams.get('category_id');
+  selectedCategory = rawCat ? parseInt(rawCat, 10) : null;
+  selectedStatus = urlParams.get('status') || null;
+  searchQuery = urlParams.get('q') || urlParams.get('search') || '';
+
+  if (window.EuPagination) {
+    window.EuPagination.init(paginationOptions);
   }
 
-  function createGalleryItem(item) {
-    const id = item.id || '';
-    const url = item.file_url || item.url || '';
-    if (!url) return null;
+  // Filter tabs tanpa reload
+  const tabsWrap = document.getElementById('prodFilterTabs');
+  if (tabsWrap) {
+    tabsWrap.addEventListener('click', (e) => {
+      const link = e.target.closest('a.tab-btn');
+      if (!link) return;
+      e.preventDefault();
 
-    const div = document.createElement('div');
-    div.className = 'prod-gallery-item';
-    div.setAttribute('data-id', id);
-    div.setAttribute('data-url', url);
+      const newStatus = link.getAttribute('data-status') || null;
+      if (newStatus === selectedStatus) return;
 
-    div.innerHTML = `
-      <div class="prod-gallery-thumb-box">
-        <img src="${url}" alt="" class="prod-gallery-thumb" width="64" height="64" loading="lazy">
-        <button type="button" class="prod-gallery-btn-del" title="Hapus foto" aria-label="Hapus foto">&times;</button>
-      </div>
-      <div class="prod-gallery-reorder">
-        <button type="button" class="prod-gallery-btn-move prod-gallery-btn-up" title="Geser ke kiri / atas" aria-label="Geser ke kiri">\u25B2</button>
-        <button type="button" class="prod-gallery-btn-move prod-gallery-btn-down" title="Geser ke kanan / bawah" aria-label="Geser ke kanan">\u25BC</button>
-      </div>
-    `;
+      selectedStatus = newStatus;
+      syncFilterAndSearchUI();
 
-    bindGalleryItemEvents(div);
-    return div;
-  }
-
-  if (btnOpenGallery) {
-    btnOpenGallery.addEventListener('click', function() {
-      if (typeof window.openMediaPicker === 'function') {
-        window.openMediaPicker({
-          multiple: true,
-          type: 'image',
-          onSelect: function(selectedList) {
-            if (Array.isArray(selectedList)) {
-              selectedList.forEach(function(m) {
-                const existing = galleryStrip.querySelector(`[data-id="${m.id}"], [data-url="${m.file_url}"]`);
-                if (!existing) {
-                  const el = createGalleryItem(m);
-                  if (el) galleryStrip.appendChild(el);
-                }
-              });
-              updateGalleryInput();
-            }
-          }
-        });
-      }
+      const curPerPage = getCurrentPerPage();
+      const nextUrl = window.EuPagination.createPaginationUrl(
+        '/admin/products',
+        { category: selectedCategory, status: selectedStatus, q: searchQuery },
+        1,
+        curPerPage
+      );
+      window.EuPagination.updateUrlState(nextUrl);
+      loadProducts(nextUrl);
     });
   }
 
-  const btnAddVariant = document.getElementById('btnAddVariant');
-  const variantsContainer = document.getElementById('variantsContainer');
+  // Filter kategori tanpa reload
+  const catSelect = document.getElementById('prodCategorySelect');
+  if (catSelect) {
+    catSelect.addEventListener('change', () => {
+      const val = catSelect.value;
+      selectedCategory = val ? parseInt(val, 10) : null;
+      syncFilterAndSearchUI();
 
-  function bindVariantRow(row) {
-    const btn = row.querySelector('.btn-remove-variant');
-    if (!btn) return;
-    btn.addEventListener('click', function() {
-      const rows = variantsContainer.querySelectorAll('.prod-variant-row-item');
-      if (rows.length > 1) {
-        row.remove();
-      } else {
-        const input = row.querySelector('input');
-        if (input) input.value = '';
-      }
+      const curPerPage = getCurrentPerPage();
+      const nextUrl = window.EuPagination.createPaginationUrl(
+        '/admin/products',
+        { category: selectedCategory, status: selectedStatus, q: searchQuery },
+        1,
+        curPerPage
+      );
+      window.EuPagination.updateUrlState(nextUrl);
+      loadProducts(nextUrl);
     });
   }
 
-  function createVariantRow(val) {
-    const value = val || '';
-    const div = document.createElement('div');
-    div.className = 'prod-variant-row-item';
-    div.innerHTML = `
-      <input type="text" name="variant_labels[]" class="form-input" placeholder="Contoh: 24 x 40 cm (40 Micron)" value="${value}">
-      <button type="button" class="btn-row-action btn-row-delete btn-remove-variant" title="Hapus varian" aria-label="Hapus varian">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-      </button>
-    `;
-    bindVariantRow(div);
-    return div;
-  }
+  // Form pencarian tanpa reload
+  const searchForm = document.getElementById('prodSearchForm');
+  const searchInput = document.getElementById('prodSearchInput');
 
-  if (btnAddVariant && variantsContainer) {
-    btnAddVariant.addEventListener('click', function() {
-      const row = createVariantRow('');
-      variantsContainer.appendChild(row);
-      const input = row.querySelector('input');
-      if (input) input.focus();
+  if (searchForm) {
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      searchQuery = searchInput ? searchInput.value.trim() : '';
+
+      const curPerPage = getCurrentPerPage();
+      const nextUrl = window.EuPagination.createPaginationUrl(
+        '/admin/products',
+        { category: selectedCategory, status: selectedStatus, q: searchQuery },
+        1,
+        curPerPage
+      );
+      window.EuPagination.updateUrlState(nextUrl);
+      loadProducts(nextUrl);
     });
-
-    variantsContainer.querySelectorAll('.prod-variant-row-item').forEach(bindVariantRow);
   }
-})();
 
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        searchQuery = searchInput.value.trim();
+        const curPerPage = getCurrentPerPage();
+        const nextUrl = window.EuPagination.createPaginationUrl(
+          '/admin/products',
+          { category: selectedCategory, status: selectedStatus, q: searchQuery },
+          1,
+          curPerPage
+        );
+        window.EuPagination.updateUrlState(nextUrl);
+        loadProducts(nextUrl);
+      }, 350);
+    });
+  }
+
+  // Sinkronisasi saat user navigasi back/forward
+  window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    const pCat = params.get('category') || params.get('category_id');
+    selectedCategory = pCat ? parseInt(pCat, 10) : null;
+    selectedStatus = params.get('status') || null;
+    searchQuery = params.get('q') || params.get('search') || '';
+    syncFilterAndSearchUI();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initProductsEvents);

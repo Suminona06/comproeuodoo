@@ -46,7 +46,7 @@
   - **Skill:** `impeccable` (`polish`, `adapt`, `animate`), `antislop-human`, `antislop-layoutmobile`, `antislop-code`
   - **Verifikasi:** Uji kesesuaian visual Varian 1, uji input halaman tidak valid, uji `AbortController`, uji responsif `320px`, dan audit aksesibilitas.
 
-- [ ] **T-304: Integrasi Paginasi Tanpa Reload pada Daftar RFQ/Inquiry Admin (`/admin/inquiries`)** *(Keputusan Q1, Q2, Q3, Q8, Q10)*
+- [x] **T-304: Integrasi Paginasi Tanpa Reload pada Daftar RFQ/Inquiry Admin (`/admin/inquiries`)** *(Keputusan Q1, Q2, Q3, Q8, Q10)*
   - **Deskripsi:** Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke `/admin/inquiries` dengan validasi parameter server (`page`, `per_page` whitelist `10/25/50/100` default `10`), respons JSON/partial HTML pada `GET /admin/inquiries`, sinkronisasi filter status & pencarian, pelestarian event delegation untuk aksi baris, serta penyesuaian halaman aktif setelah penghapusan data.
   - **Acceptance Criteria:**
     - Whitelist `per_page` (`10/25/50/100`, default `10`) dan normalisasi `page` (`>= 1`, maks `totalPages`) di `controllers/admin/inquiryController.js` & `models/inquiryModel.js` menggunakan query terparameter.
@@ -56,7 +56,7 @@
   - **Skill:** `impeccable` (`polish`, `adapt`), `antislop-code`
   - **Verifikasi:** Uji pindah halaman, ganti `per_page`, filter + pencarian, aksi modal/status/hapus di halaman 2+, dan URL manual `?per_page=1000&page=abc`.
 
-- [ ] **T-305: Integrasi Paginasi Tanpa Reload pada Daftar Katalog Produk Admin (`/admin/products`)** *(Keputusan Q1, Q2, Q3, Q4, Q5, Q6, Q8, Q10)*
+- [x] **T-305: Integrasi Paginasi Tanpa Reload pada Daftar Katalog Produk Admin (`/admin/products`)** *(Keputusan Q1, Q2, Q3, Q4, Q5, Q6, Q8, Q10)*
   - **Deskripsi:** Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke halaman daftar Katalog Produk Admin (`/admin/products`) dengan `per_page` `10/25/50/100` (default `10`) tanpa reload halaman, menyinkronkan filter kategori produk dan pencarian kata kunci dengan query server & `history.pushState`, serta menjaga stabilitas tinggi baris/thumbnail (tanpa layout shift).
   - **Acceptance Criteria:**
     - Whitelist `per_page` (`10/25/50/100`, default `10`), normalisasi `page` (`>= 1`, maks `totalPages`), filter `category_id`, dan pencarian `q` di `controllers/admin/productController.js` & `models/productModel.js` menggunakan query terparameter.

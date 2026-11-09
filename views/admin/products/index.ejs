@@ -22,8 +22,8 @@
     <div class="adm-prod-toolbar-left">
       <h2 class="toolbar-title adm-prod-toolbar-title">Daftar Produk</h2>
       
-      <form action="/admin/products" method="GET" class="adm-prod-filter-form">
-        <select name="category" class="form-select" data-eu-dropdown="elevated" data-prefix="Kategori" data-eu-size="sm" data-inline="true" data-auto-submit="true">
+      <form action="/admin/products" method="GET" class="adm-prod-filter-form" id="prodFilterForm">
+        <select name="category" id="prodCategorySelect" class="form-select" data-eu-dropdown="elevated" data-prefix="Kategori" data-eu-size="sm" data-inline="true">
           <option value="">Semua Kategori</option>
           <% categories.forEach(function(cat) { %>
             <option value="<%= cat.id %>" <%= selectedCategory === cat.id ? 'selected' : '' %>>
@@ -34,17 +34,19 @@
         <% if (selectedStatus) { %><input type="hidden" name="status" value="<%= selectedStatus %>"><% } %>
       </form>
 
-      <div class="filter-tabs-wrap">
-        <a href="/admin/products<%= selectedCategory ? '?category=' + selectedCategory : '' %>" class="tab-btn <%= !selectedStatus ? 'active' : '' %>">Semua</a>
-        <a href="/admin/products?status=published<%= selectedCategory ? '&category=' + selectedCategory : '' %>" class="tab-btn <%= selectedStatus === 'published' ? 'active' : '' %>">Published</a>
-        <a href="/admin/products?status=draft<%= selectedCategory ? '&category=' + selectedCategory : '' %>" class="tab-btn <%= selectedStatus === 'draft' ? 'active' : '' %>">Draft</a>
+      <div class="filter-tabs-wrap" id="prodFilterTabs">
+        <a href="/admin/products<%= selectedCategory ? '?category=' + selectedCategory : '' %>" data-status="" class="tab-btn <%= !selectedStatus ? 'active' : '' %>">Semua</a>
+        <a href="/admin/products?status=published<%= selectedCategory ? '&category=' + selectedCategory : '' %>" data-status="published" class="tab-btn <%= selectedStatus === 'published' ? 'active' : '' %>">Published</a>
+        <a href="/admin/products?status=draft<%= selectedCategory ? '&category=' + selectedCategory : '' %>" data-status="draft" class="tab-btn <%= selectedStatus === 'draft' ? 'active' : '' %>">Draft</a>
       </div>
     </div>
 
-    <div class="search-input-wrap">
+    <form action="/admin/products" method="GET" class="search-input-wrap adm-prod-search-form" id="prodSearchForm">
+      <input type="hidden" name="category" value="<%= selectedCategory || '' %>">
+      <input type="hidden" name="status" value="<%= selectedStatus || '' %>">
       <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="liveSearchInput" placeholder="Cari nama produk..." aria-label="Cari produk">
-    </div>
+      <input type="text" id="prodSearchInput" name="q" placeholder="Cari nama produk..." value="<%= searchQuery || '' %>" aria-label="Cari produk">
+    </form>
   </div>
 
   <div class="table-scroll-wrapper">
@@ -58,60 +60,32 @@
           <th class="adm-prod-th-action">Aksi</th>
         </tr>
       </thead>
-      <tbody>
-        <% if (products && products.length > 0) { %>
-          <% products.forEach(function(p) { %>
-            <tr data-status="<%= p.status %>">
-              <td>
-                <div class="adm-prod-thumb">
-                  <% if (p.image_url) { %>
-                    <img src="<%= p.image_url %>" alt="<%= p.name_id %>" class="adm-prod-thumb-img">
-                  <% } else { %>
-                    <span class="adm-prod-thumb-empty">NO PIC</span>
-                  <% } %>
-                </div>
-              </td>
-              <td>
-                <div class="td-client-title"><%= p.name_id %></div>
-                <div class="adm-slug-text" title="<%= p.slug %>"><%= p.slug %></div>
-              </td>
-              <td>
-                <span class="badge-role editor adm-prod-badge-cat">
-                  <%= p.category_name_id || 'Umum' %>
-                </span>
-              </td>
-              <td>
-                <span class="badge-status <%= p.status === 'published' ? 'badge-status--success' : (p.status === 'draft' ? 'badge-status--warning' : 'badge-status--danger') %>">
-                  <%= p.status === 'published' ? 'Published' : (p.status === 'draft' ? 'Draft' : (p.status || '-')) %>
-                </span>
-              </td>
-              <td class="adm-prod-td-action">
-                <div class="table-actions">
-                  <a href="/admin/products/<%= p.id %>/edit" class="btn-action btn-action-edit" title="Edit Produk">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    <span>Edit</span>
-                  </a>
-                  <form action="/admin/products/<%= p.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus produk <%= p.name_id %> secara permanen?" data-confirm-title="Hapus Produk">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button type="submit" class="btn-action btn-action-delete" title="Hapus Produk">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                      <span>Hapus</span>
-                    </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          <% }); %>
-        <% } else { %>
-          <tr>
-            <td colspan="5" class="adm-prod-empty-td">
-              Tidak ada produk yang sesuai dengan filter.
-            </td>
-          </tr>
-        <% } %>
+      <tbody id="productTableBody">
+        <%- include('partials/table-rows', { products: products, csrfToken: csrfToken }) %>
       </tbody>
     </table>
   </div>
+
+  <div class="adm-prod-pagination-wrap" id="productPaginationWrap">
+    <%- include('../../partials/pagination', {
+      id: 'productPaginationBar',
+      pagination: {
+        page: currentPage,
+        perPage: perPage,
+        totalRows: totalCount,
+        totalPages: totalPages,
+        baseUrl: '/admin/products',
+        queryParams: {
+          category: selectedCategory,
+          status: selectedStatus,
+          q: searchQuery
+        }
+      }
+    }) %>
+  </div>
 </div>
+
+<script src="/js/pagination.js" defer></script>
+<script src="/js/admin-products.js" defer></script>
 
 <%- include('../../partials/admin-footer') %>

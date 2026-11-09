@@ -1,8 +1,19 @@
 /**
- * Pengelolaan Interaktivitas Halaman Pesan Masuk & RFQ (Inquiries)
+ * Interaktivitas Halaman Pesan Masuk & RFQ (Inquiries)
+ * Paginasi tanpa reload, sinkronisasi filter/search, dan modal detail.
  */
 
 let inquiriesData = [];
+let currentStatus = 'all';
+let searchQuery = '';
+
+if (typeof window.initEuDropdowns !== 'function') {
+  window.initEuDropdowns = function (root) {
+    if (window.EuDropdown && typeof window.EuDropdown.init === 'function') {
+      window.EuDropdown.init(root);
+    }
+  };
+}
 
 function setElText(id, text) {
   const el = document.getElementById(id);
@@ -115,7 +126,120 @@ async function saveAdminNotes(id, notes) {
   }
 }
 
+function getCurrentPerPage() {
+  const bar = document.getElementById('inquiryPaginationBar') || document.querySelector('.pgn-bar');
+  if (bar) {
+    const pp = parseInt(bar.getAttribute('data-per-page'), 10);
+    if (pp) return pp;
+  }
+  const urlParams = new URLSearchParams(window.location.search);
+  return parseInt(urlParams.get('per_page'), 10) || 10;
+}
+
+const paginationOptions = {
+  containerSelector: '#inquiryPaginationBar',
+  scrollToSelector: '.table-card',
+  getQueryParams: () => ({
+    status: currentStatus,
+    search: searchQuery
+  }),
+  onPageChange: ({ url, isPopState }) => {
+    loadInquiries(url, { isPopState });
+  }
+};
+
+function loadInquiries(url, opts = {}) {
+  const tbody = document.getElementById('inquiryTableBody');
+  if (tbody) {
+    tbody.style.opacity = '0.5';
+  }
+
+  window.EuPagination.fetchPageData(
+    url,
+    (data) => {
+      if (tbody) {
+        tbody.innerHTML = data.rowsHtml;
+        tbody.style.opacity = '1';
+      }
+
+      const pgnWrap = document.getElementById('inquiryPaginationWrap');
+      if (pgnWrap && data.paginationHtml) {
+        pgnWrap.innerHTML = data.paginationHtml;
+      }
+
+      inquiriesData = data.inquiries || [];
+      const dataScript = document.getElementById('inquiriesDataJson');
+      if (dataScript) {
+        dataScript.textContent = JSON.stringify(inquiriesData);
+      }
+
+      if (tbody) {
+        if (window.EuDropdown && typeof window.EuDropdown.init === 'function') {
+          window.EuDropdown.init(tbody);
+        }
+        if (typeof window.initEuDropdowns === 'function') {
+          window.initEuDropdowns(tbody);
+        }
+      }
+
+      const newBar = document.getElementById('inquiryPaginationBar') || document.querySelector('.pgn-bar');
+      if (newBar && window.EuPagination) {
+        window.EuPagination.bind(newBar, paginationOptions);
+      }
+
+      // Mundur otomatis jika halaman terakhir kosong setelah aksi
+      if (inquiriesData.length === 0 && data.currentPage > 1) {
+        const prevPage = Math.max(1, data.currentPage - 1);
+        const newUrl = window.EuPagination.createPaginationUrl(
+          '/admin/inquiries',
+          { status: currentStatus, search: searchQuery },
+          prevPage,
+          data.perPage
+        );
+        window.EuPagination.updateUrlState(newUrl, true);
+        loadInquiries(newUrl, { isPopState: false });
+      }
+    },
+    () => {
+      if (tbody) tbody.style.opacity = '1';
+      if (typeof window.showToast === 'function') {
+        window.showToast('Gagal memuat data inquiry.');
+      }
+    }
+  );
+}
+
+function syncFilterAndSearchUI() {
+  const tabsWrap = document.querySelector('.filter-tabs-wrap');
+  if (tabsWrap) {
+    tabsWrap.querySelectorAll('.tab-btn').forEach((btn) => {
+      const href = btn.getAttribute('href') || '';
+      try {
+        const u = new URL(href, window.location.origin);
+        const s = u.searchParams.get('status') || 'all';
+        btn.classList.toggle('active', s === currentStatus);
+      } catch {
+        // fallback ignore
+      }
+    });
+  }
+
+  const searchInput = document.querySelector('.search-input-wrap input[name="search"]');
+  if (searchInput) {
+    searchInput.value = searchQuery;
+  }
+
+  const exportBtn = document.querySelector('a[href*="/admin/inquiries/export"]');
+  if (exportBtn) {
+    exportBtn.setAttribute('href', `/admin/inquiries/export?status=${encodeURIComponent(currentStatus)}`);
+  }
+}
+
 function initInquiriesEvents() {
+  const urlParams = new URLSearchParams(window.location.search);
+  currentStatus = urlParams.get('status') || 'all';
+  searchQuery = urlParams.get('search') || '';
+
   const dataScript = document.getElementById('inquiriesDataJson');
   if (dataScript && dataScript.textContent) {
     try {
@@ -125,6 +249,11 @@ function initInquiriesEvents() {
     }
   }
 
+  if (window.EuPagination) {
+    window.EuPagination.init(paginationOptions);
+  }
+
+  // Delegasi klik tombol tinjau cepat
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-inquiry-id]');
     if (btn && btn.classList.contains('btn-action-view')) {
@@ -133,11 +262,72 @@ function initInquiriesEvents() {
     }
   });
 
+  // Delegasi perubahan status inline
   document.addEventListener('change', (e) => {
     const sel = e.target.closest('.inquiry-status-select');
     if (!sel) return;
     const id = sel.getAttribute('data-id');
     if (id) quickChangeInquiryStatus(id, sel.value);
+  });
+
+  // Filter tabs tanpa reload
+  const tabsWrap = document.querySelector('.filter-tabs-wrap');
+  if (tabsWrap) {
+    tabsWrap.addEventListener('click', (e) => {
+      const link = e.target.closest('a.tab-btn');
+      if (!link) return;
+      e.preventDefault();
+
+      const href = link.getAttribute('href') || '';
+      try {
+        const u = new URL(href, window.location.origin);
+        const newStatus = u.searchParams.get('status') || 'all';
+        if (newStatus === currentStatus) return;
+
+        currentStatus = newStatus;
+        syncFilterAndSearchUI();
+
+        const perPage = getCurrentPerPage();
+        const nextUrl = window.EuPagination.createPaginationUrl(
+          '/admin/inquiries',
+          { status: currentStatus, search: searchQuery },
+          1,
+          perPage
+        );
+        window.EuPagination.updateUrlState(nextUrl);
+        loadInquiries(nextUrl);
+      } catch {
+        window.location.href = href;
+      }
+    });
+  }
+
+  // Form pencarian tanpa reload
+  const searchForm = document.querySelector('.search-input-wrap');
+  if (searchForm) {
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = searchForm.querySelector('input[name="search"]');
+      searchQuery = input ? input.value.trim() : '';
+
+      const perPage = getCurrentPerPage();
+      const nextUrl = window.EuPagination.createPaginationUrl(
+        '/admin/inquiries',
+        { status: currentStatus, search: searchQuery },
+        1,
+        perPage
+      );
+      window.EuPagination.updateUrlState(nextUrl);
+      loadInquiries(nextUrl);
+    });
+  }
+
+  // Sinkronisasi saat user navigasi back/forward
+  window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    currentStatus = params.get('status') || 'all';
+    searchQuery = params.get('search') || '';
+    syncFilterAndSearchUI();
   });
 
   const notesForm = document.getElementById('mNotesForm');
