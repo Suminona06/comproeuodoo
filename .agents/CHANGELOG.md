@@ -39,4 +39,3 @@
 - 2026-11-03 | Konvensi kode terstandarisasi, flat ESLint, skrip lint-views & lint-i18n, perbaikan sintaks HTML, serta refaktor modular view admin settings | T-270..T-276
 - 2026-11-05 | Refaktor & modularisasi menyeluruh 16 batch view admin (66 berkas EJS, eliminasi style/hex/komentar, pemecahan partials <=100 baris, namespace CSS semantik .adm-*), penegakan 100% strict lint views admin, dan verifikasi non-regresi publik Playwright | T-277..T-293
 - 2026-11-07 | Redesain Seksi Budaya Kerja (Nilai T-I-C-K-E-T) Menjadi Accordion Interaktif: Accordion desktop horizontal & mobile vertikal beranimasi Anime.js v3, integrasi CMS admin Tab 3 dengan foto latar opsional, whitelist 6 ikon SVG, akronim otomatis, dan audit kontras WCAG AA | T-294..T-300
-- 2026-11-09 | Revisi hover footer, tabel RFQ dashboard (LIMIT 10), dan paginasi tanpa reload admin inquiries & produk | T-301..T-306

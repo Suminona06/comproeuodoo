@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-09 | Kode: views/public/contact.ejs, controllers/public/contactController.js, views/partials/footer.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/contact.ejs, controllers/public/contactController.js, views/partials/footer.ejs
 
 # Tech Spec: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
 
@@ -54,8 +54,8 @@ Modul ini menangani penerimaan prospek B2B melalui formulir RFQ, pencatatan ke t
 
 ## 4. Komponen Antarmuka & Prefix CSS
 - **Formulir RFQ:** `.cf-section`, `.cf-form-wrap`, `.cf-form`, `.cf-form-row`, `.cf-form-group`, `.cf-label`, `.cf-label-required`, `.cf-input`, `.cf-select`, `.cf-textarea`, `.cf-btn-submit`, `.cf-alert`, `.cf-alert-success`, `.cf-alert-error`.
-- **Kartu Lokasi & Peta:** `.cf-office-card`, `.cf-office-header`, `.cf-office-icon`, `.cf-office-badge`, `.cf-office-name`, `.cf-office-addr`, `.cf-office-detail`, `.cf-link-primary`, `.cf-link-inherit` (mengunci `color: inherit` di seluruh state termasuk `:hover` dan `:visited`), `.cf-maps-wrap`, `.cf-maps-iframe`.
-- **Footer:** `.site-footer`, `.footer-grid`, `.footer-col`, `.ft-offices`, `.ft-office-card` (kontainer statis tanpa aturan `:hover` atau `transition`), `.ft-phone-val` serta `.ft-office-card a[href^="tel:"]` dan `.ft-office-card a[href^="mailto:"]` (mengunci `color: var(--color-text-inverse)` pada state `normal`, `:hover`, `:focus-visible`, `:active`, dan `:visited`, dengan underline saat `:hover` di dalam `@media (hover: hover)` dan `outline: 2px solid var(--color-text-inverse)` saat `:focus-visible`), `.footer-contact-item`, `.footer-social-wrap`, `.footer-social-link`.
+- **Kartu Lokasi & Peta:** `.cf-office-card`, `.cf-office-header`, `.cf-office-icon`, `.cf-office-badge`, `.cf-office-name`, `.cf-office-addr`, `.cf-office-detail`, `.cf-link-primary`, `.cf-link-inherit` (mengunci `color: inherit` di seluruh state termasuk `:hover` dan `:visited`), `.cf-maps-wrap`, `.cf-maps-iframe` `[PENDING T-301]`.
+- **Footer:** `.site-footer`, `.footer-grid`, `.footer-col`, `.ft-offices`, `.ft-office-card` (kontainer statis tanpa aturan `:hover` atau `transition`), `.ft-phone-val` serta `.ft-office-card a[href^="tel:"]` dan `.ft-office-card a[href^="mailto:"]` (mengunci `color: var(--color-text-inverse)` pada state `normal`, `:hover`, `:focus-visible`, `:active`, dan `:visited`, dengan underline saat `:hover` di dalam `@media (hover: hover)` dan `outline: 2px solid var(--color-text-inverse)` saat `:focus-visible`), `.footer-contact-item`, `.footer-social-wrap`, `.footer-social-link` `[PENDING T-301]`.
 - **Floating Button WhatsApp:** `.wa-float-container`, `.wa-float-btn`, `.wa-icon`, `.wa-tooltip`.
 - **Hero Scrim Sub-Page:** `.page-hero-scrim` (multi-layer directional gradient transparan selaras dengan home slide 2).
 

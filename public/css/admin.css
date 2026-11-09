@@ -1145,21 +1145,22 @@ body.sidebar-open .admin-backdrop {
 /* Data Table Component */
 .table-scroll-wrapper {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: visible;
+  overflow-y: visible;
 }
 
 .table-scroll-wrapper--mobile-only {
   width: 100%;
   overflow-x: visible;
+  overflow-y: visible;
 }
 
 @media (max-width: 768px) {
   .table-scroll-wrapper--mobile-only {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible;
   }
   .table-scroll-wrapper--mobile-only .data-table {
-    min-width: 640px;
+    min-width: 0;
   }
 }
 
@@ -1202,11 +1203,13 @@ body.sidebar-open .admin-backdrop {
 .td-client-title {
   font-weight: 600;
   color: var(--text-main);
+  word-break: break-word;
 }
 
 .td-client-sub {
   font-size: 11.5px;
   color: var(--text-muted);
+  word-break: break-word;
 }
 
 .adm-slug-text {
@@ -1223,12 +1226,13 @@ body.sidebar-open .admin-backdrop {
 .td-muted-text {
   color: var(--text-secondary);
   font-size: 12px;
+  word-break: break-all;
 }
 
 .td-req-text {
   color: var(--text-secondary);
   font-size: 12px;
-  max-width: 240px;
+  max-width: clamp(140px, 18vw, 240px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3505,8 +3509,7 @@ body.sidebar-open .admin-backdrop {
   .table-scroll-wrapper {
     min-width: 0 !important;
     max-width: 100% !important;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible !important;
   }
   .content-header {
     margin-bottom: 1rem !important;
@@ -5142,16 +5145,16 @@ body.sidebar-open .admin-backdrop {
 /* Modul Inquiries & RFQ (Batch 8 - T-284) */
 
 .adm-inq-th-time {
-  width: 100px;
+  width: 90px;
 }
 
 .adm-inq-th-status {
-  width: 140px;
+  width: 120px;
 }
 
 .adm-inq-th-actions {
   text-align: right;
-  width: 110px;
+  width: 160px;
 }
 
 .adm-inq-time-val {
@@ -5167,6 +5170,7 @@ body.sidebar-open .admin-backdrop {
 .adm-inq-phone-wrap {
   font-size: 12px;
   color: var(--color-text-main, var(--text-main));
+  word-break: break-all;
 }
 
 .adm-inq-wa-link {
@@ -6656,6 +6660,19 @@ body.sidebar-open .admin-backdrop {
   box-sizing: border-box;
 }
 
+.table-card .pgn-bar,
+.adm-inq-pagination-wrap .pgn-bar,
+.adm-prod-pagination-wrap .pgn-bar {
+  margin-top: 0;
+  border-top: 1px solid var(--border-main);
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  background-color: var(--bg-surface);
+  padding: 0.85rem 1.25rem;
+}
+
 .pgn-left {
   display: flex;
   align-items: center;
@@ -6870,6 +6887,78 @@ body.sidebar-open .admin-backdrop {
 }
 
 @media (max-width: 768px) {
+  /* Tampilan Data Table Stacked Card di Mobile (Hapus Scroller Mobile) */
+  .data-table thead,
+  .admin-table thead {
+    display: none;
+  }
+
+  .data-table,
+  .data-table tbody,
+  .admin-table,
+  .admin-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .data-table tbody tr,
+  .admin-table tbody tr {
+    display: block;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-main);
+    background: var(--bg-surface);
+  }
+
+  .data-table tbody tr:hover,
+  .admin-table tbody tr:hover {
+    background-color: #fafbfc;
+  }
+
+  .data-table td,
+  .admin-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+    border: none;
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .data-table td:empty,
+  .admin-table td:empty {
+    display: none;
+  }
+
+  .adm-inq-td-actions,
+  .adm-dash-td-actions,
+  .adm-prod-td-action {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-subtle);
+    justify-content: flex-end;
+  }
+
+  .table-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .td-req-text {
+    max-width: 100%;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .adm-slug-text {
+    max-width: 100%;
+  }
+
+  /* Paginasi Mobile Responsif */
   .pgn-bar {
     flex-direction: column;
     align-items: stretch;
@@ -6877,9 +6966,21 @@ body.sidebar-open .admin-backdrop {
     padding: 12px;
   }
 
+  .table-card .pgn-bar,
+  .adm-inq-pagination-wrap .pgn-bar,
+  .adm-prod-pagination-wrap .pgn-bar {
+    padding: 12px 14px;
+  }
+
+  .pgn-divider {
+    display: none;
+  }
+
   .pgn-left {
     justify-content: space-between;
     width: 100%;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
   .pgn-nav {
@@ -6912,6 +7013,14 @@ body.sidebar-open .admin-backdrop {
   .pgn-per-page-select {
     min-height: 44px;
     height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pgn-left {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 }
 

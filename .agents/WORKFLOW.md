@@ -11,7 +11,7 @@ Ikuti 5 langkah berurutan untuk setiap perubahan fitur atau perilaku:
 2. **APPROVE:** Tunggu persetujuan Azis dan jawaban atas keputusan terbuka.
 3. **MERGE KE SPEC:** Baru boleh merge setelah konfirmasi dan persetujuan Azis. Edit modul PRD/Tech terkait **DI TEMPAT** (timpa kondisi lama). Tandai bagian baru dengan `[PENDING T-xxx]`. Daftarkan task baru ke `3-TASKS.md`.
 4. **IMPLEMENT:** Baru boleh implement setelah konfirmasi dan persetujuan Azis. Kerjakan kode aplikasi, pastikan lint hijau (`npm run lint` dan `npm run lint:views` zero error pada file baru/refaktor sesuai `conventions.md`), dan centang task yang tuntas.
-5. **CLOSE (Sesi yang Sama):**
+5. **CLOSE (Sesi yang Sama):** Baru boleh close setelah konfirmasi dan persetujuan Azis.
    - Verifikasi seluruh checklist & gerbang kualitas lint hijau (zero error pada file baru/refaktor).
    - Hapus penanda `[PENDING T-xxx]` di modul terkait.
    - Pindahkan berkas proposal dari `changes/` ke `archive/`.
