@@ -23,19 +23,19 @@
 - **Verifikasi:**
   - [x] Pemeriksaan formula kontras WCAG 2.1, `npm run lint` & `npm run lint:views` hijau (0 error), serta verifikasi computed token via Playwright di `tests/test-t307-soft-green-tokens.js` (4/4 lulus).
 
-### Task T-308: Implementasi Latar Selang-Seling, Transisi Tepi Halus, & Pembersihan Inline Style Halaman Tentang Kami (`/about`)
-- **Status:** `[ ] OPEN`
+###  
+- **Status:** `[x] DONE`
 - **Modul Spesifikasi:** `prd/public-about.md` (`FR-26`), `tech/public-about.md`
 - **Skill:** `Impeccable polish`, `antislop-code`
-- **File Terdampak:** `views/public/about.ejs`, `public/css/components.css`, `locales/id.json`, `locales/en.json`
+- **File Terdampak:** `views/public/about.ejs`, `public/css/components.css`, `public/js/main.js`, `locales/id.json`, `locales/en.json`, `tests/test-t308-about-backgrounds.js`
 - **Acceptance Criteria:**
-  - [ ] Section pertama setelah hero (`.sec-story#sejarah`) memakai `var(--bg-soft-green)`, `.sec-vm#visi-misi` memakai `var(--bg-subtle)`, `.abt-tkt-section#core-values` mempertahankan latar foto + scrim yang menyatu di tepi (dengan fallback `var(--bg-soft-green)` bila tanpa foto), dan `.sec-gallery#galeri` memakai `var(--bg-subtle)`.
-  - [ ] Hero (`.page-hero`), CTA pra-footer (`.sec-cta`), dan Footer (`.site-footer`) tetap mempertahankan latar gambar/hijau gelapnya dan tidak ikut diselang-seling.
-  - [ ] Transisi antar-section menggunakan gradasi tepi pendek setinggi `48px` pada mobile (`< 768px`) dan `80px` pada desktop (`>= 768px`) melalui pseudo-element tanpa membentuk garis batas keras.
-  - [ ] Kartu statistik (`.story-stat`) dan kartu Visi & Misi (`.vm-card`) tetap memiliki batas yang jelas (`border: 1px solid var(--color-border)` dan `box-shadow: var(--shadow-level-1)`).
-  - [ ] Seluruh inline style pada `views/public/about.ejs` dipindahkan ke class CSS `.abt-*` tanpa mengubah perilaku galeri bento, lightbox, timeline, maupun accordion T-I-C-K-E-T.
+  - [x] Section pertama setelah hero (`.sec-story#sejarah`) memakai `var(--bg-soft-green)`, `.sec-vm#visi-misi` memakai `var(--bg-subtle)`, `.abt-tkt-section#core-values` mempertahankan latar foto + scrim yang menyatu di tepi (dengan fallback `var(--bg-soft-green)` bila tanpa foto), dan `.sec-gallery#galeri` memakai `var(--bg-subtle)`.
+  - [x] Hero (`.page-hero`), CTA pra-footer (`.sec-cta`), dan Footer (`.site-footer`) tetap mempertahankan latar gambar/hijau gelapnya dan tidak ikut diselang-seling.
+  - [x] Transisi antar-section menggunakan gradasi tepi pendek setinggi `48px` pada mobile (`< 768px`) dan `80px` pada desktop (`>= 768px`) melalui pseudo-element tanpa membentuk garis batas keras.
+  - [x] Kartu statistik (`.story-stat`) dan kartu Visi & Misi (`.vm-card`) tetap memiliki batas yang jelas (`border: 1px solid var(--color-border)` dan `box-shadow: var(--shadow-level-1)`).
+  - [x] Seluruh inline style pada `views/public/about.ejs` dipindahkan ke class CSS `.abt-*` tanpa mengubah perilaku galeri bento, lightbox, timeline, maupun accordion T-I-C-K-E-T.
 - **Verifikasi:**
-  - [ ] `npm run lint:views` dan `npm run lint:i18n` hijau; pengujian Playwright pada `/about` (320px, 375px, 480px, 768px, 1024px, 1440px) memvalidasi warna latar tiap section dan transisi bebas garis keras.
+  - [x] `npm run lint:views` dan `npm run lint:i18n` hijau (0 error); pengujian Playwright di `tests/test-t308-about-backgrounds.js` (320px, 375px, 480px, 768px, 1024px, 1440px) memvalidasi warna latar tiap section, kartu kontras, transisi tepi 80px/48px, dan bebas horizontal overflow (6/6 lulus).
 
 ### Task T-309: Pemecahan Section Halaman News, Latar Selang-Seling, & Pembersihan Inline Style/Script (`views/public/news.ejs`)
 - **Status:** `[ ] OPEN`

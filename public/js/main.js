@@ -606,6 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (bentoPrev) bentoPrev.disabled = currentPage === 0;
       if (bentoNext) bentoNext.disabled = currentPage >= totalPages - 1;
       if (bentoPager) {
+        bentoPager.hidden = totalPages <= 1;
         bentoPager.style.display = totalPages <= 1 ? 'none' : 'flex';
       }
     }

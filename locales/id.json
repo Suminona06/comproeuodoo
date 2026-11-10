@@ -81,7 +81,10 @@
     "standards_desc": "Kami berkomitmen memproduksi hanya kantong plastik ramah lingkungan yang memenuhi standar SNI 7188.7:2011, OXIUM, dan InSWA Green Label Indonesia.",
     "values_tablist_label": "Daftar pilar budaya kerja",
     "values_dots_label": "Navigasi pilar budaya kerja",
-    "values_dot_aria": "Pilih pilar"
+    "values_dot_aria": "Pilih pilar",
+    "timeline_empty": "Linimasa perjalanan perusahaan akan segera diperbarui.",
+    "gallery_prev": "Halaman galeri sebelumnya",
+    "gallery_next": "Halaman galeri berikutnya"
   },
   "news": {
     "page_title": "Publikasi & Kabar Perusahaan",

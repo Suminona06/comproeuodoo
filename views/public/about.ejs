@@ -14,19 +14,19 @@
 %>
 
 <main id="main-content">
-  <!-- 1. PAGE HERO -->
+  <%# 1. PAGE HERO %>
   <section class="page-hero <%= heroObj && heroObj.image_url ? 'page-hero--has-bg' : '' %>" <%- heroBg %>>
     <% if (heroObj && heroObj.image_url) { %>
       <div class="page-hero-scrim" aria-hidden="true"></div>
     <% } %>
     <div class="container">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
+        <a href="/"><%= t('nav.home') %></a>
         <span class="separator" aria-hidden="true">&rsaquo;</span>
-        <span class="current"><%= lang === 'en' ? 'About Us' : 'Tentang Kami' %></span>
+        <span class="current"><%= t('nav.about') %></span>
       </nav>
 
-      <div class="page-hero-content" style="max-width: 840px;">
+      <div class="page-hero-content abt-hero-content">
         <h1 class="page-hero-title">
           <%= (typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active && (lang === 'en' ? heroBanner.title_en : heroBanner.title_id))
               ? (lang === 'en' ? heroBanner.title_en : heroBanner.title_id)
@@ -43,7 +43,7 @@
     </div>
   </section>
 
-  <!-- 2. SEJARAH & LATAR BELAKANG PERUSAHAAN -->
+  <%# 2. SEJARAH & LATAR BELAKANG PERUSAHAAN %>
   <section class="sec-story" id="sejarah" data-od-id="company-story">
     <div class="container">
       <div class="story-layout">
@@ -74,8 +74,8 @@
               </div>
             <% }); %>
           <% } else { %>
-            <div class="tl-empty" style="padding: 24px; color: var(--text-muted); font-size: 14px; font-style: italic;">
-              <%= lang === 'en' ? 'Company journey timeline will be updated soon.' : 'Linimasa perjalanan perusahaan akan segera diperbarui.' %>
+            <div class="tl-empty abt-tl-empty">
+              <%= t('about.timeline_empty') %>
             </div>
           <% } %>
         </div>
@@ -83,7 +83,7 @@
     </div>
   </section>
 
-  <!-- 3. VISI & MISI PERUSAHAAN -->
+  <%# 3. VISI & MISI PERUSAHAAN %>
   <%
     const visionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.vision_image_url) ? visionMissionImages.vision_image_url.trim() : '';
     const missionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.mission_image_url) ? visionMissionImages.mission_image_url.trim() : '';
@@ -103,7 +103,7 @@
       </div>
 
       <div class="vm-rows">
-        <!-- Visi Row: Card Teks Kiri + Gambar Kanan (Jika Ada) -->
+        <%# Visi Row: Card Teks Kiri + Gambar Kanan (Jika Ada) %>
         <div class="vm-row reveal <%= visionImg ? 'has-image' : 'no-image' %>">
           <div class="vm-card">
             <span class="vm-card-kicker"><%= lang === 'en' ? 'CORPORATE VISION' : 'VISI' %></span>
@@ -121,7 +121,7 @@
           <% } %>
         </div>
 
-        <!-- Misi Row: Gambar Kiri (Jika Ada) + Card Teks Kanan -->
+        <%# Misi Row: Gambar Kiri (Jika Ada) + Card Teks Kanan %>
         <div class="vm-row reveal <%= missionImg ? 'has-image' : 'no-image' %>">
           <% if (missionImg) { %>
             <div class="vm-media">
@@ -138,7 +138,7 @@
                   %>
                   <li>
                     <span class="vm-list-badge"><%= idx + 1 %></span>
-                    <span style="font-size: 15px; color: var(--text-main, #0f172a); font-weight: 500; line-height: 1.6;">
+                    <span class="abt-vm-point-text">
                       <%= cleanPoint %>
                     </span>
                   </li>
@@ -155,7 +155,7 @@
 
   <%- include('../partials/about/ticket-accordion') %>
 
-  <!-- 5. GALERI FASILITAS & OPERASIONAL (Bento Mosaic Grid) -->
+  <%# 5. GALERI FASILITAS & OPERASIONAL (Bento Mosaic Grid) %>
   <% if (typeof gallerySlides !== 'undefined' && gallerySlides && gallerySlides.length > 0) { %>
     <section class="sec-gallery" id="galeri" data-od-id="gallery">
       <div class="container">
@@ -220,13 +220,13 @@
             </div>
           </div>
 
-          <div class="abt-gal-pager bento-pager" id="bentoPager" <%- totalSlides <= 1 ? 'style="display: none;"' : '' %>>
+          <div class="abt-gal-pager bento-pager" id="bentoPager" <%= totalSlides <= 1 ? 'hidden' : '' %>>
             <span class="abt-gal-pager-count bento-pager-count" aria-live="polite" aria-atomic="true"><strong id="bentoCur">01</strong> / <span id="bentoTotal"><%= String(initialPageCount).padStart(2, '0') %></span></span>
             <div class="abt-gal-pager-arrows bento-pager-arrows">
-              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoPrev" aria-label="<%= lang === 'en' ? 'Previous gallery page' : 'Halaman galeri sebelumnya' %>" disabled>
+              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoPrev" aria-label="<%= t('about.gallery_prev') %>" disabled>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
               </button>
-              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoNext" aria-label="<%= lang === 'en' ? 'Next gallery page' : 'Halaman galeri berikutnya' %>" <%- initialPageCount <= 1 ? 'disabled' : '' %>>
+              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoNext" aria-label="<%= t('about.gallery_next') %>" <%- initialPageCount <= 1 ? 'disabled' : '' %>>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
               </button>
             </div>
