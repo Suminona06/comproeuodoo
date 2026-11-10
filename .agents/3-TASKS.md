@@ -12,16 +12,16 @@
 ## Task Aktif / Terbuka (Open Tasks)
 
 ### Task T-307: Penambahan Token Warna Latar `--bg-soft-green` & Gradasi Transisi Halus
-- **Status:** `[ ] OPEN`
+- **Status:** `[x] DONE`
 - **Modul Spesifikasi:** `2-TECH-SPEC.md`, `Design/DESIGN.md`, `public/css/tokens.css`
 - **Skill:** `Impeccable polish`
-- **File Terdampak:** `public/css/tokens.css`, `Design/DESIGN.md`
+- **File Terdampak:** `public/css/tokens.css`, `Design/DESIGN.md`, `tests/test-t307-soft-green-tokens.js`
 - **Acceptance Criteria:**
-  - [ ] Token `--bg-soft-green` (`#f3f6f3`), `--color-bg-soft-green`, `--trans-soft-green-to-subtle`, `--trans-subtle-to-soft-green`, dan `--color-text-muted-on-soft` (`#475569`) terdefinisi di `:root` pada `public/css/tokens.css` dan terdokumentasi di `Design/DESIGN.md` khusus cakupan halaman About & News.
-  - [ ] Token global `--bg-base` (`#ffffff`) dan `--bg-subtle` (`#f8fafc`) tidak berubah nilainya sehingga Homepage (`views/public/index.ejs`) dan halaman publik lain tetap identik 100%.
-  - [ ] Rasio kontras WCAG AA seluruh pasangan teks utama (`16.40:1`), teks varian (`8.55:1`), teks muted terkalibrasi (`6.96:1`), dan teks primary (`5.22:1`) di atas `--bg-soft-green` lulus `>= 4.5:1`.
+  - [x] Token `--bg-soft-green` (`#f3f6f3`), `--color-bg-soft-green`, `--trans-soft-green-to-subtle`, `--trans-subtle-to-soft-green`, dan `--color-text-muted-on-soft` (`#475569`) terdefinisi di `:root` pada `public/css/tokens.css` dan terdokumentasi di `Design/DESIGN.md` khusus cakupan halaman About & News.
+  - [x] Token global `--bg-base` (`#ffffff`) dan `--bg-subtle` (`#f8fafc`) tidak berubah nilainya sehingga Homepage (`views/public/index.ejs`) dan halaman publik lain tetap identik 100%.
+  - [x] Rasio kontras WCAG AA seluruh pasangan teks utama (`16.40:1`), teks varian (`8.55:1`), teks muted terkalibrasi (`6.96:1`), dan teks primary (`5.22:1`) di atas `--bg-soft-green` lulus `>= 4.5:1`.
 - **Verifikasi:**
-  - [ ] Pemeriksaan `contrast-check.py`, `npm run lint:views` hijau, serta verifikasi computed token via Playwright.
+  - [x] Pemeriksaan formula kontras WCAG 2.1, `npm run lint` & `npm run lint:views` hijau (0 error), serta verifikasi computed token via Playwright di `tests/test-t307-soft-green-tokens.js` (4/4 lulus).
 
 ### Task T-308: Implementasi Latar Selang-Seling, Transisi Tepi Halus, & Pembersihan Inline Style Halaman Tentang Kami (`/about`)
 - **Status:** `[ ] OPEN`
