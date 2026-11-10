@@ -61,24 +61,35 @@ Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyM
 
 ---
 
-## 7. Komponen Kartu Bersama & Token Desain Scoped
-- **Shared Card Component (`.nwl-card` / `.nwd-card`):** Satu komponen terpadu untuk grid `/news` dan related `/news/:slug`. Gambar 16:9 rounded (`var(--r-xl)`), tanggal kecil abu-abu (`var(--color-text-muted)`), judul tebal line-clamp 3 baris, link hijau "Baca Selengkapnya" (`var(--color-primary)`), min target 44px. Grid: 3 col desktop (>=1024px), 2 col tablet (640-1023px), 1 col mobile (<640px).
+## 7. Struktur Section, Latar Selang-Seling, & Komponen Kartu Bersama
+- **Pemecahan 2 Section & Latar Selang-Seling (`views/public/news.ejs`) `[PENDING T-307, T-309]`:**
+  - Di bawah `.page-hero` (tetap berlatar gambar/gelap), halaman `/news` dipecah menjadi 2 `<section>` semantik dan diekstraksi ke partial modular (`views/partials/news/headline-section.ejs` dan `views/partials/news/filter-bar.ejs`, masing-masing `<= 100` baris tanpa `style="..."` maupun `<script>` inline):
+    1. `.nwl-sec-headline#nwlHeadlineSec`: memakai `background-color: var(--bg-soft-green)`.
+    2. `.nwl-sec-directory`: memakai `background-color: var(--bg-subtle)` dengan pseudo-element `::before` gradasi tepi pendek (`height: 48px` pada `< 768px`, `height: 80px` pada `>= 768px`) memakai `var(--trans-soft-green-to-subtle)` (atau fallback `var(--bg-soft-green)` bila tidak ada artikel headline di database).
+- **Shared Card Component (`.nwl-card` / `.nwd-card`):** Satu komponen terpadu untuk grid `/news` dan related `/news/:slug`. Permukaan `var(--color-surface)` dengan border `1px solid var(--color-border)` dan elevasi `var(--shadow-level-1)` agar kontras di atas kedua latar, gambar 16:9 rounded (`var(--r-xl)`), tanggal kecil (`var(--color-text-muted)`), judul tebal line-clamp 3 baris, link hijau "Baca Selengkapnya" (`var(--color-primary)`), min target 44px. Grid: 3 col desktop (>=1024px), 2 col tablet (640-1023px), 1 col mobile (<640px).
 - **Isolasi Class:** Prefix scoped `.nwl-*` (listing) dan `.nwd-*` (detail). Homepage (`views/public/index.ejs`) dibekukan. Class lama `.news-card-v2` dialiaskan ke `.nwl-card` demi kompatibilitas `tests/test-modul12-public.js`.
 
 ---
 
-## 8. Headline Slider Desktop & Mobile Reference
-- **Controller Data:** `postController.index` mengambil hingga 5 artikel headline aktif (`is_headline = 1` dan `status = 'published'`).
-- **Desktop (1440x900):** Layout asimetris 2 kolom, tinggi maksimal ~420-450px. Kiri gambar 16:9 rounded, kanan tanggal, judul tebal, ringkasan (2-3 baris), link aksi. Indikator garis di kiri bawah, panah melingkar di kanan bawah.
-- **Mobile (<768px):** Mengikuti referensi gambar mobile: Judul "News", gambar 16:9 rounded, tanggal, judul headline, ringkasan, link aksi, indikator garis di tengah, tombol panah sirkular di tengah bawah.
-- **Interaksi:** Headline = 1: statis tanpa kontrol. Headline > 1: autoplay per 6 detik, pause saat hover/fokus, mati bila `prefers-reduced-motion` aktif. Navigasi manual panah, garis, keyboard, dan swipe sentuh.
+## 8. Headline Slider & Judul Dinamis per Slide Aktif `[PENDING T-309, T-310]`
+- **Controller Data:** `postController.index` mengambil hingga 5 artikel headline aktif (`is_headline = 1` dan `status = 'published'`) lintas tipe publikasi, tidak dipengaruhi filter direktori (`type`, `category`, `search`).
+- **Judul Dinamis `.nwl-headline-sec-title` Mengikuti Slide Aktif `[PENDING T-310]`:**
+  - Setiap `.nwl-slide` menyematkan `data-post-type="<%= hPost.type %>"` (`berita`, `pers`, atau `blog`), dan `#nwlHeadlineSlider` menyimpan atribut kamus dwibahasa untuk ke-3 jenis tersebut (`news.headline_title_berita`, `news.headline_title_pers`, `news.headline_title_blog`, beserta `news.headline_aria_*` di `locales/id.json` & `locales/en.json`).
+  - Saat render SSR awal, `.nwl-headline-sec-title` dan `aria-label` `#nwlHeadlineSec` merender label sesuai `headlinePosts[0].type` (`"Berita"` / `"Siaran Pers"` / `"Blog"` untuk ID; `"News"` / `"Press Releases"` / `"Blog"` untuk EN).
+  - Saat fungsi slider berpindah slide (klik panah, klik dot garis, swipe, atau autoplay), skrip eksternal membaca `data-post-type` slide aktif dan memperbarui teks `.nwl-headline-sec-title` serta `aria-label` section secara sinkron.
+- **Desktop (1440x900) & Mobile (<768px):** Desktop asimetris 2 kolom (tinggi maksimal ~420-450px, gambar 16:9 rounded di kiri, konten di kanan, indikator garis di kiri bawah, panah di kanan bawah); mobile bertumpuk terpusat. Headline = 1: statis tanpa kontrol; Headline > 1: autoplay per 6 detik, pause saat hover/fokus, mati bila `prefers-reduced-motion` aktif.
 
 ---
 
-## 9. Endpoint & Sistem Filter Berbasis Fetch API
-- **Endpoint Asynchronous:** `postController.index` merespons JSON bila ada header `Accept: application/json` atau query `ajax=1` berisi `{ success: true, posts: [...], currentPage, totalPages, totalPosts }`.
-- **Klien Script (`public/js/news-filter.js`):** Menangani tab tipe G4 (garis bawah hijau), filter kategori, dan pencarian via `fetch()`. Memperbarui grid kartu dan pagination tanpa reload halaman.
-- **URL & Fallback:** Sinkronisasi URL via `history.pushState(null, '', url)`. Tautan reguler tetap ada sebagai fallback SSR untuk SEO. Empty state rapi berbasis token saat data nihil.
+## 9. Sistem Filter Fetch API, Kategori Geser Mobile, & Paginasi Bersama `.pgn-*` `[PENDING T-311, T-312]`
+- **Endpoint Asynchronous (`postController.index`):** Batas `limit = 9` artikel per halaman; merespons JSON bila ada header `Accept: application/json` atau query `ajax=1` berisi `{ success: true, posts: [...], currentPage, totalPages, totalPosts }`.
+- **Filter Kategori Geser Mobile (`.nwl-cat-pills`) `[PENDING T-311]`:** Pada `@media (max-width: 767px)`, `.nwl-cat-pills` menggunakan `flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; scrollbar-width: none;` dengan petunjuk visual geser, tinggi pill `>= 44px`, outline `:focus-visible` utuh, dan helper `scrollActivePillIntoView()` (`scrollIntoView({ inline: 'center', block: 'nearest' })`). `.nwl-search-form` diletakkan di bawah baris pill dengan lebar 100%.
+- **Komponen Paginasi Bersama (`views/partials/pagination.ejs` / `.pgn-bar--public`) `[PENDING T-312]`:**
+  - Menggunakan partial bersama `views/partials/pagination.ejs` (`variant: 'public'`) dan class `.pgn-*` di `public/css/components.css`; class duplikat `.pagination-bar` / `.pagination-item` dihapus.
+  - Tetap dirender saat `totalPages === 1` (selama `totalPosts > 0`) dengan tombol navigasi berstatus `disabled`.
+  - Desktop (`>= 768px`): menampilkan tombol `«`, `‹`, deret nomor halaman `.pgn-num` dengan `.pgn-ellipsis` (`...`), serta tombol `›`, `»`.
+  - Mobile (`< 768px`): menyembunyikan `.pgn-pages` dan menampilkan 4 tombol ikon persegi membulat (`[ « ]` `[ ‹ ]` `1 / 2` `[ › ]` `[ » ]`, minimal `44x44px`) mengapit `.pgn-mobile-info` (`currentPage / totalPages`).
+  - Seluruh tautan SSR memakai `<a href="/news?...">`, `aria-label` menggunakan `t('pagination.*')` (ID/EN), halaman aktif memiliki `aria-current="page"`, serta `renderPagination()` di `public/js/news-filter.js` menghasilkan markup `.pgn-*` yang identik dan menyinkronkan `history.pushState` / `popstate`.
 
 ---
 

@@ -52,6 +52,12 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 
 ## 4. Komponen Antarmuka & Prefix CSS
 
+- **Sistem Latar Selang-Seling & Transisi Tepi (`.sec-story`, `.sec-vm`, `.abt-tkt-section`, `.sec-gallery`, `.abt-*`) `[PENDING T-307, T-308]`:**
+  - `.sec-story#sejarah` menggunakan `background-color: var(--bg-soft-green)`.
+  - `.sec-vm#visi-misi` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element `::before` bertinggi `48px` (mobile `< 768px`) dan `80px` (desktop `>= 768px`) memakai `background: var(--trans-soft-green-to-subtle)`.
+  - `.abt-tkt-section#core-values` mempertahankan foto latar operasional beserta `.abt-tkt-bg-scrim` yang menyatu mulus di tepi atas/bawah; apabila tanpa foto latar, fallback menggunakan `var(--bg-soft-green)` dengan transisi tepi `var(--trans-subtle-to-soft-green)`.
+  - `.sec-gallery#galeri` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element gradasi tepi atas yang menyatu dari section sebelumnya, sementara kartu `.story-stat` dan `.vm-card` mempertahankan `background: var(--color-surface)`, `border: 1px solid var(--color-border)`, dan `box-shadow: var(--shadow-level-1)`.
+  - Seluruh atribut `style="..."` inline pada `views/public/about.ejs` dipindahkan ke class CSS ter-scope berprefix `.abt-*` (`.abt-hero-content`, `.abt-tl-empty`, `.abt-vm-point-text`, serta atribut `hidden` pada `#bentoPager`) dan teks menggunakan kamus `t('about.*')`.
 - **Nilai Inti Budaya Kerja (.abt-tkt-*):** Interactive Expanding Accordion 6 pilar menggantikan `.sec-values` legacy (spesifikasi arsitektur DOM, kontrak SVG whitelist, lifecycle anime.js, dan form admin didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
 - **Galeri Mosaik Bento & Integrasi Lightbox (`.abt-gal-*` & `.lbx-*`):**
   - Prefix Class: `.sec-gallery`, `.abt-gal-container`, `.abt-gal-viewport`, `.abt-gal-grid`, `.abt-gal-tile`, serta `.bento-grid` dan `.sec-gallery .bento-*`.

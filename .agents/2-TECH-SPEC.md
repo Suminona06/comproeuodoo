@@ -36,6 +36,7 @@ Sesuai hasil rebrand palet hijau (T-158 s/d T-168), platform menggunakan palet w
   - Leaf Accent: `var(--color-leaf, #7cbe38)`
   - Surface Footer: `var(--surface-dark-footer, #00573f)`
   - Dual-Token Public Background: `var(--bg-base, #ffffff)` & `var(--bg-subtle, #f8fafc)`
+  - Alternating Surface & Edge Transitions (About & News Only, Homepage Frozen) `[PENDING T-307]`: `var(--bg-soft-green)`, `var(--color-bg-soft-green)`, `var(--trans-soft-green-to-subtle)`, `var(--trans-subtle-to-soft-green)`, & `var(--color-text-muted-on-soft)`
 
 ---
 

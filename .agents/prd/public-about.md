@@ -56,12 +56,19 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
 - Visualisasi perjalanan ekspansi pabrik Cigondewah sejak 1990 dari pasar tradisional hingga modern supermarket dan retail nasional.
 - Setiap simpul tahun memiliki kartu detail yang merespons fokus kursor dan interaksi sentuh.
 
+### FR-26: Sistem Latar Selang-Seling & Transisi Tepi Halus Halaman Tentang Kami `[PENDING T-307, T-308]`
+- Seluruh section konten non-hero pada halaman `/about` menggunakan dua token permukaan terang secara bergantian dimulai dari `var(--bg-soft-green)` pada section pertama setelah hero (`.sec-story#sejarah`), diikuti `var(--bg-subtle)` pada `.sec-vm#visi-misi`, fallback `var(--bg-soft-green)` pada `.abt-tkt-section#core-values` (bila tanpa foto latar), dan `var(--bg-subtle)` pada `.sec-gallery#galeri`.
+- Hero berlatar gambar (`.page-hero`), section Budaya Kerja T-I-C-K-E-T saat berfoto latar, CTA pra-footer (`.sec-cta`), serta footer (`.site-footer`) dikecualikan dari selang-seling latar terang.
+- Perbatasan antar-section menggunakan gradasi transisi pendek di tepi section (`48px` pada layar mobile `< 768px` dan `80px` pada layar desktop `>= 768px`) berbasis token `var(--trans-soft-green-to-subtle)` dan `var(--trans-subtle-to-soft-green)` sehingga bebas garis batas keras dari lebar 320px hingga desktop.
+- Seluruh teks utama (`var(--color-text-main)`), teks varian (`var(--color-text-variant)`), teks sekunder (`var(--color-text-muted-on-soft)`), serta kartu permukaan (`var(--color-surface)`) dengan border `var(--color-border)` dan elevasi `var(--shadow-level-1)` di atas kedua latar wajib memenuhi rasio kontras WCAG AA (minimal 4.5:1 untuk teks normal dan batas kartu tetap jelas).
+
 ---
 
 ## 3. Keputusan Desain & Fungsional Terkunci
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
+| **Latar Selang-Seling `--bg-soft-green` & `--bg-subtle` Bertransisi Tepi Halus `[PENDING T-307, T-308]`** | Memberikan ritme visual organik antar-section di halaman Tentang Kami tanpa garis batas keras sekaligus menjaga Homepage tetap dibekukan. | 2026-11-10 |
 | **Lightbox Bento Mencakup Seluruh Slide (`#bentoGalleryData`)** | Memungkinkan penjelajahan seluruh dokumentasi pabrik tanpa harus menutup lightbox untuk mengganti halaman pager bento. | 2026-10-30 |
 | **Interactive Expanding Accordion Menggantikan Grid Kartu Statis** | Memberikan pengalaman interaktif menjelajahi 6 pilar budaya kerja dengan kedalaman visual industrial dan fokus simetris pada panel ke-3. | 2026-11-05 |
 | **Bento Mosaic Grid Menggantikan Slider Horizontal** | Memberikan kesan tata letak industrial yang kaya dan kokoh serta menampilkan variasi dokumentasi operasional pabrik lebih baik dibanding carousel slider biasa. | 2026-10-14 |
