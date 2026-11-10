@@ -12,6 +12,7 @@
 ## Task Aktif / Terbuka (Open Tasks)
 
 ### Task T-307: Penambahan Token Warna Latar `--bg-soft-green` & Gradasi Transisi Halus
+
 - **Status:** `[x] DONE`
 - **Modul Spesifikasi:** `2-TECH-SPEC.md`, `Design/DESIGN.md`, `public/css/tokens.css`
 - **Skill:** `Impeccable polish`
@@ -23,7 +24,8 @@
 - **Verifikasi:**
   - [x] Pemeriksaan formula kontras WCAG 2.1, `npm run lint` & `npm run lint:views` hijau (0 error), serta verifikasi computed token via Playwright di `tests/test-t307-soft-green-tokens.js` (4/4 lulus).
 
-###  
+### Task T-308: Implementasi Latar Selang-Seling, Transisi Tepi Halus, & Pembersihan Inline Style Halaman Tentang Kami (`/about`)
+
 - **Status:** `[x] DONE`
 - **Modul Spesifikasi:** `prd/public-about.md` (`FR-26`), `tech/public-about.md`
 - **Skill:** `Impeccable polish`, `antislop-code`
@@ -38,6 +40,7 @@
   - [x] `npm run lint:views` dan `npm run lint:i18n` hijau (0 error); pengujian Playwright di `tests/test-t308-about-backgrounds.js` (320px, 375px, 480px, 768px, 1024px, 1440px) memvalidasi warna latar tiap section, kartu kontras, transisi tepi 80px/48px, dan bebas horizontal overflow (6/6 lulus).
 
 ### Task T-309: Pemecahan Section Halaman News, Latar Selang-Seling, & Pembersihan Inline Style/Script (`views/public/news.ejs`)
+
 - **Status:** `[ ] OPEN`
 - **Modul Spesifikasi:** `prd/news.md` (`FR-12`, `FR-26`), `tech/news.md`
 - **Skill:** `Impeccable polish`, `antislop-code`
@@ -51,6 +54,7 @@
   - [ ] `npm run lint` dan `npm run lint:views` zero error; pengujian Playwright pada `/news` memverifikasi dua `<section>` terpisah beserta latar dan transisinya.
 
 ### Task T-310: Judul Section Headline Dinamis Mengikuti Jenis Artikel pada Slide Headline Aktif
+
 - **Status:** `[ ] OPEN`
 - **Modul Spesifikasi:** `prd/news.md` (`FR-24`, `FR-29`), `tech/news.md`
 - **Skill:** `Impeccable polish`, `antislop-code`
@@ -64,6 +68,7 @@
   - [ ] Pengujian otomatis Playwright: memicu perpindahan slide pada `#nwlHeadlineSlider` dan memverifikasi teks `.nwl-headline-sec-title` serta `aria-label` berubah sesuai `data-post-type` slide aktif dalam bahasa ID dan EN, serta tetap tidak terpengaruh saat tab filter di bawahnya diklik; `npm run lint` dan `npm run lint:i18n` hijau.
 
 ### Task T-311: Adaptasi Filter Kategori Geser Horizontal di Mobile (`.nwl-cat-pills`)
+
 - **Status:** `[ ] OPEN`
 - **Modul Spesifikasi:** `prd/news.md` (`FR-27`), `tech/news.md`
 - **Skill:** `Impeccable adapt`
@@ -78,6 +83,7 @@
   - [ ] Pengujian Playwright pada viewport 320px, 375px, 480px, 768px, 1024px, dan 1440px untuk memastikan semua pill berada dalam 1 baris di mobile (`scrollWidth > clientWidth` tanpa wrap, tinggi `>= 44px`) serta uji fokus keyboard `Tab` / `Shift+Tab`.
 
 ### Task T-312: Unifikasi Komponen Paginasi Bersama (`.pgn-*`), Tampilan Mobile Sesuai Referensi, & Verifikasi Playwright End-to-End
+
 - **Status:** `[ ] OPEN`
 - **Modul Spesifikasi:** `prd/news.md` (`FR-28`), `tech/news.md`, `tech/admin-ui.md`
 - **Skill:** `Impeccable adapt`, `Impeccable polish`
