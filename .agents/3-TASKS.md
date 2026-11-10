@@ -12,7 +12,8 @@
 ## Task Aktif / Terbuka (Open Tasks)
 
 ### Batch Revisi Hover Footer, Tabel RFQ Dashboard, & Paginasi Tanpa Reload (T-301 s/d T-306)
-*Referensi Proposal:* [changes/2026-11-09_footer-hover-rfq-pagination.md](changes/2026-11-09_footer-hover-rfq-pagination.md)
+
+_Referensi Proposal:_ [changes/2026-11-09_footer-hover-rfq-pagination.md](changes/2026-11-09_footer-hover-rfq-pagination.md)
 
 - [x] **T-301: Perbaikan Bug Hover Kartu Alamat Footer & Kontras WCAG AA Tautan Faks/Telp/Email**
   - **Deskripsi:** Menghapus efek hover pada kartu alamat footer (`.ft-office-card`) dan mengunci warna teks seluruh baris alamat, telepon, faks, serta email (`.ft-phone-val`, `a[href^="tel:"]`, `a[href^="mailto:"]`) pada state `normal`, `:hover`, `:focus-visible`, `:active`, dan `:visited` ke token teks terang footer (`var(--color-text-inverse)`) agar lolos kontras WCAG AA (`>= 4.5:1`) dan tidak tertimpa `a:hover` global (`var(--color-primary-dark)`). Memastikan `.cf-link-inherit` pada `/contact` juga mempertahankan `color: inherit` di semua state.
@@ -24,7 +25,7 @@
   - **Skill:** `impeccable` (`polish`), `antislop-human`, `antislop-code`
   - **Verifikasi:** Inspeksi computed style state `:hover`, `:focus-visible`, `:visited` pada nomor Faks/Telp/Email di footer & halaman `/contact`; uji kontras WCAG AA; uji navigasi `Tab`.
 
-- [x] **T-302: Penyederhanaan Tabel Inquiry RFQ Dashboard Admin (`LIMIT 10` & Scroll Hanya di Mobile)** *(Keputusan Q9)*
+- [x] **T-302: Penyederhanaan Tabel Inquiry RFQ Dashboard Admin (`LIMIT 10` & Scroll Hanya di Mobile)** _(Keputusan Q9)_
   - **Deskripsi:** Mengubah query pengambilan data Inquiry RFQ di Dashboard Admin (`/admin/dashboard`) menjadi `LIMIT 10` terbaru (`ORDER BY i.created_at DESC, i.id DESC`), tanpa paginasi, menghapus scroll pada layar desktop (`> 768px`) namun mempertahankan wrapper scroll horizontal (`overflow-x: auto`) pada layar mobile (`<= 768px`), serta mempertahankan tautan "Lihat Seluruh Inquiry".
   - **Acceptance Criteria:**
     - `controllers/admin/dashboardController.js` memanggil `inquiryModel.findAll({ limit: 10 })` di level SQL query.
@@ -34,7 +35,7 @@
   - **Skill:** `impeccable` (`adapt`, `polish`), `antislop-layoutmobile`, `antislop-code`
   - **Verifikasi:** Uji `/admin/dashboard` dengan `0`, `5`, `10`, dan `>10` data; uji viewport `320px` s/d `1440px`.
 
-- [x] **T-303: Pembuatan Komponen Paginasi Bersama Varian 1 (`.pgn-*`, Partial EJS, Modul JS, & Lokalisasi ID/EN)** *(Keputusan Q1, Q2, Q3, Q7, Q8, Q10)*
+- [x] **T-303: Pembuatan Komponen Paginasi Bersama Varian 1 (`.pgn-*`, Partial EJS, Modul JS, & Lokalisasi ID/EN)** _(Keputusan Q1, Q2, Q3, Q7, Q8, Q10)_
   - **Deskripsi:** Membangun komponen paginasi bersama yang terdiri dari partial `views/partials/pagination.ejs`, styling `.pgn-*` berbasis token CSS di `public/css/admin.css` (tanpa mengubah `.pagination-bar` halaman Berita), modul `public/js/pagination.js`, serta kamus lokalisasi ID/EN di `locales/id.json` dan `locales/en.json`.
   - **Acceptance Criteria:**
     - Identik 1:1 dengan Gambar 2 Varian 1: sisi kiri `Page [input] of <total> | Rows per page [select 10/25/50/100]` menggunakan `<select>` native ter-style (`.pgn-per-page-select`); sisi kanan `<< < 1 2 3 ... 8 9 10 > >>` dengan halaman aktif berlatar abu muda netral (`var(--bg-subtle)`) dan hover hijau token di dalam `@media (hover: hover)`.
@@ -46,7 +47,7 @@
   - **Skill:** `impeccable` (`polish`, `adapt`, `animate`), `antislop-human`, `antislop-layoutmobile`, `antislop-code`
   - **Verifikasi:** Uji kesesuaian visual Varian 1, uji input halaman tidak valid, uji `AbortController`, uji responsif `320px`, dan audit aksesibilitas.
 
-- [x] **T-304: Integrasi Paginasi Tanpa Reload pada Daftar RFQ/Inquiry Admin (`/admin/inquiries`)** *(Keputusan Q1, Q2, Q3, Q8, Q10)*
+- [x] **T-304: Integrasi Paginasi Tanpa Reload pada Daftar RFQ/Inquiry Admin (`/admin/inquiries`)** _(Keputusan Q1, Q2, Q3, Q8, Q10)_
   - **Deskripsi:** Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke `/admin/inquiries` dengan validasi parameter server (`page`, `per_page` whitelist `10/25/50/100` default `10`), respons JSON/partial HTML pada `GET /admin/inquiries`, sinkronisasi filter status & pencarian, pelestarian event delegation untuk aksi baris, serta penyesuaian halaman aktif setelah penghapusan data.
   - **Acceptance Criteria:**
     - Whitelist `per_page` (`10/25/50/100`, default `10`) dan normalisasi `page` (`>= 1`, maks `totalPages`) di `controllers/admin/inquiryController.js` & `models/inquiryModel.js` menggunakan query terparameter.
@@ -56,7 +57,7 @@
   - **Skill:** `impeccable` (`polish`, `adapt`), `antislop-code`
   - **Verifikasi:** Uji pindah halaman, ganti `per_page`, filter + pencarian, aksi modal/status/hapus di halaman 2+, dan URL manual `?per_page=1000&page=abc`.
 
-- [x] **T-305: Integrasi Paginasi Tanpa Reload pada Daftar Katalog Produk Admin (`/admin/products`)** *(Keputusan Q1, Q2, Q3, Q4, Q5, Q6, Q8, Q10)*
+- [x] **T-305: Integrasi Paginasi Tanpa Reload pada Daftar Katalog Produk Admin (`/admin/products`)** _(Keputusan Q1, Q2, Q3, Q4, Q5, Q6, Q8, Q10)_
   - **Deskripsi:** Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke halaman daftar Katalog Produk Admin (`/admin/products`) dengan `per_page` `10/25/50/100` (default `10`) tanpa reload halaman, menyinkronkan filter kategori produk dan pencarian kata kunci dengan query server & `history.pushState`, serta menjaga stabilitas tinggi baris/thumbnail (tanpa layout shift).
   - **Acceptance Criteria:**
     - Whitelist `per_page` (`10/25/50/100`, default `10`), normalisasi `page` (`>= 1`, maks `totalPages`), filter `category_id`, dan pencarian `q` di `controllers/admin/productController.js` & `models/productModel.js` menggunakan query terparameter.
@@ -66,7 +67,7 @@
   - **Skill:** `impeccable` (`polish`, `adapt`, `animate`), `antislop-human`, `antislop-layoutmobile`, `antislop-code`
   - **Verifikasi:** Uji `/admin/products` dengan kombinasi kategori + pencarian + ganti halaman & `per_page`; uji toggle status & hapus produk setelah pindah halaman.
 
-- [x] **T-306: Pengujian Wajib Menyeluruh, Audit Regresi Multi-Viewport (ID/EN), & Gerbang Kualitas Lint** *(Keputusan Q1 s/d Q10)*
+- [x] **T-306: Pengujian Wajib Menyeluruh, Audit Regresi Multi-Viewport (ID/EN), & Gerbang Kualitas Lint** _(Keputusan Q1 s/d Q10)_
   - **Deskripsi:** Melaksanakan seluruh matriks pengujian wajib dan audit regresi lintas halaman (`/admin/inquiries`, `/admin/products`, `/admin/dashboard`, `/products` publik, dan footer di semua halaman publik), lintas viewport (`320px`, `375px`, `768px`, `1024px`, `1440px`), serta bahasa (`ID` & `EN`), dan memastikan `npm run lint` serta `npm run lint:views` hijau.
   - **Acceptance Criteria:**
     - Lulus seluruh skenario uji wajib: halaman 1/tengah/terakhir; ganti `per_page` di tiap halaman; input `Page [n]` (`0`, negatif, huruf, melebihi total, kosong); URL manual `?per_page=1000` / `?page=abc` / `?page=9999`; data `0`, `1`, `10`, `11`, `>100` baris; filter + paginasi; tombol Back/Forward browser; klik cepat berulang (`AbortController`); bukti Network tab tanpa full reload.
@@ -74,4 +75,4 @@
     - `npm run lint` dan `npm run lint:views` hijau (0 error).
   - **File Terdampak:** Berkas terkait bila ditemukan temuan saat uji regresi.
   - **Skill:** `impeccable` (`polish`, `adapt`), `antislop-code`
-  - **Verifikasi:** Laporan hasil uji lengkap + output `npm run lint` dan `npm run lint:views`.
+  - **Verifikasi:** Laporan hasil uji lengkap + output `npm run lint` dan `npm run lint:views` .
