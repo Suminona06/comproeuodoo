@@ -34,19 +34,19 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
   2. **Admin:** Hak akses operasional mengelola Banner, Merek, Produk, Kategori, Berita, Kapabilitas, Konten Beranda, Tentang Kami, Kontak, dan Inquiries. Tidak dapat mengelola Pengguna atau Pengaturan Global.
   3. **Editor:** Hak akses terbatas hanya untuk mengelola Artikel Berita, Kategori Berita, dan mengunggah ke Media Library.
 
-### Dashboard CMS Terpadu (`/admin/dashboard`) `[PENDING T-302]`
+### Dashboard CMS Terpadu (`/admin/dashboard`)
 
 - Menampilkan ringkasan metrik statistik operasional:
   - Jumlah Inquiry Baru yang belum dibaca.
   - Total Produk Aktif dalam katalog.
   - Jumlah Artikel Berita terpublikasi.
-- **Tabel Inquiry RFQ Terbaru `[PENDING T-302]`:**
+- **Tabel Inquiry RFQ Terbaru:**
   - Menampilkan tepat **10 data Inquiry RFQ terbaru** (urut tanggal masuk menurun `created_at DESC, id DESC`, dibatasi langsung dengan `LIMIT 10` pada query database, bukan dipotong di view).
   - Tampil **tanpa komponen paginasi**.
   - Pada layar desktop (`> 768px`), pembungkus scroll tabel dinonaktifkan (`overflow: visible; max-height: none`), sedangkan pada layar sempit/mobile (`<= 768px`) wrapper scroll horizontal (`overflow-x: auto`) tetap dipertahankan agar tabel tidak merusak tata letak.
   - Tautan pintas **"Lihat Seluruh Inquiry"** menuju `/admin/inquiries` tetap ditampilkan di toolbar tabel dan berfungsi normal; state kosong tetap tertata rapi.
 
-### FR-16: Pengelolaan Inquiries / Permintaan Penawaran RFQ `[PENDING T-304]`
+### FR-16: Pengelolaan Inquiries / Permintaan Penawaran RFQ
 
 - Tinjauan seluruh formulir masuk di `/admin/inquiries` (dengan alias `/admin/leads`).
 - Filter status data: Semua (`all`), Baru (`baru`), Diproses (`diproses`), Selesai (`selesai`), Ditolak (`ditolak`), serta pencarian kata kunci.
@@ -85,7 +85,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 
 - Form create dan edit produk menyediakan input teks dwibahasa (`cta_text_id` dan `cta_text_en`, maks 50 karakter, opsional) dengan fallback ke default ("Minta Penawaran via WhatsApp" / "Request Quote via WhatsApp") dan mengarah ke `settings.whatsapp_number`.
 
-### FR-31: Paginasi Dinamis Tanpa Reload pada Daftar RFQ/Inquiry Admin (`/admin/inquiries`) `[PENDING T-303, T-304, T-306]`
+### FR-31: Paginasi Dinamis Tanpa Reload pada Daftar RFQ/Inquiry Admin (`/admin/inquiries`)
 
 - Menggunakan komponen paginasi bersama Varian 1 (`.pgn-*`, `views/partials/pagination.ejs` + `public/js/pagination.js`) dengan pilihan `per_page` **10, 25, 50, dan 100** (default **10**).
 - Perpindahan halaman dan perubahan `per_page` berjalan **tanpa reload halaman penuh** (fetch JSON/partial HTML dari server per halaman dengan `AbortController`) dan menyinkronkan URL melalui `history.pushState` (`?page=&per_page=`) serta mendukung tombol Back/Forward browser (`popstate`).
@@ -93,7 +93,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 - Seluruh aksi per baris (Tinjau modal, Detail, ubah status dropdown, badge status, hapus data) tetap berfungsi setelah halaman berganti melalui _event delegation_ dan re-inisialisasi state modal/dropdown.
 - Setelah penghapusan baris yang membuat halaman terakhir kosong, tampilan otomatis mundur ke halaman valid terakhir.
 
-### FR-32: Paginasi Dinamis Tanpa Reload pada Daftar Katalog Produk Admin (`/admin/products`) `[PENDING T-303, T-305, T-306]`
+### FR-32: Paginasi Dinamis Tanpa Reload pada Daftar Katalog Produk Admin (`/admin/products`)
 
 - Halaman daftar Katalog Produk Admin (`/admin/products`) menggunakan komponen paginasi bersama Varian 1 (`.pgn-*`) dengan pilihan `per_page` **10, 25, 50, dan 100** (default **10**), tanpa mengubah halaman katalog publik (`/products`).
 - Filter kategori produk (`category_id`) dan pencarian kata kunci (`q`) tetap sinkron dengan paginasi tanpa reload halaman penuh, memperbarui URL via `history.pushState`, dan mereset halaman ke **halaman 1** saat diubah.

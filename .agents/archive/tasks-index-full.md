@@ -1056,3 +1056,67 @@
 - **Skill**: `frontend-ui-engineering` + `impeccable` (polish) + `ponytail`
 - **Verifikasi**: `node --test --test-force-exit tests/test-t300-visual-comparison-qa.js` (1/1 pass), screenshot 1440px & 375px tersimpan dan dibandingkan di artefak `t300-visual-comparison-report.md`. Selesai 2026-11-06.
 
+### T-301: Perbaikan Bug Hover Kartu Alamat Footer & Kontras WCAG AA Tautan Faks/Telp/Email [DONE]
+- **Deskripsi**: Menghapus efek hover pada kartu alamat footer (`.ft-office-card`) dan mengunci warna teks seluruh baris alamat, telepon, faks, serta email (`.ft-phone-val`, `a[href^="tel:"]`, `a[href^="mailto:"]`) pada state `normal`, `:hover`, `:focus-visible`, `:active`, dan `:visited` ke token teks terang footer (`var(--color-text-inverse)`) agar lolos kontras WCAG AA (`>= 4.5:1`) dan tidak tertimpa `a:hover` global (`var(--color-primary-dark)`). Memastikan `.cf-link-inherit` pada `/contact` juga mempertahankan `color: inherit` di semua state.
+- **Acceptance Criteria**:
+  - [x] `.ft-office-card:hover` dan `transition` pada `.ft-office-card` dihapus sepenuhnya.
+  - [x] Semua baris teks dan tautan (Alamat, Telp, Faks, Email) di `.ft-office-card` memakai `var(--color-text-inverse)` di semua state (`normal`, `:hover`, `:focus-visible`, `:active`, `:visited`), dengan underline saat `:hover` di dalam `@media (hover: hover)` dan focus ring `2px solid var(--color-text-inverse)` saat `:focus-visible`.
+  - [x] `.cf-link-inherit` pada `/contact` mempertahankan `color: inherit` pada `:hover` dan `:visited`.
+- **File Terdampak**: `public/css/layout.css`, `public/css/components.css`, `views/partials/footer.ejs`
+- **Skill**: `impeccable` (polish), `antislop-human`, `antislop-code`
+- **Verifikasi**: Inspeksi computed style state `:hover`, `:focus-visible`, `:visited` pada nomor Faks/Telp/Email di footer & halaman `/contact`; uji kontras WCAG AA; uji navigasi Tab. Selesai 2026-11-10.
+
+### T-302: Penyederhanaan Tabel Inquiry RFQ Dashboard Admin (LIMIT 10 & Scroll Hanya di Mobile) [DONE]
+- **Deskripsi**: Mengubah query pengambilan data Inquiry RFQ di Dashboard Admin (`/admin/dashboard`) menjadi `LIMIT 10` terbaru (`ORDER BY i.created_at DESC, i.id DESC`), tanpa paginasi, menghapus scroll pada layar desktop (`> 768px`) dan mengeliminasi scroller mobile dengan layout stacked card responsif, serta mempertahankan tautan "Lihat Seluruh Inquiry".
+- **Acceptance Criteria**:
+  - [x] `controllers/admin/dashboardController.js` memanggil `inquiryModel.findAll({ limit: 10 })` di level SQL query.
+  - [x] Tabel `#rfqDataTable` di `views/admin/dashboard.ejs` tampil tanpa paginasi, dengan wrapper `.table-scroll-wrapper--mobile-only` (`overflow: visible` di desktop dan mobile tanpa scrollbar horizontal).
+  - [x] Tautan "Lihat Seluruh Inquiry" (`/admin/inquiries`) dan state kosong tetap berfungsi rapi.
+- **File Terdampak**: `controllers/admin/dashboardController.js`, `views/admin/dashboard.ejs`, `public/css/admin.css`
+- **Skill**: `impeccable` (adapt, polish), `antislop-layoutmobile`, `antislop-code`
+- **Verifikasi**: Uji `/admin/dashboard` dengan 0, 5, 10 data; verifikasi audit Playwright viewport 320px s/d 1440px tanpa overflow horizontal. Selesai 2026-11-10.
+
+### T-303: Pembuatan Komponen Paginasi Bersama Varian 1 (.pgn-*, Partial EJS, Modul JS, & Lokalisasi ID/EN) [DONE]
+- **Deskripsi**: Membangun komponen paginasi bersama yang terdiri dari partial `views/partials/pagination.ejs`, styling `.pgn-*` berbasis token CSS di `public/css/admin.css` (terintegrasi flush sebagai card footer tanpa margin mengambang), modul `public/js/pagination.js`, serta kamus lokalisasi ID/EN di `locales/id.json` dan `locales/en.json`.
+- **Acceptance Criteria**:
+  - [x] Identik 1:1 dengan Gambar 2 Varian 1: sisi kiri `Page [input] of <total> | Rows per page [select 10/25/50/100]` menggunakan `<select>` native ter-style (`.pgn-per-page-select`); sisi kanan `<< < 1 2 3 ... 8 9 10 > >>` dengan halaman aktif berlatar abu muda netral (`var(--bg-subtle)`) dan hover hijau token di dalam `@media (hover: hover)`.
+  - [x] Bila total hanya 1 halaman (`totalPages <= 1`), bar tetap tampil utuh dengan tombol navigasi `disabled`.
+  - [x] Di mobile (`<= 768px`), bar ditumpuk rapi tanpa divider menggantung, dan target sentuh minimal 44x44px.
+  - [x] `public/js/pagination.js` menangani fetch JSON/partial HTML dengan `AbortController`, sinkronisasi `history.pushState` (`?page=&per_page=`), event `popstate`, validasi input halaman, pengumuman `aria-live="polite"`, dan fallback link nyata saat non-JS.
+  - [x] Seluruh label teks tersedia di `locales/id.json` dan `locales/en.json`.
+- **File Terdampak**: `views/partials/pagination.ejs`, `public/js/pagination.js`, `public/css/admin.css`, `locales/id.json`, `locales/en.json`
+- **Skill**: `impeccable` (polish, adapt, animate), `antislop-human`, `antislop-layoutmobile`, `antislop-code`
+- **Verifikasi**: Uji kesesuaian visual Varian 1, uji input halaman tidak valid, uji AbortController, uji responsif 320px, dan audit aksesibilitas. Selesai 2026-11-10.
+
+### T-304: Integrasi Paginasi Tanpa Reload pada Daftar RFQ/Inquiry Admin (/admin/inquiries) [DONE]
+- **Deskripsi**: Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke `/admin/inquiries` dengan validasi parameter server (`page`, `per_page` whitelist 10/25/50/100 default 10), respons JSON/partial HTML pada `GET /admin/inquiries`, sinkronisasi filter status & pencarian, pelestarian event delegation untuk aksi baris, serta penyesuaian halaman aktif setelah penghapusan data.
+- **Acceptance Criteria**:
+  - [x] Whitelist `per_page` (10/25/50/100, default 10) dan normalisasi `page` (`>= 1`, maks `totalPages`) di `controllers/admin/inquiryController.js` & `models/inquiryModel.js` menggunakan query terparameter.
+  - [x] Pindah halaman, ganti `per_page` (reset ke halaman 1), dan filter status/pencarian (reset ke halaman 1) berjalan tanpa reload halaman penuh dan sinkron dengan `history.pushState`.
+  - [x] Aksi baris (Tinjau modal, Detail, dropdown ubah status dengan `window.initEuDropdowns()`, badge, hapus data) tetap berfungsi setelah pindah halaman; halaman mundur otomatis bila halaman terakhir kosong setelah hapus.
+- **File Terdampak**: `controllers/admin/inquiryController.js`, `models/inquiryModel.js`, `views/admin/inquiries/index.ejs`, `public/js/admin-inquiries.js`, `public/css/admin.css`
+- **Skill**: `impeccable` (polish, adapt), `antislop-code`
+- **Verifikasi**: Uji pindah halaman, ganti per_page, filter + pencarian, aksi modal/status/hapus di halaman 2+, dan URL manual `?per_page=1000&page=abc`. Selesai 2026-11-10.
+
+### T-305: Integrasi Paginasi Tanpa Reload pada Daftar Katalog Produk Admin (/admin/products) [DONE]
+- **Deskripsi**: Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke halaman daftar Katalog Produk Admin (`/admin/products`) dengan `per_page` 10/25/50/100 (default 10) tanpa reload halaman, menyinkronkan filter kategori produk dan pencarian kata kunci dengan query server & `history.pushState`, serta menjaga stabilitas tinggi baris/thumbnail (tanpa layout shift).
+- **Acceptance Criteria**:
+  - [x] Whitelist `per_page` (10/25/50/100, default 10), normalisasi `page` (`>= 1`, maks `totalPages`), filter `category_id`, dan pencarian `q` di `controllers/admin/productController.js` & `models/productModel.js` menggunakan query terparameter.
+  - [x] Pindah halaman, ganti `per_page` (reset ke halaman 1), filter kategori, dan pencarian produk berjalan tanpa reload halaman penuh, melakukan scroll halus ke awal tabel, dan mengumumkan halaman baru via `aria-live="polite"`.
+  - [x] Aksi baris produk (Edit, Toggle Status, Hapus Produk) tetap berfungsi setelah pindah halaman; halaman mundur otomatis bila halaman terakhir kosong setelah hapus; halaman katalog publik (`/products`) tidak diubah.
+- **File Terdampak**: `controllers/admin/productController.js`, `models/productModel.js`, `views/admin/products/index.ejs`, `public/js/admin-products.js`, `public/css/admin.css`
+- **Skill**: `impeccable` (polish, adapt, animate), `antislop-human`, `antislop-layoutmobile`, `antislop-code`
+- **Verifikasi**: Uji `/admin/products` dengan kombinasi kategori + pencarian + ganti halaman & per_page; uji toggle status & hapus produk setelah pindah halaman. Selesai 2026-11-10.
+
+### T-306: Pengujian Wajib Menyeluruh, Audit Regresi Multi-Viewport (ID/EN), & Gerbang Kualitas Lint [DONE]
+- **Deskripsi**: Melaksanakan seluruh matriks pengujian wajib dan audit regresi lintas halaman (`/admin/inquiries`, `/admin/products`, `/admin/dashboard`, `/products` publik, dan footer di semua halaman publik), lintas viewport (`320px`, `375px`, `768px`, `1024px`, `1440px`), serta bahasa (`ID` & `EN`), verifikasi visual Playwright tanpa horizontal scroller, dan memastikan `npm run lint` serta `npm run lint:views` hijau.
+- **Acceptance Criteria**:
+  - [x] Lulus seluruh skenario uji wajib: halaman 1/tengah/terakhir; ganti `per_page` di tiap halaman; input `Page [n]` (0, negatif, huruf, melebihi total, kosong); URL manual `?per_page=1000` / `?page=abc` / `?page=9999`; data 0, 1, 10, 11, >100 baris; filter + paginasi; tombol Back/Forward browser; klik cepat berulang (`AbortController`); bukti Network tab tanpa full reload.
+  - [x] Bebas regresi dan error console di semua viewport (`320px` s/d `1440px`) dan bahasa (`ID` & `EN`).
+  - [x] Uji audit visual Playwright memastikan tidak ada horizontal scroller pada desktop dan mobile (`hasWrapperHorizontalOverflow: false`, `hasBodyHorizontalOverflow: false`).
+  - [x] `npm run lint` dan `npm run lint:views` hijau (0 error).
+- **File Terdampak**: `public/css/admin.css`, `tests/test-playwright-audit.js`
+- **Skill**: `impeccable` (polish, adapt), `antislop-code`
+- **Verifikasi**: Skrip `tests/test-playwright-audit.js` lulus 12/12 matriks viewport, `npm run lint` (0 error), `node scripts/lint-views.js` (0 error). Selesai 2026-11-10.
+
+

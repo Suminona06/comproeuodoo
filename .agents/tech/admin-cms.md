@@ -14,13 +14,13 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 | `GET/POST`| `/admin/login` | `authController.loginView` / `login` | `loginLimiter`, `optionalAuth` | Form & autentikasi login |
 | `GET/POST`| `/admin/logout` | `authController.logout` | `requireAuth` | Mengakhiri sesi pengguna |
 | `GET/POST`| `/admin/change-password` | `authController.*` | `requireAuth` | Perbarui kata sandi mandiri |
-| `GET` | `/admin` / `/admin/dashboard`| `dashboardController.index` | `requireAuth` | Metrik operasional & 10 RFQ terbaru (`LIMIT 10`) `[PENDING T-302]` |
+| `GET` | `/admin` / `/admin/dashboard`| `dashboardController.index` | `requireAuth` | Metrik operasional & 10 RFQ terbaru (`LIMIT 10`) |
 | `GET/POST`| `/admin/users` | `userController.*` | `requireAuth`, `roleMiddleware(['superadmin'])` | CRUD akun pengguna |
-| `GET` | `/admin/inquiries` | `inquiryController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar RFQ (SSR + JSON Fetch tanpa reload) `[PENDING T-304]` |
+| `GET` | `/admin/inquiries` | `inquiryController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar RFQ (SSR + JSON Fetch tanpa reload) |
 | `GET` | `/admin/inquiries/export` | `inquiryController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor data prospek CSV |
 | `POST` | `/admin/inquiries/:id/status`| `inquiryController.updateStatus` | `requireAuth`, `roleMiddleware` | Update status & catatan sales |
 | `POST` | `/admin/inquiries/:id/delete`| `inquiryController.destroy` | `requireAuth`, `roleMiddleware` | Hapus rekaman RFQ |
-| `GET` | `/admin/products` | `productController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Katalog Produk Admin (SSR + JSON Fetch tanpa reload) `[PENDING T-305]` |
+| `GET` | `/admin/products` | `productController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Katalog Produk Admin (SSR + JSON Fetch tanpa reload) |
 
 ---
 
@@ -60,16 +60,16 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 
 ---
 
-## 5. Dashboard RFQ & Paginasi Tanpa Reload (`/admin/dashboard`, `/admin/inquiries`, `/admin/products`) `[PENDING T-302, T-304, T-305]`
+## 5. Dashboard RFQ & Paginasi Tanpa Reload (`/admin/dashboard`, `/admin/inquiries`, `/admin/products`)
 
-1. **Tabel RFQ Dashboard (`/admin/dashboard`) `[PENDING T-302]`:**
+1. **Tabel RFQ Dashboard (`/admin/dashboard`):**
    - `controllers/admin/dashboardController.js` memanggil `inquiryModel.findAll({ limit: 10 })` (`ORDER BY i.created_at DESC, i.id DESC LIMIT 10` di query SQL, tanpa paginasi).
    - Pada `views/admin/dashboard.ejs`, pembungkus `#rfqDataTable` menggunakan class `.table-scroll-wrapper--mobile-only` yang menonaktifkan scroll pada desktop (`> 768px`: `overflow: visible; max-height: none`) dan mempertahankan `overflow-x: auto` pada mobile (`<= 768px`).
-2. **Validasi Whitelist Paginasi Server (`/admin/inquiries` & `/admin/products`) `[PENDING T-304, T-305]`:**
+2. **Validasi Whitelist Paginasi Server (`/admin/inquiries` & `/admin/products`):**
    - `per_page`: di-whitelist ke `[10, 25, 50, 100]` (default `10`, maksimal `100`); nilai di luar daftar (mis. `?per_page=1000`, `0`, negatif, huruf) dinormalkan ke `10`.
    - `page`: bilangan bulat `>= 1`; nilai tidak valid dinormalkan ke `1` dan dibatasi ke `totalPages = Math.max(1, Math.ceil(totalRows / perPage))`.
    - Query di `models/inquiryModel.js` dan `models/productModel.js` menggunakan *prepared statements* terparameter (`LIMIT ? OFFSET ?`, filter `status` / `category_id`, dan pencarian `q`).
-3. **Kontrak Respons Fetch Tanpa Reload `[PENDING T-304, T-305]`:**
+3. **Kontrak Respons Fetch Tanpa Reload:**
    - Saat menerima header `Accept: application/json` (atau `X-Requested-With: fetch`), `GET /admin/inquiries` dan `GET /admin/products` mengembalikan JSON `{ ok: true, rowsHtml, inquiriesData (khusus RFQ), pagination: { page, perPage, totalRows, totalPages } }`.
    - Klien (`public/js/pagination.js`, `public/js/admin-inquiries.js`, `public/js/admin-products.js`) memperbarui `<tbody>`, menyinkronkan URL via `history.pushState` (`?page=&per_page=`), re-init `window.initEuDropdowns()`, memperbarui `inquiriesData` modal `#inquiryQuickModal`, serta memundurkan halaman aktif bila penghapusan data membuat halaman terakhir kosong.
 
