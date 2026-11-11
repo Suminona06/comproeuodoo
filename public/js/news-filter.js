@@ -179,9 +179,9 @@
 
     if (headlineSec) {
       if (data.currentPage === 1 && !data.search) {
-        headlineSec.style.display = '';
+        headlineSec.removeAttribute('hidden');
       } else {
-        headlineSec.style.display = 'none';
+        headlineSec.setAttribute('hidden', '');
       }
     }
   }
@@ -331,4 +331,174 @@
     var currentUrl = buildUrl(currentType, currentCategory, currentSearch, currentPage);
     fetchNews(currentUrl, false);
   });
+
+  function initHeadlineSlider() {
+    var slider = document.getElementById('nwlHeadlineSlider');
+    if (!slider) return;
+    var slides = slider.querySelectorAll('.nwl-slide');
+    var indicators = slider.querySelectorAll('.nwl-indicator-bar');
+    var prevBtn = document.getElementById('nwlPrevBtn');
+    var nextBtn = document.getElementById('nwlNextBtn');
+    if (slides.length <= 1) return;
+
+    var titleEl = document.querySelector('.nwl-headline-sec-title');
+    var secHeadline = document.getElementById('nwlHeadlineSec');
+    var titles = {
+      berita: slider.getAttribute('data-title-berita') || 'Berita',
+      pers: slider.getAttribute('data-title-pers') || 'Siaran Pers',
+      blog: slider.getAttribute('data-title-blog') || 'Blog'
+    };
+    var ariaLabels = {
+      berita: slider.getAttribute('data-aria-berita') || 'Berita Utama',
+      pers: slider.getAttribute('data-aria-pers') || 'Siaran Pers Utama',
+      blog: slider.getAttribute('data-aria-blog') || 'Blog Utama'
+    };
+
+    function updateHeadlineTitle(postType) {
+      var key = titles[postType] ? postType : 'berita';
+      if (titleEl && titles[key]) {
+        titleEl.textContent = titles[key];
+      }
+      if (secHeadline && ariaLabels[key]) {
+        secHeadline.setAttribute('aria-label', ariaLabels[key]);
+      }
+    }
+
+    var currentIndex = 0;
+    var totalSlides = slides.length;
+    var isTransitioning = false;
+    var isPaused = false;
+    var timer = null;
+
+    function goToSlide(targetIndex) {
+      if (isTransitioning) return;
+      var normalized = ((targetIndex % totalSlides) + totalSlides) % totalSlides;
+      if (normalized === currentIndex) return;
+      isTransitioning = true;
+
+      slides[currentIndex].classList.remove('active');
+      slides[currentIndex].setAttribute('aria-hidden', 'true');
+      var prevLinks = slides[currentIndex].querySelectorAll('a, button');
+      for (var i = 0; i < prevLinks.length; i++) {
+        prevLinks[i].setAttribute('tabindex', '-1');
+      }
+      if (indicators[currentIndex]) {
+        indicators[currentIndex].classList.remove('active');
+        indicators[currentIndex].setAttribute('aria-selected', 'false');
+      }
+
+      currentIndex = normalized;
+
+      var currentSlide = slides[currentIndex];
+      var postType = (currentSlide && currentSlide.getAttribute('data-post-type')) || 'berita';
+      updateHeadlineTitle(postType);
+
+      slides[currentIndex].classList.add('active');
+      slides[currentIndex].removeAttribute('aria-hidden');
+      var nextLinks = slides[currentIndex].querySelectorAll('a, button');
+      for (var j = 0; j < nextLinks.length; j++) {
+        nextLinks[j].removeAttribute('tabindex');
+      }
+      if (indicators[currentIndex]) {
+        indicators[currentIndex].classList.add('active');
+        indicators[currentIndex].setAttribute('aria-selected', 'true');
+      }
+
+      setTimeout(function() {
+        isTransitioning = false;
+      }, 400);
+    }
+
+    function startTimer() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+      }
+      stopTimer();
+      timer = setInterval(function() {
+        if (!isPaused) {
+          goToSlide(currentIndex + 1);
+        }
+      }, 6000);
+    }
+
+    function stopTimer() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function resetTimer() {
+      stopTimer();
+      startTimer();
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        goToSlide(currentIndex + 1);
+        resetTimer();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        goToSlide(currentIndex - 1);
+        resetTimer();
+      });
+    }
+
+    for (var k = 0; k < indicators.length; k++) {
+      (function(idx) {
+        indicators[idx].addEventListener('click', function() {
+          goToSlide(idx);
+          resetTimer();
+        });
+      })(k);
+    }
+
+    slider.addEventListener('mouseenter', function() { isPaused = true; });
+    slider.addEventListener('mouseleave', function() { isPaused = false; });
+    slider.addEventListener('focusin', function() { isPaused = true; });
+    slider.addEventListener('focusout', function() { isPaused = false; });
+
+    slider.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goToSlide(currentIndex - 1);
+        resetTimer();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goToSlide(currentIndex + 1);
+        resetTimer();
+      }
+    });
+
+    var touchStartX = 0;
+    var touchStartY = 0;
+    slider.addEventListener('touchstart', function(e) {
+      if (e.touches && e.touches.length > 0) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    slider.addEventListener('touchend', function(e) {
+      if (e.changedTouches && e.changedTouches.length > 0) {
+        var deltaX = e.changedTouches[0].clientX - touchStartX;
+        var deltaY = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+          if (deltaX < 0) {
+            goToSlide(currentIndex + 1);
+          } else {
+            goToSlide(currentIndex - 1);
+          }
+          resetTimer();
+        }
+      }
+    }, { passive: true });
+
+    startTimer();
+  }
+
+  initHeadlineSlider();
 })();

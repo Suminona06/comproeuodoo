@@ -91,7 +91,13 @@
     "page_subtitle": "Informasi operasional pabrik, perkembangan sertifikasi, dan inisiatif ramah lingkungan PT Euodoo.",
     "published_on": "Diterbitkan pada",
     "empty_posts": "Belum ada artikel publikasi yang diterbitkan saat ini.",
-    "back_to_news": "Kembali ke Daftar Publikasi"
+    "back_to_news": "Kembali ke Daftar Publikasi",
+    "headline_title_berita": "Berita",
+    "headline_title_pers": "Siaran Pers",
+    "headline_title_blog": "Blog",
+    "headline_aria_berita": "Berita Utama",
+    "headline_aria_pers": "Siaran Pers Utama",
+    "headline_aria_blog": "Blog Utama"
   },
   "contact": {
     "page_title": "Kontak Resmi & Permintaan Penawaran",

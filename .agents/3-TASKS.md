@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 6 Task (T-307 s/d T-312)
-- **Total Task Selesai:** 306 Task (T-01 s/d T-306)
+- **Task Aktif Terbuka:** 3 Task (T-310 s/d T-312)
+- **Total Task Selesai:** 309 Task (T-01 s/d T-309)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-313**.
 
@@ -41,17 +41,17 @@
 
 ### Task T-309: Pemecahan Section Halaman News, Latar Selang-Seling, & Pembersihan Inline Style/Script (`views/public/news.ejs`)
 
-- **Status:** `[ ] OPEN`
+- **Status:** `[x] DONE`
 - **Modul Spesifikasi:** `prd/news.md` (`FR-12`, `FR-26`), `tech/news.md`
 - **Skill:** `Impeccable polish`, `antislop-code`
-- **File Terdampak:** `views/public/news.ejs`, `views/partials/news/headline-section.ejs`, `views/partials/news/filter-bar.ejs`, `public/css/components.css`, `public/js/news-filter.js`
+- **File Terdampak:** `views/public/news.ejs`, `views/partials/news/headline-section.ejs`, `views/partials/news/filter-bar.ejs`, `public/css/components.css`, `public/js/news-filter.js`, `tests/test-t309-news-sections.js`
 - **Acceptance Criteria:**
-  - [ ] `views/public/news.ejs` memiliki dua `<section>` konten di bawah `.page-hero`: `.nwl-sec-headline` (`var(--bg-soft-green)`) dan `.nwl-sec-directory` (`var(--bg-subtle)`) dengan gradasi tepi pendek (`48px` mobile, `80px` desktop) tanpa garis keras.
-  - [ ] Section headline (`.nwl-sec-headline`) tetap tampil dan tidak disembunyikan oleh perubahan filter/tab direktori di bawahnya.
-  - [ ] Tidak ada atribut `style="..."` statis maupun `<script>` inline di `views/public/news.ejs` dan partial turunannya (`<= 100` baris per partial); seluruh teks memakai `t('...')` di `locales/id.json` & `locales/en.json`.
-  - [ ] Kartu berita (`.nwl-card`) tetap kontras dengan permukaan putih (`var(--color-surface)`), border token (`var(--color-border)`), dan shadow halus (`var(--shadow-level-1)`) di atas kedua latar.
+  - [x] `views/public/news.ejs` memiliki dua `<section>` konten di bawah `.page-hero`: `.nwl-sec-headline` (`var(--bg-soft-green)`) dan `.nwl-sec-directory` (`var(--bg-subtle)`) dengan gradasi tepi pendek (`48px` mobile, `80px` desktop) tanpa garis keras.
+  - [x] Section headline (`.nwl-sec-headline`) tetap tampil dan tidak disembunyikan oleh perubahan filter/tab direktori di bawahnya.
+  - [x] Tidak ada atribut `style="..."` statis maupun `<script>` inline di `views/public/news.ejs` dan partial turunannya (`<= 100` baris per partial); seluruh teks memakai `t('...')` di `locales/id.json` & `locales/en.json`.
+  - [x] Kartu berita (`.nwl-card`) tetap kontras dengan permukaan putih (`var(--color-surface)`), border token (`var(--color-border)`), dan shadow halus (`var(--shadow-level-1)`) di atas kedua latar.
 - **Verifikasi:**
-  - [ ] `npm run lint` dan `npm run lint:views` zero error; pengujian Playwright pada `/news` memverifikasi dua `<section>` terpisah beserta latar dan transisinya.
+  - [x] `npm run lint` dan `npm run lint:views` zero error; pengujian Playwright pada `/news` di `tests/test-t309-news-sections.js` memverifikasi dua `<section>` terpisah beserta latar, transisi 80px/48px, dan slider headline (6/6 lulus).
 
 ### Task T-310: Judul Section Headline Dinamis Mengikuti Jenis Artikel pada Slide Headline Aktif
 

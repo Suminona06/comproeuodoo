@@ -22,10 +22,14 @@
   const heroBg = heroObj && heroObj.image_url 
     ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
     : '';
+  const headlinesList = (typeof headlinePosts !== 'undefined' && Array.isArray(headlinePosts) && headlinePosts.length > 0)
+    ? headlinePosts
+    : (typeof headlinePost !== 'undefined' && headlinePost ? [headlinePost] : []);
+  const hasHeadlines = headlinesList.length > 0;
 %>
 
 <main id="main-content">
-  <!-- Page Hero Header -->
+  <%# 1. PAGE HERO %>
   <section class="page-hero <%= heroObj && heroObj.image_url ? 'page-hero--has-bg' : '' %>" <%- heroBg %>>
     <% if (heroObj && heroObj.image_url) { %>
       <div class="page-hero-scrim" aria-hidden="true"></div>
@@ -36,7 +40,7 @@
         <span class="separator" aria-hidden="true">&rsaquo;</span>
         <span class="current"><%= t('nav.news') %></span>
       </nav>
-      <div class="page-hero-content" style="max-width: 840px;">
+      <div class="page-hero-content nwl-hero-content">
         <h1 class="page-hero-title">
           <%= (heroObj && (currentLangCode === 'en' ? heroObj.title_en : heroObj.title_id))
               ? (currentLangCode === 'en' ? heroObj.title_en : heroObj.title_id)
@@ -47,318 +51,38 @@
               ? (currentLangCode === 'en' ? heroObj.subtitle_en : heroObj.subtitle_id)
               : t('news.page_subtitle') %>
         </p>
-      <% if (heroObj && heroObj.cta_url && (currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id)) { %>
-        <div style="margin-top: 20px;">
-          <a href="<%= heroObj.cta_url %>" class="btn btn-primary">
-            <%= currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id %>
-          </a>
-        </div>
-      <% } %>
+        <% if (heroObj && heroObj.cta_url && (currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id)) { %>
+          <div class="page-hero-cta-wrap">
+            <a href="<%= heroObj.cta_url %>" class="btn btn-primary">
+              <%= currentLangCode === 'en' ? heroObj.cta_text_en : heroObj.cta_text_id %>
+            </a>
+          </div>
+        <% } %>
+      </div>
     </div>
   </section>
 
-  <!-- News Content Section -->
-  <section class="section" style="background-color: var(--bg-base, #ffffff); padding-top: var(--space-xl); padding-bottom: var(--space-3xl);">
+  <%# 2. HEADLINE SECTION (Full Width, Soft Green Background) %>
+  <% if (hasHeadlines) { %>
+    <%- include('../partials/news/headline-section', {
+      headlinesList,
+      currentLangCode,
+      currentPage,
+      search
+    }) %>
+  <% } %>
+
+  <%# 3. DIRECTORY & LISTING SECTION (Full Width, Subtle Background) %>
+  <section class="nwl-sec-directory <%= !hasHeadlines ? 'nwl-sec-directory--solo' : '' %>" id="nwlSecDirectory">
     <div class="container">
-
-      <%
-        const headlinesList = (typeof headlinePosts !== 'undefined' && Array.isArray(headlinePosts) && headlinePosts.length > 0)
-          ? headlinePosts
-          : (typeof headlinePost !== 'undefined' && headlinePost ? [headlinePost] : []);
-      %>
-      <% if (headlinesList.length > 0 && currentPage === 1 && !search) { %>
-        <section class="nwl-headline-sec" id="nwlHeadlineSec" aria-label="<%= currentLangCode === 'en' ? 'Featured News' : 'Berita Utama' %>">
-          <h2 class="nwl-headline-sec-title"><%= currentLangCode === 'en' ? 'News' : 'Berita' %></h2>
-
-          <div class="nwl-headline-slider" id="nwlHeadlineSlider" role="region" aria-roledescription="carousel">
-            <div class="nwl-slider-track" id="nwlSliderTrack">
-              <% headlinesList.forEach((hl, idx) => { %>
-                <%
-                  const hlTitle = currentLangCode === 'en' ? (hl.title_en || hl.title_id) : hl.title_id;
-                  const hlExcerpt = currentLangCode === 'en' ? (hl.excerpt_en || hl.excerpt_id) : hl.excerpt_id;
-                  const hlDate = hl.published_at ? new Date(hl.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-                  const isHlPlaceholder = !(hl.cover_image && hl.cover_image.trim());
-                  const hlImage = isHlPlaceholder ? '/uploads/media/media-1792035656935-732682512.webp' : hl.cover_image.trim();
-                %>
-                <div class="nwl-slide <%= idx === 0 ? 'active' : '' %>" data-slide-index="<%= idx %>" role="group" aria-roledescription="slide" aria-label="<%= (idx + 1) + ' / ' + headlinesList.length %>" <%= idx !== 0 ? 'aria-hidden="true"' : '' %>>
-                  <div class="nwl-slide-grid">
-                    <div class="nwl-slide-media<%= isHlPlaceholder ? ' nwl-slide-media-placeholder' : '' %>">
-                      <img src="<%= hlImage %>" alt="<%= hlTitle %>" loading="<%= idx === 0 ? 'eager' : 'lazy' %>" class="<%= isHlPlaceholder ? 'nwl-img-placeholder' : '' %>">
-                    </div>
-                    <div class="nwl-slide-content">
-                      <% if (hlDate) { %>
-                        <time datetime="<%= hl.published_at %>" class="nwl-slide-date">
-                          <%= hlDate %>
-                        </time>
-                      <% } %>
-                      <h3 class="nwl-slide-title">
-                        <a href="/news/<%= hl.slug %>" class="nwl-slide-title-link" <%= idx !== 0 ? 'tabindex="-1"' : '' %>>
-                          <%= hlTitle %>
-                        </a>
-                      </h3>
-                      <% if (hlExcerpt) { %>
-                        <p class="nwl-slide-excerpt">
-                          <%= hlExcerpt %>
-                        </p>
-                      <% } %>
-                      <div class="nwl-slide-action">
-                        <a href="/news/<%= hl.slug %>" class="nwl-slide-link" <%= idx !== 0 ? 'tabindex="-1"' : '' %>>
-                          <span><%= currentLangCode === 'en' ? 'Read more' : 'Baca selengkapnya' %></span>
-                          <span aria-hidden="true">&rarr;</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              <% }); %>
-            </div>
-
-            <% if (headlinesList.length > 1) { %>
-              <div class="nwl-slider-controls">
-                <div class="nwl-slider-indicators" role="tablist" aria-label="Slide indicators">
-                  <% headlinesList.forEach((_, idx) => { %>
-                    <button type="button" class="nwl-indicator-bar <%= idx === 0 ? 'active' : '' %>" data-slide-to="<%= idx %>" role="tab" aria-selected="<%= idx === 0 %>" aria-label="Slide <%= idx + 1 %>"></button>
-                  <% }); %>
-                </div>
-                <div class="nwl-slider-arrows">
-                  <button type="button" class="nwl-arrow-btn nwl-arrow-prev" id="nwlPrevBtn" aria-label="<%= currentLangCode === 'en' ? 'Previous slide' : 'Slide sebelumnya' %>">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                  </button>
-                  <button type="button" class="nwl-arrow-btn nwl-arrow-next" id="nwlNextBtn" aria-label="<%= currentLangCode === 'en' ? 'Next slide' : 'Slide berikutnya' %>">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            <% } %>
-          </div>
-        </section>
-        <% if (headlinesList.length > 1) { %>
-          <script>
-            (function() {
-              var slider = document.getElementById('nwlHeadlineSlider');
-              if (!slider) return;
-              var slides = slider.querySelectorAll('.nwl-slide');
-              var indicators = slider.querySelectorAll('.nwl-indicator-bar');
-              var prevBtn = document.getElementById('nwlPrevBtn');
-              var nextBtn = document.getElementById('nwlNextBtn');
-              if (slides.length <= 1) return;
-
-              var currentIndex = 0;
-              var totalSlides = slides.length;
-              var isTransitioning = false;
-              var isPaused = false;
-              var timer = null;
-
-              function goToSlide(targetIndex) {
-                if (isTransitioning) return;
-                var normalized = (targetIndex % totalSlides + totalSlides) % totalSlides;
-                if (normalized === currentIndex) return;
-                isTransitioning = true;
-
-                slides[currentIndex].classList.remove('active');
-                slides[currentIndex].setAttribute('aria-hidden', 'true');
-                var prevLinks = slides[currentIndex].querySelectorAll('a, button');
-                for (var i = 0; i < prevLinks.length; i++) {
-                  prevLinks[i].setAttribute('tabindex', '-1');
-                }
-                if (indicators[currentIndex]) {
-                  indicators[currentIndex].classList.remove('active');
-                  indicators[currentIndex].setAttribute('aria-selected', 'false');
-                }
-
-                currentIndex = normalized;
-
-                slides[currentIndex].classList.add('active');
-                slides[currentIndex].removeAttribute('aria-hidden');
-                var nextLinks = slides[currentIndex].querySelectorAll('a, button');
-                for (var j = 0; j < nextLinks.length; j++) {
-                  nextLinks[j].removeAttribute('tabindex');
-                }
-                if (indicators[currentIndex]) {
-                  indicators[currentIndex].classList.add('active');
-                  indicators[currentIndex].setAttribute('aria-selected', 'true');
-                }
-
-                setTimeout(function() {
-                  isTransitioning = false;
-                }, 400);
-              }
-
-              function startTimer() {
-                if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                  return;
-                }
-                stopTimer();
-                timer = setInterval(function() {
-                  if (!isPaused) {
-                    goToSlide(currentIndex + 1);
-                  }
-                }, 6000);
-              }
-
-              function stopTimer() {
-                if (timer) {
-                  clearInterval(timer);
-                  timer = null;
-                }
-              }
-
-              function resetTimer() {
-                stopTimer();
-                startTimer();
-              }
-
-              if (nextBtn) {
-                nextBtn.addEventListener('click', function() {
-                  goToSlide(currentIndex + 1);
-                  resetTimer();
-                });
-              }
-
-              if (prevBtn) {
-                prevBtn.addEventListener('click', function() {
-                  goToSlide(currentIndex - 1);
-                  resetTimer();
-                });
-              }
-
-              for (var k = 0; k < indicators.length; k++) {
-                (function(idx) {
-                  indicators[idx].addEventListener('click', function() {
-                    goToSlide(idx);
-                    resetTimer();
-                  });
-                })(k);
-              }
-
-              slider.addEventListener('mouseenter', function() { isPaused = true; });
-              slider.addEventListener('mouseleave', function() { isPaused = false; });
-              slider.addEventListener('focusin', function() { isPaused = true; });
-              slider.addEventListener('focusout', function() { isPaused = false; });
-
-              slider.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowLeft') {
-                  e.preventDefault();
-                  goToSlide(currentIndex - 1);
-                  resetTimer();
-                } else if (e.key === 'ArrowRight') {
-                  e.preventDefault();
-                  goToSlide(currentIndex + 1);
-                  resetTimer();
-                }
-              });
-
-              var touchStartX = 0;
-              var touchStartY = 0;
-              slider.addEventListener('touchstart', function(e) {
-                if (e.touches && e.touches.length > 0) {
-                  touchStartX = e.touches[0].clientX;
-                  touchStartY = e.touches[0].clientY;
-                }
-              }, { passive: true });
-
-              slider.addEventListener('touchend', function(e) {
-                if (e.changedTouches && e.changedTouches.length > 0) {
-                  var deltaX = e.changedTouches[0].clientX - touchStartX;
-                  var deltaY = e.changedTouches[0].clientY - touchStartY;
-                  if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
-                    if (deltaX < 0) {
-                      goToSlide(currentIndex + 1);
-                    } else {
-                      goToSlide(currentIndex - 1);
-                    }
-                    resetTimer();
-                  }
-                }
-              }, { passive: true });
-
-              startTimer();
-            })();
-          </script>
-        <% } %>
-      <% } %>
-
-      <div class="nwl-tab-bar" role="tablist" aria-label="Tipe Publikasi">
-        <a href="<%= buildQuery(1, 'all', null) %>"
-           class="nwl-tab-item <%= activeType === 'all' ? 'active' : '' %>"
-           role="tab"
-           aria-selected="<%= activeType === 'all' %>"
-           data-type="all">
-          <%= currentLangCode === 'en' ? 'All Publications' : 'Semua Publikasi' %>
-        </a>
-        <a href="<%= buildQuery(1, 'berita', null) %>"
-           class="nwl-tab-item <%= activeType === 'berita' ? 'active' : '' %>"
-           role="tab"
-           aria-selected="<%= activeType === 'berita' %>"
-           data-type="berita">
-          <%= currentLangCode === 'en' ? 'Corporate News' : 'Berita Perusahaan' %>
-        </a>
-        <a href="<%= buildQuery(1, 'pers', null) %>"
-           class="nwl-tab-item <%= activeType === 'pers' ? 'active' : '' %>"
-           role="tab"
-           aria-selected="<%= activeType === 'pers' %>"
-           data-type="pers">
-          <%= currentLangCode === 'en' ? 'Press Releases' : 'Siaran Pers' %>
-        </a>
-        <a href="<%= buildQuery(1, 'blog', null) %>"
-           class="nwl-tab-item <%= activeType === 'blog' ? 'active' : '' %>"
-           role="tab"
-           aria-selected="<%= activeType === 'blog' %>"
-           data-type="blog">
-          <% if (currentLangCode === 'en') { %>Articles & Blog<% } else { %>Artikel & Blog<% } %>
-        </a>
-      </div>
-
-      <div class="nwl-filter-row">
-        <div class="nwl-cat-pills" id="nwlCatPills" role="navigation" aria-label="<%= currentLangCode === 'en' ? 'Topics' : 'Topik' %>">
-          <a href="<%= buildQuery(1, activeType, null) %>"
-             class="nwl-cat-pill <%= !activeCategory ? 'active' : '' %>"
-             data-category="">
-            <%= currentLangCode === 'en' ? 'All' : 'Semua' %>
-          </a>
-          <% if (categories && categories.length > 0) { %>
-            <% categories.forEach(cat => { %>
-              <% const catName = currentLangCode === 'en' ? (cat.name_en || cat.name_id) : cat.name_id; %>
-              <a href="<%= buildQuery(1, activeType, cat.slug) %>"
-                 class="nwl-cat-pill <%= activeCategory === cat.slug ? 'active' : '' %>"
-                 data-category="<%= cat.slug %>">
-                <%= catName %>
-              </a>
-            <% }); %>
-          <% } %>
-        </div>
-
-        <form action="/news" method="GET" class="nwl-search-form" id="newsSearchForm" role="search">
-          <input type="hidden" name="type" id="newsSearchType" value="<%= activeType %>">
-          <input type="hidden" name="category" id="newsSearchCategory" value="<%= activeCategory || '' %>">
-          <div class="nwl-search-input-wrap">
-            <input type="search"
-                   name="search"
-                   id="newsSearchInput"
-                   class="nwl-search-input"
-                   value="<%= search || '' %>"
-                   placeholder="<%= currentLangCode === 'en' ? 'Search articles...' : 'Cari artikel...' %>"
-                   aria-label="<%= currentLangCode === 'en' ? 'Search articles' : 'Cari artikel publikasi' %>">
-            <button type="submit" class="nwl-search-btn" aria-label="<%= currentLangCode === 'en' ? 'Submit search' : 'Kirim pencarian' %>">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
-          </div>
-          <a href="<%= buildQuery(1, activeType, activeCategory).replace(/[?&]search=[^&]*/, '') %>"
-             class="nwl-search-reset"
-             id="newsSearchReset"
-             <%= search ? '' : 'hidden' %>
-             title="<%= currentLangCode === 'en' ? 'Reset search' : 'Hapus pencarian' %>">
-            Reset
-          </a>
-        </form>
-      </div>
+      <%- include('../partials/news/filter-bar', {
+        buildQuery,
+        activeType,
+        activeCategory,
+        categories,
+        search,
+        currentLangCode
+      }) %>
 
       <div class="nwl-grid-wrapper" id="newsGridWrapper" data-lang="<%= currentLangCode %>">
         <div class="nwl-grid" id="newsGrid" <%= (!posts || posts.length === 0) ? 'hidden' : '' %>>
@@ -430,9 +154,9 @@
           </a>
         </div>
       </div>
-
     </div>
   </section>
+
   <script src="/js/news-filter.js" defer></script>
 </main>
 

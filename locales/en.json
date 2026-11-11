@@ -91,7 +91,13 @@
     "page_subtitle": "Plant operational news, environmental initiatives, and quality certifications from PT Euodoo.",
     "published_on": "Published on",
     "empty_posts": "No recent article publications available at this time.",
-    "back_to_news": "Back to Publications"
+    "back_to_news": "Back to Publications",
+    "headline_title_berita": "News",
+    "headline_title_pers": "Press Releases",
+    "headline_title_blog": "Blog",
+    "headline_aria_berita": "Featured News",
+    "headline_aria_pers": "Featured Press Releases",
+    "headline_aria_blog": "Featured Blog"
   },
   "contact": {
     "page_title": "Official Contact & RFQ Inquiry",
