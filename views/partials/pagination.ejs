@@ -8,8 +8,9 @@
     queryParams: {}
   };
 
+  const isPublic = (typeof variant !== 'undefined' && variant === 'public') || (typeof p !== 'undefined' && p && p.variant === 'public');
   const currentPage = Math.max(1, parseInt(p.page, 10) || 1);
-  const perPage = [10, 25, 50, 100].includes(parseInt(p.perPage, 10)) ? parseInt(p.perPage, 10) : 10;
+  const perPage = [9, 10, 25, 50, 100].includes(parseInt(p.perPage, 10)) ? parseInt(p.perPage, 10) : (isPublic ? 9 : 10);
   const totalPages = Math.max(1, parseInt(p.totalPages, 10) || 1);
   const barId = typeof id !== 'undefined' ? id : 'pgnBar';
   const selectId = `${barId}PerPageSelect`;
@@ -17,8 +18,9 @@
   const baseUrl = p.baseUrl || '';
   const queryParams = p.queryParams || {};
 
-  const pLang = typeof currentLang !== 'undefined' ? currentLang : 'id';
-  const txtPage = typeof t === 'function' ? t('pagination.page') : (pLang === 'en' ? 'Page' : 'Page');
+  const pLang = typeof currentLangCode !== 'undefined' ? currentLangCode : (typeof currentLang !== 'undefined' ? currentLang : 'id');
+  const txtNavLabel = typeof t === 'function' ? t('pagination.nav_label') : (pLang === 'en' ? 'Pagination Navigation' : 'Navigasi Halaman');
+  const txtPage = typeof t === 'function' ? t('pagination.page') : (pLang === 'en' ? 'Page' : 'Halaman');
   const txtOf = typeof t === 'function' ? t('pagination.of') : (pLang === 'en' ? 'of' : 'dari');
   const txtRowsPerPage = typeof t === 'function' ? t('pagination.rows_per_page') : (pLang === 'en' ? 'Rows per page' : 'Baris per halaman');
   const txtFirst = typeof t === 'function' ? t('pagination.first') : (pLang === 'en' ? 'First page' : 'Halaman pertama');
@@ -34,8 +36,14 @@
         params.set(k, v);
       }
     }
-    params.set('page', targetPage);
-    params.set('per_page', targetPerPage || perPage);
+    if (isPublic) {
+      if (targetPage && targetPage > 1) {
+        params.set('page', targetPage);
+      }
+    } else {
+      params.set('page', targetPage);
+      params.set('per_page', targetPerPage || perPage);
+    }
     const qs = params.toString();
     return qs ? `${baseUrl}?${qs}` : baseUrl;
   }
@@ -57,39 +65,41 @@
   const isFirstDisabled = currentPage <= 1;
   const isLastDisabled = currentPage >= totalPages;
 %>
-<nav class="pgn-bar" id="<%= barId %>" aria-label="Pagination Navigation" data-current-page="<%= currentPage %>" data-total-pages="<%= totalPages %>" data-per-page="<%= perPage %>" data-base-url="<%= baseUrl %>">
-  <div class="pgn-left">
-    <div class="pgn-page-jump">
-      <span class="pgn-label-txt"><%= txtPage %></span>
-      <input type="number"
-             id="<%= inputId %>"
-             class="pgn-page-input"
-             value="<%= currentPage %>"
-             min="1"
-             max="<%= totalPages %>"
-             aria-label="<%= txtGoToPage %>"
-             data-total-pages="<%= totalPages %>"
-             data-current-page="<%= currentPage %>">
-      <span class="pgn-label-txt"><%= txtOf %> <%= totalPages %></span>
-    </div>
+<nav class="pgn-bar <%= isPublic ? 'pgn-bar--public' : '' %>" id="<%= barId %>" aria-label="<%= txtNavLabel %>" data-current-page="<%= currentPage %>" data-total-pages="<%= totalPages %>" data-per-page="<%= perPage %>" data-base-url="<%= baseUrl %>">
+  <% if (!isPublic) { %>
+    <div class="pgn-left">
+      <div class="pgn-page-jump">
+        <span class="pgn-label-txt"><%= txtPage %></span>
+        <input type="number"
+               id="<%= inputId %>"
+               class="pgn-page-input"
+               value="<%= currentPage %>"
+               min="1"
+               max="<%= totalPages %>"
+               aria-label="<%= txtGoToPage %>"
+               data-total-pages="<%= totalPages %>"
+               data-current-page="<%= currentPage %>">
+        <span class="pgn-label-txt"><%= txtOf %> <%= totalPages %></span>
+      </div>
 
-    <div class="pgn-divider" aria-hidden="true"></div>
+      <div class="pgn-divider" aria-hidden="true"></div>
 
-    <div class="pgn-per-page">
-      <label for="<%= selectId %>" class="pgn-per-page-label"><%= txtRowsPerPage %></label>
-      <div class="pgn-select-wrap">
-        <select id="<%= selectId %>" class="pgn-per-page-select" aria-label="<%= txtRowsPerPage %>">
-          <% [10, 25, 50, 100].forEach(function(val) { %>
-            <option value="<%= val %>" <%= perPage === val ? 'selected' : '' %>><%= val %></option>
-          <% }); %>
-        </select>
+      <div class="pgn-per-page">
+        <label for="<%= selectId %>" class="pgn-per-page-label"><%= txtRowsPerPage %></label>
+        <div class="pgn-select-wrap">
+          <select id="<%= selectId %>" class="pgn-per-page-select" aria-label="<%= txtRowsPerPage %>">
+            <% [10, 25, 50, 100].forEach(function(val) { %>
+              <option value="<%= val %>" <%= perPage === val ? 'selected' : '' %>><%= val %></option>
+            <% }); %>
+          </select>
+        </div>
       </div>
     </div>
-  </div>
+  <% } %>
 
-  <div class="pgn-nav" role="navigation" aria-label="Page selection">
+  <div class="pgn-nav" role="navigation" aria-label="<%= txtNavLabel %>">
     <% if (isFirstDisabled) { %>
-      <span class="pgn-btn pgn-btn--first is-disabled" aria-disabled="true" title="<%= txtFirst %>">
+      <span class="pgn-btn pgn-btn--first is-disabled" aria-disabled="true" aria-label="<%= txtFirst %>" title="<%= txtFirst %>">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
       </span>
     <% } else { %>
@@ -99,7 +109,7 @@
     <% } %>
 
     <% if (isFirstDisabled) { %>
-      <span class="pgn-btn pgn-btn--prev is-disabled" aria-disabled="true" title="<%= txtPrev %>">
+      <span class="pgn-btn pgn-btn--prev is-disabled" aria-disabled="true" aria-label="<%= txtPrev %>" title="<%= txtPrev %>">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </span>
     <% } else { %>
@@ -115,7 +125,7 @@
         <% } else if (item === currentPage) { %>
           <span class="pgn-num is-active" aria-current="page"><%= item %></span>
         <% } else { %>
-          <a href="<%= buildUrl(item, perPage) %>" class="pgn-num" data-page="<%= item %>" aria-label="Page <%= item %>"><%= item %></a>
+          <a href="<%= buildUrl(item, perPage) %>" class="pgn-num" data-page="<%= item %>" aria-label="<%= txtPage %> <%= item %>"><%= item %></a>
         <% } %>
       <% }); %>
     </div>
@@ -125,7 +135,7 @@
     </div>
 
     <% if (isLastDisabled) { %>
-      <span class="pgn-btn pgn-btn--next is-disabled" aria-disabled="true" title="<%= txtNext %>">
+      <span class="pgn-btn pgn-btn--next is-disabled" aria-disabled="true" aria-label="<%= txtNext %>" title="<%= txtNext %>">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </span>
     <% } else { %>
@@ -135,7 +145,7 @@
     <% } %>
 
     <% if (isLastDisabled) { %>
-      <span class="pgn-btn pgn-btn--last is-disabled" aria-disabled="true" title="<%= txtLast %>">
+      <span class="pgn-btn pgn-btn--last is-disabled" aria-disabled="true" aria-label="<%= txtLast %>" title="<%= txtLast %>">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
       </span>
     <% } else { %>

@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-232)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-312)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-10-28  
-**Status Keseluruhan:** Selesai 100% (232 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-11-11  
+**Status Keseluruhan:** Selesai 100% (312 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-232)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-312)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -1118,5 +1118,67 @@
 - **File Terdampak**: `public/css/admin.css`, `tests/test-playwright-audit.js`
 - **Skill**: `impeccable` (polish, adapt), `antislop-code`
 - **Verifikasi**: Skrip `tests/test-playwright-audit.js` lulus 12/12 matriks viewport, `npm run lint` (0 error), `node scripts/lint-views.js` (0 error). Selesai 2026-11-10.
+
+### T-307: Penambahan Token Warna Latar --bg-soft-green & Gradasi Transisi Halus [DONE]
+- **Deskripsi**: Menambahkan token `--bg-soft-green` (#f3f6f3), `--color-bg-soft-green`, gradasi transisi `--trans-soft-green-to-subtle` & `--trans-subtle-to-soft-green`, serta `--color-text-muted-on-soft` (#475569) ke `public/css/tokens.css` dan `Design/DESIGN.md` untuk halaman About & News dengan rasio kontras WCAG AA >= 4.5:1.
+- **Acceptance Criteria**:
+  - [x] Token terdefinisi di `:root` `public/css/tokens.css` dan terdokumentasi di `Design/DESIGN.md`.
+  - [x] Token `--bg-base` dan `--bg-subtle` tidak berubah sehingga Homepage dan halaman lain identik 100%.
+  - [x] Rasio kontras teks utama (16.40:1), varian (8.55:1), muted (6.96:1), dan primary (5.22:1) lulus WCAG AA.
+- **File Terdampak**: `public/css/tokens.css`, `Design/DESIGN.md`, `tests/test-t307-soft-green-tokens.js`
+- **Skill**: `impeccable` (polish), `antislop-code`
+- **Verifikasi**: Uji Playwright `tests/test-t307-soft-green-tokens.js` lulus 4/4, `npm run lint` & `npm run lint:views` hijau. Selesai 2026-11-11.
+
+### T-308: Implementasi Latar Selang-Seling, Transisi Tepi Halus, & Pembersihan Inline Style Halaman Tentang Kami (/about) [DONE]
+- **Deskripsi**: Mengimplementasikan latar selang-seling pada `/about` (.sec-story berlatar `--bg-soft-green`, .sec-vm berlatar `--bg-subtle`, .abt-tkt-section latar foto/fallback, .sec-gallery berlatar `--bg-subtle`) dengan gradasi transisi tepi halus (48px mobile, 80px desktop) dan membersihkan seluruh inline style ke class `.abt-*`.
+- **Acceptance Criteria**:
+  - [x] Section bergantian warna latar dengan kontras kartu tetap tajam dan hero/CTA/footer dikecualikan.
+  - [x] Transisi tepi 48px/80px via pseudo-element tanpa garis batas keras.
+  - [x] Inline style dipindahkan ke class `.abt-*` dan teks menggunakan `t('about.*')`.
+- **File Terdampak**: `views/public/about.ejs`, `public/css/components.css`, `public/js/main.js`, `locales/id.json`, `locales/en.json`, `tests/test-t308-about-backgrounds.js`
+- **Skill**: `impeccable` (polish), `antislop-code`, `frontend-ui-engineering`, `antislop-human`
+- **Verifikasi**: Uji Playwright `tests/test-t308-about-backgrounds.js` lulus 6/6, `npm run lint:views` & `npm run lint:i18n` hijau. Selesai 2026-11-11.
+
+### T-309: Pemecahan Section Halaman News, Latar Selang-Seling, & Pembersihan Inline Style/Script (views/public/news.ejs) [DONE]
+- **Deskripsi**: Memecah area konten `/news` di bawah hero menjadi dua `<section>` mandiri (.nwl-sec-headline `--bg-soft-green` dan .nwl-sec-directory `--bg-subtle`) dengan transisi gradasi tepi halus 48px/80px, mengekstraksi ke partial modular <= 100 baris, dan membersihkan seluruh inline style/script.
+- **Acceptance Criteria**:
+  - [x] Dua `<section>` terpisah dengan latar selang-seling dan transisi tepi tanpa garis batas keras.
+  - [x] Section headline tidak disembunyikan oleh filter direktori di bawahnya.
+  - [x] Tanpa style/script inline, partial modular terbagi rapi, teks memakai `t('...')`.
+- **File Terdampak**: `views/public/news.ejs`, `views/partials/news/headline-section.ejs`, `views/partials/news/filter-bar.ejs`, `public/css/components.css`, `public/js/news-filter.js`, `tests/test-t309-news-sections.js`
+- **Skill**: `impeccable` (polish), `antislop-code`, `frontend-ui-engineering`
+- **Verifikasi**: Uji Playwright `tests/test-t309-news-sections.js` lulus 6/6, `npm run lint` & `npm run lint:views` hijau. Selesai 2026-11-11.
+
+### T-310: Judul Section Headline Dinamis Mengikuti Jenis Artikel pada Slide Headline Aktif [DONE]
+- **Deskripsi**: Menjadikan judul `.nwl-headline-sec-title` dan `aria-label` section headline dinamis berganti mengikuti atribut `type` (`berita`, `pers`, `blog`) dari slide headline aktif saat SSR dan setiap pergantian slide (klik panah, dot, swipe, autoplay) dengan kamus dwibahasa ID/EN.
+- **Acceptance Criteria**:
+  - [x] Kunci kamus untuk 3 jenis headline publikasi tersedia di `locales/id.json` & `locales/en.json`; tanpa judul "Semua Publikasi".
+  - [x] Atribut `data-post-type` tersemat pada tiap `.nwl-slide` dan kamus terjemahan pada `#nwlHeadlineSlider`.
+  - [x] SSR awal dan event pergantian slide menyinkronkan judul dan `aria-label` section; filter direktori tidak mempengaruhi headline.
+- **File Terdampak**: `views/partials/news/headline-section.ejs`, `public/js/news-filter.js`, `locales/id.json`, `locales/en.json`, `tests/test-t310-headline-dynamic-title.js`
+- **Skill**: `impeccable` (polish), `antislop-code`, `frontend-ui-engineering`, `test-driven-development`
+- **Verifikasi**: Uji Playwright `tests/test-t310-headline-dynamic-title.js` lulus 5/5, `npm run lint` & `npm run lint:i18n` hijau. Selesai 2026-11-11.
+
+### T-311: Adaptasi Filter Kategori Geser Horizontal di Mobile (.nwl-cat-pills) [DONE]
+- **Deskripsi**: Mengadaptasi baris pill kategori `.nwl-cat-pills` pada viewport mobile (< 768px) menjadi 1 baris geser horizontal (`overflow-x: auto; flex-wrap: nowrap`) tanpa scrollbar kasar, dengan petunjuk visual, target sentuh >= 44px, fokus keyboard jelas, auto scroll pill aktif ke tengah, dan form pencarian 100% di bawah baris pill.
+- **Acceptance Criteria**:
+  - [x] 1 baris geser horizontal di mobile tanpa membungkus, tanpa scrollbar kasar, tanpa horizontal overflow body.
+  - [x] Petunjuk visual geser halus di tepi kontainer scroll.
+  - [x] Pill aktif otomatis terlihat di layar (`scrollIntoView`), tinggi pill >= 44px, form pencarian di bawah pill selebar 100%.
+- **File Terdampak**: `public/css/components.css`, `public/js/news-filter.js`, `tests/test-t311-mobile-category-pills.js`
+- **Skill**: `antislop-layoutmobile`, `impeccable` (adapt), `test-driven-development`
+- **Verifikasi**: Uji Playwright `tests/test-t311-mobile-category-pills.js` lulus 6/6 pada 6 viewport (320px..1440px). Selesai 2026-11-11.
+
+### T-312: Unifikasi Komponen Paginasi Bersama (.pgn-*), Tampilan Mobile Sesuai Referensi, & Verifikasi Playwright End-to-End [DONE]
+- **Deskripsi**: Menyatukan komponen paginasi publik dan admin ke partial bersama `views/partials/pagination.ejs` (`.pgn-*`), menyatukan bar paginasi publik dengan latar section (tanpa card putih pembungkus), tetap menampilkan bar saat `totalPages === 1` dalam kondisi `disabled`, menyajikan layout mobile ringkas `[ « ] [ ‹ ] 1 / 2 [ › ] [ » ]` dengan target sentuh >= 44px, lokalisasi dwibahasa ID/EN, sinkronisasi Fetch API & URL, serta verifikasi Playwright end-to-end.
+- **Acceptance Criteria**:
+  - [x] Partial tunggal bersama `views/partials/pagination.ejs` (varian admin & public terpusat tanpa card putih), menghapus class lama `.pagination-bar` / `.pagination-item`.
+  - [x] Tetap tampil saat `totalPages === 1` dengan kontrol navigasi `disabled` selama ada artikel.
+  - [x] Desktop: deret nomor halaman dengan elipsis; Mobile: 4 tombol ikon persegi membulat mengapit indikator ringkas `1 / 2` di tengah.
+  - [x] Seluruh `aria-label` dwibahasa `t('pagination.*')`, `aria-current="page"`, sinkronisasi Fetch API & browser history tanpa reload.
+  - [x] Bebas regresi lintas halaman (About, News, Detail, Admin CMS, Homepage) dan multi-viewport.
+- **File Terdampak**: `views/partials/pagination.ejs`, `views/public/news.ejs`, `controllers/public/postController.js`, `public/js/news-filter.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`, `tests/test-t312-unified-pagination.js`
+- **Skill**: `impeccable` (adapt, polish), `frontend-ui-engineering`, `test-driven-development`
+- **Verifikasi**: Uji Playwright `tests/test-t312-unified-pagination.js` lulus 7/7 pada 6 viewport dan 2 bahasa, full regression 34/34 lulus, `npm run lint` dan `npm run lint:views` hijau. Selesai 2026-11-11.
 
 

@@ -168,6 +168,7 @@
     "confirm_delete_row_text": "This row contains text data that will be removed. Proceed?"
   },
   "pagination": {
+    "nav_label": "Pagination Navigation",
     "page": "Page",
     "of": "of",
     "rows_per_page": "Rows per page",

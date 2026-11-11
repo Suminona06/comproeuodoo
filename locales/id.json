@@ -168,6 +168,7 @@
     "confirm_delete_row_text": "Baris ini memiliki data teks yang akan ikut terhapus. Lanjutkan?"
   },
   "pagination": {
+    "nav_label": "Navigasi Halaman",
     "page": "Halaman",
     "of": "dari",
     "rows_per_page": "Baris per halaman",

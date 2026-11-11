@@ -93,45 +93,26 @@
           <% } %>
         </div>
 
-        <nav class="pagination-bar" id="newsPagination" aria-label="Navigasi Halaman Berita" <%= (posts && posts.length > 0 && totalPages > 1) ? '' : 'hidden' %>>
-          <% if (posts && posts.length > 0 && totalPages > 1) { %>
-            <% if (currentPage > 1) { %>
-              <a href="<%= buildQuery(currentPage - 1) %>"
-                 class="pagination-item"
-                 data-page="<%= currentPage - 1 %>"
-                 aria-label="Halaman Sebelumnya">
-                &larr; <%= t('common.previous') %>
-              </a>
-            <% } else { %>
-              <span class="pagination-item disabled" aria-disabled="true">
-                &larr; <%= t('common.previous') %>
-              </span>
-            <% } %>
-
-            <% for (let p = 1; p <= totalPages; p++) { %>
-              <% if (p === currentPage) { %>
-                <span class="pagination-item active" aria-current="page"><%= p %></span>
-              <% } else if (p === 1 || p === totalPages || (p >= currentPage - 2 && p <= currentPage + 2)) { %>
-                <a href="<%= buildQuery(p) %>" class="pagination-item" data-page="<%= p %>"><%= p %></a>
-              <% } else if (p === currentPage - 3 || p === currentPage + 3) { %>
-                <span class="pagination-item disabled">...</span>
-              <% } %>
-            <% } %>
-
-            <% if (currentPage < totalPages) { %>
-              <a href="<%= buildQuery(currentPage + 1) %>"
-                 class="pagination-item"
-                 data-page="<%= currentPage + 1 %>"
-                 aria-label="Halaman Berikutnya">
-                <%= t('common.next') %> &rarr;
-              </a>
-            <% } else { %>
-              <span class="pagination-item disabled" aria-disabled="true">
-                <%= t('common.next') %> &rarr;
-              </span>
-            <% } %>
-          <% } %>
-        </nav>
+        <% if (posts && posts.length > 0) { %>
+          <%- include('../partials/pagination', {
+            pagination: {
+              page: currentPage,
+              perPage: 9,
+              totalRows: totalPosts,
+              totalPages: totalPages,
+              baseUrl: '/news',
+              queryParams: {
+                type: activeType !== 'all' ? activeType : undefined,
+                category: activeCategory || undefined,
+                search: search || undefined
+              }
+            },
+            variant: 'public',
+            id: 'newsPagination'
+          }) %>
+        <% } else { %>
+          <div id="newsPagination" hidden></div>
+        <% } %>
 
         <div class="nwl-empty-state" id="newsEmptyState" <%= (!posts || posts.length === 0) ? '' : 'hidden' %>>
           <div class="nwl-empty-icon" aria-hidden="true">

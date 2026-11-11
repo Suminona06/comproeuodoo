@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-07 | Kode: views/public/about.ejs, controllers/public/pageController.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-11 | Kode: views/public/about.ejs, controllers/public/pageController.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
@@ -52,7 +52,7 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 
 ## 4. Komponen Antarmuka & Prefix CSS
 
-- **Sistem Latar Selang-Seling & Transisi Tepi (`.sec-story`, `.sec-vm`, `.abt-tkt-section`, `.sec-gallery`, `.abt-*`) `[PENDING T-307, T-308]`:**
+- **Sistem Latar Selang-Seling & Transisi Tepi (`.sec-story`, `.sec-vm`, `.abt-tkt-section`, `.sec-gallery`, `.abt-*`):**
   - `.sec-story#sejarah` menggunakan `background-color: var(--bg-soft-green)`.
   - `.sec-vm#visi-misi` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element `::before` bertinggi `48px` (mobile `< 768px`) dan `80px` (desktop `>= 768px`) memakai `background: var(--trans-soft-green-to-subtle)`.
   - `.abt-tkt-section#core-values` mempertahankan foto latar operasional beserta `.abt-tkt-bg-scrim` yang menyatu mulus di tepi atas/bawah; apabila tanpa foto latar, fallback menggunakan `var(--bg-soft-green)` dengan transisi tepi `var(--trans-subtle-to-soft-green)`.

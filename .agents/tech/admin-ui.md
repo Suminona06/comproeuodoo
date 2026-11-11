@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: public/css/tokens.css, public/css/admin.css, public/js/admin-form-validation.js, public/js/admin.js, public/js/pagination.js, views/partials/pagination.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-11 | Kode: public/css/tokens.css, public/css/admin.css, public/js/admin-form-validation.js, public/js/admin.js, public/js/pagination.js, views/partials/pagination.ejs
 
 # Tech Spec: Standar Komponen UI, Tombol, Paginasi & Validasi Form Admin (Admin UI)
 
@@ -68,5 +68,5 @@ Sub-modul ini mendefinisikan arsitektur teknis komponen tombol terpadu (`.adm-bt
    - Focus-visible: `outline: 2px solid var(--primary); outline-offset: 2px`.
    - State 1 Halaman (`totalPages <= 1`): `.pgn-bar` tetap tampil utuh dengan keempat tombol chevron berstatus `disabled` (`opacity: 0.45; cursor: not-allowed`).
    - Mobile (`@media (max-width: 768px)`): `.pgn-bar` ditumpuk 2 baris, deret nomor halaman diringkas (`<< < 2 / 10 > >>`), dan target sentuh seluruh kontrol minimal `44x44px`.
-4. **Varian Publik Bersama (`.pgn-bar--public`) `[PENDING T-312]`:**
+4. **Varian Publik Bersama (`.pgn-bar--public`):**
    - Partial `views/partials/pagination.ejs` mendukung `variant: 'public'` (digunakan pada `/news` dan disinkronkan oleh `public/js/news-filter.js`): menyembunyikan `.pgn-left` (`Page jump` & `Rows per page`), memusatkan `.pgn-nav` dengan tautan `<a href="...">` SSR nyata, menampilkan nomor halaman ber-elipsis di desktop (`>= 768px`) serta format ringkas `[ « ] [ ‹ ] 1 / 2 [ › ] [ » ]` di mobile (`< 768px`), tetap tampil `disabled` saat `totalPages <= 1`, dan memakai label `t('pagination.*')` dwibahasa (ID/EN).
