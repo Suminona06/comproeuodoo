@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 3 Task (T-310 s/d T-312)
-- **Total Task Selesai:** 309 Task (T-01 s/d T-309)
+- **Task Aktif Terbuka:** 2 Task (T-311 s/d T-312)
+- **Total Task Selesai:** 310 Task (T-01 s/d T-310)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-313**.
 
@@ -55,17 +55,17 @@
 
 ### Task T-310: Judul Section Headline Dinamis Mengikuti Jenis Artikel pada Slide Headline Aktif
 
-- **Status:** `[ ] OPEN`
+- **Status:** `[x] DONE`
 - **Modul Spesifikasi:** `prd/news.md` (`FR-24`, `FR-29`), `tech/news.md`
 - **Skill:** `Impeccable polish`, `antislop-code`
-- **File Terdampak:** `views/partials/news/headline-section.ejs`, `public/js/news-filter.js`, `locales/id.json`, `locales/en.json`
+- **File Terdampak:** `views/partials/news/headline-section.ejs`, `public/js/news-filter.js`, `locales/id.json`, `locales/en.json`, `tests/test-t310-headline-dynamic-title.js`
 - **Acceptance Criteria:**
-  - [ ] Kunci kamus baru untuk ke-3 jenis publikasi (`news.headline_title_berita`: `"Berita"` / `"News"`, `news.headline_title_pers`: `"Siaran Pers"` / `"Press Releases"`, `news.headline_title_blog`: `"Blog"` / `"Blog"`, beserta pasangan `news.headline_aria_berita`, `news.headline_aria_pers`, `news.headline_aria_blog`) tersedia simetris di `locales/id.json` dan `locales/en.json`; tidak ada judul `"Semua Publikasi"` pada `.nwl-headline-sec-title`.
-  - [ ] Setiap elemen `.nwl-slide` memiliki atribut `data-post-type="<%= hPost.type %>"` (`berita`, `pers`, atau `blog`), dan container `#nwlHeadlineSlider` memuat atribut data terjemahan ketiga jenis tersebut.
-  - [ ] Saat render SSR awal, `.nwl-headline-sec-title` dan `aria-label` `#nwlHeadlineSec` langsung merender label sesuai `headlinePosts[0].type` dalam bahasa aktif (ID/EN).
-  - [ ] Setiap kali slide headline berganti (via tombol prev/next slider, dot indikator, swipe sentuh, atau autoplay), `.nwl-headline-sec-title` dan `aria-label` `#nwlHeadlineSec` otomatis berubah mengikuti `data-post-type` slide yang baru aktif, sedangkan perubahan tab filter/kategori/pencarian pada direktori di bawahnya tidak mengubah isi maupun judul slider headline.
+  - [x] Kunci kamus baru untuk ke-3 jenis publikasi (`news.headline_title_berita`: `"Berita"` / `"News"`, `news.headline_title_pers`: `"Siaran Pers"` / `"Press Releases"`, `news.headline_title_blog`: `"Blog"` / `"Blog"`, beserta pasangan `news.headline_aria_berita`, `news.headline_aria_pers`, `news.headline_aria_blog`) tersedia simetris di `locales/id.json` dan `locales/en.json`; tidak ada judul `"Semua Publikasi"` pada `.nwl-headline-sec-title`.
+  - [x] Setiap elemen `.nwl-slide` memiliki atribut `data-post-type="<%= hPost.type %>"` (`berita`, `pers`, atau `blog`), dan container `#nwlHeadlineSlider` memuat atribut data terjemahan ketiga jenis tersebut.
+  - [x] Saat render SSR awal, `.nwl-headline-sec-title` dan `aria-label` `#nwlHeadlineSec` langsung merender label sesuai `headlinePosts[0].type` dalam bahasa aktif (ID/EN).
+  - [x] Setiap kali slide headline berganti (via tombol prev/next slider, dot indikator, swipe sentuh, atau autoplay), `.nwl-headline-sec-title` dan `aria-label` `#nwlHeadlineSec` otomatis berubah mengikuti `data-post-type` slide yang baru aktif, sedangkan perubahan tab filter/kategori/pencarian pada direktori di bawahnya tidak mengubah isi maupun judul slider headline.
 - **Verifikasi:**
-  - [ ] Pengujian otomatis Playwright: memicu perpindahan slide pada `#nwlHeadlineSlider` dan memverifikasi teks `.nwl-headline-sec-title` serta `aria-label` berubah sesuai `data-post-type` slide aktif dalam bahasa ID dan EN, serta tetap tidak terpengaruh saat tab filter di bawahnya diklik; `npm run lint` dan `npm run lint:i18n` hijau.
+  - [x] Pengujian otomatis Playwright di `tests/test-t310-headline-dynamic-title.js`: memicu perpindahan slide pada `#nwlHeadlineSlider` dan memverifikasi teks `.nwl-headline-sec-title` serta `aria-label` berubah sesuai `data-post-type` slide aktif dalam bahasa ID dan EN, serta tetap tidak terpengaruh saat tab filter di bawahnya diklik (5/5 lulus); `npm run lint` dan `npm run lint:i18n` hijau.
 
 ### Task T-311: Adaptasi Filter Kategori Geser Horizontal di Mobile (`.nwl-cat-pills`)
 
