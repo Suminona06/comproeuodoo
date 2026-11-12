@@ -1,0 +1,66 @@
+<%
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'id';
+  const data = typeof about !== 'undefined' && about ? about : {};
+  const topStats = (typeof stats !== 'undefined' && Array.isArray(stats)) ? stats.slice(0, 4) : [];
+  const isQuad = topStats.length === 4;
+  const kickerText = (lang === 'en' ? storyHeader?.kicker_en : storyHeader?.kicker_id)
+    || (lang === 'en' ? 'Our Story' : 'Kisah Kami');
+  const titleText = lang === 'en'
+    ? (data.history_title_en || 'Building Quality of Life for a Better Tomorrow')
+    : (data.history_title_id || 'Semangat Membangun Kualitas Hidup yang Lebih Baik');
+  const descText = lang === 'en'
+    ? (data.history_en || 'Starting by serving traditional markets, we grew into a manufacturing partner for modern retail networks and the national industrial sector.')
+    : (data.history_id || 'Berawal dari melayani pasar tradisional, kami tumbuh menjadi mitra manufaktur bagi jaringan retail modern dan sektor industri nasional. Perjalanan kami ditopang satu keyakinan: mutu yang konsisten dan komitmen pada kelestarian lingkungan adalah fondasi kemitraan jangka panjang.');
+%>
+<div class="abt-cnt-block" data-od-id="company-story-counter">
+  <div class="abt-cnt-layout">
+    <div class="abt-cnt-copy reveal">
+      <span class="abt-cnt-kicker"><%= kickerText %></span>
+      <h2 class="abt-cnt-title"><%= titleText %></h2>
+      <p class="abt-cnt-desc"><%= descText %></p>
+    </div>
+
+    <% if (topStats.length > 0) { %>
+      <div class="abt-cnt-stage reveal">
+        <dl class="abt-cnt-grid <%= isQuad ? 'abt-cnt-grid--quad' : '' %>">
+          <% topStats.forEach(function(stat, idx) { %>
+            <div class="abt-cnt-card abt-cnt-card--q<%= idx + 1 %>" data-quadrant="<%= idx + 1 %>">
+              <dd class="abt-cnt-num" data-stat-value="<%= stat.stat_value %>"><%= stat.stat_value %></dd>
+              <dt class="abt-cnt-label"><%= lang === 'en' ? (stat.label_en || stat.label_id) : stat.label_id %></dt>
+            </div>
+          <% }); %>
+        </dl>
+
+        <% if (isQuad) { %>
+          <div class="abt-cnt-badges" aria-hidden="true">
+            <span class="abt-cnt-badge abt-cnt-badge--q1" data-badge-quadrant="1">
+              <svg class="abt-cnt-badge-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="7" x2="17" y2="17"></line>
+                <polyline points="17 9 17 17 9 17"></polyline>
+              </svg>
+            </span>
+            <span class="abt-cnt-badge abt-cnt-badge--q2" data-badge-quadrant="2">
+              <svg class="abt-cnt-badge-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="17" y1="7" x2="7" y2="17"></line>
+                <polyline points="15 17 7 17 7 9"></polyline>
+              </svg>
+            </span>
+            <span class="abt-cnt-badge abt-cnt-badge--q3" data-badge-quadrant="3">
+              <svg class="abt-cnt-badge-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="9 7 17 7 17 15"></polyline>
+              </svg>
+            </span>
+            <span class="abt-cnt-badge abt-cnt-badge--q4" data-badge-quadrant="4">
+              <svg class="abt-cnt-badge-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="17" y1="17" x2="7" y2="7"></line>
+                <polyline points="7 15 7 7 15 7"></polyline>
+              </svg>
+            </span>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div>
+

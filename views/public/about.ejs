@@ -46,39 +46,22 @@
   <%# 2. SEJARAH & LATAR BELAKANG PERUSAHAAN %>
   <section class="sec-story" id="sejarah" data-od-id="company-story">
     <div class="container">
-      <div class="story-layout">
-        <div class="story-sticky reveal">
-          <span class="story-kicker"><%= (lang === 'en' ? storyHeader?.kicker_en : storyHeader?.kicker_id) || (lang === 'en' ? 'Our Story' : 'Kisah Kami') %></span>
-          <h2><%= lang === 'en' ? (data.history_title_en || 'Building Quality of Life for a Better Tomorrow') : (data.history_title_id || 'Semangat Membangun Kualitas Hidup yang Lebih Baik') %></h2>
-          <p><%= lang === 'en' ? (data.history_en || 'Starting by serving traditional markets, we grew into a manufacturing partner for modern retail networks and the national industrial sector.') : (data.history_id || 'Berawal dari melayani pasar tradisional, kami tumbuh menjadi mitra manufaktur bagi jaringan retail modern dan sektor industri nasional. Perjalanan kami ditopang satu keyakinan: mutu yang konsisten dan komitmen pada kelestarian lingkungan adalah fondasi kemitraan jangka panjang.') %></p>
-          
-          <% if (typeof stats !== 'undefined' && stats && stats.length > 0) { %>
-            <div class="story-stats">
-              <% stats.forEach(stat => { %>
-                <div class="story-stat">
-                  <div class="story-stat-num"><%= stat.stat_value %></div>
-                  <div class="story-stat-label"><%= lang === 'en' ? (stat.label_en || stat.label_id) : stat.label_id %></div>
-                </div>
-              <% }); %>
-            </div>
-          <% } %>
-        </div>
+      <%- include('../partials/about/story-counter') %>
 
-        <div class="timeline reveal" data-od-id="company-timeline">
-          <% if (typeof timeline !== 'undefined' && timeline && timeline.length > 0) { %>
-            <% timeline.forEach(item => { %>
-              <div class="tl-item">
-                <div class="tl-year"><%= lang === 'en' ? (item.year_label_en || item.year_label_id) : item.year_label_id %></div>
-                <div class="tl-title"><%= lang === 'en' ? (item.title_en || item.title_id) : item.title_id %></div>
-                <div class="tl-desc"><%= lang === 'en' ? (item.description_en || item.description_id) : item.description_id %></div>
-              </div>
-            <% }); %>
-          <% } else { %>
-            <div class="tl-empty abt-tl-empty">
-              <%= t('about.timeline_empty') %>
+      <div class="timeline reveal" data-od-id="company-timeline">
+        <% if (typeof timeline !== 'undefined' && timeline && timeline.length > 0) { %>
+          <% timeline.forEach(item => { %>
+            <div class="tl-item">
+              <div class="tl-year"><%= lang === 'en' ? (item.year_label_en || item.year_label_id) : item.year_label_id %></div>
+              <div class="tl-title"><%= lang === 'en' ? (item.title_en || item.title_id) : item.title_id %></div>
+              <div class="tl-desc"><%= lang === 'en' ? (item.description_en || item.description_id) : item.description_id %></div>
             </div>
-          <% } %>
-        </div>
+          <% }); %>
+        <% } else { %>
+          <div class="tl-empty abt-tl-empty">
+            <%= t('about.timeline_empty') %>
+          </div>
+        <% } %>
       </div>
     </div>
   </section>
@@ -247,4 +230,5 @@
 </main>
 
 <script src="/js/ticket-accordion.js?v=20261106-2" defer></script>
+<script src="/js/about-story.js" defer></script>
 <%- include('../partials/footer') %>

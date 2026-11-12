@@ -975,56 +975,5 @@ document.addEventListener('DOMContentLoaded', () => {
       openGalleryObserver.observe(bentoGallery);
     }
   })();
-
-  // Count-up animation for about page history stats (T-126)
-  (() => {
-    const statElements = document.querySelectorAll('.story-stat-num');
-    if (!statElements.length) return;
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
-      return;
-    }
-
-    function animateCountUp(el) {
-      const originalText = el.textContent.trim();
-      const match = originalText.match(/^(\d+)(.*)$/);
-      if (!match) return;
-
-      const targetNum = parseInt(match[1], 10);
-      const suffix = match[2] || '';
-      const duration = 1500;
-      let startTime = null;
-
-      function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        const current = Math.round(targetNum * easeOut);
-
-        el.textContent = current + suffix;
-
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          el.textContent = targetNum + suffix;
-        }
-      }
-
-      el.textContent = '0' + suffix;
-      requestAnimationFrame(step);
-    }
-
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          obs.unobserve(entry.target);
-          animateCountUp(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    statElements.forEach((el) => observer.observe(el));
-  })();
 });
 
