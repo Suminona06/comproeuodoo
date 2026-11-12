@@ -1,0 +1,42 @@
+<div class="pd-gallery" data-gallery>
+  <div class="pd-gallery-main pd-main-media"
+       role="button"
+       tabindex="0"
+       data-main-trigger
+       data-active-index="0"
+       data-caption="<%= prodName %>"
+       aria-label="<%= t('product_detail.zoom_aria') + prodName %>">
+    <img id="pdMainImage"
+         src="<%= mainImage %>"
+         alt="<%= prodName %>"
+         fetchpriority="high"
+         width="560"
+         height="476">
+    <span class="pd-zoom-hint" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="11" y1="8" x2="11" y2="14"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
+      </svg>
+    </span>
+  </div>
+
+  <% if (gallery && gallery.length > 1) { %>
+    <div class="pd-thumbs" role="region" aria-label="<%= t('product_detail.gallery_thumbs_aria') %>">
+      <% gallery.forEach(function(img, i) { %>
+        <button type="button"
+                class="pd-thumb-btn"
+                data-thumb
+                data-index="<%= i %>"
+                data-full="<%= img %>"
+                data-alt="<%= prodName %> - <%= i + 1 %>"
+                aria-pressed="<%= i === 0 ? 'true' : 'false' %>"
+                aria-label="<%= t('product_detail.thumb_aria') + (i + 1) %>">
+          <img src="<%= img %>" alt="" width="76" height="64" loading="lazy">
+        </button>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+

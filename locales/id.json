@@ -163,7 +163,18 @@
     "cta_whatsapp_default": "Minta Penawaran via WhatsApp",
     "submit_rfq": "Kirim Formulir RFQ",
     "tab_overview": "Deskripsi",
-    "tab_size_chart": "Tabel Ukuran"
+    "tab_size_chart": "Tabel Ukuran",
+    "breadcrumb_aria": "Breadcrumb",
+    "breadcrumb_home": "Beranda",
+    "breadcrumb_products": "Produk",
+    "zoom_aria": "Perbesar foto produk: ",
+    "gallery_thumbs_aria": "Galeri thumbnail produk",
+    "thumb_aria": "Foto ",
+    "variants_label": "VARIAN PRODUK YANG TERSEDIA",
+    "variants_aria": "Pilihan varian produk",
+    "related_kicker": "REKOMENDASI PRODUK",
+    "related_title": "Produk Terkait Lainnya",
+    "view_category": "Lihat Kategori"
   },
   "footer": {
     "desc": "PT. EUODOO memproduksi kantong plastik HDPE dan LLDPE 100% degradable untuk retail modern, sektor industri, dan pasar tradisional sejak 1990.",

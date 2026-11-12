@@ -26,20 +26,20 @@
 - **Skill:** `antislop-code`, `adapt`
 - **Verifikasi:** Jalankan `node scripts/lint-views.js`, `npm run lint`, `npm run lint:i18n`, verifikasi tampilan visual browser di 4 breakpoint, dan uji seluruh kontrol interaktif di konsol DevTools. Selesai 2026-11-12.
 
-### T-319: Ekstraksi 4 Partial Modular & Lokalisasi `views/public/product-detail.ejs` [OPEN]
+### T-319: Ekstraksi 4 Partial Modular & Lokalisasi `views/public/product-detail.ejs` [DONE]
 - **Modul Spesifikasi:** [prd/products.md](prd/products.md) (`FR-24`), [tech/products-detail.md](tech/products-detail.md)
 - **Deskripsi:** Memecah `views/public/product-detail.ejs` (187 baris) ke dalam 4 partial granular di `views/partials/products/`: `gallery.ejs`, `info-cta.ejs`, `size-table.ejs`, dan `related-section.ejs`. Mengonversi seluruh teks statis hardcoded (breadcrumb, label varian ukuran, tooltip/aria zoom galeri, header tabel ukuran, teks tombol CTA, dan judul produk terkait) ke fungsi lokalisasi `t('product_detail.*')` yang terdaftar lengkap dan simetris di `locales/id.json` dan `locales/en.json`.
 - **Acceptance Criteria:**
-  - [ ] Template utama `views/public/product-detail.ejs` menjadi orchestrator ramping (< 50 baris EJS) dan setiap partial (`gallery.ejs`, `info-cta.ejs`, `size-table.ejs`, `related-section.ejs`) berukuran <= 100 baris.
-  - [ ] Seluruh string statis menggunakan fungsi `t('product_detail.*')` terdaftar simetris di `locales/id.json` dan `locales/en.json`.
-  - [ ] Zero inline style, zero raw hex, zero HTML comments pada seluruh template EJS terkait.
-  - [ ] `npm run lint:views views/public/product-detail.ejs views/partials/products/*.ejs` lolos dengan ZERO ERROR.
-  - [ ] `npm run lint` dan `npm run lint:i18n` lolos hijau tanpa error.
-  - [ ] Tampilan visual detail produk `/products/:slug` IDENTIK 100% (pixel-perfect) sebelum vs sesudah refaktor pada 320px, 375px, 768px, dan 1440px di ID dan EN.
-  - [ ] Interaksi galeri sticky, thumbnail switching, PhotoSwipe lightbox zoom, seleksi pill varian, scroll tabel ukuran mobile card, dan tombol WhatsApp/RFQ tetap berfungsi normal tanpa error console.
+  - [x] Template utama `views/public/product-detail.ejs` menjadi orchestrator ramping (~50 baris EJS) dan setiap partial (`gallery.ejs`, `info-cta.ejs`, `size-table.ejs`, `related-section.ejs`) berukuran <= 100 baris.
+  - [x] Seluruh string statis menggunakan fungsi `t('product_detail.*')` terdaftar simetris di `locales/id.json` dan `locales/en.json`.
+  - [x] Zero inline style, zero raw hex, zero HTML comments pada seluruh template EJS terkait.
+  - [x] `npm run lint:views views/public/product-detail.ejs views/partials/products/*.ejs` lolos dengan ZERO ERROR.
+  - [x] `npm run lint` dan `npm run lint:i18n` lolos hijau tanpa error.
+  - [x] Tampilan visual detail produk `/products/:slug` IDENTIK 100% (pixel-perfect) sebelum vs sesudah refaktor pada 320px, 375px, 768px, dan 1440px di ID dan EN.
+  - [x] Interaksi galeri sticky, thumbnail switching, PhotoSwipe lightbox zoom, seleksi pill varian, scroll tabel ukuran mobile card, dan tombol WhatsApp/RFQ tetap berfungsi normal tanpa error console.
 - **File Terdampak:** `views/public/product-detail.ejs`, `views/partials/products/gallery.ejs`, `views/partials/products/info-cta.ejs`, `views/partials/products/size-table.ejs`, `views/partials/products/related-section.ejs`, `locales/id.json`, `locales/en.json`
 - **Skill:** `antislop-code`, `adapt`
-- **Verifikasi:** Jalankan `node scripts/lint-views.js`, `npm run lint`, `npm run lint:i18n`, verifikasi rendering tabel ukuran dinamis, uji pembukaan PhotoSwipe lightbox dan klik thumbnail di browser.
+- **Verifikasi:** Jalankan `node scripts/lint-views.js`, `npm run lint`, `npm run lint:i18n`, verifikasi rendering tabel ukuran dinamis, uji pembukaan PhotoSwipe lightbox dan klik thumbnail di browser. Selesai 2026-11-12.
 
 ### T-320: Pembersihan Minor & Lokalisasi `views/public/news.ejs` [OPEN]
 - **Modul Spesifikasi:** [prd/news.md](prd/news.md) (`FR-12`), [tech/news.md](tech/news.md)

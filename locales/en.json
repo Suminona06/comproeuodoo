@@ -163,7 +163,18 @@
     "cta_whatsapp_default": "Request Quote via WhatsApp",
     "submit_rfq": "Submit RFQ Form",
     "tab_overview": "Overview",
-    "tab_size_chart": "Size Chart"
+    "tab_size_chart": "Size Chart",
+    "breadcrumb_aria": "Breadcrumb",
+    "breadcrumb_home": "Home",
+    "breadcrumb_products": "Products",
+    "zoom_aria": "Enlarge product photo: ",
+    "gallery_thumbs_aria": "Product gallery thumbnails",
+    "thumb_aria": "Photo ",
+    "variants_label": "AVAILABLE PRODUCT VARIANTS",
+    "variants_aria": "Available variants",
+    "related_kicker": "RECOMMENDED PRODUCTS",
+    "related_title": "Related Products You May Need",
+    "view_category": "View Category"
   },
   "footer": {
     "desc": "PT. EUODOO manufactures 100% degradable HDPE and LLDPE plastic bags for retailers, industries, and traditional markets since 1990.",
