@@ -25,7 +25,7 @@ function parseStatValue(rawText) {
   const target = parseInt(cleanDigits, 10);
   if (Number.isNaN(target)) return null;
 
-  return { prefix: match[1] || '', target, sep, suffix: match[3] || '', raw };
+  return { prefix: match[1], target, sep, suffix: match[3], raw };
 }
 
 function formatStatNumber(val, parsed) {
@@ -172,7 +172,8 @@ function scrollToTimelineIndex(ctx, nextIdx) {
   ctx.currentIndex = clamped;
 
   const targetItem = ctx.items[clamped];
-  const targetLeft = targetItem ? targetItem.offsetLeft : 0;
+  const baseLeft = ctx.items[0] ? ctx.items[0].offsetLeft : 0;
+  const targetLeft = targetItem ? Math.max(0, targetItem.offsetLeft - baseLeft) : 0;
   ctx.isProgrammatic = true;
   ctx.viewport.scrollTo({
     left: targetLeft,

@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-312)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-317)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-11-11  
-**Status Keseluruhan:** Selesai 100% (312 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-11-12  
+**Status Keseluruhan:** Selesai 100% (317 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-312)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-317)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -1180,5 +1180,63 @@
 - **File Terdampak**: `views/partials/pagination.ejs`, `views/public/news.ejs`, `controllers/public/postController.js`, `public/js/news-filter.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`, `tests/test-t312-unified-pagination.js`
 - **Skill**: `impeccable` (adapt, polish), `frontend-ui-engineering`, `test-driven-development`
 - **Verifikasi**: Uji Playwright `tests/test-t312-unified-pagination.js` lulus 7/7 pada 6 viewport dan 2 bahasa, full regression 34/34 lulus, `npm run lint` dan `npm run lint:views` hijau. Selesai 2026-11-11.
+
+### T-313: Refaktor Partial Counter Statistik 2x2 Ber-Notch (`.abt-cnt-*`) & Perbaikan Count-Up [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md) (`FR-05`, `FR-33`), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Membuat partial modular `views/partials/about/story-counter.ejs` (66 baris, <= 100 baris) untuk blok pertama di `<section class="sec-story" id="sejarah">` tanpa panel pembungkus (`var(--bg-soft-green)`). Kolom kiri merender kicker, `h2`, dan paragraf sejarah; kolom kanan merender `<dl class="abt-cnt-grid">` dengan `stats.slice(0, 4)` (kelas `abt-cnt-grid--quad` aktif saat tepat 4 stat aktif untuk mengaktifkan potongan sudut cekung `radial-gradient` CSS mask dan 4 lencana panah diagonal pusat `.abt-cnt-badge`; bila `< 4` stat aktif, kartu kosong tidak dirender dan notch/lencana disembunyikan). Mengimplementasikan `public/js/about-story.js` untuk menjalankan count-up satu kali via `IntersectionObserver` + Anime.js (mendukung format `1990`, `1500+`, `1.500+`, `30+`, serta fallback nilai akhir statis untuk tanpa JS dan `prefers-reduced-motion: reduce`) dan mikro-interaksi hover kartu yang menggeser panah lencana kuadran terkait ke pusat via Anime.js; menghapus count-up legacy di `public/js/main.js`.
+- **Acceptance Criteria:**
+  - [x] Struktur, proporsi, potongan sudut (notch), dan 4 lencana panah pusat identik Gambar 2 saat terdapat 4 stat aktif; bila `< 4` stat aktif, kartu kosong tidak dirender dan notch/lencana disembunyikan; tanpa panel pembungkus; seluruh warna menggunakan token CSS.
+  - [x] Maksimal 4 stat aktif pertama tampil; tidak ada catatan tambahan di halaman Admin.
+  - [x] Animasi count-up berjalan satu kali saat terlihat, mendukung pemisah ribuan & sufiks, dan nilai akhir langsung tampil saat JS mati atau `prefers-reduced-motion: reduce`.
+  - [x] Hover kartu pada pointer (`@media (hover: hover)`) menggeser panah lencana kuadran terkait ke pusat via Anime.js dan mengubah warna lencana ke token primer.
+  - [x] Mobile (320px-767px) tampil rapi, profesional, bersih, jelas, dan elegan: teks di atas, grid 2x2 tetap ber-notch di bawah, angka tidak terpotong, dan kontras memenuhi WCAG AA.
+- **File Terdampak:** `views/public/about.ejs`, `views/partials/about/story-counter.ejs`, `public/css/components.css`, `public/js/about-story.js`, `public/js/main.js`, `views/partials/footer.ejs`
+- **Skill:** `antislop-code`, `impeccable` (polish), `ponytail` (full), `implement-task`
+- **Verifikasi:** Uji Playwright `tests/test-t313-about-story-htimeline.js` skenario 1-5 lulus 100%, `npm run lint`, `npm run lint:views` hijau. Selesai 2026-11-12.
+
+### T-314: Pengelolaan Header Timeline Editable di Admin CMS (`FR-34`) [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md) (`FR-34`), [tech/public-about.md](../tech/public-about.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Menambahkan 6 kunci settings: `about_timeline_tagline_id`, `about_timeline_tagline_en`, `about_timeline_title_id`, `about_timeline_title_en`, `about_timeline_desc_id`, `about_timeline_desc_en` di `models/aboutModel.js` (`getTimelineHeader()` dengan fallback teks bawaan dwibahasa dan registrasi pada `directSettingKeys` di `updateAboutData()`). Memperbarui `controllers/admin/aboutController.js` (sanitasi panjang 50/120/300) dan `controllers/public/pageController.js` untuk meneruskan `timelineHeader`. Membuat form admin partial modular `views/admin/about/partials/tab-sejarah-timeline-header.ejs` (39 baris) dan menyertakannya di `views/admin/about/partials/tab-sejarah.ejs` dengan tata letak `.form-row-2`.
+- **Acceptance Criteria:**
+  - [x] Ke-6 field header timeline (Tagline, Judul, Deskripsi ID/EN) dapat disimpan dari `/admin/about`, bertahan setelah muat ulang, dan tampil ter-escape (`<%= %>`) di halaman publik `/about`.
+  - [x] Bila field dikosongkan, sistem menggunakan fallback teks bawaan dwibahasa.
+  - [x] Setiap berkas partial admin tetap <= 100 baris tanpa catatan tambahan pada bagian statistik.
+- **File Terdampak:** `models/aboutModel.js`, `controllers/admin/aboutController.js`, `controllers/public/pageController.js`, `views/admin/about/partials/tab-sejarah-timeline-header.ejs`, `views/admin/about/partials/tab-sejarah.ejs`
+- **Skill:** `ponytail` (full), `antislop-human`, `impeccable`, `test-driven-development`
+- **Verifikasi:** Uji Playwright `tests/test-t313-about-story-htimeline.js` skenario 9 & 11 lulus 100%, `npm run lint`, `npm run lint:views` hijau. Selesai 2026-11-12.
+
+### T-315: Implementasi Komponen Horizontal Timeline Slider (`.abt-htl-*`) & Kamus i18n [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md) (`FR-05`, `FR-33`), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Membuat partial `views/partials/about/history-timeline.ejs` (73 baris, <= 100 baris) langsung di atas latar section `.sec-story#sejarah` tanpa panel putih pembungkus. Merender header dari `timelineHeader` beserta tombol persegi bergaris prev/next (>= 44x44px, `aria-controls`, `aria-disabled`) dan track `<ol class="abt-htl-track" id="abt-htl-track">` berbasis CSS `scroll-snap-type: x mandatory`. Menerapkan geometri garis horizontal dari tepi kiri track yang berhenti tepat di pusat bulatan item terakhir, efek hover/fokus (bulatan membesar + ring hijau, tahun hijau), serta pengisian segmen garis progres hijau tua (`var(--color-primary-dark)`, `.is-filled` + `scaleX` Anime.js) dari awal hingga item aktif. Menambahkan kunci i18n aksesibilitas di `locales/id.json` dan `locales/en.json`, serta mempertahankan `t('about.timeline_empty')`.
+- **Acceptance Criteria:**
+  - [x] Tampilan desktop (>= 1024px, 3 kolom) identik Gambar 1 (awal) dan Gambar 3 (ujung: garis berhenti tepat di bulatan item terakhir).
+  - [x] Tampilan tablet (768px-1023px, 2 kolom) dan mobile (< 768px, 1 kolom + peek ~15% item berikutnya, tombol prev/next pindah ke bawah deskripsi rata kiri sesuai Gambar 4, langsung di atas latar section tanpa panel putih).
+  - [x] Geser per 1 item, berhenti di ujung (`aria-disabled="true"`), tanpa autoplay, tombol disembunyikan bila total item <= kolom terlihat.
+  - [x] Hover/fokus item dan item aktif menampilkan ring hijau pada bulatan, tahun berwarna hijau primer, dan segmen garis sampai item aktif terisi hijau tua (`var(--color-primary-dark)`).
+  - [x] Swipe sentuh, navigasi papan ketik (`Tab`, `ArrowLeft`, `ArrowRight`), dan pengumuman `aria-live` berfungsi; tanpa horizontal overflow di 320px.
+- **File Terdampak:** `views/partials/about/history-timeline.ejs`, `views/public/about.ejs`, `public/css/components.css`, `public/js/about-story.js`, `locales/id.json`, `locales/en.json`
+- **Skill:** `antislop-code`, `ponytail` (full), `frontend-ui-engineering`, `impeccable` (craft-floor, polish)
+- **Verifikasi:** Uji Playwright `tests/test-t313-about-story-htimeline.js` skenario 6-8 lulus 100%, `npm run lint`, `npm run lint:views`, `npm run lint:i18n` hijau. Selesai 2026-11-12.
+
+### T-316: Pembersihan CSS/JS Legacy & Polish Lintas Breakpoint [DONE]
+- **Modul Spesifikasi:** [tech/public-about.md](../tech/public-about.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Menghapus aturan CSS legacy `.story-layout`, `.story-sticky`, `.story-kicker`, `.story-stats`, `.story-stat`, `.story-stat-num`, `.story-stat-label`, `.timeline`, `.tl-*`, dan `.abt-tl-empty` dari `public/css/components.css`. Melakukan audit Impeccable (polish, adapt, animate) pada breakpoint 320px, 375px, 480px, 768px, 1024px, 1440px, dengan perhatian khusus pada kerapian, kejelasan, dan keanggunan tampilan mobile. Memastikan seluruh `:hover` berada di dalam `@media (hover: hover)`, `:active` tersedia untuk layar sentuh, dan `@media (prefers-reduced-motion: reduce)` menonaktifkan transisi gerak.
+- **Acceptance Criteria:**
+  - [x] Tidak ada CSS/JS mati peninggalan `.story-*` / `.tl-*` yang tersisa di `public/css/components.css` dan `public/js/main.js`.
+  - [x] `npm run lint`, `npm run lint:views`, dan `npm run lint:i18n` hijau tanpa error.
+  - [x] Seluruh section lain di `/about` (Visi Misi, Budaya Kerja T-I-C-K-E-T, Galeri Bento + Lightbox, CTA) dan navigasi anchor `#sejarah` bebas regresi.
+- **File Terdampak:** `public/css/components.css`, `public/js/main.js`, `views/public/about.ejs`
+- **Skill:** `code-review-and-quality`, `impeccable` (polish), `ponytail` (full)
+- **Verifikasi:** Full regression check, console log zero errors, audit linters 100% hijau. Selesai 2026-11-12.
+
+### T-317: Verifikasi E2E Playwright Counter 2x2 & Horizontal Timeline Slider [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Membuat skrip pengujian otomatis `tests/test-t313-about-story-htimeline.js` menggunakan `node:test` dan `playwright` (`chromium`) yang menguji 12 skenario end-to-end: viewport bebas overflow & kolom proporsional, pembatasan 4 kartu quad vs tanpa notch pada < 4 stat, count-up & reduced motion, CSS mask radial-gradient kartu & lencana pusat aria-hidden, hover mikro-interaksi panah lencana via Anime.js, kontrol slider prev/next & scroll-snap & garis berhenti di bulatan terakhir & ArrowRight & progres garis hijau tua, auto-hide tombol navigasi bila total <= kolom terlihat, mobile 375px layout & peek, integrasi settings dwibahasa ID/EN, nol console error & anchor #sejarah, serta form admin simpan 6 header fields. Menyempurnakan ruang aman bulatan pertama (`--abt-htl-edge-bleed: 8px`) dan menghasilkan tangkapan layar audit visual di `tests/screenshots-audit/`.
+- **Acceptance Criteria:**
+  - [x] Seluruh pengujian di `tests/test-t313-about-story-htimeline.js` lulus 12/12 (100%) bersama `npm run lint`, `npm run lint:views`, dan `npm run lint:i18n`.
+- **File Terdampak:** `tests/test-t313-about-story-htimeline.js`, `public/css/components.css`, `public/js/about-story.js`
+- **Skill:** `ponytail-review`, `frontend-ui-engineering`, `code-review-and-quality`, `browser-testing-with-devtools`, `impeccable` (polish)
+- **Verifikasi:** Eksekusi `node --test tests/test-t313-about-story-htimeline.js` menghasilkan `12 passed, 0 failed` dalam 19.8 detik. Selesai 2026-11-12.
+
 
 

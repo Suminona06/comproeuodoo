@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-11 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, controllers/public/pageController.js, public/js/about-story.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-12 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, controllers/public/pageController.js, public/js/about-story.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
@@ -37,7 +37,7 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 | `sort_order` | `INT` | YES | `0` | Urutan penataan tile |
 | `is_active` | `TINYINT(1)` | YES | `1` | Status penayangan |
 
-### B. Tabel `about_stats` & `about_timeline` `[PENDING T-313, T-315]`
+### B. Tabel `about_stats` & `about_timeline`
 *File Migrasi:* `database/migrations/007_create_about_gallery_stats_timeline.sql`
 - `about_stats`: `id` (INT PK), `stat_value` (VARCHAR 50, menyimpan nilai gabungan angka dan sufiks seperti `'30+'`, `'1990'`, `'1.500+'`), `label_id` (VARCHAR 255), `label_en` (VARCHAR 255), `sort_order` (INT), `is_active` (TINYINT 1), `created_at`, `updated_at`.
 - `about_timeline`: `id` (INT PK), `year_label_id` (VARCHAR 100), `year_label_en` (VARCHAR 100), `title_id` (VARCHAR 255), `title_en` (VARCHAR 255), `description_id` (TEXT), `description_en` (TEXT), `sort_order` (INT), `is_active` (TINYINT 1), `created_at`, `updated_at`.
@@ -48,7 +48,7 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 - `about_values_bg_image`, `about_values_pill_*`, `about_values_subtitle_*`, `about_values_json` (6 Pilar Budaya Kerja Interaktif, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
 - `vision_image_url`, `mission_image_url`.
 - `about_gallery_kicker_*`, `about_gallery_title_*`, `about_story_kicker_*`.
-- `about_timeline_tagline_id`, `about_timeline_tagline_en`, `about_timeline_title_id`, `about_timeline_title_en`, `about_timeline_desc_id`, `about_timeline_desc_en` (6 kunci header Timeline Sejarah yang dikelola di `/admin/about` melalui `aboutModel.getTimelineHeader()` dan `aboutModel.updateAboutData()`, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md)). `[PENDING T-314]`
+- `about_timeline_tagline_id`, `about_timeline_tagline_en`, `about_timeline_title_id`, `about_timeline_title_en`, `about_timeline_desc_id`, `about_timeline_desc_en` (6 kunci header Timeline Sejarah yang dikelola di `/admin/about` melalui `aboutModel.getTimelineHeader()` dan `aboutModel.updateAboutData()`, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md)).
 
 ---
 
@@ -71,7 +71,7 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
     - Baik render awal SSR di `views/public/about.ejs` maupun fungsi `createSingleTile(item, idx, globalIdx)` di `public/js/main.js` menyematkan atribut `data-slide-index="<globalIndex>"`, `tabindex="0"`, `role="button"`, dan `aria-label` dwibahasa (ID/EN) pada setiap `.abt-gal-tile`.
     - Listener menggunakan *event delegation* pada kontainer `#bentoGalleryGrid` untuk menangkap klik dan `keydown` (`Enter`/`Space`) pada `.abt-gal-tile`, lalu memanggil `window.EuodooLightbox.open(slidesData, globalIndex, tileEl)` menggunakan array penuh dari `#bentoGalleryData` (bukan hanya 6 tile halaman aktif).
     - Komponen bersama Lightbox dimuat dari PhotoSwipe v5 *self-hosted* (`public/vendor/photoswipe/`) bersama `public/css/lightbox.css` dan `public/js/lightbox.js` berprefix `.lbx-*` (detail penuh pada `tech/products-detail.md` Bagian 6.2), menampilkan *caption* kategori (`category`) dan judul (`title`), penghitung `"3 / 12"`, kontrol *zoom* klik + tombol `+`/`-` di desktop, serta *double-tap* + *pinch-to-zoom* + *swipe* di perangkat sentuh.
-- **Counter Statistik 2x2 Ber-Notch & Horizontal Timeline Slider (`.abt-cnt-*` & `.abt-htl-*`):** `[PENDING T-313, T-314, T-315, T-316]`
+- **Counter Statistik 2x2 Ber-Notch & Horizontal Timeline Slider (`.abt-cnt-*` & `.abt-htl-*`):**
   - Menggantikan class legacy `.story-layout`, `.story-sticky`, `.story-stats`, `.story-stat*`, `.timeline`, `.tl-*`, dan `.abt-tl-empty` di dalam `<section class="sec-story" id="sejarah">`.
   - Dimodularisasi menjadi partial `views/partials/about/story-counter.ejs` (`.abt-cnt-*`) dan `views/partials/about/history-timeline.ejs` (`.abt-htl-*`) beserta script ter-scope `public/js/about-story.js`.
   - Spesifikasi teknis lengkap (struktur DOM, CSS `radial-gradient` *inverted corner mask*, mikro-interaksi lencana pusat Anime.js, parser *count-up*, mekanik slider `scroll-snap` + garis progres `is-filled`, dan kontrak form admin header timeline) didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md).
