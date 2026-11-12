@@ -12,12 +12,12 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
 ### FR-05 (Sub-fitur: Tentang Kami): Render Halaman Profil Perusahaan
 - Sistem merender halaman Tentang Kami secara Server-Side Rendering (SSR) berbasis EJS dengan komponen:
   1. Header Halaman & Breadcrumb navigasi (`nav.breadcrumbs`).
-  2. Profil Perusahaan & Latar Belakang (nama terdahulu: PT Sahabat Baru & PT Pelita Baru).
+  2. Profil Perusahaan & Latar Belakang (kicker, judul `h2`, dan paragraf sejarah dari `settings`) di kolom kiri blok **Modern Counter Section** (`.abt-cnt-*`), berpasangan dengan grid statistik 2x2 di kolom kanan tanpa panel pembungkus (`var(--bg-soft-green)`). `[PENDING T-313]`
   3. Nilai-Nilai Inti Budaya Perusahaan: 6 Pilar Budaya Kerja Interaktif (Default T-I-C-K-E-T: Takut Tuhan, Integritas, Komunikasi, Kasih, Luar Biasa, Taat; huruf dan konten dapat disunting fleksibel di CMS).
   4. Visi & Misi Korporat dengan media foto representatif pabrik/tim.
   5. Galeri Mosaik Bento Berhalaman (`.sec-gallery`, `.abt-gal-*`).
-  6. Statistik Kunci Pencapaian (Tahun Berdiri, Kapasitas Produksi, Luas Fasilitas, Mitra B2B) dengan animasi count-up.
-  7. Lini Masa Sejarah Interaktif (Timeline 1990 hingga era modern) dengan efek transisi hover.
+  6. Statistik Kunci Pencapaian dalam grid 2x2 ber-notch (`.abt-cnt-grid`) berisi maksimal 4 stat aktif pertama (`sort_order ASC`) dengan 4 lencana bulat panah diagonal di pusat, animasi count-up Anime.js, dan mikro-interaksi hover. `[PENDING T-313]`
+  7. Lini Masa Sejarah Interaktif dalam blok **Horizontal Timeline Slider** (`.abt-htl-*`) dengan header editable di Admin (ID/EN), tombol navigasi persegi bergaris, track 3/2/1 kolom, garis progres hijau tua sampai item aktif, dan garis yang berhenti tepat di bulatan item terakhir. `[PENDING T-314, T-315]`
 
 ### Bento Mosaic Gallery Berhalaman (`.abt-gal-*`)
 - Galeri foto pabrik disusun dalam pola tata letak asimetris (Bento Grid) berukuran tetap untuk mencegah Cumulative Layout Shift (CLS).
@@ -48,13 +48,21 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
   - *Vertical Accordion* 6 baris kartu horizontal bertumpuk (tinggi ~70-76px, target sentuh >=44px). Baris aktif melebar ke bawah menampilkan judul, deskripsi, dan glow hijau tanpa horizontal overflow di 320px.
 - **Aksesibilitas & Semantik:** Semantik `role="tablist"` / `role="tab"` / `role="tabpanel"`, atribut `aria-expanded` & `aria-controls`, panah keyboard (`ArrowLeft`/`ArrowRight`/`ArrowUp`/`ArrowDown`), dan kontras WCAG AA (>=4.5:1).
 
-### Angka Statistik Pencapaian & Animasi Count-Up
-- Menampilkan metrik numerik operasional manufaktur.
-- Skrip pengamat viewport (`IntersectionObserver`) memicu animasi count-up angka secara otomatis ketika seksi memasuki layar.
+### Angka Statistik Pencapaian & Animasi Count-Up (`.abt-cnt-*`) `[PENDING T-313]`
+- Tata letak 2 kolom di desktop (narasi sejarah di kiri, grid statistik di kanan) dan bertumpuk di mobile (narasi di atas, grid **tetap 2x2 ber-notch** di bawah hingga lebar 320px), langsung di atas latar section `var(--bg-soft-green)` tanpa panel pembungkus.
+- Merender maksimal **4 statistik aktif pertama** (`sort_order ASC`) dalam `<dl class="abt-cnt-grid">`. Kartu menggunakan permukaan `var(--color-surface)` dengan sudut luar membulat besar dan sudut dalam yang menghadap pusat grid dipotong cekung (*inverted corner*) disertai 4 lencana bulat panah diagonal (`↘`, `↙`, `↗`, `↖`) di titik pusat. Bila stat aktif `< 4`, kartu kosong tidak dirender dan *notch* serta lencana pusat disembunyikan.
+- Angka besar tebal (`var(--color-primary)`) dan label kapital kecil (`var(--color-text-main)` / `var(--color-text-muted-on-soft)`) memenuhi kontras WCAG AA. Nilai akhir dirender di HTML SSR; `IntersectionObserver` + Anime.js menjalankan *count-up* satu kali saat terlihat (mendukung pemisah ribuan & sufiks) dan dilewati pada `prefers-reduced-motion: reduce`. Saat kartu di-*hover* (`@media (hover: hover)`), panah lencana kuadran terkait bergeser halus ke pusat via Anime.js.
 
-### Timeline Sejarah Interaktif
-- Visualisasi perjalanan ekspansi pabrik Cigondewah sejak 1990 dari pasar tradisional hingga modern supermarket dan retail nasional.
-- Setiap simpul tahun memiliki kartu detail yang merespons fokus kursor dan interaksi sentuh.
+### Timeline Sejarah Interaktif Horizontal Slider (`.abt-htl-*`) `[PENDING T-314, T-315]`
+- Berada di bawah blok Counter di dalam `.sec-story#sejarah` tanpa kartu/panel putih pembungkus. Header memuat tagline, judul `h2`, dan deskripsi (ketiganya editable di Admin ID/EN), serta tombol *prev/next* persegi bergaris (`>= 44x44px`, di kanan sejajar bawah deskripsi pada desktop/tablet; pindah ke bawah deskripsi rata kiri pada mobile `< 768px`).
+- Track menampilkan 3 kolom di desktop (`>= 1024px`), 2 kolom di tablet (`768px-1023px`), dan 1 kolom + *peek* (~15% item berikutnya) di mobile (`< 768px`). Urutan vertikal per item: tahun besar tebal, garis horizontal dengan bulatan (`var(--color-primary)`) di awal kolom, judul, dan deskripsi. Garis dimulai dari tepi kiri dan **berhenti tepat di bulatan item terakhir**.
+- Geser per 1 item (berhenti di ujung dengan `aria-disabled="true"`, tanpa autoplay; tombol disembunyikan bila total item `<=` kolom terlihat). Saat *hover*/fokus atau pada item aktif (item pertama yang terlihat): bulatan membesar dengan *ring* hijau (`var(--primary-subtle)` / `var(--focus-ring)`), tahun berubah ke `var(--color-primary)`, dan segmen garis dari awal hingga item aktif terisi hijau tua (`var(--color-primary-dark)`). Pertahankan *empty state* `t('about.timeline_empty')`.
+
+### FR-33: Aksesibilitas & Interaksi Counter 2x2 dan Horizontal Timeline Slider `[PENDING T-313, T-315]`
+- Region slider memiliki `role="region"`, `aria-roledescription="carousel"`, `aria-label` dwibahasa, kontrol tombol `aria-controls` + `aria-disabled`, pengumuman posisi via `aria-live="polite"`, dukungan swipe sentuh native dan papan ketik (`Tab`, `ArrowLeft`, `ArrowRight`), bebas *horizontal overflow* di 320px, animasi hanya `transform`/`opacity`, dan statis tertata saat `prefers-reduced-motion: reduce`.
+
+### FR-34: Pengelolaan Header Timeline di Admin CMS `[PENDING T-314]`
+- Halaman `/admin/about` (tab "1. Sejarah", kartu "Linimasa") menyediakan 6 field di dalam form utama: Tagline ID/EN (maks 50), Judul ID/EN (maks 120), dan Deskripsi ID/EN (maks 300), dengan fallback ke teks bawaan dwibahasa bila dikosongkan. Tanpa catatan tambahan pada bagian statistik di admin.
 
 ### FR-26: Sistem Latar Selang-Seling & Transisi Tepi Halus Halaman Tentang Kami
 - Seluruh section konten non-hero pada halaman `/about` menggunakan dua token permukaan terang secara bergantian dimulai dari `var(--bg-soft-green)` pada section pertama setelah hero (`.sec-story#sejarah`), diikuti `var(--bg-subtle)` pada `.sec-vm#visi-misi`, fallback `var(--bg-soft-green)` pada `.abt-tkt-section#core-values` (bila tanpa foto latar), dan `var(--bg-subtle)` pada `.sec-gallery#galeri`.
