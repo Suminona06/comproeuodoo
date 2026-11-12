@@ -25,6 +25,7 @@ Modul Berita mengelola publikasi konten editorial perusahaan yang mencakup berit
   8. Seksi bagikan dengan label "Bagikan:" / "Share :" dan 4 tombol aksi sirkular (WhatsApp, Facebook, X, Salin Tautan) berbasis token hijau Euodoo.
   9. Seksi "Baca Berita Lainnya" berkontainer lebih lebar dengan latar abu-abu muda token (`var(--bg-subtle)`), menampilkan maksimal 3 kartu artikel terbaru selain artikel yang sedang dibaca (disembunyikan bila kosong).
   10. Seluruh elemen G1 yang tidak ada di G2 dihapus dari tampilan publik detail artikel.
+  11. **Modularitas & Pembersihan View [PENDING T-320 & T-321]:** Teks empty state dan reset pada `/news` menggunakan `t('news.empty_desc')` dan `t('news.empty_reset')` [PENDING T-320]. Detail artikel `/news/:slug` 100% bebas dari inline script (dikelola oleh `public/js/news-detail.js`), menggunakan class semantik tunggal `.nwd-prose`, dan seluruh teks statis dialihkan ke `t('news_detail.*')` [PENDING T-321].
 
 ### FR-13: Pengelolaan Artikel di CMS (CRUD)
 - Admin dan Editor dapat membuat, membaca, mengedit, dan menghapus artikel di menu `/admin/posts`.
