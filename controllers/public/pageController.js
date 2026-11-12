@@ -17,6 +17,7 @@ export const pageController = {
         timeline,
         galleryHeader,
         storyHeader,
+        timelineHeader,
         visionMissionImages
       ] = await Promise.all([
         aboutModel.getAboutData(),
@@ -26,6 +27,7 @@ export const pageController = {
         aboutTimelineModel.findAll({ activeOnly: true }),
         aboutModel.getGalleryHeader(),
         aboutModel.getStoryHeader(),
+        aboutModel.getTimelineHeader(),
         aboutModel.getVisionMissionImages()
       ]);
 
@@ -44,6 +46,7 @@ export const pageController = {
         timeline,
         galleryHeader,
         storyHeader,
+        timelineHeader,
         visionMissionImages
       });
     } catch (err) {
@@ -69,6 +72,14 @@ export const pageController = {
         storyHeader: {
           kicker_id: 'Kisah Kami',
           kicker_en: 'Our Story'
+        },
+        timelineHeader: {
+          tagline_id: 'Perjalanan Kami',
+          tagline_en: 'Our Journey',
+          title_id: 'Jejak Langkah & Tonggak Sejarah',
+          title_en: 'Milestones & Historical Journey',
+          desc_id: 'Menelusuri pertumbuhan PT Euodoo dari awal berdiri hingga menjadi mitra solusi korporasi dan industri yang terpercaya.',
+          desc_en: 'Tracing PT Euodoo\'s growth from its founding to becoming a trusted corporate and industrial solutions partner.'
         },
         visionMissionImages: {
           vision_image_url: '',

@@ -271,6 +271,31 @@ export const aboutModel = {
     }
   },
 
+  async getTimelineHeader() {
+    const defaults = {
+      tagline_id: 'Perjalanan Kami',
+      tagline_en: 'Our Journey',
+      title_id: 'Jejak Langkah & Tonggak Sejarah',
+      title_en: 'Milestones & Historical Journey',
+      desc_id: 'Menelusuri pertumbuhan PT Euodoo dari awal berdiri hingga menjadi mitra solusi korporasi dan industri yang terpercaya.',
+      desc_en: 'Tracing PT Euodoo\'s growth from its founding to becoming a trusted corporate and industrial solutions partner.'
+    };
+    try {
+      const allSettings = await settingModel.getAll();
+      return {
+        tagline_id: allSettings.about_timeline_tagline_id || defaults.tagline_id,
+        tagline_en: allSettings.about_timeline_tagline_en || defaults.tagline_en,
+        title_id: allSettings.about_timeline_title_id || defaults.title_id,
+        title_en: allSettings.about_timeline_title_en || defaults.title_en,
+        desc_id: allSettings.about_timeline_desc_id || defaults.desc_id,
+        desc_en: allSettings.about_timeline_desc_en || defaults.desc_en
+      };
+    } catch (err) {
+      logger.error('aboutModel.getTimelineHeader error:', { message: err.message });
+      return defaults;
+    }
+  },
+
   async getVisionMissionImages() {
     try {
       const allSettings = await settingModel.getAll();
@@ -338,6 +363,12 @@ export const aboutModel = {
       'about_gallery_body_en',
       'about_story_kicker_id',
       'about_story_kicker_en',
+      'about_timeline_tagline_id',
+      'about_timeline_tagline_en',
+      'about_timeline_title_id',
+      'about_timeline_title_en',
+      'about_timeline_desc_id',
+      'about_timeline_desc_en',
       'about_values_bg_image',
       'about_values_pill_id',
       'about_values_pill_en',

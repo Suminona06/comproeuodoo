@@ -115,9 +115,140 @@ function initBadgeHover() {
   cards.forEach((card) => bindCardHover(stage, card));
 }
 
+function getVisibleColumns() {
+  if (window.innerWidth >= 1024) return 3;
+  if (window.innerWidth >= 768) return 2;
+  return 1;
+}
+
+function setBtnDisabled(btn, isDisabled) {
+  if (!btn) return;
+  btn.disabled = isDisabled;
+  btn.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
+}
+
+function animateLineSegment(lineEl, shouldFill) {
+  if (!lineEl) return;
+  const wasFilled = lineEl.classList.contains('is-filled');
+  lineEl.classList.toggle('is-filled', shouldFill);
+  const fillEl = lineEl.querySelector('.abt-htl-line-fill');
+  if (!fillEl || wasFilled === shouldFill || typeof anime !== 'function' || isReducedMotion()) return;
+
+  anime.remove(fillEl);
+  anime({
+    targets: fillEl,
+    scaleX: shouldFill ? [0, 1] : [1, 0],
+    duration: 320,
+    easing: 'easeOutCubic'
+  });
+}
+
+function syncTimelineVisuals(ctx) {
+  const cols = getVisibleColumns();
+  const maxIdx = Math.max(0, ctx.items.length - cols);
+  ctx.currentIndex = Math.max(0, Math.min(ctx.currentIndex, maxIdx));
+
+  ctx.items.forEach((item, idx) => {
+    item.classList.toggle('is-active', idx === ctx.currentIndex);
+    const lineEl = item.querySelector('.abt-htl-line');
+    animateLineSegment(lineEl, idx < ctx.currentIndex);
+  });
+
+  if (ctx.nav) {
+    ctx.nav.hidden = ctx.items.length <= cols;
+  }
+  setBtnDisabled(ctx.prevBtn, ctx.currentIndex <= 0);
+  setBtnDisabled(ctx.nextBtn, ctx.currentIndex >= maxIdx);
+
+  if (ctx.liveEl) {
+    ctx.liveEl.textContent = `${ctx.labelPrefix}: ${ctx.currentIndex + 1} / ${ctx.items.length}`;
+  }
+}
+
+function scrollToTimelineIndex(ctx, nextIdx) {
+  const cols = getVisibleColumns();
+  const maxIdx = Math.max(0, ctx.items.length - cols);
+  const clamped = Math.max(0, Math.min(nextIdx, maxIdx));
+  ctx.currentIndex = clamped;
+
+  const targetItem = ctx.items[clamped];
+  const targetLeft = targetItem ? targetItem.offsetLeft : 0;
+  ctx.isProgrammatic = true;
+  ctx.viewport.scrollTo({
+    left: targetLeft,
+    behavior: isReducedMotion() ? 'auto' : 'smooth'
+  });
+  syncTimelineVisuals(ctx);
+
+  window.clearTimeout(ctx.scrollTimer);
+  ctx.scrollTimer = window.setTimeout(() => {
+    ctx.isProgrammatic = false;
+  }, 380);
+}
+
+function onViewportScroll(ctx) {
+  if (ctx.isProgrammatic || !ctx.items.length) return;
+  const itemWidth = ctx.items[0].offsetWidth || 1;
+  const cols = getVisibleColumns();
+  const maxIdx = Math.max(0, ctx.items.length - cols);
+  const rawIdx = Math.round(ctx.viewport.scrollLeft / itemWidth);
+  const nextIdx = Math.max(0, Math.min(rawIdx, maxIdx));
+  if (nextIdx === ctx.currentIndex) return;
+
+  ctx.currentIndex = nextIdx;
+  syncTimelineVisuals(ctx);
+}
+
+function onTimelineKeydown(ctx, evt) {
+  if (evt.key === 'ArrowRight') {
+    evt.preventDefault();
+    scrollToTimelineIndex(ctx, ctx.currentIndex + 1);
+  } else if (evt.key === 'ArrowLeft') {
+    evt.preventDefault();
+    scrollToTimelineIndex(ctx, ctx.currentIndex - 1);
+  }
+}
+
+function initHorizontalTimeline() {
+  const block = document.querySelector('.abt-htl-block');
+  if (!block) return;
+
+  const viewport = block.querySelector('.abt-htl-viewport');
+  const items = Array.from(block.querySelectorAll('.abt-htl-item'));
+  if (!viewport || !items.length) return;
+
+  const liveEl = block.querySelector('.abt-htl-live');
+  const ctx = {
+    block,
+    viewport,
+    items,
+    nav: block.querySelector('.abt-htl-nav'),
+    prevBtn: block.querySelector('.abt-htl-btn--prev'),
+    nextBtn: block.querySelector('.abt-htl-btn--next'),
+    liveEl,
+    labelPrefix: (liveEl && liveEl.getAttribute('data-label-prefix')) || 'Milestone',
+    currentIndex: 0,
+    isProgrammatic: false,
+    scrollTimer: null
+  };
+
+  if (ctx.prevBtn) {
+    ctx.prevBtn.addEventListener('click', () => scrollToTimelineIndex(ctx, ctx.currentIndex - 1));
+  }
+  if (ctx.nextBtn) {
+    ctx.nextBtn.addEventListener('click', () => scrollToTimelineIndex(ctx, ctx.currentIndex + 1));
+  }
+  viewport.addEventListener('scroll', () => onViewportScroll(ctx), { passive: true });
+  block.addEventListener('keydown', (evt) => onTimelineKeydown(ctx, evt));
+  window.addEventListener('resize', () => syncTimelineVisuals(ctx));
+
+  syncTimelineVisuals(ctx);
+}
+
 function initAboutStory() {
   initCounterStats();
   initBadgeHover();
+  initHorizontalTimeline();
 }
 
 if (document.readyState === 'loading') {
@@ -125,4 +256,3 @@ if (document.readyState === 'loading') {
 } else {
   initAboutStory();
 }
-

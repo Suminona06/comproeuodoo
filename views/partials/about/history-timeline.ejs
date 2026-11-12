@@ -1,0 +1,73 @@
+<%
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'id';
+  const items = (typeof timeline !== 'undefined' && Array.isArray(timeline)) ? timeline : [];
+  const tlHdr = typeof timelineHeader !== 'undefined' && timelineHeader ? timelineHeader : {};
+  const taglineText = (lang === 'en' ? tlHdr.tagline_en : tlHdr.tagline_id)
+    || (lang === 'en' ? 'Our Journey' : 'Perjalanan Kami');
+  const titleText = (lang === 'en' ? tlHdr.title_en : tlHdr.title_id)
+    || (lang === 'en' ? 'Milestones & Historical Journey' : 'Jejak Langkah & Tonggak Sejarah');
+  const descText = (lang === 'en' ? tlHdr.desc_en : tlHdr.desc_id)
+    || (lang === 'en'
+      ? 'Tracing PT Euodoo\'s growth from its founding to becoming a trusted corporate and industrial solutions partner.'
+      : 'Menelusuri pertumbuhan PT Euodoo dari awal berdiri hingga menjadi mitra solusi korporasi dan industri yang terpercaya.');
+%>
+<div class="abt-htl-block reveal" data-od-id="company-timeline" role="region" aria-roledescription="carousel" aria-label="<%= t('about.timeline_region_label') %>">
+  <header class="abt-htl-header">
+    <div class="abt-htl-header-copy">
+      <span class="abt-htl-tagline"><%= taglineText %></span>
+      <h2 class="abt-htl-title"><%= titleText %></h2>
+      <p class="abt-htl-desc"><%= descText %></p>
+    </div>
+
+    <% if (items.length > 0) { %>
+      <div class="abt-htl-nav" <%= items.length <= 1 ? 'hidden' : '' %>>
+        <button type="button" class="abt-htl-btn abt-htl-btn--prev" aria-controls="abt-htl-track" aria-label="<%= t('about.timeline_prev') %>" aria-disabled="true" disabled>
+          <svg class="abt-htl-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <button type="button" class="abt-htl-btn abt-htl-btn--next" aria-controls="abt-htl-track" aria-label="<%= t('about.timeline_next') %>" <%- items.length <= 1 ? 'aria-disabled="true" disabled' : 'aria-disabled="false"' %>>
+          <svg class="abt-htl-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    <% } %>
+  </header>
+
+  <div class="abt-htl-live sr-only" aria-live="polite" aria-atomic="true" data-label-prefix="<%= t('about.timeline_position') %>"></div>
+
+  <% if (items.length > 0) { %>
+    <div class="abt-htl-viewport" tabindex="0" aria-label="<%= t('about.timeline_region_label') %>">
+      <ol class="abt-htl-track" id="abt-htl-track">
+        <% items.forEach(function(item, idx) { %>
+          <%
+            const yearLabel = lang === 'en' ? (item.year_label_en || item.year_label_id) : item.year_label_id;
+            const itemTitle = lang === 'en' ? (item.title_en || item.title_id) : item.title_id;
+            const itemDesc = lang === 'en' ? (item.description_en || item.description_id) : item.description_id;
+          %>
+          <li class="abt-htl-item <%= idx === 0 ? 'is-active' : '' %>" data-index="<%= idx %>">
+            <div class="abt-htl-year"><%= yearLabel %></div>
+            <div class="abt-htl-axis" aria-hidden="true">
+              <span class="abt-htl-dot"></span>
+              <% if (idx < items.length - 1) { %>
+                <span class="abt-htl-line"><span class="abt-htl-line-fill"></span></span>
+              <% } %>
+            </div>
+            <h3 class="abt-htl-item-title"><%= itemTitle %></h3>
+            <% if (itemDesc) { %>
+              <p class="abt-htl-item-desc"><%= itemDesc %></p>
+            <% } %>
+          </li>
+        <% }); %>
+      </ol>
+    </div>
+  <% } else { %>
+    <div class="abt-htl-empty">
+      <%= t('about.timeline_empty') %>
+    </div>
+  <% } %>
+</div>
+

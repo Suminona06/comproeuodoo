@@ -83,6 +83,10 @@
     "values_dots_label": "Corporate culture pillars navigation",
     "values_dot_aria": "Select pillar",
     "timeline_empty": "Company journey timeline will be updated soon.",
+    "timeline_region_label": "Company historical journey timeline",
+    "timeline_prev": "Previous milestone",
+    "timeline_next": "Next milestone",
+    "timeline_position": "Milestone",
     "gallery_prev": "Previous gallery page",
     "gallery_next": "Next gallery page"
   },

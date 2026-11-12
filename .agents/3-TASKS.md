@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 4 Task (T-314 s/d T-317)
-- **Total Task Selesai:** 313 Task (T-01 s/d T-313)
+- **Task Aktif Terbuka:** 2 Task (T-316 s/d T-317)
+- **Total Task Selesai:** 315 Task (T-01 s/d T-315)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-318**.
 
@@ -25,7 +25,7 @@
   - [x] Mobile (`320px-767px`) tampil rapi, profesional, bersih, jelas, dan elegan: teks di atas, grid 2x2 tetap ber-notch di bawah, angka tidak terpotong, dan kontras memenuhi WCAG AA.
 - **File Terdampak:** `views/public/about.ejs`, `views/partials/about/story-counter.ejs`, `public/css/components.css`, `public/js/about-story.js`, `public/js/main.js`, `views/partials/footer.ejs`.
 
-### [ ] T-314: Pengelolaan Header Timeline Editable di Admin CMS (`FR-34`)
+### [x] T-314: Pengelolaan Header Timeline Editable di Admin CMS (`FR-34`)
 - **Modul Spesifikasi:** [prd/public-about.md](prd/public-about.md) (`FR-34`), [tech/public-about.md](tech/public-about.md), [tech/public-about-timeline.md](tech/public-about-timeline.md)
 - **Deskripsi:**
   - Tambahkan 6 kunci `settings`: `about_timeline_tagline_id`, `about_timeline_tagline_en`, `about_timeline_title_id`, `about_timeline_title_en`, `about_timeline_desc_id`, `about_timeline_desc_en`.
@@ -33,12 +33,12 @@
   - Perbarui `aboutController.index`, `aboutController.update` (sanitasi panjang maks `50`/`120`/`300`), dan `pageController.about` untuk meneruskan `timelineHeader`.
   - Buat partial `views/admin/about/partials/tab-sejarah-timeline-header.ejs` dan sertakan di `views/admin/about/partials/tab-sejarah.ejs` di dalam form utama `/admin/about` (mengikuti pola `.form-row-2` yang sudah ada).
 - **Acceptance Criteria:**
-  - [ ] Ke-6 field header timeline (Tagline, Judul, Deskripsi ID/EN) dapat disimpan dari `/admin/about`, bertahan setelah muat ulang, dan tampil ter-escape (`<%= %>`) di halaman publik `/about`.
-  - [ ] Bila field dikosongkan, sistem menggunakan fallback teks bawaan dwibahasa.
-  - [ ] Setiap berkas partial admin tetap `<= 100` baris tanpa catatan tambahan pada bagian statistik.
+  - [x] Ke-6 field header timeline (Tagline, Judul, Deskripsi ID/EN) dapat disimpan dari `/admin/about`, bertahan setelah muat ulang, dan tampil ter-escape (`<%= %>`) di halaman publik `/about`.
+  - [x] Bila field dikosongkan, sistem menggunakan fallback teks bawaan dwibahasa.
+  - [x] Setiap berkas partial admin tetap `<= 100` baris tanpa catatan tambahan pada bagian statistik.
 - **File Terdampak:** `models/aboutModel.js`, `controllers/admin/aboutController.js`, `controllers/public/pageController.js`, `views/admin/about/partials/tab-sejarah-timeline-header.ejs`, `views/admin/about/partials/tab-sejarah.ejs`.
 
-### [ ] T-315: Implementasi Komponen Horizontal Timeline Slider (`.abt-htl-*`) & Kamus i18n
+### [x] T-315: Implementasi Komponen Horizontal Timeline Slider (`.abt-htl-*`) & Kamus i18n
 - **Modul Spesifikasi:** [prd/public-about.md](prd/public-about.md) (`FR-05`, `FR-33`), [tech/public-about-timeline.md](tech/public-about-timeline.md)
 - **Deskripsi:**
   - Buat partial `views/partials/about/history-timeline.ejs` (`<= 100` baris) langsung di atas latar section `.sec-story#sejarah` tanpa panel putih pembungkus.
@@ -46,11 +46,11 @@
   - Terapkan geometri garis horizontal dari tepi kiri track yang **berhenti tepat di pusat bulatan item terakhir**, efek hover/fokus (bulatan membesar + ring hijau, tahun hijau), serta pengisian segmen garis progres hijau tua (`var(--color-primary-dark)`, `.is-filled` + `scaleX` Anime.js) dari awal hingga item aktif.
   - Tambahkan kunci i18n aksesibilitas (`about.timeline_region_label`, `about.timeline_prev`, `about.timeline_next`, `about.timeline_position`) di `locales/id.json` dan `locales/en.json`, serta pertahankan `t('about.timeline_empty')`.
 - **Acceptance Criteria:**
-  - [ ] Tampilan desktop (`>= 1024px`, 3 kolom) identik Gambar 1 (awal) dan Gambar 3 (ujung: garis berhenti tepat di bulatan item terakhir).
-  - [ ] Tampilan tablet (`768px-1023px`, 2 kolom) dan mobile (`< 768px`, 1 kolom + *peek* ~15% item berikutnya, tombol *prev/next* pindah ke bawah deskripsi rata kiri sesuai Gambar 4, langsung di atas latar section tanpa panel putih).
-  - [ ] Geser per 1 item, berhenti di ujung (`aria-disabled="true"`), tanpa autoplay, tombol disembunyikan bila total item `<=` kolom terlihat.
-  - [ ] Hover/fokus item dan item aktif menampilkan ring hijau pada bulatan, tahun berwarna hijau primer, dan segmen garis sampai item aktif terisi hijau tua (`var(--color-primary-dark)`).
-  - [ ] Swipe sentuh, navigasi papan ketik (`Tab`, `ArrowLeft`, `ArrowRight`), dan pengumuman `aria-live` berfungsi; tanpa *horizontal overflow* di `320px`.
+  - [x] Tampilan desktop (`>= 1024px`, 3 kolom) identik Gambar 1 (awal) dan Gambar 3 (ujung: garis berhenti tepat di bulatan item terakhir).
+  - [x] Tampilan tablet (`768px-1023px`, 2 kolom) dan mobile (`< 768px`, 1 kolom + *peek* ~15% item berikutnya, tombol *prev/next* pindah ke bawah deskripsi rata kiri sesuai Gambar 4, langsung di atas latar section tanpa panel putih).
+  - [x] Geser per 1 item, berhenti di ujung (`aria-disabled="true"`), tanpa autoplay, tombol disembunyikan bila total item `<=` kolom terlihat.
+  - [x] Hover/fokus item dan item aktif menampilkan ring hijau pada bulatan, tahun berwarna hijau primer, dan segmen garis sampai item aktif terisi hijau tua (`var(--color-primary-dark)`).
+  - [x] Swipe sentuh, navigasi papan ketik (`Tab`, `ArrowLeft`, `ArrowRight`), dan pengumuman `aria-live` berfungsi; tanpa *horizontal overflow* di `320px`.
 - **File Terdampak:** `views/partials/about/history-timeline.ejs`, `views/public/about.ejs`, `public/css/components.css`, `public/js/about-story.js`, `locales/id.json`, `locales/en.json`.
 
 ### [ ] T-316: Pembersihan CSS/JS Legacy & Polish Lintas Breakpoint

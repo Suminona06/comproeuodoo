@@ -47,22 +47,7 @@
   <section class="sec-story" id="sejarah" data-od-id="company-story">
     <div class="container">
       <%- include('../partials/about/story-counter') %>
-
-      <div class="timeline reveal" data-od-id="company-timeline">
-        <% if (typeof timeline !== 'undefined' && timeline && timeline.length > 0) { %>
-          <% timeline.forEach(item => { %>
-            <div class="tl-item">
-              <div class="tl-year"><%= lang === 'en' ? (item.year_label_en || item.year_label_id) : item.year_label_id %></div>
-              <div class="tl-title"><%= lang === 'en' ? (item.title_en || item.title_id) : item.title_id %></div>
-              <div class="tl-desc"><%= lang === 'en' ? (item.description_en || item.description_id) : item.description_id %></div>
-            </div>
-          <% }); %>
-        <% } else { %>
-          <div class="tl-empty abt-tl-empty">
-            <%= t('about.timeline_empty') %>
-          </div>
-        <% } %>
-      </div>
+      <%- include('../partials/about/history-timeline') %>
     </div>
   </section>
 

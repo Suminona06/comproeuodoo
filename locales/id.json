@@ -83,6 +83,10 @@
     "values_dots_label": "Navigasi pilar budaya kerja",
     "values_dot_aria": "Pilih pilar",
     "timeline_empty": "Linimasa perjalanan perusahaan akan segera diperbarui.",
+    "timeline_region_label": "Linimasa sejarah perjalanan perusahaan",
+    "timeline_prev": "Tonggak sejarah sebelumnya",
+    "timeline_next": "Tonggak sejarah berikutnya",
+    "timeline_position": "Tonggak sejarah",
     "gallery_prev": "Halaman galeri sebelumnya",
     "gallery_next": "Halaman galeri berikutnya"
   },

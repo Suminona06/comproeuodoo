@@ -77,16 +77,28 @@ function parseTicketHeader(body) {
   };
 }
 
+function parseTimelineHeader(body = {}) {
+  return {
+    about_timeline_tagline_id: trimSliceOptional(body.about_timeline_tagline_id, 50),
+    about_timeline_tagline_en: trimSliceOptional(body.about_timeline_tagline_en, 50),
+    about_timeline_title_id: trimSliceOptional(body.about_timeline_title_id, 120),
+    about_timeline_title_en: trimSliceOptional(body.about_timeline_title_en, 120),
+    about_timeline_desc_id: trimSliceOptional(body.about_timeline_desc_id, 300),
+    about_timeline_desc_en: trimSliceOptional(body.about_timeline_desc_en, 300)
+  };
+}
+
 export const aboutController = {
   async index(req, res) {
     try {
-      const [about, gallerySlides, stats, timeline, galleryHeader, storyHeader, visionMissionImages] = await Promise.all([
+      const [about, gallerySlides, stats, timeline, galleryHeader, storyHeader, timelineHeader, visionMissionImages] = await Promise.all([
         aboutModel.getAboutData(),
         aboutGalleryModel.findAll(),
         aboutStatsModel.findAll(),
         aboutTimelineModel.findAll(),
         aboutModel.getGalleryHeader(),
         aboutModel.getStoryHeader(),
+        aboutModel.getTimelineHeader(),
         aboutModel.getVisionMissionImages()
       ]);
 
@@ -101,6 +113,7 @@ export const aboutController = {
         timeline,
         galleryHeader,
         storyHeader,
+        timelineHeader,
         visionMissionImages,
         error: req.query.error || null,
         success: req.query.success || null,
@@ -190,6 +203,7 @@ export const aboutController = {
         about_gallery_body_en: about_gallery_body_en !== undefined ? about_gallery_body_en.trim() : undefined,
         about_story_kicker_id: about_story_kicker_id !== undefined ? about_story_kicker_id.trim() : undefined,
         about_story_kicker_en: about_story_kicker_en !== undefined ? about_story_kicker_en.trim() : undefined,
+        ...parseTimelineHeader(req.body),
         ...ticketHeader,
         values,
         certifications
