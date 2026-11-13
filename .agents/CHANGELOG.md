@@ -42,3 +42,5 @@
 - 2026-11-10 | Revisi Bug Hover Footer, RFQ Dashboard & Paginasi Bersama Varian 1: Eliminasi efek hover & penguncian kontras WCAG AA kartu alamat footer, penyederhanaan tabel RFQ dashboard LIMIT 10, komponen paginasi bersama Varian 1 .pgn-* terintegrasi tanpa reload pada inquiries & produk admin, penghapusan horizontal scroller desktop/mobile dengan mobile stacked cards, dan audit Playwright multi-viewport | T-301..T-306
 - 2026-11-11 | Latar selang-seling About & News, filter geser mobile, judul headline dinamis, dan paginasi terpadu .pgn-* | T-307..T-312
 - 2026-11-12 | Redesain counter statistik 2x2 ber-notch, horizontal timeline slider, header linimasa admin, dan uji Playwright E2E | T-313..T-317
+
+- 2026-11-13 | Refaktor & modularisasi view publik Products, Product Detail, News & News Detail (ekstraksi partials, lokalisasi, .nwd-prose, news-detail.js, kontras AA, serta pembaruan tes regresi) | T-318..T-322

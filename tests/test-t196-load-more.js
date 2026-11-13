@@ -36,14 +36,21 @@ console.log('--- TEST SUITE: T-196 PROGRESSIVE ENHANCEMENT LOAD MORE ---');
 async function runTests() {
   let passed = 0;
 
-  // Test 1: SSR /products with <= 9 products hides load more wrapper
+  // Test 1: SSR /products hides #plp-more-wrap via .is-hidden when !hasMore or <= 9 products
   {
-    const res = await get('/products');
-    assert.strictEqual(res.statusCode, 200, 'GET /products should return 200');
+    const fragRes = await get('/products?page=1&format=fragment', {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    });
+    assert.strictEqual(fragRes.statusCode, 200, 'GET /products?format=fragment should return 200');
+    const fragData = JSON.parse(fragRes.body);
+    const lastPage = Math.max(1, Math.ceil((fragData.totalProducts || 0) / 9));
+    const res = await get(`/products?page=${lastPage}`);
+    assert.strictEqual(res.statusCode, 200, 'GET /products last page should return 200');
     assert(res.body.includes('id="plp-more-wrap"'), 'products.ejs should render #plp-more-wrap container');
     assert(res.body.includes('id="plp-load-more-btn"'), 'products.ejs should render #plp-load-more-btn element');
-    assert(res.body.includes('style="display: none;"'), '#plp-more-wrap should be hidden when total products <= 9');
-    console.log('  [PASS] SSR hides load more button when total products <= 9');
+    assert(res.body.includes('class="plp-more-wrap is-hidden"'), '#plp-more-wrap should have .is-hidden when no more products remain');
+    console.log('  [PASS] SSR hides load more button via .is-hidden when no more products remain');
     passed++;
   }
 
@@ -77,6 +84,7 @@ async function runTests() {
     const cssPath = path.resolve('public/css/components.css');
     const css = fs.readFileSync(cssPath, 'utf8');
     assert(css.includes('.plp-more-wrap'), 'components.css should define .plp-more-wrap');
+    assert(css.includes('.plp-more-wrap.is-hidden'), 'components.css should define .plp-more-wrap.is-hidden');
     assert(css.includes('.plp-more-btn'), 'components.css should define .plp-more-btn');
     assert(css.includes('.plp-more-btn:focus-visible'), 'components.css should define .plp-more-btn:focus-visible');
     assert(css.includes('.plp-more-btn.is-loading'), 'components.css should define .plp-more-btn.is-loading state');

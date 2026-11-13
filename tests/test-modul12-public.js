@@ -32,7 +32,7 @@ async function runModul12Tests() {
   const aboutHtml = await resAbout.text();
   assert.ok(aboutHtml.includes('page-hero'), 'Must contain page hero header');
   assert.ok(aboutHtml.includes('1990'), 'Must contain company heritage narrative');
-  assert.ok(aboutHtml.includes('T-I-C-K-E-T'), 'Must contain T-I-C-K-E-T core values');
+  assert.ok(aboutHtml.includes('T - I - C - K - E - T'), 'Must contain T - I - C - K - E - T core values');
   console.log('  2a. About Us structure and corporate values verified: PASSED');
 
   // Test 3: Products Catalog Page
@@ -96,7 +96,7 @@ async function runModul12Tests() {
   assert.ok(newsDetailHtml.includes('nwd-hero-media'), 'Must contain hero media');
   assert.ok(newsDetailHtml.includes('nwd-title'), 'Must contain article title');
   assert.ok(newsDetailHtml.includes('nwd-author'), 'Must contain clean author attribution');
-  assert.ok(newsDetailHtml.includes('article-prose'), 'Must contain structured article prose');
+  assert.ok(newsDetailHtml.includes('nwd-prose'), 'Must contain structured article prose');
   assert.ok(newsDetailHtml.includes('application/ld+json'), 'Must contain JSON-LD article schema');
   assert.ok(newsDetailHtml.includes('copyLinkBtn'), 'Must contain interactive share buttons');
   assert.ok(newsDetailHtml.includes('euodoo.co.id'), 'Share URLs and canonical links must reference euodoo.co.id domain');
