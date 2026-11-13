@@ -800,12 +800,25 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.ft-main:has(> :only-child) {
+  grid-template-columns: 1fr;
+}
+
+.ft-main > * {
+  min-width: 0;
+}
+
 .ft-desc {
   color: var(--text-on-dark, #cbd5e1);
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 24px;
   max-width: 540px;
+  overflow-wrap: anywhere;
+}
+
+.ft-main:has(> :only-child) .ft-desc {
+  max-width: 680px;
 }
 
 .ft-desc:last-child {
@@ -897,23 +910,36 @@
   flex-direction: column;
   justify-content: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .ft-nav-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  box-sizing: border-box;
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--r-lg, 8px);
-  color: #ffffff;
+  color: var(--color-text-inverse);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
   transition: background var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               border-color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
               transform var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.ft-nav-link:visited {
+  color: var(--color-text-inverse);
+}
+
+.ft-nav-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .ft-nav-link:hover {
@@ -945,6 +971,7 @@
   color: #ffffff;
   font-weight: 700;
   font-size: 1rem;
+  flex-shrink: 0;
   transition: transform var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 

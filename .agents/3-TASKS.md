@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 3 Task (T-325 s/d T-327)
-- **Total Task Selesai:** 324 Task (T-01 s/d T-324)
+- **Task Aktif Terbuka:** 2 Task (T-326 s/d T-327)
+- **Total Task Selesai:** 325 Task (T-01 s/d T-325)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-323** (berikutnya **T-328**).
 
@@ -35,7 +35,7 @@
     4. `public/css/admin.css` menata `.stg-footer-*` / `.stg-char-count` memakai token `tokens.css` (zero raw hex baru), kontras AA, kontrol ramah sentuh, responsif tanpa overflow.
   - **Verifikasi:** `npm run lint`, `npm run lint:views`; uji browser alur 0 item, tambah hingga 4 item, geser urutan, hapus, batas `350` char, penolakan URL tidak valid, simpan & reload tanpa error console.
 
-- [ ] **T-325**: Footer Publik Dinamis pada `views/partials/footer.ejs` (`.ft-*`) & Lokalisasi ID/EN tanpa Menyentuh Homepage
+- [x] **T-325**: Footer Publik Dinamis pada `views/partials/footer.ejs` (`.ft-*`) & Lokalisasi ID/EN tanpa Menyentuh Homepage
   - **Modul:** [prd/footer.md](prd/footer.md), [tech/footer.md](tech/footer.md)
   - **Skill:** `adapt`, `polish`, `antislop-code`
   - **File Terdampak:** `views/partials/footer.ejs`, `public/css/layout.css`, `locales/id.json`, `locales/en.json`

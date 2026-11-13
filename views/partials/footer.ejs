@@ -18,13 +18,15 @@
 
     <div class="ft-main">
       <div>
-        <p class="ft-desc">
-          <%= typeof settings !== 'undefined' && settings && (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id)
-              ? (currentLang === 'en' ? settings.meta_description_en : settings.meta_description_id)
-              : (currentLang === 'en'
-                  ? 'PT. EUODOO is a manufacturing and trading enterprise of eco-certified HDPE and LLDPE plastic bags. Established in 1990, we supply modern retail chains, industrial sectors, and traditional wholesale markets from our production plant in Bandung, West Java.'
-                  : 'PT. EUODOO adalah perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE bersertifikasi ramah lingkungan. Didirikan tahun 1990, kami melayani retail modern, sektor industri, dan pasar tradisional dari fasilitas produksi di Bandung, Jawa Barat.') %>
-        </p>
+        <%
+          const rawFooterDesc = typeof settings !== 'undefined' && settings
+            ? (currentLang === 'en' ? settings.footer_desc_en : settings.footer_desc_id)
+            : '';
+          const resolvedFooterDesc = (rawFooterDesc && String(rawFooterDesc).trim())
+            ? String(rawFooterDesc).trim()
+            : t('footer.default_desc');
+        %>
+        <p class="ft-desc"><%= resolvedFooterDesc %></p>
 
         <%
           const showOfficeCard = typeof settings !== 'undefined' && settings ? (settings.office_card_visible !== '0' && settings.office_card_visible !== 0) : true;
@@ -98,24 +100,23 @@
         <% } %>
       </div>
 
-      <div class="ft-nav">
-        <a href="/products" class="ft-nav-link">
-          <span><%= currentLang === 'en' ? 'Retail & Industrial Products' : 'Produk Retail & Industri' %></span>
-          <span class="ft-nav-arrow">&#8594;</span>
-        </a>
-        <a href="/about" class="ft-nav-link">
-          <span><%= currentLang === 'en' ? 'About PT. EUODOO' : 'Tentang PT. EUODOO' %></span>
-          <span class="ft-nav-arrow">&#8594;</span>
-        </a>
-        <a href="/about#sertifikasi" class="ft-nav-link">
-          <span><%= currentLang === 'en' ? 'Environmental Certifications' : 'Sertifikasi Lingkungan' %></span>
-          <span class="ft-nav-arrow">&#8594;</span>
-        </a>
-        <a href="/products" class="ft-nav-link">
-          <span><%= currentLang === 'en' ? 'Brands PB & Berkah' : 'Merk PB & Berkah' %></span>
-          <span class="ft-nav-arrow">&#8594;</span>
-        </a>
-      </div>
+      <%
+        const rawFooterLinks = typeof footerNavLinks !== 'undefined' && Array.isArray(footerNavLinks)
+          ? footerNavLinks
+          : (typeof settings !== 'undefined' && settings && Array.isArray(settings.footer_nav_links) ? settings.footer_nav_links : []);
+        const activeFooterLinks = rawFooterLinks.slice(0, 4);
+      %>
+      <% if (activeFooterLinks.length > 0) { %>
+      <nav class="ft-nav" aria-label="<%= t('footer.quick_links') %>">
+        <% activeFooterLinks.forEach((item) => { %>
+          <% const linkLabel = currentLang === 'en' ? (item.label_en || item.label_id) : (item.label_id || item.label_en); %>
+          <a href="<%= item.url %>" class="ft-nav-link"<%- item.isExternal ? ' target="_blank" rel="noopener noreferrer"' : '' %>>
+            <span class="ft-nav-text"><%= linkLabel %></span>
+            <span class="ft-nav-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        <% }); %>
+      </nav>
+      <% } %>
     </div>
 
     <div class="ft-bottom">
