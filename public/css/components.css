@@ -8294,6 +8294,7 @@ table.pd-size td:first-child {
 }
 
 .nwd-breadcrumb-current {
+  display: inline-block;
   color: var(--color-text-navy, #071f17);
   font-weight: 600;
   max-width: 480px;
@@ -8886,7 +8887,7 @@ table.pd-size td:first-child {
 .nwl-slide-date {
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted-on-soft);
   display: block;
   margin-bottom: 12px;
 }
@@ -8916,7 +8917,7 @@ table.pd-size td:first-child {
 
 .nwl-slide-excerpt {
   font-size: 15px;
-  color: var(--color-text-muted, #475569);
+  color: var(--color-text-muted-on-soft);
   line-height: 1.6;
   margin: 0 0 24px;
   display: -webkit-box;

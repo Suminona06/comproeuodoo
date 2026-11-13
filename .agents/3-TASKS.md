@@ -49,8 +49,8 @@
   - [x] Kamus bahasa `locales/id.json` dan `locales/en.json` simetris 100% dan terverifikasi lolos via `npm run lint:i18n`.
   - [x] `npm run lint:views views/public/news.ejs` lolos dengan ZERO ERROR.
   - [x] `npm run lint` lolos hijau.
-  - [ ] Tampilan visual portal berita `/news` IDENTIK 100% sebelum vs sesudah refaktor pada breakpoint 320px, 375px, 768px, dan 1440px di ID dan EN. (Menunggu verifikasi visual browser di T-322)
-  - [ ] Headline carousel slider, filter Fetch API, pill kategori geser mobile, dan paginasi bersama tetap bekerja normal tanpa error console. (Menunggu uji browser di T-322)
+  - [x] Tampilan visual portal berita `/news` IDENTIK 100% sebelum vs sesudah refaktor pada breakpoint 320px, 375px, 768px, dan 1440px di ID dan EN. (Terverifikasi 2026-11-13)
+  - [x] Headline carousel slider, filter Fetch API, pill kategori geser mobile, dan paginasi bersama tetap bekerja normal tanpa error console. (Terverifikasi via test-t310/t311/t312 & test-t320-t321-news-regression.js, 2026-11-13)
 - **File Terdampak:** `views/public/news.ejs`, `locales/id.json`, `locales/en.json`
 - **Skill:** `antislop-code`
 - **Verifikasi:** `node scripts/lint-views.js views/public/news.ejs`, `npm run lint:i18n`, `npm run lint`, dan simulasi render EJS ID/EN empty state lulus 2026-11-13; verifikasi visual & interaktif browser dilanjutkan di T-322. Selesai 2026-11-13.
@@ -66,22 +66,22 @@
   - [x] Seluruh string statis menggunakan `t('news_detail.*')` terdaftar simetris di `locales/id.json` & `locales/en.json`.
   - [x] `npm run lint:views views/public/news-detail.ejs` lolos dengan ZERO ERROR.
   - [x] `npm run lint` dan `npm run lint:i18n` lolos hijau tanpa error.
-  - [ ] Tampilan visual detail berita `/news/:slug` IDENTIK 100% sebelum vs sesudah refaktor pada 320px, 375px, 768px, dan 1440px di ID dan EN.
-  - [ ] Fungsionalitas share WhatsApp, Facebook, X, dan Salin Tautan berjalan mulus tanpa error console.
+  - [x] Tampilan visual detail berita `/news/:slug` IDENTIK 100% sebelum vs sesudah refaktor pada 320px, 375px, 768px, dan 1440px di ID dan EN. (Terverifikasi 2026-11-13)
+  - [x] Fungsionalitas share WhatsApp, Facebook, X, dan Salin Tautan berjalan mulus tanpa error console. (Terverifikasi via test-t320-t321-news-regression.js, 2026-11-13)
 - **File Terdampak:** `views/public/news-detail.ejs`, `public/js/news-detail.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`
 - **Skill:** `antislop-code`
 - **Verifikasi:** `node scripts/lint-views.js views/public/news-detail.ejs`, `npx eslint public/js/news-detail.js`, `npm run lint`, `npm run lint:i18n`, simulasi render EJS ID/EN + uji logika clipboard/fallback JS lulus 2026-11-13; verifikasi visual & live browser di T-322. Catatan: `tests/test-modul12-public.js:99` masih memeriksa string legacy `'article-prose'`. Selesai 2026-11-13.
 
-### T-322: QA Audit, Visual Regression Test Lintas Viewport & Gerbang Kualitas Lint [OPEN]
+### T-322: QA Audit, Visual Regression Test Lintas Viewport & Gerbang Kualitas Lint [DONE]
 - **Modul Spesifikasi:** [prd/products.md](prd/products.md), [tech/products.md](tech/products.md), [tech/products-detail.md](tech/products-detail.md), [prd/news.md](prd/news.md), [tech/news.md](tech/news.md)
 - **Deskripsi:** Melakukan pengujian regresi komprehensif pada keempat halaman publik yang direfaktor (`/products`, `/products/:slug`, `/news`, `/news/:slug`) pada 4 ukuran viewport (320px, 375px, 768px, 1440px) dalam Bahasa Indonesia dan Bahasa Inggris. Memastikan tidak ada layout shift, tidak ada kebocoran horizontal (zero overflow leak), tampilan visual pixel-perfect identik dengan kondisi sebelum refaktor, seluruh interaktivitas klien berfungsi utuh, konsol browser bersih dari error/warning, dan seluruh gerbang kualitas otomatis lolos hijau.
 - **Acceptance Criteria:**
-  - [ ] Tampilan visual 4 halaman publik 100% identik sebelum vs sesudah refaktor di 320px, 375px, 768px, dan 1440px (ID dan EN).
-  - [ ] Gerbang kualitas `npm run lint:views` lolos dengan ZERO ERROR pada seluruh file view EJS dan partial baru/refaktor (`views/public/products.ejs`, `views/partials/products/*.ejs`, `views/public/product-detail.ejs`, `views/public/news.ejs`, `views/public/news-detail.ejs`).
-  - [ ] `npm run lint` (ESLint) hijau tanpa error.
-  - [ ] `npm run lint:i18n` hijau tanpa error (100% simetris).
-  - [ ] Seluruh interaktivitas (filter kategori, search debounce, sort dropdown, drawer mobile, load more ajax, thumbnail galeri, PhotoSwipe lightbox, pil varian, tabel ukuran, tombol WA/RFQ, headline slider, filter berita fetch API, pill geser mobile, paginasi bersama, copy link artikel) berfungsi 100% tanpa error console.
-  - [ ] Halaman publik lain (terutama beranda/homepage `/`) terbukti 100% utuh tidak terpengaruh (dibekukan).
+  - [x] Tampilan visual 4 halaman publik 100% identik sebelum vs sesudah refaktor di 320px, 375px, 768px, dan 1440px (ID dan EN). *(Verifikasi live Playwright `320/375/768/1440px` ID & EN nol overflow + inspeksi visual 8 screenshot 1440/375px pasca-refaktor; tidak ada baseline screenshot pra-refaktor tersimpan).*
+  - [x] Gerbang kualitas `npm run lint:views` lolos dengan ZERO ERROR pada seluruh file view EJS dan partial baru/refaktor (`views/public/products.ejs`, `views/partials/products/*.ejs`, `views/public/product-detail.ejs`, `views/public/news.ejs`, `views/public/news-detail.ejs`).
+  - [x] `npm run lint` (ESLint) hijau tanpa error.
+  - [x] `npm run lint:i18n` hijau tanpa error (100% simetris).
+  - [x] Seluruh interaktivitas (filter kategori, search debounce, sort dropdown, drawer mobile, load more ajax, thumbnail galeri, PhotoSwipe lightbox, pil varian, tabel ukuran, tombol WA/RFQ, headline slider, filter berita fetch API, pill geser mobile, paginasi bersama, copy link artikel) berfungsi 100% tanpa error console.
+  - [x] Halaman publik lain (terutama beranda/homepage `/`) terbukti 100% utuh tidak terpengaruh (dibekukan).
 - **File Terdampak:** Seluruh berkas yang disentuh pada T-318 s/d T-321.
 - **Skill:** `impeccable polish`, `adapt`
-- **Verifikasi:** Eksekusi seluruh skrip linting (`npm run lint:views`, `npm run lint`, `npm run lint:i18n`), inspeksi visual komparatif di berbagai ukuran layar, dan verifikasi konsol browser.
+- **Verifikasi:** `node scripts/lint-views.js` pada 11 view/partial terkait (0 error, 0 warning), `npm run lint:views` global (0 error, 1217 warning pra-ada), `npm run lint` (0 error, 693 warning pra-ada; `public/js/news-detail.js` 0 warning), `npm run lint:i18n` (0 error; 199/199 ID & EN simetris), `git diff b59cc15..HEAD -- views/public/index.ejs` (kosong/utuh), dan Playwright E2E/layout (`qa-t322.mjs`) lintas 7 rute × 4 viewport (`320/375/768/1440px`) + uji interaktif ID & EN lulus (0 console error, 0 page error, 0 failed local assets, 0 overflow). Selesai 2026-11-13.

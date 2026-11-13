@@ -29,7 +29,6 @@
 %>
 
 <main id="main-content">
-  <%# 1. PAGE HERO %>
   <section class="page-hero <%= heroObj && heroObj.image_url ? 'page-hero--has-bg' : '' %>" <%- heroBg %>>
     <% if (heroObj && heroObj.image_url) { %>
       <div class="page-hero-scrim" aria-hidden="true"></div>
@@ -62,7 +61,6 @@
     </div>
   </section>
 
-  <%# 2. HEADLINE SECTION (Full Width, Soft Green Background) %>
   <% if (hasHeadlines) { %>
     <%- include('../partials/news/headline-section', {
       headlinesList,
@@ -72,7 +70,6 @@
     }) %>
   <% } %>
 
-  <%# 3. DIRECTORY & LISTING SECTION (Full Width, Subtle Background) %>
   <section class="nwl-sec-directory <%= !hasHeadlines ? 'nwl-sec-directory--solo' : '' %>" id="nwlSecDirectory">
     <div class="container">
       <%- include('../partials/news/filter-bar', {
