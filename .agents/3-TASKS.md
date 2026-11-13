@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 5 Task (T-323 s/d T-327)
-- **Total Task Selesai:** 322 Task (T-01 s/d T-322)
+- **Task Aktif Terbuka:** 3 Task (T-325 s/d T-327)
+- **Total Task Selesai:** 324 Task (T-01 s/d T-324)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-323** (berikutnya **T-328**).
 
@@ -13,7 +13,7 @@
 
 *Rujukan Proposal Terkunci:* [changes/2026-11-13_footer-dinamis-dan-alert-news.md](changes/2026-11-13_footer-dinamis-dan-alert-news.md)
 
-- [ ] **T-323**: Skema Migrasi `019`, Ekstraksi `services/settingService.js`, & Normalisasi `middleware/settingsMiddleware.js`
+- [x] **T-323**: Skema Migrasi `019`, Ekstraksi `services/settingService.js`, & Normalisasi `middleware/settingsMiddleware.js`
   - **Modul:** [prd/settings.md](prd/settings.md), [tech/settings-footer.md](tech/settings-footer.md), [tech/footer.md](tech/footer.md)
   - **Skill:** `antislop-code`
   - **File Terdampak:** `database/migrations/019_footer_dynamic_content_v1.sql` *(baru)*, `services/settingService.js` *(baru)*, `controllers/admin/settingController.js`, `middleware/settingsMiddleware.js`
@@ -24,7 +24,7 @@
     4. `middleware/settingsMiddleware.js` menormalisasi `footer_desc_*` dan mem-parse + sanitasi ulang `res.locals.footerNavLinks` (`0–4` item valid, flag `isExternal` untuk `http(s)://`, fallback aman bila JSON rusak), dengan `clearSettingsCache()` saat update.
   - **Verifikasi:** Uji helper `services/settingService.js` (0/4/5 item, 350/351 char, whitelist & penolakan URL berbahaya), uji idempotensi `node database/migrate.js`, dan `npm run lint`.
 
-- [ ] **T-324**: Antarmuka CMS Pengelolaan Deskripsi Footer & Repeater Menu Footer (`.stg-*`, `/admin/settings`)
+- [x] **T-324**: Antarmuka CMS Pengelolaan Deskripsi Footer & Repeater Menu Footer (`.stg-*`, `/admin/settings`)
   - **Modul:** [prd/settings.md](prd/settings.md), [tech/settings.md](tech/settings.md), [tech/settings-footer.md](tech/settings-footer.md)
   - **Skill:** `adapt`, `polish`, `antislop-code`
   - **File Terdampak:** `views/admin/settings/partials/footer-content-card.ejs` *(baru)*, `views/admin/settings/index.ejs`, `public/js/admin-settings.js`, `public/css/admin.css`

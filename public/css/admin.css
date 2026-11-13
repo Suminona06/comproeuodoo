@@ -4268,6 +4268,237 @@ body.sidebar-open .admin-backdrop {
   gap: 10px;
 }
 
+.stg-col-wa-pct-cell {
+  width: 140px;
+}
+
+.stg-col-wa-act-cell {
+  width: 48px;
+  text-align: center;
+}
+
+.stg-field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stg-char-count {
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--bg-subtle);
+  color: var(--color-text-muted-on-soft);
+  border: 1px solid var(--border-main);
+}
+
+.stg-char-count.is-near-limit {
+  background: var(--st-baru-bg);
+  color: var(--st-baru-text);
+  border-color: var(--st-baru-border);
+}
+
+.stg-char-count.is-at-limit {
+  background: var(--st-ditolak-bg);
+  color: var(--st-ditolak-text);
+  border-color: var(--st-ditolak-border);
+}
+
+.stg-footer-textarea {
+  min-height: 84px;
+}
+
+.stg-footer-repeater {
+  margin-top: 20px;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+}
+
+.stg-footer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.stg-footer-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--surface-dark-deep);
+}
+
+.stg-footer-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--color-outline-variant);
+}
+
+.stg-footer-count-badge.is-full {
+  background: var(--primary-subtle);
+  color: var(--primary-hover);
+  border-color: var(--primary-border);
+}
+
+.stg-footer-desc {
+  margin: 0 0 14px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted-on-soft);
+  overflow-wrap: anywhere;
+}
+
+.stg-footer-empty {
+  padding: 18px 16px;
+  margin-bottom: 14px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted-on-soft);
+  background: var(--bg-surface);
+  border: 1px dashed var(--color-outline);
+  border-radius: var(--r-md);
+}
+
+.stg-footer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.stg-footer-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-md);
+}
+
+.stg-footer-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stg-footer-item-num {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--primary-hover);
+  font-variant-numeric: tabular-nums;
+}
+
+.stg-footer-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stg-footer-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.25fr;
+  gap: 12px;
+  min-width: 0;
+}
+
+.stg-footer-field {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+.stg-footer-ctrl-btn,
+.stg-footer-add-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 12px;
+}
+
+.stg-footer-ctrl-btn:focus-visible,
+.stg-footer-add-btn:focus-visible,
+.stg-footer-repeater .form-input:focus-visible,
+.stg-footer-textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.stg-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stg-footer-hint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-muted-on-soft);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .stg-footer-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stg-footer-field--url {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .stg-footer-repeater {
+    padding: 14px 12px;
+  }
+
+  .stg-footer-item {
+    padding: 12px;
+  }
+
+  .stg-footer-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .stg-footer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stg-footer-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stg-footer-repeater *,
+  .stg-char-count {
+    transition: none !important;
+  }
+}
+
 /* ==========================================================================
    Batch 1: Auth & Error Pages (.err403-*, .adm-login-*, .chpwd-*) (T-277)
    ========================================================================== */
