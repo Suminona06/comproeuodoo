@@ -1,6 +1,3 @@
-<%- include('../partials/header') %>
-<%- include('../partials/navbar', { headerSolid: true }) %>
-
 <%
   const currentLangCode = currentLang || 'id';
   const postTitle = currentLangCode === 'en' ? (post.title_en || post.title_id) : post.title_id;
@@ -9,45 +6,44 @@
   const pubDate = post.published_at ? new Date(post.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
   const isDetailPlaceholder = !(post.cover_image && post.cover_image.trim());
   const coverImg = isDetailPlaceholder ? '/uploads/media/media-1792035656935-732682512.webp' : post.cover_image.trim();
-  const catLabel = currentLangCode === 'en' ? (post.category_name_en || post.category_name_id) : post.category_name_id;
-  const readTime = Math.max(2, Math.round(((post.content_id || '').length) / 450)) + ' min baca';
-  const typeLabel = post.type === 'pers' ? 'Siaran Pers Resmi' : (post.type === 'blog' ? 'Artikel & Wawasan' : 'Berita Perusahaan');
   const canonicalUrl = (post.canonical_url && !post.canonical_url.includes('localhost')) ? post.canonical_url.replace('euodoo.com', 'euodoo.co.id') : `https://euodoo.co.id/news/${post.slug}`;
-%>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "<%= (postTitle || '').replace(/"/g, '\\"') %>",
-  "image": ["<%= coverImg.startsWith('http') ? coverImg : 'https://euodoo.co.id' + coverImg %>"],
-  "datePublished": "<%= post.published_at ? new Date(post.published_at).toISOString() : '' %>",
-  "dateModified": "<%= post.updated_at ? new Date(post.updated_at).toISOString() : (post.published_at ? new Date(post.published_at).toISOString() : '') %>",
-  "author": {
-    "@type": "Organization",
-    "name": "PT Euodoo",
-    "url": "https://euodoo.co.id"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "PT Euodoo",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://euodoo.co.id/images/logo.png"
-    }
-  },
-  "description": "<%= (postExcerpt || '').replace(/"/g, '\\"') %>"
-}
-</script>
+  if (typeof seo !== 'undefined' && seo && typeof seo.addSchema === 'function') {
+    seo.addSchema({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: postTitle || '',
+      image: [coverImg.startsWith('http') ? coverImg : 'https://euodoo.co.id' + coverImg],
+      datePublished: post.published_at ? new Date(post.published_at).toISOString() : '',
+      dateModified: post.updated_at ? new Date(post.updated_at).toISOString() : (post.published_at ? new Date(post.published_at).toISOString() : ''),
+      author: {
+        '@type': 'Organization',
+        name: 'PT Euodoo',
+        url: 'https://euodoo.co.id'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'PT Euodoo',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://euodoo.co.id/images/logo.png'
+        }
+      },
+      description: postExcerpt || ''
+    });
+  }
+%>
+<%- include('../partials/header') %>
+<%- include('../partials/navbar', { headerSolid: true }) %>
 
 <main id="main-content" class="news-detail-wrap">
   <div class="nwd-breadcrumb-wrap">
     <div class="container">
       <div class="nwd-article-col">
-        <nav aria-label="Breadcrumb">
+        <nav aria-label="<%= t('news_detail.breadcrumb_aria') %>">
           <ol class="nwd-breadcrumb">
-            <li class="nwd-breadcrumb-item"><a href="/"><%= currentLangCode === 'en' ? 'Home' : 'Beranda' %></a></li>
-            <li class="nwd-breadcrumb-item"><a href="/news"><%= currentLangCode === 'en' ? 'News' : 'Berita' %></a></li>
+            <li class="nwd-breadcrumb-item"><a href="/"><%= t('news_detail.breadcrumb_home') %></a></li>
+            <li class="nwd-breadcrumb-item"><a href="/news"><%= t('news_detail.breadcrumb_news') %></a></li>
             <li class="nwd-breadcrumb-item nwd-breadcrumb-current" aria-current="page"><%= postTitle %></li>
           </ol>
         </nav>
@@ -71,10 +67,10 @@
         <h1 class="nwd-title"><%= postTitle %></h1>
 
         <div class="nwd-author">
-          <%= currentLangCode === 'en' ? 'By PT Euodoo Editorial Team' : 'Oleh Redaksi PT Euodoo' %>
+          <%= t('news_detail.author') %>
         </div>
 
-        <div class="nwd-prose article-prose">
+        <div class="nwd-prose">
           <% if (postContent) { %>
             <%
               let renderedArticleHtml = postContent;
@@ -88,7 +84,7 @@
             <%- renderedArticleHtml %>
           <% } else { %>
             <p class="nwd-empty-prose">
-              <%= currentLangCode === 'en' ? 'The full content of this article is currently being updated by the editorial team.' : 'Konten lengkap artikel ini sedang dalam proses pembaruan oleh redaksi PT Euodoo.' %>
+              <%= t('news_detail.empty_prose') %>
             </p>
           <% } %>
         </div>
@@ -96,7 +92,7 @@
         <hr class="nwd-divider">
 
         <div class="nwd-share-row">
-          <span class="nwd-share-label"><%= currentLangCode === 'en' ? 'Share :' : 'Bagikan :' %></span>
+          <span class="nwd-share-label"><%= t('news_detail.share_label') %></span>
           <div class="nwd-share-btns">
             <a href="https://wa.me/?text=<%= encodeURIComponent(postTitle + ' - ' + canonicalUrl) %>" target="_blank" rel="noopener noreferrer" class="nwd-share-btn" aria-label="WhatsApp" title="WhatsApp">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -113,28 +109,13 @@
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </svg>
             </a>
-            <button type="button" class="nwd-share-btn" id="copyLinkBtn" aria-label="<%= currentLangCode === 'en' ? 'Copy article link' : 'Salin tautan artikel' %>" title="<%= currentLangCode === 'en' ? 'Copy link' : 'Salin tautan' %>">
+            <button type="button" class="nwd-share-btn" id="copyLinkBtn" data-share-url="<%= canonicalUrl %>" data-copied-msg="<%= t('news_detail.copy_success') %>" aria-label="<%= t('news_detail.copy_aria') %>" title="<%= t('news_detail.copy_title') %>">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
               </svg>
             </button>
           </div>
-          <script>
-            (function() {
-              var btn = document.getElementById('copyLinkBtn');
-              if (btn) {
-                btn.addEventListener('click', function() {
-                  var shareUrl = '<%= canonicalUrl %>';
-                  if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(shareUrl).then(function() {
-                      alert('<%= currentLangCode === "en" ? "Article link copied to clipboard!" : "Tautan artikel berhasil disalin!" %>');
-                    });
-                  }
-                });
-              }
-            })();
-          </script>
         </div>
       </div>
     </div>
@@ -145,7 +126,7 @@
       <div class="container">
         <div class="nwd-related-head">
           <h2 class="nwd-related-title">
-            <%= currentLangCode === 'en' ? 'Read Other News' : 'Baca Berita Lainnya' %>
+            <%= t('news_detail.related_title') %>
           </h2>
         </div>
 
@@ -158,5 +139,7 @@
     </section>
   <% } %>
 </main>
+
+<script src="/js/news-detail.js" defer></script>
 
 <%- include('../partials/footer') %>

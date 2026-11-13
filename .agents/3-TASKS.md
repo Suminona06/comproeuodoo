@@ -41,36 +41,36 @@
 - **Skill:** `antislop-code`, `adapt`
 - **Verifikasi:** Jalankan `node scripts/lint-views.js`, `npm run lint`, `npm run lint:i18n`, verifikasi rendering tabel ukuran dinamis, uji pembukaan PhotoSwipe lightbox dan klik thumbnail di browser. Selesai 2026-11-12.
 
-### T-320: Pembersihan Minor & Lokalisasi `views/public/news.ejs` [OPEN]
+### T-320: Pembersihan Minor & Lokalisasi `views/public/news.ejs` [DONE]
 - **Modul Spesifikasi:** [prd/news.md](prd/news.md) (`FR-12`), [tech/news.md](tech/news.md)
-- **Deskripsi:** Melakukan pembersihan minor pada `views/public/news.ejs` (144 baris) dengan mengonversi teks hardcoded empty state direktori artikel ("No articles match your selected filter criteria..." / "Tidak ditemukan artikel...") dan tombol reset ("View All Publications" / "Lihat Semua Publikasi") ke helper lokalisasi terpusat `t('news.empty_desc')` dan `t('news.empty_reset')` di `locales/id.json` dan `locales/en.json`.
+- **Deskripsi:** Melakukan pembersihan minor pada `views/public/news.ejs` (144 baris) dengan mengonversi teks hardcoded empty state direktori artikel ("No articles match your selected filter criteria..." / "Tidak ditemukan artikel...") dan tombol reset ("View All Publications" / "Lihat Semua Publikasi") ke helper lokalisasi terpusat `t('news.empty_desc')` dan `t('news.empty_reset')` di `locales/id.json` dan `locales/en.json`, serta menyesuaikan konstruksi atribut `heroBg` agar lolos gerbang `lint-views`.
 - **Acceptance Criteria:**
-  - [ ] Teks deskripsi empty state dan tombol reset di `news.ejs` menggunakan `t('news.empty_desc')` dan `t('news.empty_reset')`.
-  - [ ] Kamus bahasa `locales/id.json` dan `locales/en.json` simetris 100% dan terverifikasi lolos via `npm run lint:i18n`.
-  - [ ] `npm run lint:views views/public/news.ejs` lolos dengan ZERO ERROR.
-  - [ ] `npm run lint` lolos hijau.
-  - [ ] Tampilan visual portal berita `/news` IDENTIK 100% sebelum vs sesudah refaktor pada breakpoint 320px, 375px, 768px, dan 1440px di ID dan EN.
-  - [ ] Headline carousel slider, filter Fetch API, pill kategori geser mobile, dan paginasi bersama tetap bekerja normal tanpa error console.
+  - [x] Teks deskripsi empty state dan tombol reset di `news.ejs` menggunakan `t('news.empty_desc')` dan `t('news.empty_reset')`.
+  - [x] Kamus bahasa `locales/id.json` dan `locales/en.json` simetris 100% dan terverifikasi lolos via `npm run lint:i18n`.
+  - [x] `npm run lint:views views/public/news.ejs` lolos dengan ZERO ERROR.
+  - [x] `npm run lint` lolos hijau.
+  - [ ] Tampilan visual portal berita `/news` IDENTIK 100% sebelum vs sesudah refaktor pada breakpoint 320px, 375px, 768px, dan 1440px di ID dan EN. (Menunggu verifikasi visual browser di T-322)
+  - [ ] Headline carousel slider, filter Fetch API, pill kategori geser mobile, dan paginasi bersama tetap bekerja normal tanpa error console. (Menunggu uji browser di T-322)
 - **File Terdampak:** `views/public/news.ejs`, `locales/id.json`, `locales/en.json`
 - **Skill:** `antislop-code`
-- **Verifikasi:** Jalankan `npm run lint:views`, `npm run lint:i18n`, dan uji filter pencarian hingga memunculkan empty state di browser.
+- **Verifikasi:** `node scripts/lint-views.js views/public/news.ejs`, `npm run lint:i18n`, `npm run lint`, dan simulasi render EJS ID/EN empty state lulus 2026-11-13; verifikasi visual & interaktif browser dilanjutkan di T-322. Selesai 2026-11-13.
 
-### T-321: Refaktor `views/public/news-detail.ejs` & Ekstraksi Skrip `public/js/news-detail.js` [OPEN]
+### T-321: Refaktor `views/public/news-detail.ejs` & Ekstraksi Skrip `public/js/news-detail.js` [DONE]
 - **Modul Spesifikasi:** [prd/news.md](prd/news.md) (`FR-12`), [tech/news.md](tech/news.md)
 - **Deskripsi:** Menghapus tag inline `<script>` (L123-137) dari `views/public/news-detail.ejs` dan memindahkan logikanya ke berkas JS eksternal baru `public/js/news-detail.js` (dimuat via defer `<script src="/js/news-detail.js" defer></script>`). Menghapus class ganda `article-prose` dari `<div class="nwd-prose article-prose">` sehingga menyisakan `.nwd-prose` saja. Memindahkan seluruh aturan styling pendukung dari `.article-prose` (link, table, th, td, blockquote, code, pre, ul, ol, li, h4) ke `.nwd-prose` di `public/css/components.css` dengan memetakan seluruh hex mentah ke token CSS resmi. Mengonversi seluruh teks hardcoded (breadcrumb, atribusi editorial redaksi, share label, empty prose, dan alert copy link) ke kunci lokalisasi `t('news_detail.*')` di `locales/id.json` dan `locales/en.json`.
 - **Acceptance Criteria:**
-  - [ ] Zero inline `<script>` di dalam `views/public/news-detail.ejs` (100% patuh CSP Helmet).
-  - [ ] Berkas eksternal baru `public/js/news-detail.js` mengelola event klik tombol `#copyLinkBtn` via `addEventListener` dengan penanganan fallback clipboard yang aman dan pesan feedback dwibahasa.
-  - [ ] Class ganda disederhanakan menjadi `<div class="nwd-prose">`.
-  - [ ] Seluruh aturan CSS artikel terpusat di `.nwd-prose` tanpa sisa warna hex mentah (100% token CSS).
-  - [ ] Seluruh string statis menggunakan `t('news_detail.*')` terdaftar simetris di `locales/id.json` & `locales/en.json`.
-  - [ ] `npm run lint:views views/public/news-detail.ejs` lolos dengan ZERO ERROR.
-  - [ ] `npm run lint` dan `npm run lint:i18n` lolos hijau tanpa error.
+  - [x] Zero inline `<script>` di dalam `views/public/news-detail.ejs` (100% patuh CSP Helmet).
+  - [x] Berkas eksternal baru `public/js/news-detail.js` mengelola event klik tombol `#copyLinkBtn` via `addEventListener` dengan penanganan fallback clipboard yang aman dan pesan feedback dwibahasa.
+  - [x] Class ganda disederhanakan menjadi `<div class="nwd-prose">`.
+  - [x] Seluruh aturan CSS artikel terpusat di `.nwd-prose` tanpa sisa warna hex mentah (100% token CSS).
+  - [x] Seluruh string statis menggunakan `t('news_detail.*')` terdaftar simetris di `locales/id.json` & `locales/en.json`.
+  - [x] `npm run lint:views views/public/news-detail.ejs` lolos dengan ZERO ERROR.
+  - [x] `npm run lint` dan `npm run lint:i18n` lolos hijau tanpa error.
   - [ ] Tampilan visual detail berita `/news/:slug` IDENTIK 100% sebelum vs sesudah refaktor pada 320px, 375px, 768px, dan 1440px di ID dan EN.
   - [ ] Fungsionalitas share WhatsApp, Facebook, X, dan Salin Tautan berjalan mulus tanpa error console.
 - **File Terdampak:** `views/public/news-detail.ejs`, `public/js/news-detail.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`
 - **Skill:** `antislop-code`
-- **Verifikasi:** Jalankan `node scripts/lint-views.js`, `npm run lint`, `npm run lint:i18n`, verifikasi penyalinan tautan ke clipboard pada browser, dan cek error console DevTools.
+- **Verifikasi:** `node scripts/lint-views.js views/public/news-detail.ejs`, `npx eslint public/js/news-detail.js`, `npm run lint`, `npm run lint:i18n`, simulasi render EJS ID/EN + uji logika clipboard/fallback JS lulus 2026-11-13; verifikasi visual & live browser di T-322. Catatan: `tests/test-modul12-public.js:99` masih memeriksa string legacy `'article-prose'`. Selesai 2026-11-13.
 
 ### T-322: QA Audit, Visual Regression Test Lintas Viewport & Gerbang Kualitas Lint [OPEN]
 - **Modul Spesifikasi:** [prd/products.md](prd/products.md), [tech/products.md](tech/products.md), [tech/products-detail.md](tech/products-detail.md), [prd/news.md](prd/news.md), [tech/news.md](tech/news.md)

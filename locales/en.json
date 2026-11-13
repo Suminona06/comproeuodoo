@@ -112,6 +112,8 @@
     "page_subtitle": "Plant operational news, environmental initiatives, and quality certifications from PT Euodoo.",
     "published_on": "Published on",
     "empty_posts": "No recent article publications available at this time.",
+    "empty_desc": "No articles match your selected filter criteria.",
+    "empty_reset": "View All Publications",
     "back_to_news": "Back to Publications",
     "headline_title_berita": "News",
     "headline_title_pers": "Press Releases",
@@ -209,5 +211,17 @@
     "next": "Next page",
     "last": "Last page",
     "go_to_page": "Go to page"
+  },
+  "news_detail": {
+    "breadcrumb_aria": "Breadcrumb",
+    "breadcrumb_home": "Home",
+    "breadcrumb_news": "News",
+    "author": "By PT Euodoo Editorial Team",
+    "empty_prose": "The full content of this article is currently being updated by the editorial team.",
+    "share_label": "Share :",
+    "copy_aria": "Copy article link",
+    "copy_title": "Copy link",
+    "copy_success": "Article link copied to clipboard!",
+    "related_title": "Read Other News"
   }
 }

@@ -112,6 +112,8 @@
     "page_subtitle": "Informasi operasional pabrik, perkembangan sertifikasi, dan inisiatif ramah lingkungan PT Euodoo.",
     "published_on": "Diterbitkan pada",
     "empty_posts": "Belum ada artikel publikasi yang diterbitkan saat ini.",
+    "empty_desc": "Tidak ditemukan artikel atau publikasi yang cocok dengan kriteria filter yang Anda pilih.",
+    "empty_reset": "Lihat Semua Publikasi",
     "back_to_news": "Kembali ke Daftar Publikasi",
     "headline_title_berita": "Berita",
     "headline_title_pers": "Siaran Pers",
@@ -209,5 +211,17 @@
     "next": "Halaman berikutnya",
     "last": "Halaman terakhir",
     "go_to_page": "Lompat ke halaman"
+  },
+  "news_detail": {
+    "breadcrumb_aria": "Breadcrumb",
+    "breadcrumb_home": "Beranda",
+    "breadcrumb_news": "Berita",
+    "author": "Oleh Redaksi PT Euodoo",
+    "empty_prose": "Konten lengkap artikel ini sedang dalam proses pembaruan oleh redaksi PT Euodoo.",
+    "share_label": "Bagikan :",
+    "copy_aria": "Salin tautan artikel",
+    "copy_title": "Salin tautan",
+    "copy_success": "Tautan artikel berhasil disalin!",
+    "related_title": "Baca Berita Lainnya"
   }
 }
