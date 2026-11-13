@@ -6,11 +6,13 @@ console.log('Testing T-266: Public Pages Dropdown Migration (PLP Sort & Contact 
 
 // 1. Static Audit of Public Views
 const prodView = fs.readFileSync('views/public/products.ejs', 'utf8');
+const prodToolbarView = fs.readFileSync('views/partials/products/toolbar.ejs', 'utf8');
 const contactView = fs.readFileSync('views/public/contact.ejs', 'utf8');
 const footerView = fs.readFileSync('views/partials/footer.ejs', 'utf8');
 
-assert(prodView.includes('data-eu-dropdown="elevated"'), 'products.ejs must declare data-eu-dropdown="elevated"');
-assert(prodView.includes('data-prefix="'), 'products.ejs must declare data-prefix for sort select');
+assert(prodView.includes('partials/products/toolbar'), 'products.ejs must include partials/products/toolbar');
+assert(prodToolbarView.includes('data-eu-dropdown="elevated"'), 'toolbar.ejs must declare data-eu-dropdown="elevated"');
+assert(prodToolbarView.includes('data-prefix="'), 'toolbar.ejs must declare data-prefix for sort select');
 assert(contactView.includes('id="product_id" name="product_id" class="cf-select" data-eu-dropdown="outlined"'), 'contact.ejs #product_id must declare data-eu-dropdown="outlined"');
 assert(contactView.includes('id="inquiry_type" name="type" class="cf-select" data-eu-dropdown="outlined"'), 'contact.ejs #inquiry_type must declare data-eu-dropdown="outlined"');
 assert(footerView.includes('admin-dropdown.js'), 'footer.ejs must include admin-dropdown.js');
