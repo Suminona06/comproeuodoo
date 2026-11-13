@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task) & ringkasan 317 task selesai.
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task) & ringkasan 322 task selesai.
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -17,10 +17,10 @@
 | **Public About** | ACTIVE | 2026-11-12 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs` |
 | **Public About Story & Timeline** | ACTIVE | 2026-11-12 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-timeline.md](tech/public-about-timeline.md) | `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `public/js/about-story.js` |
 | **Public About Ticket Accordion** | ACTIVE | 2026-11-07 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |
-| **Products Catalog** | ACTIVE | 2026-10-31 | [prd/products.md](prd/products.md) | [tech/products.md](tech/products.md) | `views/public/products.ejs` |
-| **Products Detail** | ACTIVE | 2026-10-31 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs` |
+| **Products Catalog** | ACTIVE | 2026-11-13 | [prd/products.md](prd/products.md) | [tech/products.md](tech/products.md) | `views/public/products.ejs` |
+| **Products Detail** | ACTIVE | 2026-11-13 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs` |
 | **Manufacturing Capabilities** | ACTIVE | 2026-10-21 | [prd/capabilities.md](prd/capabilities.md) | [tech/capabilities.md](tech/capabilities.md) | `views/public/capabilities.ejs` |
-| **News & Articles** | ACTIVE | 2026-11-11 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs` |
+| **News & Articles** | ACTIVE | 2026-11-13 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs` |
 | **Contact, Footer & WA** | ACTIVE | 2026-11-10 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs` |
 | **Admin CMS & Users** | ACTIVE | 2026-11-10 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
 | **Admin UI, Buttons, Pagination & Validation** | ACTIVE | 2026-11-11 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin.css`, `public/js/pagination.js`, `public/js/admin-form-validation.js` |

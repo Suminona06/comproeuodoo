@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-11 | Kode: controllers/public/postController.js, controllers/admin/postController.js, models/slugRedirectModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-13 | Kode: controllers/public/postController.js, controllers/admin/postController.js, models/slugRedirectModel.js
 
 # Tech Spec: Modul Berita & Publikasi (News & Articles)
 
@@ -58,7 +58,7 @@ Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyM
   8. Seksi bagikan `.nwd-share` dengan 4 tombol sirkular (WhatsApp, Facebook, X, Salin Tautan) berbasis token hijau Euodoo (`var(--color-surface-container)` hover `var(--color-primary)`).
   9. Seksi rekomendasi artikel terkait `.nwd-related-sec` kontainer lebih lebar berlatar `var(--bg-subtle)`, 3 kartu terbaru selain artikel aktif (sembunyi bila kosong).
   10. Seluruh elemen G1 yang tidak ada di G2 dihapus dari tampilan publik.
-  11. **Pembersihan Skrip Eksternal & Unifikasi Class `.nwd-prose` [PENDING T-321]:** Tag inline `<script>` dihapus tuntas; logika tombol `#copyLinkBtn` dipindahkan ke berkas eksternal baru `public/js/news-detail.js` (dimuat via defer `<script src="/js/news-detail.js" defer></script>`). Class ganda disederhanakan menjadi `<div class="nwd-prose">`; seluruh aturan CSS pelengkap (`a`, `table`, `th`, `td`, `code`, `pre`, `ul`, `ol`, `li`, `h4`) dari `.article-prose` dimigrasikan ke `.nwd-prose` di `public/css/components.css` dengan token resmi tanpa sisa warna hex mentah. Seluruh teks statis dikonversi ke `t('news_detail.*')`.
+  11. **Pembersihan Skrip Eksternal & Unifikasi Class `.nwd-prose`:** Tag inline `<script>` dihapus tuntas; logika tombol `#copyLinkBtn` dipindahkan ke berkas eksternal baru `public/js/news-detail.js` (dimuat via defer `<script src="/js/news-detail.js" defer></script>`). Class ganda disederhanakan menjadi `<div class="nwd-prose">`; seluruh aturan CSS pelengkap (`a`, `table`, `th`, `td`, `code`, `pre`, `ul`, `ol`, `li`, `h4`) dari `.article-prose` dimigrasikan ke `.nwd-prose` di `public/css/components.css` dengan token resmi tanpa sisa warna hex mentah. Seluruh teks statis dikonversi ke `t('news_detail.*')`.
 
 ---
 
@@ -67,7 +67,7 @@ Modul Berita mengelola artikel publikasi korporat melalui integrasi editor TinyM
   - Di bawah `.page-hero` (tetap berlatar gambar/gelap), halaman `/news` dipecah menjadi 2 `<section>` semantik dan diekstraksi ke partial modular (`views/partials/news/headline-section.ejs` dan `views/partials/news/filter-bar.ejs`, masing-masing `<= 100` baris tanpa `style="..."` maupun `<script>` inline):
     1. `.nwl-sec-headline#nwlHeadlineSec`: memakai `background-color: var(--bg-soft-green)`.
     2. `.nwl-sec-directory`: memakai `background-color: var(--bg-subtle)` dengan pseudo-element `::before` gradasi tepi pendek (`height: 48px` pada `< 768px`, `height: 80px` pada `>= 768px`) memakai `var(--trans-soft-green-to-subtle)` (atau fallback `var(--bg-soft-green)` bila tidak ada artikel headline di database).
-  - **Lokalisasi Empty State [PENDING T-320]:** Teks empty state dan tombol reset pada `views/public/news.ejs` menggunakan helper lokalisasi `t('news.empty_desc')` dan `t('news.empty_reset')` terdaftar simetris di ID dan EN.
+  - **Lokalisasi Empty State:** Teks empty state dan tombol reset pada `views/public/news.ejs` menggunakan helper lokalisasi `t('news.empty_desc')` dan `t('news.empty_reset')` terdaftar simetris di ID dan EN.
 - **Shared Card Component (`.nwl-card` / `.nwd-card`):** Satu komponen terpadu untuk grid `/news` dan related `/news/:slug`. Permukaan `var(--color-surface)` dengan border `1px solid var(--color-border)` dan elevasi `var(--shadow-level-1)` agar kontras di atas kedua latar, gambar 16:9 rounded (`var(--r-xl)`), tanggal kecil (`var(--color-text-muted)`), judul tebal line-clamp 3 baris, link hijau "Baca Selengkapnya" (`var(--color-primary)`), min target 44px. Grid: 3 col desktop (>=1024px), 2 col tablet (640-1023px), 1 col mobile (<640px).
 - **Isolasi Class:** Prefix scoped `.nwl-*` (listing) dan `.nwd-*` (detail). Homepage (`views/public/index.ejs`) dibekukan. Class lama `.news-card-v2` dialiaskan ke `.nwl-card` demi kompatibilitas `tests/test-modul12-public.js`.
 
