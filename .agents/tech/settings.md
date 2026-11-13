@@ -19,7 +19,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ## 3. Skema Data Terkait
 
 ### Tabel `settings`
-*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`
+*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql` `[PENDING T-323]`
 
 | Kolom | Tipe | Nullable | Default | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
@@ -57,7 +57,10 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 
 ### E. SEO Fallback Global
 - `meta_title_id`, `meta_title_en`: Judul fallback global.
-- `meta_description_id`, `meta_description_en`: Deskripsi fallback global.
+- `meta_description_id`, `meta_description_en`: Deskripsi fallback global (`<head>` saja; terpisah dari `footer_desc_*`).
+
+### F. Konten Footer Publik `[PENDING T-323]`
+- `footer_desc_id`, `footer_desc_en`, `footer_nav_links_json`: Dikelola via kartu CMS footer pada [tech/settings-footer.md](settings-footer.md).
 
 ---
 
@@ -67,17 +70,15 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 
 ---
 
-## 6. Penanganan Controller & Validasi Server-Side (`settingController.update`)
+## 6. Penanganan Controller & Service (`settingController` & `settingService.js`)
+- **Ekstraksi Service `[PENDING T-323]`:** Logika validasi payload, whitelist URL, dan penyimpanan diekstrak ke `services/settingService.js` agar `settingController.js` dan `settingService.js` masing-masing `<= 300` baris dengan fungsi `<= 40` baris (detail validasi footer pada [tech/settings-footer.md](settings-footer.md)).
 - **Validasi Toggle Switch Visibilitas:** Nilai `office_card_visible` dan `factory_card_visible` dipaksa ke format biner string `'1'` atau `'0'`.
 - **Validasi Skema JSON Multi-Nomor WhatsApp:**
   1. Parsing aman payload JSON `whatsapp_numbers_json`.
   2. Setiap baris wajib memiliki `number` (hanya karakter angka dan simbol plus dengan panjang 9-16 digit), `label` (string internal yang ditrim dan disanitasi dari tag HTML, maks 50 karakter), dan `percentage` (integer 1-100).
   3. Validasi akumulasi matematis: $\sum \text{percentage} === 100$. Jika tidak sama dengan 100, lempar error validasi dan batalkan penyimpanan.
   4. Fallback transparan: Jika payload tidak disertakan / kosong, nilai legacy `whatsapp_number` tetap dipertahankan.
-- **Pipeline Generator Multi-Ukuran Favicon (`generateFaviconSet`):**
-  1. Disediakan fungsi `generateFaviconSet(sourcePath)` di `middleware/uploadMiddleware.js` berbasis Sharp menggunakan latar transparan murni tanpa background putih dengan penskalaan proporsional terpusat, menjaga proporsi asli simbol tanpa distorsi atau peregangan ("tidak ketarik") pada kanvas persegi `16x16`, `32x32`, `180x180`, `192x192`, dan `512x512` PNG di `public/uploads/settings/`, serta sinkronisasi fallback root `/favicon.ico`.
-  2. Saat pengaturan disimpan di `settingController.update`, jika `site_favicon` diisi/diunggah, `generateFaviconSet` memproses sumber `site_favicon`; jika `site_favicon` dikosongkan, sistem otomatis menjalankan fallback dari `site_logo_header` / `site_logo` dan menyimpan path turunan ke `site_favicon_16`, `site_favicon_32`, `site_favicon_180`, `site_favicon_192`, serta `site_favicon_512`.
-  3. Seluruh layout publik dan admin (`views/partials/head.ejs`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, dan `views/admin/403.ejs`) merender tag `<link rel="icon" type="image/png" sizes="32x32">`, `<link rel="icon" type="image/png" sizes="16x16">`, `<link rel="apple-touch-icon" sizes="180x180">`, dan `<link rel="icon" type="image/png" sizes="192x192">`.
+- **Pipeline Generator Multi-Ukuran Favicon (`generateFaviconSet`):** Dipecah ke sub-modul [tech/settings-assets.md](settings-assets.md) (Sharp transparan 16/32/180/192/512 PNG & fallback `/favicon.ico`).
 - **Cache Invalidation:** Memanggil `clearSettingsCache()` untuk membersihkan memory cache segera setelah update berhasil dieksekusi.
 
 ---
@@ -90,6 +91,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
   3. `dual-location-card.ejs`: Alamat dual lokasi (Kantor Jakarta & Pabrik Bandung) serta embed Google Maps dengan placeholder aman (panjang <= 100 baris).
   4. `whatsapp-service-card.ejs`: Nomor resmi, tema tombol floating, salam pembuka, dan repeater rotasi multi-nomor (panjang <= 100 baris).
   5. `social-media-card.ejs`: Akun LinkedIn, Instagram, Facebook, dan YouTube serta toggle visibilitas (panjang <= 100 baris).
+  6. `footer-content-card.ejs` `[PENDING T-324]`: Deskripsi footer dwibahasa (`<= 350` char) dan repeater 0–4 menu kanan footer (spesifikasi detail pada [tech/settings-footer.md](settings-footer.md)).
 - **Isolasi Class & Token:**
   - Seluruh penataan tata letak khusus settings menggunakan class berprefix unik `.stg-*` yang diisolasi pada `public/css/admin.css` (tanpa mengubah class bersama `.form-card`, `.form-group`, `.form-row-2`).
   - Dilarang keras menggunakan style inline dan warna hex mentah; seluruh styling merujuk ke token desain CSS resmi (`var(--bg-subtle)`, `var(--color-border)`, `var(--color-primary-dark)`, `var(--surface-dark-deep)`, `var(--color-leaf)`).

@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task) & ringkasan 322 task selesai.
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (5 Task: T-323 s/d T-327) & ringkasan 322 task selesai.
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -21,13 +21,17 @@
 | **Products Detail** | ACTIVE | 2026-11-13 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs` |
 | **Manufacturing Capabilities** | ACTIVE | 2026-10-21 | [prd/capabilities.md](prd/capabilities.md) | [tech/capabilities.md](tech/capabilities.md) | `views/public/capabilities.ejs` |
 | **News & Articles** | ACTIVE | 2026-11-13 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs` |
+| **News Detail** | ACTIVE | 2026-11-13 | [prd/news-detail.md](prd/news-detail.md) | [tech/news-detail.md](tech/news-detail.md) | `views/public/news-detail.ejs`, `public/js/news-detail.js` |
 | **Contact, Footer & WA** | ACTIVE | 2026-11-10 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs` |
+| **Public Footer** | ACTIVE | 2026-10-30 | [prd/footer.md](prd/footer.md) | [tech/footer.md](tech/footer.md) | `views/partials/footer.ejs`, `public/css/layout.css` |
 | **Admin CMS & Users** | ACTIVE | 2026-11-10 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
 | **Admin UI, Buttons, Pagination & Validation** | ACTIVE | 2026-11-11 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin.css`, `public/js/pagination.js`, `public/js/admin-form-validation.js` |
 | **Admin UI Dropdown Component** | ACTIVE | 2026-11-03 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui-dropdown.md](tech/admin-ui-dropdown.md) | `public/css/admin.css`, `public/js/admin-dropdown.js` |
 | **Media Library** | ACTIVE | 2026-10-30 | [prd/media-library.md](prd/media-library.md) | [tech/media-library.md](tech/media-library.md) | `views/admin/media/` |
 | **SEO & Security** | ACTIVE | 2026-10-21 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
 | **Site Settings** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
+| **Site Settings Footer** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings-footer.md](tech/settings-footer.md) | `services/settingService.js`, `views/admin/settings/partials/footer-content-card.ejs`, `public/js/admin-settings.js` |
+| **Site Settings Branding Assets** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings-assets.md](tech/settings-assets.md) | `middleware/uploadMiddleware.js`, `views/admin/settings/partials/visual-identity-card.ejs` |
 | **Code Conventions & Standards** | ACTIVE | 2026-11-10 | - | [tech/conventions.md](tech/conventions.md) | `eslint.config.js`, `scripts/lint-*.js` |
 
 ## 3. Direktori Pendukung

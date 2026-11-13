@@ -3,58 +3,38 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-11-13 | Kode: controllers/public/po
 # PRD: Modul Berita & Publikasi (News & Articles)
 
 ## 1. Ringkasan & Ruang Lingkup
-Modul Berita mengelola publikasi konten editorial perusahaan yang mencakup berita terkini, siaran pers resmi, pembaruan kepatuhan regulasi lingkungan, dan artikel edukasi material plastik mudah terurai.
+Modul Berita mengelola publikasi konten editorial perusahaan (berita terkini, siaran pers resmi, artikel blog material plastik mudah terurai) pada portal `/news` dan CMS `/admin/posts`. Spesifikasi halaman detail artikel (`/news/:slug`) berada pada sub-modul [prd/news-detail.md](news-detail.md).
 
 ---
 
 ## 2. Functional Requirements
 
-### FR-12: Tampilan Halaman News Publik & Detail Artikel
-- Sistem merender portal berita di `/news` dan detail artikel di `/news/:slug`.
-- Area konten `/news` di bawah `.page-hero` dipisahkan menjadi dua `<section>` mandiri dengan latar selang-seling (`FR-26`):
+### FR-12: Tampilan Halaman Portal Berita Publik (`/news`)
+- Sistem merender portal berita di `/news` dengan dua `<section>` mandiri berlatar selang-seling di bawah `.page-hero` (`FR-26`):
   1. **Section Headline (`.nwl-sec-headline`, `FR-24`, `FR-29`):** Berlatar `var(--bg-soft-green)`, menampilkan judul dinamis sesuai jenis artikel slide aktif (`berita`, `pers`, `blog`) dan Headline Carousel Slider interaktif.
   2. **Section Direktori Artikel (`.nwl-sec-directory`, `FR-25`, `FR-27`, `FR-28`):** Berlatar `var(--bg-subtle)` dengan gradasi transisi tepi halus (`48px` mobile, `80px` desktop) dari Section Headline, memuat Tab Navigasi Tipe Publikasi, Baris Pill Kategori Geser Horizontal di Mobile, Form Pencarian Artikel, Grid Kartu Berita Bersama (`limit = 9` per halaman), serta Komponen Paginasi Bersama (`.pgn-bar--public`).
-- Halaman detail artikel `/news/:slug`:
-  1. Breadcrumb unboxed mandiri sejajar kolom artikel dengan pemisah chevron CSS (Home > News > Judul).
-  2. Gambar sampul utama sudut membulat token selebar kolom artikel berasio tetap tanpa kotak pembungkus gelap.
-  3. Tanggal publikasi abu-abu netral.
-  4. H1 Judul artikel tebal kontras tinggi.
-  5. Atribusi teks redaksi bersih: "Oleh Redaksi PT Euodoo" (ID) / "By PT Euodoo Editorial Team" (EN) tanpa avatar dan tanpa divisi.
-  6. Isi konten artikel HTML TinyMCE langsung di atas kanvas halaman tanpa kartu pembungkus (tanpa border, tanpa shadow).
-  7. Garis pemisah horizontal halus.
-  8. Seksi bagikan dengan label "Bagikan:" / "Share :" dan 4 tombol aksi sirkular (WhatsApp, Facebook, X, Salin Tautan) berbasis token hijau Euodoo.
-  9. Seksi "Baca Berita Lainnya" berkontainer lebih lebar dengan latar abu-abu muda token (`var(--bg-subtle)`), menampilkan maksimal 3 kartu artikel terbaru selain artikel yang sedang dibaca (disembunyikan bila kosong).
-  10. Seluruh elemen G1 yang tidak ada di G2 dihapus dari tampilan publik detail artikel.
-  11. **Modularitas & Pembersihan View:** Teks empty state dan reset pada `/news` menggunakan `t('news.empty_desc')` dan `t('news.empty_reset')`. Detail artikel `/news/:slug` 100% bebas dari inline script (dikelola oleh `public/js/news-detail.js`), menggunakan class semantik tunggal `.nwd-prose`, dan seluruh teks statis dialihkan ke `t('news_detail.*')`.
+- Teks empty state dan reset pada `/news` menggunakan `t('news.empty_desc')` dan `t('news.empty_reset')`.
+- Untuk spesifikasi lengkap tampilan detail artikel (`/news/:slug`), tombol bagikan, serta SweetAlert2 Toast salin tautan (`FR-30 [PENDING T-326]`), lihat [prd/news-detail.md](news-detail.md).
 
 ### FR-13: Pengelolaan Artikel di CMS (CRUD)
 - Admin dan Editor dapat membuat, membaca, mengedit, dan menghapus artikel di menu `/admin/posts`.
 - Status artikel: `draft` (tersimpan belum publik), `published` (aktif tayang), `archived` (diarsipkan dari publik).
-- Rich Text Editor TinyMCE: integrasi editor visual self-hosted dengan toolbar pemformatan lengkap, embedding tabel, kutipan, dan pengunggahan gambar langsung di dalam teks.
+- Rich Text Editor TinyMCE: editor visual self-hosted dengan toolbar pemformatan lengkap, embedding tabel, kutipan, dan unggah gambar di dalam teks.
 - Pengunggahan gambar sampul mandiri dengan kompresi WebP otomatis.
-- **Custom Slug & Redirect 301 Otomatis:** Admin dapat menyesuaikan URL slug artikel. Jika slug yang sudah terpublikasi diubah, sistem secara otomatis mencatat riwayat ke tabel `slug_redirects` dan menjalankan HTTP 301 Permanent Redirect dari slug lama ke slug baru untuk menjaga SEO rank.
+- **Custom Slug & Redirect 301 Otomatis:** Admin dapat menyesuaikan URL slug artikel. Perubahan slug artikel `published` otomatis dicatat ke tabel `slug_redirects` untuk menjalankan HTTP 301 Permanent Redirect dari slug lama ke baru.
 
 ### FR-24 & FR-29: Headline Slider & Judul Dinamis Mengikuti Slide Aktif
-- Seksi headline pada `/news` menggunakan komposisi asimetris 2 kolom di desktop (mengacu G3) dan tumpukan vertikal berpusat kontrol di mobile:
-  - **Desktop (1440x900):** Ketinggian maksimal ~setengah viewport (~420-450px). Sisi kiri gambar rounded 16:9 ber-radius token (`var(--r-2xl)`), sisi kanan tanggal, judul headline tebal, ringkasan (2-3 baris), dan tautan "Baca Selengkapnya →". Indikator garis di kiri bawah dan tombol panah melingkar di kanan bawah.
-  - **Mobile (<768px):** Judul dinamis `.nwl-headline-sec-title`, gambar rounded 16:9, tanggal terbit, judul headline, ringkasan, tautan "Baca Selengkapnya →", indikator garis horizontal di posisi tengah, dan tombol panah sirkular di tengah bawah.
+- Komposisi asimetris 2 kolom di desktop (`1440x900`, tinggi maksimal ~420-450px: gambar 16:9 `var(--r-2xl)` di kiri, tanggal, judul tebal, ringkasan 2-3 baris, tautan "Baca Selengkapnya", indikator garis kiri bawah, panah sirkular kanan bawah) dan tumpukan vertikal terpusat di mobile (`<768px`).
 - **Perilaku Data & Judul Dinamis per Slide (`FR-29`):**
-  - Slider headline selalu menampilkan artikel terpublikasi dengan `is_headline = 1` dan **tidak terpengaruh** oleh filter tab tipe, kategori, maupun pencarian pada direktori di bawahnya.
-  - Judul `.nwl-headline-sec-title` (beserta `aria-label` pada `#nwlHeadlineSec`) menampilkan salah satu dari 3 jenis publikasi sesuai atribut `type` artikel pada **slide yang sedang tampil/aktif** (tidak pernah menampilkan `"Semua Publikasi"`):
-    - `berita`: **"Berita"** (ID) / **"News"** (EN)
-    - `pers`: **"Siaran Pers"** (ID) / **"Press Releases"** (EN)
-    - `blog`: **"Blog"** (ID) / **"Blog"** (EN)
-  - Saat halaman dimuat (SSR), `.nwl-headline-sec-title` menampilkan jenis dari slide pertama (`headlinePosts[0].type`). Setiap kali slide berganti (via tombol panah, indikator garis, swipe sentuh, atau autoplay 6 detik), judul `.nwl-headline-sec-title` otomatis berganti mengikuti `type` slide yang aktif.
-  - Jika 1 headline: tampil statis tanpa kontrol navigasi dan tanpa indikator garis. Jika > 1 headline: autoplay bergulir setiap 6 detik, otomatis pause saat hover/fokus keyboard, mati saat `prefers-reduced-motion` aktif.
+  - Slider selalu menampilkan artikel `published` dengan `is_headline = 1` dan tidak terpengaruh filter direktori di bawahnya.
+  - `.nwl-headline-sec-title` dan `aria-label` `#nwlHeadlineSec` menampilkan salah satu label jenis sesuai atribut `type` pada **slide yang sedang aktif** (tidak pernah `"Semua Publikasi"`): `berita` (**"Berita"** / **"News"**), `pers` (**"Siaran Pers"** / **"Press Releases"**), `blog` (**"Blog"** / **"Blog"**).
+  - Saat SSR awal, menampilkan jenis `headlinePosts[0].type`; saat slide berpindah (panah, indikator garis, swipe sentuh, atau autoplay 6 detik), judul langsung ikut berubah.
+  - 1 headline: statis tanpa kontrol; > 1 headline: autoplay 6 detik, pause saat hover/fokus keyboard, mati saat `prefers-reduced-motion` aktif.
 
 ### FR-25, FR-27, & FR-28: Filter Fetch API, Kategori Geser Mobile, & Paginasi Bersama
-- **Tab Tipe & Filter Fetch API (`FR-25`):** Tab navigasi tipe konten bergaya G4 dengan garis bawah aktif hijau token (`var(--color-primary)`). Pergantian tipe konten, kategori topik, pencarian, dan halaman mengeksekusi `fetch()` ke `/news` tanpa reload halaman (mereset ke halaman 1 saat filter/pencarian berubah), menyinkronkan URL via `window.history.pushState` & `popstate`, menjaga canonical URL, menyediakan hyperlink SSR nyata untuk SEO, serta menerapkan validasi whitelist ketat di server.
-- **Baris Pill Kategori Geser Horizontal di Mobile (`FR-27`, `.nwl-cat-pills`):** Pada viewport mobile (`< 768px`), `.nwl-cat-pills` ditampilkan dalam **satu baris horizontal yang digeser ke samping** (`overflow-x: auto`, `flex-wrap: nowrap`, `scroll-snap-type: x proximity`) sepola dengan `.nwl-tab-bar`, tanpa scrollbar kasar (`scrollbar-width: none`), dilengkapi petunjuk visual geser, target sentuh minimal `44x44px`, fokus keyboard jelas, serta otomatis menggulirkan pill aktif ke layar (`scrollIntoView`) saat halaman dimuat atau kategori dipilih. Form pencarian (`.nwl-search-form`) berada tepat di bawah baris pill dengan lebar 100%.
-- **Paginasi Bersama Publik (`FR-28`, `.pgn-bar--public`):**
-  - Menggunakan komponen bersama `views/partials/pagination.ejs` dengan batas `9` artikel per halaman (`limit = 9`). Bar paginasi publik menyatu langsung dengan latar belakang section (tanpa card putih pembungkus luar) dan **selalu ditampilkan** selama ada artikel (`totalPosts > 0`), termasuk saat `totalPages === 1` dengan tombol navigasi berstatus `disabled`.
-  - **Desktop (`>= 768px`):** Menampilkan kontrol navigasi (`«`, `‹`), deret nomor halaman dengan elipsis (`...`), dan kontrol navigasi (`›`, `»`).
-  - **Mobile (`< 768px`):** Nomor halaman disembunyikan; hanya menampilkan 4 tombol ikon persegi membulat (`[ « ]` Halaman Pertama, `[ ‹ ]` Halaman Sebelumnya, `[ › ]` Halaman Berikutnya, `[ » ]` Halaman Terakhir, ukuran minimal `44x44px`) yang mengapit indikator ringkas `1 / 2` (`currentPage / totalPages`) di tengah.
-  - Seluruh atribut `aria-label` nav dan tombol terlokalisasi penuh dalam ID & EN (`t('pagination.*')`), serta halaman aktif menyandang `aria-current="page"`.
+- **Tab Tipe & Filter Fetch API (`FR-25`):** Tab navigasi tipe konten bergaya G4 dengan garis bawah aktif hijau token (`var(--color-primary)`). Pergantian tipe konten, kategori, pencarian, dan halaman mengeksekusi `fetch()` ke `/news` tanpa reload (reset ke halaman 1 saat filter/cari berubah), menyinkronkan URL via `window.history.pushState` & `popstate`, mempertahankan hyperlink SSR nyata untuk SEO, serta validasi whitelist ketat di server.
+- **Baris Pill Kategori Geser Horizontal di Mobile (`FR-27`, `.nwl-cat-pills`):** Pada viewport `< 768px`, ditampilkan dalam 1 baris geser horizontal (`overflow-x: auto`, `flex-wrap: nowrap`, `scroll-snap-type: x proximity`, `scrollbar-width: none`) dengan target sentuh minimal `44x44px`, fokus keyboard jelas, dan auto-scroll pill aktif (`scrollIntoView`). `.nwl-search-form` berada di bawah baris pill selebar 100%.
+- **Paginasi Bersama Publik (`FR-28`, `.pgn-bar--public`):** Komponen `views/partials/pagination.ejs` (`limit = 9`), menyatu langsung dengan latar section tanpa card luar, selalu tampil selama `totalPosts > 0` (tombol `disabled` bila `totalPages === 1`). Desktop (`>= 768px`) menampilkan `«`, `‹`, deret nomor + `...`, `›`, `»`; Mobile (`< 768px`) menampilkan 4 tombol ikon `>= 44x44px` mengapit indikator `currentPage / totalPages`. Atribut `aria-label` memakai `t('pagination.*')` dan halaman aktif `aria-current="page"`.
 
 ---
 
@@ -62,14 +42,12 @@ Modul Berita mengelola publikasi konten editorial perusahaan yang mencakup berit
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
-| **Pemecahan 2 Section Berlatar Selang-Seling `--bg-soft-green` & `--bg-subtle`** | Memisahkan secara visual area Headline utama dan Direktori pencarian dengan transisi gradasi tepi halus tanpa menyentuh Homepage. | 2026-11-10 |
-| **Judul Headline Mengikuti Tipe Artikel pada Slide Aktif** | Menjaga slider headline tetap menayangkan seluruh berita utama (`is_headline = 1`) sembari menampilkan label jenis berita (`Berita`, `Siaran Pers`, `Blog`) yang akurat untuk slide yang sedang dilihat. | 2026-11-10 |
-| **Filter Kategori 1 Baris Geser & Unifikasi Paginasi `.pgn-*`** | Menghemat ruang vertikal di layar mobile serta menyatukan komponen paginasi publik dan admin dengan tampilan mobile ringkas (`« ‹ 1/2 › »`). | 2026-11-10 |
-| **Integrasi Editor TinyMCE Self-Hosted** | Menghindari ketergantungan API key cloud berbayar dan menjamin stabilitas pemformatan artikel teknis. | 2026-10-06 |
-| **Sistem Redirect 301 Otomatis pada Perubahan Slug** | Mencegah broken link (error 404) dan menjaga integritas backlink mesin pencari saat editor memperbaiki judul URL artikel. | 2026-10-06 |
-| **3 Tab Kategori Berita Terstruktur** | Memisahkan komunikasi korporat resmi (press release) dari artikel edukatif industri untuk kenyamanan pembaca. | 2026-10-09 |
-| **Detail Berita Identik G2** | Menghadirkan tampilan editorial yang bersih, lapang, dan profesional tanpa kartu pembungkus tebal yang membatasi konten. | 2026-10-27 |
-| **Komponen Kartu Bersama Identik G4** | Menjamin konsistensi visual 100% antara listing berita dan seksi baca berita lainnya dengan rasio 16:9 dan line-clamp 3 baris. | 2026-10-27 |
-| **Headline Slider Desktop & Mobile Reference** | Membatasi ketinggian desktop agar proporsional serta menyajikan layout mobile terpusat yang intuitif dan ramah gestur sentuh. | 2026-10-27 |
-| **Filter In-Page Berbasis Fetch API** | Menghilangkan reload halaman saat menyaring berita tanpa dependensi library eksternal baru dengan tetap menjaga SEO rank lewat fallback SSR. | 2026-10-27 |
-| **Tombol Bagikan Sirkular Monokrom Token Hijau** | Mempertahankan fungsionalitas share medsos populer dengan palet warna brand Euodoo tanpa menggunakan warna biru merek lain. | 2026-10-27 |
+| **Pemecahan 2 Section Berlatar `--bg-soft-green` & `--bg-subtle`** | Memisahkan secara visual area Headline utama dan Direktori pencarian dengan transisi gradasi halus tanpa menyentuh Homepage. | 2026-11-10 |
+| **Judul Headline Mengikuti Tipe Artikel pada Slide Aktif** | Menjaga slider tetap menayangkan seluruh berita utama (`is_headline = 1`) sembari menampilkan label jenis akurat untuk slide aktif. | 2026-11-10 |
+| **Filter Kategori 1 Baris Geser & Unifikasi Paginasi `.pgn-*`** | Menghemat ruang vertikal mobile dan menyatukan komponen paginasi publik/admin dengan tampilan ringkas mobile (`« ‹ 1/2 › »`). | 2026-11-10 |
+| **Integrasi Editor TinyMCE Self-Hosted** | Menghindari ketergantungan API key cloud berbayar dan menjaga stabilitas pemformatan artikel teknis. | 2026-10-06 |
+| **Sistem Redirect 301 Otomatis pada Perubahan Slug** | Mencegah broken link (404) dan menjaga integritas backlink mesin pencari saat editor mengubah slug artikel. | 2026-10-06 |
+| **3 Tab Kategori Berita Terstruktur** | Memisahkan komunikasi korporat resmi (`pers`) dari berita utama dan artikel edukatif (`blog`). | 2026-10-09 |
+| **Komponen Kartu Bersama Identik G4** | Menjamin konsistensi visual 100% antara listing berita dan artikel terkait dengan rasio 16:9 dan line-clamp 3 baris. | 2026-10-27 |
+| **Headline Slider Desktop & Mobile Reference** | Membatasi tinggi desktop proporsional dan menyajikan kontrol terpusat ramah sentuh pada layar mobile. | 2026-10-27 |
+| **Filter In-Page Berbasis Fetch API** | Menghilangkan reload halaman saat menyaring berita tanpa library eksternal baru sekaligus menjaga SEO lewat fallback SSR. | 2026-10-27 |

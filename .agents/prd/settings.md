@@ -30,6 +30,11 @@ Modul Pengaturan Situs berfungsi sebagai pusat kendali variabel global aplikasi 
      - Pesan salam pembuka default (`whatsapp_default_message`, `whatsapp_default_message_en`).
      - Tema tampilan tombol (`whatsapp_button_theme`).
 
+### FR-23: Manajemen Konten Footer Publik (`/admin/settings`) `[PENDING T-324]`
+- Menambahkan kartu konfigurasi ke-5/6 berjudul **Konten Footer Publik** pada `/admin/settings` (khusus Superadmin) dengan antarmuka Bahasa Indonesia baku:
+  1. **Deskripsi Footer Dwibahasa:** Input teks deskripsi Bahasa Indonesia (`footer_desc_id`) dan Bahasa Inggris (`footer_desc_en`) dengan batas maksimal `350` karakter per bahasa dan penghitung karakter langsung, terpisah sepenuhnya dari `meta_description_*` SEO global.
+  2. **Repeater Menu Footer Kanan (`0–4` Item):** Pengelola daftar tautan dinamis (`footer_nav_links_json`) sebanyak `0` hingga maksimal `4` item dengan field **Label (ID)** (`<= 80` char), **Label (EN)** (`<= 80` char), **URL Tujuan** (`<= 255` char; mendukung path internal `/...` / `#...` maupun URL eksternal `https://...` / `http://...`), kontrol **Naik/Turun** urutan, tombol **Hapus**, state kosong informatif saat `0` item, serta penonaktifan tombol **Tambah Menu** saat sudah mencapai `4` item.
+
 ---
 
 ## 3. Keputusan Desain & Fungsional Terkunci
@@ -42,3 +47,4 @@ Modul Pengaturan Situs berfungsi sebagai pusat kendali variabel global aplikasi 
 | **Akses Terbatas Khusus Superadmin** | Melindungi integritas legalitas kontak korporat dari modifikasi yang tidak diotorisasi. | 2026-10-05 |
 | **Toggle Switch Kustom Alamat Dual Lokasi** | Mempertahankan konsistensi UX admin yang seirama dengan toggle switch media sosial yang sudah ada. | 2026-10-30 |
 | **Repeater WhatsApp Dinamis & Validasi Total 100%** | Memastikan pembagian beban rotasi kontak terdistribusi secara presisi tanpa risiko persentase parsial atau berlebih. | 2026-10-30 |
+| **Pemisahan `footer_desc_*` & Repeater 0–4 Menu Footer `[PENDING T-323]` `[PENDING T-324]`** | Menjaga pengaturan footer terpusat di `/admin/settings` tanpa mengubah metadata SEO `meta_description_*` dan aman lewat whitelist URL ketat. | 2026-11-13 |
