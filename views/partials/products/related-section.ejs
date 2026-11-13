@@ -1,0 +1,22 @@
+<% if (typeof relatedProducts !== 'undefined' && relatedProducts && relatedProducts.length > 0) { %>
+  <section class="pd-related">
+    <div class="pd-related-header">
+      <div>
+        <span class="pd-related-kicker">
+          <%= t('product_detail.related_kicker') %>
+        </span>
+        <h2 class="pd-related-title">
+          <%= t('product_detail.related_title') %>
+        </h2>
+      </div>
+      <a href="/products?category=<%= catSlug %>" class="pd-btn pd-btn-outline pd-btn-sm">
+        <%= t('product_detail.view_category') %> &rarr;
+      </a>
+    </div>
+
+    <div class="plp-grid pd-related-grid">
+      <%- include('../../public/partials/product-card-fragment', { products: relatedProducts, currentLang: lang }) %>
+    </div>
+  </section>
+<% } %>
+

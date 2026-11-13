@@ -1,0 +1,59 @@
+<% if (inquiries && inquiries.length > 0) { %>
+  <% inquiries.forEach(function(item) { %>
+    <tr data-status="<%= item.status %>" id="inq-row-<%= item.id %>">
+      <td>
+        <span class="adm-inq-time-val">
+          <%= new Date(item.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) %>
+        </span>
+        <div class="adm-inq-date-val">
+          <%= new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+        </div>
+      </td>
+      <td>
+        <div class="td-client-title"><%= item.company || '-' %></div>
+        <div class="td-client-sub"><%= item.name %></div>
+      </td>
+      <td>
+        <div class="adm-inq-phone-wrap">
+          <a href="https://wa.me/<%= item.phone ? item.phone.replace(/[^0-9]/g, '') : '' %>" target="_blank" class="adm-inq-wa-link">
+            <%= item.phone %>
+          </a>
+        </div>
+        <div class="td-muted-text"><%= item.email %></div>
+      </td>
+      <td>
+        <div class="td-req-text" title="<%= item.message || '' %>">
+          <%= item.message ? item.message.substring(0, 70) + '...' : 'Tidak ada rincian.' %>
+        </div>
+      </td>
+      <td>
+        <select class="status-select inquiry-status-select st-<%= item.status === 'ditindaklanjuti' ? 'selesai' : (item.status === 'dibaca' ? 'diproses' : item.status) %>"
+                data-id="<%= item.id %>" data-eu-dropdown="filled" data-eu-size="sm" data-inline="true" aria-label="Ubah status">
+          <option value="baru" <%= item.status === 'baru' ? 'selected' : '' %>>Baru</option>
+          <option value="dibaca" <%= item.status === 'dibaca' ? 'selected' : '' %>>Dibaca</option>
+          <option value="ditindaklanjuti" <%= item.status === 'ditindaklanjuti' ? 'selected' : '' %>>Selesai</option>
+          <option value="ditolak" <%= item.status === 'ditolak' ? 'selected' : '' %>>Ditolak</option>
+        </select>
+      </td>
+      <td class="adm-inq-td-actions">
+        <div class="table-actions">
+          <button type="button" class="btn-action btn-action-view" data-action="view-inquiry" data-inquiry-id="<%= item.id %>" title="Tinjau Cepat">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Tinjau</span>
+          </button>
+          <a href="/admin/inquiries/<%= item.id %>" class="btn-action btn-action-edit" title="Halaman Rincian Penuh">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+            <span>Detail</span>
+          </a>
+        </div>
+      </td>
+    </tr>
+  <% }); %>
+<% } else { %>
+  <tr>
+    <td colspan="6" class="adm-inq-empty-td">
+      Tidak ada data permintaan penawaran pada filter ini.
+    </td>
+  </tr>
+<% } %>
+

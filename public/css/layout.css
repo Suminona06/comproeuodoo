@@ -827,19 +827,12 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--r-lg, 8px);
   padding: 16px 18px;
-  transition: background var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
-              border-color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.ft-office-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .ft-office-label {
   font-size: 11px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-inverse);
   text-transform: uppercase;
   letter-spacing: .05em;
   margin-bottom: 6px;
@@ -851,36 +844,50 @@
 .ft-office-dot {
   width: 6px;
   height: 6px;
-  background: #ffffff;
+  background: var(--color-text-inverse);
   border-radius: 50%;
 }
 
 .ft-office-addr {
   font-size: 13px;
-  color: #ffffff;
+  color: var(--color-text-inverse);
   font-weight: 700;
   line-height: 1.5;
 }
 
 .ft-phone-label {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-on-dark, rgba(255, 255, 255, 0.85));
   font-weight: 600;
 }
 
+.ft-office-card a,
 .ft-phone-val {
-  color: #ffffff;
+  color: var(--color-text-inverse);
   font-weight: 700;
   text-decoration: none;
   transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.ft-phone-val:hover {
-  text-decoration: underline;
-  opacity: 0.9;
+.ft-office-card a:visited,
+.ft-phone-val:visited,
+.ft-office-card a:active,
+.ft-phone-val:active {
+  color: var(--color-text-inverse);
 }
 
+@media (hover: hover) {
+  .ft-office-card a:hover,
+  .ft-phone-val:hover {
+    color: var(--color-text-inverse);
+    text-decoration: underline;
+    opacity: 0.9;
+  }
+}
+
+.ft-office-card a:focus-visible,
 .ft-phone-val:focus-visible {
-  outline: 2px solid #ffffff;
+  color: var(--color-text-inverse);
+  outline: 2px solid var(--color-text-inverse);
   outline-offset: 2px;
   border-radius: var(--r-sm, 4px);
 }

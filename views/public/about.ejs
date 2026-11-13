@@ -14,19 +14,19 @@
 %>
 
 <main id="main-content">
-  <!-- 1. PAGE HERO -->
+  <%# 1. PAGE HERO %>
   <section class="page-hero <%= heroObj && heroObj.image_url ? 'page-hero--has-bg' : '' %>" <%- heroBg %>>
     <% if (heroObj && heroObj.image_url) { %>
       <div class="page-hero-scrim" aria-hidden="true"></div>
     <% } %>
     <div class="container">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/"><%= lang === 'en' ? 'Home' : 'Beranda' %></a>
+        <a href="/"><%= t('nav.home') %></a>
         <span class="separator" aria-hidden="true">&rsaquo;</span>
-        <span class="current"><%= lang === 'en' ? 'About Us' : 'Tentang Kami' %></span>
+        <span class="current"><%= t('nav.about') %></span>
       </nav>
 
-      <div class="page-hero-content" style="max-width: 840px;">
+      <div class="page-hero-content abt-hero-content">
         <h1 class="page-hero-title">
           <%= (typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active && (lang === 'en' ? heroBanner.title_en : heroBanner.title_id))
               ? (lang === 'en' ? heroBanner.title_en : heroBanner.title_id)
@@ -43,47 +43,15 @@
     </div>
   </section>
 
-  <!-- 2. SEJARAH & LATAR BELAKANG PERUSAHAAN -->
+  <%# 2. SEJARAH & LATAR BELAKANG PERUSAHAAN %>
   <section class="sec-story" id="sejarah" data-od-id="company-story">
     <div class="container">
-      <div class="story-layout">
-        <div class="story-sticky reveal">
-          <span class="story-kicker"><%= (lang === 'en' ? storyHeader?.kicker_en : storyHeader?.kicker_id) || (lang === 'en' ? 'Our Story' : 'Kisah Kami') %></span>
-          <h2><%= lang === 'en' ? (data.history_title_en || 'Building Quality of Life for a Better Tomorrow') : (data.history_title_id || 'Semangat Membangun Kualitas Hidup yang Lebih Baik') %></h2>
-          <p><%= lang === 'en' ? (data.history_en || 'Starting by serving traditional markets, we grew into a manufacturing partner for modern retail networks and the national industrial sector.') : (data.history_id || 'Berawal dari melayani pasar tradisional, kami tumbuh menjadi mitra manufaktur bagi jaringan retail modern dan sektor industri nasional. Perjalanan kami ditopang satu keyakinan: mutu yang konsisten dan komitmen pada kelestarian lingkungan adalah fondasi kemitraan jangka panjang.') %></p>
-          
-          <% if (typeof stats !== 'undefined' && stats && stats.length > 0) { %>
-            <div class="story-stats">
-              <% stats.forEach(stat => { %>
-                <div class="story-stat">
-                  <div class="story-stat-num"><%= stat.stat_value %></div>
-                  <div class="story-stat-label"><%= lang === 'en' ? (stat.label_en || stat.label_id) : stat.label_id %></div>
-                </div>
-              <% }); %>
-            </div>
-          <% } %>
-        </div>
-
-        <div class="timeline reveal" data-od-id="company-timeline">
-          <% if (typeof timeline !== 'undefined' && timeline && timeline.length > 0) { %>
-            <% timeline.forEach(item => { %>
-              <div class="tl-item">
-                <div class="tl-year"><%= lang === 'en' ? (item.year_label_en || item.year_label_id) : item.year_label_id %></div>
-                <div class="tl-title"><%= lang === 'en' ? (item.title_en || item.title_id) : item.title_id %></div>
-                <div class="tl-desc"><%= lang === 'en' ? (item.description_en || item.description_id) : item.description_id %></div>
-              </div>
-            <% }); %>
-          <% } else { %>
-            <div class="tl-empty" style="padding: 24px; color: var(--text-muted); font-size: 14px; font-style: italic;">
-              <%= lang === 'en' ? 'Company journey timeline will be updated soon.' : 'Linimasa perjalanan perusahaan akan segera diperbarui.' %>
-            </div>
-          <% } %>
-        </div>
-      </div>
+      <%- include('../partials/about/story-counter') %>
+      <%- include('../partials/about/history-timeline') %>
     </div>
   </section>
 
-  <!-- 3. VISI & MISI PERUSAHAAN -->
+  <%# 3. VISI & MISI PERUSAHAAN %>
   <%
     const visionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.vision_image_url) ? visionMissionImages.vision_image_url.trim() : '';
     const missionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.mission_image_url) ? visionMissionImages.mission_image_url.trim() : '';
@@ -103,7 +71,7 @@
       </div>
 
       <div class="vm-rows">
-        <!-- Visi Row: Card Teks Kiri + Gambar Kanan (Jika Ada) -->
+        <%# Visi Row: Card Teks Kiri + Gambar Kanan (Jika Ada) %>
         <div class="vm-row reveal <%= visionImg ? 'has-image' : 'no-image' %>">
           <div class="vm-card">
             <span class="vm-card-kicker"><%= lang === 'en' ? 'CORPORATE VISION' : 'VISI' %></span>
@@ -121,7 +89,7 @@
           <% } %>
         </div>
 
-        <!-- Misi Row: Gambar Kiri (Jika Ada) + Card Teks Kanan -->
+        <%# Misi Row: Gambar Kiri (Jika Ada) + Card Teks Kanan %>
         <div class="vm-row reveal <%= missionImg ? 'has-image' : 'no-image' %>">
           <% if (missionImg) { %>
             <div class="vm-media">
@@ -138,7 +106,7 @@
                   %>
                   <li>
                     <span class="vm-list-badge"><%= idx + 1 %></span>
-                    <span style="font-size: 15px; color: var(--text-main, #0f172a); font-weight: 500; line-height: 1.6;">
+                    <span class="abt-vm-point-text">
                       <%= cleanPoint %>
                     </span>
                   </li>
@@ -153,40 +121,9 @@
     </div>
   </section>
 
-  <!-- 4. NILAI-NILAI INTI BUDAYA KERJA T-I-C-K-E-T -->
-  <section class="sec-values" id="core-values">
-    <div class="container">
-      <div class="values-header pillars-header reveal">
-        <span class="brands-kicker"><%= lang === 'en' ? 'CORE VALUES' : 'NILAI INTI BUDAYA' %></span>
-        <h2>Budaya Kerja T - I - C - K - E - T</h2>
-        <p>
-          <%= lang === 'en'
-            ? 'The six foundational pillars guiding moral integrity, human potential, and manufacturing dedication.'
-            : 'Enam pilar utama yang membina karakter positif, potensi insan, dan profesionalisme di setiap lini kerja.' %>
-        </p>
-      </div>
+  <%- include('../partials/about/ticket-accordion') %>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-        <% (data.values || []).forEach(function(val) { %>
-          <div class="value-card pillar-card reveal" style="padding: 24px;">
-            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
-              <div style="width: 44px; height: 44px; border-radius: var(--r-lg, 8px); background: #e6f7f2; border: 1px solid #a3e0d0; color: var(--primary, #00755a); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 800;">
-                <%= val.letter %>
-              </div>
-              <h3 style="font-size: 1.15rem; color: var(--navy, #071f17); margin: 0; font-weight: 700;">
-                <%= lang === 'en' ? val.title_en : val.title_id %>
-              </h3>
-            </div>
-            <p style="font-size: 13.5px; color: var(--text-variant, #424753); line-height: 1.6; margin: 0;">
-              <%= lang === 'en' ? val.desc_en : val.desc_id %>
-            </p>
-          </div>
-        <% }); %>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. GALERI FASILITAS & OPERASIONAL (Bento Mosaic Grid) -->
+  <%# 5. GALERI FASILITAS & OPERASIONAL (Bento Mosaic Grid) %>
   <% if (typeof gallerySlides !== 'undefined' && gallerySlides && gallerySlides.length > 0) { %>
     <section class="sec-gallery" id="galeri" data-od-id="gallery">
       <div class="container">
@@ -251,13 +188,13 @@
             </div>
           </div>
 
-          <div class="abt-gal-pager bento-pager" id="bentoPager" <%- totalSlides <= 1 ? 'style="display: none;"' : '' %>>
+          <div class="abt-gal-pager bento-pager" id="bentoPager" <%= totalSlides <= 1 ? 'hidden' : '' %>>
             <span class="abt-gal-pager-count bento-pager-count" aria-live="polite" aria-atomic="true"><strong id="bentoCur">01</strong> / <span id="bentoTotal"><%= String(initialPageCount).padStart(2, '0') %></span></span>
             <div class="abt-gal-pager-arrows bento-pager-arrows">
-              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoPrev" aria-label="<%= lang === 'en' ? 'Previous gallery page' : 'Halaman galeri sebelumnya' %>" disabled>
+              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoPrev" aria-label="<%= t('about.gallery_prev') %>" disabled>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
               </button>
-              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoNext" aria-label="<%= lang === 'en' ? 'Next gallery page' : 'Halaman galeri berikutnya' %>" <%- initialPageCount <= 1 ? 'disabled' : '' %>>
+              <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoNext" aria-label="<%= t('about.gallery_next') %>" <%- initialPageCount <= 1 ? 'disabled' : '' %>>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
               </button>
             </div>
@@ -277,4 +214,6 @@
 
 </main>
 
+<script src="/js/ticket-accordion.js?v=20261106-2" defer></script>
+<script src="/js/about-story.js" defer></script>
 <%- include('../partials/footer') %>

@@ -1,0 +1,18 @@
+<%
+  const activeIcon = (typeof icon === 'string' && icon) ? icon : 'praying-hands';
+  const iconClass = typeof className !== 'undefined' ? className : '';
+%>
+<% if (activeIcon === 'shield-check') { %>
+  <%- include('./shield-check', { className: iconClass }) %>
+<% } else if (activeIcon === 'chat-dots') { %>
+  <%- include('./chat-dots', { className: iconClass }) %>
+<% } else if (activeIcon === 'heart') { %>
+  <%- include('./heart', { className: iconClass }) %>
+<% } else if (activeIcon === 'star') { %>
+  <%- include('./star', { className: iconClass }) %>
+<% } else if (activeIcon === 'handshake') { %>
+  <%- include('./handshake', { className: iconClass }) %>
+<% } else { %>
+  <%- include('./praying-hands', { className: iconClass }) %>
+<% } %>
+

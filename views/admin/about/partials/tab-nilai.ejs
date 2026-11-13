@@ -1,51 +1,73 @@
 <div class="about-tab-pane" id="tab-ticket" role="tabpanel">
   <div class="about-glass-card">
     <div class="form-card-title adm-abt-card-title">
-      <span>Nilai Budaya Kerja: T - I - C - K - E - T</span>
+      <span>Nilai Budaya Kerja: 6 Pilar Interaktif</span>
       <span class="badge badge-primary adm-abt-badge-xs">6 Pilar Utama</span>
     </div>
     <p class="adm-abt-card-desc">
-      Nilai fundamental yang menjadi pedoman perilaku seluruh staf PT Euodoo sesuai Company Profile resmi.
+      Nilai fundamental yang menjadi pedoman perilaku seluruh staf PT Euodoo. Huruf, judul, foto, dan ikon pilar dapat dikustomisasi secara fleksibel.
     </p>
 
-    <div class="adm-abt-list-stack">
-      <% const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T']; %>
-      <% (about.values || []).forEach(function(val, idx) { %>
-        <% const formKey = idx === 5 ? 'T_2' : val.letter; %>
-        <div class="adm-abt-val-card">
-          <div class="adm-abt-val-header">
-            <span class="adm-abt-val-letter">
-              <%= val.letter %>
-            </span>
-            <div>
-              <strong class="adm-abt-val-title">Pilar Huruf <%= val.letter %> (<%= idx === 5 ? 'Pilar Ke-6' : 'Pilar Ke-' + (idx + 1) %>)</strong>
+    <div class="adm-abt-sec-config">
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="about_values_pill_id">Pill Header (ID)</label>
+          <input type="text" id="about_values_pill_id" name="about_values_pill_id" class="form-input" value="<%= about.values_pill_id || 'Budaya Kerja' %>" maxlength="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="about_values_pill_en">Pill Header (EN)</label>
+          <input type="text" id="about_values_pill_en" name="about_values_pill_en" class="form-input" value="<%= about.values_pill_en || 'Corporate Culture' %>" maxlength="50">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="about_values_subtitle_id">Subjudul Section (ID)</label>
+          <input type="text" id="about_values_subtitle_id" name="about_values_subtitle_id" class="form-input" value="<%= about.values_subtitle_id || '' %>" maxlength="150">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="about_values_subtitle_en">Subjudul Section (EN)</label>
+          <input type="text" id="about_values_subtitle_en" name="about_values_subtitle_en" class="form-input" value="<%= about.values_subtitle_en || '' %>" maxlength="150">
+        </div>
+      </div>
+      <div class="form-group adm-abt-mb-0">
+        <label class="form-label" for="about_values_bg_image">Foto Latar Section (Lanskap Pabrik)</label>
+        <div class="media-picker-component">
+          <input type="hidden" id="about_values_bg_image" name="about_values_bg_image" value="<%= about.values_bg_image || '' %>">
+          <div class="media-picker-preview-box">
+            <img src="<%= about.values_bg_image || '' %>" alt="Pratinjau Latar Section" class="media-picker-preview-img <%= about.values_bg_image ? '' : 'hidden' %>">
+            <div class="media-picker-empty <%= about.values_bg_image ? 'hidden' : '' %>">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Belum ada foto dipilih</span>
             </div>
           </div>
-
-          <div class="form-row-2 adm-abt-val-row">
-            <div class="form-group adm-abt-mb-0">
-              <label class="form-label adm-abt-form-label-sm">Nama Nilai (ID)</label>
-              <input type="text" name="val_title_id_<%= formKey %>" class="form-input" value="<%= val.title_id %>">
-            </div>
-            <div class="form-group adm-abt-mb-0">
-              <label class="form-label adm-abt-form-label-sm">Nama Nilai (EN)</label>
-              <input type="text" name="val_title_en_<%= formKey %>" class="form-input" value="<%= val.title_en %>">
-            </div>
-          </div>
-
-          <div class="form-row-2">
-            <div class="form-group adm-abt-mb-0">
-              <label class="form-label adm-abt-form-label-sm">Penjelasan / Makna (ID)</label>
-              <textarea name="val_desc_id_<%= formKey %>" class="form-textarea adm-abt-textarea-pill"><%= val.desc_id %></textarea>
-            </div>
-            <div class="form-group adm-abt-mb-0">
-              <label class="form-label adm-abt-form-label-sm">Penjelasan / Makna (EN)</label>
-              <textarea name="val_desc_en_<%= formKey %>" class="form-textarea adm-abt-textarea-pill"><%= val.desc_en %></textarea>
-            </div>
+          <div class="media-picker-ctrls">
+            <button type="button" class="adm-btn adm-btn-secondary adm-btn-sm btn-open-media-picker" data-target="about_values_bg_image" data-picker-type="image" aria-label="Pilih foto latar dari Media Library">
+              <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Pilih Media</span>
+            </button>
+            <button type="button" class="adm-btn adm-btn-danger adm-btn-sm btn-clear-media <%= about.values_bg_image ? '' : 'hidden' %>" aria-label="Hapus foto latar">
+              <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span>Hapus</span>
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="adm-d-none" aria-hidden="true">
+      <template id="ticket-icon-praying-hands"><%- include('../../../partials/icons/ticket/praying-hands', { className: 'adm-abt-icon-svg' }) %></template>
+      <template id="ticket-icon-shield-check"><%- include('../../../partials/icons/ticket/shield-check', { className: 'adm-abt-icon-svg' }) %></template>
+      <template id="ticket-icon-chat-dots"><%- include('../../../partials/icons/ticket/chat-dots', { className: 'adm-abt-icon-svg' }) %></template>
+      <template id="ticket-icon-heart"><%- include('../../../partials/icons/ticket/heart', { className: 'adm-abt-icon-svg' }) %></template>
+      <template id="ticket-icon-star"><%- include('../../../partials/icons/ticket/star', { className: 'adm-abt-icon-svg' }) %></template>
+      <template id="ticket-icon-handshake"><%- include('../../../partials/icons/ticket/handshake', { className: 'adm-abt-icon-svg' }) %></template>
+    </div>
+
+    <div class="adm-abt-list-stack adm-abt-mt-md">
+      <% (about.values || []).forEach(function(val, idx) { %>
+        <% const formKey = idx === 5 ? 'T_2' : (val.letter || String(idx + 1)); %>
+        <%- include('./tab-nilai-card', { val, idx, formKey, ticketIcons: (typeof ticketIcons !== 'undefined' ? ticketIcons : null), ticketIconKeys: (typeof ticketIconKeys !== 'undefined' ? ticketIconKeys : []) }) %>
       <% }); %>
     </div>
   </div>
 </div>
-

@@ -337,14 +337,104 @@ export const productController = {
   getProductsWithSizeTable,
   async index(req, res) {
     try {
-      const categoryId = req.query.category ? parseInt(req.query.category, 10) : null;
-      const status = req.query.status || null;
-      const search = req.query.search || null;
+      const rawCategory = req.query.category_id || req.query.category;
+      const parsedCategory = rawCategory ? parseInt(rawCategory, 10) : null;
+      const categoryId = parsedCategory && !isNaN(parsedCategory) ? parsedCategory : null;
 
-      const [products, categories] = await Promise.all([
-        productModel.findAll({ categoryId, status, search }),
+      const allowedStatuses = ['published', 'draft', 'archived'];
+      const rawStatus = req.query.status ? String(req.query.status).trim() : null;
+      const status = allowedStatuses.includes(rawStatus) ? rawStatus : null;
+
+      const rawSearch = req.query.q || req.query.search;
+      const search = rawSearch && typeof rawSearch === 'string' ? rawSearch.trim().slice(0, 100) : null;
+
+      const allowedPerPage = [10, 25, 50, 100];
+      const parsedPerPage = parseInt(req.query.per_page, 10);
+      const perPage = allowedPerPage.includes(parsedPerPage) ? parsedPerPage : 10;
+
+      const [totalCount, categories] = await Promise.all([
+        productModel.countAll({ categoryId, status, search }),
         productCategoryModel.findAll({ activeOnly: false })
       ]);
+
+      const totalPages = Math.max(1, Math.ceil(totalCount / perPage));
+
+      const parsedPage = parseInt(req.query.page, 10);
+      let currentPage = isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+      const offset = (currentPage - 1) * perPage;
+
+      const products = await productModel.findAll({
+        categoryId,
+        status,
+        search,
+        limit: perPage,
+        offset
+      });
+
+      const isAjax = Boolean(
+        req.xhr ||
+        req.headers.accept?.includes('application/json') ||
+        req.headers['x-requested-with'] === 'fetch' ||
+        req.query.format === 'json'
+      );
+
+      if (isAjax) {
+        const renderLocals = {
+          ...res.locals,
+          products,
+          csrfToken: res.locals.csrfToken || '',
+          currentPage,
+          perPage,
+          totalPages,
+          totalCount,
+          selectedCategory: categoryId,
+          selectedStatus: status,
+          searchQuery: search || '',
+          pagination: {
+            page: currentPage,
+            perPage,
+            totalRows: totalCount,
+            totalPages,
+            baseUrl: '/admin/products',
+            queryParams: {
+              category: categoryId,
+              status: status,
+              q: search
+            }
+          }
+        };
+
+        return req.app.render('admin/products/partials/table-rows', renderLocals, (err, rowsHtml) => {
+          if (err) {
+            logger.error('Product index ajax render rows error:', err);
+            return res.status(500).json({ success: false, message: 'Gagal merender data tabel produk.' });
+          }
+
+          return req.app.render('partials/pagination', renderLocals, (pErr, paginationHtml) => {
+            if (pErr) {
+              logger.error('Product index ajax render pagination error:', pErr);
+              return res.status(500).json({ success: false, message: 'Gagal merender paginasi.' });
+            }
+
+            return res.json({
+              success: true,
+              products,
+              totalCount,
+              totalPages,
+              currentPage,
+              perPage,
+              selectedCategory: categoryId,
+              selectedStatus: status,
+              searchQuery: search || '',
+              rowsHtml,
+              paginationHtml
+            });
+          });
+        });
+      }
 
       res.render('admin/products/index', {
         title: 'Manajemen Katalog Produk',
@@ -354,13 +444,26 @@ export const productController = {
         categories,
         selectedCategory: categoryId,
         selectedStatus: status,
-        searchQuery: search,
+        searchQuery: search || '',
+        currentPage,
+        perPage,
+        totalPages,
+        totalCount,
         error: req.query.error || null,
         success: req.query.success || null,
         csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
       logger.error('Product index error:', { message: err.message });
+      const isAjax = Boolean(
+        req.xhr ||
+        req.headers.accept?.includes('application/json') ||
+        req.headers['x-requested-with'] === 'fetch' ||
+        req.query.format === 'json'
+      );
+      if (isAjax) {
+        return res.status(500).json({ success: false, message: 'Gagal memuat katalog produk.' });
+      }
       res.status(500).render('admin/products/index', {
         title: 'Manajemen Produk',
         pageTitle: 'Katalog Produk',
@@ -370,6 +473,10 @@ export const productController = {
         selectedCategory: null,
         selectedStatus: null,
         searchQuery: null,
+        currentPage: 1,
+        perPage: 10,
+        totalPages: 1,
+        totalCount: 0,
         error: 'Gagal memuat katalog produk.',
         csrfToken: res.locals.csrfToken || ''
       });
@@ -834,9 +941,17 @@ export const productController = {
       }
       await productModel.delete(id);
       invalidateSitemapCache();
+
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.json({ success: true, message: 'Produk berhasil dihapus.' });
+      }
+
       res.redirect('/admin/products?success=' + encodeURIComponent('Produk berhasil dihapus.'));
     } catch (err) {
       logger.error('Product destroy error:', { message: err.message });
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(500).json({ success: false, message: 'Gagal menghapus produk.' });
+      }
       res.redirect('/admin/products?error=' + encodeURIComponent('Gagal menghapus produk.'));
     }
   }

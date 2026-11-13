@@ -1,11 +1,11 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-232)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-317)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-10-28  
-**Status Keseluruhan:** Selesai 100% (232 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-11-12  
+**Status Keseluruhan:** Selesai 100% (317 Task Selesai)  
 
 ---
 
-## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-232)
+## DAFTAR TASK IMPLEMENTASI (T-01 s/d T-317)
 
 - **Task Utama (Fondasi & Rilis Awal):** [2026-09-29_website-pt-euodoo.md](../3-TASKS/2026-09-29_website-pt-euodoo.md)
   - **Tanggal:** 2026-09-29
@@ -969,3 +969,274 @@
 - **File Terdampak**: `scripts/lint-views.js`, `public/js/admin-settings.js`, `tests/test-t293-full-regression-qa.js`
 - **Skill**: `antislop-code` + `ci-cd-and-automation` + `code-review-and-quality`
 - **Verifikasi**: `node tests/test-t293-full-regression-qa.js` (seluruh gerbang kualitas lulus 100%, 0 error konsol). Selesai 2026-11-05.
+
+
+### T-294: Persiapan Whitelist Ikon SVG Identik Desain & Normalizer Data Model [DONE]
+- **Deskripsi**: Menyiapkan 6 aset SVG garis stroke seragam yang presisi identik dengan gambar desain (`praying-hands`, `shield-check`, `chat-dots`, `heart`, `star`, `handshake`) sebagai partial server-side / helper dictionary, serta memperbarui defaults dan parser fallback `about_values_json` pada `models/aboutModel.js` agar data lama tetap valid dan aman dengan dukungan huruf pilar dinamis.
+- **Acceptance Criteria**:
+  - [x] 6 SVG garis outline tersimpan rapi tanpa inline style/handler dan tanpa warna hex mentah (`stroke="currentColor"`, `viewBox="0 0 24 24"`), 100% identik dengan motif pada gambar referensi.
+  - [x] `aboutModel.js` memuat defaults lengkap 6 pilar dengan properti `letter`, `title_id`, `title_en`, `desc_id`, `desc_en`, `image_url`, `icon_key`, dan `sort_order`.
+  - [x] Fungsi `aboutModel.getAboutData()` melakukan fallback graceful jika ada properti yang belum didefinisikan pada data database lama, serta membaca pengaturan baru `about_values_bg_image`, `about_values_pill_*`, dan `about_values_subtitle_*`.
+- **File Terdampak**: `utils/ticketIcons.js`, `views/partials/icons/ticket/*.ejs`, `models/aboutModel.js`, `tests/test-t294-ticket-icons-normalizer.js`
+- **Skill**: `antislop-code` + `ponytail`
+- **Verifikasi**: `node --test tests/test-t294-ticket-icons-normalizer.js` (4/4 tests pass, zero errors). Selesai 2026-11-05.
+
+### T-295: Penyesuaian Antarmuka Admin CMS Tab Nilai Budaya & Validasi Controller [DONE]
+- **Deskripsi**: Memperbarui form `views/admin/about/partials/tab-nilai.ejs` untuk mendukung pengelolaan foto latar section, input pill dan subjudul dwibahasa ID/EN, serta 6 kartu pilar yang memuat input huruf fleksibel (1 karakter), judul ID/EN, deskripsi ID/EN, foto latar kartu via Universal Media Picker, dan dropdown kustom admin (`.eu-dd-*`) dengan pratinjau SVG untuk 6 pilihan icon whitelist. Memperbarui `aboutController.update` dengan validasi server-side ketat.
+- **Acceptance Criteria**:
+  - [x] Tab 3 ("Nilai Budaya") menampilkan form konfigurasi header seksi (pill ID/EN, subjudul ID/EN, foto latar seksi).
+  - [x] 6 kartu pilar dapat disunting hurufnya (input `maxlength="1"`, auto-uppercase), judul, deskripsi, foto kartu, dan ikonnya.
+  - [x] Media picker bekerja mulus untuk memilih foto dari media library lokal tanpa inline style.
+  - [x] Dropdown ikon menampilkan preview SVG dari whitelist 6 ikon resmi identik gambar.
+  - [x] Controller memvalidasi whitelist `icon_key`, URL lokal media library, dan batas panjang karakter (huruf 1 char, judul max 50, deskripsi max 250, pill max 50, subjudul max 150).
+  - [x] Penyimpanan data berhasil memperbarui `about_values_json` dan pengaturan baru tanpa menghapus field lain.
+- **File Terdampak**: `views/admin/about/partials/tab-nilai.ejs`, `views/admin/about/partials/tab-nilai-card.ejs`, `controllers/admin/aboutController.js`, `public/css/admin.css`, `public/js/admin.js`, `tests/test-t295-admin-ticket-form-qa.js`
+- **Skill**: `antislop-code` + `code-review-and-quality`
+- **Verifikasi**: `node --test tests/test-t295-admin-ticket-form-qa.js` (3/3 tests pass, zero errors; lint views 0 errors). Selesai 2026-11-05.
+
+### T-296: Pembersihan Legacy Inline Styles & Implementasi Markup Accordion Publik [DONE]
+- **Deskripsi**: Membersihkan seluruh inline `style="..."` dan hex code dari section `#core-values` di `views/public/about.ejs`, mengekstrak komponen ke partial modular `views/partials/about/ticket-accordion.ejs`, mengintegrasikan latar foto seksi dengan overlay gradien token, merangkai judul akronim otomatis dari huruf 6 pilar aktif, dan menetapkan panel ke-3 aktif secara default saat render SSR.
+- **Acceptance Criteria**:
+  - [x] Zero inline style dan zero hex color di section pilar budaya kerja.
+  - [x] Partial berukuran <= 100 baris sesuai konvensi modularitas EJS.
+  - [x] Judul section otomatis dirangkai dari gabungan `letter` ke-6 pilar aktif (mis. `T - I - C - K - E - T`).
+  - [x] Panel ke-3 (indeks 2) otomatis dirender dengan status aktif (`is-active`, `aria-expanded="true"`).
+  - [x] Markup semantik menggunakan `role="tablist"`, `role="tab"`, `role="tabpanel"`, serta `aria-controls`.
+  - [x] Tombol "Pelajari Lebih Lanjut", kicker, dan teks note ditiadakan sepenuhnya.
+  - [x] Foto dimuat menggunakan elemen `<img>` semantik dengan `loading="lazy"` (atau eager untuk panel awal) dan class `.abt-tkt-img` (`object-fit: cover`).
+  - [x] Kamus bahasa `locales/id.json` dan `locales/en.json` disinkronkan untuk seluruh teks statis.
+- **File Terdampak**: `views/public/about.ejs`, `views/partials/about/ticket-accordion.ejs`, `controllers/public/pageController.js`, `locales/id.json`, `locales/en.json`, `tests/test-t296-public-accordion-markup-qa.js`
+- **Skill**: `impeccable` (polish) + `antislop-human` + `antislop-code`
+- **Verifikasi**: `node --test tests/test-t296-public-accordion-markup-qa.js` (4/4 tests pass), `npm run lint:views` (0 errors), `npm run lint:i18n` (0 errors). Selesai 2026-11-05.
+
+### T-297: Penataan Styling Desktop & Mobile Accordion Berbasis Token Desain [DONE]
+- **Deskripsi**: Mengimplementasikan styling CSS lengkap untuk `.abt-tkt-*` di `public/css/components.css`: latar section dengan foto pabrik + scrim overlay gradien token, tata letak desktop 6 panel berdampingan dengan border glow lembut, tipografi vertikal diapit garis aksen tipis, styling panel aktif, indikator dots di bawah, serta tata letak mobile bertumpuk vertikal pada breakpoint konsisten `@media (max-width: 768px)` dengan target sentuh min 44px.
+- **Acceptance Criteria**:
+  - [x] Seluruh warna, radius sudut, shadow, dan spasi merujuk 100% ke token CSS (`tokens.css`).
+  - [x] Latar section memadukan foto dan scrim overlay token dengan rasio kontras teks header >= 4.5:1 (WCAG AA).
+  - [x] Status fokus keyboard (`:focus-visible`) tampak jelas dan kontras.
+  - [x] Tampilan mobile pada `@media (max-width: 768px)` bertumpuk vertikal rapi, panel aktif membuka ke bawah tanpa overflow scrollbar di 320px.
+  - [x] Seluruh teks putih di atas overlay foto memenuhi kontras WCAG AA (>= 4.5:1 untuk teks body, >= 3:1 untuk teks besar).
+- **File Terdampak**: `public/css/tokens.css`, `public/css/components.css`, `tests/test-t297-ticket-accordion-styles-qa.js`
+- **Skill**: `antislop-layoutmobile` + `antislop-human` + `impeccable` (adapt)
+- **Verifikasi**: `node --test tests/test-t297-ticket-accordion-styles-qa.js` (4/4 tests pass across 320px, 375px, 768px, 1024px, 1440px in Chromium; WCAG AA contrast verified; 0 lint errors). Selesai 2026-11-06.
+
+### T-298: Orkestrasi Animasi Anime.js v3 & Logika Interaksi Klien (Klik & Fokus Saja) [DONE]
+- **Deskripsi**: Membangun skrip eksternal `public/js/ticket-accordion.js` untuk mengelola interaksi klik mouse dan navigasi keyboard saja (tanpa hover), sinkronisasi dots, inisialisasi panel ke-3 aktif saat load, animasi pelebaran `flex-grow` (1 ke 3) via Anime.js v3, pembatalan animasi berjalan saat klik cepat, pre-decode gambar, serta penanganan `prefers-reduced-motion`.
+- **Acceptance Criteria**:
+  - [x] Pemicu interaksi hanya event `click` dan `keydown` (`Enter`, `Space`, `ArrowLeft`/`ArrowRight`/`ArrowUp`/`ArrowDown`). Event hover kursor mouse tidak memicu perpindahan panel.
+  - [x] State awal saat load mengaktifkan panel ke-3 (indeks 2) secara mulus.
+  - [x] Transisi pelebaran panel mengorkestrasikan proxy `flex-grow` (1 ke 3) dan kemunculan teks secara halus via Anime.js v3 (`anime({})`).
+  - [x] Animasi berjalan dibatalkan seketika (`anime.remove()`) saat pengguna mengklik panel lain secara cepat untuk mencegah glitch layout.
+  - [x] Pada `prefers-reduced-motion: reduce`, transisi berlangsung instan tanpa animasi interpolasi JS.
+  - [x] Zero CLS: Tinggi kontainer accordion tetap stabil (510px di desktop) tanpa pergeseran elemen sekitarnya.
+- **File Terdampak**: `public/js/ticket-accordion.js`, `public/css/components.css`, `views/public/about.ejs`, `tests/test-t298-ticket-accordion-interaction-qa.js`
+- **Skill**: `impeccable` (animate) + `antislop-code`
+- **Verifikasi**: `node --test tests/test-t298-ticket-accordion-interaction-qa.js` (3/3 tests pass in Chromium, 0 console errors), `npx eslint public/js/ticket-accordion.js` (0 errors, 0 warnings). Selesai 2026-11-06.
+
+### T-299: Uji Regresi, Audit Aksesibilitas WCAG & Gerbang Kualitas Lint [DONE]
+- **Deskripsi**: Menjalankan pengujian regresi komprehensif pada halaman Tentang Kami dan panel admin CMS, melakukan audit rasio kontras teks menggunakan `antislop-human` contrast-checker (terutama teks header di atas foto latar ber-scrim), memverifikasi ketiadaan error console, dan memastikan kepatuhan penuh terhadap gerbang linting.
+- **Acceptance Criteria**:
+  - [x] Section lain di `/about` (Galeri Bento + Lightbox PhotoSwipe, Statistik, Timeline, Visi Misi) tetap berfungsi normal tanpa regresi.
+  - [x] Tab admin lain di CMS Tentang Kami tetap dapat disimpan dengan normal.
+  - [x] `npm run lint` menghasilkan 0 error.
+  - [x] `npm run lint:views` menghasilkan 0 error pada seluruh file yang disentuh.
+  - [x] Seluruh teks dwibahasa (ID dan EN) tampil benar saat pergantian bahasa.
+- **File Terdampak**: `controllers/admin/aboutController.js`, `views/partials/about/ticket-accordion.ejs`, `tests/test-t299-about-ticket-regression-qa.js`
+- **Skill**: `antislop-human` + `code-review-and-quality` + `ponytail-review` + `test-driven-development`
+- **Verifikasi**: `node --test --test-force-exit tests/test-t294-ticket-icons-normalizer.js tests/test-t295-admin-ticket-form-qa.js tests/test-t296-public-accordion-markup-qa.js tests/test-t297-ticket-accordion-styles-qa.js tests/test-t298-ticket-accordion-interaction-qa.js tests/test-t299-about-ticket-regression-qa.js` (21/21 pass), `node tests/test-t292-about-views-refactor-qa.js` (100% pass), `npm run lint` (0 errors), `npm run lint:views` (0 errors), `npm run lint:i18n` (0 errors). Selesai 2026-11-06.
+
+### T-300: Verifikasi Komparasi Screenshot 1440px vs Desain Asli & Finalisasi Dokumentasi [DONE]
+- **Deskripsi**: Mengambil screenshot tampilan desktop pada viewport 1440px dengan panel ke-3 terbuka, membandingkan secara berdampingan dengan gambar referensi desain asli, mendokumentasikan setiap selisih visual mikro yang tersisa, serta mempersiapkan artefak untuk tahap Close.
+- **Acceptance Criteria**:
+  - [x] Screenshot 1440px desktop mereplikasi proporsi, kontur, glow hijau, dan tipografi gambar desain secara presisi dengan panel ke-3 terbuka.
+  - [x] Tabel deviasi visual (jika ada selisih mikro) didokumentasikan secara transparan.
+  - [x] Seluruh kriteria penerimaan siap diverifikasi oleh Azis.
+- **File Terdampak**: `public/css/components.css`, `utils/ticketIcons.js`, `views/partials/icons/ticket/*.ejs`, `tests/test-t300-visual-comparison-qa.js`
+- **Skill**: `frontend-ui-engineering` + `impeccable` (polish) + `ponytail`
+- **Verifikasi**: `node --test --test-force-exit tests/test-t300-visual-comparison-qa.js` (1/1 pass), screenshot 1440px & 375px tersimpan dan dibandingkan di artefak `t300-visual-comparison-report.md`. Selesai 2026-11-06.
+
+### T-301: Perbaikan Bug Hover Kartu Alamat Footer & Kontras WCAG AA Tautan Faks/Telp/Email [DONE]
+- **Deskripsi**: Menghapus efek hover pada kartu alamat footer (`.ft-office-card`) dan mengunci warna teks seluruh baris alamat, telepon, faks, serta email (`.ft-phone-val`, `a[href^="tel:"]`, `a[href^="mailto:"]`) pada state `normal`, `:hover`, `:focus-visible`, `:active`, dan `:visited` ke token teks terang footer (`var(--color-text-inverse)`) agar lolos kontras WCAG AA (`>= 4.5:1`) dan tidak tertimpa `a:hover` global (`var(--color-primary-dark)`). Memastikan `.cf-link-inherit` pada `/contact` juga mempertahankan `color: inherit` di semua state.
+- **Acceptance Criteria**:
+  - [x] `.ft-office-card:hover` dan `transition` pada `.ft-office-card` dihapus sepenuhnya.
+  - [x] Semua baris teks dan tautan (Alamat, Telp, Faks, Email) di `.ft-office-card` memakai `var(--color-text-inverse)` di semua state (`normal`, `:hover`, `:focus-visible`, `:active`, `:visited`), dengan underline saat `:hover` di dalam `@media (hover: hover)` dan focus ring `2px solid var(--color-text-inverse)` saat `:focus-visible`.
+  - [x] `.cf-link-inherit` pada `/contact` mempertahankan `color: inherit` pada `:hover` dan `:visited`.
+- **File Terdampak**: `public/css/layout.css`, `public/css/components.css`, `views/partials/footer.ejs`
+- **Skill**: `impeccable` (polish), `antislop-human`, `antislop-code`
+- **Verifikasi**: Inspeksi computed style state `:hover`, `:focus-visible`, `:visited` pada nomor Faks/Telp/Email di footer & halaman `/contact`; uji kontras WCAG AA; uji navigasi Tab. Selesai 2026-11-10.
+
+### T-302: Penyederhanaan Tabel Inquiry RFQ Dashboard Admin (LIMIT 10 & Scroll Hanya di Mobile) [DONE]
+- **Deskripsi**: Mengubah query pengambilan data Inquiry RFQ di Dashboard Admin (`/admin/dashboard`) menjadi `LIMIT 10` terbaru (`ORDER BY i.created_at DESC, i.id DESC`), tanpa paginasi, menghapus scroll pada layar desktop (`> 768px`) dan mengeliminasi scroller mobile dengan layout stacked card responsif, serta mempertahankan tautan "Lihat Seluruh Inquiry".
+- **Acceptance Criteria**:
+  - [x] `controllers/admin/dashboardController.js` memanggil `inquiryModel.findAll({ limit: 10 })` di level SQL query.
+  - [x] Tabel `#rfqDataTable` di `views/admin/dashboard.ejs` tampil tanpa paginasi, dengan wrapper `.table-scroll-wrapper--mobile-only` (`overflow: visible` di desktop dan mobile tanpa scrollbar horizontal).
+  - [x] Tautan "Lihat Seluruh Inquiry" (`/admin/inquiries`) dan state kosong tetap berfungsi rapi.
+- **File Terdampak**: `controllers/admin/dashboardController.js`, `views/admin/dashboard.ejs`, `public/css/admin.css`
+- **Skill**: `impeccable` (adapt, polish), `antislop-layoutmobile`, `antislop-code`
+- **Verifikasi**: Uji `/admin/dashboard` dengan 0, 5, 10 data; verifikasi audit Playwright viewport 320px s/d 1440px tanpa overflow horizontal. Selesai 2026-11-10.
+
+### T-303: Pembuatan Komponen Paginasi Bersama Varian 1 (.pgn-*, Partial EJS, Modul JS, & Lokalisasi ID/EN) [DONE]
+- **Deskripsi**: Membangun komponen paginasi bersama yang terdiri dari partial `views/partials/pagination.ejs`, styling `.pgn-*` berbasis token CSS di `public/css/admin.css` (terintegrasi flush sebagai card footer tanpa margin mengambang), modul `public/js/pagination.js`, serta kamus lokalisasi ID/EN di `locales/id.json` dan `locales/en.json`.
+- **Acceptance Criteria**:
+  - [x] Identik 1:1 dengan Gambar 2 Varian 1: sisi kiri `Page [input] of <total> | Rows per page [select 10/25/50/100]` menggunakan `<select>` native ter-style (`.pgn-per-page-select`); sisi kanan `<< < 1 2 3 ... 8 9 10 > >>` dengan halaman aktif berlatar abu muda netral (`var(--bg-subtle)`) dan hover hijau token di dalam `@media (hover: hover)`.
+  - [x] Bila total hanya 1 halaman (`totalPages <= 1`), bar tetap tampil utuh dengan tombol navigasi `disabled`.
+  - [x] Di mobile (`<= 768px`), bar ditumpuk rapi tanpa divider menggantung, dan target sentuh minimal 44x44px.
+  - [x] `public/js/pagination.js` menangani fetch JSON/partial HTML dengan `AbortController`, sinkronisasi `history.pushState` (`?page=&per_page=`), event `popstate`, validasi input halaman, pengumuman `aria-live="polite"`, dan fallback link nyata saat non-JS.
+  - [x] Seluruh label teks tersedia di `locales/id.json` dan `locales/en.json`.
+- **File Terdampak**: `views/partials/pagination.ejs`, `public/js/pagination.js`, `public/css/admin.css`, `locales/id.json`, `locales/en.json`
+- **Skill**: `impeccable` (polish, adapt, animate), `antislop-human`, `antislop-layoutmobile`, `antislop-code`
+- **Verifikasi**: Uji kesesuaian visual Varian 1, uji input halaman tidak valid, uji AbortController, uji responsif 320px, dan audit aksesibilitas. Selesai 2026-11-10.
+
+### T-304: Integrasi Paginasi Tanpa Reload pada Daftar RFQ/Inquiry Admin (/admin/inquiries) [DONE]
+- **Deskripsi**: Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke `/admin/inquiries` dengan validasi parameter server (`page`, `per_page` whitelist 10/25/50/100 default 10), respons JSON/partial HTML pada `GET /admin/inquiries`, sinkronisasi filter status & pencarian, pelestarian event delegation untuk aksi baris, serta penyesuaian halaman aktif setelah penghapusan data.
+- **Acceptance Criteria**:
+  - [x] Whitelist `per_page` (10/25/50/100, default 10) dan normalisasi `page` (`>= 1`, maks `totalPages`) di `controllers/admin/inquiryController.js` & `models/inquiryModel.js` menggunakan query terparameter.
+  - [x] Pindah halaman, ganti `per_page` (reset ke halaman 1), dan filter status/pencarian (reset ke halaman 1) berjalan tanpa reload halaman penuh dan sinkron dengan `history.pushState`.
+  - [x] Aksi baris (Tinjau modal, Detail, dropdown ubah status dengan `window.initEuDropdowns()`, badge, hapus data) tetap berfungsi setelah pindah halaman; halaman mundur otomatis bila halaman terakhir kosong setelah hapus.
+- **File Terdampak**: `controllers/admin/inquiryController.js`, `models/inquiryModel.js`, `views/admin/inquiries/index.ejs`, `public/js/admin-inquiries.js`, `public/css/admin.css`
+- **Skill**: `impeccable` (polish, adapt), `antislop-code`
+- **Verifikasi**: Uji pindah halaman, ganti per_page, filter + pencarian, aksi modal/status/hapus di halaman 2+, dan URL manual `?per_page=1000&page=abc`. Selesai 2026-11-10.
+
+### T-305: Integrasi Paginasi Tanpa Reload pada Daftar Katalog Produk Admin (/admin/products) [DONE]
+- **Deskripsi**: Mengintegrasikan komponen paginasi `.pgn-*` (Varian 1) ke halaman daftar Katalog Produk Admin (`/admin/products`) dengan `per_page` 10/25/50/100 (default 10) tanpa reload halaman, menyinkronkan filter kategori produk dan pencarian kata kunci dengan query server & `history.pushState`, serta menjaga stabilitas tinggi baris/thumbnail (tanpa layout shift).
+- **Acceptance Criteria**:
+  - [x] Whitelist `per_page` (10/25/50/100, default 10), normalisasi `page` (`>= 1`, maks `totalPages`), filter `category_id`, dan pencarian `q` di `controllers/admin/productController.js` & `models/productModel.js` menggunakan query terparameter.
+  - [x] Pindah halaman, ganti `per_page` (reset ke halaman 1), filter kategori, dan pencarian produk berjalan tanpa reload halaman penuh, melakukan scroll halus ke awal tabel, dan mengumumkan halaman baru via `aria-live="polite"`.
+  - [x] Aksi baris produk (Edit, Toggle Status, Hapus Produk) tetap berfungsi setelah pindah halaman; halaman mundur otomatis bila halaman terakhir kosong setelah hapus; halaman katalog publik (`/products`) tidak diubah.
+- **File Terdampak**: `controllers/admin/productController.js`, `models/productModel.js`, `views/admin/products/index.ejs`, `public/js/admin-products.js`, `public/css/admin.css`
+- **Skill**: `impeccable` (polish, adapt, animate), `antislop-human`, `antislop-layoutmobile`, `antislop-code`
+- **Verifikasi**: Uji `/admin/products` dengan kombinasi kategori + pencarian + ganti halaman & per_page; uji toggle status & hapus produk setelah pindah halaman. Selesai 2026-11-10.
+
+### T-306: Pengujian Wajib Menyeluruh, Audit Regresi Multi-Viewport (ID/EN), & Gerbang Kualitas Lint [DONE]
+- **Deskripsi**: Melaksanakan seluruh matriks pengujian wajib dan audit regresi lintas halaman (`/admin/inquiries`, `/admin/products`, `/admin/dashboard`, `/products` publik, dan footer di semua halaman publik), lintas viewport (`320px`, `375px`, `768px`, `1024px`, `1440px`), serta bahasa (`ID` & `EN`), verifikasi visual Playwright tanpa horizontal scroller, dan memastikan `npm run lint` serta `npm run lint:views` hijau.
+- **Acceptance Criteria**:
+  - [x] Lulus seluruh skenario uji wajib: halaman 1/tengah/terakhir; ganti `per_page` di tiap halaman; input `Page [n]` (0, negatif, huruf, melebihi total, kosong); URL manual `?per_page=1000` / `?page=abc` / `?page=9999`; data 0, 1, 10, 11, >100 baris; filter + paginasi; tombol Back/Forward browser; klik cepat berulang (`AbortController`); bukti Network tab tanpa full reload.
+  - [x] Bebas regresi dan error console di semua viewport (`320px` s/d `1440px`) dan bahasa (`ID` & `EN`).
+  - [x] Uji audit visual Playwright memastikan tidak ada horizontal scroller pada desktop dan mobile (`hasWrapperHorizontalOverflow: false`, `hasBodyHorizontalOverflow: false`).
+  - [x] `npm run lint` dan `npm run lint:views` hijau (0 error).
+- **File Terdampak**: `public/css/admin.css`, `tests/test-playwright-audit.js`
+- **Skill**: `impeccable` (polish, adapt), `antislop-code`
+- **Verifikasi**: Skrip `tests/test-playwright-audit.js` lulus 12/12 matriks viewport, `npm run lint` (0 error), `node scripts/lint-views.js` (0 error). Selesai 2026-11-10.
+
+### T-307: Penambahan Token Warna Latar --bg-soft-green & Gradasi Transisi Halus [DONE]
+- **Deskripsi**: Menambahkan token `--bg-soft-green` (#f3f6f3), `--color-bg-soft-green`, gradasi transisi `--trans-soft-green-to-subtle` & `--trans-subtle-to-soft-green`, serta `--color-text-muted-on-soft` (#475569) ke `public/css/tokens.css` dan `Design/DESIGN.md` untuk halaman About & News dengan rasio kontras WCAG AA >= 4.5:1.
+- **Acceptance Criteria**:
+  - [x] Token terdefinisi di `:root` `public/css/tokens.css` dan terdokumentasi di `Design/DESIGN.md`.
+  - [x] Token `--bg-base` dan `--bg-subtle` tidak berubah sehingga Homepage dan halaman lain identik 100%.
+  - [x] Rasio kontras teks utama (16.40:1), varian (8.55:1), muted (6.96:1), dan primary (5.22:1) lulus WCAG AA.
+- **File Terdampak**: `public/css/tokens.css`, `Design/DESIGN.md`, `tests/test-t307-soft-green-tokens.js`
+- **Skill**: `impeccable` (polish), `antislop-code`
+- **Verifikasi**: Uji Playwright `tests/test-t307-soft-green-tokens.js` lulus 4/4, `npm run lint` & `npm run lint:views` hijau. Selesai 2026-11-11.
+
+### T-308: Implementasi Latar Selang-Seling, Transisi Tepi Halus, & Pembersihan Inline Style Halaman Tentang Kami (/about) [DONE]
+- **Deskripsi**: Mengimplementasikan latar selang-seling pada `/about` (.sec-story berlatar `--bg-soft-green`, .sec-vm berlatar `--bg-subtle`, .abt-tkt-section latar foto/fallback, .sec-gallery berlatar `--bg-subtle`) dengan gradasi transisi tepi halus (48px mobile, 80px desktop) dan membersihkan seluruh inline style ke class `.abt-*`.
+- **Acceptance Criteria**:
+  - [x] Section bergantian warna latar dengan kontras kartu tetap tajam dan hero/CTA/footer dikecualikan.
+  - [x] Transisi tepi 48px/80px via pseudo-element tanpa garis batas keras.
+  - [x] Inline style dipindahkan ke class `.abt-*` dan teks menggunakan `t('about.*')`.
+- **File Terdampak**: `views/public/about.ejs`, `public/css/components.css`, `public/js/main.js`, `locales/id.json`, `locales/en.json`, `tests/test-t308-about-backgrounds.js`
+- **Skill**: `impeccable` (polish), `antislop-code`, `frontend-ui-engineering`, `antislop-human`
+- **Verifikasi**: Uji Playwright `tests/test-t308-about-backgrounds.js` lulus 6/6, `npm run lint:views` & `npm run lint:i18n` hijau. Selesai 2026-11-11.
+
+### T-309: Pemecahan Section Halaman News, Latar Selang-Seling, & Pembersihan Inline Style/Script (views/public/news.ejs) [DONE]
+- **Deskripsi**: Memecah area konten `/news` di bawah hero menjadi dua `<section>` mandiri (.nwl-sec-headline `--bg-soft-green` dan .nwl-sec-directory `--bg-subtle`) dengan transisi gradasi tepi halus 48px/80px, mengekstraksi ke partial modular <= 100 baris, dan membersihkan seluruh inline style/script.
+- **Acceptance Criteria**:
+  - [x] Dua `<section>` terpisah dengan latar selang-seling dan transisi tepi tanpa garis batas keras.
+  - [x] Section headline tidak disembunyikan oleh filter direktori di bawahnya.
+  - [x] Tanpa style/script inline, partial modular terbagi rapi, teks memakai `t('...')`.
+- **File Terdampak**: `views/public/news.ejs`, `views/partials/news/headline-section.ejs`, `views/partials/news/filter-bar.ejs`, `public/css/components.css`, `public/js/news-filter.js`, `tests/test-t309-news-sections.js`
+- **Skill**: `impeccable` (polish), `antislop-code`, `frontend-ui-engineering`
+- **Verifikasi**: Uji Playwright `tests/test-t309-news-sections.js` lulus 6/6, `npm run lint` & `npm run lint:views` hijau. Selesai 2026-11-11.
+
+### T-310: Judul Section Headline Dinamis Mengikuti Jenis Artikel pada Slide Headline Aktif [DONE]
+- **Deskripsi**: Menjadikan judul `.nwl-headline-sec-title` dan `aria-label` section headline dinamis berganti mengikuti atribut `type` (`berita`, `pers`, `blog`) dari slide headline aktif saat SSR dan setiap pergantian slide (klik panah, dot, swipe, autoplay) dengan kamus dwibahasa ID/EN.
+- **Acceptance Criteria**:
+  - [x] Kunci kamus untuk 3 jenis headline publikasi tersedia di `locales/id.json` & `locales/en.json`; tanpa judul "Semua Publikasi".
+  - [x] Atribut `data-post-type` tersemat pada tiap `.nwl-slide` dan kamus terjemahan pada `#nwlHeadlineSlider`.
+  - [x] SSR awal dan event pergantian slide menyinkronkan judul dan `aria-label` section; filter direktori tidak mempengaruhi headline.
+- **File Terdampak**: `views/partials/news/headline-section.ejs`, `public/js/news-filter.js`, `locales/id.json`, `locales/en.json`, `tests/test-t310-headline-dynamic-title.js`
+- **Skill**: `impeccable` (polish), `antislop-code`, `frontend-ui-engineering`, `test-driven-development`
+- **Verifikasi**: Uji Playwright `tests/test-t310-headline-dynamic-title.js` lulus 5/5, `npm run lint` & `npm run lint:i18n` hijau. Selesai 2026-11-11.
+
+### T-311: Adaptasi Filter Kategori Geser Horizontal di Mobile (.nwl-cat-pills) [DONE]
+- **Deskripsi**: Mengadaptasi baris pill kategori `.nwl-cat-pills` pada viewport mobile (< 768px) menjadi 1 baris geser horizontal (`overflow-x: auto; flex-wrap: nowrap`) tanpa scrollbar kasar, dengan petunjuk visual, target sentuh >= 44px, fokus keyboard jelas, auto scroll pill aktif ke tengah, dan form pencarian 100% di bawah baris pill.
+- **Acceptance Criteria**:
+  - [x] 1 baris geser horizontal di mobile tanpa membungkus, tanpa scrollbar kasar, tanpa horizontal overflow body.
+  - [x] Petunjuk visual geser halus di tepi kontainer scroll.
+  - [x] Pill aktif otomatis terlihat di layar (`scrollIntoView`), tinggi pill >= 44px, form pencarian di bawah pill selebar 100%.
+- **File Terdampak**: `public/css/components.css`, `public/js/news-filter.js`, `tests/test-t311-mobile-category-pills.js`
+- **Skill**: `antislop-layoutmobile`, `impeccable` (adapt), `test-driven-development`
+- **Verifikasi**: Uji Playwright `tests/test-t311-mobile-category-pills.js` lulus 6/6 pada 6 viewport (320px..1440px). Selesai 2026-11-11.
+
+### T-312: Unifikasi Komponen Paginasi Bersama (.pgn-*), Tampilan Mobile Sesuai Referensi, & Verifikasi Playwright End-to-End [DONE]
+- **Deskripsi**: Menyatukan komponen paginasi publik dan admin ke partial bersama `views/partials/pagination.ejs` (`.pgn-*`), menyatukan bar paginasi publik dengan latar section (tanpa card putih pembungkus), tetap menampilkan bar saat `totalPages === 1` dalam kondisi `disabled`, menyajikan layout mobile ringkas `[ « ] [ ‹ ] 1 / 2 [ › ] [ » ]` dengan target sentuh >= 44px, lokalisasi dwibahasa ID/EN, sinkronisasi Fetch API & URL, serta verifikasi Playwright end-to-end.
+- **Acceptance Criteria**:
+  - [x] Partial tunggal bersama `views/partials/pagination.ejs` (varian admin & public terpusat tanpa card putih), menghapus class lama `.pagination-bar` / `.pagination-item`.
+  - [x] Tetap tampil saat `totalPages === 1` dengan kontrol navigasi `disabled` selama ada artikel.
+  - [x] Desktop: deret nomor halaman dengan elipsis; Mobile: 4 tombol ikon persegi membulat mengapit indikator ringkas `1 / 2` di tengah.
+  - [x] Seluruh `aria-label` dwibahasa `t('pagination.*')`, `aria-current="page"`, sinkronisasi Fetch API & browser history tanpa reload.
+  - [x] Bebas regresi lintas halaman (About, News, Detail, Admin CMS, Homepage) dan multi-viewport.
+- **File Terdampak**: `views/partials/pagination.ejs`, `views/public/news.ejs`, `controllers/public/postController.js`, `public/js/news-filter.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`, `tests/test-t312-unified-pagination.js`
+- **Skill**: `impeccable` (adapt, polish), `frontend-ui-engineering`, `test-driven-development`
+- **Verifikasi**: Uji Playwright `tests/test-t312-unified-pagination.js` lulus 7/7 pada 6 viewport dan 2 bahasa, full regression 34/34 lulus, `npm run lint` dan `npm run lint:views` hijau. Selesai 2026-11-11.
+
+### T-313: Refaktor Partial Counter Statistik 2x2 Ber-Notch (`.abt-cnt-*`) & Perbaikan Count-Up [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md) (`FR-05`, `FR-33`), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Membuat partial modular `views/partials/about/story-counter.ejs` (66 baris, <= 100 baris) untuk blok pertama di `<section class="sec-story" id="sejarah">` tanpa panel pembungkus (`var(--bg-soft-green)`). Kolom kiri merender kicker, `h2`, dan paragraf sejarah; kolom kanan merender `<dl class="abt-cnt-grid">` dengan `stats.slice(0, 4)` (kelas `abt-cnt-grid--quad` aktif saat tepat 4 stat aktif untuk mengaktifkan potongan sudut cekung `radial-gradient` CSS mask dan 4 lencana panah diagonal pusat `.abt-cnt-badge`; bila `< 4` stat aktif, kartu kosong tidak dirender dan notch/lencana disembunyikan). Mengimplementasikan `public/js/about-story.js` untuk menjalankan count-up satu kali via `IntersectionObserver` + Anime.js (mendukung format `1990`, `1500+`, `1.500+`, `30+`, serta fallback nilai akhir statis untuk tanpa JS dan `prefers-reduced-motion: reduce`) dan mikro-interaksi hover kartu yang menggeser panah lencana kuadran terkait ke pusat via Anime.js; menghapus count-up legacy di `public/js/main.js`.
+- **Acceptance Criteria:**
+  - [x] Struktur, proporsi, potongan sudut (notch), dan 4 lencana panah pusat identik Gambar 2 saat terdapat 4 stat aktif; bila `< 4` stat aktif, kartu kosong tidak dirender dan notch/lencana disembunyikan; tanpa panel pembungkus; seluruh warna menggunakan token CSS.
+  - [x] Maksimal 4 stat aktif pertama tampil; tidak ada catatan tambahan di halaman Admin.
+  - [x] Animasi count-up berjalan satu kali saat terlihat, mendukung pemisah ribuan & sufiks, dan nilai akhir langsung tampil saat JS mati atau `prefers-reduced-motion: reduce`.
+  - [x] Hover kartu pada pointer (`@media (hover: hover)`) menggeser panah lencana kuadran terkait ke pusat via Anime.js dan mengubah warna lencana ke token primer.
+  - [x] Mobile (320px-767px) tampil rapi, profesional, bersih, jelas, dan elegan: teks di atas, grid 2x2 tetap ber-notch di bawah, angka tidak terpotong, dan kontras memenuhi WCAG AA.
+- **File Terdampak:** `views/public/about.ejs`, `views/partials/about/story-counter.ejs`, `public/css/components.css`, `public/js/about-story.js`, `public/js/main.js`, `views/partials/footer.ejs`
+- **Skill:** `antislop-code`, `impeccable` (polish), `ponytail` (full), `implement-task`
+- **Verifikasi:** Uji Playwright `tests/test-t313-about-story-htimeline.js` skenario 1-5 lulus 100%, `npm run lint`, `npm run lint:views` hijau. Selesai 2026-11-12.
+
+### T-314: Pengelolaan Header Timeline Editable di Admin CMS (`FR-34`) [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md) (`FR-34`), [tech/public-about.md](../tech/public-about.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Menambahkan 6 kunci settings: `about_timeline_tagline_id`, `about_timeline_tagline_en`, `about_timeline_title_id`, `about_timeline_title_en`, `about_timeline_desc_id`, `about_timeline_desc_en` di `models/aboutModel.js` (`getTimelineHeader()` dengan fallback teks bawaan dwibahasa dan registrasi pada `directSettingKeys` di `updateAboutData()`). Memperbarui `controllers/admin/aboutController.js` (sanitasi panjang 50/120/300) dan `controllers/public/pageController.js` untuk meneruskan `timelineHeader`. Membuat form admin partial modular `views/admin/about/partials/tab-sejarah-timeline-header.ejs` (39 baris) dan menyertakannya di `views/admin/about/partials/tab-sejarah.ejs` dengan tata letak `.form-row-2`.
+- **Acceptance Criteria:**
+  - [x] Ke-6 field header timeline (Tagline, Judul, Deskripsi ID/EN) dapat disimpan dari `/admin/about`, bertahan setelah muat ulang, dan tampil ter-escape (`<%= %>`) di halaman publik `/about`.
+  - [x] Bila field dikosongkan, sistem menggunakan fallback teks bawaan dwibahasa.
+  - [x] Setiap berkas partial admin tetap <= 100 baris tanpa catatan tambahan pada bagian statistik.
+- **File Terdampak:** `models/aboutModel.js`, `controllers/admin/aboutController.js`, `controllers/public/pageController.js`, `views/admin/about/partials/tab-sejarah-timeline-header.ejs`, `views/admin/about/partials/tab-sejarah.ejs`
+- **Skill:** `ponytail` (full), `antislop-human`, `impeccable`, `test-driven-development`
+- **Verifikasi:** Uji Playwright `tests/test-t313-about-story-htimeline.js` skenario 9 & 11 lulus 100%, `npm run lint`, `npm run lint:views` hijau. Selesai 2026-11-12.
+
+### T-315: Implementasi Komponen Horizontal Timeline Slider (`.abt-htl-*`) & Kamus i18n [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md) (`FR-05`, `FR-33`), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Membuat partial `views/partials/about/history-timeline.ejs` (73 baris, <= 100 baris) langsung di atas latar section `.sec-story#sejarah` tanpa panel putih pembungkus. Merender header dari `timelineHeader` beserta tombol persegi bergaris prev/next (>= 44x44px, `aria-controls`, `aria-disabled`) dan track `<ol class="abt-htl-track" id="abt-htl-track">` berbasis CSS `scroll-snap-type: x mandatory`. Menerapkan geometri garis horizontal dari tepi kiri track yang berhenti tepat di pusat bulatan item terakhir, efek hover/fokus (bulatan membesar + ring hijau, tahun hijau), serta pengisian segmen garis progres hijau tua (`var(--color-primary-dark)`, `.is-filled` + `scaleX` Anime.js) dari awal hingga item aktif. Menambahkan kunci i18n aksesibilitas di `locales/id.json` dan `locales/en.json`, serta mempertahankan `t('about.timeline_empty')`.
+- **Acceptance Criteria:**
+  - [x] Tampilan desktop (>= 1024px, 3 kolom) identik Gambar 1 (awal) dan Gambar 3 (ujung: garis berhenti tepat di bulatan item terakhir).
+  - [x] Tampilan tablet (768px-1023px, 2 kolom) dan mobile (< 768px, 1 kolom + peek ~15% item berikutnya, tombol prev/next pindah ke bawah deskripsi rata kiri sesuai Gambar 4, langsung di atas latar section tanpa panel putih).
+  - [x] Geser per 1 item, berhenti di ujung (`aria-disabled="true"`), tanpa autoplay, tombol disembunyikan bila total item <= kolom terlihat.
+  - [x] Hover/fokus item dan item aktif menampilkan ring hijau pada bulatan, tahun berwarna hijau primer, dan segmen garis sampai item aktif terisi hijau tua (`var(--color-primary-dark)`).
+  - [x] Swipe sentuh, navigasi papan ketik (`Tab`, `ArrowLeft`, `ArrowRight`), dan pengumuman `aria-live` berfungsi; tanpa horizontal overflow di 320px.
+- **File Terdampak:** `views/partials/about/history-timeline.ejs`, `views/public/about.ejs`, `public/css/components.css`, `public/js/about-story.js`, `locales/id.json`, `locales/en.json`
+- **Skill:** `antislop-code`, `ponytail` (full), `frontend-ui-engineering`, `impeccable` (craft-floor, polish)
+- **Verifikasi:** Uji Playwright `tests/test-t313-about-story-htimeline.js` skenario 6-8 lulus 100%, `npm run lint`, `npm run lint:views`, `npm run lint:i18n` hijau. Selesai 2026-11-12.
+
+### T-316: Pembersihan CSS/JS Legacy & Polish Lintas Breakpoint [DONE]
+- **Modul Spesifikasi:** [tech/public-about.md](../tech/public-about.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Menghapus aturan CSS legacy `.story-layout`, `.story-sticky`, `.story-kicker`, `.story-stats`, `.story-stat`, `.story-stat-num`, `.story-stat-label`, `.timeline`, `.tl-*`, dan `.abt-tl-empty` dari `public/css/components.css`. Melakukan audit Impeccable (polish, adapt, animate) pada breakpoint 320px, 375px, 480px, 768px, 1024px, 1440px, dengan perhatian khusus pada kerapian, kejelasan, dan keanggunan tampilan mobile. Memastikan seluruh `:hover` berada di dalam `@media (hover: hover)`, `:active` tersedia untuk layar sentuh, dan `@media (prefers-reduced-motion: reduce)` menonaktifkan transisi gerak.
+- **Acceptance Criteria:**
+  - [x] Tidak ada CSS/JS mati peninggalan `.story-*` / `.tl-*` yang tersisa di `public/css/components.css` dan `public/js/main.js`.
+  - [x] `npm run lint`, `npm run lint:views`, dan `npm run lint:i18n` hijau tanpa error.
+  - [x] Seluruh section lain di `/about` (Visi Misi, Budaya Kerja T-I-C-K-E-T, Galeri Bento + Lightbox, CTA) dan navigasi anchor `#sejarah` bebas regresi.
+- **File Terdampak:** `public/css/components.css`, `public/js/main.js`, `views/public/about.ejs`
+- **Skill:** `code-review-and-quality`, `impeccable` (polish), `ponytail` (full)
+- **Verifikasi:** Full regression check, console log zero errors, audit linters 100% hijau. Selesai 2026-11-12.
+
+### T-317: Verifikasi E2E Playwright Counter 2x2 & Horizontal Timeline Slider [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md)
+- **Deskripsi:** Membuat skrip pengujian otomatis `tests/test-t313-about-story-htimeline.js` menggunakan `node:test` dan `playwright` (`chromium`) yang menguji 12 skenario end-to-end: viewport bebas overflow & kolom proporsional, pembatasan 4 kartu quad vs tanpa notch pada < 4 stat, count-up & reduced motion, CSS mask radial-gradient kartu & lencana pusat aria-hidden, hover mikro-interaksi panah lencana via Anime.js, kontrol slider prev/next & scroll-snap & garis berhenti di bulatan terakhir & ArrowRight & progres garis hijau tua, auto-hide tombol navigasi bila total <= kolom terlihat, mobile 375px layout & peek, integrasi settings dwibahasa ID/EN, nol console error & anchor #sejarah, serta form admin simpan 6 header fields. Menyempurnakan ruang aman bulatan pertama (`--abt-htl-edge-bleed: 8px`) dan menghasilkan tangkapan layar audit visual di `tests/screenshots-audit/`.
+- **Acceptance Criteria:**
+  - [x] Seluruh pengujian di `tests/test-t313-about-story-htimeline.js` lulus 12/12 (100%) bersama `npm run lint`, `npm run lint:views`, dan `npm run lint:i18n`.
+- **File Terdampak:** `tests/test-t313-about-story-htimeline.js`, `public/css/components.css`, `public/js/about-story.js`
+- **Skill:** `ponytail-review`, `frontend-ui-engineering`, `code-review-and-quality`, `browser-testing-with-devtools`, `impeccable` (polish)
+- **Verifikasi:** Eksekusi `node --test tests/test-t313-about-story-htimeline.js` menghasilkan `12 passed, 0 failed` dalam 19.8 detik. Selesai 2026-11-12.
+
+
+

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-31 | Kode: views/public/about.ejs, controllers/public/pageController.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-12 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, controllers/public/pageController.js, public/js/about-story.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
@@ -38,19 +38,29 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 | `is_active` | `TINYINT(1)` | YES | `1` | Status penayangan |
 
 ### B. Tabel `about_stats` & `about_timeline`
-- `about_stats`: `id`, `number_value` (VARCHAR 50, mis. "1990", "1500+"), `suffix` (VARCHAR 20, mis. "Ton"), `label_id`, `label_en`, `sort_order`, `is_active`.
-- `about_timeline`: `id`, `year` (VARCHAR 20, mis. "1990"), `title_id`, `title_en`, `desc_id`, `desc_en`, `image_url`, `sort_order`, `is_active`.
+*File Migrasi:* `database/migrations/007_create_about_gallery_stats_timeline.sql`
+- `about_stats`: `id` (INT PK), `stat_value` (VARCHAR 50, menyimpan nilai gabungan angka dan sufiks seperti `'30+'`, `'1990'`, `'1.500+'`), `label_id` (VARCHAR 255), `label_en` (VARCHAR 255), `sort_order` (INT), `is_active` (TINYINT 1), `created_at`, `updated_at`.
+- `about_timeline`: `id` (INT PK), `year_label_id` (VARCHAR 100), `year_label_en` (VARCHAR 100), `title_id` (VARCHAR 255), `title_en` (VARCHAR 255), `description_id` (TEXT), `description_en` (TEXT), `sort_order` (INT), `is_active` (TINYINT 1), `created_at`, `updated_at`.
 
 ### C. Kunci Pengaturan Tentang Kami (`settings`)
 - `about_founded_year`, `about_former_names`, `about_history_title_*`, `about_history_*`.
-- `about_vision_*`, `about_mission_*`, `about_values_json` (Nilai TIKET).
+- `about_vision_*`, `about_mission_*`.
+- `about_values_bg_image`, `about_values_pill_*`, `about_values_subtitle_*`, `about_values_json` (6 Pilar Budaya Kerja Interaktif, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
 - `vision_image_url`, `mission_image_url`.
 - `about_gallery_kicker_*`, `about_gallery_title_*`, `about_story_kicker_*`.
+- `about_timeline_tagline_id`, `about_timeline_tagline_en`, `about_timeline_title_id`, `about_timeline_title_en`, `about_timeline_desc_id`, `about_timeline_desc_en` (6 kunci header Timeline Sejarah yang dikelola di `/admin/about` melalui `aboutModel.getTimelineHeader()` dan `aboutModel.updateAboutData()`, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md)).
 
 ---
 
 ## 4. Komponen Antarmuka & Prefix CSS
 
+- **Sistem Latar Selang-Seling & Transisi Tepi (`.sec-story`, `.sec-vm`, `.abt-tkt-section`, `.sec-gallery`, `.abt-*`):**
+  - `.sec-story#sejarah` menggunakan `background-color: var(--bg-soft-green)`.
+  - `.sec-vm#visi-misi` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element `::before` bertinggi `48px` (mobile `< 768px`) dan `80px` (desktop `>= 768px`) memakai `background: var(--trans-soft-green-to-subtle)`.
+  - `.abt-tkt-section#core-values` mempertahankan foto latar operasional beserta `.abt-tkt-bg-scrim` yang menyatu mulus di tepi atas/bawah; apabila tanpa foto latar, fallback menggunakan `var(--bg-soft-green)` dengan transisi tepi `var(--trans-subtle-to-soft-green)`.
+  - `.sec-gallery#galeri` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element gradasi tepi atas yang menyatu dari section sebelumnya, sementara kartu `.abt-cnt-card` dan `.vm-card` mempertahankan `background: var(--color-surface)` dan elevasi token.
+  - Seluruh atribut `style="..."` inline pada `views/public/about.ejs` dipindahkan ke class CSS ter-scope berprefix `.abt-*` (`.abt-hero-content`, `.abt-vm-point-text`, serta atribut `hidden` pada `#bentoPager`) dan teks menggunakan kamus `t('about.*')`.
+- **Nilai Inti Budaya Kerja (.abt-tkt-*):** Interactive Expanding Accordion 6 pilar menggantikan `.sec-values` legacy (spesifikasi arsitektur DOM, kontrak SVG whitelist, lifecycle anime.js, dan form admin didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
 - **Galeri Mosaik Bento & Integrasi Lightbox (`.abt-gal-*` & `.lbx-*`):**
   - Prefix Class: `.sec-gallery`, `.abt-gal-container`, `.abt-gal-viewport`, `.abt-gal-grid`, `.abt-gal-tile`, serta `.bento-grid` dan `.sec-gallery .bento-*`.
   - Varian Posisi Tile: `.abt-gal-tile--pos-1` s/d `.abt-gal-tile--pos-6`, `.abt-gal-tile--tall`, `.abt-gal-tile--wide`.
@@ -61,8 +71,10 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
     - Baik render awal SSR di `views/public/about.ejs` maupun fungsi `createSingleTile(item, idx, globalIdx)` di `public/js/main.js` menyematkan atribut `data-slide-index="<globalIndex>"`, `tabindex="0"`, `role="button"`, dan `aria-label` dwibahasa (ID/EN) pada setiap `.abt-gal-tile`.
     - Listener menggunakan *event delegation* pada kontainer `#bentoGalleryGrid` untuk menangkap klik dan `keydown` (`Enter`/`Space`) pada `.abt-gal-tile`, lalu memanggil `window.EuodooLightbox.open(slidesData, globalIndex, tileEl)` menggunakan array penuh dari `#bentoGalleryData` (bukan hanya 6 tile halaman aktif).
     - Komponen bersama Lightbox dimuat dari PhotoSwipe v5 *self-hosted* (`public/vendor/photoswipe/`) bersama `public/css/lightbox.css` dan `public/js/lightbox.js` berprefix `.lbx-*` (detail penuh pada `tech/products-detail.md` Bagian 6.2), menampilkan *caption* kategori (`category`) dan judul (`title`), penghitung `"3 / 12"`, kontrol *zoom* klik + tombol `+`/`-` di desktop, serta *double-tap* + *pinch-to-zoom* + *swipe* di perangkat sentuh.
-- **Nilai Inti Perusahaan:** `.sec-values`, `.value-card.pillar-card`, `.value-letter`.
-- **Statistik & Timeline:** `.sec-stats`, `.stat-num` (count-up target), `.timeline-card`, `.timeline-node`.
+- **Counter Statistik 2x2 Ber-Notch & Horizontal Timeline Slider (`.abt-cnt-*` & `.abt-htl-*`):**
+  - Menggantikan class legacy `.story-layout`, `.story-sticky`, `.story-stats`, `.story-stat*`, `.timeline`, `.tl-*`, dan `.abt-tl-empty` di dalam `<section class="sec-story" id="sejarah">`.
+  - Dimodularisasi menjadi partial `views/partials/about/story-counter.ejs` (`.abt-cnt-*`) dan `views/partials/about/history-timeline.ejs` (`.abt-htl-*`) beserta script ter-scope `public/js/about-story.js`.
+  - Spesifikasi teknis lengkap (struktur DOM, CSS `radial-gradient` *inverted corner mask*, mikro-interaksi lencana pusat Anime.js, parser *count-up*, mekanik slider `scroll-snap` + garis progres `is-filled`, dan kontrak form admin header timeline) didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md).
 
 ---
 

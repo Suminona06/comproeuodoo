@@ -128,7 +128,7 @@ async function runKelompokCTests() {
   const publicSanitizedHtml = await publicSanitizedRes.text();
   assert(!publicSanitizedHtml.includes('<script>alert('), 'Public page must not render injected script');
   assert(publicSanitizedHtml.includes('Judul Aman'), 'Public page must render valid content');
-  assert(publicSanitizedHtml.includes('class="article-prose"'), 'Public page must contain .article-prose container');
+  assert(publicSanitizedHtml.includes('class="nwd-prose"'), 'Public page must contain .nwd-prose container');
   console.log('  ✓ Public article page safely renders sanitized rich HTML without XSS');
 
   // 4b. Test Legacy Plain-Text Article (Article #1)
@@ -136,7 +136,7 @@ async function runKelompokCTests() {
   const legacyRes = await fetch(`${BASE_URL}/news/${legacySlug}`);
   assert.strictEqual(legacyRes.status, 200, 'Legacy plain-text article page must return 200');
   const legacyHtml = await legacyRes.text();
-  assert(legacyHtml.includes('class="article-prose"'), 'Legacy article must contain .article-prose container');
+  assert(legacyHtml.includes('class="nwd-prose"'), 'Legacy article must contain .nwd-prose container');
   assert(legacyHtml.includes('<p>PT Euodoo terus meningkatkan'), 'Legacy plain-text article automatically formatted with paragraph tags');
   console.log('  ✓ Legacy plain-text article rendered seamlessly with paragraph auto-formatting');
 
@@ -145,7 +145,7 @@ async function runKelompokCTests() {
   const existingHtmlRes = await fetch(`${BASE_URL}/news/${existingHtmlSlug}`);
   assert.strictEqual(existingHtmlRes.status, 200, 'Existing HTML article must return 200');
   const existingHtmlText = await existingHtmlRes.text();
-  assert(existingHtmlText.includes('class="article-prose"'), 'Existing article must contain .article-prose container');
+  assert(existingHtmlText.includes('class="nwd-prose"'), 'Existing article must contain .nwd-prose container');
   assert(existingHtmlText.includes('ekolabel'), 'Existing article content rendered properly');
   console.log('  ✓ Existing HTML article renders with full styling and layout integrity');
 

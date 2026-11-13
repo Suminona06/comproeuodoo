@@ -4,17 +4,101 @@ import aboutStatsModel from '../../models/aboutStatsModel.js';
 import aboutTimelineModel from '../../models/aboutTimelineModel.js';
 import logger from '../../utils/logger.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
+import { TICKET_ICONS, TICKET_ICON_KEYS, isValidTicketIconKey } from '../../utils/ticketIcons.js';
+
+function sanitizeSafePath(val, fallback = '') {
+  if (typeof val !== 'string') return fallback;
+  const trimmed = val.trim();
+  if (/^(\/uploads\/|\/images\/)[a-zA-Z0-9_.\-/]+$/.test(trimmed) && trimmed.length <= 500) {
+    return trimmed;
+  }
+  return fallback;
+}
+
+function sanitizeOptionalBgImage(rawBg) {
+  if (rawBg === undefined) return undefined;
+  const trimmed = String(rawBg || '').trim();
+  if (trimmed === '') return '';
+  return sanitizeSafePath(trimmed, '');
+}
+
+function getFieldValue(body, formKey, idx, prefix, defVal = '') {
+  const val = body[`${prefix}_${formKey}`] ?? body[`${prefix}_${idx}`];
+  if (val !== undefined && val !== null && String(val).trim() !== '') {
+    return String(val).trim();
+  }
+  return defVal;
+}
+
+function parseSingleValue(body, defLetter, idx, defaultValues) {
+  const formKey = idx === 5 ? 'T_2' : defLetter;
+  const def = defaultValues[idx] || defaultValues[0];
+  const letter = getFieldValue(body, formKey, idx, 'val_letter', defLetter).charAt(0).toUpperCase();
+  const rawIcon = getFieldValue(body, formKey, idx, 'val_icon_key', def.icon_key);
+  const rawImg = getFieldValue(body, formKey, idx, 'val_image_url', def.image_url);
+
+  return {
+    letter: letter || defLetter,
+    title_id: getFieldValue(body, formKey, idx, 'val_title_id', def.title_id).slice(0, 50),
+    title_en: getFieldValue(body, formKey, idx, 'val_title_en', def.title_en).slice(0, 50),
+    desc_id: getFieldValue(body, formKey, idx, 'val_desc_id', def.desc_id).slice(0, 250),
+    desc_en: getFieldValue(body, formKey, idx, 'val_desc_en', def.desc_en).slice(0, 250),
+    image_url: sanitizeSafePath(rawImg, def.image_url),
+    icon_key: isValidTicketIconKey(rawIcon) ? rawIcon : def.icon_key,
+    sort_order: idx + 1
+  };
+}
+
+function parseTicketValues(body, defaultValues) {
+  const hasAnyValKey = Object.keys(body || {}).some((k) => k.startsWith('val_'));
+  if (!hasAnyValKey) return undefined;
+  const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T'];
+  return actualLetters.map((defLetter, idx) => parseSingleValue(body, defLetter, idx, defaultValues));
+}
+
+function readRawField(body, primaryKey, aliasKey) {
+  return body[primaryKey] !== undefined ? body[primaryKey] : body[aliasKey];
+}
+
+function trimSliceOptional(val, maxLen, emptyFallback = '') {
+  if (val === undefined) return undefined;
+  const str = String(val || emptyFallback).trim();
+  return str.slice(0, maxLen);
+}
+
+function parseTicketHeader(body) {
+  const rawBg = readRawField(body, 'about_values_bg_image', 'values_bg_image');
+  return {
+    about_values_bg_image: sanitizeOptionalBgImage(rawBg),
+    about_values_pill_id: trimSliceOptional(readRawField(body, 'about_values_pill_id', 'values_pill_id'), 50, 'Budaya Kerja'),
+    about_values_pill_en: trimSliceOptional(readRawField(body, 'about_values_pill_en', 'values_pill_en'), 50, 'Corporate Culture'),
+    about_values_subtitle_id: trimSliceOptional(readRawField(body, 'about_values_subtitle_id', 'values_subtitle_id'), 150),
+    about_values_subtitle_en: trimSliceOptional(readRawField(body, 'about_values_subtitle_en', 'values_subtitle_en'), 150)
+  };
+}
+
+function parseTimelineHeader(body = {}) {
+  return {
+    about_timeline_tagline_id: trimSliceOptional(body.about_timeline_tagline_id, 50),
+    about_timeline_tagline_en: trimSliceOptional(body.about_timeline_tagline_en, 50),
+    about_timeline_title_id: trimSliceOptional(body.about_timeline_title_id, 120),
+    about_timeline_title_en: trimSliceOptional(body.about_timeline_title_en, 120),
+    about_timeline_desc_id: trimSliceOptional(body.about_timeline_desc_id, 300),
+    about_timeline_desc_en: trimSliceOptional(body.about_timeline_desc_en, 300)
+  };
+}
 
 export const aboutController = {
   async index(req, res) {
     try {
-      const [about, gallerySlides, stats, timeline, galleryHeader, storyHeader, visionMissionImages] = await Promise.all([
+      const [about, gallerySlides, stats, timeline, galleryHeader, storyHeader, timelineHeader, visionMissionImages] = await Promise.all([
         aboutModel.getAboutData(),
         aboutGalleryModel.findAll(),
         aboutStatsModel.findAll(),
         aboutTimelineModel.findAll(),
         aboutModel.getGalleryHeader(),
         aboutModel.getStoryHeader(),
+        aboutModel.getTimelineHeader(),
         aboutModel.getVisionMissionImages()
       ]);
 
@@ -22,11 +106,14 @@ export const aboutController = {
         title: 'Manajemen Halaman Tentang Kami - PT Euodoo CMS',
         activeNav: 'about',
         about,
+        ticketIcons: TICKET_ICONS,
+        ticketIconKeys: TICKET_ICON_KEYS,
         gallerySlides,
         stats,
         timeline,
         galleryHeader,
         storyHeader,
+        timelineHeader,
         visionMissionImages,
         error: req.query.error || null,
         success: req.query.success || null,
@@ -71,19 +158,10 @@ export const aboutController = {
         about_story_kicker_en
       } = req.body;
 
-      const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T'];
-      const defaultValues = aboutModel.getDefaults().values;
-
-      const values = actualLetters.map((letter, idx) => {
-        const formKey = idx === 5 ? 'T_2' : letter;
-        return {
-          letter,
-          title_id: req.body[`val_title_id_${formKey}`] || defaultValues[idx].title_id,
-          title_en: req.body[`val_title_en_${formKey}`] || defaultValues[idx].title_en,
-          desc_id: req.body[`val_desc_id_${formKey}`] || defaultValues[idx].desc_id,
-          desc_en: req.body[`val_desc_en_${formKey}`] || defaultValues[idx].desc_en
-        };
-      });
+      const currentAbout = await aboutModel.getAboutData();
+      const defaultValues = currentAbout?.values || aboutModel.getDefaults().values;
+      const values = parseTicketValues(req.body, defaultValues);
+      const ticketHeader = parseTicketHeader(req.body);
 
       const defaultCerts = aboutModel.getDefaults().certifications;
       const certifications = defaultCerts.map((cert, idx) => {
@@ -125,6 +203,8 @@ export const aboutController = {
         about_gallery_body_en: about_gallery_body_en !== undefined ? about_gallery_body_en.trim() : undefined,
         about_story_kicker_id: about_story_kicker_id !== undefined ? about_story_kicker_id.trim() : undefined,
         about_story_kicker_en: about_story_kicker_en !== undefined ? about_story_kicker_en.trim() : undefined,
+        ...parseTimelineHeader(req.body),
+        ...ticketHeader,
         values,
         certifications
       };

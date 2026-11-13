@@ -1,0 +1,92 @@
+<%
+  const headlinesList = (typeof headlinePosts !== 'undefined' && Array.isArray(headlinePosts) && headlinePosts.length > 0)
+    ? headlinePosts
+    : (typeof headlinePost !== 'undefined' && headlinePost ? [headlinePost] : []);
+  const isHidden = (currentPage > 1 || search);
+  const initialType = (headlinesList[0] && ['berita', 'pers', 'blog'].includes(headlinesList[0].type))
+    ? headlinesList[0].type
+    : 'berita';
+  const initialTitleKey = 'news.headline_title_' + initialType;
+  const initialAriaKey = 'news.headline_aria_' + initialType;
+%>
+<% if (headlinesList.length > 0) { %>
+  <section class="nwl-sec-headline" id="nwlHeadlineSec" aria-label="<%= t(initialAriaKey) %>" <%= isHidden ? 'hidden' : '' %>>
+    <div class="container">
+      <h2 class="nwl-headline-sec-title"><%= t(initialTitleKey) %></h2>
+
+      <div class="nwl-headline-slider" id="nwlHeadlineSlider" role="region" aria-roledescription="carousel"
+        data-title-berita="<%= t('news.headline_title_berita') %>"
+        data-title-pers="<%= t('news.headline_title_pers') %>"
+        data-title-blog="<%= t('news.headline_title_blog') %>"
+        data-aria-berita="<%= t('news.headline_aria_berita') %>"
+        data-aria-pers="<%= t('news.headline_aria_pers') %>"
+        data-aria-blog="<%= t('news.headline_aria_blog') %>">
+        <div class="nwl-slider-track" id="nwlSliderTrack">
+          <% headlinesList.forEach((hl, idx) => { %>
+            <%
+              const hlTitle = currentLangCode === 'en' ? (hl.title_en || hl.title_id) : hl.title_id;
+              const hlExcerpt = currentLangCode === 'en' ? (hl.excerpt_en || hl.excerpt_id) : hl.excerpt_id;
+              const hlDate = hl.published_at ? new Date(hl.published_at).toLocaleDateString(currentLangCode === 'en' ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+              const isHlPlaceholder = !(hl.cover_image && hl.cover_image.trim());
+              const hlImage = isHlPlaceholder ? '/uploads/media/media-1792035656935-732682512.webp' : hl.cover_image.trim();
+              const hlType = hl.type || 'berita';
+            %>
+            <div class="nwl-slide <%= idx === 0 ? 'active' : '' %>" data-slide-index="<%= idx %>" data-post-type="<%= hlType %>" role="group" aria-roledescription="slide" aria-label="<%= (idx + 1) + ' / ' + headlinesList.length %>" <%= idx !== 0 ? 'aria-hidden="true"' : '' %>>
+              <div class="nwl-slide-grid">
+                <div class="nwl-slide-media<%= isHlPlaceholder ? ' nwl-slide-media-placeholder' : '' %>">
+                  <img src="<%= hlImage %>" alt="<%= hlTitle %>" loading="<%= idx === 0 ? 'eager' : 'lazy' %>" class="<%= isHlPlaceholder ? 'nwl-img-placeholder' : '' %>">
+                </div>
+                <div class="nwl-slide-content">
+                  <% if (hlDate) { %>
+                    <time datetime="<%= hl.published_at %>" class="nwl-slide-date">
+                      <%= hlDate %>
+                    </time>
+                  <% } %>
+                  <h3 class="nwl-slide-title">
+                    <a href="/news/<%= hl.slug %>" class="nwl-slide-title-link" <%= idx !== 0 ? 'tabindex="-1"' : '' %>>
+                      <%= hlTitle %>
+                    </a>
+                  </h3>
+                  <% if (hlExcerpt) { %>
+                    <p class="nwl-slide-excerpt">
+                      <%= hlExcerpt %>
+                    </p>
+                  <% } %>
+                  <div class="nwl-slide-action">
+                    <a href="/news/<%= hl.slug %>" class="nwl-slide-link" <%= idx !== 0 ? 'tabindex="-1"' : '' %>>
+                      <span><%= currentLangCode === 'en' ? 'Read more' : 'Baca selengkapnya' %></span>
+                      <span aria-hidden="true">&rarr;</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <% if (headlinesList.length > 1) { %>
+          <div class="nwl-slider-controls">
+            <div class="nwl-slider-indicators" role="tablist" aria-label="Slide indicators">
+              <% headlinesList.forEach((_, idx) => { %>
+                <button type="button" class="nwl-indicator-bar <%= idx === 0 ? 'active' : '' %>" data-slide-to="<%= idx %>" role="tab" aria-selected="<%= idx === 0 %>" aria-label="Slide <%= idx + 1 %>"></button>
+              <% }); %>
+            </div>
+            <div class="nwl-slider-arrows">
+              <button type="button" class="nwl-arrow-btn nwl-arrow-prev" id="nwlPrevBtn" aria-label="<%= currentLangCode === 'en' ? 'Previous slide' : 'Slide sebelumnya' %>">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button type="button" class="nwl-arrow-btn nwl-arrow-next" id="nwlNextBtn" aria-label="<%= currentLangCode === 'en' ? 'Next slide' : 'Slide berikutnya' %>">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+<% } %>
+

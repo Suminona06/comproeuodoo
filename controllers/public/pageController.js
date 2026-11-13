@@ -17,6 +17,7 @@ export const pageController = {
         timeline,
         galleryHeader,
         storyHeader,
+        timelineHeader,
         visionMissionImages
       ] = await Promise.all([
         aboutModel.getAboutData(),
@@ -26,22 +27,26 @@ export const pageController = {
         aboutTimelineModel.findAll({ activeOnly: true }),
         aboutModel.getGalleryHeader(),
         aboutModel.getStoryHeader(),
+        aboutModel.getTimelineHeader(),
         aboutModel.getVisionMissionImages()
       ]);
 
       const lang = res.locals.currentLang || 'id';
       const title = (lang === 'en' ? 'About Us' : 'Tentang Kami') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const ticketAcronym = (about?.values || []).map((v) => v.letter).join(' - ') || 'T - I - C - K - E - T';
 
       res.render('public/about', {
         title,
         path: '/about',
         about,
+        ticketAcronym,
         heroBanner,
         gallerySlides,
         stats,
         timeline,
         galleryHeader,
         storyHeader,
+        timelineHeader,
         visionMissionImages
       });
     } catch (err) {
@@ -51,6 +56,7 @@ export const pageController = {
         title: 'Tentang Kami | PT Euodoo',
         path: '/about',
         about: fallbackAbout,
+        ticketAcronym: (fallbackAbout.values || []).map((v) => v.letter).join(' - ') || 'T - I - C - K - E - T',
         heroBanner: null,
         gallerySlides: [],
         stats: [],
@@ -66,6 +72,14 @@ export const pageController = {
         storyHeader: {
           kicker_id: 'Kisah Kami',
           kicker_en: 'Our Story'
+        },
+        timelineHeader: {
+          tagline_id: 'Perjalanan Kami',
+          tagline_en: 'Our Journey',
+          title_id: 'Jejak Langkah & Tonggak Sejarah',
+          title_en: 'Milestones & Historical Journey',
+          desc_id: 'Menelusuri pertumbuhan PT Euodoo dari awal berdiri hingga menjadi mitra solusi korporasi dan industri yang terpercaya.',
+          desc_en: 'Tracing PT Euodoo\'s growth from its founding to becoming a trusted corporate and industrial solutions partner.'
         },
         visionMissionImages: {
           vision_image_url: '',

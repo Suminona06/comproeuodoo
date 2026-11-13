@@ -11,6 +11,10 @@
   --color-bg-base: #ffffff;
   --color-bg-subtle: #f8fafc;
 
+  /* Alternating Surface Tokens (Khusus Halaman Tentang Kami /about & Berita /news - T-307) */
+  --bg-soft-green: #f3f6f3;
+  --color-bg-soft-green: #f3f6f3;
+
   /* Surfaces & Neutral Containers */
   --color-surface: var(--bg-base);
   --color-surface-dim: #e2e8f0;
@@ -27,11 +31,14 @@
   --trans-subtle-to-base: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
   --trans-subtle-to-wcu: linear-gradient(to bottom, rgba(248, 250, 252, 0) 0%, #f4fbf6 100%);
   --trans-wcu-to-subtle: linear-gradient(to bottom, #def0e6 0%, rgba(248, 250, 252, 0) 100%);
+  --trans-soft-green-to-subtle: linear-gradient(to bottom, #f3f6f3 0%, #f8fafc 100%);
+  --trans-subtle-to-soft-green: linear-gradient(to bottom, #f8fafc 0%, #f3f6f3 100%);
 
   /* Typography / Text Neutrals */
   --color-text-main: #0f172a;
   --color-text-navy: #131b2e;
   --color-text-muted: #64748b;
+  --color-text-muted-on-soft: #475569;
   --color-text-variant: #424753;
   --color-text-inverse: #ffffff;
   --color-inverse-surface: #283044;
@@ -53,6 +60,7 @@
   --primary-subtle: #e6f7f2;
   --primary-border: #a3e0d0;
   --shadow-primary: 0 2px 6px rgba(0, 117, 90, 0.20);
+  --shadow-glow-primary: 0 0 25px rgba(0, 167, 124, 0.45), 0 18px 48px rgba(0, 117, 90, 0.25);
   --trans-cta-gradient: linear-gradient(135deg, #00573f 0%, #00755a 60%, #009476 100%);
 
   /* Admin Button Tokens (T-257) */

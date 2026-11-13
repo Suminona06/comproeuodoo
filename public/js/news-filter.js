@@ -93,39 +93,119 @@
 
   function renderPagination(page, totalPages, lang) {
     if (!newsPagination) return;
-    if (totalPages <= 1) {
-      newsPagination.innerHTML = '';
-      newsPagination.setAttribute('hidden', '');
-      return;
-    }
+    newsPagination.className = 'pgn-bar pgn-bar--public';
     newsPagination.removeAttribute('hidden');
-    var prevLabel = lang === 'en' ? 'Previous' : 'Sebelumnya';
-    var nextLabel = lang === 'en' ? 'Next' : 'Berikutnya';
 
-    var html = '';
-    if (page > 1) {
-      html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, page - 1) + '" class="pagination-item" data-page="' + (page - 1) + '" aria-label="Halaman Sebelumnya">&larr; ' + prevLabel + '</a>';
+    var isFirstDisabled = page <= 1;
+    var isLastDisabled = page >= totalPages;
+
+    var firstLabel = lang === 'en' ? 'First page' : 'Halaman pertama';
+    var prevLabel = lang === 'en' ? 'Previous page' : 'Halaman sebelumnya';
+    var nextLabel = lang === 'en' ? 'Next page' : 'Halaman berikutnya';
+    var lastLabel = lang === 'en' ? 'Last page' : 'Halaman terakhir';
+    var pageLabel = lang === 'en' ? 'Page' : 'Halaman';
+    var navLabel = lang === 'en' ? 'Pagination Navigation' : 'Navigasi Halaman';
+
+    newsPagination.setAttribute('aria-label', navLabel);
+
+    var firstIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>';
+    var prevIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+    var nextIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+    var lastIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>';
+
+    var html = '<div class="pgn-nav" role="navigation" aria-label="' + navLabel + '">';
+
+    if (isFirstDisabled) {
+      html += '<span class="pgn-btn pgn-btn--first is-disabled" aria-disabled="true" aria-label="' + firstLabel + '" title="' + firstLabel + '">' + firstIcon + '</span>';
     } else {
-      html += '<span class="pagination-item disabled" aria-disabled="true">&larr; ' + prevLabel + '</span>';
+      html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, 1) + '" class="pgn-btn pgn-btn--first" data-page="1" aria-label="' + firstLabel + '" title="' + firstLabel + '">' + firstIcon + '</a>';
     }
 
-    for (var p = 1; p <= totalPages; p++) {
-      if (p === page) {
-        html += '<span class="pagination-item active" aria-current="page">' + p + '</span>';
-      } else if (p === 1 || p === totalPages || (p >= page - 2 && p <= page + 2)) {
-        html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, p) + '" class="pagination-item" data-page="' + p + '">' + p + '</a>';
-      } else if (p === page - 3 || p === page + 3) {
-        html += '<span class="pagination-item disabled">...</span>';
+    if (isFirstDisabled) {
+      html += '<span class="pgn-btn pgn-btn--prev is-disabled" aria-disabled="true" aria-label="' + prevLabel + '" title="' + prevLabel + '">' + prevIcon + '</span>';
+    } else {
+      html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, page - 1) + '" class="pgn-btn pgn-btn--prev" data-page="' + (page - 1) + '" aria-label="' + prevLabel + '" title="' + prevLabel + '">' + prevIcon + '</a>';
+    }
+
+    html += '<div class="pgn-pages">';
+    var pageItems = [];
+    if (totalPages <= 7) {
+      for (var i = 1; i <= totalPages; i++) pageItems.push(i);
+    } else if (page <= 3) {
+      pageItems = [1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages];
+    } else if (page >= totalPages - 2) {
+      pageItems = [1, 2, 3, '...', totalPages - 2, totalPages - 1, totalPages];
+    } else {
+      pageItems = [1, '...', page - 1, page, page + 1, '...', totalPages];
+    }
+
+    for (var j = 0; j < pageItems.length; j++) {
+      var item = pageItems[j];
+      if (item === '...') {
+        html += '<span class="pgn-ellipsis" aria-hidden="true">&hellip;</span>';
+      } else if (item === page) {
+        html += '<span class="pgn-num is-active" aria-current="page">' + item + '</span>';
+      } else {
+        html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, item) + '" class="pgn-num" data-page="' + item + '" aria-label="' + pageLabel + ' ' + item + '">' + item + '</a>';
       }
     }
+    html += '</div>';
 
-    if (page < totalPages) {
-      html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, page + 1) + '" class="pagination-item" data-page="' + (page + 1) + '" aria-label="Halaman Berikutnya">' + nextLabel + ' &rarr;</a>';
+    html += '<div class="pgn-mobile-info" aria-hidden="true"><span>' + page + ' / ' + totalPages + '</span></div>';
+
+    if (isLastDisabled) {
+      html += '<span class="pgn-btn pgn-btn--next is-disabled" aria-disabled="true" aria-label="' + nextLabel + '" title="' + nextLabel + '">' + nextIcon + '</span>';
     } else {
-      html += '<span class="pagination-item disabled" aria-disabled="true">' + nextLabel + ' &rarr;</span>';
+      html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, page + 1) + '" class="pgn-btn pgn-btn--next" data-page="' + (page + 1) + '" aria-label="' + nextLabel + '" title="' + nextLabel + '">' + nextIcon + '</a>';
     }
 
+    if (isLastDisabled) {
+      html += '<span class="pgn-btn pgn-btn--last is-disabled" aria-disabled="true" aria-label="' + lastLabel + '" title="' + lastLabel + '">' + lastIcon + '</span>';
+    } else {
+      html += '<a href="' + buildUrl(currentType, currentCategory, currentSearch, totalPages) + '" class="pgn-btn pgn-btn--last" data-page="' + totalPages + '" aria-label="' + lastLabel + '" title="' + lastLabel + '">' + lastIcon + '</a>';
+    }
+
+    html += '</div>';
     newsPagination.innerHTML = html;
+  }
+
+  function updateScrollHints() {
+    if (!catPillsContainer) return;
+    var maxScroll = catPillsContainer.scrollWidth - catPillsContainer.clientWidth;
+    if (maxScroll <= 2) {
+      catPillsContainer.removeAttribute('data-scroll-left');
+      catPillsContainer.removeAttribute('data-scroll-right');
+      return;
+    }
+    var sl = catPillsContainer.scrollLeft;
+    if (sl > 4) {
+      catPillsContainer.setAttribute('data-scroll-left', 'true');
+    } else {
+      catPillsContainer.removeAttribute('data-scroll-left');
+    }
+    if (sl < maxScroll - 4) {
+      catPillsContainer.setAttribute('data-scroll-right', 'true');
+    } else {
+      catPillsContainer.removeAttribute('data-scroll-right');
+    }
+  }
+
+  function scrollActivePillIntoView() {
+    if (!catPillsContainer) return;
+    var activePill = catPillsContainer.querySelector('.nwl-cat-pill.active');
+    if (!activePill) return;
+
+    var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var behavior = prefersReducedMotion ? 'auto' : 'smooth';
+
+    if (activePill.scrollIntoView) {
+      activePill.scrollIntoView({
+        behavior: behavior,
+        inline: 'center',
+        block: 'nearest'
+      });
+    }
+    updateScrollHints();
   }
 
   function renderCategories(categories, activeCat, lang) {
@@ -142,6 +222,8 @@
       }
     }
     catPillsContainer.innerHTML = html;
+    scrollActivePillIntoView();
+    updateScrollHints();
   }
 
   function updateControlsUI(data) {
@@ -179,9 +261,9 @@
 
     if (headlineSec) {
       if (data.currentPage === 1 && !data.search) {
-        headlineSec.style.display = '';
+        headlineSec.removeAttribute('hidden');
       } else {
-        headlineSec.style.display = 'none';
+        headlineSec.setAttribute('hidden', '');
       }
     }
   }
@@ -275,7 +357,7 @@
       return;
     }
 
-    var pageItem = e.target.closest('#newsPagination a.pagination-item');
+    var pageItem = e.target.closest('#newsPagination a.pgn-btn, #newsPagination a.pgn-num, #newsPagination a.pagination-item');
     if (pageItem) {
       e.preventDefault();
       var targetPage = parseInt(pageItem.getAttribute('data-page'), 10);
@@ -331,4 +413,181 @@
     var currentUrl = buildUrl(currentType, currentCategory, currentSearch, currentPage);
     fetchNews(currentUrl, false);
   });
+
+  function initHeadlineSlider() {
+    var slider = document.getElementById('nwlHeadlineSlider');
+    if (!slider) return;
+    var slides = slider.querySelectorAll('.nwl-slide');
+    var indicators = slider.querySelectorAll('.nwl-indicator-bar');
+    var prevBtn = document.getElementById('nwlPrevBtn');
+    var nextBtn = document.getElementById('nwlNextBtn');
+    if (slides.length <= 1) return;
+
+    var titleEl = document.querySelector('.nwl-headline-sec-title');
+    var secHeadline = document.getElementById('nwlHeadlineSec');
+    var titles = {
+      berita: slider.getAttribute('data-title-berita') || 'Berita',
+      pers: slider.getAttribute('data-title-pers') || 'Siaran Pers',
+      blog: slider.getAttribute('data-title-blog') || 'Blog'
+    };
+    var ariaLabels = {
+      berita: slider.getAttribute('data-aria-berita') || 'Berita Utama',
+      pers: slider.getAttribute('data-aria-pers') || 'Siaran Pers Utama',
+      blog: slider.getAttribute('data-aria-blog') || 'Blog Utama'
+    };
+
+    function updateHeadlineTitle(postType) {
+      var key = titles[postType] ? postType : 'berita';
+      if (titleEl && titles[key]) {
+        titleEl.textContent = titles[key];
+      }
+      if (secHeadline && ariaLabels[key]) {
+        secHeadline.setAttribute('aria-label', ariaLabels[key]);
+      }
+    }
+
+    var currentIndex = 0;
+    var totalSlides = slides.length;
+    var isTransitioning = false;
+    var isPaused = false;
+    var timer = null;
+
+    function goToSlide(targetIndex) {
+      if (isTransitioning) return;
+      var normalized = ((targetIndex % totalSlides) + totalSlides) % totalSlides;
+      if (normalized === currentIndex) return;
+      isTransitioning = true;
+
+      slides[currentIndex].classList.remove('active');
+      slides[currentIndex].setAttribute('aria-hidden', 'true');
+      var prevLinks = slides[currentIndex].querySelectorAll('a, button');
+      for (var i = 0; i < prevLinks.length; i++) {
+        prevLinks[i].setAttribute('tabindex', '-1');
+      }
+      if (indicators[currentIndex]) {
+        indicators[currentIndex].classList.remove('active');
+        indicators[currentIndex].setAttribute('aria-selected', 'false');
+      }
+
+      currentIndex = normalized;
+
+      var currentSlide = slides[currentIndex];
+      var postType = (currentSlide && currentSlide.getAttribute('data-post-type')) || 'berita';
+      updateHeadlineTitle(postType);
+
+      slides[currentIndex].classList.add('active');
+      slides[currentIndex].removeAttribute('aria-hidden');
+      var nextLinks = slides[currentIndex].querySelectorAll('a, button');
+      for (var j = 0; j < nextLinks.length; j++) {
+        nextLinks[j].removeAttribute('tabindex');
+      }
+      if (indicators[currentIndex]) {
+        indicators[currentIndex].classList.add('active');
+        indicators[currentIndex].setAttribute('aria-selected', 'true');
+      }
+
+      setTimeout(function() {
+        isTransitioning = false;
+      }, 400);
+    }
+
+    function startTimer() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+      }
+      stopTimer();
+      timer = setInterval(function() {
+        if (!isPaused) {
+          goToSlide(currentIndex + 1);
+        }
+      }, 6000);
+    }
+
+    function stopTimer() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function resetTimer() {
+      stopTimer();
+      startTimer();
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        goToSlide(currentIndex + 1);
+        resetTimer();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        goToSlide(currentIndex - 1);
+        resetTimer();
+      });
+    }
+
+    for (var k = 0; k < indicators.length; k++) {
+      (function(idx) {
+        indicators[idx].addEventListener('click', function() {
+          goToSlide(idx);
+          resetTimer();
+        });
+      })(k);
+    }
+
+    slider.addEventListener('mouseenter', function() { isPaused = true; });
+    slider.addEventListener('mouseleave', function() { isPaused = false; });
+    slider.addEventListener('focusin', function() { isPaused = true; });
+    slider.addEventListener('focusout', function() { isPaused = false; });
+
+    slider.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goToSlide(currentIndex - 1);
+        resetTimer();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goToSlide(currentIndex + 1);
+        resetTimer();
+      }
+    });
+
+    var touchStartX = 0;
+    var touchStartY = 0;
+    slider.addEventListener('touchstart', function(e) {
+      if (e.touches && e.touches.length > 0) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    slider.addEventListener('touchend', function(e) {
+      if (e.changedTouches && e.changedTouches.length > 0) {
+        var deltaX = e.changedTouches[0].clientX - touchStartX;
+        var deltaY = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+          if (deltaX < 0) {
+            goToSlide(currentIndex + 1);
+          } else {
+            goToSlide(currentIndex - 1);
+          }
+          resetTimer();
+        }
+      }
+    }, { passive: true });
+
+    startTimer();
+  }
+
+  initHeadlineSlider();
+
+  if (catPillsContainer) {
+    catPillsContainer.addEventListener('scroll', updateScrollHints, { passive: true });
+    window.addEventListener('resize', updateScrollHints);
+    scrollActivePillIntoView();
+    updateScrollHints();
+  }
 })();

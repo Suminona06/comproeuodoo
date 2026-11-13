@@ -221,6 +221,7 @@
 
       const shouldShow = Boolean(data && data.hasMore && (data.totalProducts > 9));
       if (shouldShow) {
+        moreWrap.classList.remove('is-hidden');
         moreWrap.style.display = 'flex';
         const nextUrl = new URL(window.location.origin + '/products');
         const nextP = (data.page || currentPage) + 1;
@@ -232,6 +233,7 @@
         moreBtn.dataset.currentPage = String(data.page || currentPage);
         moreBtn.dataset.totalPages = String(data.totalPages || 1);
       } else {
+        moreWrap.classList.add('is-hidden');
         moreWrap.style.display = 'none';
       }
 
