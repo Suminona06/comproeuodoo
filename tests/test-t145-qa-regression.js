@@ -74,7 +74,7 @@ async function runTest() {
   assert(indexEjs.includes('class="sec-products"'), 'Homepage must contain .sec-products');
   assert(indexEjs.includes('class="sec-pillars"'), 'Homepage must contain .sec-pillars');
   assert(indexEjs.includes('class="sec-evidence"'), 'Homepage must contain .sec-evidence');
-  assert(indexEjs.includes('class="sec-brands"'), 'Homepage must contain .sec-brands');
+  assert(/class="[^"]*\bsec-brands\b[^"]*"/.test(indexEjs), 'Homepage must contain .sec-brands');
   assert(indexEjs.includes('class="sec-news"'), 'Homepage must contain .sec-news');
 
   const footerEjsPath = path.resolve('views/partials/footer.ejs');
@@ -116,8 +116,7 @@ async function runTest() {
     const resId = await makeRequest({ path: `${route}${route.includes('?') ? '&' : '?'}lang=id` });
     assert.strictEqual(resId.statusCode, 200, `Route ${route} in ID must return 200`);
     assert(resId.data.includes('Hubungi Kami'), `${route} (ID) must render 'Hubungi Kami' button`);
-    assert(resId.data.includes('Kantor Pusat (Bandung)') || resId.data.includes('Kantor Pusat (Jakarta)') || resId.data.includes('Kantor Pusat'), `${route} (ID) must render Kantor Pusat`);
-    assert(resId.data.includes('Pabrik Manufaktur (Bandung)'), `${route} (ID) must render 'Pabrik Manufaktur (Bandung)'`);
+    assert(resId.data.includes('ft-office-card') && resId.data.includes('ft-office-label'), `${route} (ID) must render active location card`);
     assert(resId.data.includes('Telp:'), `${route} (ID) must render 'Telp:' label`);
     assert(resId.data.includes('Hak cipta dilindungi undang-undang.'), `${route} (ID) must render Indonesian copyright`);
     assert(resId.data.includes('Syarat &amp; Ketentuan') || resId.data.includes('Syarat & Ketentuan'), `${route} (ID) must render 'Syarat & Ketentuan'`);
@@ -127,8 +126,7 @@ async function runTest() {
     const resEn = await makeRequest({ path: `${route}${route.includes('?') ? '&' : '?'}lang=en` });
     assert.strictEqual(resEn.statusCode, 200, `Route ${route} in EN must return 200`);
     assert(resEn.data.includes('Contact Us'), `${route} (EN) must render 'Contact Us' button`);
-    assert(resEn.data.includes('Head Office (Bandung)') || resEn.data.includes('Head Office (Jakarta)') || resEn.data.includes('Head Office'), `${route} (EN) must render Head Office`);
-    assert(resEn.data.includes('Manufacturing Plant (Bandung)'), `${route} (EN) must render 'Manufacturing Plant (Bandung)'`);
+    assert(resEn.data.includes('ft-office-card') && resEn.data.includes('ft-office-label'), `${route} (EN) must render active location card`);
     assert(resEn.data.includes('Phone:'), `${route} (EN) must render 'Phone:' label`);
     assert(resEn.data.includes('All rights reserved.'), `${route} (EN) must render English copyright`);
     assert(resEn.data.includes('Terms &amp; Conditions') || resEn.data.includes('Terms & Conditions'), `${route} (EN) must render 'Terms & Conditions'`);

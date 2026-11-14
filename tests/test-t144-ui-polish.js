@@ -11,9 +11,9 @@ const cssContent = fs.readFileSync(cssPath, 'utf8');
 console.log('\n[TEST 1] Verifying Zero Blue in layout.css for Footer (T-144)...');
 
 // Extract footer section from layout.css
-const footerStart = cssContent.indexOf('PT Euodoo Prototype v2 Footer Layout');
+const footerStart = cssContent.indexOf('PT Euodoo Footer Layout');
 const footerEnd = cssContent.indexOf('Responsive Media Queries for Header & Footer');
-assert(footerStart !== -1, 'Must find PT Euodoo Prototype v2 Footer Layout in layout.css');
+assert(footerStart !== -1, 'Must find PT Euodoo Footer Layout in layout.css');
 assert(footerEnd !== -1, 'Must find end of main footer block in layout.css');
 
 const footerCss = cssContent.substring(footerStart, footerEnd);
@@ -25,11 +25,11 @@ assert(!footerCss.includes('#0055b8'), 'Footer must not use #0055b8');
 console.log('  1a. Complete elimination of blue tints in footer CSS: PASSED');
 
 // Check specific element styles
-assert(footerCss.includes('.ft-office-label {\n  font-size: 11px;\n  font-weight: 700;\n  color: #ffffff;'), '.ft-office-label must be #ffffff and bold');
-assert(footerCss.includes('.ft-office-dot {\n  width: 6px;\n  height: 6px;\n  background: #ffffff;'), '.ft-office-dot must be 6px circle with #ffffff background');
-assert(footerCss.includes('.ft-office-addr {\n  font-size: 13px;\n  color: #ffffff;\n  font-weight: 700;'), '.ft-office-addr must be #ffffff and bold');
-assert(footerCss.includes('.ft-phone-val {\n  color: #ffffff;\n  font-weight: 700;'), '.ft-phone-val must be #ffffff and bold');
-assert(footerCss.includes('.ft-phone-val:hover {\n  text-decoration: underline;'), '.ft-phone-val:hover must have underline affordance');
+assert(footerCss.includes('.ft-office-label {\n  font-size: 11px;\n  font-weight: 700;\n  color: var(--color-text-inverse);'), '.ft-office-label must use inverse token and bold');
+assert(footerCss.includes('.ft-office-dot {\n  width: 6px;\n  height: 6px;\n  background: var(--color-text-inverse);'), '.ft-office-dot must be 6px circle with inverse token background');
+assert(footerCss.includes('.ft-office-addr {\n  font-size: 13px;\n  color: var(--color-text-inverse);\n  font-weight: 700;'), '.ft-office-addr must use inverse token and bold');
+assert(footerCss.includes('.ft-office-card a,\n.ft-phone-val {\n  color: var(--color-text-inverse);\n  font-weight: 700;'), '.ft-phone-val must use inverse token and bold');
+assert(footerCss.includes('.ft-office-card a:hover,\n  .ft-phone-val:hover {\n    color: var(--color-text-inverse);\n    text-decoration: underline;'), '.ft-phone-val:hover must have underline affordance');
 assert(footerCss.includes('.ft-nav-arrow {\n  color: #ffffff;\n  font-weight: 700;'), '.ft-nav-arrow must be #ffffff and bold');
 assert(footerCss.includes('.ft-bottom {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding-top: 28px;\n  font-size: 13px;\n  color: rgba(255, 255, 255, 0.65);'), '.ft-bottom text must have high contrast >= 0.65 opacity');
 console.log('  1b. Typography hierarchy, pure white colors, and click affordances: PASSED');

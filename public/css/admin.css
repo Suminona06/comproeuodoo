@@ -4292,7 +4292,7 @@ body.sidebar-open .admin-backdrop {
   padding: 2px 8px;
   border-radius: var(--r-pill);
   background: var(--bg-subtle);
-  color: var(--color-text-muted-on-soft);
+  color: var(--text-secondary);
   border: 1px solid var(--border-main);
 }
 
@@ -4314,7 +4314,7 @@ body.sidebar-open .admin-backdrop {
 
 .stg-footer-repeater {
   margin-top: 20px;
-  background: var(--color-bg-subtle);
+  background: var(--bg-page);
   border: 1px solid var(--border-main);
   border-radius: var(--r-lg);
   padding: 18px 20px;
@@ -4335,7 +4335,7 @@ body.sidebar-open .admin-backdrop {
   gap: 8px;
   font-size: 14px;
   font-weight: 700;
-  color: var(--surface-dark-deep);
+  color: var(--text-main);
 }
 
 .stg-footer-count-badge {
@@ -4348,7 +4348,7 @@ body.sidebar-open .admin-backdrop {
   font-variant-numeric: tabular-nums;
   background: var(--bg-surface);
   color: var(--text-secondary);
-  border: 1px solid var(--color-outline-variant);
+  border: 1px solid var(--border-main);
 }
 
 .stg-footer-count-badge.is-full {
@@ -4361,7 +4361,7 @@ body.sidebar-open .admin-backdrop {
   margin: 0 0 14px 0;
   font-size: 13px;
   line-height: 1.5;
-  color: var(--color-text-muted-on-soft);
+  color: var(--text-secondary);
   overflow-wrap: anywhere;
 }
 
@@ -4371,9 +4371,9 @@ body.sidebar-open .admin-backdrop {
   text-align: center;
   font-size: 13px;
   line-height: 1.5;
-  color: var(--color-text-muted-on-soft);
+  color: var(--text-secondary);
   background: var(--bg-surface);
-  border: 1px dashed var(--color-outline);
+  border: 1px dashed var(--border-hover);
   border-radius: var(--r-md);
 }
 
@@ -4454,7 +4454,7 @@ body.sidebar-open .admin-backdrop {
 .stg-footer-hint {
   font-size: 12px;
   line-height: 1.45;
-  color: var(--color-text-muted-on-soft);
+  color: var(--text-secondary);
   overflow-wrap: anywhere;
 }
 

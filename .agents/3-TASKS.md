@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 1 Task (T-327)
-- **Total Task Selesai:** 326 Task (T-01 s/d T-326)
+- **Task Aktif Terbuka:** 0 Task
+- **Total Task Selesai:** 327 Task (T-01 s/d T-327)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-323** (berikutnya **T-328**).
 
@@ -57,7 +57,7 @@
     4. `locales/id.json` & `locales/en.json` simetris memiliki `news_detail.copy_success` & `news_detail.copy_error`.
   - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `node tests/test-t320-t321-news-regression.js`; uji klik `#copyLinkBtn` sukses (toast hijau 2 detik) & gagal salin di Playwright ID/EN, nol dialog native, homepage tidak memuat vendor SweetAlert2.
 
-- [ ] **T-327**: Uji Regresi Akhir Multi-Viewport, Aksesibilitas, & Gerbang Kualitas
+- [x] **T-327**: Uji Regresi Akhir Multi-Viewport, Aksesibilitas, & Gerbang Kualitas
   - **Modul:** [prd/news-detail.md](prd/news-detail.md), [prd/footer.md](prd/footer.md), [prd/settings.md](prd/settings.md)
   - **Skill:** `polish`, `adapt`, `antislop-code`
   - **File Terdampak:** `tests/test-t327-footer-news-alert-regression.js` *(baru)*
