@@ -1,12 +1,20 @@
 import multer from 'multer';
 import sharp from 'sharp';
+import os from 'node:os';
 import path from 'path';
 import fs from 'fs';
+import { UPLOAD_CONFIG } from '../config/constants.js';
 import storage from '../config/storage.js';
 import logger from '../utils/logger.js';
 
-// Memory storage to process image buffers directly via Sharp
 const memoryStorage = multer.memoryStorage();
+const tempDiskStorage = multer.diskStorage({
+  destination: os.tmpdir(),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `euodoo-tmp-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
+  }
+});
 
 // Supported MIME types (SVG excluded to prevent same-origin stored XSS)
 const ALLOWED_IMAGE_TYPES = [
@@ -53,9 +61,25 @@ const mediaFilter = (req, file, cb) => {
 
 export const uploadMedia = multer({
   storage: memoryStorage,
-  limits: { fileSize: 30 * 1024 * 1024 }, // 30 MB max
+  limits: { fileSize: UPLOAD_CONFIG.MAX_FILE_SIZE },
   fileFilter: mediaFilter
 });
+
+export const uploadLargeMedia = multer({
+  storage: tempDiskStorage,
+  limits: { fileSize: UPLOAD_CONFIG.MAX_MEDIA_STREAM_SIZE },
+  fileFilter: mediaFilter
+});
+
+export const cleanupTempFile = async (file) => {
+  if (file?.path) await fs.promises.unlink(file.path).catch(() => {});
+};
+
+function persistUploadSource(source, filename, mimeType, subFolder) {
+  return typeof source === 'string'
+    ? storage.saveFromFile(source, filename, mimeType, subFolder)
+    : storage.save(source, filename, mimeType, subFolder);
+}
 
 // Dimension presets based on context
 const DIMENSION_PRESETS = {
@@ -68,6 +92,21 @@ const DIMENSION_PRESETS = {
   settings: { maxWidth: 800, maxHeight: 800, quality: 90 }
 };
 
+async function saveWebpAsset(buffer, subFolder = 'media', options = {}) {
+  const preset = DIMENSION_PRESETS[subFolder] || DIMENSION_PRESETS.media;
+  const maxWidth = options.maxWidth || preset.maxWidth;
+  const maxHeight = options.maxHeight || preset.maxHeight;
+  const quality = options.quality || preset.quality;
+  const filename = `${subFolder}-${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
+
+  const processedBuffer = await sharp(buffer)
+    .resize(maxWidth, maxHeight, { fit: 'inside', withoutEnlargement: true })
+    .webp({ quality, effort: 4 })
+    .toBuffer();
+
+  return await storage.save(processedBuffer, filename, 'image/webp', subFolder);
+}
+
 /**
  * Process image buffer through Sharp and save via storage driver as WebP
  * @param {Buffer} buffer
@@ -76,22 +115,7 @@ const DIMENSION_PRESETS = {
  * @returns {Promise<string>} public URL path
  */
 export const processAndSaveWebP = async (buffer, subFolder = 'media', options = {}) => {
-  const preset = DIMENSION_PRESETS[subFolder] || DIMENSION_PRESETS.media;
-  const maxWidth = options.maxWidth || preset.maxWidth;
-  const maxHeight = options.maxHeight || preset.maxHeight;
-  const quality = options.quality || preset.quality;
-
-  const filename = `${subFolder}-${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
-
-  const processedBuffer = await sharp(buffer)
-    .resize(maxWidth, maxHeight, {
-      fit: 'inside',
-      withoutEnlargement: true
-    })
-    .webp({ quality, effort: 4 })
-    .toBuffer();
-
-  const saved = await storage.save(processedBuffer, filename, 'image/webp', subFolder);
+  const saved = await saveWebpAsset(buffer, subFolder, options);
   logger.info(`Processed and saved WebP: ${saved.url} (${saved.size} bytes via ${saved.driver})`);
   return saved.url;
 };
@@ -109,65 +133,35 @@ export const processAndSaveImage = async (buffer, subFolder = 'media', originalN
   if (isSvgUpload(originalName, mimeType)) {
     throw new Error('Format berkas SVG tidak diizinkan.');
   }
-
-  const preset = DIMENSION_PRESETS[subFolder] || DIMENSION_PRESETS.media;
-  const maxWidth = options.maxWidth || preset.maxWidth;
-  const maxHeight = options.maxHeight || preset.maxHeight;
-  const quality = options.quality || preset.quality;
-
-  const filename = `${subFolder}-${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
-
-  const processedBuffer = await sharp(buffer)
-    .resize(maxWidth, maxHeight, {
-      fit: 'inside',
-      withoutEnlargement: true
-    })
-    .webp({ quality, effort: 4 })
-    .toBuffer();
-
-  return await storage.save(processedBuffer, filename, 'image/webp', subFolder);
+  return await saveWebpAsset(buffer, subFolder, options);
 };
 
-/**
- * Save video file buffer via storage driver
- * @param {Buffer} buffer
- * @param {string} originalName
- * @param {string} subFolder 'banners' | 'media'
- * @returns {Promise<string>} public URL path
- */
-export const saveVideoFile = async (buffer, originalName = '', subFolder = 'banners') => {
+export const saveVideoFile = async (source, originalName = '', subFolder = 'banners') => {
   const ext = path.extname(originalName).toLowerCase() || '.mp4';
   const mimeType = ext === '.webm' ? 'video/webm' : 'video/mp4';
   const filename = `video-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
 
-  const saved = await storage.save(buffer, filename, mimeType, subFolder);
+  const saved = await persistUploadSource(source, filename, mimeType, subFolder);
   logger.info(`Saved video file: ${saved.url} (${saved.size} bytes via ${saved.driver})`);
   return saved.url;
 };
 
-/**
- * Save document file buffer (PDF) via storage driver
- * @param {Buffer} buffer
- * @param {string} originalName
- * @param {string} subFolder
- * @returns {Promise<Object>} storage result
- */
-export const saveDocumentFile = async (buffer, originalName = '', subFolder = 'media') => {
+export const saveDocumentFile = async (source, originalName = '', subFolder = 'media') => {
   const ext = path.extname(originalName).toLowerCase() || '.pdf';
   const filename = `doc-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
 
-  const saved = await storage.save(buffer, filename, 'application/pdf', subFolder);
+  const saved = await persistUploadSource(source, filename, 'application/pdf', subFolder);
   logger.info(`Saved document file: ${saved.url} (${saved.size} bytes via ${saved.driver})`);
   return saved;
 };
 
-export const processAndSaveVideo = async (buffer, originalName = '', mimeType = 'video/mp4', subFolder = 'media') => {
-  const url = await saveVideoFile(buffer, originalName, subFolder);
+export const processAndSaveVideo = async (source, originalName = '', _mimeType = 'video/mp4', subFolder = 'media') => {
+  const url = await saveVideoFile(source, originalName, subFolder);
   return { url };
 };
 
-export const processAndSaveDocument = async (buffer, originalName = '', mimeType = 'application/pdf', subFolder = 'media') => {
-  return await saveDocumentFile(buffer, originalName, subFolder);
+export const processAndSaveDocument = async (source, originalName = '', _mimeType = 'application/pdf', subFolder = 'media') => {
+  return await saveDocumentFile(source, originalName, subFolder);
 };
 
 /**
@@ -197,17 +191,37 @@ export const saveSettingUpload = async (file, prefix = 'setting') => {
     return saved.url;
   }
 
-  // PNG or WebP or JPG
   if (ext === '.png' || file.mimetype === 'image/png') {
-    // Preserve transparent PNG format for crisp vector/raster corporate logos
     const filename = `${prefix}-${Date.now()}.png`;
     const saved = await storage.save(file.buffer, filename, 'image/png', subFolder);
     return saved.url;
   }
 
-  // Default to optimized WebP
   return await processAndSaveWebP(file.buffer, 'settings', { maxWidth: 800, maxHeight: 800, quality: 90 });
 };
+
+async function readFaviconSourceBuffer(source) {
+  if (Buffer.isBuffer(source)) return source;
+  if (typeof source !== 'string' || !source.trim()) {
+    throw new Error('Sumber berkas favicon tidak valid.');
+  }
+  const trimmed = source.trim();
+  const cleanPath = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
+  const resolvedPath = path.isAbsolute(cleanPath) ? cleanPath : path.join(process.cwd(), 'public', cleanPath);
+  const altPath = path.join(process.cwd(), cleanPath);
+  if (fs.existsSync(resolvedPath)) return await fs.promises.readFile(resolvedPath);
+  if (fs.existsSync(altPath)) return await fs.promises.readFile(altPath);
+  throw new Error(`Berkas sumber favicon tidak ditemukan di: ${resolvedPath}`);
+}
+
+async function syncRootFavicon(pngBuffer) {
+  try {
+    const rootFaviconPath = path.join(process.cwd(), 'public', 'favicon.ico');
+    await fs.promises.writeFile(rootFaviconPath, pngBuffer);
+  } catch (err) {
+    logger.warn(`Could not sync public/favicon.ico: ${err.message}`);
+  }
+}
 
 /**
  * Generate multi-size square favicon package (16, 32, 180, 192, 512)
@@ -216,75 +230,30 @@ export const saveSettingUpload = async (file, prefix = 'setting') => {
  * @returns {Promise<{ favicon: string, sizes: Object }>}
  */
 export const generateFaviconSet = async (source) => {
-  let inputBuffer;
-  if (Buffer.isBuffer(source)) {
-    inputBuffer = source;
-  } else if (typeof source === 'string' && source.trim()) {
-    let cleanPath = source.trim();
-    if (cleanPath.startsWith('/')) cleanPath = cleanPath.slice(1);
-    const resolvedPath = path.isAbsolute(cleanPath)
-      ? cleanPath
-      : path.join(process.cwd(), 'public', cleanPath);
-
-    if (fs.existsSync(resolvedPath)) {
-      inputBuffer = await fs.promises.readFile(resolvedPath);
-    } else {
-      const altPath = path.join(process.cwd(), cleanPath);
-      if (fs.existsSync(altPath)) {
-        inputBuffer = await fs.promises.readFile(altPath);
-      } else {
-        throw new Error(`Berkas sumber favicon tidak ditemukan di: ${resolvedPath}`);
-      }
-    }
-  } else {
-    throw new Error('Sumber berkas favicon tidak valid.');
-  }
-
+  const inputBuffer = await readFaviconSourceBuffer(source);
+  const sourceToProcess = await sharp(inputBuffer).trim().toBuffer().catch(() => inputBuffer);
   const sizes = [16, 32, 180, 192, 512];
   const results = {};
 
-  // Trim transparent padding from source image so symbol fills canvas properly (similar to standard browser favicons)
-  let sourceToProcess = inputBuffer;
-  try {
-    sourceToProcess = await sharp(inputBuffer).trim().toBuffer();
-  } catch (trimErr) {
-    sourceToProcess = inputBuffer;
-  }
-
   for (const size of sizes) {
-    // Proportional contain resize on clean transparent canvas without white background
     const finalBuffer = await sharp(sourceToProcess)
-      .resize(size, size, {
-        fit: 'contain',
-        background: { r: 0, g: 0, b: 0, alpha: 0 }
-      })
+      .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
       .png({ compressionLevel: 9 })
       .toBuffer();
 
-    const filename = `favicon-${size}x${size}.png`;
-    const saved = await storage.save(finalBuffer, filename, 'image/png', 'settings');
+    const saved = await storage.save(finalBuffer, `favicon-${size}x${size}.png`, 'image/png', 'settings');
     results[size] = saved.url;
-
-    // Fallback synchronization for root /favicon.ico (size 32)
-    if (size === 32) {
-      try {
-        const rootFaviconPath = path.join(process.cwd(), 'public', 'favicon.ico');
-        await fs.promises.writeFile(rootFaviconPath, finalBuffer);
-      } catch (err) {
-        logger.warn(`Could not sync public/favicon.ico: ${err.message}`);
-      }
-    }
+    if (size === 32) await syncRootFavicon(finalBuffer);
   }
 
   logger.info(`Generated multi-size favicon package: ${Object.values(results).join(', ')}`);
-  return {
-    favicon: results[32],
-    sizes: results
-  };
+  return { favicon: results[32], sizes: results };
 };
 
 export default {
   uploadMedia,
+  uploadLargeMedia,
+  cleanupTempFile,
   processAndSaveWebP,
   processAndSaveImage,
   saveSettingUpload,

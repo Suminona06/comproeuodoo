@@ -1,62 +1,106 @@
 import { APP_CONFIG } from '../config/constants.js';
 import { safeJsonForHtml } from '../utils/sanitizer.js';
 
-/**
- * Dynamic SEO Engine Middleware
- * Injects meta tags, Open Graph, Twitter Cards, canonical links, hreflang, and JSON-LD schema into res.locals.seo
- */
-export const seoMiddleware = (req, res, next) => {
-  const currentLang = req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
-  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-  const host = req.get('host') || 'localhost:3000';
-  const baseUrl = `${protocol}://${host}`;
-  const currentPath = req.originalUrl.split('?')[0];
-  const canonicalUrl = `${baseUrl}${currentPath === '/' ? '' : currentPath}`;
+const DEFAULT_ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'euodoo.co.id', 'www.euodoo.co.id'];
+const HOST_HEADER_RE = /^[a-z0-9.-]+(:\d{1,5})?$/i;
 
-  const schemas = [];
+function parseSafeBaseUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') return null;
+  try {
+    const parsed = new URL(rawUrl.trim());
+    const valid = parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    return valid ? parsed.origin : null;
+  } catch {
+    return null;
+  }
+}
 
-  // Organization Schema (default for corporate homepage)
-  const organizationSchema = {
+function getAllowedHosts() {
+  const extra = String(process.env.ALLOWED_HOSTS || '')
+    .split(',')
+    .map((h) => h.trim().toLowerCase())
+    .filter(Boolean);
+  return new Set([...DEFAULT_ALLOWED_HOSTS, ...extra]);
+}
+
+function resolveProtocol(req) {
+  const forwarded = String(req.headers?.['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase();
+  if (forwarded === 'https' || forwarded === 'http') return forwarded;
+  return req.protocol === 'https' ? 'https' : 'http';
+}
+
+function resolveBaseUrl(req) {
+  const configured = parseSafeBaseUrl(process.env.APP_BASE_URL);
+  if (configured) return configured;
+  const fallback = process.env.NODE_ENV === 'production' ? 'https://euodoo.co.id' : 'http://localhost:3000';
+  const rawHost = typeof req.get === 'function' ? String(req.get('host') || '').trim() : '';
+  if (!rawHost || !HOST_HEADER_RE.test(rawHost)) return fallback;
+  const hostname = rawHost.split(':')[0].toLowerCase();
+  if (!getAllowedHosts().has(hostname)) return fallback;
+  return `${resolveProtocol(req)}://${rawHost}`;
+}
+
+function isCardEnabled(val) {
+  return val !== '0' && val !== 0;
+}
+
+function buildOrgAddresses(settings) {
+  const addresses = [];
+  if (isCardEnabled(settings.office_card_visible) && settings.office_address) {
+    addresses.push({ '@type': 'PostalAddress', streetAddress: settings.office_address, addressCountry: 'ID' });
+  }
+  if (isCardEnabled(settings.factory_card_visible) && settings.factory_address) {
+    addresses.push({ '@type': 'PostalAddress', streetAddress: settings.factory_address, addressCountry: 'ID' });
+  }
+  if (addresses.length > 0) return addresses;
+  return [{ '@type': 'PostalAddress', addressLocality: 'Bandung', postalCode: '40214', streetAddress: 'Jl. Paralon II No. 21 Cijerah', addressCountry: 'ID' }];
+}
+
+function buildOrgContactPoints(settings) {
+  const candidates = [
+    [settings.factory_card_visible, settings.factory_phone],
+    [settings.office_card_visible, settings.office_phone || settings.company_phone]
+  ];
+  const points = candidates
+    .filter(([visible, phone]) => isCardEnabled(visible) && phone)
+    .map(([, telephone]) => ({
+      '@type': 'ContactPoint',
+      telephone,
+      contactType: 'customer service',
+      availableLanguage: ['Indonesian', 'English']
+    }));
+  if (points.length > 0) return points;
+  return [{ '@type': 'ContactPoint', telephone: settings.company_phone || '+6222-6012519', contactType: 'customer service', availableLanguage: ['Indonesian', 'English'] }];
+}
+
+function resolveOrgLogo(baseUrl, settings) {
+  const raw = settings.site_logo_header || settings.site_logo_footer || '/images/brands/brand-euodoo.webp';
+  return raw.startsWith('/') ? `${baseUrl}${raw}` : raw;
+}
+
+function resolveOrgDescription(currentLang, settings) {
+  if (currentLang === 'en') {
+    return settings.footer_desc_en || settings.meta_description_en || '100% degradable eco-friendly HDPE and LLDPE plastic bags manufacturer based in Bandung, Indonesia.';
+  }
+  return settings.footer_desc_id || settings.meta_description_id || 'Produsen manufaktur kantong plastik ramah lingkungan 100% degradable HDPE dan LLDPE di Bandung, Indonesia.';
+}
+
+function buildOrganizationSchema(baseUrl, currentLang, settings = {}) {
+  return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'PT Euodoo',
-    alternateName: 'PT. EUODOO',
+    name: settings.company_name || 'PT Euodoo',
+    alternateName: 'PT Euodoo',
     url: baseUrl,
-    logo: `${baseUrl}/images/brands/brand-euodoo.webp`,
-    description: currentLang === 'en'
-      ? '100% degradable eco-friendly HDPE and LLDPE plastic bags manufacturer based in Bandung, Indonesia.'
-      : 'Produsen manufaktur kantong plastik ramah lingkungan 100% degradable HDPE dan LLDPE di Bandung, Indonesia.',
-    address: [
-      {
-        '@type': 'PostalAddress',
-        addressLocality: 'Jakarta Pusat',
-        postalCode: '10270',
-        streetAddress: 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07',
-        addressCountry: 'ID'
-      },
-      {
-        '@type': 'PostalAddress',
-        addressLocality: 'Bandung',
-        postalCode: '40214',
-        streetAddress: 'Jl. Paralon II No. 21 Cijerah',
-        addressCountry: 'ID'
-      }
-    ],
-    contactPoint: [
-      {
-        '@type': 'ContactPoint',
-        telephone: '+6221-53668626',
-        contactType: 'customer service',
-        availableLanguage: ['Indonesian', 'English']
-      }
-    ]
+    logo: resolveOrgLogo(baseUrl, settings),
+    description: resolveOrgDescription(currentLang, settings),
+    address: buildOrgAddresses(settings),
+    contactPoint: buildOrgContactPoints(settings)
   };
+}
 
-  if (currentPath === '/' || currentPath === '') {
-    schemas.push(organizationSchema);
-  }
-
-  res.locals.seo = {
+function createSeoObject(baseUrl, canonicalUrl, currentLang, schemas) {
+  return {
     title: '',
     description: '',
     keywords: 'kantong plastik ramah lingkungan, 100% degradable, oxium, kantong belanja hdpe, lldpe industri, karung woven, pt euodoo',
@@ -74,19 +118,9 @@ export const seoMiddleware = (req, res, next) => {
       xDefault: canonicalUrl
     },
     schemas,
-    /**
-     * Add custom schema (e.g. Product or Article)
-     * @param {Object} schemaObj
-     */
     addSchema(schemaObj) {
-      if (schemaObj) {
-        schemas.push(schemaObj);
-      }
+      if (schemaObj) schemas.push(schemaObj);
     },
-    /**
-     * Helper to render application/ld+json script tags
-     * @returns {string}
-     */
     renderJsonLd() {
       if (schemas.length === 0) return '';
       return schemas
@@ -94,7 +128,24 @@ export const seoMiddleware = (req, res, next) => {
         .join('\n');
     }
   };
+}
 
+/**
+ * Dynamic SEO Engine Middleware
+ * Injects meta tags, Open Graph, Twitter Cards, canonical links, hreflang, and JSON-LD schema into res.locals.seo
+ */
+export const seoMiddleware = (req, res, next) => {
+  const currentLang = req.cookies?.[APP_CONFIG.LANG_COOKIE_NAME] || APP_CONFIG.DEFAULT_LANG;
+  const baseUrl = resolveBaseUrl(req);
+  const currentPath = String(req.originalUrl || '/').split('?')[0];
+  const canonicalUrl = `${baseUrl}${currentPath === '/' ? '' : currentPath}`;
+  const schemas = [];
+
+  if (currentPath === '/' || currentPath === '') {
+    schemas.push(buildOrganizationSchema(baseUrl, currentLang, res.locals?.settings || {}));
+  }
+
+  res.locals.seo = createSeoObject(baseUrl, canonicalUrl, currentLang, schemas);
   next();
 };
 

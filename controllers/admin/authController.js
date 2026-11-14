@@ -152,7 +152,7 @@ export const authController = {
       });
     }
 
-    if (new_password.length < 8) {
+    if (String(new_password).trim().length < 8) {
       return res.status(400).render('admin/change-password', {
         title: 'Ganti Kata Sandi - PT Euodoo CMS',
         activeNav: 'password',

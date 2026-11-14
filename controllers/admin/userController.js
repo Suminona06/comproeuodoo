@@ -2,6 +2,37 @@ import bcrypt from 'bcryptjs';
 import userModel from '../../models/userModel.js';
 import logger from '../../utils/logger.js';
 
+const MIN_PASSWORD_LENGTH = 8;
+
+function renderCreateFormError(res, error, formData, status = 400) {
+  return res.status(status).render('admin/users/create', {
+    title: 'Tambah Pengguna Baru',
+    pageTitle: 'Tambah Pengguna',
+    activeNav: 'users',
+    error,
+    formData
+  });
+}
+
+function renderEditFormError(res, targetUser, error, status = 400) {
+  return res.status(status).render('admin/users/edit', {
+    title: 'Edit Pengguna',
+    pageTitle: 'Edit Pengguna',
+    activeNav: 'users',
+    targetUser,
+    error
+  });
+}
+
+async function resolveUpdatePassword(newPassword) {
+  const trimmed = typeof newPassword === 'string' ? newPassword.trim() : '';
+  if (!trimmed) return { hash: null, error: null };
+  if (trimmed.length < MIN_PASSWORD_LENGTH) {
+    return { hash: null, error: `Kata sandi baru minimal harus ${MIN_PASSWORD_LENGTH} karakter.` };
+  }
+  return { hash: await bcrypt.hash(trimmed, 10), error: null };
+}
+
 export const userController = {
   async index(req, res) {
     try {
@@ -37,39 +68,21 @@ export const userController = {
   async store(req, res) {
     try {
       const { name, email, password, role } = req.body;
-
       if (!name || !email || !password || !role) {
-        return res.status(400).render('admin/users/create', {
-          title: 'Tambah Pengguna Baru',
-          pageTitle: 'Tambah Pengguna',
-          activeNav: 'users',
-          error: 'Seluruh kolom (Nama, Email, Sandi, Role) wajib diisi.',
-          formData: req.body
-        });
+        return renderCreateFormError(res, 'Seluruh kolom (Nama, Email, Sandi, Role) wajib diisi.', req.body);
       }
-
+      if (String(password).trim().length < MIN_PASSWORD_LENGTH) {
+        return renderCreateFormError(res, `Kata sandi minimal harus ${MIN_PASSWORD_LENGTH} karakter.`, req.body);
+      }
       if (!['superadmin', 'admin', 'editor'].includes(role)) {
-        return res.status(400).render('admin/users/create', {
-          title: 'Tambah Pengguna Baru',
-          pageTitle: 'Tambah Pengguna',
-          activeNav: 'users',
-          error: 'Role tidak valid. Pilihan role: Superadmin, Admin, atau Editor.',
-          formData: req.body
-        });
+        return renderCreateFormError(res, 'Role tidak valid. Pilihan role: Superadmin, Admin, atau Editor.', req.body);
       }
-
-      const existing = await userModel.findByEmail(email);
+      const existing = await userModel.findByEmail(email.trim().toLowerCase());
       if (existing) {
-        return res.status(400).render('admin/users/create', {
-          title: 'Tambah Pengguna Baru',
-          pageTitle: 'Tambah Pengguna',
-          activeNav: 'users',
-          error: 'Alamat email sudah terdaftar dalam sistem.',
-          formData: req.body
-        });
+        return renderCreateFormError(res, 'Alamat email sudah terdaftar dalam sistem.', req.body);
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(String(password).trim(), 10);
       await userModel.create({
         name: name.trim(),
         email: email.trim().toLowerCase(),
@@ -80,13 +93,7 @@ export const userController = {
       res.redirect('/admin/users?success=' + encodeURIComponent('Pengguna baru berhasil ditambahkan.'));
     } catch (err) {
       logger.error('User controller store error:', err);
-      res.status(500).render('admin/users/create', {
-        title: 'Tambah Pengguna Baru',
-        pageTitle: 'Tambah Pengguna',
-        activeNav: 'users',
-        error: 'Terjadi kegagalan server saat menyimpan pengguna baru.',
-        formData: req.body
-      });
+      renderCreateFormError(res, 'Terjadi kegagalan server saat menyimpan pengguna baru.', req.body, 500);
     }
   },
 
@@ -119,29 +126,20 @@ export const userController = {
       if (!user) {
         return res.redirect('/admin/users?error=' + encodeURIComponent('Pengguna tidak ditemukan.'));
       }
-
       if (role && role !== user.role) {
         const check = await userModel.canDemoteUser(id, role);
-        if (!check.canDemote) {
-          return res.status(400).render('admin/users/edit', {
-            title: 'Edit Pengguna',
-            pageTitle: 'Edit Pengguna',
-            activeNav: 'users',
-            targetUser: user,
-            error: check.message
-          });
-        }
+        if (!check.canDemote) return renderEditFormError(res, user, check.message);
       }
+
+      const pwResult = await resolveUpdatePassword(new_password);
+      if (pwResult.error) return renderEditFormError(res, user, pwResult.error);
 
       const updateData = {
         name: name ? name.trim() : user.name,
         email: email ? email.trim().toLowerCase() : user.email,
-        role: role || user.role
+        role: role || user.role,
+        ...(pwResult.hash ? { password: pwResult.hash } : {})
       };
-
-      if (new_password && new_password.trim().length >= 6) {
-        updateData.password = await bcrypt.hash(new_password.trim(), 10);
-      }
 
       await userModel.update(id, updateData);
       res.redirect('/admin/users?success=' + encodeURIComponent('Data pengguna berhasil diperbarui.'));

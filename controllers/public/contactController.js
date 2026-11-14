@@ -1,5 +1,4 @@
 import inquiryModel from '../../models/inquiryModel.js';
-import leadModel from '../../models/leadModel.js';
 import productModel from '../../models/productModel.js';
 import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import { verifyTurnstileToken } from '../../utils/turnstileVerifier.js';
@@ -230,21 +229,6 @@ export const contactController = {
         source: 'contact_form',
         status: 'baru',
         ip_address: ipAddress
-      });
-
-      leadModel.create({
-        type: leadType,
-        name: cleanName,
-        company: cleanCompany,
-        email: cleanEmail,
-        phone: cleanPhone,
-        product_id: parsedProductId,
-        quantity: cleanQuantity,
-        message: cleanMessage,
-        status: 'baru',
-        ip_address: ipAddress
-      }).catch(err => {
-        logger.warn('Mirror to leadModel error:', { message: err.message });
       });
 
       logger.info('New B2B Inquiry recorded:', { id: inquiryId, company: cleanCompany, email: cleanEmail });

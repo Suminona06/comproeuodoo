@@ -1,5 +1,5 @@
 import mediaModel from '../../models/mediaModel.js';
-import { processAndSaveImage, processAndSaveVideo, processAndSaveDocument } from '../../middleware/uploadMiddleware.js';
+import { processAndSaveImage, processAndSaveVideo, processAndSaveDocument, cleanupTempFile } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import logger from '../../utils/logger.js';
 
@@ -68,20 +68,21 @@ export const mediaController = {
       }
 
       const file = req.file;
+      const source = file.path || file.buffer;
       let mediaType = 'image';
       let fileUrl = null;
 
       if (file.mimetype.startsWith('image/')) {
         mediaType = 'image';
-        const result = await processAndSaveImage(file.buffer, 'media', file.originalname, file.mimetype);
+        const result = await processAndSaveImage(source, 'media', file.originalname, file.mimetype);
         fileUrl = result.url;
       } else if (file.mimetype.startsWith('video/')) {
         mediaType = 'video';
-        const result = await processAndSaveVideo(file.buffer, file.originalname, file.mimetype, 'media');
+        const result = await processAndSaveVideo(source, file.originalname, file.mimetype, 'media');
         fileUrl = result.url;
       } else if (file.mimetype === 'application/pdf') {
         mediaType = 'document';
-        const result = await processAndSaveDocument(file.buffer, file.originalname, file.mimetype, 'media');
+        const result = await processAndSaveDocument(source, file.originalname, file.mimetype, 'media');
         fileUrl = result.url;
       } else {
         return res.redirect('/admin/media?error=' + encodeURIComponent('Tipe file tidak didukung.'));
@@ -100,6 +101,8 @@ export const mediaController = {
     } catch (err) {
       logger.error('Media controller upload error:', err);
       res.redirect('/admin/media?error=' + encodeURIComponent('Gagal mengunggah media: ' + err.message));
+    } finally {
+      await cleanupTempFile(req.file);
     }
   },
 
@@ -209,20 +212,21 @@ export const mediaController = {
       }
 
       const file = req.file;
+      const source = file.path || file.buffer;
       let mediaType = 'image';
       let fileUrl = null;
 
       if (file.mimetype.startsWith('image/')) {
         mediaType = 'image';
-        const result = await processAndSaveImage(file.buffer, 'media', file.originalname, file.mimetype);
+        const result = await processAndSaveImage(source, 'media', file.originalname, file.mimetype);
         fileUrl = result.url;
       } else if (file.mimetype.startsWith('video/')) {
         mediaType = 'video';
-        const result = await processAndSaveVideo(file.buffer, file.originalname, file.mimetype, 'media');
+        const result = await processAndSaveVideo(source, file.originalname, file.mimetype, 'media');
         fileUrl = result.url;
       } else if (file.mimetype === 'application/pdf') {
         mediaType = 'document';
-        const result = await processAndSaveDocument(file.buffer, file.originalname, file.mimetype, 'media');
+        const result = await processAndSaveDocument(source, file.originalname, file.mimetype, 'media');
         fileUrl = result.url;
       } else {
         return res.status(400).json({ success: false, message: 'Tipe file tidak didukung.' });
@@ -242,6 +246,8 @@ export const mediaController = {
     } catch (err) {
       logger.error('mediaController.apiUpload error:', err);
       res.status(500).json({ success: false, message: 'Gagal mengunggah media: ' + err.message });
+    } finally {
+      await cleanupTempFile(req.file);
     }
   },
 
