@@ -202,7 +202,7 @@
         </div>
 
         <script type="application/json" id="bentoGalleryData">
-          <%- JSON.stringify(gallerySlides.map(s => ({
+          <%- safeJson(gallerySlides.map(s => ({
             image_url: s.image_url,
             category: lang === 'en' ? (s.category_en || s.category_id || '') : (s.category_id || ''),
             title: lang === 'en' ? (s.title_en || s.title_id || '') : (s.title_id || '')

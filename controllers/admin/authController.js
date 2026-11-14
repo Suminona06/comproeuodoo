@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModel from '../../models/userModel.js';
 import { APP_CONFIG } from '../../config/constants.js';
+import { getJwtSecret } from '../../config/secrets.js';
 import logger from '../../utils/logger.js';
 
 export const authController = {
@@ -89,8 +90,7 @@ export const authController = {
         role: user.role
       };
 
-      const jwtSecret = process.env.JWT_SECRET || 'euodoo_jwt_secret_dev';
-      const token = jwt.sign(tokenPayload, jwtSecret, {
+      const token = jwt.sign(tokenPayload, getJwtSecret(), {
         expiresIn: process.env.JWT_EXPIRES_IN || '1h'
       });
 

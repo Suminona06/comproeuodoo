@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { APP_CONFIG } from '../config/constants.js';
+import { getJwtSecret } from '../config/secrets.js';
 import logger from '../utils/logger.js';
 
 /**
@@ -16,8 +17,7 @@ export const requireAuth = (req, res, next) => {
   }
 
   try {
-    const jwtSecret = process.env.JWT_SECRET || 'euodoo_jwt_secret_dev';
-    const decoded = jwt.verify(token, jwtSecret);
+    const decoded = jwt.verify(token, getJwtSecret());
     req.user = decoded;
     res.locals.user = decoded;
     next();
@@ -43,8 +43,7 @@ export const optionalAuth = (req, res, next) => {
   }
 
   try {
-    const jwtSecret = process.env.JWT_SECRET || 'euodoo_jwt_secret_dev';
-    const decoded = jwt.verify(token, jwtSecret);
+    const decoded = jwt.verify(token, getJwtSecret());
     req.user = decoded;
     res.locals.user = decoded;
   } catch (err) {

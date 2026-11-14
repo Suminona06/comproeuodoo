@@ -15,9 +15,12 @@ import { optionalAuth } from './middleware/authMiddleware.js';
 import { i18nMiddleware } from './middleware/i18nMiddleware.js';
 import { settingsMiddleware } from './middleware/settingsMiddleware.js';
 import { seoMiddleware } from './middleware/seoMiddleware.js';
+import { getCookieSecret, validateProductionSecrets } from './config/secrets.js';
+import { safeJsonForHtml } from './utils/sanitizer.js';
 import logger from './utils/logger.js';
 
 dotenv.config();
+validateProductionSecrets();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,10 +74,24 @@ app.use(
   })
 );
 
+function setStaticAssetHeaders(res, filePath) {
+  const normalizedPath = filePath.split(path.sep).join('/');
+  if (normalizedPath.includes('/uploads/') && /\.svgz?$/i.test(filePath)) {
+    res.setHeader('Content-Security-Policy', 'sandbox');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Content-Disposition', 'attachment');
+  }
+  if (/\.(webp|jpg|jpeg|png|svg|ico|woff2|woff|mp4|webm)$/i.test(filePath)) {
+    res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
+  } else if (/\.(css|js)$/i.test(filePath)) {
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+  }
+}
+
 // Body Parsers & Cookie Parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cookieParser(process.env.COOKIE_SECRET || 'euodoo_cookie_secret_dev'));
+app.use(cookieParser(getCookieSecret()));
 
 // Static Files & Asset Caching
 app.use(
@@ -82,13 +99,7 @@ app.use(
     maxAge: process.env.NODE_ENV === 'production' ? '7d' : '1h',
     etag: true,
     lastModified: true,
-    setHeaders: (res, filePath) => {
-      if (/\.(webp|jpg|jpeg|png|svg|ico|woff2|woff|mp4|webm)$/i.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
-      } else if (/\.(css|js)$/i.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=86400');
-      }
-    }
+    setHeaders: setStaticAssetHeaders
   })
 );
 
@@ -121,6 +132,7 @@ app.use((req, res, next) => {
   res.locals.path = req.path;
   res.locals.user = req.user || null;
   res.locals.csrfToken = res.locals.csrfToken || '';
+  res.locals.safeJson = safeJsonForHtml;
   next();
 });
 

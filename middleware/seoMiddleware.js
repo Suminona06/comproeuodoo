@@ -1,4 +1,5 @@
 import { APP_CONFIG } from '../config/constants.js';
+import { safeJsonForHtml } from '../utils/sanitizer.js';
 
 /**
  * Dynamic SEO Engine Middleware
@@ -89,7 +90,7 @@ export const seoMiddleware = (req, res, next) => {
     renderJsonLd() {
       if (schemas.length === 0) return '';
       return schemas
-        .map((s) => `<script type="application/ld+json">\n${JSON.stringify(s, null, 2)}\n</script>`)
+        .map((s) => `<script type="application/ld+json">\n${safeJsonForHtml(s, 2)}\n</script>`)
         .join('\n');
     }
   };

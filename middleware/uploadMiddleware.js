@@ -8,28 +8,31 @@ import logger from '../utils/logger.js';
 // Memory storage to process image buffers directly via Sharp
 const memoryStorage = multer.memoryStorage();
 
-// Supported MIME types
+// Supported MIME types (SVG excluded to prevent same-origin stored XSS)
 const ALLOWED_IMAGE_TYPES = [
   'image/jpeg',
   'image/png',
   'image/webp',
   'image/gif',
-  'image/svg+xml',
   'image/x-icon',
   'image/vnd.microsoft.icon'
 ];
 
-const ALLOWED_VIDEO_TYPES = [
-  'video/mp4',
-  'video/webm'
-];
+const SVG_EXTENSION_RE = /\.svgz?$/i;
 
-const ALLOWED_DOCUMENT_TYPES = [
-  'application/pdf'
-];
+function isSvgUpload(originalName = '', mimeType = '') {
+  const ext = path.extname(originalName).toLowerCase();
+  return SVG_EXTENSION_RE.test(ext) || String(mimeType).toLowerCase().includes('svg');
+}
+
+const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm'];
+const ALLOWED_DOCUMENT_TYPES = ['application/pdf'];
 
 // File filter validator
 const mediaFilter = (req, file, cb) => {
+  if (isSvgUpload(file.originalname, file.mimetype)) {
+    return cb(new Error('Format berkas SVG tidak diizinkan demi keamanan.'), false);
+  }
   const ext = path.extname(file.originalname).toLowerCase();
   const isIco = ext === '.ico';
   const isImage = ALLOWED_IMAGE_TYPES.includes(file.mimetype) || isIco;
@@ -41,7 +44,7 @@ const mediaFilter = (req, file, cb) => {
   } else {
     cb(
       new Error(
-        'Format berkas tidak didukung. Harap unggah gambar (JPG, PNG, WebP, SVG, ICO), video (MP4, WebM), atau PDF.'
+        'Format berkas tidak didukung. Harap unggah gambar (JPG, PNG, WebP, ICO), video (MP4, WebM), atau PDF.'
       ),
       false
     );
@@ -94,7 +97,7 @@ export const processAndSaveWebP = async (buffer, subFolder = 'media', options = 
 };
 
 /**
- * Comprehensive image processor supporting SVG preservation and metadata return
+ * Process raster image buffer via Sharp and return metadata
  * @param {Buffer} buffer
  * @param {string} subFolder
  * @param {string} originalName
@@ -103,10 +106,8 @@ export const processAndSaveWebP = async (buffer, subFolder = 'media', options = 
  * @returns {Promise<Object>} storage result object { url, filename, size, driver, mimeType }
  */
 export const processAndSaveImage = async (buffer, subFolder = 'media', originalName = '', mimeType = 'image/jpeg', options = {}) => {
-  // SVG files are saved directly without Sharp rasterization
-  if (mimeType === 'image/svg+xml') {
-    const filename = `${subFolder}-${Date.now()}-${Math.round(Math.random() * 1e9)}.svg`;
-    return await storage.save(buffer, filename, 'image/svg+xml', subFolder);
+  if (isSvgUpload(originalName, mimeType)) {
+    throw new Error('Format berkas SVG tidak diizinkan.');
   }
 
   const preset = DIMENSION_PRESETS[subFolder] || DIMENSION_PRESETS.media;
@@ -180,22 +181,19 @@ export const deleteUploadedFile = async (fileUrl) => {
 
 /**
  * Save settings media (favicon, logo header, logo footer)
- * Preserves transparency and supports ICO, SVG, PNG, WebP
+ * Preserves transparency and supports ICO, PNG, WebP
  */
 export const saveSettingUpload = async (file, prefix = 'setting') => {
   if (!file || !file.buffer) return null;
+  if (isSvgUpload(file.originalname, file.mimetype)) {
+    throw new Error('Format berkas SVG tidak diizinkan.');
+  }
   const ext = path.extname(file.originalname).toLowerCase();
   const subFolder = 'settings';
 
   if (ext === '.ico' || file.mimetype === 'image/x-icon' || file.mimetype === 'image/vnd.microsoft.icon') {
     const filename = `${prefix}-${Date.now()}.ico`;
     const saved = await storage.save(file.buffer, filename, 'image/x-icon', subFolder);
-    return saved.url;
-  }
-
-  if (ext === '.svg' || file.mimetype === 'image/svg+xml') {
-    const filename = `${prefix}-${Date.now()}.svg`;
-    const saved = await storage.save(file.buffer, filename, 'image/svg+xml', subFolder);
     return saved.url;
   }
 
