@@ -54,20 +54,4 @@ export const optionalAuth = (req, res, next) => {
   next();
 };
 
-/**
- * Role-Based Access Control Middleware
- * @param {Array<string>} roles
- */
-export const requireRole = (roles = []) => {
-  return (req, res, next) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(403).json({ success: false, error: 'Akses ditolak.' });
-      }
-      return res.status(403).send('Akses Ditolak: Anda tidak memiliki hak akses yang cukup.');
-    }
-    next();
-  };
-};
-
-export default { requireAuth, optionalAuth, requireRole };
+export default { requireAuth, optionalAuth };

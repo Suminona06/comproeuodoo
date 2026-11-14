@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
+import { validateMigrationSequence } from '../utils/migrationSequence.js';
 
 dotenv.config();
 
@@ -153,6 +154,8 @@ async function runMigrations() {
     const files = fs.readdirSync(migrationsDir)
       .filter(file => file.endsWith('.sql'))
       .sort();
+
+    validateMigrationSequence(files);
 
     if (files.length === 0) {
       logger.info('No migration files found in database/migrations.');

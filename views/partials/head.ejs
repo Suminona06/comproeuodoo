@@ -36,7 +36,6 @@
 <meta name="author" content="PT Euodoo">
 <meta name="robots" content="<%= seoObj.robots || 'index, follow' %>">
 
-<!-- Favicon Multi-Sizes (T-256) -->
 <% 
   const fav32 = (typeof settings !== 'undefined' && settings && settings.site_favicon_32) ? settings.site_favicon_32 : ((typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/uploads/settings/favicon-32x32.png');
   const fav16 = (typeof settings !== 'undefined' && settings && settings.site_favicon_16) ? settings.site_favicon_16 : ((typeof settings !== 'undefined' && settings && settings.site_favicon) ? settings.site_favicon : '/uploads/settings/favicon-16x16.png');
@@ -48,13 +47,11 @@
 <link rel="apple-touch-icon" sizes="180x180" href="<%= fav180 %>?v=3">
 <link rel="icon" type="image/png" sizes="192x192" href="<%= fav192 %>?v=3">
 
-<!-- Alternate Language Links & Canonical -->
 <link rel="canonical" href="<%= canonicalUrl %>">
 <link rel="alternate" hreflang="id" href="<%= alternateId %>">
 <link rel="alternate" hreflang="en" href="<%= alternateEn %>">
 <link rel="alternate" hreflang="x-default" href="<%= alternateDefault %>">
 
-<!-- Open Graph / Facebook -->
 <meta property="og:type" content="<%= ogTypeResolved %>">
 <meta property="og:title" content="<%= ogTitle %>">
 <meta property="og:description" content="<%= ogDesc %>">
@@ -62,18 +59,15 @@
 <meta property="og:site_name" content="PT Euodoo">
 <meta property="og:image" content="<%= ogImg %>">
 
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="<%= ogTitle %>">
 <meta name="twitter:description" content="<%= ogDesc %>">
 <meta name="twitter:image" content="<%= ogImg %>">
 
-<!-- Preconnect to Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
-<!-- Design System CSS Tokens & Core Styles -->
 <link rel="stylesheet" href="/css/tokens.css?v=20261106-2">
 <link rel="stylesheet" href="/css/base.css?v=20261106-2">
 <link rel="stylesheet" href="/css/layout.css?v=20261106-2">
@@ -84,7 +78,6 @@
 <link rel="stylesheet" href="/vendor/photoswipe/photoswipe.css">
 <link rel="stylesheet" href="/css/lightbox.css">
 
-<!-- Structured Data (JSON-LD) -->
 <% if (typeof seoObj.renderJsonLd === 'function') { %>
   <%- seoObj.renderJsonLd() %>
 <% } %>

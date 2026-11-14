@@ -5,13 +5,13 @@
     <div class="ft-top">
       <a href="/" class="brand" aria-label="Beranda PT Euodoo">
         <% if (typeof settings !== 'undefined' && settings && settings.site_logo_footer) { %>
-          <img src="<%= settings.site_logo_footer %>" alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" class="ft-brand-logo" style="max-height: 40px; width: auto; object-fit: contain; display: block;">
+          <img src="<%= settings.site_logo_footer %>" alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" class="ft-brand-logo">
         <% } else { %>
-          <span class="brand-name" style="color:#ffffff;font-size:1.5rem;">PT EUODOO</span>
+          <span class="brand-name ft-brand-name">PT EUODOO</span>
           <span class="ft-brand-badge">MANUFACTURING</span>
         <% } %>
       </a>
-      <a href="/contact" class="btn-pill-solid-white" style="padding:0 28px;font-size:14px;">
+      <a href="/contact" class="btn-pill-solid-white ft-contact-cta">
         <%= currentLang === 'en' ? 'Contact Us' : 'Hubungi Kami' %>
       </a>
     </div>
@@ -177,10 +177,8 @@
   </div>
 </footer>
 
-<!-- Dynamic Floating WhatsApp Button -->
 <%- include('./whatsapp-btn') %>
 
-<!-- Core Vendor & Client JS -->
 <script src="/vendor/animejs/anime.min.js"></script>
 <script src="/vendor/photoswipe/photoswipe.umd.min.js"></script>
 <script src="/vendor/photoswipe/photoswipe-lightbox.umd.min.js"></script>

@@ -975,5 +975,16 @@ document.addEventListener('DOMContentLoaded', () => {
       openGalleryObserver.observe(bentoGallery);
     }
   })();
+
+  document.querySelectorAll('.brand-logo-header').forEach((logoImg) => {
+    const showLogoFallback = () => {
+      logoImg.classList.add('is-hidden');
+    };
+    if (logoImg.complete && logoImg.naturalWidth === 0) {
+      showLogoFallback();
+    } else {
+      logoImg.addEventListener('error', showLogoFallback);
+    }
+  });
 });
 
