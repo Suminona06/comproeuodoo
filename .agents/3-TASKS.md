@@ -2,8 +2,8 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 2 Task (T-326 s/d T-327)
-- **Total Task Selesai:** 325 Task (T-01 s/d T-325)
+- **Task Aktif Terbuka:** 1 Task (T-327)
+- **Total Task Selesai:** 326 Task (T-01 s/d T-326)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-323** (berikutnya **T-328**).
 
@@ -46,7 +46,7 @@
     4. `public/css/layout.css` menambahkan `.ft-main:has(> :only-child) { grid-template-columns: 1fr; }` untuk state `0` item, menjamin `.ft-nav-link` minimal `44px`, `overflow-wrap: anywhere` di `320px`, `prefers-reduced-motion: reduce`, dan mempertahankan aturan `.ft-*` yang diawasi `test-t144`, `test-t145`, dan `test-t241`.
   - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `node tests/test-t144-ui-polish.js`, `node tests/test-t145-qa-regression.js`, `node tests/test-t241-public-ui.js`; cek state `0`, `1–3`, dan `4` menu + eksternal link pada viewport `320..1440`.
 
-- [ ] **T-326**: SweetAlert2 Toast 2 Detik Bertema Hijau Euodoo pada Detail Berita (`/news/:slug`)
+- [x] **T-326**: SweetAlert2 Toast 2 Detik Bertema Hijau Euodoo pada Detail Berita (`/news/:slug`)
   - **Modul:** [prd/news-detail.md](prd/news-detail.md), [tech/news-detail.md](tech/news-detail.md)
   - **Skill:** `polish`, `animate`, `antislop-code`
   - **File Terdampak:** `controllers/public/postController.js`, `views/partials/head.ejs`, `views/public/news-detail.ejs`, `public/js/news-detail.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`

@@ -223,6 +223,7 @@
     "copy_aria": "Copy article link",
     "copy_title": "Copy link",
     "copy_success": "Article link copied to clipboard!",
+    "copy_error": "Failed to copy article link. Please copy it manually from the address bar.",
     "related_title": "Read Other News"
   }
 }

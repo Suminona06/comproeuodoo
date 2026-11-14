@@ -4,6 +4,40 @@ import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import slugRedirectModel from '../../models/slugRedirectModel.js';
 import logger from '../../utils/logger.js';
 
+async function fetchRelatedPosts(post) {
+  const sameType = await postModel.findAll({ status: 'published', type: post.type, limit: 10 });
+  const related = sameType.filter(p => p.id !== post.id).slice(0, 3);
+  if (related.length >= 3) return related;
+
+  const otherRecent = await postModel.findAll({ status: 'published', limit: 10 });
+  const existingIds = new Set([post.id, ...related.map(p => p.id)]);
+  const fillers = otherRecent.filter(p => !existingIds.has(p.id));
+  return related.concat(fillers).slice(0, 3);
+}
+
+async function findPostRedirectUrl(slug) {
+  const redirect = await slugRedirectModel.findRedirect('post', slug);
+  if (!redirect || !redirect.new_slug) return null;
+  logger.info(`Redirecting 301 from /news/${slug} to /news/${redirect.new_slug}`);
+  return `/news/${redirect.new_slug}`;
+}
+
+async function renderMissingPost(res, slug) {
+  const redirectUrl = await findPostRedirectUrl(slug);
+  if (redirectUrl) return res.redirect(301, redirectUrl);
+  return res.status(404).render('public/404', {
+    title: 'Artikel Tidak Ditemukan | PT Euodoo',
+    path: '/news'
+  });
+}
+
+function resolveDetailTitle(post, locals) {
+  const currentLang = locals.currentLang || 'id';
+  const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
+  const companyName = locals.settings?.company_name || 'PT Euodoo';
+  return `${postTitle} | ${companyName}`;
+}
+
 export const postController = {
   async index(req, res) {
     try {
@@ -106,36 +140,16 @@ export const postController = {
       const post = await postModel.findBySlug(slug);
 
       if (!post || post.status !== 'published') {
-        // Cek riwayat 301 redirect
-        const redirect = await slugRedirectModel.findRedirect('post', slug);
-        if (redirect && redirect.new_slug) {
-          logger.info(`Redirecting 301 from /news/${slug} to /news/${redirect.new_slug}`);
-          return res.redirect(301, `/news/${redirect.new_slug}`);
-        }
-
-        return res.status(404).render('public/404', {
-          title: 'Artikel Tidak Ditemukan | PT Euodoo',
-          path: '/news'
-        });
+        return renderMissingPost(res, slug);
       }
 
-      let allRecent = await postModel.findAll({ status: 'published', type: post.type, limit: 10 });
-      let recentPosts = allRecent.filter(p => p.id !== post.id).slice(0, 3);
-      if (recentPosts.length < 3) {
-        const otherRecent = await postModel.findAll({ status: 'published', limit: 10 });
-        const existingIds = new Set([post.id, ...recentPosts.map(p => p.id)]);
-        const fillers = otherRecent.filter(p => !existingIds.has(p.id));
-        recentPosts = recentPosts.concat(fillers).slice(0, 3);
-      }
-
-      const currentLang = res.locals.currentLang || 'id';
-      const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
-      const title = postTitle + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const recentPosts = await fetchRelatedPosts(post);
 
       res.render('public/news-detail', {
-        title,
+        title: resolveDetailTitle(post, res.locals),
         path: '/news',
         headerSolid: true,
+        useSweetAlert: true,
         post,
         recentPosts
       });

@@ -9884,3 +9884,120 @@ table.pd-size td:first-child {
     animation: none !important;
   }
 }
+
+/* News Detail Copy Link Toast (.nwd-swal-*) - T-326 */
+.nwd-swal-container.swal2-container {
+  z-index: var(--z-toast) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup {
+  --swal2-background: var(--bg-base);
+  --swal2-color: var(--color-text-navy);
+  --swal2-outline: var(--focus-ring);
+  --swal2-close-button-focus-box-shadow: var(--focus-ring);
+  --swal2-close-button-color: var(--color-text-muted);
+  --swal2-timer-progress-bar-background: var(--color-primary);
+  background: var(--bg-base) !important;
+  color: var(--color-text-navy) !important;
+  border: 1px solid var(--primary-border) !important;
+  border-left: 4px solid var(--color-primary) !important;
+  border-radius: var(--r-lg) !important;
+  box-shadow: var(--shadow-level-2) !important;
+  font-family: var(--font-family-base) !important;
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-md) !important;
+  display: grid !important;
+  grid-template-columns: min-content 1fr min-content !important;
+  align-items: center !important;
+  column-gap: var(--space-sm) !important;
+  max-width: min(400px, calc(100vw - var(--space-lg))) !important;
+  box-sizing: border-box !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup.nwd-swal-error {
+  --swal2-timer-progress-bar-background: var(--color-error);
+  border-color: var(--color-error-bg) !important;
+  border-left: 4px solid var(--color-error) !important;
+  background: var(--bg-base) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .nwd-swal-title {
+  color: var(--color-text-navy) !important;
+  font-family: var(--font-family-base) !important;
+  font-size: var(--font-size-body-sm) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  line-height: var(--line-height-body-sm) !important;
+  margin: 0 !important;
+  padding: var(--space-xs) 0 !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup.nwd-swal-error .nwd-swal-title {
+  color: var(--color-error) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-icon {
+  margin: 0 !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-icon.swal2-success {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-icon.swal2-success [class^="swal2-success-line"] {
+  background-color: var(--color-primary) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-icon.swal2-success .swal2-success-ring {
+  border-color: var(--primary-border) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-icon.swal2-error {
+  border-color: var(--color-error) !important;
+  color: var(--color-error) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+  background-color: var(--color-error) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-close.nwd-swal-close {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--color-text-muted) !important;
+  border-radius: var(--r-sm) !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  transition: color var(--transition-fast), background-color var(--transition-fast) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-close.nwd-swal-close:hover {
+  color: var(--color-text-navy) !important;
+  background-color: var(--primary-subtle) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-close.nwd-swal-close:focus-visible {
+  outline: var(--focus-ring-outline) !important;
+  outline-offset: 2px !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup .swal2-timer-progress-bar.nwd-swal-progress {
+  background: var(--color-primary) !important;
+}
+
+.swal2-popup.swal2-toast.nwd-swal-popup.nwd-swal-error .swal2-timer-progress-bar.nwd-swal-progress {
+  background: var(--color-error) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swal2-popup.swal2-toast.nwd-swal-popup,
+  .swal2-popup.swal2-toast.nwd-swal-popup * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

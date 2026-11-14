@@ -223,6 +223,7 @@
     "copy_aria": "Salin tautan artikel",
     "copy_title": "Salin tautan",
     "copy_success": "Tautan artikel berhasil disalin!",
+    "copy_error": "Gagal menyalin tautan artikel. Silakan salin manual dari bilah alamat.",
     "related_title": "Baca Berita Lainnya"
   }
 }
