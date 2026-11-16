@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: controllers/admin/mediaController.js, middleware/uploadMiddleware.js, models/mediaModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/admin/mediaController.js, middleware/uploadMiddleware.js, models/mediaModel.js, utils/seedAssetsSync.js
 
 # Tech Spec: Modul Media Library (Media & Storage)
 
@@ -54,6 +54,9 @@ Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke fo
 3. **Penyimpanan:**
    - Driver `local`: berkas disimpan di direktori `public/uploads/media/`.
    - Driver `s3`: berkas diunggah via AWS SDK ke bucket S3 yang ditentukan di `.env`.
+4. **Aset Baseline Terlacak Git (`database/seed-assets/uploads/`):**
+   - Berkas `public/uploads/*` tetap di-gitignore agar upload CMS produksi tidak menimbulkan konflik `git pull`.
+   - Salinan aset media aktif (gambar, video MP4, dan favicon settings) disimpan di `database/seed-assets/uploads/` dan disalin non-destruktif (hanya jika berkas tujuan belum ada) ke `public/uploads/` oleh `utils/seedAssetsSync.js` saat `npm run migrate` maupun `npm run seed`.
 
 ---
 

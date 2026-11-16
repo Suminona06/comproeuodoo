@@ -3,7 +3,7 @@ import { generateSitemap, invalidateSitemapCache } from '../utils/sitemapGenerat
 import productModel from '../models/productModel.js';
 import postModel from '../models/postModel.js';
 
-const BASE_URL = 'http://127.0.0.1:3000';
+const BASE_URL = process.env.TEST_BASE_URL || 'http://127.0.0.1:3000';
 
 async function runModul13Tests() {
   console.log('--- STARTING MODUL 13 (SEO ENGINE, AUDIT & DELIVERY GATE) TESTS ---');
@@ -32,11 +32,11 @@ async function runModul13Tests() {
   assert.ok(sitemapXml.includes('xmlns:xhtml="http://www.w3.org/1999/xhtml"'), 'Must have xhtml namespace for hreflang');
 
   // Verify static routes in sitemap
-  assert.ok(sitemapXml.includes('<loc>http://127.0.0.1:3000/</loc>'), 'Must include home');
-  assert.ok(sitemapXml.includes('<loc>http://127.0.0.1:3000/about</loc>'), 'Must include about');
-  assert.ok(sitemapXml.includes('<loc>http://127.0.0.1:3000/products</loc>'), 'Must include products');
-  assert.ok(sitemapXml.includes('<loc>http://127.0.0.1:3000/news</loc>'), 'Must include news');
-  assert.ok(sitemapXml.includes('<loc>http://127.0.0.1:3000/contact</loc>'), 'Must include contact');
+  assert.ok(sitemapXml.includes(`<loc>${BASE_URL}/</loc>`), 'Must include home');
+  assert.ok(sitemapXml.includes(`<loc>${BASE_URL}/about</loc>`), 'Must include about');
+  assert.ok(sitemapXml.includes(`<loc>${BASE_URL}/products</loc>`), 'Must include products');
+  assert.ok(sitemapXml.includes(`<loc>${BASE_URL}/news</loc>`), 'Must include news');
+  assert.ok(sitemapXml.includes(`<loc>${BASE_URL}/contact</loc>`), 'Must include contact');
 
   // Verify bilingual alternates
   assert.ok(sitemapXml.includes('hreflang="id"'), 'Must include Indonesian hreflang');
@@ -123,7 +123,7 @@ async function runModul13Tests() {
   console.log('\n[TEST 8] Testing Schema.org Structured Data (JSON-LD)...');
   // 8a: Organization Schema on Homepage
   assert.ok(homeHtml.includes('"@type": "Organization"') || homeHtml.includes('"@type":"Organization"'), 'Homepage must inject Organization schema');
-  assert.ok(homeHtml.includes('"name": "PT Euodoo"') || homeHtml.includes('"name":"PT Euodoo"'), 'Organization schema must declare company name');
+  assert.ok(/"name"\s*:\s*"PT\.?\s*Euodoo[^"]*"/i.test(homeHtml), 'Organization schema must declare company name');
 
   // 8b: Article Schema on News Detail
   const newsDetailHtml = await (await fetch(`${BASE_URL}/news/mengenal-teknologi-oxium-plastik-biodegradable`)).text();

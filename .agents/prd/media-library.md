@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: controllers/admin/mediaController.js, views/admin/media/, views/partials/media-picker-modal.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/admin/mediaController.js, views/admin/media/, views/partials/media-picker-modal.ejs
 
 # PRD: Modul Media Library (Media & Storage)
 
@@ -31,6 +31,7 @@ Modul Media Library mengelola penyimpanan, optimasi, dan penggunaan aset visual 
 
 ### Fleksibilitas Storage Driver
 - Mendukung penyimpanan berkas lokal (`public/uploads/`) untuk lingkungan pengembangan dan penyimpanan awan (Amazon S3 / kompatibel S3) melalui konfigurasi environment `STORAGE_DRIVER`.
+- Aset media baseline (gambar, video MP4, favicon) yang digunakan oleh konten awal disimpan terpisah di `database/seed-assets/uploads/` (terlacak Git) dan disalin otomatis ke `public/uploads/` tanpa menimpa unggahan CMS produksi.
 
 ### FR-27: Dukungan Mode Multi-Select pada Universal Media Picker
 - Universal Media Picker Modal (`views/partials/media-picker-modal.ejs`) mendukung mode seleksi ganda (*multi-select*).

@@ -2,7 +2,7 @@ import assert from 'assert';
 import inquiryModel from '../models/inquiryModel.js';
 import settingModel from '../models/settingModel.js';
 
-const BASE_URL = 'http://127.0.0.1:3000';
+const BASE_URL = process.env.TEST_BASE_URL || 'http://127.0.0.1:3000';
 
 async function runModul12Tests() {
   console.log('--- STARTING MODUL 12 (PUBLIC INTERFACE SSR & UX v2.0) TESTS ---');
