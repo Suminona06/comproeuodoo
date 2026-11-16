@@ -1,0 +1,103 @@
+name: CI Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint JS
+        run: npm run lint
+
+      - name: Lint EJS Views and CSS Tokens
+        run: npm run lint:views
+
+      - name: Lint i18n Dictionaries
+        run: npm run lint:i18n
+
+      - name: Security Audit (High Severity Report)
+        run: npm audit --audit-level=high || echo "::warning::High severity vulnerabilities detected in dependencies"
+
+  migrate-seed-test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_ROOT_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          MYSQL_DATABASE: euodoo_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      NODE_ENV: test
+      HOST: 127.0.0.1
+      PORT: 3000
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+      DB_NAME: euodoo_db
+      ADMIN_DEFAULT_EMAIL: admin@euodoo.com
+      ADMIN_DEFAULT_PASSWORD: ${{ secrets.CI_ADMIN_PASSWORD || 'AdminEuodoo2026!' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database migrations and baseline asset sync
+        run: npm run migrate
+
+      - name: Verify idempotent re-migration
+        run: npm run migrate
+
+      - name: Verify synced media, video, and favicon assets
+        run: |
+          test -f public/uploads/media/video-1792114962121-285568127.mp4
+          test -f public/uploads/settings/favicon-32x32.png
+
+      - name: Run database seeders
+        run: npm run seed
+
+      - name: Start server and run test suite
+        run: |
+          node server.js > /tmp/ci-server.log 2>&1 &
+          SERVER_PID=$!
+          trap "kill $SERVER_PID || true" EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:3000/ > /dev/null
+          npm test
+          node --test tests/test-audit-recommendations.js

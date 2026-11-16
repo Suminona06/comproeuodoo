@@ -22,3 +22,14 @@ To update antislop later: `npx antislop-ai --update`, or run `npx antislop-ai` a
 - **Batas Ukuran:** Setiap berkas modul maksimal ~8KB, `.agents/INDEX.md` maksimal 60 baris. Jika melebihi batas, wajib dipecah menjadi sub-modul yang lebih spesifik.
 - **Wajib baca `.agents/tech/conventions.md`** sebelum menulis atau merefaktor kode (view EJS, CSS, JS).
 - **Gerbang Kualitas Lint:** `npm run lint` dan `npm run lint:views` wajib hijau tanpa error pada berkas terkait sebelum Close.
+
+## Konteks Stack, Perintah & Batasan Aset (Context Engineering)
+- **Stack:** Node.js >=20 (v24), Express 4.19 ESM, EJS SSR, MySQL2 (`utf8mb4`), Sharp WebP, Vanilla CSS tokens (`public/css/tokens.css`).
+- **Perintah Utama:**
+  - `npm run migrate`: Eksekusi migrasi SQL (`database/migrations/`) + sinkronisasi aset baseline non-destruktif (`database/seed-assets/uploads/` -> `public/uploads/`).
+  - `npm run seed`: Menjalankan `database/seeds/v2_seed.js` dari `database/seeds/snapshot.json` + akun default env.
+  - `npm run seed:export`: Ekspor ulang snapshot DB lokal ke `snapshot.json` & `database/seed-assets/uploads/` (`--write-migration <path>` opsional).
+  - `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`: Seluruh gerbang kualitas CI (`.github/workflows/ci.yml`).
+- **Batasan Penting:**
+  - `public/uploads/*` tetap di-gitignore; aset gambar/video/favicon aktif disimpan di `database/seed-assets/uploads/`.
+  - Dilarang mengekspor `users` (password hash) atau `inquiries` ke `snapshot.json` maupun file migrasi, serta dilarang men-commit `.env` atau rahasia produksi.

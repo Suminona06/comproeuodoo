@@ -33,6 +33,7 @@
 | **Site Settings Footer** | ACTIVE | 2026-11-16 | [prd/settings.md](prd/settings.md) | [tech/settings-footer.md](tech/settings-footer.md) | `services/settingService.js`, `views/admin/settings/partials/footer-content-card.ejs`, `public/js/admin-settings.js` |
 | **Site Settings Branding Assets** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings-assets.md](tech/settings-assets.md) | `middleware/uploadMiddleware.js`, `views/admin/settings/partials/visual-identity-card.ejs` |
 | **Code Conventions & Standards** | ACTIVE | 2026-11-16 | - | [tech/conventions.md](tech/conventions.md) | `eslint.config.js`, `scripts/lint-*.js` |
+| **CI/CD & Seed Snapshot** | ACTIVE | 2026-11-16 | - | [tech/ci-cd-seeding.md](tech/ci-cd-seeding.md) | `database/migrate.js`, `database/seeds/`, `.github/workflows/ci.yml` |
 
 ## 3. Direktori Pendukung
 - `changes/`: Proposal perubahan berjalan (dihapus/dipindah ke archive saat close).

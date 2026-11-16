@@ -5,6 +5,7 @@ import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
 import { validateMigrationSequence } from '../utils/migrationSequence.js';
+import { syncSeedAssets } from '../utils/seedAssetsSync.js';
 
 dotenv.config();
 
@@ -207,6 +208,9 @@ async function runMigrations() {
     } else {
       logger.info(`Successfully applied ${appliedCount} migration(s).`);
     }
+
+    const assetSync = syncSeedAssets({ overwrite: false });
+    logger.info(`[ASSETS] Seed upload sync complete (copied: ${assetSync.copied}, skipped: ${assetSync.skipped}, total: ${assetSync.total}).`);
   } catch (err) {
     logger.error(`Migration execution stopped with error: ${err.message}`);
     process.exit(1);

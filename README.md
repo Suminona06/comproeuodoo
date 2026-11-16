@@ -35,10 +35,19 @@ cp .env.example .env # atau edit langsung file .env
 Pastikan variabel `DB_HOST`, `DB_USER`, `DB_PASSWORD`, dan `DB_NAME` terisi dengan benar.
 
 ### 3. Migrasi & Seeder Database
-Jalankan migrasi tabel dan data awal (seeder akun administrator, pengaturan situs, kategori, dan kapabilitas awal):
+Jalankan migrasi tabel, sinkronisasi konten terkini (`020_seed_current_content_v1.sql`), dan pemulihan aset gambar/video baseline dari `database/seed-assets/uploads/` ke `public/uploads/` (non-destruktif):
 ```bash
 npm run migrate
 npm run seed
+```
+
+Jika Anda menyunting konten, gambar, atau video melalui CMS lokal dan ingin memperbarui snapshot untuk disimpan ke GitHub:
+```bash
+# Memperbarui database/seeds/snapshot.json & database/seed-assets/uploads/
+npm run seed:export
+
+# Atau sekaligus menghasilkan/memperbarui file migrasi SQL
+npm run seed:export -- --write-migration database/migrations/021_nama_snapshot.sql
 ```
 
 Kredensial Default Admin:
@@ -111,13 +120,22 @@ node tests/test-admin-crud.js
    ```bash
    source /home/username/nodevenv/public_html/20/bin/activate
    cd /home/username/public_html
+   git pull origin main
    npm install --production
    npm run migrate
-   npm run seed
+   # Jalankan npm run seed hanya pada setup awal atau jika ingin mengisi ulang akun default
    ```
+   Perintah `npm run migrate` otomatis mengeksekusi migrasi skema & konten sekali jalan serta menyalin aset gambar, video, dan favicon baseline yang belum ada dari `database/seed-assets/uploads/` ke `public/uploads/` tanpa menimpa unggahan CMS yang sudah berjalan di server.
 5. **Restart Aplikasi:**
    Klik tombol **Restart** pada panel Node.js Selector di cPanel.
-   File [.htaccess](file:///home/itpc/Euodoo/.htaccess) yang sudah disediakan akan otomatis mengarahkan lalu lintas HTTPS dan menangani caching aset statis.
+   File [.htaccess](.htaccess) yang sudah disediakan akan otomatis mengarahkan lalu lintas HTTPS dan menangani caching aset statis.
+
+---
+
+## 🤖 CI Quality Gate (GitHub Actions)
+Workflow [.github/workflows/ci.yml](.github/workflows/ci.yml) memvalidasi setiap PR/push ke `main`:
+- Lint kode JS (`npm run lint`), lint template EJS/CSS (`npm run lint:views`), dan audit kamus i18n (`npm run lint:i18n`).
+- Dry-run `npm run migrate` (2x untuk uji idempoten), `npm run seed`, verifikasi aset video/favicon, serta `npm test`.
 
 ---
 
