@@ -10,14 +10,14 @@ Modul Tentang Kami (`/about`) memuat rekam jejak, visi misi, nilai budaya kerja,
 ## 2. Functional Requirements
 
 ### FR-05 (Sub-fitur: Tentang Kami): Render Halaman Profil Perusahaan
-- Sistem merender halaman Tentang Kami secara Server-Side Rendering (SSR) berbasis EJS dengan komponen:
-  1. Header Halaman & Breadcrumb navigasi (`nav.breadcrumbs`).
-  2. Profil Perusahaan & Latar Belakang (kicker, judul `h2`, dan paragraf sejarah dari `settings`) di kolom kiri blok **Modern Counter Section** (`.abt-cnt-*`), berpasangan dengan grid statistik 2x2 di kolom kanan tanpa panel pembungkus (`var(--bg-soft-green)`).
-  3. Nilai-Nilai Inti Budaya Perusahaan: 6 Pilar Budaya Kerja Interaktif (Default T-I-C-K-E-T: Takut Tuhan, Integritas, Komunikasi, Kasih, Luar Biasa, Taat; huruf dan konten dapat disunting fleksibel di CMS).
-  4. Visi & Misi Korporat dengan media foto representatif pabrik/tim.
-  5. Galeri Mosaik Bento Berhalaman (`.sec-gallery`, `.abt-gal-*`).
-  6. Statistik Kunci Pencapaian dalam grid 2x2 ber-notch (`.abt-cnt-grid`) berisi maksimal 4 stat aktif pertama (`sort_order ASC`) dengan 4 lencana bulat panah diagonal di pusat, animasi count-up Anime.js, dan mikro-interaksi hover.
-  7. Lini Masa Sejarah Interaktif dalam blok **Horizontal Timeline Slider** (`.abt-htl-*`) dengan header editable di Admin (ID/EN), tombol navigasi persegi bergaris, track 3/2/1 kolom, garis progres hijau tua sampai item aktif, dan garis yang berhenti tepat di bulatan item terakhir.
+- Sistem merender halaman Tentang Kami (`/about`) secara SSR berbasis *thin page* (`views/public/about.ejs`) yang mengorkestrasikan partial modular per section (`story-counter`, `history-timeline`, `vision-mission`, `ticket-accordion`, `gallery-bento`) `[PENDING T-329]`:
+  1. **Hero & Breadcrumb:** Header halaman (`.page-hero`) dan `nav.breadcrumbs` di *thin page* dengan gambar latar `<img>` berprioritas tinggi dan scrim token (tanpa inline style) `[PENDING T-329]`.
+  2. **Profil & Statistik (`.abt-cnt-*`):** Kicker, judul `h2`, dan narasi sejarah (`settings`) di kiri, berpasangan dengan grid statistik 2x2 ber-notch di kanan di atas `var(--bg-soft-green)`.
+  3. **Budaya Kerja (`.abt-tkt-*`):** 6 Pilar Budaya Kerja interaktif (default T-I-C-K-E-T) yang dikelola fleksibel di CMS.
+  4. **Visi & Misi (`.sec-vm` / `.abt-vm-*`):** Pernyataan visi & misi korporat beserta foto representatif pabrik/tim.
+  5. **Galeri Bento (`.sec-gallery` / `.abt-gal-*`):** Galeri mosaik berhalaman dengan lightbox layar penuh.
+  6. **Linimasa Sejarah (`.abt-htl-*`):** Slider horizontal tonggak sejarah perusahaan dengan header editable di Admin.
+- Seluruh teks UI statis dan teks fallback section (Hero, Sejarah, Visi & Misi, Budaya Kerja, Linimasa, dan Galeri) wajib dimuat dari kamus lokalisasi `t('about.*')` di `locales/id.json` dan `locales/en.json` tanpa string literal hardcoded di template maupun controller `[PENDING T-328] [PENDING T-329]`.
 
 ### Bento Mosaic Gallery Berhalaman (`.abt-gal-*`)
 - Galeri foto pabrik disusun dalam pola tata letak asimetris (Bento Grid) berukuran tetap untuk mencegah Cumulative Layout Shift (CLS).

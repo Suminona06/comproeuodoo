@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-12 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, controllers/public/pageController.js, public/js/about-story.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-12 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, views/partials/about/vision-mission.ejs, views/partials/about/ticket-accordion.ejs, views/partials/about/gallery-bento.ejs, controllers/public/pageController.js, public/js/about-story.js, public/js/ticket-accordion.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
@@ -11,7 +11,7 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/about` | `pageController.about` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR halaman Tentang Kami |
+| `GET` | `/about` | `pageController.about` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR halaman Tentang Kami (`<= 40` baris per fungsi/helper, fallback via `t('about.*')` `[PENDING T-328]`) |
 | `GET` | `/admin/about` | `aboutController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS kelola konten Tentang Kami |
 | `POST` | `/admin/about` | `aboutController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update profil umum & foto visi misi |
 | `POST` | `/admin/about/gallery` | `aboutController.storeGallerySlide` | `requireAuth`, `roleMiddleware` | Tambah slide galeri bento |
@@ -54,12 +54,17 @@ Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel
 
 ## 4. Komponen Antarmuka & Prefix CSS
 
+- **Arsitektur Thin Page, Hero & Partial Modular (`views/public/about.ejs`, `views/partials/about/*.ejs`):** `[PENDING T-329]`
+  - `views/public/about.ejs` dirampingkan menjadi *thin page* (`<= 100` baris, nesting `<= 2` level) tanpa komentar HTML `<!-- ... -->`, tanpa atribut `style="..."` inline, dan tanpa string fallback literal.
+  - Blok `.page-hero` dipertahankan langsung di *thin page* `views/public/about.ejs`; gambar latar dirender melalui `<img class="page-hero-bg-img" src="..." alt="" fetchpriority="high" decoding="async">` di dalam `.page-hero` dan tingkat opasitas scrim dikendalikan via `.page-hero-scrim[data-scrim-level]` di `public/css/components.css`.
+  - Seksi Visi & Misi diekstrak ke `views/partials/about/vision-mission.ejs` (`<= 100` baris, nesting `<= 2` level) dengan class ter-scope `.abt-vm-*` (mempertahankan `.sec-vm` dan `.vm-*`) dan teks fallback via `t('about.*')`.
+  - Seksi Galeri Bento diekstrak ke `views/partials/about/gallery-bento.ejs` (`<= 100` baris, nesting `<= 2` level). Atribut `style="--tile-i: ...;"` dihapus dari SSR maupun `createSingleTile` di `public/js/main.js`; indeks animasi stagger dipetakan di CSS melalui `.abt-gal-tile--pos-1` s/d `.abt-gal-tile--pos-6`.
 - **Sistem Latar Selang-Seling & Transisi Tepi (`.sec-story`, `.sec-vm`, `.abt-tkt-section`, `.sec-gallery`, `.abt-*`):**
   - `.sec-story#sejarah` menggunakan `background-color: var(--bg-soft-green)`.
   - `.sec-vm#visi-misi` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element `::before` bertinggi `48px` (mobile `< 768px`) dan `80px` (desktop `>= 768px`) memakai `background: var(--trans-soft-green-to-subtle)`.
   - `.abt-tkt-section#core-values` mempertahankan foto latar operasional beserta `.abt-tkt-bg-scrim` yang menyatu mulus di tepi atas/bawah; apabila tanpa foto latar, fallback menggunakan `var(--bg-soft-green)` dengan transisi tepi `var(--trans-subtle-to-soft-green)`.
   - `.sec-gallery#galeri` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element gradasi tepi atas yang menyatu dari section sebelumnya, sementara kartu `.abt-cnt-card` dan `.vm-card` mempertahankan `background: var(--color-surface)` dan elevasi token.
-  - Seluruh atribut `style="..."` inline pada `views/public/about.ejs` dipindahkan ke class CSS ter-scope berprefix `.abt-*` (`.abt-hero-content`, `.abt-vm-point-text`, serta atribut `hidden` pada `#bentoPager`) dan teks menggunakan kamus `t('about.*')`.
+  - Seluruh warna CSS pada selektor `.page-hero*`, `.abt-*`, `.sec-vm / .vm-*`, dan `.sec-gallery` merujuk penuh ke token resmi `public/css/tokens.css` tanpa warna hex mentah dan lolos strict lint `scripts/lint-views.js` `[PENDING T-331]`.
 - **Nilai Inti Budaya Kerja (.abt-tkt-*):** Interactive Expanding Accordion 6 pilar menggantikan `.sec-values` legacy (spesifikasi arsitektur DOM, kontrak SVG whitelist, lifecycle anime.js, dan form admin didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
 - **Galeri Mosaik Bento & Integrasi Lightbox (`.abt-gal-*` & `.lbx-*`):**
   - Prefix Class: `.sec-gallery`, `.abt-gal-container`, `.abt-gal-viewport`, `.abt-gal-grid`, `.abt-gal-tile`, serta `.bento-grid` dan `.sec-gallery .bento-*`.

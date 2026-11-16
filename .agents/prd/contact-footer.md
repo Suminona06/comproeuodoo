@@ -10,17 +10,17 @@ Modul Kontak & Footer menangani saluran komunikasi konversi prospek B2B, penanga
 ## 2. Functional Requirements
 
 ### FR-14: Halaman Kontak Publik & Formulir RFQ (`/contact`)
-- Sistem merender antarmuka kontak terpisah dua kolom di `/contact`:
+- Sistem merender antarmuka kontak terpisah dua kolom di `/contact` melalui *thin page* `views/public/contact.ejs` (memuat `.page-hero` langsung di *thin page* dengan `<img class="page-hero-bg-img" fetchpriority="high">` dan `.page-hero-scrim[data-scrim-level]`) yang mengorkestrasikan partial `status-alerts.ejs`, `rfq-form.ejs`, dan `locations-map.ejs` tanpa inline style, tanpa inline script, tanpa komentar HTML, dan seluruh teks fallback/validasi menggunakan kamus `t('contact.*')` (`locales/id.json` & `locales/en.json`) `[PENDING T-328] [PENDING T-330]`:
   1. **Kolom Kiri - Formulir RFQ Terisolasi (`.cf-*`):**
-     - Field input: Nama Lengkap (`name`, required, max 100), Nama Perusahaan (`company`, optional, max 100), Email Bisnis (`email`, required, email format), Nomor Telepon/WhatsApp (`phone`, required, min 7 max 30).
+     - Field input: Nama Lengkap (`name`, required, max 100), Nama Perusahaan (`company`, optional, max 100 sesuai skema DB), Email Bisnis (`email`, required, email format, max 100), Nomor Telepon/WhatsApp (`phone`, required, min 7 max 30).
      - Pilihan Produk Terkait (`product_id` dropdown dengan opsi auto-select).
-     - Estimasi Kuantitas Kebutuhan (`quantity`, misal "100.000 pcs / 5 ton").
+     - Estimasi Kuantitas Kebutuhan (`quantity`, max 100, misal "100.000 pcs / 5 ton").
      - Jenis Permintaan (`type`: Permintaan Penawaran / RFQ, Kemitraan Distributor, Pertanyaan Umum).
-     - Pesan Detail / Spesifikasi Custom (`message`, required, max 2000).
-     - Tombol Submit dengan indikator validasi interaktif dan proteksi anti-spam.
+     - Pesan Detail / Spesifikasi Custom (`message`, required, min 10, max 3000) `[PENDING T-328]`.
+     - Tombol Submit dengan indikator validasi interaktif terlokalisasi dan proteksi anti-spam (CSRF, honeypot, Cloudflare Turnstile).
   2. **Kolom Kanan - Dual Lokasi Kantor & Peta Google Maps:**
      - **Kartu Head Office Jakarta:** Alamat Palmerah Selatan Suite 02-07, telepon, fax, dan email kantor pusat. Ditampilkan kondisional jika setting `office_card_visible = '1'`.
-     - **Kartu Factory Bandung:** Alamat Paralon II No. 21 Cijerah/Cigondewah, hotline pabrik, fax, email pabrik, dan jam operasional kerja. Ditampilkan kondisional jika setting `factory_card_visible = '1'`.
+     - **Kartu Factory Bandung:** Alamat Paralon II No. 21 Cijerah/Cigondewah, hotline pabrik, fax, email pabrik, dan jam operasional kerja (fallback dari `t('contact.*')`). Ditampilkan kondisional jika setting `factory_card_visible = '1'`.
      - **Sematan Peta Google Maps Responsif (`.cf-maps-wrap`):** Iframe peta pabrik Cigondewah yang memuat interaktif (`loading="lazy"`). Jika kedua kartu alamat dinonaktifkan, peta mengambil ruang penuh secara proporsional tanpa kekosongan visual atau layout shift.
 
 ### FR-15: Floating Button WhatsApp & Pengaturan WA Global

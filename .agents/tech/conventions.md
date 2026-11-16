@@ -66,7 +66,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 
 ### D. Strategi Penegakan Baseline Lint (Keputusan 1)
 - **File Legacy:** Ditandai *warning* (non-blocking).
-- **File Baru & Refaktor:** Ditandai *error* ketat (blocking). Wajib lolos hijau sebelum task *Close*.
+- **File Baru & Refaktor:** Ditandai *error* ketat (blocking) dalam `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js` (mencakup view/partial Admin serta view/partial publik hasil refaktor termasuk `views/public/about.ejs`, `views/partials/about/`, `views/public/contact.ejs`, `views/partials/contact/` `[PENDING T-331]`). Wajib lolos hijau sebelum task *Close*.
 
 ---
 

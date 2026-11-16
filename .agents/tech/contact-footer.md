@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, controllers/public/contactController.js, views/partials/footer.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/contact/status-alerts.ejs, views/partials/contact/rfq-form.ejs, views/partials/contact/locations-map.ejs, public/js/contact.js, controllers/public/contactController.js, views/partials/footer.ejs
 
 # Tech Spec: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
 
@@ -11,8 +11,8 @@ Modul ini menangani penerimaan prospek B2B melalui formulir RFQ, pencatatan ke t
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/contact` | `contactController.index` | `seoMiddleware`, `i18nMiddleware` | Render halaman Kontak & RFQ |
-| `POST` | `/contact` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Proses submisi formulir RFQ |
+| `GET` | `/contact` | `contactController.index` | `seoMiddleware`, `i18nMiddleware` | Render halaman Kontak & RFQ (`<= 40` baris per fungsi, pesan via `t('contact.*')` `[PENDING T-328]`) |
+| `POST` | `/contact` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Proses submisi formulir RFQ (helper validasi modular `<= 40` baris, `company` max 100, `message` 10..3000, pesan via `t('contact.*')` `[PENDING T-328]`) |
 | `POST` | `/leads` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Endpoint alias kompatibilitas formulir |
 | `GET` | `/admin/contact` | `contactCmsController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS konten teks halaman kontak |
 | `POST` | `/admin/contact` | `contactCmsController.update`| `requireAuth`, `roleMiddleware` | Update teks hero kontak |
@@ -54,11 +54,16 @@ Modul ini menangani penerimaan prospek B2B melalui formulir RFQ, pencatatan ke t
 ---
 
 ## 4. Komponen Antarmuka & Prefix CSS
-- **Formulir RFQ:** `.cf-section`, `.cf-form-wrap`, `.cf-form`, `.cf-form-row`, `.cf-form-group`, `.cf-label`, `.cf-label-required`, `.cf-input`, `.cf-select`, `.cf-textarea`, `.cf-btn-submit`, `.cf-alert`, `.cf-alert-success`, `.cf-alert-error`.
+- **Arsitektur Thin Page & Partial Kontak (`views/public/contact.ejs`, `views/partials/contact/*.ejs`, `public/js/contact.js`):** `[PENDING T-330]`
+  - `views/public/contact.ejs` dirampingkan menjadi *thin page* (`<= 100` baris, nesting `<= 2` level) tanpa komentar HTML `<!-- ... -->`, tanpa atribut `style="..."` inline, tanpa `<script>` inline, serta memperbaiki penutup `</div>` pada `.page-hero-content.cf-hero-content`.
+  - `.page-hero` tetap berada di *thin page* `views/public/contact.ejs` menggunakan `<img class="page-hero-bg-img" fetchpriority="high" decoding="async">` + `.page-hero-scrim[data-scrim-level]` (tanpa inline `style`).
+  - Partial modular (`<= 100` baris, nesting `<= 2` level): `views/partials/contact/status-alerts.ejs` (`#form-status`), `views/partials/contact/rfq-form.ejs` (`#rfqForm`, `.cf-honeypot`, `company` `maxlength="100"`, `message` `minlength="10" maxlength="3000"`, `data-loading-text="<%= t('contact.loading_text') %>"`), dan `views/partials/contact/locations-map.ejs` (kartu lokasi & peta, fallback via `t('contact.*')`).
+  - Validasi progresif klien diekstrak ke `public/js/contact.js` (`defer`, `<= 40` baris per fungsi, menggunakan `textContent` pada span label `#submitBtn` saat submit, bukan `innerHTML`).
+- **Formulir RFQ:** `.cf-hero-content`, `.cf-honeypot`, `.cf-split-grid`, `.cf-card-box`, `.cf-section`, `.cf-form-wrap`, `.cf-form`, `.cf-form-row`, `.cf-form-group`, `.cf-label`, `.cf-label-required`, `.cf-input`, `.cf-select`, `.cf-textarea`, `.cf-btn-submit`, `.cf-alert`, `.cf-alert-success`, `.cf-alert-error`. Seluruh warna `.cf-*` di `public/css/components.css` menggunakan token CSS resmi `public/css/tokens.css` tanpa hex mentah `[PENDING T-331]`.
 - **Kartu Lokasi & Peta:** `.cf-office-card`, `.cf-office-header`, `.cf-office-icon`, `.cf-office-badge`, `.cf-office-name`, `.cf-office-addr`, `.cf-office-detail`, `.cf-link-primary`, `.cf-link-inherit` (mengunci `color: inherit` di seluruh state termasuk `:hover` dan `:visited`), `.cf-maps-wrap`, `.cf-maps-iframe`.
 - **Footer (`views/partials/footer.ejs`):** `.site-footer`, `.ft-main` (`.ft-main:has(> :only-child)`), `.ft-desc` (`footer_desc_*`), `.ft-nav` (`0–4` tautan), `.ft-offices`, `.ft-office-card` (kontainer statis, fokus & kontras tinggi), `.ft-phone-val` -> rincian teknis lengkap berada di sub-modul [tech/footer.md](footer.md).
 - **Floating Button WhatsApp:** `.wa-float-container`, `.wa-float-btn`, `.wa-icon`, `.wa-tooltip`.
-- **Hero Scrim Sub-Page:** `.page-hero-scrim` (multi-layer directional gradient transparan selaras dengan home slide 2).
+- **Hero Scrim Sub-Page:** `.page-hero-bg-img` & `.page-hero-scrim[data-scrim-level]` (multi-layer directional gradient transparan selaras dengan home slide 2 `[PENDING T-330] [PENDING T-331]`).
 
 ---
 
