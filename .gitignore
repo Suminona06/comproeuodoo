@@ -62,6 +62,7 @@ scripts/*port-forward*
 # Test artifacts & screenshots (stored in agent brain instead)
 tests/screenshots/
 *.png
+!database/seed-assets/**/*.png
 
 scripts/setup-port-forward*
 scripts/port-forward*
