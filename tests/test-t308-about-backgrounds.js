@@ -60,7 +60,7 @@ describe('Task T-308: Latar Selang-Seling, Transisi Tepi Halus & Pembersihan Inl
     assert.doesNotMatch(galleryPartial, /style="display:\s*none;"/i, 'style display none pada bentoPager wajib diganti ke hidden');
 
     assert.match(aboutContent, /abt-hero-content/);
-    assert.match(timelinePartial, /abt-tl-empty/);
+    assert.match(timelinePartial, /abt-htl-empty/);
     assert.match(vmPartial, /abt-vm-point-text/);
     assert.match(galleryPartial, /bentoPager.*hidden/);
   });

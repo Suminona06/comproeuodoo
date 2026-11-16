@@ -1,5 +1,6 @@
 import assert from 'assert';
 import inquiryModel from '../models/inquiryModel.js';
+import settingModel from '../models/settingModel.js';
 
 const BASE_URL = 'http://127.0.0.1:3000';
 
@@ -114,12 +115,21 @@ async function runModul12Tests() {
 
   // Test 7: Contact Page
   console.log('\n[TEST 7] Testing Contact Page (/contact) SSR...');
-  const resContact = await fetch(`${BASE_URL}/contact`);
+  const [resContact, settings] = await Promise.all([
+    fetch(`${BASE_URL}/contact`),
+    settingModel.getAll()
+  ]);
   assert.strictEqual(resContact.status, 200, 'Contact page must return HTTP 200');
   const contactHtml = await resContact.text();
   assert.ok(contactHtml.includes('contact-split-grid'), 'Must contain 2-column split layout');
-  assert.ok(contactHtml.includes('Palmerah'), 'Must contain Jakarta Palmerah office info');
-  assert.ok(contactHtml.includes('Cigondewah'), 'Must contain Bandung Cigondewah factory info');
+  if (settings.office_card_visible !== '0' && settings.office_card_visible !== 0) {
+    const officeAddr = settings.office_address || 'Palmerah';
+    assert.ok(contactHtml.includes(officeAddr), 'Must contain configured head office info');
+  }
+  if (settings.factory_card_visible !== '0' && settings.factory_card_visible !== 0) {
+    const factoryAddr = settings.factory_address || settings.contact_address_id || 'Bandung';
+    assert.ok(contactHtml.includes(factoryAddr), 'Must contain configured factory info');
+  }
   assert.ok(contactHtml.includes('google.com/maps/embed'), 'Must contain Google Maps iframe embed');
   assert.ok(contactHtml.includes('name="_csrf"'), 'Must contain CSRF token');
   assert.ok(contactHtml.includes('name="hp_website"'), 'Must contain honeypot spam protection');
@@ -168,6 +178,30 @@ async function runModul12Tests() {
   // Cleanup test inquiry
   await inquiryModel.delete(latestInquiries[0].id);
   console.log('  8a. RFQ submission, rate limiting, and database insertion verified: PASSED');
+
+  const invalidProdRes = await fetch(`${BASE_URL}/contact`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Cookie': cookies || '',
+      'x-test-bypass-rate-limit': 'true'
+    },
+    body: new URLSearchParams({
+      _csrf: csrfToken,
+      'cf-turnstile-response': 'XXXX.DUMMY.TOKEN.XXXX',
+      name: 'Unit Test Client',
+      company: 'PT Unit Test Mitra',
+      email: 'client@unittest.com',
+      phone: '081999888777',
+      product_id: '999999',
+      message: 'Permintaan penawaran dengan product_id tidak valid.'
+    }).toString()
+  });
+  assert.strictEqual(invalidProdRes.status, 400, 'Non-existent product_id must return HTTP 400');
+  const invalidProdBody = await invalidProdRes.json();
+  assert.strictEqual(invalidProdBody.success, false, 'Non-existent product_id payload must indicate failure');
+  console.log('  8b. Non-existent product_id rejected with HTTP 400: PASSED');
 
   console.log('\n--- ALL MODUL 12 TESTS PASSED SUCCESSFULLY! ---');
   process.exit(0);
