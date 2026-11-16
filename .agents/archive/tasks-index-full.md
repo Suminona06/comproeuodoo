@@ -1378,3 +1378,9 @@
 - **File Terdampak:** `scripts/lint-views.js`, `public/css/components.css`, `tests/test-t308-about-backgrounds.js`, `tests/test-public-dropdown-migration.js`, `tests/test-modul12-public.js`
 - **Skill:** `antislop-code`, `ponytail-review`, `code-review-and-quality`, `debugging-and-error-recovery`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-modul12-public.js`, `test-public-dropdown-migration.js`, `test-t308-about-backgrounds.js`, dan audit Playwright (`320px`–`1440px`, `ID` & `EN`) seluruhnya lulus 2026-11-16.
+
+### 2026-11-16 — Snapshot Seed Konten, Aset Media Baseline & CI Quality Gate (T-332 s/d T-335)
+- [x] **T-332:** Menyalin 34 aset media aktif (gambar, video MP4, favicon) ke `database/seed-assets/uploads/`, membuat `utils/seedAssetsSync.js` non-destruktif, serta mengintegrasikannya ke `database/migrate.js` dan `database/seeds/v2_seed.js`.
+- [x] **T-333:** Membuat `database/seeds/snapshotSchema.js` dan `database/seeds/exportSnapshot.js` (`npm run seed:export`), menghasilkan `database/seeds/snapshot.json` dan `database/migrations/020_seed_current_content_v1.sql`, serta memperbarui `database/seeds/v2_seed.js`.
+- [x] **T-334:** Menambahkan workflow GitHub Actions `.github/workflows/ci.yml` untuk lint JS/views/i18n, `npm run migrate`, `npm run seed`, dan `npm test`.
+- [x] **T-335:** Memperbarui `README.md`, `AGENTS.md`, `.agents/AGENTS.md`, `2-TECH-SPEC.md`, `tech/media-library.md`, `prd/media-library.md`, dan `tech/ci-cd-seeding.md`; menambahkan `tests/test-seed-snapshot.js` serta memverifikasi dry-run migrasi + seed + seluruh test suite.

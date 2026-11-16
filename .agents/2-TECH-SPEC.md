@@ -20,9 +20,9 @@ Dokumen ini adalah spesifikasi arsitektur teknis utama platform web company prof
 - **Database Client:** `mysql2/promise` dengan Connection Pool (`config/database.js`)
 - **Format Karakter:** `utf8mb4` dengan collation `utf8mb4_unicode_ci`
 - **Engine Tabel:** `InnoDB` untuk seluruh tabel
-- **Sistem Migrasi:** Skrip SQL berurutan di `database/migrations/` yang dieksekusi via `database/migrate.js`, diikuti sinkronisasi aset baseline non-destruktif (`utils/seedAssetsSync.js`) dari `database/seed-assets/uploads/` ke `public/uploads/`. `[PENDING T-332][PENDING T-333]`
-- **Seeding & Snapshot Konten:** `database/seeds/v2_seed.js` membaca `database/seeds/snapshot.json` (dibangkitkan lewat `npm run seed:export`) dan memulihkan aset upload baseline + akun default. `[PENDING T-333]`
-- **CI Quality Gates:** GitHub Actions (`.github/workflows/ci.yml`) menjalankan `lint`, `lint:views`, `lint:i18n`, migrasi + seed MySQL, dan `npm test`. `[PENDING T-334]`
+- **Sistem Migrasi:** Skrip SQL berurutan di `database/migrations/` yang dieksekusi via `database/migrate.js`, diikuti sinkronisasi aset baseline non-destruktif (`utils/seedAssetsSync.js`) dari `database/seed-assets/uploads/` ke `public/uploads/`.
+- **Seeding & Snapshot Konten:** `database/seeds/v2_seed.js` membaca `database/seeds/snapshot.json` (dibangkitkan lewat `npm run seed:export`) dan memulihkan aset upload baseline + akun default.
+- **CI Quality Gates:** GitHub Actions (`.github/workflows/ci.yml`) menjalankan `lint`, `lint:views`, `lint:i18n`, migrasi + seed MySQL, dan `npm test`.
 
 ---
 
