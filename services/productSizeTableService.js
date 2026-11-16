@@ -18,15 +18,17 @@ function buildLegacyRow(fields, idx) {
   return { col_1: vals[0], col_2: vals[1], col_3: vals[2], col_4: vals[3], col_5: vals[4], col_6: vals[5] };
 }
 
+const LEGACY_FIELD_KEYS = [
+  ['kode_produk', 'size_code'],
+  ['lebar', 'size_width'],
+  ['panjang', 'size_length'],
+  ['tebal_micron', 'size_thickness'],
+  ['kapasitas', 'size_capacity'],
+  ['bahan', 'size_material']
+];
+
 function buildLegacyFormRows(body) {
-  const fields = [
-    toArray(body.kode_produk || body.size_code),
-    toArray(body.lebar || body.size_width),
-    toArray(body.panjang || body.size_length),
-    toArray(body.tebal_micron || body.size_thickness),
-    toArray(body.kapasitas || body.size_capacity),
-    toArray(body.bahan || body.size_material)
-  ];
+  const fields = LEGACY_FIELD_KEYS.map(([primary, fallback]) => toArray(body[primary] || body[fallback]));
   const maxLen = Math.max(...fields.map((arr) => arr.length));
   const legacyRows = [];
 
@@ -124,6 +126,12 @@ function normalizeRawSizeTableInput(raw) {
   return raw.length === 0 ? null : { columns: LEGACY_COLUMNS, rows: raw };
 }
 
+function assertSizeTableBounds(rawColumns, rawRows) {
+  if (rawColumns.length < 1) throw new Error('Tabel ukuran minimal memiliki 1 kolom.');
+  if (rawColumns.length > 8) throw new Error('Tabel ukuran maksimal memiliki 8 kolom.');
+  if (rawRows.length > 30) throw new Error('Tabel ukuran maksimal memiliki 30 baris.');
+}
+
 export function parseDynamicSizeTable(body) {
   if (!body || typeof body !== 'object') return null;
   const raw = normalizeRawSizeTableInput(resolveRawSizeTable(body));
@@ -132,9 +140,7 @@ export function parseDynamicSizeTable(body) {
   const rawColumns = Array.isArray(raw.columns) ? raw.columns : [];
   const rawRows = Array.isArray(raw.rows) ? raw.rows : [];
   if (rawColumns.length === 0 && rawRows.length === 0) return null;
-  if (rawColumns.length < 1) throw new Error('Tabel ukuran minimal memiliki 1 kolom.');
-  if (rawColumns.length > 8) throw new Error('Tabel ukuran maksimal memiliki 8 kolom.');
-  if (rawRows.length > 30) throw new Error('Tabel ukuran maksimal memiliki 30 baris.');
+  assertSizeTableBounds(rawColumns, rawRows);
 
   const { cleanColumns, incomingMap } = sanitizeColumns(rawColumns);
   const cleanRows = sanitizeRows(rawRows, cleanColumns, incomingMap);

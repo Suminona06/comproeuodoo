@@ -14,16 +14,16 @@ export function createSlug(text) {
 }
 
 const trimOpt = (val) => (val ? String(val).trim() : null);
+const trimEmpty = (val) => (val ? String(val).trim() : '');
 
 function buildVariantEntry(fields, idx) {
   const entry = {
-    size_label: trimOpt(fields.sizes[idx]) || '',
-    thickness: trimOpt(fields.thicknesses[idx]) || '',
-    color: trimOpt(fields.colors[idx]) || '',
-    material_type: trimOpt(fields.materials[idx]) || ''
+    size_label: trimEmpty(fields.sizes[idx]),
+    thickness: trimEmpty(fields.thicknesses[idx]),
+    color: trimEmpty(fields.colors[idx]),
+    material_type: trimEmpty(fields.materials[idx])
   };
-  const hasValue = entry.size_label || entry.thickness || entry.color || entry.material_type;
-  return hasValue ? { ...entry, sort_order: idx, is_active: 1 } : null;
+  return Object.values(entry).some(Boolean) ? { ...entry, sort_order: idx, is_active: 1 } : null;
 }
 
 export function parseVariants(body) {
@@ -120,14 +120,19 @@ function findFirstLengthError(checks) {
   return null;
 }
 
+const cleanOptionalCta = (raw) => {
+  if (raw === undefined) return null;
+  return raw ? stripTags(raw) : '';
+};
+
 export function validateProductFields(body = {}, { requireNameId = false } = {}) {
   const { name_id, short_description_id, short_description_en, cta_text_id, cta_text_en } = body;
-  if (requireNameId && (!name_id || !name_id.trim())) {
+  if (requireNameId && !trimOpt(name_id)) {
     return { error: 'Nama produk (Bahasa Indonesia) wajib diisi.' };
   }
 
-  const cleanCtaId = cta_text_id !== undefined ? (cta_text_id ? stripTags(cta_text_id) : '') : null;
-  const cleanCtaEn = cta_text_en !== undefined ? (cta_text_en ? stripTags(cta_text_en) : '') : null;
+  const cleanCtaId = cleanOptionalCta(cta_text_id);
+  const cleanCtaEn = cleanOptionalCta(cta_text_en);
 
   const lengthError = findFirstLengthError([
     [trimOpt(short_description_id), 200, 'Deskripsi singkat (ID) maksimal 200 karakter.'],
@@ -167,17 +172,24 @@ export function parseProductListFilters(queryParams = {}) {
 
 const isNumericMediaRef = (x) => typeof x === 'number' || (typeof x === 'string' && /^\d+$/.test(x.trim()));
 
+function formatNumericGalleryItem(item, mediaMap) {
+  const id = parseInt(item, 10);
+  const m = mediaMap[id];
+  return { id, url: m?.file_url || '', name: m?.filename || `Media #${id}` };
+}
+
+function formatObjectGalleryItem(item) {
+  return {
+    id: item.id || null,
+    url: item.url || item.file_url || '',
+    name: item.name || item.filename || 'Foto'
+  };
+}
+
 function formatResolvedGalleryItem(item, mediaMap) {
-  if (isNumericMediaRef(item)) {
-    const id = parseInt(item, 10);
-    const m = mediaMap[id];
-    return { id, url: m ? m.file_url : '', name: m ? m.filename : `Media #${id}` };
-  }
+  if (isNumericMediaRef(item)) return formatNumericGalleryItem(item, mediaMap);
   if (typeof item === 'string') return { id: null, url: item, name: item.split('/').pop() || 'Foto Galeri' };
-  if (item && typeof item === 'object') {
-    return { id: item.id || null, url: item.url || item.file_url || '', name: item.name || item.filename || 'Foto' };
-  }
-  return null;
+  return item && typeof item === 'object' ? formatObjectGalleryItem(item) : null;
 }
 
 export async function resolveGalleryItems(galleryImages) {
@@ -194,8 +206,19 @@ export async function resolveGalleryItems(galleryImages) {
   return galleryImages.map((item) => formatResolvedGalleryItem(item, mediaMap)).filter(Boolean);
 }
 
-export function buildProductCreateData(body, { cleanCtaId, cleanCtaEn, imageUrl, sizeTable }) {
+const buildProductSeoFields = (body) => ({
+  meta_title_id: body.meta_title_id || null,
+  meta_title_en: body.meta_title_en || null,
+  meta_desc_id: body.meta_desc_id || null,
+  meta_desc_en: body.meta_desc_en || null
+});
+
+const pickProductVariants = (body) => {
   const variantLabels = parseVariantLabels(body);
+  return variantLabels.length > 0 ? variantLabels : parseVariants(body);
+};
+
+export function buildProductCreateData(body, { cleanCtaId, cleanCtaEn, imageUrl, sizeTable }) {
   const nameId = body.name_id.trim();
 
   return {
@@ -209,16 +232,13 @@ export function buildProductCreateData(body, { cleanCtaId, cleanCtaEn, imageUrl,
     description_en: trimOpt(body.description_en),
     cta_text_id: cleanCtaId || null,
     cta_text_en: cleanCtaEn || null,
-    variants: variantLabels.length > 0 ? variantLabels : parseVariants(body),
+    variants: pickProductVariants(body),
     size_table: sizeTable,
     main_image: imageUrl,
     gallery_images: parseGalleryImages(body),
     status: body.status || 'published',
     sort_order: parseInt(body.sort_order || '0', 10),
-    meta_title_id: body.meta_title_id || null,
-    meta_title_en: body.meta_title_en || null,
-    meta_desc_id: body.meta_desc_id || null,
-    meta_desc_en: body.meta_desc_en || null
+    ...buildProductSeoFields(body)
   };
 }
 
@@ -232,8 +252,7 @@ const resolveOptionalCta = (rawVal, cleanVal, existingVal) => (rawVal !== undefi
 
 function applyOptionalStructuredUpdates(updateData, body) {
   if (body.variant_labels !== undefined || body.variants !== undefined || body.var_size !== undefined) {
-    const variantLabels = parseVariantLabels(body);
-    updateData.variants = variantLabels.length > 0 ? variantLabels : parseVariants(body);
+    updateData.variants = pickProductVariants(body);
   }
   if (SIZE_TABLE_BODY_KEYS.some((k) => body[k] !== undefined)) {
     updateData.size_table = parseDynamicSizeTable(body);
@@ -257,10 +276,7 @@ export function buildProductUpdateData(body, product, { cleanCtaId, cleanCtaEn }
     cta_text_en: resolveOptionalCta(body.cta_text_en, cleanCtaEn, product.cta_text_en),
     status: body.status || product.status,
     sort_order: body.sort_order !== undefined ? parseInt(body.sort_order, 10) : product.sort_order,
-    meta_title_id: body.meta_title_id || null,
-    meta_title_en: body.meta_title_en || null,
-    meta_desc_id: body.meta_desc_id || null,
-    meta_desc_en: body.meta_desc_en || null
+    ...buildProductSeoFields(body)
   };
   applyOptionalStructuredUpdates(updateData, body);
   return updateData;

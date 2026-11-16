@@ -110,27 +110,15 @@ export const productController = {
       });
 
       const sharedViewState = {
-        products,
-        selectedCategory: filters.categoryId,
-        selectedStatus: filters.status,
-        searchQuery: filters.search || '',
-        currentPage,
-        perPage: filters.perPage,
-        totalPages,
-        totalCount,
-        csrfToken: res.locals.csrfToken || ''
+        products, selectedCategory: filters.categoryId, selectedStatus: filters.status,
+        searchQuery: filters.search || '', currentPage, perPage: filters.perPage,
+        totalPages, totalCount, csrfToken: res.locals.csrfToken || ''
       };
-
       if (wantsJson(req)) return renderIndexJsonResponse(req, res, sharedViewState, filters);
 
       return res.render('admin/products/index', {
-        title: 'Manajemen Katalog Produk',
-        pageTitle: 'Katalog Produk Manufaktur',
-        activeNav: 'products',
-        categories,
-        ...sharedViewState,
-        error: req.query.error || null,
-        success: req.query.success || null
+        title: 'Manajemen Katalog Produk', pageTitle: 'Katalog Produk Manufaktur', activeNav: 'products',
+        categories, ...sharedViewState, error: req.query.error || null, success: req.query.success || null
       });
     } catch (err) {
       return handleIndexError(req, res, err);

@@ -135,5 +135,70 @@ describe('Audit Recommendations Verification', () => {
     csrfProtection(reqSameOriginAdmin, res2, () => {});
     assert.equal(res2.statusCode, 403);
     assert.ok(res2.body.includes('href="/admin/products/create"'), 'Same-origin referer path should be preserved safely');
+
+    let passedValid = false;
+    const reqValid = {
+      method: 'POST',
+      originalUrl: '/contact',
+      cookies: { _csrf_token: 'expected-token-123' },
+      body: { _csrf: 'expected-token-123' },
+      headers: {},
+      get: () => ''
+    };
+    csrfProtection(reqValid, createMockRes(), () => { passedValid = true; });
+    assert.equal(passedValid, true, 'Matching CSRF token must call next()');
+  });
+
+  it('7. Extracted product/about services build normalized payloads and CSV columns cleanly', async () => {
+    const prodSvc = await import('../services/productService.js');
+    const sizeSvc = await import('../services/productSizeTableService.js');
+    const aboutSvc = await import('../services/aboutService.js');
+
+    const validRes = prodSvc.validateProductFields({ name_id: 'Kantong HD', cta_text_id: '<b>Pesan</b>' }, { requireNameId: true });
+    assert.equal(validRes.cleanCtaId, 'Pesan');
+    assert.ok(prodSvc.validateProductFields({}, { requireNameId: true }).error);
+
+    const st = sizeSvc.parseDynamicSizeTable({
+      size_table: JSON.stringify({ columns: [{ id: 'c1', label: 'Kode' }], rows: [{ c1: '<b>HD-10</b>' }] })
+    });
+    assert.equal(st.columns[0].id, 'col_1');
+    assert.equal(st.rows[0].col_1, 'HD-10');
+
+    const { columns, rows } = sizeSvc.buildProductCsvExport([
+      { id: 1, slug: 'p1', name_id: 'P1', name_en: 'P1', status: 'published', size_table: st }
+    ]);
+    assert.ok(columns.some((c) => c.label === 'Kode'));
+    assert.equal(rows[0]['__dyn_kode'], 'HD-10');
+
+    const created = prodSvc.buildProductCreateData(
+      { name_id: 'Kantong Baru', category_id: '5', var_size: ['30x40'], var_thickness: ['20mc'] },
+      { cleanCtaId: 'Pesan', cleanCtaEn: 'Order', imageUrl: '/uploads/a.webp', sizeTable: st }
+    );
+    assert.equal(created.slug, 'kantong-baru');
+    assert.equal(created.category_id, 5);
+
+    const statErr = aboutSvc.parseStatCreate({ stat_value: '99%', label_id: 'Mutu' }, 8);
+    assert.ok(statErr.error);
+  });
+
+  it('8. Refactored shared partials and 404/capabilities views have zero inline styles/handlers/comments', () => {
+    const cleanedViews = [
+      'views/partials/whatsapp-btn.ejs',
+      'views/partials/cta-global.ejs',
+      'views/partials/navbar.ejs',
+      'views/partials/footer.ejs',
+      'views/public/404.ejs',
+      'views/public/capabilities.ejs'
+    ];
+    for (const relPath of cleanedViews) {
+      const content = fs.readFileSync(relPath, 'utf8');
+      assert.equal(/\sstyle\s*=/i.test(content), false, `${relPath} must not contain inline style=`);
+      assert.equal(/\son\w+\s*=/i.test(content), false, `${relPath} must not contain inline event handlers`);
+      assert.equal(/<!--[\s\S]*?-->/.test(content), false, `${relPath} must not contain HTML comments`);
+    }
+    const navbarSrc = fs.readFileSync('views/partials/navbar.ejs', 'utf8');
+    const mainJsSrc = fs.readFileSync('public/js/main.js', 'utf8');
+    assert.ok(navbarSrc.includes('brand-logo-header'));
+    assert.ok(mainJsSrc.includes('.brand-logo-header'));
   });
 });
