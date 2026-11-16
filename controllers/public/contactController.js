@@ -110,6 +110,9 @@ async function resolveProductSelection(rawProductId, res) {
   }
   const parsedId = parseInt(trimmed, 10);
   const product = await productModel.findById(parsedId);
+  if (!product) {
+    return { valid: false, errorKey: 'contact.err_product_invalid' };
+  }
   const productName = getLocalizedProductName(product, res.locals.currentLang, defaultName);
   return { valid: true, productId: parsedId, productName };
 }

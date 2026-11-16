@@ -48,17 +48,21 @@ describe('Task T-308: Latar Selang-Seling, Transisi Tepi Halus & Pembersihan Inl
     await pool.end();
   });
 
-  it('1. views/public/about.ejs bebas inline style statis & memuat class .abt-*', () => {
+  it('1. views/public/about.ejs dan partial /about bebas inline style statis & memuat class .abt-*', () => {
     const aboutContent = fs.readFileSync(path.resolve('views/public/about.ejs'), 'utf-8');
+    const timelinePartial = fs.readFileSync(path.resolve('views/partials/about/history-timeline.ejs'), 'utf-8');
+    const vmPartial = fs.readFileSync(path.resolve('views/partials/about/vision-mission.ejs'), 'utf-8');
+    const galleryPartial = fs.readFileSync(path.resolve('views/partials/about/gallery-bento.ejs'), 'utf-8');
+
     assert.doesNotMatch(aboutContent, /style="max-width:\s*840px;"/i, 'style max-width 840px wajib dihapus');
-    assert.doesNotMatch(aboutContent, /style="padding:\s*24px;\s*color:\s*var\(--text-muted\);/i, 'style tl-empty wajib dihapus');
-    assert.doesNotMatch(aboutContent, /style="font-size:\s*15px;\s*color:\s*var\(--text-main/i, 'style poin misi wajib dihapus');
-    assert.doesNotMatch(aboutContent, /style="display:\s*none;"/i, 'style display none pada bentoPager wajib diganti ke hidden');
+    assert.doesNotMatch(timelinePartial, /style="padding:\s*24px;\s*color:\s*var\(--text-muted\);/i, 'style tl-empty wajib dihapus');
+    assert.doesNotMatch(vmPartial, /style="font-size:\s*15px;\s*color:\s*var\(--text-main/i, 'style poin misi wajib dihapus');
+    assert.doesNotMatch(galleryPartial, /style="display:\s*none;"/i, 'style display none pada bentoPager wajib diganti ke hidden');
 
     assert.match(aboutContent, /abt-hero-content/);
-    assert.match(aboutContent, /abt-tl-empty/);
-    assert.match(aboutContent, /abt-vm-point-text/);
-    assert.match(aboutContent, /bentoPager.*hidden/);
+    assert.match(timelinePartial, /abt-tl-empty/);
+    assert.match(vmPartial, /abt-vm-point-text/);
+    assert.match(galleryPartial, /bentoPager.*hidden/);
   });
 
   it('2. Warna latar selang-seling terkomputasi dengan benar di desktop (1440px)', async () => {

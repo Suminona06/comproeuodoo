@@ -1,0 +1,88 @@
+<%
+  const showOfficeCard = settingsObj.office_card_visible !== '0' && settingsObj.office_card_visible !== 0;
+  const showFactoryCard = settingsObj.factory_card_visible !== '0' && settingsObj.factory_card_visible !== 0;
+  const cleanTel = (phoneStr) => String(phoneStr || '').replace(/[^0-9+]/g, '');
+
+  const officeName = (isEn ? settingsObj.office_name_en : settingsObj.office_name_id) || t('contact.default_office_name');
+  const officeAddress = settingsObj.office_address || t('contact.default_office_address');
+  const officePhone = settingsObj.office_phone || settingsObj.company_phone || '(021) 53668626';
+  const officeFax = settingsObj.office_fax || '';
+  const officeEmail = settingsObj.office_email || settingsObj.company_email || '';
+
+  const factoryName = (isEn ? settingsObj.factory_name_en : settingsObj.factory_name_id) || t('contact.default_factory_name');
+  const factoryAddress = settingsObj.factory_address || settingsObj.contact_address_id || t('contact.default_factory_address');
+  const factoryPhone = settingsObj.factory_phone || settingsObj.contact_phone || '(022) 6012519';
+  const factoryFax = settingsObj.factory_fax || '';
+  const factoryEmail = settingsObj.factory_email || '';
+  const factoryWorkingHours = (isEn
+    ? (settingsObj.factory_working_hours_en || settingsObj.contact_working_hours_en)
+    : (settingsObj.factory_working_hours_id || settingsObj.contact_working_hours_id)) || t('contact.default_factory_hours');
+  const mapsEmbed = settingsObj.google_maps_embed || settingsObj.contact_maps_embed_url
+    || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.56347862248!2d107.5731168!3d-6.9034443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e215ac!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid';
+%>
+<div>
+  <% if (showOfficeCard) { %>
+    <div class="cf-office-card">
+      <div class="cf-office-header">
+        <div class="cf-office-icon cf-office-icon-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <div>
+          <span class="badge badge-primary cf-office-badge"><%= t('contact.badge_head_office') %></span>
+          <h3 class="cf-office-name"><%= officeName %></h3>
+        </div>
+      </div>
+      <p class="cf-office-addr"><%= officeAddress %></p>
+      <div class="cf-office-detail">
+        <div><strong><%= t('contact.phone_label_short') %></strong> <a href="tel:<%= cleanTel(officePhone) %>" class="cf-link-primary"><%= officePhone %></a></div>
+        <% if (officeFax) { %>
+          <div><strong><%= t('contact.fax_label_short') %></strong> <a href="tel:<%= cleanTel(officeFax) %>" class="cf-link-inherit"><%= officeFax %></a></div>
+        <% } %>
+        <% if (officeEmail) { %>
+          <div><strong><%= t('contact.email_label_short') %></strong> <a href="mailto:<%= officeEmail %>" class="cf-link-primary"><%= officeEmail %></a></div>
+        <% } %>
+      </div>
+    </div>
+  <% } %>
+
+  <% if (showFactoryCard) { %>
+    <div class="cf-office-card">
+      <div class="cf-office-header">
+        <div class="cf-office-icon cf-office-icon-success">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="badge badge-success cf-office-badge"><%= t('contact.badge_factory') %></span>
+          <h3 class="cf-office-name"><%= factoryName %></h3>
+        </div>
+      </div>
+      <p class="cf-office-addr"><%= factoryAddress %></p>
+      <div class="cf-office-detail">
+        <div><strong><%= t('contact.hotline_label') %></strong> <a href="tel:<%= cleanTel(factoryPhone) %>" class="cf-link-primary"><%= factoryPhone %></a></div>
+        <% if (factoryFax) { %>
+          <div><strong><%= t('contact.fax_label_short') %></strong> <a href="tel:<%= cleanTel(factoryFax) %>" class="cf-link-inherit"><%= factoryFax %></a></div>
+        <% } %>
+        <% if (factoryEmail) { %>
+          <div><strong><%= t('contact.email_label_short') %></strong> <a href="mailto:<%= factoryEmail %>" class="cf-link-primary"><%= factoryEmail %></a></div>
+        <% } %>
+        <div><strong><%= t('contact.operating_hours_label') %></strong> <%= factoryWorkingHours %></div>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="cf-maps-wrap">
+    <iframe
+      class="cf-maps-iframe"
+      src="<%= mapsEmbed %>"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="<%= t('contact.map_title') %>">
+    </iframe>
+  </div>
+</div>

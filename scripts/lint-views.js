@@ -6,12 +6,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-// File atau direktori hasil refaktor yang wajib zero-error (100% Admin Views & Admin Partials)
+// File atau direktori hasil refaktor yang wajib zero-error
 const DEFAULT_STRICT_PATHS = [
   'views/admin/',
   'views/partials/admin-header.ejs',
   'views/partials/admin-footer.ejs',
-  'views/partials/media-picker-modal.ejs'
+  'views/partials/media-picker-modal.ejs',
+  'views/public/about.ejs',
+  'views/partials/about/',
+  'views/public/contact.ejs',
+  'views/partials/contact/'
 ];
 
 function getFiles(dir, ext) {

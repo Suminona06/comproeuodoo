@@ -1,0 +1,94 @@
+<%
+  const formHeading = isEn
+    ? (settingsObj.contact_form_title_en || t('contact.form_heading'))
+    : (settingsObj.contact_form_title_id || t('contact.form_heading'));
+  const formSubheading = isEn
+    ? (settingsObj.contact_form_subtitle_en || t('contact.form_subheading'))
+    : (settingsObj.contact_form_subtitle_id || t('contact.form_subheading'));
+  const productOptions = (typeof products !== 'undefined' && Array.isArray(products))
+    ? products.map((prod) => ({
+      id: prod.id,
+      name: isEn ? (prod.name_en || prod.name_id) : prod.name_id,
+      selected: Boolean(selectedProduct && (selectedProduct.id === prod.id || selectedProduct.slug === prod.slug))
+    }))
+    : [];
+%>
+<div class="contact-card-box cf-card-box">
+  <div class="cf-header">
+    <div class="cf-kicker"><%= t('contact.kicker_label') %></div>
+    <h2 class="cf-title"><%= formHeading %></h2>
+    <p class="cf-subtitle"><%= formSubheading %></p>
+  </div>
+
+  <form id="rfqForm" action="/contact" method="POST" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <div class="cf-honeypot" aria-hidden="true">
+      <label for="hp_website"><%= t('contact.honeypot_label') %></label>
+      <input type="text" id="hp_website" name="hp_website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <div class="cf-form-row">
+      <div class="cf-form-group">
+        <label for="name" class="cf-label cf-label-required"><%= t('contact.name_label') %></label>
+        <input type="text" id="name" name="name" class="cf-input" placeholder="<%= t('contact.name_placeholder') %>" required maxlength="100" aria-required="true">
+      </div>
+      <div class="cf-form-group">
+        <label for="company" class="cf-label"><%= t('contact.company_label') %></label>
+        <input type="text" id="company" name="company" class="cf-input" placeholder="<%= t('contact.company_placeholder') %>" maxlength="100">
+      </div>
+    </div>
+
+    <div class="cf-form-row">
+      <div class="cf-form-group">
+        <label for="email" class="cf-label cf-label-required"><%= t('contact.email_label') %></label>
+        <input type="email" id="email" name="email" class="cf-input" placeholder="<%= t('contact.email_placeholder') %>" required maxlength="100" aria-required="true">
+      </div>
+      <div class="cf-form-group">
+        <label for="phone" class="cf-label cf-label-required"><%= t('contact.phone_label') %></label>
+        <input type="tel" id="phone" name="phone" class="cf-input" placeholder="<%= t('contact.phone_placeholder') %>" required minlength="7" maxlength="30" aria-required="true">
+      </div>
+    </div>
+
+    <div class="cf-form-row">
+      <div class="cf-form-group">
+        <label for="product_id" class="cf-label"><%= t('contact.product_label') %></label>
+        <select id="product_id" name="product_id" class="cf-select" data-eu-dropdown="outlined">
+          <option value=""><%= t('contact.product_select_default') %></option>
+          <% productOptions.forEach((opt) => { %>
+            <option value="<%= opt.id %>" <%= opt.selected ? 'selected' : '' %>><%= opt.name %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="cf-form-group">
+        <label for="quantity" class="cf-label"><%= t('contact.quantity_label') %></label>
+        <input type="text" id="quantity" name="quantity" class="cf-input" placeholder="<%= t('contact.quantity_placeholder') %>" maxlength="100">
+      </div>
+    </div>
+
+    <div class="cf-form-group">
+      <label for="inquiry_type" class="cf-label"><%= t('contact.inquiry_type_label') %></label>
+      <select id="inquiry_type" name="type" class="cf-select" data-eu-dropdown="outlined">
+        <option value="inquiry" selected><%= t('contact.inquiry_type_rfq') %></option>
+        <option value="partnership"><%= t('contact.inquiry_type_partnership') %></option>
+        <option value="general"><%= t('contact.inquiry_type_general') %></option>
+      </select>
+    </div>
+
+    <div class="cf-form-group cf-form-group-last">
+      <label for="message" class="cf-label cf-label-required"><%= t('contact.message_label') %></label>
+      <textarea id="message" name="message" class="cf-textarea" rows="5" placeholder="<%= t('contact.message_placeholder') %>" required minlength="10" maxlength="3000" aria-required="true"></textarea>
+    </div>
+
+    <% if (typeof turnstileSiteKey !== 'undefined' && turnstileSiteKey) { %>
+      <div class="cf-form-group-turnstile">
+        <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="light"></div>
+      </div>
+    <% } %>
+
+    <button type="submit" id="submitBtn" class="btn btn-primary cf-btn-submit" data-loading-text="<%= t('contact.loading_text') %>">
+      <span class="cf-submit-label"><%= t('contact.submit_btn') %></span>
+      <span class="cf-submit-arrow" aria-hidden="true">&rarr;</span>
+    </button>
+  </form>
+</div>
