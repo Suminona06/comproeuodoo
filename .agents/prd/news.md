@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-13 | Kode: controllers/public/postController.js, views/public/news.ejs, views/public/news-detail.ejs, views/admin/posts/edit.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/public/postController.js, views/public/news.ejs, views/public/news-detail.ejs, views/admin/posts/edit.ejs
 
 # PRD: Modul Berita & Publikasi (News & Articles)
 
@@ -14,7 +14,7 @@ Modul Berita mengelola publikasi konten editorial perusahaan (berita terkini, si
   1. **Section Headline (`.nwl-sec-headline`, `FR-24`, `FR-29`):** Berlatar `var(--bg-soft-green)`, menampilkan judul dinamis sesuai jenis artikel slide aktif (`berita`, `pers`, `blog`) dan Headline Carousel Slider interaktif.
   2. **Section Direktori Artikel (`.nwl-sec-directory`, `FR-25`, `FR-27`, `FR-28`):** Berlatar `var(--bg-subtle)` dengan gradasi transisi tepi halus (`48px` mobile, `80px` desktop) dari Section Headline, memuat Tab Navigasi Tipe Publikasi, Baris Pill Kategori Geser Horizontal di Mobile, Form Pencarian Artikel, Grid Kartu Berita Bersama (`limit = 9` per halaman), serta Komponen Paginasi Bersama (`.pgn-bar--public`).
 - Teks empty state dan reset pada `/news` menggunakan `t('news.empty_desc')` dan `t('news.empty_reset')`.
-- Untuk spesifikasi lengkap tampilan detail artikel (`/news/:slug`), tombol bagikan, serta SweetAlert2 Toast salin tautan (`FR-30 [PENDING T-326]`), lihat [prd/news-detail.md](news-detail.md).
+- Untuk spesifikasi lengkap tampilan detail artikel (`/news/:slug`), tombol bagikan, serta SweetAlert2 Toast salin tautan (`FR-30`), lihat [prd/news-detail.md](news-detail.md).
 
 ### FR-13: Pengelolaan Artikel di CMS (CRUD)
 - Admin dan Editor dapat membuat, membaca, mengedit, dan menghapus artikel di menu `/admin/posts`.

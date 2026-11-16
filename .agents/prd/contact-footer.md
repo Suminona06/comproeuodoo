@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/contact.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
 
 # PRD: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
 
@@ -49,7 +49,7 @@ Modul Kontak & Footer menangani saluran komunikasi konversi prospek B2B, penanga
 - Dapat diaktifkan/dinonaktifkan per halaman melalui konfigurasi CMS `global_cta_pages_json`.
 
 ### Master Site Footer (`.site-footer`)
-- Spesifikasi fungsional lengkap Footer Global Publik (`.ft-desc` dwibahasa `FR-27` `[PENDING T-325]`, menu kanan dinamis `0–4` item `FR-28` `[PENDING T-325]`, visibilitas `.ft-offices` `FR-24`, `.ft-office-card`, dan ikon media sosial) berada pada sub-modul [prd/footer.md](footer.md). Homepage `views/public/index.ejs` dibekukan.
+- Spesifikasi fungsional lengkap Footer Global Publik (`.ft-desc` dwibahasa `FR-27`, menu kanan dinamis `0–4` item `FR-28`, visibilitas `.ft-offices` `FR-24`, `.ft-office-card`, dan ikon media sosial) berada pada sub-modul [prd/footer.md](footer.md). Homepage `views/public/index.ejs` dibekukan.
 
 ---
 

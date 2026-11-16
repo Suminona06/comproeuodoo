@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-13 | Kode: controllers/public/postController.js, controllers/admin/postController.js, models/slugRedirectModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/public/postController.js, controllers/admin/postController.js, models/slugRedirectModel.js
 
 # Tech Spec: Modul Berita & Publikasi (News & Articles)
 
@@ -46,7 +46,7 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
 ---
 
 ## 6. Detail Artikel (`/news/:slug`)
-- Seluruh struktur `.nwd-*`, breadcrumb mandiri, `.nwd-prose`, `public/js/news-detail.js`, serta integrasi SweetAlert2 Toast 2 detik (`useSweetAlert: true` `[PENDING T-326]`) didokumentasikan pada sub-modul [tech/news-detail.md](news-detail.md).
+- Seluruh struktur `.nwd-*`, breadcrumb mandiri, `.nwd-prose`, `public/js/news-detail.js`, serta integrasi SweetAlert2 Toast 2 detik (`useSweetAlert: true`) didokumentasikan pada sub-modul [tech/news-detail.md](news-detail.md).
 
 ---
 

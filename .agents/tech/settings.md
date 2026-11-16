@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
 
 # Tech Spec: Modul Pengaturan Situs (Site Settings)
 
@@ -19,7 +19,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ## 3. Skema Data Terkait
 
 ### Tabel `settings`
-*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql` `[PENDING T-323]`
+*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql`
 
 | Kolom | Tipe | Nullable | Default | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
@@ -59,7 +59,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 - `meta_title_id`, `meta_title_en`: Judul fallback global.
 - `meta_description_id`, `meta_description_en`: Deskripsi fallback global (`<head>` saja; terpisah dari `footer_desc_*`).
 
-### F. Konten Footer Publik `[PENDING T-323]`
+### F. Konten Footer Publik
 - `footer_desc_id`, `footer_desc_en`, `footer_nav_links_json`: Dikelola via kartu CMS footer pada [tech/settings-footer.md](settings-footer.md).
 
 ---
@@ -71,7 +71,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ---
 
 ## 6. Penanganan Controller & Service (`settingController` & `settingService.js`)
-- **Ekstraksi Service `[PENDING T-323]`:** Logika validasi payload, whitelist URL, dan penyimpanan diekstrak ke `services/settingService.js` agar `settingController.js` dan `settingService.js` masing-masing `<= 300` baris dengan fungsi `<= 40` baris (detail validasi footer pada [tech/settings-footer.md](settings-footer.md)).
+- **Ekstraksi Service:** Logika validasi payload, whitelist URL, dan penyimpanan diekstrak ke `services/settingService.js` agar `settingController.js` dan `settingService.js` masing-masing `<= 300` baris dengan fungsi `<= 40` baris (detail validasi footer pada [tech/settings-footer.md](settings-footer.md)).
 - **Validasi Toggle Switch Visibilitas:** Nilai `office_card_visible` dan `factory_card_visible` dipaksa ke format biner string `'1'` atau `'0'`.
 - **Validasi Skema JSON Multi-Nomor WhatsApp:**
   1. Parsing aman payload JSON `whatsapp_numbers_json`.
@@ -91,7 +91,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
   3. `dual-location-card.ejs`: Alamat dual lokasi (Kantor Jakarta & Pabrik Bandung) serta embed Google Maps dengan placeholder aman (panjang <= 100 baris).
   4. `whatsapp-service-card.ejs`: Nomor resmi, tema tombol floating, salam pembuka, dan repeater rotasi multi-nomor (panjang <= 100 baris).
   5. `social-media-card.ejs`: Akun LinkedIn, Instagram, Facebook, dan YouTube serta toggle visibilitas (panjang <= 100 baris).
-  6. `footer-content-card.ejs` `[PENDING T-324]`: Deskripsi footer dwibahasa (`<= 350` char) dan repeater 0–4 menu kanan footer (spesifikasi detail pada [tech/settings-footer.md](settings-footer.md)).
+  6. `footer-content-card.ejs`: Deskripsi footer dwibahasa (`<= 350` char) dan repeater 0–4 menu kanan footer (spesifikasi detail pada [tech/settings-footer.md](settings-footer.md)).
 - **Isolasi Class & Token:**
   - Seluruh penataan tata letak khusus settings menggunakan class berprefix unik `.stg-*` yang diisolasi pada `public/css/admin.css` (tanpa mengubah class bersama `.form-card`, `.form-group`, `.form-row-2`).
   - Dilarang keras menggunakan style inline dan warna hex mentah; seluruh styling merujuk ke token desain CSS resmi (`var(--bg-subtle)`, `var(--color-border)`, `var(--color-primary-dark)`, `var(--surface-dark-deep)`, `var(--color-leaf)`).

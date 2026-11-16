@@ -1,7 +1,7 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-317)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-327)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-11-12  
-**Status Keseluruhan:** Selesai 100% (317 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-11-16  
+**Status Keseluruhan:** Selesai 100% (327 Task Selesai)  
 
 ---
 
@@ -1314,3 +1314,39 @@
 - **File Terdampak:** Seluruh berkas yang disentuh pada T-318 s/d T-321 serta pembaruan test suite terkait.
 - **Skill:** `impeccable polish`, `adapt`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, `test-t196-load-more.js`, `test-public-dropdown-migration.js`, `test-t243-hero-filter.js`, dan `test-t320-t321-news-regression.js` seluruhnya lulus 2026-11-13.
+
+### T-323: Skema Migrasi `019`, Ekstraksi `services/settingService.js`, & Normalisasi `middleware/settingsMiddleware.js` [DONE]
+- **Modul Spesifikasi:** [prd/settings.md](../prd/settings.md), [tech/settings-footer.md](../tech/settings-footer.md), [tech/footer.md](../tech/footer.md)
+- **Proposal Terkait:** [2026-11-13_footer-dinamis-dan-alert-news.md](changes/2026-11-13_footer-dinamis-dan-alert-news.md)
+- **Deskripsi:** Menambahkan migrasi idempoten `019_footer_dynamic_content_v1.sql` (`footer_desc_id`, `footer_desc_en`, `footer_nav_links_json`), mengekstrak logika normalisasi, validasi batas panjang `<= 350` karakter, validasi 0–4 item, serta whitelist protokol URL `isAllowedFooterUrl` ke `services/settingService.js`, dan menormalisasi `res.locals.footerNavLinks` pada `middleware/settingsMiddleware.js`.
+- **File Terdampak:** `database/migrations/019_footer_dynamic_content_v1.sql`, `services/settingService.js`, `controllers/admin/settingController.js`, `middleware/settingsMiddleware.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** Uji helper `services/settingService.js`, idempotensi `database/migrate.js`, `npm run lint`, dan `test-t327-footer-news-alert-regression.js` lulus.
+
+### T-324: Antarmuka CMS Pengelolaan Deskripsi Footer & Repeater Menu Footer (`.stg-*`, `/admin/settings`) [DONE]
+- **Modul Spesifikasi:** [prd/settings.md](../prd/settings.md), [tech/settings.md](../tech/settings.md), [tech/settings-footer.md](../tech/settings-footer.md)
+- **Deskripsi:** Menambahkan partial `footer-content-card.ejs` (`<= 100` baris, `.stg-*`, zero inline style/handler/komentar HTML) dengan textarea dwibahasa + penghitung karakter dan repeater 0–4 item menu pada `/admin/settings`, lengkap dengan skrip DOM API aman di `public/js/admin-settings.js` serta styling token pada `public/css/admin.css`.
+- **File Terdampak:** `views/admin/settings/partials/footer-content-card.ejs`, `views/admin/settings/index.ejs`, `public/js/admin-settings.js`, `public/css/admin.css`
+- **Skill:** `adapt`, `polish`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, dan uji Playwright alur CMS repeater 0–4 menu + validasi URL lulus.
+
+### T-325: Footer Publik Dinamis pada `views/partials/footer.ejs` (`.ft-*`) & Lokalisasi ID/EN tanpa Menyentuh Homepage [DONE]
+- **Modul Spesifikasi:** [prd/footer.md](../prd/footer.md), [tech/footer.md](../tech/footer.md)
+- **Deskripsi:** Memperbarui `views/partials/footer.ejs` agar merender `.ft-desc` dwibahasa ter-escape dengan fallback `t('footer.default_desc')`, merender `0–4` tautan `.ft-nav-link` (otomatis `target="_blank" rel="noopener noreferrer"` untuk URL eksternal), serta menambahkan adaptasi `.ft-main:has(> :only-child)` dan penataan aksesibel di `public/css/layout.css` tanpa menyentuh `views/public/index.ejs`.
+- **File Terdampak:** `views/partials/footer.ejs`, `public/css/layout.css`, `locales/id.json`, `locales/en.json`
+- **Skill:** `adapt`, `polish`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-t241-public-ui.js`, dan `test-t327-footer-news-alert-regression.js` lulus.
+
+### T-326: SweetAlert2 Toast 2 Detik Bertema Hijau Euodoo pada Detail Berita (`/news/:slug`) [DONE]
+- **Modul Spesifikasi:** [prd/news-detail.md](../prd/news-detail.md), [tech/news-detail.md](../tech/news-detail.md)
+- **Deskripsi:** Mengganti `window.alert` pada detail berita `/news/:slug` menjadi SweetAlert2 Toast self-hosted 2 detik bertema token hijau Euodoo (`.nwd-swal-*`), dimuat secara kondisional melalui `useSweetAlert: true` sehingga homepage bebas beban aset vendor, dilengkapi varian error (`news_detail.copy_error`), `#nwdCopyStatus`, serta penghormatan `prefers-reduced-motion`.
+- **File Terdampak:** `controllers/public/postController.js`, `views/partials/head.ejs`, `views/public/news-detail.ejs`, `public/js/news-detail.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`
+- **Skill:** `polish`, `animate`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-t320-t321-news-regression.js`, dan `test-t327-footer-news-alert-regression.js` lulus.
+
+### T-327: Uji Regresi Akhir Multi-Viewport, Aksesibilitas, & Gerbang Kualitas [DONE]
+- **Modul Spesifikasi:** [prd/news-detail.md](../prd/news-detail.md), [prd/footer.md](../prd/footer.md), [prd/settings.md](../prd/settings.md)
+- **Deskripsi:** Menambahkan dan menjalankan suite Playwright multi-viewport (`320`, `375`, `480`, `768`, `1024`, `1440` px) pada ID & EN (`/`, `/news/:slug`, `/admin/settings`) untuk membuktikan nol horizontal overflow, kontras AA, target sentuh `>= 44px`, pemisahan `footer_desc_*` vs `meta_description_*`, repeater `0–4` menu footer, penolakan URL berbahaya, serta toast SweetAlert2 2 detik pada `/news/:slug`.
+- **File Terdampak:** `tests/test-t327-footer-news-alert-regression.js`
+- **Skill:** `polish`, `adapt`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-t241-public-ui.js`, `test-t320-t321-news-regression.js`, dan `test-t327-footer-news-alert-regression.js` seluruhnya lulus 2026-11-16.

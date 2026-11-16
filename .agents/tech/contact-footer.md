@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/contact.ejs, controllers/public/contactController.js, views/partials/footer.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, controllers/public/contactController.js, views/partials/footer.ejs
 
 # Tech Spec: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
 
@@ -42,11 +42,11 @@ Modul ini menangani penerimaan prospek B2B melalui formulir RFQ, pencatatan ke t
 | `created_at` | `TIMESTAMP` | YES | Current Time | Waktu submisi |
 
 ### B. Kunci Pengaturan Kontak & Footer (`settings`)
-*File Migrasi:* `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql` `[PENDING T-323]`
+*File Migrasi:* `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql`
 - Head Office: `office_name_*`, `office_address`, `office_phone`, `office_fax`, `office_email`, `office_card_visible` (`'1'`/`'0'`).
 - Factory: `factory_name_*`, `factory_address`, `factory_phone`, `factory_fax`, `factory_email`, `factory_working_hours_*`, `factory_card_visible` (`'1'`/`'0'`).
 - Maps: `contact_maps_embed_url` / `google_maps_embed`.
-- Konten Footer Dinamis `[PENDING T-323]`: `footer_desc_id`, `footer_desc_en` (maks 350 char), `footer_nav_links_json` (array JSON 0–4 item; kontrak validasi di [tech/settings-footer.md](settings-footer.md)).
+- Konten Footer Dinamis: `footer_desc_id`, `footer_desc_en` (maks 350 char), `footer_nav_links_json` (array JSON 0–4 item; kontrak validasi di [tech/settings-footer.md](settings-footer.md)).
 - Social Media: `social_facebook_url`, `social_facebook_visible`, `social_instagram_url`, `social_instagram_visible`, `social_linkedin_url`, `social_linkedin_visible`, `social_youtube_url`, `social_youtube_visible`.
 - WhatsApp: `whatsapp_number`, `whatsapp_default_message`, `whatsapp_default_message_en`, `whatsapp_formatted_number`, `whatsapp_numbers_json` (JSON array: `number`, `formatted`, `label`, `percentage`).
 - Global CTA: `global_cta_title_*`, `global_cta_subtitle_*`, `global_cta_btn1_*`, `global_cta_btn2_*`, `global_cta_pages_json`, `global_cta_is_active`.
@@ -56,7 +56,7 @@ Modul ini menangani penerimaan prospek B2B melalui formulir RFQ, pencatatan ke t
 ## 4. Komponen Antarmuka & Prefix CSS
 - **Formulir RFQ:** `.cf-section`, `.cf-form-wrap`, `.cf-form`, `.cf-form-row`, `.cf-form-group`, `.cf-label`, `.cf-label-required`, `.cf-input`, `.cf-select`, `.cf-textarea`, `.cf-btn-submit`, `.cf-alert`, `.cf-alert-success`, `.cf-alert-error`.
 - **Kartu Lokasi & Peta:** `.cf-office-card`, `.cf-office-header`, `.cf-office-icon`, `.cf-office-badge`, `.cf-office-name`, `.cf-office-addr`, `.cf-office-detail`, `.cf-link-primary`, `.cf-link-inherit` (mengunci `color: inherit` di seluruh state termasuk `:hover` dan `:visited`), `.cf-maps-wrap`, `.cf-maps-iframe`.
-- **Footer (`views/partials/footer.ejs`):** `.site-footer`, `.ft-main` (`.ft-main:has(> :only-child)` `[PENDING T-325]`), `.ft-desc` (`footer_desc_*`), `.ft-nav` (`0–4` tautan `[PENDING T-325]`), `.ft-offices`, `.ft-office-card` (kontainer statis, fokus & kontras tinggi), `.ft-phone-val` -> rincian teknis lengkap berada di sub-modul [tech/footer.md](footer.md).
+- **Footer (`views/partials/footer.ejs`):** `.site-footer`, `.ft-main` (`.ft-main:has(> :only-child)`), `.ft-desc` (`footer_desc_*`), `.ft-nav` (`0–4` tautan), `.ft-offices`, `.ft-office-card` (kontainer statis, fokus & kontras tinggi), `.ft-phone-val` -> rincian teknis lengkap berada di sub-modul [tech/footer.md](footer.md).
 - **Floating Button WhatsApp:** `.wa-float-container`, `.wa-float-btn`, `.wa-icon`, `.wa-tooltip`.
 - **Hero Scrim Sub-Page:** `.page-hero-scrim` (multi-layer directional gradient transparan selaras dengan home slide 2).
 
