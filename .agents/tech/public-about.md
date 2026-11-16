@@ -1,88 +1,61 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-12 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, views/partials/about/vision-mission.ejs, views/partials/about/ticket-accordion.ejs, views/partials/about/gallery-bento.ejs, controllers/public/pageController.js, public/js/about-story.js, public/js/ticket-accordion.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, views/partials/about/vision-mission.ejs, views/partials/about/ticket-accordion.ejs, views/partials/about/gallery-bento.ejs, controllers/public/pageController.js, public/js/about-story.js, public/js/ticket-accordion.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
 ## 1. Arsitektur & Komponen
-Halaman Tentang Kami (`/about`) memadukan data profil statis korporat dari tabel `settings` bersama data relasional galeri (dengan paginasi sisi klien dan Lightbox Zoom layar penuh bersama `.lbx-*`), statistik, dan lini masa sejarah dari tabel-tabel terdedikasi (`about_*`).
+Halaman Tentang Kami (`/about`) memadukan profil korporat dari tabel `settings` dengan data relasional `about_gallery_slides`, `about_stats`, dan `about_timeline` (`models/aboutModel.js`), dirender SSR melalui *thin page* dan partial modular serta dilengkapi paginasi galeri bento + Lightbox PhotoSwipe v5 (`.lbx-*`).
 
 ---
 
 ## 2. Rute & Controller
 
-| Method | Path | Controller / Handler | Middleware | Keterangan |
+| Method | Path | Controller | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/about` | `pageController.about` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR halaman Tentang Kami (`<= 40` baris per fungsi/helper, fallback via `t('about.*')` `[PENDING T-328]`) |
-| `GET` | `/admin/about` | `aboutController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS kelola konten Tentang Kami |
-| `POST` | `/admin/about` | `aboutController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update profil umum & foto visi misi |
+| `GET` | `/about` | `pageController.about` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR `/about` (`<= 40` baris/fungsi, fallback `t('about.*')`) |
+| `GET` | `/admin/about` | `aboutController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS Tentang Kami |
+| `POST` | `/admin/about` | `aboutController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update profil, visi misi, & foto |
 | `POST` | `/admin/about/gallery` | `aboutController.storeGallerySlide` | `requireAuth`, `roleMiddleware` | Tambah slide galeri bento |
 | `POST` | `/admin/about/stats` | `aboutController.storeStats` | `requireAuth`, `roleMiddleware` | Tambah angka statistik |
-| `POST` | `/admin/about/timeline`| `aboutController.storeTimeline` | `requireAuth`, `roleMiddleware` | Tambah simpul sejarah |
+| `POST` | `/admin/about/timeline` | `aboutController.storeTimeline` | `requireAuth`, `roleMiddleware` | Tambah simpul sejarah |
 
 ---
 
 ## 3. Skema Data Terkait
 
 ### A. Tabel `about_gallery_slides`
-*File Migrasi:* `database/migrations/007_create_about_gallery_stats_timeline.sql`, `008_make_about_gallery_title_nullable.sql`
+*Migrasi:* `007_create_about_gallery_stats_timeline.sql`, `008_make_about_gallery_title_nullable.sql`
 
 | Kolom | Tipe | Nullable | Default | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
 | `id` | `INT` | NO | Auto Inc | Primary Key |
-| `image_url` | `VARCHAR(500)` | NO | - | Path berkas gambar WebP |
-| `title_id` | `VARCHAR(255)` | YES | NULL | Judul foto (ID, bersifat opsional) |
-| `title_en` | `VARCHAR(255)` | YES | NULL | Judul foto (EN, bersifat opsional) |
-| `caption_id` | `TEXT` | YES | NULL | Keterangan foto (ID) |
-| `caption_en` | `TEXT` | YES | NULL | Keterangan foto (EN) |
-| `tag` | `VARCHAR(100)` | YES | NULL | Kategori foto (misal: Pabrik, Mesin, Tim) |
-| `sort_order` | `INT` | YES | `0` | Urutan penataan tile |
+| `image_url` | `VARCHAR(500)` | NO | - | Path gambar WebP |
+| `title_id` / `title_en` | `VARCHAR(255)` | YES | NULL | Judul foto opsional |
+| `caption_id` / `caption_en` | `TEXT` | YES | NULL | Keterangan foto |
+| `tag` | `VARCHAR(100)` | YES | NULL | Kategori foto |
+| `sort_order` | `INT` | YES | `0` | Urutan tile |
 | `is_active` | `TINYINT(1)` | YES | `1` | Status penayangan |
 
-### B. Tabel `about_stats` & `about_timeline`
-*File Migrasi:* `database/migrations/007_create_about_gallery_stats_timeline.sql`
-- `about_stats`: `id` (INT PK), `stat_value` (VARCHAR 50, menyimpan nilai gabungan angka dan sufiks seperti `'30+'`, `'1990'`, `'1.500+'`), `label_id` (VARCHAR 255), `label_en` (VARCHAR 255), `sort_order` (INT), `is_active` (TINYINT 1), `created_at`, `updated_at`.
-- `about_timeline`: `id` (INT PK), `year_label_id` (VARCHAR 100), `year_label_en` (VARCHAR 100), `title_id` (VARCHAR 255), `title_en` (VARCHAR 255), `description_id` (TEXT), `description_en` (TEXT), `sort_order` (INT), `is_active` (TINYINT 1), `created_at`, `updated_at`.
-
-### C. Kunci Pengaturan Tentang Kami (`settings`)
-- `about_founded_year`, `about_former_names`, `about_history_title_*`, `about_history_*`.
-- `about_vision_*`, `about_mission_*`.
-- `about_values_bg_image`, `about_values_pill_*`, `about_values_subtitle_*`, `about_values_json` (6 Pilar Budaya Kerja Interaktif, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
-- `vision_image_url`, `mission_image_url`.
-- `about_gallery_kicker_*`, `about_gallery_title_*`, `about_story_kicker_*`.
-- `about_timeline_tagline_id`, `about_timeline_tagline_en`, `about_timeline_title_id`, `about_timeline_title_en`, `about_timeline_desc_id`, `about_timeline_desc_en` (6 kunci header Timeline Sejarah yang dikelola di `/admin/about` melalui `aboutModel.getTimelineHeader()` dan `aboutModel.updateAboutData()`, spesifikasi teknis lengkap didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md)).
+### B. Tabel `about_stats`, `about_timeline` & Pengaturan `settings`
+*Migrasi:* `007_create_about_gallery_stats_timeline.sql`
+- `about_stats`: `id`, `stat_value` (`VARCHAR(50)`), `label_id`, `label_en`, `sort_order`, `is_active`, timestamps.
+- `about_timeline`: `id`, `year_label_id/en` (`VARCHAR(100)`), `title_id/en` (`VARCHAR(255)`), `description_id/en` (`TEXT`), `sort_order`, `is_active`, timestamps.
+- Kunci `settings`: `about_founded_year`, `about_former_names`, `about_history_*`, `about_vision_*`, `about_mission_*`, `vision_image_url`, `mission_image_url`, `about_story_kicker_*`, `about_gallery_kicker_*`, `about_gallery_title_*`, `about_values_*` (lihat [tech/public-about-ticket.md](public-about-ticket.md)), serta `about_timeline_{tagline,title,desc}_{id,en}` (lihat [tech/public-about-timeline.md](public-about-timeline.md)).
 
 ---
 
 ## 4. Komponen Antarmuka & Prefix CSS
-
-- **Arsitektur Thin Page, Hero & Partial Modular (`views/public/about.ejs`, `views/partials/about/*.ejs`):** `[PENDING T-329]`
-  - `views/public/about.ejs` dirampingkan menjadi *thin page* (`<= 100` baris, nesting `<= 2` level) tanpa komentar HTML `<!-- ... -->`, tanpa atribut `style="..."` inline, dan tanpa string fallback literal.
-  - Blok `.page-hero` dipertahankan langsung di *thin page* `views/public/about.ejs`; gambar latar dirender melalui `<img class="page-hero-bg-img" src="..." alt="" fetchpriority="high" decoding="async">` di dalam `.page-hero` dan tingkat opasitas scrim dikendalikan via `.page-hero-scrim[data-scrim-level]` di `public/css/components.css`.
-  - Seksi Visi & Misi diekstrak ke `views/partials/about/vision-mission.ejs` (`<= 100` baris, nesting `<= 2` level) dengan class ter-scope `.abt-vm-*` (mempertahankan `.sec-vm` dan `.vm-*`) dan teks fallback via `t('about.*')`.
-  - Seksi Galeri Bento diekstrak ke `views/partials/about/gallery-bento.ejs` (`<= 100` baris, nesting `<= 2` level). Atribut `style="--tile-i: ...;"` dihapus dari SSR maupun `createSingleTile` di `public/js/main.js`; indeks animasi stagger dipetakan di CSS melalui `.abt-gal-tile--pos-1` s/d `.abt-gal-tile--pos-6`.
-- **Sistem Latar Selang-Seling & Transisi Tepi (`.sec-story`, `.sec-vm`, `.abt-tkt-section`, `.sec-gallery`, `.abt-*`):**
-  - `.sec-story#sejarah` menggunakan `background-color: var(--bg-soft-green)`.
-  - `.sec-vm#visi-misi` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element `::before` bertinggi `48px` (mobile `< 768px`) dan `80px` (desktop `>= 768px`) memakai `background: var(--trans-soft-green-to-subtle)`.
-  - `.abt-tkt-section#core-values` mempertahankan foto latar operasional beserta `.abt-tkt-bg-scrim` yang menyatu mulus di tepi atas/bawah; apabila tanpa foto latar, fallback menggunakan `var(--bg-soft-green)` dengan transisi tepi `var(--trans-subtle-to-soft-green)`.
-  - `.sec-gallery#galeri` menggunakan `background-color: var(--bg-subtle)` dengan pseudo-element gradasi tepi atas yang menyatu dari section sebelumnya, sementara kartu `.abt-cnt-card` dan `.vm-card` mempertahankan `background: var(--color-surface)` dan elevasi token.
-  - Seluruh warna CSS pada selektor `.page-hero*`, `.abt-*`, `.sec-vm / .vm-*`, dan `.sec-gallery` merujuk penuh ke token resmi `public/css/tokens.css` tanpa warna hex mentah dan lolos strict lint `scripts/lint-views.js` `[PENDING T-331]`.
-- **Nilai Inti Budaya Kerja (.abt-tkt-*):** Interactive Expanding Accordion 6 pilar menggantikan `.sec-values` legacy (spesifikasi arsitektur DOM, kontrak SVG whitelist, lifecycle anime.js, dan form admin didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md)).
-- **Galeri Mosaik Bento & Integrasi Lightbox (`.abt-gal-*` & `.lbx-*`):**
-  - Prefix Class: `.sec-gallery`, `.abt-gal-container`, `.abt-gal-viewport`, `.abt-gal-grid`, `.abt-gal-tile`, serta `.bento-grid` dan `.sec-gallery .bento-*`.
-  - Varian Posisi Tile: `.abt-gal-tile--pos-1` s/d `.abt-gal-tile--pos-6`, `.abt-gal-tile--tall`, `.abt-gal-tile--wide`.
-  - Varian Grid Dinamis Halaman: `.abt-gal-grid--6`, `.abt-gal-grid--5`, `.abt-gal-grid--4`, `.abt-gal-grid--3`, `.abt-gal-grid--2`, `.abt-gal-grid--1`.
-  - Kontrol Paginasi: `.abt-gal-pager`, `.abt-gal-pager-count`, `.abt-gal-pager-btn`.
-  - Animasi Engine: Anime.js v3 Shutter Wipe di `public/js/main.js`.
-  - **Integrasi Lightbox Lintas Halaman Pager:**
-    - Baik render awal SSR di `views/public/about.ejs` maupun fungsi `createSingleTile(item, idx, globalIdx)` di `public/js/main.js` menyematkan atribut `data-slide-index="<globalIndex>"`, `tabindex="0"`, `role="button"`, dan `aria-label` dwibahasa (ID/EN) pada setiap `.abt-gal-tile`.
-    - Listener menggunakan *event delegation* pada kontainer `#bentoGalleryGrid` untuk menangkap klik dan `keydown` (`Enter`/`Space`) pada `.abt-gal-tile`, lalu memanggil `window.EuodooLightbox.open(slidesData, globalIndex, tileEl)` menggunakan array penuh dari `#bentoGalleryData` (bukan hanya 6 tile halaman aktif).
-    - Komponen bersama Lightbox dimuat dari PhotoSwipe v5 *self-hosted* (`public/vendor/photoswipe/`) bersama `public/css/lightbox.css` dan `public/js/lightbox.js` berprefix `.lbx-*` (detail penuh pada `tech/products-detail.md` Bagian 6.2), menampilkan *caption* kategori (`category`) dan judul (`title`), penghitung `"3 / 12"`, kontrol *zoom* klik + tombol `+`/`-` di desktop, serta *double-tap* + *pinch-to-zoom* + *swipe* di perangkat sentuh.
-- **Counter Statistik 2x2 Ber-Notch & Horizontal Timeline Slider (`.abt-cnt-*` & `.abt-htl-*`):**
-  - Menggantikan class legacy `.story-layout`, `.story-sticky`, `.story-stats`, `.story-stat*`, `.timeline`, `.tl-*`, dan `.abt-tl-empty` di dalam `<section class="sec-story" id="sejarah">`.
-  - Dimodularisasi menjadi partial `views/partials/about/story-counter.ejs` (`.abt-cnt-*`) dan `views/partials/about/history-timeline.ejs` (`.abt-htl-*`) beserta script ter-scope `public/js/about-story.js`.
-  - Spesifikasi teknis lengkap (struktur DOM, CSS `radial-gradient` *inverted corner mask*, mikro-interaksi lencana pusat Anime.js, parser *count-up*, mekanik slider `scroll-snap` + garis progres `is-filled`, dan kontrak form admin header timeline) didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md).
+- **Thin Page & Hero (`views/public/about.ejs`):** `<= 100` baris, nesting `<= 2`, bebas komentar HTML, inline style, dan string fallback literal (`t('about.*')`). `.page-hero` menggunakan `<img class="page-hero-bg-img" fetchpriority="high" decoding="async">` + `.page-hero-scrim[data-scrim-level]` di CSS.
+- **Visi & Misi (`views/partials/about/vision-mission.ejs`):** Partial `<= 100` baris dengan `.sec-vm`, `.vm-*`, `.abt-vm-*`, dan fallback `t('about.*')`.
+- **Galeri Bento (`views/partials/about/gallery-bento.ejs`) & Lightbox:**
+  - Partial `<= 100` baris; indeks animasi stagger dipetakan di CSS (`.abt-gal-tile--pos-1..6`) tanpa `style="--tile-i: ..."`.
+  - Prefix `.sec-gallery`, `.abt-gal-{container,viewport,grid,tile,pager,pager-count,pager-btn}`, `.bento-*`, serta varian `.abt-gal-grid--1..6`.
+  - Event delegation `#bentoGallery` / `#bentoGrid` memicu `window.EuodooLightbox.open(slidesData, globalIndex, tileEl)` atas array `#bentoGalleryData` (detail Lightbox `.lbx-*` di `tech/products-detail.md`).
+- **Story Counter & Timeline:** Didelegasikan ke [tech/public-about-timeline.md](public-about-timeline.md) (`.abt-cnt-*`, `.abt-htl-*`).
+- **Budaya Kerja T-I-C-K-E-T:** Didelegasikan ke [tech/public-about-ticket.md](public-about-ticket.md) (`.abt-tkt-*`).
+- **Latar Selang-Seling & Token:** `.sec-story` & fallback `.abt-tkt-section` memakai `var(--bg-soft-green)`; `.sec-vm` & `.sec-gallery` memakai `var(--bg-subtle)` dengan pseudo-element gradasi tepi `48px` (mobile) / `80px` (desktop) dari token `--trans-*`. Seluruh selektor `.page-hero*`, `.abt-*`, `.sec-vm / .vm-*`, `.sec-gallery` merujuk penuh ke `public/css/tokens.css` tanpa hex mentah dan lulus strict `lint:views`.
 
 ---
 
-## 5. Keamanan & Performa
-- **Zero CLS Galeri:** Kontainer `.abt-gal-viewport` menggunakan tinggi terhitung tetap dan penumpukan layer posisi absolut selama transisi antar halaman.
-- **Image Pre-Decode:** Sebelum slide baru dianimasikan ke dalam viewport, gambar di-decode via JavaScript `img.decode()` untuk memastikan bebas kedipan (*zero flicker*).
+## 5. Performa Galeri
+- **Zero CLS:** `.abt-gal-viewport` menjaga tinggi kontainer tetap selama pergantian halaman.
+- **Image Pre-Decode:** `public/js/main.js` menjalankan `img.decode()` sebelum animasi Anime.js Shutter Wipe.

@@ -1350,3 +1350,31 @@
 - **File Terdampak:** `tests/test-t327-footer-news-alert-regression.js`
 - **Skill:** `polish`, `adapt`, `antislop-code`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-t241-public-ui.js`, `test-t320-t321-news-regression.js`, dan `test-t327-footer-news-alert-regression.js` seluruhnya lulus 2026-11-16.
+
+### T-328: Penyelarasan Batas Input RFQ, Kamus i18n ID/EN & Refaktor Modular Controller Public About/Contact [DONE]
+- **Modul Spesifikasi:** [prd/contact-footer.md](../prd/contact-footer.md), [tech/contact-footer.md](../tech/contact-footer.md), [prd/public-about.md](../prd/public-about.md), [tech/public-about.md](../tech/public-about.md)
+- **Deskripsi:** Menyelaraskan batas input RFQ (`company` max 100, `message` 10..3000) dan validasi keberadaan `product_id` DB di `contactController.submit`, menambahkan 46 kunci terjemahan simetris `about.*` & `contact.*` ke `locales/id.json` & `locales/en.json`, serta merefaktor `controllers/public/contactController.js` & `controllers/public/pageController.js` menjadi helper modular (`<= 40` baris, nesting `<= 2`, kompleksitas `<= 8`) berbasis kamus `t(...)`.
+- **File Terdampak:** `locales/id.json`, `locales/en.json`, `controllers/public/contactController.js`, `controllers/public/pageController.js`
+- **Skill:** `implement-task`, `code-review-and-quality`, `antislop-code`, `debugging-and-error-recovery`
+- **Verifikasi:** `npm run lint:i18n`, `npm run lint`, dan `tests/test-modul12-public.js` (termasuk uji 8b penolakan `product_id` fiktif HTTP 400) lulus.
+
+### T-329: Refaktor & Modularisasi Halaman Tentang Kami (`/about`) [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md), [tech/public-about.md](../tech/public-about.md), [prd/public-about-timeline.md](../prd/public-about-timeline.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md), [tech/public-about-ticket.md](../tech/public-about-ticket.md)
+- **Deskripsi:** Merampingkan `views/public/about.ejs` menjadi *thin page* (`<= 100` baris, nesting `<= 2` level) dengan `<img class="page-hero-bg-img" fetchpriority="high">` + `.page-hero-scrim[data-scrim-level]` di `public/css/components.css`, mengekstrak `vision-mission.ejs` & `gallery-bento.ejs`, menghapus `style="--tile-i: ..."` dari EJS & `public/js/main.js`, serta memindahkan seluruh teks fallback literal ke kamus `t('about.*')`.
+- **File Terdampak:** `views/public/about.ejs`, `views/partials/about/vision-mission.ejs`, `views/partials/about/gallery-bento.ejs`, `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `views/partials/about/ticket-accordion.ejs`, `public/js/main.js`, `public/css/components.css`
+- **Skill:** `ponytail`, `antislop-code`, `code-simplification`, `polish`, `adapt`
+- **Verifikasi:** `node scripts/lint-views.js views/public/about.ejs`, `node scripts/lint-views.js views/partials/about` (0 error, 0 warning), `npm run lint:i18n`, `test-t299`, `test-t308`, dan `test-t313` lulus.
+
+### T-330: Refaktor & Modularisasi Halaman Kontak (`/contact`) & Ekstraksi `public/js/contact.js` [DONE]
+- **Modul Spesifikasi:** [prd/contact-footer.md](../prd/contact-footer.md), [tech/contact-footer.md](../tech/contact-footer.md)
+- **Deskripsi:** Memperbaiki bug penutup `</div>` `.page-hero-content` pada `views/public/contact.ejs`, menerapkan `<img class="page-hero-bg-img">` + `.page-hero-scrim[data-scrim-level]` + `.cf-hero-content`, merampingkan menjadi *thin page* tanpa komentar HTML/inline style/inline script dengan mengekstrak `status-alerts.ejs`, `rfq-form.ejs` (`.cf-honeypot`, `company` max 100, `message` 10..3000, `data-loading-text`), dan `locations-map.ejs`, serta mengekstrak validasi klien ke `public/js/contact.js` (`defer`, `textContent`).
+- **File Terdampak:** `views/public/contact.ejs`, `views/partials/contact/status-alerts.ejs`, `views/partials/contact/rfq-form.ejs`, `views/partials/contact/locations-map.ejs`, `public/js/contact.js`, `public/css/components.css`
+- **Skill:** `ponytail`, `antislop-code`, `code-simplification`, `polish`, `adapt`
+- **Verifikasi:** `node scripts/lint-views.js views/public/contact.ejs`, `node scripts/lint-views.js views/partials/contact` (0 error, 0 warning), `eslint public/js/contact.js`, `test-modul12-public.js`, dan `test-public-dropdown-migration.js` lulus.
+
+### T-331: Penegakan Strict Lint Views, Pembersihan Token CSS & Audit Regresi Lintas Viewport [DONE]
+- **Modul Spesifikasi:** [tech/conventions.md](../tech/conventions.md), [tech/public-about.md](../tech/public-about.md), [tech/contact-footer.md](../tech/contact-footer.md)
+- **Deskripsi:** Mendaftarkan `views/public/about.ejs`, `views/partials/about/`, `views/public/contact.ejs`, dan `views/partials/contact/` ke `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js`; mengganti warna hex mentah & membersihkan komentar AI-slop (`antislop-code`) pada `.page-hero*`, `.abt-*`, `.sec-vm / .vm-*`, `.sec-gallery`, dan `.cf-*` di `public/css/components.css` ke token `public/css/tokens.css`; menyelaraskan test statis lama ke partial modular; dan memverifikasi kontras WCAG AA serta interaktivitas di `320px`–`1440px` (`ID` & `EN`).
+- **File Terdampak:** `scripts/lint-views.js`, `public/css/components.css`, `tests/test-t308-about-backgrounds.js`, `tests/test-public-dropdown-migration.js`, `tests/test-modul12-public.js`
+- **Skill:** `antislop-code`, `ponytail-review`, `code-review-and-quality`, `debugging-and-error-recovery`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-modul12-public.js`, `test-public-dropdown-migration.js`, `test-t308-about-backgrounds.js`, dan audit Playwright (`320px`–`1440px`, `ID` & `EN`) seluruhnya lulus 2026-11-16.

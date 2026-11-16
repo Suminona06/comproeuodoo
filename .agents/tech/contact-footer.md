@@ -1,89 +1,69 @@
 Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/contact/status-alerts.ejs, views/partials/contact/rfq-form.ejs, views/partials/contact/locations-map.ejs, public/js/contact.js, controllers/public/contactController.js, views/partials/footer.ejs
 
-# Tech Spec: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
+# Tech Spec: Modul Kontak, Footer & WhatsApp
 
 ## 1. Arsitektur & Komponen
-Modul ini menangani penerimaan prospek B2B melalui formulir RFQ, pencatatan ke tabel `inquiries`, pengiriman notifikasi email via Nodemailer, penyajian data dual lokasi, footer global, dan floating WhatsApp.
+Menangani penerimaan prospek B2B melalui formulir RFQ (`inquiries`), notifikasi email via Nodemailer, dual lokasi, footer global, dan floating WhatsApp.
 
 ---
 
 ## 2. Rute & Controller
 
-| Method | Path | Controller / Handler | Middleware | Keterangan |
+| Method | Path | Controller | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/contact` | `contactController.index` | `seoMiddleware`, `i18nMiddleware` | Render halaman Kontak & RFQ (`<= 40` baris per fungsi, pesan via `t('contact.*')` `[PENDING T-328]`) |
-| `POST` | `/contact` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Proses submisi formulir RFQ (helper validasi modular `<= 40` baris, `company` max 100, `message` 10..3000, pesan via `t('contact.*')` `[PENDING T-328]`) |
-| `POST` | `/leads` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Endpoint alias kompatibilitas formulir |
-| `GET` | `/admin/contact` | `contactCmsController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS konten teks halaman kontak |
-| `POST` | `/admin/contact` | `contactCmsController.update`| `requireAuth`, `roleMiddleware` | Update teks hero kontak |
+| `GET` | `/contact` | `contactController.index` | `seoMiddleware`, `i18nMiddleware` | Render halaman Kontak (`<= 40` baris/fungsi, pesan via `t('contact.*')`) |
+| `POST` | `/contact` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Proses RFQ (helper `<= 40` baris, `company` max 100, `message` 10..3000, validasi `product_id` DB via `resolveProductSelection` -> `400` bila tak ada, pesan `t('contact.*')`) |
+| `POST` | `/leads` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Alias kompatibilitas formulir |
+| `GET` | `/admin/contact` | `contactCmsController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS teks hero kontak |
+| `POST` | `/admin/contact` | `contactCmsController.update` | `requireAuth`, `roleMiddleware` | Update teks hero kontak |
 
 ---
 
 ## 3. Skema Data Terkait
 
 ### A. Tabel `inquiries`
-*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `003_upgrade_v2_schema.sql`
+*Migrasi:* `001_create_initial_schema.sql`, `003_upgrade_v2_schema.sql`
 
 | Kolom | Tipe | Nullable | Default | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
 | `id` | `INT` | NO | Auto Inc | Primary Key |
 | `type` | `ENUM('inquiry','partnership','general')` | YES | `'inquiry'` | Kategori permintaan B2B |
-| `name` | `VARCHAR(100)` | NO | - | Nama lengkap pengirim |
-| `company` | `VARCHAR(100)` | YES | NULL | Nama instansi / perusahaan |
-| `email` | `VARCHAR(100)` | NO | - | Alamat email bisnis |
-| `phone` | `VARCHAR(30)` | NO | - | Nomor telepon / WhatsApp |
-| `product_id` | `INT` | YES | NULL | Foreign Key ke `products.id` |
-| `quantity` | `VARCHAR(100)` | YES | NULL | Estimasi volume kebutuhan |
+| `name` | `VARCHAR(100)` | NO | - | Nama pengirim |
+| `company` | `VARCHAR(100)` | YES | NULL | Nama perusahaan |
+| `email` | `VARCHAR(100)` | NO | - | Email bisnis |
+| `phone` | `VARCHAR(30)` | NO | - | Telepon / WhatsApp |
+| `product_id` | `INT` | YES | NULL | FK ke `products.id` |
+| `quantity` | `VARCHAR(100)` | YES | NULL | Estimasi kebutuhan |
 | `message` | `TEXT` | YES | NULL | Rincian pesan & spesifikasi |
-| `source` | `ENUM('contact_form','wa_product')` | YES | `'contact_form'` | Kanal asal prospek |
-| `status` | `ENUM('baru','dibaca','ditindaklanjuti','ditolak')` | YES | `'baru'` | Status penanganan tim sales |
-| `admin_notes` | `TEXT` | YES | NULL | Catatan internal sales |
-| `ip_address` | `VARCHAR(45)` | YES | NULL | IP pengirim untuk audit log |
+| `source` | `ENUM('contact_form','wa_product')` | YES | `'contact_form'` | Kanal asal |
+| `status` | `ENUM('baru','dibaca','ditindaklanjuti','ditolak')` | YES | `'baru'` | Status sales |
+| `admin_notes` | `TEXT` | YES | NULL | Catatan internal |
+| `ip_address` | `VARCHAR(45)` | YES | NULL | IP audit log |
 | `created_at` | `TIMESTAMP` | YES | Current Time | Waktu submisi |
 
 ### B. Kunci Pengaturan Kontak & Footer (`settings`)
-*File Migrasi:* `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql`
+*Migrasi:* `009`, `010`, `011`, `019`
 - Head Office: `office_name_*`, `office_address`, `office_phone`, `office_fax`, `office_email`, `office_card_visible` (`'1'`/`'0'`).
 - Factory: `factory_name_*`, `factory_address`, `factory_phone`, `factory_fax`, `factory_email`, `factory_working_hours_*`, `factory_card_visible` (`'1'`/`'0'`).
 - Maps: `contact_maps_embed_url` / `google_maps_embed`.
-- Konten Footer Dinamis: `footer_desc_id`, `footer_desc_en` (maks 350 char), `footer_nav_links_json` (array JSON 0–4 item; kontrak validasi di [tech/settings-footer.md](settings-footer.md)).
-- Social Media: `social_facebook_url`, `social_facebook_visible`, `social_instagram_url`, `social_instagram_visible`, `social_linkedin_url`, `social_linkedin_visible`, `social_youtube_url`, `social_youtube_visible`.
-- WhatsApp: `whatsapp_number`, `whatsapp_default_message`, `whatsapp_default_message_en`, `whatsapp_formatted_number`, `whatsapp_numbers_json` (JSON array: `number`, `formatted`, `label`, `percentage`).
-- Global CTA: `global_cta_title_*`, `global_cta_subtitle_*`, `global_cta_btn1_*`, `global_cta_btn2_*`, `global_cta_pages_json`, `global_cta_is_active`.
+- Footer: `footer_desc_*` (maks 350), `footer_nav_links_json` (0–4 item; lihat [tech/settings-footer.md](settings-footer.md)).
+- Medsos: `social_{facebook,instagram,linkedin,youtube}_{url,visible}`.
+- WhatsApp: `whatsapp_number`, `whatsapp_default_message`, `whatsapp_default_message_en`, `whatsapp_formatted_number`, `whatsapp_numbers_json` (`number`, `formatted`, `label`, `percentage`).
+- Global CTA: `global_cta_{title,subtitle,btn1,btn2}_*`, `global_cta_pages_json`, `global_cta_is_active`.
 
 ---
 
 ## 4. Komponen Antarmuka & Prefix CSS
-- **Arsitektur Thin Page & Partial Kontak (`views/public/contact.ejs`, `views/partials/contact/*.ejs`, `public/js/contact.js`):** `[PENDING T-330]`
-  - `views/public/contact.ejs` dirampingkan menjadi *thin page* (`<= 100` baris, nesting `<= 2` level) tanpa komentar HTML `<!-- ... -->`, tanpa atribut `style="..."` inline, tanpa `<script>` inline, serta memperbaiki penutup `</div>` pada `.page-hero-content.cf-hero-content`.
-  - `.page-hero` tetap berada di *thin page* `views/public/contact.ejs` menggunakan `<img class="page-hero-bg-img" fetchpriority="high" decoding="async">` + `.page-hero-scrim[data-scrim-level]` (tanpa inline `style`).
-  - Partial modular (`<= 100` baris, nesting `<= 2` level): `views/partials/contact/status-alerts.ejs` (`#form-status`), `views/partials/contact/rfq-form.ejs` (`#rfqForm`, `.cf-honeypot`, `company` `maxlength="100"`, `message` `minlength="10" maxlength="3000"`, `data-loading-text="<%= t('contact.loading_text') %>"`), dan `views/partials/contact/locations-map.ejs` (kartu lokasi & peta, fallback via `t('contact.*')`).
-  - Validasi progresif klien diekstrak ke `public/js/contact.js` (`defer`, `<= 40` baris per fungsi, menggunakan `textContent` pada span label `#submitBtn` saat submit, bukan `innerHTML`).
-- **Formulir RFQ:** `.cf-hero-content`, `.cf-honeypot`, `.cf-split-grid`, `.cf-card-box`, `.cf-section`, `.cf-form-wrap`, `.cf-form`, `.cf-form-row`, `.cf-form-group`, `.cf-label`, `.cf-label-required`, `.cf-input`, `.cf-select`, `.cf-textarea`, `.cf-btn-submit`, `.cf-alert`, `.cf-alert-success`, `.cf-alert-error`. Seluruh warna `.cf-*` di `public/css/components.css` menggunakan token CSS resmi `public/css/tokens.css` tanpa hex mentah `[PENDING T-331]`.
-- **Kartu Lokasi & Peta:** `.cf-office-card`, `.cf-office-header`, `.cf-office-icon`, `.cf-office-badge`, `.cf-office-name`, `.cf-office-addr`, `.cf-office-detail`, `.cf-link-primary`, `.cf-link-inherit` (mengunci `color: inherit` di seluruh state termasuk `:hover` dan `:visited`), `.cf-maps-wrap`, `.cf-maps-iframe`.
-- **Footer (`views/partials/footer.ejs`):** `.site-footer`, `.ft-main` (`.ft-main:has(> :only-child)`), `.ft-desc` (`footer_desc_*`), `.ft-nav` (`0–4` tautan), `.ft-offices`, `.ft-office-card` (kontainer statis, fokus & kontras tinggi), `.ft-phone-val` -> rincian teknis lengkap berada di sub-modul [tech/footer.md](footer.md).
-- **Floating Button WhatsApp:** `.wa-float-container`, `.wa-float-btn`, `.wa-icon`, `.wa-tooltip`.
-- **Hero Scrim Sub-Page:** `.page-hero-bg-img` & `.page-hero-scrim[data-scrim-level]` (multi-layer directional gradient transparan selaras dengan home slide 2 `[PENDING T-330] [PENDING T-331]`).
+- **Arsitektur Thin Page & Partial:**
+  - `views/public/contact.ejs` (`<= 100` baris, nesting `<= 2`): bebas komentar HTML, inline style, dan `<script>` inline; penutup `</div>` `.page-hero-content.cf-hero-content` utuh; hero dirender via `<img class="page-hero-bg-img" fetchpriority="high" decoding="async">` + `.page-hero-scrim[data-scrim-level]`.
+  - Partial (`<= 100` baris, nesting `<= 2`): `views/partials/contact/status-alerts.ejs` (`#form-status`), `views/partials/contact/rfq-form.ejs` (`#rfqForm`, `.cf-honeypot`, `company` `maxlength="100"`, `message` `minlength="10" maxlength="3000"`, `data-loading-text="<%= t('contact.loading_text') %>"`), dan `views/partials/contact/locations-map.ejs` (fallback `t('contact.*')`).
+  - Validasi progresif klien di `public/js/contact.js` (`defer`, `<= 40` baris/fungsi, update tombol via `textContent` pada `.cf-submit-label`).
+- **Prefix CSS (`.cf-*`, seluruh warna via `public/css/tokens.css`):** `.cf-hero-content`, `.cf-honeypot`, `.cf-split-grid`, `.cf-card-box`, `.cf-section`, `.cf-form-*`, `.cf-label*`, `.cf-input`, `.cf-select`, `.cf-textarea`, `.cf-btn-submit`, `.cf-alert*`, `.cf-office-*`, `.cf-link-primary`, `.cf-link-inherit` (mengunci `color: inherit`), `.cf-maps-wrap`, `.cf-maps-iframe`.
+- **Footer & WA:** `.site-footer`, `.ft-main`, `.ft-desc`, `.ft-nav`, `.ft-offices`, `.ft-office-card`, `.ft-phone-val` (detail di [tech/footer.md](footer.md)); `.wa-float-*`.
+- **Hero Scrim Sub-Page:** `.page-hero-bg-img` & `.page-hero-scrim[data-scrim-level]` selaras dengan slide 2 beranda dan kontras WCAG AA (`>= 4.5:1` teks normal, `>= 3.0:1` teks besar).
 
 ---
 
-## 5. Keamanan & Rate Limiting
-- **Rate Limiting:** `middleware/rateLimiter.js` (`leadLimiter`) membatasi maksimal 10 submisi per IP per interval 15 menit.
-- **CSRF & Sanitasi:** Formulir memverifikasi token CSRF dan melakukan `trim()` serta sanitasi karakter input sebelum menyimpan ke tabel `inquiries`.
-- **Notifikasi Email Asinkron:** Menggunakan `utils/mailer.js` untuk mengirimkan ringkasan data RFQ ke email sales secara asinkron tanpa memblokir respons HTTP ke pengguna.
-
----
-
-## 6. Logika Fungsional Khusus
-
-### A. Algoritma Rolling WhatsApp Berbobot di Server (SSR)
-1. Server mengecek `settings.whatsapp_numbers_json`.
-2. Jika string JSON valid dan $\sum percentage === 100$:
-   - Bangkitkan nilai acak integer $R \in [1, 100]$.
-   - Cari nomor dengan rentang akumulasi persentase $\ge R$.
-   - Cetak nomor aktif ke elemen `<a href="https://wa.me/<nomor>?text=...">`. Nomor lainnya tidak dicetak ke HTML publik.
-3. Fallback: Jika data JSON kosong atau tidak valid, baca setting tunggal legacy `whatsapp_formatted_number` atau `whatsapp_number`.
-
-### B. Standardisasi Filter Hero Banner Sub-Page
-- Aturan visual `.page-hero-scrim` pada `views/public/products.ejs`, `views/public/news.ejs`, `views/public/contact.ejs`, dan `views/public/about.ejs` menerapkan gradasi terkalibrasi multi-stop mengikuti pola `.hero-slide-image .hero-grad` beranda.
-- Gambar latar belakang fasilitas pabrik terlihat jernih dan nyata, aksen hijau brand (`var(--color-primary-dark)` / `var(--color-primary)`) berbaur secara lembut, dan seluruh teks judul, subjudul, serta remah roti (*breadcrumb*) memenuhi batas rasio kontras aksesibilitas WCAG AA (minimal 4.5:1 untuk teks normal dan 3.0:1 untuk teks tebal/besar).
+## 5. Keamanan & Logika Khusus
+- **Proteksi Form:** `leadLimiter` (10 req/IP/15m), CSRF, honeypot `hp_website`, verifikasi product ID di DB, Cloudflare Turnstile, sanitasi/trim, dan mailer asinkron (`utils/mailer.js`).
+- **Rolling WA Server-Side:** Jika `whatsapp_numbers_json` valid dengan total `percentage === 100`, pilih acak integer $R \in [1, 100]$ terhadap akumulasi bobot dan render satu nomor terpilih saja; fallback ke nomor tunggal legacy bila kosong/invalid.

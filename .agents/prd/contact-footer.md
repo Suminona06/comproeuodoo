@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/contact/*.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
 
 # PRD: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
 
@@ -10,13 +10,13 @@ Modul Kontak & Footer menangani saluran komunikasi konversi prospek B2B, penanga
 ## 2. Functional Requirements
 
 ### FR-14: Halaman Kontak Publik & Formulir RFQ (`/contact`)
-- Sistem merender antarmuka kontak terpisah dua kolom di `/contact` melalui *thin page* `views/public/contact.ejs` (memuat `.page-hero` langsung di *thin page* dengan `<img class="page-hero-bg-img" fetchpriority="high">` dan `.page-hero-scrim[data-scrim-level]`) yang mengorkestrasikan partial `status-alerts.ejs`, `rfq-form.ejs`, dan `locations-map.ejs` tanpa inline style, tanpa inline script, tanpa komentar HTML, dan seluruh teks fallback/validasi menggunakan kamus `t('contact.*')` (`locales/id.json` & `locales/en.json`) `[PENDING T-328] [PENDING T-330]`:
+- Sistem merender antarmuka kontak terpisah dua kolom di `/contact` melalui *thin page* `views/public/contact.ejs` (memuat `.page-hero` langsung di *thin page* dengan `<img class="page-hero-bg-img" fetchpriority="high">` dan `.page-hero-scrim[data-scrim-level]`) yang mengorkestrasikan partial `status-alerts.ejs`, `rfq-form.ejs`, dan `locations-map.ejs` tanpa inline style, tanpa inline script, tanpa komentar HTML, dan seluruh teks fallback/validasi menggunakan kamus `t('contact.*')` (`locales/id.json` & `locales/en.json`):
   1. **Kolom Kiri - Formulir RFQ Terisolasi (`.cf-*`):**
      - Field input: Nama Lengkap (`name`, required, max 100), Nama Perusahaan (`company`, optional, max 100 sesuai skema DB), Email Bisnis (`email`, required, email format, max 100), Nomor Telepon/WhatsApp (`phone`, required, min 7 max 30).
      - Pilihan Produk Terkait (`product_id` dropdown dengan opsi auto-select).
      - Estimasi Kuantitas Kebutuhan (`quantity`, max 100, misal "100.000 pcs / 5 ton").
      - Jenis Permintaan (`type`: Permintaan Penawaran / RFQ, Kemitraan Distributor, Pertanyaan Umum).
-     - Pesan Detail / Spesifikasi Custom (`message`, required, min 10, max 3000) `[PENDING T-328]`.
+     - Pesan Detail / Spesifikasi Custom (`message`, required, min 10, max 3000).
      - Tombol Submit dengan indikator validasi interaktif terlokalisasi dan proteksi anti-spam (CSRF, honeypot, Cloudflare Turnstile).
   2. **Kolom Kanan - Dual Lokasi Kantor & Peta Google Maps:**
      - **Kartu Head Office Jakarta:** Alamat Palmerah Selatan Suite 02-07, telepon, fax, dan email kantor pusat. Ditampilkan kondisional jika setting `office_card_visible = '1'`.
