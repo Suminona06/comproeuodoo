@@ -1,0 +1,85 @@
+<%
+  const totalSlides = gallerySlides.length;
+  const initialPageCount = Math.ceil(totalSlides / 6);
+  const initialSlice = gallerySlides.slice(0, Math.min(6, totalSlides));
+  const gridModifiers = {
+    5: 'abt-gal-grid--5 bento-grid--5',
+    4: 'abt-gal-grid--4 bento-grid--4',
+    3: 'abt-gal-grid--3 bento-grid--3',
+    2: 'abt-gal-grid--2 bento-grid--2',
+    1: 'abt-gal-grid--1 bento-grid--1'
+  };
+  const gridModifier = gridModifiers[initialSlice.length] || '';
+  const preparedTiles = initialSlice.map((slide, idx) => {
+    let posClass = 'abt-gal-tile--pos-' + (idx + 1) + ' bento-tile--pos-' + (idx + 1);
+    if (initialSlice.length === 6 && idx === 0) {
+      posClass = 'abt-gal-tile--pos-1 abt-gal-tile--tall bento-tile--pos-1 bento-tile--tall';
+    } else if (initialSlice.length === 6 && (idx === 1 || idx === 4)) {
+      posClass = 'abt-gal-tile--pos-' + (idx + 1) + ' abt-gal-tile--wide bento-tile--pos-' + (idx + 1) + ' bento-tile--wide';
+    }
+    const cleanTag = ((lang === 'en' ? (slide.category_en || slide.category_id) : slide.category_id) || '').trim();
+    const cleanTitle = ((lang === 'en' ? (slide.title_en || slide.title_id) : slide.title_id) || '').trim();
+    const photoNum = String(idx + 1).padStart(2, '0');
+    const altText = cleanTitle || cleanTag || t('about.gallery_photo_fallback', { num: photoNum });
+    return {
+      slide,
+      idx,
+      posClass,
+      cleanTag,
+      cleanTitle,
+      altText,
+      hasCaption: Boolean(cleanTag || cleanTitle)
+    };
+  });
+  const serializeJson = typeof safeJson === 'function'
+    ? safeJson
+    : (v) => JSON.stringify(v ?? null).replace(/</g, '\\u003c');
+  const galleryJsonData = gallerySlides.map((s) => ({
+    image_url: s.image_url,
+    category: lang === 'en' ? (s.category_en || s.category_id || '') : (s.category_id || ''),
+    title: lang === 'en' ? (s.title_en || s.title_id || '') : (s.title_id || '')
+  }));
+%>
+<section class="sec-gallery" id="galeri" data-od-id="gallery">
+  <div class="container">
+    <div class="gal-header reveal">
+      <div class="gal-header-text">
+        <span class="gal-kicker"><%= (lang === 'en' ? galleryHeader?.kicker_en : galleryHeader?.kicker_id) || t('about.gallery_default_kicker') %></span>
+        <h2><%= (lang === 'en' ? galleryHeader?.title_en : galleryHeader?.title_id) || t('about.gallery_default_title') %></h2>
+        <p><%= (lang === 'en' ? galleryHeader?.body_en : galleryHeader?.body_id) || t('about.gallery_default_desc') %></p>
+      </div>
+    </div>
+
+    <div class="abt-gal-container bento-gallery" id="bentoGallery">
+      <div class="abt-gal-viewport" id="abtGalViewport">
+        <div class="abt-gal-grid bento-grid <%= gridModifier %>" id="bentoGrid">
+          <% preparedTiles.forEach((tile) => { %>
+            <div class="bento-tile abt-gal-tile <%= tile.posClass %>" role="button" tabindex="0" data-slide-index="<%= tile.idx %>" aria-label="<%= tile.altText %>">
+              <img src="<%= tile.slide.image_url %>" alt="<%= tile.altText %>" decoding="async" <%- tile.idx > 0 ? 'loading="lazy"' : '' %>>
+              <% if (tile.hasCaption) { %>
+                <div class="abt-gal-cap bento-cap">
+                  <span class="abt-gal-cat bento-cat" <%- tile.cleanTag ? '' : 'hidden' %>><%= tile.cleanTag %></span>
+                  <div class="abt-gal-title bento-title" <%- tile.cleanTitle ? '' : 'hidden' %>><%= tile.cleanTitle %></div>
+                </div>
+              <% } %>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+
+      <div class="abt-gal-pager bento-pager" id="bentoPager" <%= totalSlides <= 1 ? 'hidden' : '' %>>
+        <span class="abt-gal-pager-count bento-pager-count" aria-live="polite" aria-atomic="true"><strong id="bentoCur">01</strong> / <span id="bentoTotal"><%= String(initialPageCount).padStart(2, '0') %></span></span>
+        <div class="abt-gal-pager-arrows bento-pager-arrows">
+          <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoPrev" aria-label="<%= t('about.gallery_prev') %>" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+          </button>
+          <button type="button" class="abt-gal-pager-btn bento-pager-btn" id="bentoNext" aria-label="<%= t('about.gallery_next') %>" <%- initialPageCount <= 1 ? 'disabled' : '' %>>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="application/json" id="bentoGalleryData"><%- serializeJson(galleryJsonData) %></script>
+  </div>
+</section>

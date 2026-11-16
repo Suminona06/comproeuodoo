@@ -4208,6 +4208,37 @@
   background-repeat: no-repeat;
 }
 
+.page-hero-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.page-hero-scrim[data-scrim-level="soft"] {
+  --hero-scrim-mid: 0.65;
+  --hero-scrim-edge: 0.35;
+}
+
+.page-hero-scrim[data-scrim-level="light"] {
+  --hero-scrim-mid: 0.74;
+  --hero-scrim-edge: 0.40;
+}
+
+.page-hero-scrim[data-scrim-level="medium"] {
+  --hero-scrim-mid: 0.85;
+  --hero-scrim-edge: 0.50;
+}
+
+.page-hero-scrim[data-scrim-level="standard"] {
+  --hero-scrim-mid: 0.85;
+  --hero-scrim-edge: 0.60;
+}
+
 /* Sub-page hero scrim: layered directional protection calibrated to match home slide 2 */
 .page-hero-scrim {
   position: absolute;
@@ -6768,6 +6799,13 @@
     clip-path: inset(0 0% 0 0% round 12px);
   }
 }
+
+.sec-gallery .abt-gal-tile--pos-1 { --tile-i: 0; }
+.sec-gallery .abt-gal-tile--pos-2 { --tile-i: 1; }
+.sec-gallery .abt-gal-tile--pos-3 { --tile-i: 2; }
+.sec-gallery .abt-gal-tile--pos-4 { --tile-i: 3; }
+.sec-gallery .abt-gal-tile--pos-5 { --tile-i: 4; }
+.sec-gallery .abt-gal-tile--pos-6 { --tile-i: 5; }
 
 .sec-gallery .abt-gal-tile.is-leaving,
 .sec-gallery .bento-tile.is-leaving {

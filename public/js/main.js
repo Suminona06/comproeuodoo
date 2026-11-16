@@ -622,7 +622,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tile.setAttribute('role', 'button');
       tile.tabIndex = 0;
       tile.setAttribute('data-slide-index', String(globalIdx));
-      tile.style.setProperty('--tile-i', idx);
 
       const tag = slide.category ? slide.category.trim() : '';
       const titleText = slide.title ? slide.title.trim() : '';
@@ -742,13 +741,12 @@ document.addEventListener('DOMContentLoaded', () => {
           currentGrid.parentNode.removeChild(currentGrid);
         }
         incomingGrid.classList.remove('is-incoming');
-        incomingTiles.forEach((tile, idx) => {
+        incomingTiles.forEach((tile) => {
           tile.classList.remove('is-entering', 'is-leaving');
           tile.style.removeProperty('opacity');
           tile.style.removeProperty('transform');
           tile.style.removeProperty('clip-path');
           tile.style.removeProperty('will-change');
-          tile.style.setProperty('--tile-i', idx);
         });
 
         isTransitioning = false;
@@ -959,8 +957,7 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const tiles = bentoGallery.querySelectorAll('.abt-gal-tile, .bento-tile');
-            tiles.forEach((tile, idx) => {
-              tile.style.setProperty('--tile-i', idx);
+            tiles.forEach((tile) => {
               tile.classList.add('is-opening');
             });
             setTimeout(() => {

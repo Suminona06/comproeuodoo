@@ -1,0 +1,57 @@
+<%
+  const visionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.vision_image_url)
+    ? visionMissionImages.vision_image_url.trim()
+    : '';
+  const missionImg = (typeof visionMissionImages !== 'undefined' && visionMissionImages?.mission_image_url)
+    ? visionMissionImages.mission_image_url.trim()
+    : '';
+  const rawMission = lang === 'en' ? (data.mission_en || '') : (data.mission_id || '');
+  const missionPoints = rawMission.split('\n').map((p) => p.trim()).filter((p) => p.length > 0);
+%>
+<section class="sec-vm abt-vm-section" id="visi-misi" data-od-id="vision-mission">
+  <div class="container">
+    <div class="vm-header abt-vm-header reveal">
+      <span class="vm-kicker abt-vm-kicker"><%= t('about.vm_kicker') %></span>
+      <h2><%= t('about.vm_title') %></h2>
+      <p><%= t('about.vm_subtitle') %></p>
+    </div>
+
+    <div class="vm-rows abt-vm-rows">
+      <div class="vm-row abt-vm-row reveal <%= visionImg ? 'has-image' : 'no-image' %>">
+        <div class="vm-card abt-vm-card">
+          <span class="vm-card-kicker abt-vm-card-kicker"><%= t('about.vm_vision_kicker') %></span>
+          <h3 class="vm-card-title abt-vm-card-title"><%= lang === 'en' ? data.vision_en : data.vision_id %></h3>
+          <p class="vm-card-desc abt-vm-card-desc"><%= t('about.vm_vision_desc') %></p>
+        </div>
+        <% if (visionImg) { %>
+          <div class="vm-media abt-vm-media">
+            <img src="<%= visionImg %>" alt="<%= t('about.vm_vision_img_alt') %>" loading="lazy">
+          </div>
+        <% } %>
+      </div>
+
+      <div class="vm-row abt-vm-row reveal <%= missionImg ? 'has-image' : 'no-image' %>">
+        <% if (missionImg) { %>
+          <div class="vm-media abt-vm-media">
+            <img src="<%= missionImg %>" alt="<%= t('about.vm_mission_img_alt') %>" loading="lazy">
+          </div>
+        <% } %>
+        <div class="vm-card abt-vm-card">
+          <span class="vm-card-kicker abt-vm-card-kicker"><%= t('about.vm_mission_kicker') %></span>
+          <% if (missionPoints.length > 1) { %>
+            <ul class="vm-list abt-vm-list">
+              <% missionPoints.forEach(function(point, idx) { %>
+                <li>
+                  <span class="vm-list-badge abt-vm-list-badge"><%= idx + 1 %></span>
+                  <span class="abt-vm-point-text"><%= point.replace(/^\d+[.)]\s*/, '') %></span>
+                </li>
+              <% }); %>
+            </ul>
+          <% } else { %>
+            <h3 class="vm-card-title abt-vm-card-title"><%= rawMission %></h3>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
