@@ -196,7 +196,7 @@
   </div>
 </div>
 
-<script type="application/json" id="dashboardInquiriesJson"><%- JSON.stringify(recentInquiries || []) %></script>
+<script type="application/json" id="dashboardInquiriesJson"><%- safeJson(recentInquiries || []) %></script>
 <script src="/js/admin-dashboard.js" defer></script>
 
 <%- include('../partials/admin-footer') %>

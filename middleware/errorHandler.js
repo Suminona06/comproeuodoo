@@ -1,3 +1,4 @@
+import escapeHtml from 'escape-html';
 import logger from '../utils/logger.js';
 
 /**
@@ -47,32 +48,12 @@ export const notFoundHandler = (req, res, next) => {
   }
 };
 
-/**
- * Global Error Handler Middleware
- */
-export const errorHandler = (err, req, res, next) => {
-  const statusCode = err.status || err.statusCode || 500;
-  const isDev = process.env.NODE_ENV !== 'production';
-
-  logger.error(err.message, {
-    status: statusCode,
-    path: req.originalUrl,
-    method: req.method,
-    stack: isDev ? err.stack : undefined
-  });
-
-  const isJson = req.xhr || req.headers.accept?.includes('application/json') || req.path.startsWith('/api/');
-
-  if (isJson) {
-    return res.status(statusCode).json({
-      success: false,
-      error: isDev ? err.message : 'Terjadi kesalahan internal pada server.',
-      ...(isDev && { stack: err.stack })
-    });
-  }
-
-  res.status(statusCode);
-  return res.send(`
+function renderDevErrorHtml(statusCode, err, showDebugDetails) {
+  const safeMsg = showDebugDetails
+    ? escapeHtml(err.message)
+    : 'Terjadi kendala pada sistem kami. Tim teknis sedang menanganinya.';
+  const safeStackHtml = showDebugDetails && err.stack ? `<pre>${escapeHtml(err.stack)}</pre>` : '';
+  return `
     <!DOCTYPE html>
     <html lang="id">
     <head>
@@ -90,12 +71,38 @@ export const errorHandler = (err, req, res, next) => {
     <body>
       <div class="container">
         <h1>${statusCode}</h1>
-        <p>${isDev ? err.message : 'Terjadi kendala pada sistem kami. Tim teknis sedang menanganinya.'}</p>
-        ${isDev && err.stack ? `<pre>${err.stack}</pre>` : ''}
+        <p>${safeMsg}</p>
+        ${safeStackHtml}
         <br>
         <a href="/">Kembali ke Beranda</a>
       </div>
     </body>
     </html>
-  `);
+  `;
+}
+
+/**
+ * Global Error Handler Middleware
+ */
+export const errorHandler = (err, req, res, _next) => {
+  const statusCode = err.status || err.statusCode || 500;
+  const showDebugDetails = process.env.NODE_ENV === 'development';
+
+  logger.error(err.message, {
+    status: statusCode,
+    path: req.originalUrl,
+    method: req.method,
+    stack: err.stack
+  });
+
+  const isJson = req.xhr || req.headers.accept?.includes('application/json') || req.path.startsWith('/api/');
+  if (isJson) {
+    return res.status(statusCode).json({
+      success: false,
+      error: showDebugDetails ? err.message : 'Terjadi kesalahan internal pada server.',
+      ...(showDebugDetails && { stack: err.stack })
+    });
+  }
+
+  return res.status(statusCode).send(renderDevErrorHtml(statusCode, err, showDebugDetails));
 };

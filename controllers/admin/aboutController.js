@@ -2,90 +2,33 @@ import aboutModel from '../../models/aboutModel.js';
 import aboutGalleryModel from '../../models/aboutGalleryModel.js';
 import aboutStatsModel from '../../models/aboutStatsModel.js';
 import aboutTimelineModel from '../../models/aboutTimelineModel.js';
+import {
+  buildAboutUpdatePayload,
+  parseGallerySlideCreate,
+  parseGallerySlideUpdate,
+  parseStatCreate,
+  parseStatUpdate,
+  parseTimelineCreate,
+  parseTimelineUpdate
+} from '../../services/aboutService.js';
 import logger from '../../utils/logger.js';
 import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
-import { TICKET_ICONS, TICKET_ICON_KEYS, isValidTicketIconKey } from '../../utils/ticketIcons.js';
+import { TICKET_ICONS, TICKET_ICON_KEYS } from '../../utils/ticketIcons.js';
 
-function sanitizeSafePath(val, fallback = '') {
-  if (typeof val !== 'string') return fallback;
-  const trimmed = val.trim();
-  if (/^(\/uploads\/|\/images\/)[a-zA-Z0-9_.\-/]+$/.test(trimmed) && trimmed.length <= 500) {
-    return trimmed;
+const wantsJson = (req) => Boolean(req.xhr || req.headers?.accept?.includes('application/json'));
+
+function sendTabSuccess(req, res, { tab, message, id }) {
+  if (wantsJson(req)) {
+    const body = { success: true, message };
+    if (id !== undefined) body.id = id;
+    return res.json(body);
   }
-  return fallback;
+  return res.redirect(`/admin/about?tab=${tab}&success=${encodeURIComponent(message)}`);
 }
 
-function sanitizeOptionalBgImage(rawBg) {
-  if (rawBg === undefined) return undefined;
-  const trimmed = String(rawBg || '').trim();
-  if (trimmed === '') return '';
-  return sanitizeSafePath(trimmed, '');
-}
-
-function getFieldValue(body, formKey, idx, prefix, defVal = '') {
-  const val = body[`${prefix}_${formKey}`] ?? body[`${prefix}_${idx}`];
-  if (val !== undefined && val !== null && String(val).trim() !== '') {
-    return String(val).trim();
-  }
-  return defVal;
-}
-
-function parseSingleValue(body, defLetter, idx, defaultValues) {
-  const formKey = idx === 5 ? 'T_2' : defLetter;
-  const def = defaultValues[idx] || defaultValues[0];
-  const letter = getFieldValue(body, formKey, idx, 'val_letter', defLetter).charAt(0).toUpperCase();
-  const rawIcon = getFieldValue(body, formKey, idx, 'val_icon_key', def.icon_key);
-  const rawImg = getFieldValue(body, formKey, idx, 'val_image_url', def.image_url);
-
-  return {
-    letter: letter || defLetter,
-    title_id: getFieldValue(body, formKey, idx, 'val_title_id', def.title_id).slice(0, 50),
-    title_en: getFieldValue(body, formKey, idx, 'val_title_en', def.title_en).slice(0, 50),
-    desc_id: getFieldValue(body, formKey, idx, 'val_desc_id', def.desc_id).slice(0, 250),
-    desc_en: getFieldValue(body, formKey, idx, 'val_desc_en', def.desc_en).slice(0, 250),
-    image_url: sanitizeSafePath(rawImg, def.image_url),
-    icon_key: isValidTicketIconKey(rawIcon) ? rawIcon : def.icon_key,
-    sort_order: idx + 1
-  };
-}
-
-function parseTicketValues(body, defaultValues) {
-  const hasAnyValKey = Object.keys(body || {}).some((k) => k.startsWith('val_'));
-  if (!hasAnyValKey) return undefined;
-  const actualLetters = ['T', 'I', 'C', 'K', 'E', 'T'];
-  return actualLetters.map((defLetter, idx) => parseSingleValue(body, defLetter, idx, defaultValues));
-}
-
-function readRawField(body, primaryKey, aliasKey) {
-  return body[primaryKey] !== undefined ? body[primaryKey] : body[aliasKey];
-}
-
-function trimSliceOptional(val, maxLen, emptyFallback = '') {
-  if (val === undefined) return undefined;
-  const str = String(val || emptyFallback).trim();
-  return str.slice(0, maxLen);
-}
-
-function parseTicketHeader(body) {
-  const rawBg = readRawField(body, 'about_values_bg_image', 'values_bg_image');
-  return {
-    about_values_bg_image: sanitizeOptionalBgImage(rawBg),
-    about_values_pill_id: trimSliceOptional(readRawField(body, 'about_values_pill_id', 'values_pill_id'), 50, 'Budaya Kerja'),
-    about_values_pill_en: trimSliceOptional(readRawField(body, 'about_values_pill_en', 'values_pill_en'), 50, 'Corporate Culture'),
-    about_values_subtitle_id: trimSliceOptional(readRawField(body, 'about_values_subtitle_id', 'values_subtitle_id'), 150),
-    about_values_subtitle_en: trimSliceOptional(readRawField(body, 'about_values_subtitle_en', 'values_subtitle_en'), 150)
-  };
-}
-
-function parseTimelineHeader(body = {}) {
-  return {
-    about_timeline_tagline_id: trimSliceOptional(body.about_timeline_tagline_id, 50),
-    about_timeline_tagline_en: trimSliceOptional(body.about_timeline_tagline_en, 50),
-    about_timeline_title_id: trimSliceOptional(body.about_timeline_title_id, 120),
-    about_timeline_title_en: trimSliceOptional(body.about_timeline_title_en, 120),
-    about_timeline_desc_id: trimSliceOptional(body.about_timeline_desc_id, 300),
-    about_timeline_desc_en: trimSliceOptional(body.about_timeline_desc_en, 300)
-  };
+function sendTabError(req, res, { tab, statusCode = 500, message }) {
+  if (wantsJson(req)) return res.status(statusCode).json({ success: false, message });
+  return res.redirect(`/admin/about?tab=${tab}&error=${encodeURIComponent(message)}`);
 }
 
 export const aboutController = {
@@ -127,87 +70,9 @@ export const aboutController = {
 
   async update(req, res) {
     try {
-      const {
-        founded_year,
-        former_names,
-        history_title_id,
-        history_title_en,
-        history_id,
-        history_en,
-        vision_id,
-        vision_en,
-        mission_id,
-        mission_en,
-        motto_id,
-        motto_en,
-        slogan_id,
-        slogan_en,
-        goal_id,
-        goal_en,
-        eco_statement_id,
-        eco_statement_en,
-        vision_image_url,
-        mission_image_url,
-        about_gallery_kicker_id,
-        about_gallery_kicker_en,
-        about_gallery_title_id,
-        about_gallery_title_en,
-        about_gallery_body_id,
-        about_gallery_body_en,
-        about_story_kicker_id,
-        about_story_kicker_en
-      } = req.body;
-
       const currentAbout = await aboutModel.getAboutData();
-      const defaultValues = currentAbout?.values || aboutModel.getDefaults().values;
-      const values = parseTicketValues(req.body, defaultValues);
-      const ticketHeader = parseTicketHeader(req.body);
-
-      const defaultCerts = aboutModel.getDefaults().certifications;
-      const certifications = defaultCerts.map((cert, idx) => {
-        return {
-          name: req.body[`cert_name_${idx}`] || cert.name,
-          issuer: req.body[`cert_issuer_${idx}`] || cert.issuer,
-          badge: req.body[`cert_badge_${idx}`] || cert.badge,
-          desc_id: req.body[`cert_desc_id_${idx}`] || cert.desc_id,
-          desc_en: req.body[`cert_desc_en_${idx}`] || cert.desc_en
-        };
-      });
-
-      const updatePayload = {
-        founded_year: founded_year ? founded_year.trim() : undefined,
-        former_names: former_names ? former_names.trim() : undefined,
-        history_title_id: history_title_id ? history_title_id.trim() : undefined,
-        history_title_en: history_title_en ? history_title_en.trim() : undefined,
-        history_id: history_id ? history_id.trim() : undefined,
-        history_en: history_en ? history_en.trim() : undefined,
-        vision_id: vision_id ? vision_id.trim() : undefined,
-        vision_en: vision_en ? vision_en.trim() : undefined,
-        mission_id: mission_id ? mission_id.trim() : undefined,
-        mission_en: mission_en ? mission_en.trim() : undefined,
-        motto_id: motto_id ? motto_id.trim() : undefined,
-        motto_en: motto_en ? motto_en.trim() : undefined,
-        slogan_id: slogan_id ? slogan_id.trim() : undefined,
-        slogan_en: slogan_en ? slogan_en.trim() : undefined,
-        goal_id: goal_id ? goal_id.trim() : undefined,
-        goal_en: goal_en ? goal_en.trim() : undefined,
-        eco_statement_id: eco_statement_id ? eco_statement_id.trim() : undefined,
-        eco_statement_en: eco_statement_en ? eco_statement_en.trim() : undefined,
-        vision_image_url: vision_image_url !== undefined ? vision_image_url.trim() : undefined,
-        mission_image_url: mission_image_url !== undefined ? mission_image_url.trim() : undefined,
-        about_gallery_kicker_id: about_gallery_kicker_id !== undefined ? about_gallery_kicker_id.trim() : undefined,
-        about_gallery_kicker_en: about_gallery_kicker_en !== undefined ? about_gallery_kicker_en.trim() : undefined,
-        about_gallery_title_id: about_gallery_title_id !== undefined ? about_gallery_title_id.trim() : undefined,
-        about_gallery_title_en: about_gallery_title_en !== undefined ? about_gallery_title_en.trim() : undefined,
-        about_gallery_body_id: about_gallery_body_id !== undefined ? about_gallery_body_id.trim() : undefined,
-        about_gallery_body_en: about_gallery_body_en !== undefined ? about_gallery_body_en.trim() : undefined,
-        about_story_kicker_id: about_story_kicker_id !== undefined ? about_story_kicker_id.trim() : undefined,
-        about_story_kicker_en: about_story_kicker_en !== undefined ? about_story_kicker_en.trim() : undefined,
-        ...parseTimelineHeader(req.body),
-        ...ticketHeader,
-        values,
-        certifications
-      };
+      const defaults = aboutModel.getDefaults();
+      const updatePayload = buildAboutUpdatePayload(req.body, currentAbout?.values || defaults.values, defaults.certifications);
 
       if (req.file) {
         updatePayload.image_url = await processAndSaveWebP(req.file.buffer, 'pages', { maxWidth: 1920, maxHeight: 1080 });
@@ -216,7 +81,6 @@ export const aboutController = {
       }
 
       await aboutModel.updateAboutData(updatePayload);
-
       logger.info('aboutController: About content successfully updated by admin');
       return res.redirect('/admin/about?success=Konten+halaman+tentang+kami+berhasil+diperbarui.');
     } catch (err) {
@@ -227,311 +91,112 @@ export const aboutController = {
 
   async storeGallerySlide(req, res) {
     try {
-      const { image_url, category_id, category_en, title_id, title_en, subtitle_id, subtitle_en, sort_order, is_active } = req.body;
-
-      if (!image_url || !image_url.trim()) {
-        const errorMsg = 'Gambar slide galeri wajib diisi.';
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(400).json({ success: false, message: errorMsg });
-        }
-        return res.redirect(`/admin/about?tab=tab-gallery&error=${encodeURIComponent(errorMsg)}`);
-      }
-
-      const id = await aboutGalleryModel.create({
-        image_url: image_url.trim(),
-        category_id: category_id ? category_id.trim() : '',
-        category_en: category_en ? category_en.trim() : '',
-        title_id: title_id ? title_id.trim() : '',
-        title_en: title_en ? title_en.trim() : '',
-        subtitle_id: subtitle_id ? subtitle_id.trim() : '',
-        subtitle_en: subtitle_en ? subtitle_en.trim() : '',
-        sort_order: parseInt(sort_order || '0', 10),
-        is_active: is_active === undefined ? 1 : (is_active === '1' || is_active === 1 || is_active === true ? 1 : 0)
-      });
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Slide galeri berhasil ditambahkan.', id });
-      }
-      return res.redirect('/admin/about?tab=tab-gallery&success=Slide+galeri+berhasil+ditambahkan.');
+      const parsed = parseGallerySlideCreate(req.body);
+      if (parsed.error) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 400, message: parsed.error });
+      const id = await aboutGalleryModel.create(parsed.data);
+      return sendTabSuccess(req, res, { tab: 'tab-gallery', message: 'Slide galeri berhasil ditambahkan.', id });
     } catch (err) {
       logger.error('aboutController.storeGallerySlide error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-gallery&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-gallery', message: err.message });
     }
   },
 
   async updateGallerySlide(req, res) {
     try {
-      const { id } = req.params;
-      const slide = await aboutGalleryModel.findById(id);
-      if (!slide) {
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(404).json({ success: false, message: 'Slide tidak ditemukan.' });
-        }
-        return res.redirect('/admin/about?tab=tab-gallery&error=Slide+tidak+ditemukan.');
-      }
-
-      const { image_url, category_id, category_en, title_id, title_en, subtitle_id, subtitle_en, sort_order, is_active } = req.body;
-
-      if (image_url !== undefined && !image_url.trim()) {
-        const errorMsg = 'Gambar slide galeri wajib diisi.';
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(400).json({ success: false, message: errorMsg });
-        }
-        return res.redirect(`/admin/about?tab=tab-gallery&error=${encodeURIComponent(errorMsg)}`);
-      }
-
-      await aboutGalleryModel.update(id, {
-        image_url: image_url !== undefined ? image_url.trim() : undefined,
-        category_id: category_id !== undefined ? category_id.trim() : undefined,
-        category_en: category_en !== undefined ? category_en.trim() : undefined,
-        title_id: title_id !== undefined ? title_id.trim() : undefined,
-        title_en: title_en !== undefined ? title_en.trim() : undefined,
-        subtitle_id: subtitle_id !== undefined ? subtitle_id.trim() : undefined,
-        subtitle_en: subtitle_en !== undefined ? subtitle_en.trim() : undefined,
-        sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : undefined,
-        is_active: is_active !== undefined ? (is_active === '1' || is_active === 1 || is_active === true ? 1 : 0) : undefined
-      });
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Slide galeri berhasil diperbarui.' });
-      }
-      return res.redirect('/admin/about?tab=tab-gallery&success=Slide+galeri+berhasil+diperbarui.');
+      const slide = await aboutGalleryModel.findById(req.params.id);
+      if (!slide) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 404, message: 'Slide tidak ditemukan.' });
+      const parsed = parseGallerySlideUpdate(req.body);
+      if (parsed.error) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 400, message: parsed.error });
+      await aboutGalleryModel.update(req.params.id, parsed.data);
+      return sendTabSuccess(req, res, { tab: 'tab-gallery', message: 'Slide galeri berhasil diperbarui.' });
     } catch (err) {
       logger.error('aboutController.updateGallerySlide error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-gallery&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-gallery', message: err.message });
     }
   },
 
   async deleteGallerySlide(req, res) {
     try {
-      const { id } = req.params;
-      const slide = await aboutGalleryModel.findById(id);
-      if (!slide) {
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(404).json({ success: false, message: 'Slide tidak ditemukan.' });
-        }
-        return res.redirect('/admin/about?tab=tab-gallery&error=Slide+tidak+ditemukan.');
-      }
-
-      await aboutGalleryModel.delete(id);
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Slide galeri berhasil dihapus.' });
-      }
-      return res.redirect('/admin/about?tab=tab-gallery&success=Slide+galeri+berhasil+dihapus.');
+      const slide = await aboutGalleryModel.findById(req.params.id);
+      if (!slide) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 404, message: 'Slide tidak ditemukan.' });
+      await aboutGalleryModel.delete(req.params.id);
+      return sendTabSuccess(req, res, { tab: 'tab-gallery', message: 'Slide galeri berhasil dihapus.' });
     } catch (err) {
       logger.error('aboutController.deleteGallerySlide error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-gallery&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-gallery', message: err.message });
     }
   },
 
   async storeStats(req, res) {
     try {
-      const { stat_value, label_id, label_en, sort_order, is_active } = req.body;
-
-      if (!stat_value || !stat_value.trim() || !label_id || !label_id.trim()) {
-        const errorMsg = 'Nilai statistik dan label wajib diisi.';
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(400).json({ success: false, message: errorMsg });
-        }
-        return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(errorMsg)}`);
-      }
-
-      const currentStats = await aboutStatsModel.findAll();
-      if (currentStats.length >= 8) {
-        const limitMsg = 'Batas maksimal 8 item statistik telah tercapai.';
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(400).json({ success: false, message: limitMsg });
-        }
-        return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(limitMsg)}`);
-      }
-
-      const id = await aboutStatsModel.create({
-        stat_value: stat_value.trim(),
-        label_id: label_id.trim(),
-        label_en: label_en ? label_en.trim() : '',
-        sort_order: parseInt(sort_order || '0', 10),
-        is_active: is_active === undefined ? 1 : (is_active === '1' || is_active === 1 || is_active === true ? 1 : 0)
-      });
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Statistik berhasil ditambahkan.', id });
-      }
-      return res.redirect('/admin/about?tab=tab-sejarah&success=Statistik+berhasil+ditambahkan.');
+      const existing = await aboutStatsModel.findAll();
+      const parsed = parseStatCreate(req.body, existing.length);
+      if (parsed.error) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 400, message: parsed.error });
+      const id = await aboutStatsModel.create(parsed.data);
+      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Statistik berhasil ditambahkan.', id });
     } catch (err) {
       logger.error('aboutController.storeStats error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
     }
   },
 
   async updateStats(req, res) {
     try {
-      const { id } = req.params;
-      const stat = await aboutStatsModel.findById(id);
-      if (!stat) {
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(404).json({ success: false, message: 'Statistik tidak ditemukan.' });
-        }
-        return res.redirect('/admin/about?tab=tab-sejarah&error=Statistik+tidak+ditemukan.');
-      }
-
-      const { stat_value, label_id, label_en, sort_order, is_active } = req.body;
-
-      await aboutStatsModel.update(id, {
-        stat_value: stat_value !== undefined ? stat_value.trim() : undefined,
-        label_id: label_id !== undefined ? label_id.trim() : undefined,
-        label_en: label_en !== undefined ? label_en.trim() : undefined,
-        sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : undefined,
-        is_active: is_active !== undefined ? (is_active === '1' || is_active === 1 || is_active === true ? 1 : 0) : undefined
-      });
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Statistik berhasil diperbarui.' });
-      }
-      return res.redirect('/admin/about?tab=tab-sejarah&success=Statistik+berhasil+diperbarui.');
+      const stat = await aboutStatsModel.findById(req.params.id);
+      if (!stat) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Statistik tidak ditemukan.' });
+      await aboutStatsModel.update(req.params.id, parseStatUpdate(req.body));
+      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Statistik berhasil diperbarui.' });
     } catch (err) {
       logger.error('aboutController.updateStats error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
     }
   },
 
   async deleteStats(req, res) {
     try {
-      const { id } = req.params;
-      const stat = await aboutStatsModel.findById(id);
-      if (!stat) {
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(404).json({ success: false, message: 'Statistik tidak ditemukan.' });
-        }
-        return res.redirect('/admin/about?tab=tab-sejarah&error=Statistik+tidak+ditemukan.');
-      }
-
-      await aboutStatsModel.delete(id);
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Statistik berhasil dihapus.' });
-      }
-      return res.redirect('/admin/about?tab=tab-sejarah&success=Statistik+berhasil+dihapus.');
+      const stat = await aboutStatsModel.findById(req.params.id);
+      if (!stat) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Statistik tidak ditemukan.' });
+      await aboutStatsModel.delete(req.params.id);
+      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Statistik berhasil dihapus.' });
     } catch (err) {
       logger.error('aboutController.deleteStats error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
     }
   },
 
   async storeTimeline(req, res) {
     try {
-      const { year_label_id, year_label_en, title_id, title_en, description_id, description_en, sort_order, is_active } = req.body;
-
-      if (!year_label_id || !year_label_id.trim() || !title_id || !title_id.trim()) {
-        const errorMsg = 'Label tahun dan judul item timeline wajib diisi.';
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(400).json({ success: false, message: errorMsg });
-        }
-        return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(errorMsg)}`);
-      }
-
-      const id = await aboutTimelineModel.create({
-        year_label_id: year_label_id.trim(),
-        year_label_en: year_label_en ? year_label_en.trim() : '',
-        title_id: title_id.trim(),
-        title_en: title_en ? title_en.trim() : '',
-        description_id: description_id ? description_id.trim() : '',
-        description_en: description_en ? description_en.trim() : '',
-        sort_order: parseInt(sort_order || '0', 10),
-        is_active: is_active === undefined ? 1 : (is_active === '1' || is_active === 1 || is_active === true ? 1 : 0)
-      });
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Item timeline berhasil ditambahkan.', id });
-      }
-      return res.redirect('/admin/about?tab=tab-sejarah&success=Item+timeline+berhasil+ditambahkan.');
+      const parsed = parseTimelineCreate(req.body);
+      if (parsed.error) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 400, message: parsed.error });
+      const id = await aboutTimelineModel.create(parsed.data);
+      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Item timeline berhasil ditambahkan.', id });
     } catch (err) {
       logger.error('aboutController.storeTimeline error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
     }
   },
 
   async updateTimeline(req, res) {
     try {
-      const { id } = req.params;
-      const item = await aboutTimelineModel.findById(id);
-      if (!item) {
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(404).json({ success: false, message: 'Timeline tidak ditemukan.' });
-        }
-        return res.redirect('/admin/about?tab=tab-sejarah&error=Timeline+tidak+ditemukan.');
-      }
-
-      const { year_label_id, year_label_en, title_id, title_en, description_id, description_en, sort_order, is_active } = req.body;
-
-      await aboutTimelineModel.update(id, {
-        year_label_id: year_label_id !== undefined ? year_label_id.trim() : undefined,
-        year_label_en: year_label_en !== undefined ? year_label_en.trim() : undefined,
-        title_id: title_id !== undefined ? title_id.trim() : undefined,
-        title_en: title_en !== undefined ? title_en.trim() : undefined,
-        description_id: description_id !== undefined ? description_id.trim() : undefined,
-        description_en: description_en !== undefined ? description_en.trim() : undefined,
-        sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : undefined,
-        is_active: is_active !== undefined ? (is_active === '1' || is_active === 1 || is_active === true ? 1 : 0) : undefined
-      });
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Item timeline berhasil diperbarui.' });
-      }
-      return res.redirect('/admin/about?tab=tab-sejarah&success=Item+timeline+berhasil+diperbarui.');
+      const item = await aboutTimelineModel.findById(req.params.id);
+      if (!item) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Timeline tidak ditemukan.' });
+      await aboutTimelineModel.update(req.params.id, parseTimelineUpdate(req.body));
+      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Item timeline berhasil diperbarui.' });
     } catch (err) {
       logger.error('aboutController.updateTimeline error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
     }
   },
 
   async deleteTimeline(req, res) {
     try {
-      const { id } = req.params;
-      const item = await aboutTimelineModel.findById(id);
-      if (!item) {
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-          return res.status(404).json({ success: false, message: 'Timeline tidak ditemukan.' });
-        }
-        return res.redirect('/admin/about?tab=tab-sejarah&error=Timeline+tidak+ditemukan.');
-      }
-
-      await aboutTimelineModel.delete(id);
-
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, message: 'Item timeline berhasil dihapus.' });
-      }
-      return res.redirect('/admin/about?tab=tab-sejarah&success=Item+timeline+berhasil+dihapus.');
+      const item = await aboutTimelineModel.findById(req.params.id);
+      if (!item) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Timeline tidak ditemukan.' });
+      await aboutTimelineModel.delete(req.params.id);
+      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Item timeline berhasil dihapus.' });
     } catch (err) {
       logger.error('aboutController.deleteTimeline error:', { message: err.message });
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      return res.redirect(`/admin/about?tab=tab-sejarah&error=${encodeURIComponent(err.message)}`);
+      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
     }
   }
 };

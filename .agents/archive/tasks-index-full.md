@@ -1,7 +1,7 @@
-# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-317)
+# ARSIP HISTORI TASK LENGKAP (T-01 s/d T-327)
 **PT Euodoo - Website Company Profile & CMS**  
-**Tanggal Diarsipkan:** 2026-11-12  
-**Status Keseluruhan:** Selesai 100% (317 Task Selesai)  
+**Tanggal Diarsipkan:** 2026-11-16  
+**Status Keseluruhan:** Selesai 100% (327 Task Selesai)  
 
 ---
 
@@ -1314,3 +1314,67 @@
 - **File Terdampak:** Seluruh berkas yang disentuh pada T-318 s/d T-321 serta pembaruan test suite terkait.
 - **Skill:** `impeccable polish`, `adapt`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, `test-t196-load-more.js`, `test-public-dropdown-migration.js`, `test-t243-hero-filter.js`, dan `test-t320-t321-news-regression.js` seluruhnya lulus 2026-11-13.
+
+### T-323: Skema Migrasi `019`, Ekstraksi `services/settingService.js`, & Normalisasi `middleware/settingsMiddleware.js` [DONE]
+- **Modul Spesifikasi:** [prd/settings.md](../prd/settings.md), [tech/settings-footer.md](../tech/settings-footer.md), [tech/footer.md](../tech/footer.md)
+- **Proposal Terkait:** [2026-11-13_footer-dinamis-dan-alert-news.md](changes/2026-11-13_footer-dinamis-dan-alert-news.md)
+- **Deskripsi:** Menambahkan migrasi idempoten `019_footer_dynamic_content_v1.sql` (`footer_desc_id`, `footer_desc_en`, `footer_nav_links_json`), mengekstrak logika normalisasi, validasi batas panjang `<= 350` karakter, validasi 0–4 item, serta whitelist protokol URL `isAllowedFooterUrl` ke `services/settingService.js`, dan menormalisasi `res.locals.footerNavLinks` pada `middleware/settingsMiddleware.js`.
+- **File Terdampak:** `database/migrations/019_footer_dynamic_content_v1.sql`, `services/settingService.js`, `controllers/admin/settingController.js`, `middleware/settingsMiddleware.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** Uji helper `services/settingService.js`, idempotensi `database/migrate.js`, `npm run lint`, dan `test-t327-footer-news-alert-regression.js` lulus.
+
+### T-324: Antarmuka CMS Pengelolaan Deskripsi Footer & Repeater Menu Footer (`.stg-*`, `/admin/settings`) [DONE]
+- **Modul Spesifikasi:** [prd/settings.md](../prd/settings.md), [tech/settings.md](../tech/settings.md), [tech/settings-footer.md](../tech/settings-footer.md)
+- **Deskripsi:** Menambahkan partial `footer-content-card.ejs` (`<= 100` baris, `.stg-*`, zero inline style/handler/komentar HTML) dengan textarea dwibahasa + penghitung karakter dan repeater 0–4 item menu pada `/admin/settings`, lengkap dengan skrip DOM API aman di `public/js/admin-settings.js` serta styling token pada `public/css/admin.css`.
+- **File Terdampak:** `views/admin/settings/partials/footer-content-card.ejs`, `views/admin/settings/index.ejs`, `public/js/admin-settings.js`, `public/css/admin.css`
+- **Skill:** `adapt`, `polish`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, dan uji Playwright alur CMS repeater 0–4 menu + validasi URL lulus.
+
+### T-325: Footer Publik Dinamis pada `views/partials/footer.ejs` (`.ft-*`) & Lokalisasi ID/EN tanpa Menyentuh Homepage [DONE]
+- **Modul Spesifikasi:** [prd/footer.md](../prd/footer.md), [tech/footer.md](../tech/footer.md)
+- **Deskripsi:** Memperbarui `views/partials/footer.ejs` agar merender `.ft-desc` dwibahasa ter-escape dengan fallback `t('footer.default_desc')`, merender `0–4` tautan `.ft-nav-link` (otomatis `target="_blank" rel="noopener noreferrer"` untuk URL eksternal), serta menambahkan adaptasi `.ft-main:has(> :only-child)` dan penataan aksesibel di `public/css/layout.css` tanpa menyentuh `views/public/index.ejs`.
+- **File Terdampak:** `views/partials/footer.ejs`, `public/css/layout.css`, `locales/id.json`, `locales/en.json`
+- **Skill:** `adapt`, `polish`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-t241-public-ui.js`, dan `test-t327-footer-news-alert-regression.js` lulus.
+
+### T-326: SweetAlert2 Toast 2 Detik Bertema Hijau Euodoo pada Detail Berita (`/news/:slug`) [DONE]
+- **Modul Spesifikasi:** [prd/news-detail.md](../prd/news-detail.md), [tech/news-detail.md](../tech/news-detail.md)
+- **Deskripsi:** Mengganti `window.alert` pada detail berita `/news/:slug` menjadi SweetAlert2 Toast self-hosted 2 detik bertema token hijau Euodoo (`.nwd-swal-*`), dimuat secara kondisional melalui `useSweetAlert: true` sehingga homepage bebas beban aset vendor, dilengkapi varian error (`news_detail.copy_error`), `#nwdCopyStatus`, serta penghormatan `prefers-reduced-motion`.
+- **File Terdampak:** `controllers/public/postController.js`, `views/partials/head.ejs`, `views/public/news-detail.ejs`, `public/js/news-detail.js`, `public/css/components.css`, `locales/id.json`, `locales/en.json`
+- **Skill:** `polish`, `animate`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-t320-t321-news-regression.js`, dan `test-t327-footer-news-alert-regression.js` lulus.
+
+### T-327: Uji Regresi Akhir Multi-Viewport, Aksesibilitas, & Gerbang Kualitas [DONE]
+- **Modul Spesifikasi:** [prd/news-detail.md](../prd/news-detail.md), [prd/footer.md](../prd/footer.md), [prd/settings.md](../prd/settings.md)
+- **Deskripsi:** Menambahkan dan menjalankan suite Playwright multi-viewport (`320`, `375`, `480`, `768`, `1024`, `1440` px) pada ID & EN (`/`, `/news/:slug`, `/admin/settings`) untuk membuktikan nol horizontal overflow, kontras AA, target sentuh `>= 44px`, pemisahan `footer_desc_*` vs `meta_description_*`, repeater `0–4` menu footer, penolakan URL berbahaya, serta toast SweetAlert2 2 detik pada `/news/:slug`.
+- **File Terdampak:** `tests/test-t327-footer-news-alert-regression.js`
+- **Skill:** `polish`, `adapt`, `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-t241-public-ui.js`, `test-t320-t321-news-regression.js`, dan `test-t327-footer-news-alert-regression.js` seluruhnya lulus 2026-11-16.
+
+### T-328: Penyelarasan Batas Input RFQ, Kamus i18n ID/EN & Refaktor Modular Controller Public About/Contact [DONE]
+- **Modul Spesifikasi:** [prd/contact-footer.md](../prd/contact-footer.md), [tech/contact-footer.md](../tech/contact-footer.md), [prd/public-about.md](../prd/public-about.md), [tech/public-about.md](../tech/public-about.md)
+- **Deskripsi:** Menyelaraskan batas input RFQ (`company` max 100, `message` 10..3000) dan validasi keberadaan `product_id` DB di `contactController.submit`, menambahkan 46 kunci terjemahan simetris `about.*` & `contact.*` ke `locales/id.json` & `locales/en.json`, serta merefaktor `controllers/public/contactController.js` & `controllers/public/pageController.js` menjadi helper modular (`<= 40` baris, nesting `<= 2`, kompleksitas `<= 8`) berbasis kamus `t(...)`.
+- **File Terdampak:** `locales/id.json`, `locales/en.json`, `controllers/public/contactController.js`, `controllers/public/pageController.js`
+- **Skill:** `implement-task`, `code-review-and-quality`, `antislop-code`, `debugging-and-error-recovery`
+- **Verifikasi:** `npm run lint:i18n`, `npm run lint`, dan `tests/test-modul12-public.js` (termasuk uji 8b penolakan `product_id` fiktif HTTP 400) lulus.
+
+### T-329: Refaktor & Modularisasi Halaman Tentang Kami (`/about`) [DONE]
+- **Modul Spesifikasi:** [prd/public-about.md](../prd/public-about.md), [tech/public-about.md](../tech/public-about.md), [prd/public-about-timeline.md](../prd/public-about-timeline.md), [tech/public-about-timeline.md](../tech/public-about-timeline.md), [tech/public-about-ticket.md](../tech/public-about-ticket.md)
+- **Deskripsi:** Merampingkan `views/public/about.ejs` menjadi *thin page* (`<= 100` baris, nesting `<= 2` level) dengan `<img class="page-hero-bg-img" fetchpriority="high">` + `.page-hero-scrim[data-scrim-level]` di `public/css/components.css`, mengekstrak `vision-mission.ejs` & `gallery-bento.ejs`, menghapus `style="--tile-i: ..."` dari EJS & `public/js/main.js`, serta memindahkan seluruh teks fallback literal ke kamus `t('about.*')`.
+- **File Terdampak:** `views/public/about.ejs`, `views/partials/about/vision-mission.ejs`, `views/partials/about/gallery-bento.ejs`, `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `views/partials/about/ticket-accordion.ejs`, `public/js/main.js`, `public/css/components.css`
+- **Skill:** `ponytail`, `antislop-code`, `code-simplification`, `polish`, `adapt`
+- **Verifikasi:** `node scripts/lint-views.js views/public/about.ejs`, `node scripts/lint-views.js views/partials/about` (0 error, 0 warning), `npm run lint:i18n`, `test-t299`, `test-t308`, dan `test-t313` lulus.
+
+### T-330: Refaktor & Modularisasi Halaman Kontak (`/contact`) & Ekstraksi `public/js/contact.js` [DONE]
+- **Modul Spesifikasi:** [prd/contact-footer.md](../prd/contact-footer.md), [tech/contact-footer.md](../tech/contact-footer.md)
+- **Deskripsi:** Memperbaiki bug penutup `</div>` `.page-hero-content` pada `views/public/contact.ejs`, menerapkan `<img class="page-hero-bg-img">` + `.page-hero-scrim[data-scrim-level]` + `.cf-hero-content`, merampingkan menjadi *thin page* tanpa komentar HTML/inline style/inline script dengan mengekstrak `status-alerts.ejs`, `rfq-form.ejs` (`.cf-honeypot`, `company` max 100, `message` 10..3000, `data-loading-text`), dan `locations-map.ejs`, serta mengekstrak validasi klien ke `public/js/contact.js` (`defer`, `textContent`).
+- **File Terdampak:** `views/public/contact.ejs`, `views/partials/contact/status-alerts.ejs`, `views/partials/contact/rfq-form.ejs`, `views/partials/contact/locations-map.ejs`, `public/js/contact.js`, `public/css/components.css`
+- **Skill:** `ponytail`, `antislop-code`, `code-simplification`, `polish`, `adapt`
+- **Verifikasi:** `node scripts/lint-views.js views/public/contact.ejs`, `node scripts/lint-views.js views/partials/contact` (0 error, 0 warning), `eslint public/js/contact.js`, `test-modul12-public.js`, dan `test-public-dropdown-migration.js` lulus.
+
+### T-331: Penegakan Strict Lint Views, Pembersihan Token CSS & Audit Regresi Lintas Viewport [DONE]
+- **Modul Spesifikasi:** [tech/conventions.md](../tech/conventions.md), [tech/public-about.md](../tech/public-about.md), [tech/contact-footer.md](../tech/contact-footer.md)
+- **Deskripsi:** Mendaftarkan `views/public/about.ejs`, `views/partials/about/`, `views/public/contact.ejs`, dan `views/partials/contact/` ke `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js`; mengganti warna hex mentah & membersihkan komentar AI-slop (`antislop-code`) pada `.page-hero*`, `.abt-*`, `.sec-vm / .vm-*`, `.sec-gallery`, dan `.cf-*` di `public/css/components.css` ke token `public/css/tokens.css`; menyelaraskan test statis lama ke partial modular; dan memverifikasi kontras WCAG AA serta interaktivitas di `320px`–`1440px` (`ID` & `EN`).
+- **File Terdampak:** `scripts/lint-views.js`, `public/css/components.css`, `tests/test-t308-about-backgrounds.js`, `tests/test-public-dropdown-migration.js`, `tests/test-modul12-public.js`
+- **Skill:** `antislop-code`, `ponytail-review`, `code-review-and-quality`, `debugging-and-error-recovery`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-modul12-public.js`, `test-public-dropdown-migration.js`, `test-t308-about-backgrounds.js`, dan audit Playwright (`320px`–`1440px`, `ID` & `EN`) seluruhnya lulus 2026-11-16.

@@ -15,7 +15,7 @@ import contactCmsController from '../controllers/admin/contactCmsController.js';
 import { requireAuth, optionalAuth } from '../middleware/authMiddleware.js';
 import { roleMiddleware } from '../middleware/roleMiddleware.js';
 import { loginLimiter } from '../middleware/rateLimiter.js';
-import { uploadMedia } from '../middleware/uploadMiddleware.js';
+import { uploadMedia, uploadLargeMedia } from '../middleware/uploadMiddleware.js';
 import bannerController from '../controllers/admin/bannerController.js';
 import pageHeroBannerController from '../controllers/admin/pageHeroBannerController.js';
 import capabilityController from '../controllers/admin/capabilityController.js';
@@ -58,9 +58,9 @@ router.post('/brands/:id/delete', requireAuth, roleMiddleware(['superadmin', 'ad
 router.get('/media', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.index);
 router.get('/media/api', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.apiList);
 router.get('/api/media', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.apiList);
-router.post('/api/media/upload', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('file'), mediaController.apiUpload);
+router.post('/api/media/upload', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadLargeMedia.single('file'), mediaController.apiUpload);
 router.post('/api/media/check-usage', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.apiCheckUsage);
-router.post('/media/upload', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('file'), mediaController.upload);
+router.post('/media/upload', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadLargeMedia.single('file'), mediaController.upload);
 router.post('/media/youtube', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), mediaController.addYoutube);
 router.post('/media/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), mediaController.destroy);
 router.delete('/api/media/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), mediaController.destroy);
@@ -124,9 +124,9 @@ router.post(
 // T-50: Banners Management (Superadmin & Admin)
 router.get('/banners', requireAuth, roleMiddleware(['superadmin', 'admin']), bannerController.index);
 router.get('/banners/create', requireAuth, roleMiddleware(['superadmin', 'admin']), bannerController.createView);
-router.post('/banners', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('media_file'), bannerController.store);
+router.post('/banners', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadLargeMedia.single('media_file'), bannerController.store);
 router.get('/banners/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), bannerController.editView);
-router.post('/banners/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('media_file'), bannerController.update);
+router.post('/banners/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadLargeMedia.single('media_file'), bannerController.update);
 router.post('/banners/:id/status', requireAuth, roleMiddleware(['superadmin', 'admin']), bannerController.toggleStatus);
 router.post('/banners/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin']), bannerController.destroy);
 

@@ -1,52 +1,180 @@
 import inquiryModel from '../../models/inquiryModel.js';
-import leadModel from '../../models/leadModel.js';
 import productModel from '../../models/productModel.js';
 import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import { verifyTurnstileToken } from '../../utils/turnstileVerifier.js';
 import mailer from '../../config/mailer.js';
 import logger from '../../utils/logger.js';
 
+const MAX_TEXT_LENGTH = 100;
+const MIN_MESSAGE_LENGTH = 10;
+const MAX_MESSAGE_LENGTH = 3000;
+const DEFAULT_COMPANY_NAME = 'PT Euodoo';
+const DEFAULT_TURNSTILE_SITE_KEY = '1x00000000000000000000AA';
+const VALID_INQUIRY_TYPES = ['inquiry', 'partnership', 'general'];
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^[0-9\s+\-()]{7,30}$/;
+
+const ERROR_QUERY_KEYS = {
+  rate_limited: 'contact.err_rate_limited',
+  validation: 'contact.err_validation',
+  turnstile: 'contact.err_turnstile_query',
+  '1': 'contact.error_alert'
+};
+
+function translate(res, key) {
+  return typeof res.locals?.t === 'function' ? res.locals.t(key) : key;
+}
+
+function isAjaxRequest(req) {
+  return Boolean(req.xhr || req.headers.accept?.includes('application/json'));
+}
+
+function sendSubmissionError(res, isAjax, statusCode, redirectCode, messageKey) {
+  if (isAjax) {
+    return res.status(statusCode).json({
+      success: false,
+      message: translate(res, messageKey)
+    });
+  }
+  return res.redirect(`/contact?error=${redirectCode}#form-status`);
+}
+
+function sendSubmissionSuccess(res, isAjax, messageKey) {
+  if (isAjax) {
+    return res.json({
+      success: true,
+      message: translate(res, messageKey)
+    });
+  }
+  return res.redirect('/contact?success=1#form-status');
+}
+
+function trimNullable(value) {
+  const str = value ? String(value).trim() : '';
+  return str || null;
+}
+
+function normalizeRfqPayload(body = {}) {
+  return {
+    hpWebsite: body.hp_website,
+    name: trimNullable(body.name) || '',
+    company: trimNullable(body.company),
+    email: (trimNullable(body.email) || '').toLowerCase(),
+    phone: trimNullable(body.phone) || '',
+    productId: body.product_id,
+    quantity: trimNullable(body.quantity),
+    message: trimNullable(body.message) || '',
+    type: VALID_INQUIRY_TYPES.includes(body.type) ? body.type : 'inquiry',
+    turnstileToken: body['cf-turnstile-response']
+  };
+}
+
+function validateRfqPayload(payload) {
+  const required = ['name', 'email', 'phone', 'message'];
+  if (required.some((field) => !payload[field])) {
+    return 'contact.err_required_fields';
+  }
+  const lengthChecks = [
+    { value: payload.name, key: 'contact.err_name_max' },
+    { value: payload.company, key: 'contact.err_company_max' },
+    { value: payload.email, key: 'contact.err_email_max' },
+    { value: payload.quantity, key: 'contact.err_quantity_max' }
+  ];
+  const exceeded = lengthChecks.find((item) => item.value && item.value.length > MAX_TEXT_LENGTH);
+  if (exceeded) return exceeded.key;
+
+  if (payload.message.length < MIN_MESSAGE_LENGTH || payload.message.length > MAX_MESSAGE_LENGTH) {
+    return 'contact.err_message_length';
+  }
+  if (!EMAIL_REGEX.test(payload.email)) return 'contact.err_email_format';
+  if (!PHONE_REGEX.test(payload.phone)) return 'contact.err_phone_format';
+  return null;
+}
+
+function getLocalizedProductName(product, currentLang, defaultName) {
+  if (!product) return defaultName;
+  if (currentLang === 'en') {
+    return product.name_en || product.name_id;
+  }
+  return product.name_id;
+}
+
+async function resolveProductSelection(rawProductId, res) {
+  const defaultName = translate(res, 'contact.default_product_name');
+  const trimmed = trimNullable(rawProductId);
+  if (!trimmed) {
+    return { valid: true, productId: null, productName: defaultName };
+  }
+  if (!/^\d+$/.test(trimmed) || parseInt(trimmed, 10) <= 0) {
+    return { valid: false, errorKey: 'contact.err_product_invalid' };
+  }
+  const parsedId = parseInt(trimmed, 10);
+  const product = await productModel.findById(parsedId);
+  if (!product) {
+    return { valid: false, errorKey: 'contact.err_product_invalid' };
+  }
+  const productName = getLocalizedProductName(product, res.locals.currentLang, defaultName);
+  return { valid: true, productId: parsedId, productName };
+}
+
+async function persistAndNotifyInquiry(payload, productInfo, ipAddress) {
+  const inquiryId = await inquiryModel.create({
+    type: payload.type,
+    name: payload.name,
+    company: payload.company,
+    email: payload.email,
+    phone: payload.phone,
+    product_id: productInfo.productId,
+    quantity: payload.quantity,
+    message: payload.message,
+    source: 'contact_form',
+    status: 'baru',
+    ip_address: ipAddress
+  });
+
+  logger.info('New B2B Inquiry recorded:', { id: inquiryId, company: payload.company, email: payload.email });
+
+  mailer.sendLeadNotification({
+    name: payload.name,
+    company_name: payload.company,
+    email: payload.email,
+    phone: payload.phone,
+    product_name: productInfo.productName,
+    estimated_quantity: payload.quantity,
+    message: payload.message
+  }).catch((err) => {
+    logger.warn('Background mailer error:', { message: err.message });
+  });
+}
+
+function findSelectedProduct(products, productParam) {
+  if (!productParam) return null;
+  const target = String(productParam);
+  return products.find((p) => String(p.id) === target || p.slug === target) || null;
+}
+
+function getClientIp(req) {
+  return req.ip || req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
+}
+
 export const contactController = {
   async index(req, res) {
+    const companyName = res.locals.settings?.company_name || DEFAULT_COMPANY_NAME;
+    const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY || DEFAULT_TURNSTILE_SITE_KEY;
     try {
       const { product, success, error } = req.query;
       const [products, heroBanner] = await Promise.all([
         productModel.findAll({ isActive: true }),
         pageHeroBannerModel.getByPageKey('contact')
       ]);
-
-      let selectedProduct = null;
-      if (product) {
-        selectedProduct = products.find(p => String(p.id) === String(product) || p.slug === product);
-      }
-
-      let errorMsg = null;
-      const currentLang = res.locals.currentLang || 'id';
-      const isEn = currentLang === 'en';
-      if (error === 'rate_limited') {
-        errorMsg = isEn
-          ? 'Too many requests. Please wait 10 minutes before trying again.'
-          : 'Terlalu banyak permintaan terkirim. Mohon tunggu 10 menit sebelum mencoba lagi.';
-      } else if (error === 'validation') {
-        errorMsg = isEn
-          ? 'Please complete all required fields with valid formats.'
-          : 'Mohon lengkapi seluruh field bertanda wajib dengan format yang valid.';
-      } else if (error === 'turnstile') {
-        errorMsg = isEn
-          ? 'Cloudflare Turnstile verification failed or expired. Please check the verification box again.'
-          : 'Verifikasi keamanan Cloudflare Turnstile gagal atau kedaluwarsa. Silakan centang kembali kotak verifikasi.';
-      } else if (error === '1') {
-        errorMsg = res.locals.t('contact.error_alert');
-      }
-
-      const title = res.locals.t('contact.page_title') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
-      const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
+      const errorKey = ERROR_QUERY_KEYS[error] || null;
+      const errorMsg = errorKey ? translate(res, errorKey) : null;
 
       res.render('public/contact', {
-        title,
+        title: `${translate(res, 'contact.page_title')} | ${companyName}`,
         path: '/contact',
         products,
-        selectedProduct,
+        selectedProduct: findSelectedProduct(products, product),
         success: success === '1',
         error: Boolean(errorMsg),
         errorMsg,
@@ -56,234 +184,50 @@ export const contactController = {
     } catch (err) {
       logger.error('Public contactController.index error:', { message: err.message, stack: err.stack });
       res.status(500).render('public/contact', {
-        title: 'Kontak & Permintaan Penawaran | PT Euodoo',
+        title: `${translate(res, 'contact.page_title')} | ${companyName}`,
         path: '/contact',
         products: [],
         selectedProduct: null,
         success: false,
         error: true,
-        errorMsg: 'Terjadi kesalahan sistem saat memuat formulir.'
+        errorMsg: translate(res, 'contact.err_system_load'),
+        heroBanner: null,
+        turnstileSiteKey
       });
     }
   },
 
   async submit(req, res) {
-    const isAjax = req.xhr || req.headers.accept?.includes('application/json');
-    const currentLang = res.locals.currentLang || (req.session && req.session.lang) || 'id';
-    const isEn = currentLang === 'en';
-
+    const isAjax = isAjaxRequest(req);
     try {
-      const { name, company, email, phone, product_id, quantity, message, hp_website, type } = req.body;
-
-      if (hp_website) {
+      const payload = normalizeRfqPayload(req.body);
+      if (payload.hpWebsite) {
         logger.warn('Spam submission detected and dropped via honeypot.');
-        if (isAjax) {
-          return res.json({ success: true, message: isEn ? 'Inquiry submitted successfully.' : 'Permintaan berhasil dikirim.' });
-        }
-        return res.redirect('/contact?success=1#form-status');
+        return sendSubmissionSuccess(res, isAjax, 'contact.honeypot_success');
       }
 
-      const cleanName = (name || '').trim();
-      const cleanCompany = company ? String(company).trim() : null;
-      const cleanEmail = (email || '').trim().toLowerCase();
-      const cleanPhone = (phone || '').trim();
-      const cleanQuantity = quantity ? String(quantity).trim() : null;
-      const cleanMessage = (message || '').trim();
-
-      if (!cleanName || !cleanEmail || !cleanPhone || !cleanMessage) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn ? 'Please fill in all required fields.' : 'Mohon lengkapi seluruh field wajib.'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
+      const validationErrorKey = validateRfqPayload(payload);
+      if (validationErrorKey) {
+        return sendSubmissionError(res, isAjax, 400, 'validation', validationErrorKey);
       }
 
-      if (cleanName.length > 100) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn ? 'Name exceeds maximum length of 100 characters.' : 'Nama melebihi batas maksimal 100 karakter.'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
+      const productInfo = await resolveProductSelection(payload.productId, res);
+      if (!productInfo.valid) {
+        return sendSubmissionError(res, isAjax, 400, 'validation', productInfo.errorKey);
       }
 
-      if (cleanCompany && cleanCompany.length > 150) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn ? 'Company name exceeds maximum length of 150 characters.' : 'Nama perusahaan melebihi batas maksimal 150 karakter.'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
-      }
-
-      if (cleanEmail.length > 100) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn ? 'Email exceeds maximum length of 100 characters.' : 'Email melebihi batas maksimal 100 karakter.'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
-      }
-
-      if (cleanQuantity && cleanQuantity.length > 100) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn ? 'Quantity exceeds maximum length of 100 characters.' : 'Kuantitas melebihi batas maksimal 100 karakter.'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
-      }
-
-      if (cleanMessage.length < 10 || cleanMessage.length > 3000) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn
-              ? 'Message must be between 10 and 3,000 characters.'
-              : 'Pesan rincian kebutuhan harus antara 10 hingga 3.000 karakter.'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(cleanEmail)) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn ? 'Invalid email address format.' : 'Format alamat email tidak valid.'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
-      }
-
-      const phoneRegex = /^[0-9\s+\-()]{7,30}$/;
-      if (!phoneRegex.test(cleanPhone)) {
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn
-              ? 'Invalid phone number format. Only numbers, spaces, +, -, and () are allowed (min 7 characters).'
-              : 'Format nomor telepon tidak valid. Hanya angka, spasi, +, -, dan () yang diperbolehkan (min 7 karakter).'
-          });
-        }
-        return res.redirect('/contact?error=validation#form-status');
-      }
-
-      let productName = isEn ? 'Custom / General Inquiries' : 'Kebutuhan Custom / Umum';
-      let parsedProductId = null;
-      if (product_id !== undefined && product_id !== null && String(product_id).trim() !== '') {
-        const rawProductId = String(product_id).trim();
-        if (!/^\d+$/.test(rawProductId) || parseInt(rawProductId, 10) <= 0) {
-          if (isAjax) {
-            return res.status(400).json({
-              success: false,
-              message: isEn ? 'Invalid product selection.' : 'Pilihan produk tidak valid.'
-            });
-          }
-          return res.redirect('/contact?error=validation#form-status');
-        }
-        parsedProductId = parseInt(rawProductId, 10);
-        const prod = await productModel.findById(parsedProductId);
-        if (prod) {
-          productName = isEn ? (prod.name_en || prod.name_id) : prod.name_id;
-        }
-      }
-
-      const validTypes = ['inquiry', 'partnership', 'general'];
-      const leadType = validTypes.includes(type) ? type : 'inquiry';
-
-      const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
-
-      // Verifikasi Cloudflare Turnstile CAPTCHA (Item 7 / T-68)
-      const turnstileToken = req.body['cf-turnstile-response'];
-      const turnstileResult = await verifyTurnstileToken(turnstileToken, ipAddress);
-
+      const ipAddress = getClientIp(req);
+      const turnstileResult = await verifyTurnstileToken(payload.turnstileToken, ipAddress);
       if (!turnstileResult.success) {
         logger.warn(`[Turnstile] Submission blocked for IP ${ipAddress}. Errors: ${(turnstileResult.errorCodes || []).join(', ')}`);
-        if (isAjax) {
-          return res.status(400).json({
-            success: false,
-            message: isEn
-              ? 'Security verification (Cloudflare Turnstile) failed or expired. Please verify again.'
-              : 'Verifikasi keamanan Cloudflare Turnstile gagal atau tidak valid. Silakan coba lagi.'
-          });
-        }
-        return res.redirect('/contact?error=turnstile#form-status');
+        return sendSubmissionError(res, isAjax, 400, 'turnstile', 'contact.err_turnstile_submit');
       }
 
-      const inquiryId = await inquiryModel.create({
-        type: leadType,
-        name: cleanName,
-        company: cleanCompany,
-        email: cleanEmail,
-        phone: cleanPhone,
-        product_id: parsedProductId,
-        quantity: cleanQuantity,
-        message: cleanMessage,
-        source: 'contact_form',
-        status: 'baru',
-        ip_address: ipAddress
-      });
-
-      leadModel.create({
-        type: leadType,
-        name: cleanName,
-        company: cleanCompany,
-        email: cleanEmail,
-        phone: cleanPhone,
-        product_id: parsedProductId,
-        quantity: cleanQuantity,
-        message: cleanMessage,
-        status: 'baru',
-        ip_address: ipAddress
-      }).catch(err => {
-        logger.warn('Mirror to leadModel error:', { message: err.message });
-      });
-
-      logger.info('New B2B Inquiry recorded:', { id: inquiryId, company: cleanCompany, email: cleanEmail });
-
-      mailer.sendLeadNotification({
-        name: cleanName,
-        company_name: cleanCompany,
-        email: cleanEmail,
-        phone: cleanPhone,
-        product_name: productName,
-        estimated_quantity: cleanQuantity,
-        message: cleanMessage
-      }).catch(err => {
-        logger.warn('Background mailer error:', { message: err.message });
-      });
-
-      if (isAjax) {
-        return res.json({
-          success: true,
-          message: isEn
-            ? 'Thank you. Your RFQ has been successfully submitted. Our sales team will contact you shortly.'
-            : 'Terima kasih. Permintaan penawaran Anda telah berhasil dikirim. Tim penjualan kami akan segera menghubungi Anda.'
-        });
-      }
-
-      return res.redirect('/contact?success=1#form-status');
+      await persistAndNotifyInquiry(payload, productInfo, ipAddress);
+      return sendSubmissionSuccess(res, isAjax, 'contact.success_alert');
     } catch (err) {
       logger.error('Public contactController.submit error:', { message: err.message, stack: err.stack });
-      const currentLang = res.locals.currentLang || (req.session && req.session.lang) || 'id';
-      const isEn = currentLang === 'en';
-      if (isAjax) {
-        return res.status(500).json({
-          success: false,
-          message: isEn
-            ? 'A system error occurred while processing your request. Please try again or contact us directly.'
-            : 'Terjadi kesalahan sistem saat mengirimkan data. Silakan coba kembali atau hubungi kami langsung.'
-        });
-      }
-      return res.redirect('/contact?error=1#form-status');
+      return sendSubmissionError(res, isAjax, 500, '1', 'contact.err_system_submit');
     }
   }
 };

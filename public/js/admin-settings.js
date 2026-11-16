@@ -1,241 +1,188 @@
-/**
- * admin-settings.js - Pengaturan Admin Situs & WhatsApp Multi-Nomor Rolling (T-240)
- * Strictly vanilla JS, CSP-compliant (no inline event handlers)
- */
-document.addEventListener('DOMContentLoaded', () => {
-  const repeaterWrap = document.getElementById('waRepeaterContainer');
-  if (!repeaterWrap) return;
+import {
+  ICON_PATHS,
+  inputVal,
+  createEl,
+  createSvgIcon,
+  parseStoredList,
+  failValidation,
+  initFooterDescCounters,
+  validateFooterDescs,
+  initFooterNavRepeater,
+  validateFooterNavContext
+} from './admin-settings-footer.js';
 
-  const hiddenInput = document.getElementById('whatsapp_numbers_json');
-  const tbody = document.getElementById('waTableBody');
-  const emptyHint = document.getElementById('waEmptyHint');
-  const tableContainer = document.getElementById('waTableContainer');
-  const btnAdd = document.getElementById('btnAddWaRow');
-  const totalDisplay = document.getElementById('waTotalDisplay');
-  const badge = document.getElementById('waTotalBadge');
-  const form = repeaterWrap.closest('form');
-
-  // Initial data parsing
-  let waList = [];
-  try {
-    const raw = hiddenInput ? hiddenInput.value : '[]';
-    waList = JSON.parse(raw);
-    if (!Array.isArray(waList)) waList = [];
-  } catch (err) {
-    waList = [];
+function renderWaBadge(badge, total, rowCount) {
+  if (!badge) return;
+  badge.replaceChildren();
+  if (rowCount === 0) {
+    badge.className = 'wa-repeater-badge-ok';
+    badge.append(createSvgIcon(ICON_PATHS.check), document.createTextNode(' Mode Fallback (1 Nomor Utama)'));
+    return;
   }
+  const isOk = total === 100;
+  badge.className = isOk ? 'wa-repeater-badge-ok' : 'wa-repeater-badge-warn';
+  const countSpan = createEl('span', '', String(total));
+  countSpan.id = 'waTotalDisplay';
+  badge.append(
+    createSvgIcon(isOk ? ICON_PATHS.check : ICON_PATHS.alert),
+    document.createTextNode(' Total: '),
+    countSpan,
+    document.createTextNode(isOk ? '% (Seimbang)' : '% (Wajib 100%)')
+  );
+}
 
-  /**
-   * Recalculate total percentage and update UI status badge
-   */
-  function updateTotal() {
-    const rows = tbody.querySelectorAll('tr.wa-row');
-    if (rows.length === 0) {
-      if (emptyHint) emptyHint.classList.remove('stg-d-none');
-      if (tableContainer) tableContainer.classList.add('stg-d-none');
-      if (badge) {
-        badge.className = 'wa-repeater-badge-ok';
-        badge.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg> Mode Fallback (1 Nomor Utama)';
-      }
-      return 0;
+function updateWaTotal(ctx) {
+  const rows = ctx.tbody.querySelectorAll('tr.wa-row');
+  const isEmpty = rows.length === 0;
+  if (ctx.emptyHint) ctx.emptyHint.classList.toggle('stg-d-none', !isEmpty);
+  if (ctx.tableContainer) ctx.tableContainer.classList.toggle('stg-d-none', isEmpty);
+
+  let sum = 0;
+  rows.forEach((row) => {
+    const val = parseInt(row.querySelector('.wa-input-pct')?.value, 10);
+    if (!isNaN(val)) sum += val;
+  });
+  if (ctx.totalDisplay) ctx.totalDisplay.textContent = String(sum);
+  renderWaBadge(ctx.badge, sum, rows.length);
+  return sum;
+}
+
+function buildWaInput(type, className, placeholder, value) {
+  const input = createEl('input', `form-input ${className}`);
+  input.type = type;
+  input.placeholder = placeholder;
+  input.value = value;
+  input.required = true;
+  return input;
+}
+
+function createWaRowElement(ctx, data = {}) {
+  const tr = createEl('tr', 'wa-row');
+  const numInput = buildWaInput('text', 'wa-input-num', '6281234567890', data.number || data.formatted || '');
+  const labelInput = buildWaInput('text', 'wa-input-label', 'Contoh: Sales Retail', data.label || '');
+  labelInput.required = false;
+  labelInput.maxLength = 50;
+
+  const pctVal = data.percentage !== undefined ? String(data.percentage) : '100';
+  const pctInput = buildWaInput('number', 'wa-input-pct', '100', pctVal);
+  pctInput.min = '1';
+  pctInput.max = '100';
+  pctInput.step = '1';
+
+  const pctWrap = createEl('div', 'wa-pct-wrap');
+  pctWrap.append(pctInput, createEl('span', 'wa-pct-suffix', '%'));
+
+  const delBtn = createEl('button', 'adm-btn adm-btn-danger adm-btn-sm wa-btn-del');
+  delBtn.type = 'button';
+  delBtn.title = 'Hapus nomor ini';
+  delBtn.setAttribute('aria-label', 'Hapus nomor ini');
+  delBtn.appendChild(createSvgIcon(ICON_PATHS.trash, 'adm-btn-icon adm-btn-icon-trash', '12'));
+
+  const cells = [numInput, labelInput, pctWrap, delBtn].map((child, idx) => {
+    const td = document.createElement('td');
+    if (idx === 2) td.className = 'stg-col-wa-pct-cell';
+    if (idx === 3) td.className = 'stg-col-wa-act-cell';
+    td.appendChild(child);
+    return td;
+  });
+  tr.append(...cells);
+
+  delBtn.addEventListener('click', () => {
+    tr.remove();
+    updateWaTotal(ctx);
+  });
+  [numInput, labelInput, pctInput].forEach((el) => el.addEventListener('input', () => updateWaTotal(ctx)));
+  return tr;
+}
+
+function validateSingleWaRow(row, index) {
+  const numInput = row.querySelector('.wa-input-num');
+  const cleanNum = inputVal(numInput).replace(/[^0-9]/g, '');
+  if (cleanNum.length < 9 || cleanNum.length > 16) {
+    failValidation(numInput, 'Validasi WhatsApp', `Nomor WhatsApp pada baris ke-${index + 1} wajib berisi 9-16 digit angka (contoh: 6281234567890).`);
+    return null;
+  }
+  const pctInput = row.querySelector('.wa-input-pct');
+  const pct = parseInt(inputVal(pctInput), 10);
+  if (isNaN(pct) || pct < 1 || pct > 100) {
+    failValidation(pctInput, 'Validasi WhatsApp', `Persentase pada baris ke-${index + 1} harus antara 1% dan 100%.`);
+    return null;
+  }
+  const labelText = inputVal(row.querySelector('.wa-input-label')).substring(0, 50);
+  return { number: cleanNum, formatted: cleanNum, label: labelText || `Sales ${index + 1}`, percentage: pct };
+}
+
+function validateWaContext(ctx) {
+  if (!ctx) return true;
+  const rows = ctx.tbody.querySelectorAll('tr.wa-row');
+  if (rows.length === 0) {
+    if (ctx.hiddenInput) ctx.hiddenInput.value = '[]';
+    return true;
+  }
+  const total = updateWaTotal(ctx);
+  if (total !== 100) {
+    return failValidation(ctx.tbody.querySelector('.wa-input-pct'), 'Validasi WhatsApp', `Total persentase alokasi WhatsApp harus tepat 100% (saat ini: ${total}%).\nMohon sesuaikan nilai persentase sebelum menyimpan.`);
+  }
+  const serialized = [];
+  for (let i = 0; i < rows.length; i++) {
+    const entry = validateSingleWaRow(rows[i], i);
+    if (!entry) return false;
+    serialized.push(entry);
+  }
+  if (ctx.hiddenInput) ctx.hiddenInput.value = JSON.stringify(serialized);
+  return true;
+}
+
+function initWhatsAppRepeater() {
+  const wrap = document.getElementById('waRepeaterContainer');
+  if (!wrap) return null;
+
+  const ctx = {
+    wrap,
+    hiddenInput: document.getElementById('whatsapp_numbers_json'),
+    tbody: document.getElementById('waTableBody'),
+    emptyHint: document.getElementById('waEmptyHint'),
+    tableContainer: document.getElementById('waTableContainer'),
+    btnAdd: document.getElementById('btnAddWaRow'),
+    totalDisplay: document.getElementById('waTotalDisplay'),
+    badge: document.getElementById('waTotalBadge')
+  };
+
+  parseStoredList(ctx.hiddenInput).forEach((item) => ctx.tbody.appendChild(createWaRowElement(ctx, item)));
+  updateWaTotal(ctx);
+
+  if (ctx.btnAdd) {
+    ctx.btnAdd.addEventListener('click', () => {
+      const currentRows = ctx.tbody.querySelectorAll('tr.wa-row');
+      const currentSum = updateWaTotal(ctx);
+      const defaultPct = currentRows.length > 0 ? Math.max(1, 100 - currentSum) : 100;
+      const newRow = createWaRowElement(ctx, { number: '', label: `Sales ${currentRows.length + 1}`, percentage: defaultPct });
+      ctx.tbody.appendChild(newRow);
+      updateWaTotal(ctx);
+      newRow.querySelector('.wa-input-num')?.focus();
+    });
+  }
+  return ctx;
+}
+
+function bootAdminSettings() {
+  const waCtx = initWhatsAppRepeater();
+  const descInputs = initFooterDescCounters();
+  const footerCtx = initFooterNavRepeater();
+  const form = (waCtx?.wrap || footerCtx?.wrap)?.closest('form');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    const isOk = validateFooterDescs(descInputs) && validateWaContext(waCtx) && validateFooterNavContext(footerCtx);
+    if (!isOk) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+  }, true);
+}
 
-    if (emptyHint) emptyHint.classList.add('stg-d-none');
-    if (tableContainer) tableContainer.classList.remove('stg-d-none');
-
-    let sum = 0;
-    rows.forEach(row => {
-      const pctInput = row.querySelector('.wa-input-pct');
-      const val = parseInt(pctInput?.value, 10);
-      if (!isNaN(val)) sum += val;
-    });
-
-    if (totalDisplay) totalDisplay.textContent = sum;
-
-    if (badge) {
-      if (sum === 100) {
-        badge.className = 'wa-repeater-badge-ok';
-        badge.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg> Total: <span id="waTotalDisplay">${sum}</span>% (Seimbang)`;
-      } else {
-        badge.className = 'wa-repeater-badge-warn';
-        badge.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Total: <span id="waTotalDisplay">${sum}</span>% (Wajib 100%)`;
-      }
-    }
-
-    return sum;
-  }
-
-  /**
-   * Create a new row element in the repeater table
-   */
-  function createRowElement(data = {}) {
-    const tr = document.createElement('tr');
-    tr.className = 'wa-row';
-
-    const numVal = data.number || data.formatted || '';
-    const labelVal = data.label || '';
-    const pctVal = data.percentage !== undefined ? data.percentage : 100;
-
-    tr.innerHTML = `
-      <td>
-        <input type="text" class="form-input wa-input-num" placeholder="6281234567890" value="${escapeHtml(numVal)}" required>
-      </td>
-      <td>
-        <input type="text" class="form-input wa-input-label" placeholder="Contoh: Sales Retail" value="${escapeHtml(labelVal)}" maxlength="50">
-      </td>
-      <td style="width: 140px;">
-        <div class="wa-pct-wrap">
-          <input type="number" class="form-input wa-input-pct" min="1" max="100" step="1" value="${pctVal}" required>
-          <span class="wa-pct-suffix">%</span>
-        </div>
-      </td>
-      <td style="width: 48px; text-align: center;">
-        <button type="button" class="adm-btn adm-btn-danger adm-btn-sm wa-btn-del" title="Hapus nomor ini" aria-label="Hapus nomor ini">
-          <svg class="adm-btn-icon adm-btn-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-        </button>
-      </td>
-    `;
-
-    // Attach row events
-    const btnDel = tr.querySelector('.wa-btn-del');
-    btnDel.addEventListener('click', () => {
-      tr.remove();
-      updateTotal();
-    });
-
-    const inputs = tr.querySelectorAll('input');
-    inputs.forEach(input => {
-      input.addEventListener('input', () => {
-        updateTotal();
-      });
-    });
-
-    return tr;
-  }
-
-  function escapeHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  // Populate initial rows
-  if (waList.length > 0) {
-    waList.forEach(item => {
-      tbody.appendChild(createRowElement(item));
-    });
-  }
-  updateTotal();
-
-  // Add new row button
-  if (btnAdd) {
-    btnAdd.addEventListener('click', () => {
-      const currentRows = tbody.querySelectorAll('tr.wa-row');
-      let defaultPct = 100;
-      if (currentRows.length > 0) {
-        let currentSum = 0;
-        currentRows.forEach(r => {
-          const v = parseInt(r.querySelector('.wa-input-pct')?.value, 10);
-          if (!isNaN(v)) currentSum += v;
-        });
-        defaultPct = Math.max(1, 100 - currentSum);
-      }
-
-      const newRow = createRowElement({
-        number: '',
-        label: `Sales ${currentRows.length + 1}`,
-        percentage: defaultPct
-      });
-      tbody.appendChild(newRow);
-      updateTotal();
-
-      const firstInput = newRow.querySelector('.wa-input-num');
-      if (firstInput) firstInput.focus();
-    });
-  }
-
-  // Intercept form submission to validate and serialize
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      const rows = tbody.querySelectorAll('tr.wa-row');
-      if (rows.length === 0) {
-        if (hiddenInput) hiddenInput.value = '[]';
-        return true;
-      }
-
-      const total = updateTotal();
-      if (total !== 100) {
-        e.preventDefault();
-        if (window.showAdminAlert) {
-          window.showAdminAlert({
-            title: 'Validasi WhatsApp',
-            text: `Total persentase alokasi WhatsApp harus tepat 100% (saat ini: ${total}%).\nMohon sesuaikan nilai persentase sebelum menyimpan.`,
-            icon: 'warning'
-          });
-        }
-        const firstPct = tbody.querySelector('.wa-input-pct');
-        if (firstPct) firstPct.focus();
-        return false;
-      }
-
-      const serialized = [];
-      let hasError = false;
-
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const numInput = row.querySelector('.wa-input-num');
-        const labelInput = row.querySelector('.wa-input-label');
-        const pctInput = row.querySelector('.wa-input-pct');
-
-        const rawNum = String(numInput?.value || '').trim();
-        const cleanNum = rawNum.replace(/[^0-9]/g, '');
-
-        if (!cleanNum || cleanNum.length < 9 || cleanNum.length > 16) {
-          e.preventDefault();
-          if (window.showAdminAlert) {
-            window.showAdminAlert({
-              title: 'Validasi WhatsApp',
-              text: `Nomor WhatsApp pada baris ke-${i + 1} tidak valid.\nNomor wajib berisi 9-16 digit angka (contoh: 6281234567890).`,
-              icon: 'warning'
-            });
-          }
-          if (numInput) numInput.focus();
-          hasError = true;
-          break;
-        }
-
-        const pct = parseInt(pctInput?.value, 10);
-        if (isNaN(pct) || pct < 1 || pct > 100) {
-          e.preventDefault();
-          if (window.showAdminAlert) {
-            window.showAdminAlert({
-              title: 'Validasi WhatsApp',
-              text: `Persentase pada baris ke-${i + 1} harus antara 1% dan 100%.`,
-              icon: 'warning'
-            });
-          }
-          if (pctInput) pctInput.focus();
-          hasError = true;
-          break;
-        }
-
-        serialized.push({
-          number: cleanNum,
-          formatted: cleanNum,
-          label: String(labelInput?.value || '').trim().substring(0, 50) || `Sales ${i + 1}`,
-          percentage: pct
-        });
-      }
-
-      if (hasError) return false;
-
-      if (hiddenInput) {
-        hiddenInput.value = JSON.stringify(serialized);
-      }
-    });
-  }
-});
-
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootAdminSettings);
+} else {
+  bootAdminSettings();
+}

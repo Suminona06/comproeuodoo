@@ -1,0 +1,28 @@
+<div id="form-status">
+  <% if (typeof success !== 'undefined' && success) { %>
+    <div class="cf-alert cf-alert-success">
+      <svg class="cf-alert-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <div>
+        <h3 class="cf-alert-title"><%= t('contact.success_title') %></h3>
+        <p class="cf-alert-desc"><%= t('contact.success_alert') %></p>
+      </div>
+    </div>
+  <% } %>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="cf-alert cf-alert-error">
+      <svg class="cf-alert-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div>
+        <h3 class="cf-alert-title"><%= t('contact.error_title') %></h3>
+        <p class="cf-alert-desc"><%= typeof errorMsg !== 'undefined' && errorMsg ? errorMsg : t('contact.error_alert') %></p>
+      </div>
+    </div>
+  <% } %>
+</div>

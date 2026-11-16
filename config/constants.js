@@ -41,7 +41,8 @@ export const POST_STATUS = {
 };
 
 export const UPLOAD_CONFIG = {
-  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10 MB
+  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10 MB memory cap for image/doc uploads
+  MAX_MEDIA_STREAM_SIZE: 30 * 1024 * 1024, // 30 MB disk-streamed cap for banners/media
   ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
   ALLOWED_VIDEO_TYPES: ['video/mp4', 'video/webm'],
   DIRECTORIES: {

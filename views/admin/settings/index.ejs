@@ -3,7 +3,7 @@
 <div class="content-header">
   <div class="content-title-text">
     <h1>Pengaturan Situs &amp; Kontak Perusahaan</h1>
-    <p>Konfigurasi identitas korporasi, alamat ganda kantor/pabrik, nomor WhatsApp resmi, dan tautan sosial media.</p>
+    <p>Konfigurasi identitas korporasi, alamat ganda kantor/pabrik, nomor WhatsApp resmi, tautan sosial media, serta konten footer publik.</p>
   </div>
 </div>
 
@@ -15,8 +15,9 @@
   <%- include('./partials/dual-location-card', { settings }) %>
   <%- include('./partials/whatsapp-service-card', { settings }) %>
   <%- include('./partials/social-media-card', { settings }) %>
+  <%- include('./partials/footer-content-card', { settings }) %>
   <%- include('./partials/sticky-actions') %>
 </form>
 
-<script src="/js/admin-settings.js?v=1.0"></script>
+<script type="module" src="/js/admin-settings.js?v=1.0"></script>
 <%- include('../../partials/admin-footer') %>

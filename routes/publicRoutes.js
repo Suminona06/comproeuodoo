@@ -9,20 +9,53 @@ import { leadLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
+const LOCAL_RETURN_BASE = 'http://local.invalid';
+
+function isRejectedReturnRaw(value) {
+  if (!value) return true;
+  if (value.includes('\\') || value.startsWith('//')) return true;
+  return /[\r\n\0]/.test(value);
+}
+
+function parseReturnTarget(clean) {
+  try {
+    const isRel = clean.startsWith('/');
+    return { isRel, url: new URL(clean, isRel ? LOCAL_RETURN_BASE : undefined) };
+  } catch {
+    return null;
+  }
+}
+
+function isAllowedReturnTarget(info, reqHost) {
+  if (!info) return false;
+  const isHttp = info.url.protocol === 'http:' || info.url.protocol === 'https:';
+  const targetHost = info.isRel ? 'local.invalid' : reqHost;
+  return isHttp && Boolean(targetHost) && info.url.host === targetHost;
+}
+
+function resolveSafeReturnPath(referrer, reqHost) {
+  if (typeof referrer !== 'string') return '/';
+  const clean = referrer.trim();
+  if (isRejectedReturnRaw(clean)) return '/';
+  const info = parseReturnTarget(clean);
+  if (!isAllowedReturnTarget(info, reqHost)) return '/';
+  return `${info.url.pathname}${info.url.search}${info.url.hash}`;
+}
+
 // Language switcher route
 router.get('/lang/:code', (req, res) => {
   const { code } = req.params;
   const validLangs = ['id', 'en'];
   const targetLang = validLangs.includes(code) ? code : 'id';
-  
+
   res.cookie('euodoo_lang', targetLang, {
     maxAge: 365 * 24 * 60 * 60 * 1000,
     httpOnly: false,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production'
   });
-  
-  const returnTo = req.get('Referrer') || '/';
+
+  const returnTo = resolveSafeReturnPath(req.get('Referrer'), req.get('host'));
   res.redirect(returnTo);
 });
 

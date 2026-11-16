@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-05 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
 
 # Tech Spec: Konvensi Kode & Standar Kualitas (Code Conventions & Standards)
 
@@ -66,7 +66,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 
 ### D. Strategi Penegakan Baseline Lint (Keputusan 1)
 - **File Legacy:** Ditandai *warning* (non-blocking).
-- **File Baru & Refaktor:** Ditandai *error* ketat (blocking). Wajib lolos hijau sebelum task *Close*.
+- **File Baru & Refaktor:** Ditandai *error* ketat (blocking) dalam `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js` (mencakup view/partial Admin serta view/partial publik hasil refaktor termasuk `views/public/about.ejs`, `views/partials/about/`, `views/public/contact.ejs`, `views/partials/contact/`). Wajib lolos hijau sebelum task *Close*.
 
 ---
 

@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import escapeHtml from 'escape-html';
 import logger from '../utils/logger.js';
 
 const transporter = nodemailer.createTransport({
@@ -10,9 +11,72 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASS || ''
   },
   tls: {
-    rejectUnauthorized: process.env.NODE_ENV === 'production'
+    rejectUnauthorized: process.env.NODE_ENV === 'production' || process.env.SMTP_ALLOW_INSECURE_TLS !== 'true'
   }
 });
+
+function stripCrLf(value) {
+  return String(value || '').replace(/[\r\n]+/g, ' ').trim();
+}
+
+function escapeField(value, fallback = '-') {
+  return escapeHtml(value ? String(value) : fallback);
+}
+
+function sanitizeMailtoAddress(rawEmail) {
+  return escapeHtml(String(rawEmail || '').replace(/[\r\n"'<>?\s&]/g, ''));
+}
+
+function renderLeadRows(lead) {
+  const safeEmailText = escapeField(lead.email);
+  const safeMailto = sanitizeMailtoAddress(lead.email);
+  const rows = [
+    ['Nama Lengkap:', escapeField(lead.name)],
+    ['Perusahaan:', escapeField(lead.company_name)],
+    ['Email:', `<a href="mailto:${safeMailto}">${safeEmailText}</a>`],
+    ['Telepon / WA:', escapeField(lead.phone)],
+    ['Produk:', escapeField(lead.product_name, 'Kebutuhan Custom / Umum')],
+    ['Estimasi Kuantitas:', escapeField(lead.estimated_quantity)],
+    ['Pesan / Kebutuhan:', escapeField(lead.message), true]
+  ];
+  return rows
+    .map(([label, val, multiline], idx) => {
+      const rowBorder = idx < rows.length - 1 ? 'border-bottom: 1px solid #f1f5f9;' : '';
+      const tdLabel = multiline ? 'vertical-align: top;' : '';
+      const tdVal = multiline ? 'white-space: pre-line;' : '';
+      return `<tr style="${rowBorder}"><td style="padding: 10px 0; color: #64748b; width: 35%; font-weight: bold; ${tdLabel}">${label}</td><td style="padding: 10px 0; color: #0f172a; ${tdVal}">${val}</td></tr>`;
+    })
+    .join('\n');
+}
+
+function buildLeadEmailHtml(lead) {
+  const safeMailto = sanitizeMailtoAddress(lead.email);
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+      <div style="background-color: #00573F; color: #ffffff; padding: 20px; text-align: center;">
+        <h2 style="margin: 0; font-size: 20px;">PT Euodoo Presisi Indonesia</h2>
+        <p style="margin: 5px 0 0 0; color: #a3e0d0; font-size: 14px;">Notifikasi Permintaan Penawaran Harga (RFQ)</p>
+      </div>
+      <div style="padding: 24px; background-color: #ffffff;">
+        <p style="font-size: 15px; color: #334155; margin-top: 0;">
+          Terdapat prospek / lead penawaran harga baru yang masuk melalui formulir situs web:
+        </p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px;">
+          <tbody>${renderLeadRows(lead)}</tbody>
+        </table>
+        <div style="margin-top: 24px; text-align: center;">
+          <a href="mailto:${safeMailto}?subject=Tanggapan%20Penawaran%20PT%20Euodoo"
+             style="background-color: #00755A; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; display: inline-block;">
+            Balas Email Prospek
+          </a>
+        </div>
+      </div>
+      <div style="background-color: #f8fafc; padding: 14px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;">
+        Email ini dikirim otomatis oleh sistem CMS PT Euodoo Presisi Indonesia.
+      </div>
+    </div>
+  `;
+}
 
 export const mailer = {
   transporter,
@@ -24,63 +88,9 @@ export const mailer = {
     try {
       const recipient = process.env.SALES_NOTIFICATION_EMAIL || 'sales@euodoo.com';
       const mailFrom = process.env.MAIL_FROM || '"PT Euodoo Web" <notification@euodoo.com>';
-
-      const subject = `[Permintaan Penawaran B2B] ${lead.company_name ? lead.company_name + ' - ' : ''}${lead.name}`;
-
-      const htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-          <div style="background-color: #00573F; color: #ffffff; padding: 20px; text-align: center;">
-            <h2 style="margin: 0; font-size: 20px;">PT Euodoo Presisi Indonesia</h2>
-            <p style="margin: 5px 0 0 0; color: #a3e0d0; font-size: 14px;">Notifikasi Permintaan Penawaran Harga (RFQ)</p>
-          </div>
-          <div style="padding: 24px; background-color: #ffffff;">
-            <p style="font-size: 15px; color: #334155; margin-top: 0;">
-              Terdapat prospek / lead penawaran harga baru yang masuk melalui formulir situs web:
-            </p>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px;">
-              <tbody>
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b; width: 35%; font-weight: bold;">Nama Lengkap:</td>
-                  <td style="padding: 10px 0; color: #0f172a;">${lead.name || '-'}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Perusahaan:</td>
-                  <td style="padding: 10px 0; color: #0f172a;">${lead.company_name || '-'}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Email:</td>
-                  <td style="padding: 10px 0; color: #0f172a;"><a href="mailto:${lead.email}">${lead.email || '-'}</a></td>
-                </tr>
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Telepon / WA:</td>
-                  <td style="padding: 10px 0; color: #0f172a;">${lead.phone || '-'}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Produk:</td>
-                  <td style="padding: 10px 0; color: #0f172a;">${lead.product_name || 'Kebutuhan Custom / Umum'}</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                  <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Estimasi Kuantitas:</td>
-                  <td style="padding: 10px 0; color: #0f172a;">${lead.estimated_quantity || '-'}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 0; color: #64748b; font-weight: bold; vertical-align: top;">Pesan / Kebutuhan:</td>
-                  <td style="padding: 10px 0; color: #0f172a; white-space: pre-line;">${lead.message || '-'}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div style="margin-top: 24px; text-align: center;">
-              <a href="mailto:${lead.email}?subject=Tanggapan%20Penawaran%20PT%20Euodoo"
-                 style="background-color: #00755A; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; display: inline-block;">
-                Balas Email Prospek
-              </a>
-            </div>
-          </div>
-          <div style="background-color: #f8fafc; padding: 14px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;">
-            Email ini dikirim otomatis oleh sistem CMS PT Euodoo Presisi Indonesia.
-          </div>
-        </div>
-      `;
+      const companyPart = lead.company_name ? `${stripCrLf(lead.company_name)} - ` : '';
+      const subject = `[Permintaan Penawaran B2B] ${companyPart}${stripCrLf(lead.name)}`;
+      const htmlContent = buildLeadEmailHtml(lead);
 
       const info = await transporter.sendMail({
         from: mailFrom,

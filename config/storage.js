@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { pipeline } from 'node:stream/promises';
 import { fileURLToPath } from 'url';
 import logger from '../utils/logger.js';
 
@@ -44,6 +45,17 @@ class LocalStorageDriver {
       size: buffer.length,
       mimeType
     };
+  }
+
+  async saveFromFile(sourcePath, filename, mimeType = 'application/octet-stream', subFolder = 'media') {
+    const targetDir = path.join(this.baseUploadDir, subFolder);
+    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
+    const filePath = path.join(targetDir, filename);
+    await pipeline(fs.createReadStream(sourcePath), fs.createWriteStream(filePath));
+    const { size } = await fs.promises.stat(filePath);
+    const url = `/uploads/${subFolder}/${filename}`;
+    logger.debug(`[LocalStorage] Streamed ${url} (${size} bytes)`);
+    return { driver: 'local', filename, subFolder, url, path: filePath, size, mimeType };
   }
 
   async delete(fileUrl) {
@@ -140,6 +152,23 @@ class S3StorageDriver {
     } catch (uploadError) {
       logger.error(`[S3Storage] Upload error: ${uploadError.message}. Falling back to local storage.`);
       return localDriver.save(buffer, filename, mimeType, subFolder);
+    }
+  }
+
+  async saveFromFile(sourcePath, filename, mimeType = 'application/octet-stream', subFolder = 'media') {
+    if (!this.client || !this.bucket) return localDriver.saveFromFile(sourcePath, filename, mimeType, subFolder);
+    try {
+      const { PutObjectCommand } = await import('@aws-sdk/client-s3');
+      const key = `uploads/${subFolder}/${filename}`;
+      await this.client.send(new PutObjectCommand({
+        Bucket: this.bucket, Key: key, Body: fs.createReadStream(sourcePath), ContentType: mimeType
+      }));
+      const { size } = await fs.promises.stat(sourcePath);
+      const url = this.cdnUrl ? `${this.cdnUrl.replace(/\/$/, '')}/${key}` : `https://${this.bucket}.s3.${this.region}.amazonaws.com/${key}`;
+      return { driver: 's3', filename, subFolder, url, key, size, mimeType };
+    } catch (uploadError) {
+      logger.error(`[S3Storage] Stream upload error: ${uploadError.message}. Falling back to local storage.`);
+      return localDriver.saveFromFile(sourcePath, filename, mimeType, subFolder);
     }
   }
 

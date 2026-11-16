@@ -1,4 +1,5 @@
 import leadModel from '../../models/leadModel.js';
+import { sendCsvResponse } from '../../utils/csvExporter.js';
 import logger from '../../utils/logger.js';
 
 export const leadController = {
@@ -63,57 +64,27 @@ export const leadController = {
   },
 
   /**
-   * Export all leads to CSV file with UTF-8 BOM
+   * Export all leads to CSV file with formula neutralization and UTF-8 BOM
    */
   async exportCsv(req, res) {
     try {
       const leads = await leadModel.exportAll();
-
-      const headers = [
-        'ID',
-        'Tanggal Masuk',
-        'Jenis Inquiry',
-        'Nama Lengkap',
-        'Perusahaan',
-        'Email',
-        'Telepon',
-        'Produk Terkait',
-        'Estimasi Kuantitas',
-        'Pesan Kebutuhan',
-        'Status',
-        'Catatan Admin'
+      const columns = [
+        { label: 'ID', key: 'id' },
+        { label: 'Tanggal Masuk', key: (r) => new Date(r.tanggal).toISOString().replace('T', ' ').substring(0, 19) },
+        { label: 'Jenis Inquiry', key: 'jenis_inquiry' },
+        { label: 'Nama Lengkap', key: 'nama' },
+        { label: 'Perusahaan', key: 'perusahaan' },
+        { label: 'Email', key: 'email' },
+        { label: 'Telepon', key: 'telepon' },
+        { label: 'Produk Terkait', key: 'produk_terkait' },
+        { label: 'Estimasi Kuantitas', key: 'estimasi_kuantitas' },
+        { label: 'Pesan Kebutuhan', key: 'pesan' },
+        { label: 'Status', key: 'status' },
+        { label: 'Catatan Admin', key: 'catatan_admin' }
       ];
-
-      const csvRows = [headers.join(',')];
-
-      leads.forEach((row) => {
-        const values = [
-          row.id,
-          `"${new Date(row.tanggal).toISOString().replace('T', ' ').substring(0, 19)}"`,
-          `"${row.jenis_inquiry}"`,
-          `"${(row.nama || '').replace(/"/g, '""')}"`,
-          `"${(row.perusahaan || '').replace(/"/g, '""')}"`,
-          `"${(row.email || '').replace(/"/g, '""')}"`,
-          `"${(row.telepon || '').replace(/"/g, '""')}"`,
-          `"${(row.produk_terkait || '').replace(/"/g, '""')}"`,
-          `"${(row.estimasi_kuantitas || '').replace(/"/g, '""')}"`,
-          `"${(row.pesan || '').replace(/"/g, '""')}"`,
-          `"${row.status}"`,
-          `"${(row.catatan_admin || '').replace(/"/g, '""')}"`
-        ];
-        csvRows.push(values.join(','));
-      });
-
-      // UTF-8 BOM for Microsoft Excel compatibility
-      const bom = '\uFEFF';
-      const csvContent = bom + csvRows.join('\r\n');
-
-      const timestamp = new Date().toISOString().substring(0, 10);
-      const filename = `leads-pt-euodoo-${timestamp}.csv`;
-
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-      return res.send(csvContent);
+      const filename = `leads-pt-euodoo-${new Date().toISOString().substring(0, 10)}.csv`;
+      return sendCsvResponse(res, filename, columns, leads);
     } catch (err) {
       logger.error('Lead exportCsv error:', { message: err.message });
       return res.redirect('/admin/leads?error=Gagal+mengunduh+berkas+CSV.');

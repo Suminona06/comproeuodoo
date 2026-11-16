@@ -153,7 +153,7 @@
   </div>
 </div>
 
-<script type="application/json" id="inquiriesDataJson"><%- JSON.stringify(inquiries || []) %></script>
+<script type="application/json" id="inquiriesDataJson"><%- safeJson(inquiries || []) %></script>
 <script src="/js/pagination.js" defer></script>
 <script src="/js/admin-inquiries.js" defer></script>
 

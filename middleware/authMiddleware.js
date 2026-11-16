@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { APP_CONFIG } from '../config/constants.js';
+import { getJwtSecret } from '../config/secrets.js';
 import logger from '../utils/logger.js';
 
 /**
@@ -16,8 +17,7 @@ export const requireAuth = (req, res, next) => {
   }
 
   try {
-    const jwtSecret = process.env.JWT_SECRET || 'euodoo_jwt_secret_dev';
-    const decoded = jwt.verify(token, jwtSecret);
+    const decoded = jwt.verify(token, getJwtSecret());
     req.user = decoded;
     res.locals.user = decoded;
     next();
@@ -43,8 +43,7 @@ export const optionalAuth = (req, res, next) => {
   }
 
   try {
-    const jwtSecret = process.env.JWT_SECRET || 'euodoo_jwt_secret_dev';
-    const decoded = jwt.verify(token, jwtSecret);
+    const decoded = jwt.verify(token, getJwtSecret());
     req.user = decoded;
     res.locals.user = decoded;
   } catch (err) {
@@ -55,20 +54,4 @@ export const optionalAuth = (req, res, next) => {
   next();
 };
 
-/**
- * Role-Based Access Control Middleware
- * @param {Array<string>} roles
- */
-export const requireRole = (roles = []) => {
-  return (req, res, next) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(403).json({ success: false, error: 'Akses ditolak.' });
-      }
-      return res.status(403).send('Akses Ditolak: Anda tidak memiliki hak akses yang cukup.');
-    }
-    next();
-  };
-};
-
-export default { requireAuth, optionalAuth, requireRole };
+export default { requireAuth, optionalAuth };

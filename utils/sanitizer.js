@@ -43,6 +43,29 @@ export const sanitizeArticleHtml = (dirtyHtml) => {
   return sanitizeHtml(dirtyHtml, SANITIZE_OPTIONS).trim();
 };
 
+const HTML_UNSAFE_JSON_CHARS = /[<>&\u2028\u2029]/g;
+const HTML_JSON_ESCAPE_MAP = {
+  '<': '\\u003c',
+  '>': '\\u003e',
+  '&': '\\u0026',
+  '\u2028': '\\u2028',
+  '\u2029': '\\u2029'
+};
+
+/**
+ * Serialize JSON safely for embedding inside HTML <script> tags.
+ * Escapes HTML-significant characters so embedded values cannot break out of tags.
+ * @param {any} value
+ * @param {number} [space]
+ * @returns {string}
+ */
+export function safeJsonForHtml(value, space) {
+  const raw = JSON.stringify(value ?? null, null, space);
+  const serialized = raw === undefined ? 'null' : raw;
+  return serialized.replace(HTML_UNSAFE_JSON_CHARS, (ch) => HTML_JSON_ESCAPE_MAP[ch]);
+}
+
 export default {
-  sanitizeArticleHtml
+  sanitizeArticleHtml,
+  safeJsonForHtml
 };

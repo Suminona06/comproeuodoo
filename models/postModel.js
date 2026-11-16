@@ -1,5 +1,13 @@
 import { query, execute } from '../config/database.js';
 
+const SCHEDULE_CHECK_INTERVAL_MS = 60 * 1000;
+let lastScheduledCheckAt = 0;
+let pendingScheduledCheck = null;
+
+function isCardScheduledInvalidated(data) {
+  return data?.status === 'scheduled' || data?.scheduled_at !== undefined;
+}
+
 export const postModel = {
   /**
    * Find posts with filters: type ('berita'|'pers'|'blog'), categoryId, status, headline, search
@@ -177,6 +185,7 @@ export const postModel = {
     ];
 
     const result = await execute(sql, params);
+    if (isCardScheduledInvalidated(data)) this.resetScheduledPublishCache();
     return result.insertId;
   },
 
@@ -231,6 +240,7 @@ export const postModel = {
     values.push(id);
     const sql = `UPDATE posts SET ${fields.join(', ')} WHERE id = ?`;
     const result = await execute(sql, values);
+    if (isCardScheduledInvalidated(data)) this.resetScheduledPublishCache();
     return result.affectedRows > 0;
   },
 
@@ -244,17 +254,40 @@ export const postModel = {
     return true;
   },
 
+  resetScheduledPublishCache() {
+    lastScheduledCheckAt = 0;
+    pendingScheduledCheck = null;
+  },
+
   /**
-   * Auto-publish scheduled posts that have reached their scheduled_at time
+   * Auto-publish scheduled posts, throttled to once per minute to avoid write churn on GET reads
    */
-  async checkScheduledPublish() {
-    try {
-      await execute(
-        "UPDATE posts SET status = 'published', published_at = NOW() WHERE status = 'scheduled' AND scheduled_at <= NOW()"
-      );
-    } catch {
-      // Non-blocking
+  async checkScheduledPublish({ force = false } = {}) {
+    const now = Date.now();
+    if (!force && now - lastScheduledCheckAt < SCHEDULE_CHECK_INTERVAL_MS) {
+      return { skipped: true, updated: 0 };
     }
+    if (pendingScheduledCheck) return pendingScheduledCheck;
+
+    pendingScheduledCheck = (async () => {
+      try {
+        lastScheduledCheckAt = Date.now();
+        const due = await query(
+          "SELECT id FROM posts WHERE status = 'scheduled' AND scheduled_at <= NOW() LIMIT 1"
+        );
+        if (due.length === 0) return { skipped: false, updated: 0 };
+        const result = await execute(
+          "UPDATE posts SET status = 'published', published_at = NOW() WHERE status = 'scheduled' AND scheduled_at <= NOW()"
+        );
+        return { skipped: false, updated: result.affectedRows || 0 };
+      } catch {
+        return { skipped: false, updated: 0 };
+      } finally {
+        pendingScheduledCheck = null;
+      }
+    })();
+
+    return pendingScheduledCheck;
   }
 };
 

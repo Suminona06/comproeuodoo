@@ -1,18 +1,8 @@
 import bannerModel from '../../models/bannerModel.js';
-import { processAndSaveWebP, saveVideoFile } from '../../middleware/uploadMiddleware.js';
+import { processAndSaveWebP, saveVideoFile, cleanupTempFile } from '../../middleware/uploadMiddleware.js';
 import storage from '../../config/storage.js';
 import logger from '../../utils/logger.js';
-
-function extractYouTubeId(url) {
-  if (!url || typeof url !== 'string') return null;
-  const trimmed = url.trim();
-  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
-    return trimmed;
-  }
-  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const match = trimmed.match(regExp);
-  return (match && match[1].length === 11) ? match[1] : null;
-}
+import { extractYouTubeId } from '../../utils/youtube.js';
 
 function isValidCtaUrl(url) {
   if (!url || typeof url !== 'string') return true;
@@ -151,11 +141,12 @@ export const bannerController = {
         }
         finalMediaUrl = ytId;
       } else if (req.file) {
+        const mediaSource = req.file.path || req.file.buffer;
         if (req.file.mimetype.startsWith('video/')) {
-          finalMediaUrl = await saveVideoFile(req.file.buffer, req.file.originalname, 'banners');
+          finalMediaUrl = await saveVideoFile(mediaSource, req.file.originalname, 'banners');
           type = 'video';
         } else {
-          finalMediaUrl = await processAndSaveWebP(req.file.buffer, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
+          finalMediaUrl = await processAndSaveWebP(mediaSource, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
           type = 'image';
         }
       }
@@ -182,6 +173,8 @@ export const bannerController = {
     } catch (err) {
       logger.error('Banner store error:', { message: err.message });
       res.redirect('/admin/banners?error=' + encodeURIComponent('Gagal menyimpan banner: ' + err.message));
+    } finally {
+      await cleanupTempFile(req.file);
     }
   },
 
@@ -266,13 +259,14 @@ export const bannerController = {
           finalMediaUrl = ytId;
         }
       } else if (req.file) {
+        const mediaSource = req.file.path || req.file.buffer;
         if (req.file.mimetype.startsWith('video/')) {
           if (banner.video_url) await storage.delete(banner.video_url);
-          finalMediaUrl = await saveVideoFile(req.file.buffer, req.file.originalname, 'banners');
+          finalMediaUrl = await saveVideoFile(mediaSource, req.file.originalname, 'banners');
           type = 'video';
         } else {
           if (banner.image_url) await storage.delete(banner.image_url);
-          finalMediaUrl = await processAndSaveWebP(req.file.buffer, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
+          finalMediaUrl = await processAndSaveWebP(mediaSource, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
           type = 'image';
         }
       }
@@ -300,6 +294,8 @@ export const bannerController = {
     } catch (err) {
       logger.error('Banner update error:', err);
       res.redirect('/admin/banners?error=' + encodeURIComponent('Gagal memperbarui banner: ' + err.message));
+    } finally {
+      await cleanupTempFile(req.file);
     }
   },
 

@@ -5,52 +5,23 @@
   const currentLangCode = typeof currentLang !== 'undefined' && currentLang ? currentLang : 'id';
   const isEn = currentLangCode === 'en';
   const settingsObj = typeof settings !== 'undefined' && settings ? settings : {};
-
-  const showOfficeCard = settingsObj.office_card_visible !== '0' && settingsObj.office_card_visible !== 0;
-  const showFactoryCard = settingsObj.factory_card_visible !== '0' && settingsObj.factory_card_visible !== 0;
-
-  const cleanTel = (phoneStr) => String(phoneStr || '').replace(/[^0-9+]/g, '');
-
-  const officeName = isEn
-    ? (settingsObj.office_name_en ? settingsObj.office_name_en : 'Head Office (Jakarta)')
-    : (settingsObj.office_name_id ? settingsObj.office_name_id : 'Kantor Pusat (Jakarta)');
-  const officeAddress = settingsObj.office_address || 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270 - Indonesia';
-  const officePhone = settingsObj.office_phone || settingsObj.company_phone || '(021) 53668626';
-  const officeFax = settingsObj.office_fax || '';
-  const officeEmail = settingsObj.office_email || settingsObj.company_email || '';
-
-  const factoryName = isEn
-    ? (settingsObj.factory_name_en ? settingsObj.factory_name_en : 'Manufacturing Plant (Bandung)')
-    : (settingsObj.factory_name_id ? settingsObj.factory_name_id : 'Pabrik Manufaktur (Bandung)');
-  const factoryAddress = settingsObj.factory_address || settingsObj.contact_address_id || 'Kawasan Industri Cigondewah, Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214';
-  const factoryPhone = settingsObj.factory_phone || settingsObj.contact_phone || '(022) 6012519';
-  const factoryFax = settingsObj.factory_fax || '';
-  const factoryEmail = settingsObj.factory_email || '';
-  const factoryWorkingHours = isEn
-    ? (settingsObj.factory_working_hours_en || settingsObj.contact_working_hours_en || 'Monday - Friday: 08:00 - 17:00 WIB | Saturday: 08:00 - 13:00 WIB')
-    : (settingsObj.factory_working_hours_id || settingsObj.contact_working_hours_id || 'Senin - Jumat: 08.00 - 17.00 WIB | Sabtu: 08.00 - 13.00 WIB');
-  const mapsEmbed = settingsObj.google_maps_embed || settingsObj.contact_maps_embed_url || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.56347862248!2d107.5731168!3d-6.9034443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e215ac!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid';
-  const formHeading = isEn
-    ? (settingsObj.contact_form_title_en || t('contact.form_heading'))
-    : (settingsObj.contact_form_title_id || t('contact.form_heading'));
-  const formSubheading = isEn
-    ? (settingsObj.contact_form_subtitle_en || t('contact.form_subheading'))
-    : (settingsObj.contact_form_subtitle_id || t('contact.form_subheading'));
-
   const heroObj = typeof heroBanner !== 'undefined' && heroBanner && heroBanner.is_active ? heroBanner : null;
   const userOpacity = heroObj && heroObj.overlay_opacity ? parseFloat(heroObj.overlay_opacity) : 0.35;
-  const midOpacity = Math.min(0.85, Math.max(0.40, (userOpacity * 1.85))).toFixed(2);
-  const edgeOpacity = Math.min(0.60, Math.max(0.15, (userOpacity * 1.00))).toFixed(2);
-  const heroBg = heroObj && heroObj.image_url 
-    ? `style="background-image: url('${heroObj.image_url}'); --hero-scrim-mid: ${midOpacity}; --hero-scrim-edge: ${edgeOpacity};"` 
-    : '';
+  let scrimLevel = 'standard';
+  if (userOpacity <= 0.35) scrimLevel = 'soft';
+  else if (userOpacity <= 0.45) scrimLevel = 'light';
+  else if (userOpacity <= 0.55) scrimLevel = 'medium';
+  const hasHeroBg = Boolean(heroObj && heroObj.image_url);
+  const heroTitle = (heroObj && (isEn ? heroObj.title_en : heroObj.title_id)) || t('contact.page_title');
+  const heroDesc = (heroObj && (isEn ? heroObj.subtitle_en : heroObj.subtitle_id)) || t('contact.page_subtitle');
+  const heroCtaText = heroObj ? (isEn ? heroObj.cta_text_en : heroObj.cta_text_id) : '';
 %>
 
 <main id="main-content">
-  <!-- Page Hero Header -->
-  <section class="page-hero <%= heroObj && heroObj.image_url ? 'page-hero--has-bg' : '' %>" <%- heroBg %>>
-    <% if (heroObj && heroObj.image_url) { %>
-      <div class="page-hero-scrim" aria-hidden="true"></div>
+  <section class="page-hero <%= hasHeroBg ? 'page-hero--has-bg' : '' %>">
+    <% if (hasHeroBg) { %>
+      <img src="<%= heroObj.image_url %>" alt="" class="page-hero-bg-img" fetchpriority="high" decoding="async">
+      <div class="page-hero-scrim" data-scrim-level="<%= scrimLevel %>" aria-hidden="true"></div>
     <% } %>
     <div class="container">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -58,366 +29,31 @@
         <span class="separator" aria-hidden="true">&rsaquo;</span>
         <span class="current"><%= t('nav.contact') %></span>
       </nav>
-      <div class="page-hero-content" style="max-width: 840px;">
-        <h1 class="page-hero-title">
-          <%= (heroObj && (isEn ? heroObj.title_en : heroObj.title_id))
-              ? (isEn ? heroObj.title_en : heroObj.title_id)
-              : t('contact.page_title') %>
-        </h1>
-        <p class="page-hero-desc">
-          <%= (heroObj && (isEn ? heroObj.subtitle_en : heroObj.subtitle_id))
-              ? (isEn ? heroObj.subtitle_en : heroObj.subtitle_id)
-              : t('contact.page_subtitle') %>
-        </p>
-      <% if (heroObj && heroObj.cta_url && (isEn ? heroObj.cta_text_en : heroObj.cta_text_id)) { %>
-        <div class="cf-hero-cta">
-          <a href="<%= heroObj.cta_url %>" class="btn btn-primary">
-            <%= isEn ? heroObj.cta_text_en : heroObj.cta_text_id %>
-          </a>
-        </div>
-      <% } %>
+      <div class="page-hero-content cf-hero-content">
+        <h1 class="page-hero-title"><%= heroTitle %></h1>
+        <p class="page-hero-desc"><%= heroDesc %></p>
+        <% if (heroObj && heroObj.cta_url && heroCtaText) { %>
+          <div class="cf-hero-cta">
+            <a href="<%= heroObj.cta_url %>" class="btn btn-primary"><%= heroCtaText %></a>
+          </div>
+        <% } %>
+      </div>
     </div>
   </section>
 
-  <!-- Split Form & Information Section -->
   <section class="section section-bg-workspace cf-section">
     <div class="container">
+      <%- include('../partials/contact/status-alerts') %>
 
-      <!-- Status Alerts -->
-      <div id="form-status">
-        <% if (typeof success !== 'undefined' && success) { %>
-          <div class="cf-alert cf-alert-success">
-            <svg class="cf-alert-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <div>
-              <h3 class="cf-alert-title"><%= t('contact.success_title') %></h3>
-              <p class="cf-alert-desc"><%= t('contact.success_alert') %></p>
-            </div>
-          </div>
-        <% } %>
-
-        <% if (typeof error !== 'undefined' && error) { %>
-          <div class="cf-alert cf-alert-error">
-            <svg class="cf-alert-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-            <div>
-              <h3 class="cf-alert-title"><%= t('contact.error_title') %></h3>
-              <p class="cf-alert-desc"><%= typeof errorMsg !== 'undefined' && errorMsg ? errorMsg : t('contact.error_alert') %></p>
-            </div>
-          </div>
-        <% } %>
+      <div class="contact-split-grid cf-split-grid">
+        <%- include('../partials/contact/rfq-form', { isEn, settingsObj }) %>
+        <%- include('../partials/contact/locations-map', { isEn, settingsObj }) %>
       </div>
-
-      <div class="contact-split-grid">
-
-        <!-- Column 1: RFQ Form -->
-        <div class="contact-card-box">
-          <div class="cf-header">
-            <div class="cf-kicker"><%= t('contact.kicker_label') %></div>
-            <h2 class="cf-title"><%= formHeading %></h2>
-            <p class="cf-subtitle"><%= formSubheading %></p>
-          </div>
-
-          <form id="rfqForm" action="/contact" method="POST" novalidate>
-            <!-- CSRF Protection -->
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-            <!-- Honeypot anti-spam (hidden from users) -->
-            <div style="display: none !important;" aria-hidden="true">
-              <label for="hp_website">Do not fill this field</label>
-              <input type="text" id="hp_website" name="hp_website" tabindex="-1" autocomplete="off">
-            </div>
-
-            <!-- Name & Company Row -->
-            <div class="cf-form-row">
-              <div class="cf-form-group">
-                <label for="name" class="cf-label cf-label-required">
-                  <%= t('contact.name_label') %>
-                </label>
-                <input type="text"
-                       id="name"
-                       name="name"
-                       class="cf-input"
-                       placeholder="<%= t('contact.name_placeholder') %>"
-                       required
-                       maxlength="100"
-                       aria-required="true">
-              </div>
-
-              <div class="cf-form-group">
-                <label for="company" class="cf-label">
-                  <%= t('contact.company_label') %>
-                </label>
-                <input type="text"
-                       id="company"
-                       name="company"
-                       class="cf-input"
-                       placeholder="<%= t('contact.company_placeholder') %>"
-                       maxlength="150">
-              </div>
-            </div>
-
-            <!-- Email & Phone Row -->
-            <div class="cf-form-row">
-              <div class="cf-form-group">
-                <label for="email" class="cf-label cf-label-required">
-                  <%= t('contact.email_label') %>
-                </label>
-                <input type="email"
-                       id="email"
-                       name="email"
-                       class="cf-input"
-                       placeholder="<%= t('contact.email_placeholder') %>"
-                       required
-                       maxlength="100"
-                       aria-required="true">
-              </div>
-
-              <div class="cf-form-group">
-                <label for="phone" class="cf-label cf-label-required">
-                  <%= t('contact.phone_label') %>
-                </label>
-                <input type="tel"
-                       id="phone"
-                       name="phone"
-                       class="cf-input"
-                       placeholder="<%= t('contact.phone_placeholder') %>"
-                       required
-                       minlength="7"
-                       maxlength="30"
-                       aria-required="true">
-              </div>
-            </div>
-
-            <!-- Product Selection & Quantity Row -->
-            <div class="cf-form-row">
-              <div class="cf-form-group">
-                <label for="product_id" class="cf-label">
-                  <%= t('contact.product_label') %>
-                </label>
-                <select id="product_id" name="product_id" class="cf-select" data-eu-dropdown="outlined">
-                  <option value=""><%= t('contact.product_select_default') %></option>
-                  <% if (products && products.length > 0) { %>
-                    <% products.forEach(prod => { %>
-                      <%
-                        const isSel = selectedProduct && (selectedProduct.id === prod.id || selectedProduct.slug === prod.slug);
-                        const pName = currentLangCode === 'en' ? (prod.name_en || prod.name_id) : prod.name_id;
-                      %>
-                      <option value="<%= prod.id %>" <%= isSel ? 'selected' : '' %>>
-                        <%= pName %>
-                      </option>
-                    <% }); %>
-                  <% } %>
-                </select>
-              </div>
-
-              <div class="cf-form-group">
-                <label for="quantity" class="cf-label">
-                  <%= t('contact.quantity_label') %>
-                </label>
-                <input type="text"
-                       id="quantity"
-                       name="quantity"
-                       class="cf-input"
-                       placeholder="<%= t('contact.quantity_placeholder') %>"
-                       maxlength="100">
-              </div>
-            </div>
-
-            <!-- Inquiry Type Selector -->
-            <div class="cf-form-group">
-              <label for="inquiry_type" class="cf-label">
-                <%= t('contact.inquiry_type_label') %>
-              </label>
-              <select id="inquiry_type" name="type" class="cf-select" data-eu-dropdown="outlined">
-                <option value="inquiry" selected><%= t('contact.inquiry_type_rfq') %></option>
-                <option value="partnership"><%= t('contact.inquiry_type_partnership') %></option>
-                <option value="general"><%= t('contact.inquiry_type_general') %></option>
-              </select>
-            </div>
-
-            <!-- Message / Technical Specs -->
-            <div class="cf-form-group cf-form-group-last">
-              <label for="message" class="cf-label cf-label-required">
-                <%= t('contact.message_label') %>
-              </label>
-              <textarea id="message"
-                        name="message"
-                        class="cf-textarea"
-                        rows="5"
-                        placeholder="<%= t('contact.message_placeholder') %>"
-                        required
-                        minlength="10"
-                        maxlength="3000"
-                        aria-required="true"></textarea>
-            </div>
-
-            <!-- Cloudflare Turnstile CAPTCHA (Item 7 / T-68) -->
-            <% if (typeof turnstileSiteKey !== 'undefined' && turnstileSiteKey) { %>
-              <div class="cf-form-group-turnstile">
-                <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="light"></div>
-              </div>
-            <% } %>
-
-            <!-- Submit Button -->
-            <button type="submit"
-                    id="submitBtn"
-                    class="btn btn-primary cf-btn-submit">
-              <span><%= t('contact.submit_btn') %></span>
-              <span aria-hidden="true">&rarr;</span>
-            </button>
-          </form>
-        </div>
-
-        <!-- Column 2: Dual Office Locations & Google Maps -->
-        <div>
-          <!-- Jakarta Palmerah Head Office Card -->
-          <% if (showOfficeCard) { %>
-          <div class="cf-office-card">
-            <div class="cf-office-header">
-              <div class="cf-office-icon cf-office-icon-primary">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-              </div>
-              <div>
-                <span class="badge badge-primary cf-office-badge"><%= t('contact.badge_head_office') %></span>
-                <h3 class="cf-office-name"><%= officeName %></h3>
-              </div>
-            </div>
-            <p class="cf-office-addr">
-              <%= officeAddress %>
-            </p>
-            <div class="cf-office-detail">
-              <div><strong><%= t('contact.phone_label_short') %></strong> <a href="tel:<%= cleanTel(officePhone) %>" class="cf-link-primary"><%= officePhone %></a></div>
-              <% if (officeFax) { %>
-                <div><strong><%= t('contact.fax_label_short') %></strong> <a href="tel:<%= cleanTel(officeFax) %>" class="cf-link-inherit"><%= officeFax %></a></div>
-              <% } %>
-              <% if (officeEmail) { %>
-                <div><strong><%= t('contact.email_label_short') %></strong> <a href="mailto:<%= officeEmail %>" class="cf-link-primary"><%= officeEmail %></a></div>
-              <% } %>
-            </div>
-          </div>
-          <% } %>
-
-          <!-- Bandung Cigondewah Factory Card -->
-          <% if (showFactoryCard) { %>
-          <div class="cf-office-card">
-            <div class="cf-office-header">
-              <div class="cf-office-icon cf-office-icon-success">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                </svg>
-              </div>
-              <div>
-                <span class="badge badge-success cf-office-badge"><%= t('contact.badge_factory') %></span>
-                <h3 class="cf-office-name"><%= factoryName %></h3>
-              </div>
-            </div>
-            <p class="cf-office-addr">
-              <%= factoryAddress %>
-            </p>
-            <div class="cf-office-detail">
-              <div><strong><%= t('contact.hotline_label') %></strong> <a href="tel:<%= cleanTel(factoryPhone) %>" class="cf-link-primary"><%= factoryPhone %></a></div>
-              <% if (factoryFax) { %>
-                <div><strong><%= t('contact.fax_label_short') %></strong> <a href="tel:<%= cleanTel(factoryFax) %>" class="cf-link-inherit"><%= factoryFax %></a></div>
-              <% } %>
-              <% if (factoryEmail) { %>
-                <div><strong><%= t('contact.email_label_short') %></strong> <a href="mailto:<%= factoryEmail %>" class="cf-link-primary"><%= factoryEmail %></a></div>
-              <% } %>
-              <div><strong><%= t('contact.operating_hours_label') %></strong> <%= factoryWorkingHours %></div>
-            </div>
-          </div>
-          <% } %>
-
-          <!-- Google Maps Responsive Embed -->
-          <div class="cf-maps-wrap">
-            <iframe
-              class="cf-maps-iframe"
-              src="<%= mapsEmbed %>"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              title="<%= t('contact.map_title') %>">
-            </iframe>
-          </div>
-        </div>
-
-      </div>
-
     </div>
   </section>
 </main>
 
-<script>
-  // Progressive enhancement & client-side validation for RFQ form submission
-  (function() {
-    const form = document.getElementById('rfqForm');
-    if (!form) return;
-
-    form.addEventListener('submit', function(e) {
-      const btn = document.getElementById('submitBtn');
-      if (!btn) return;
-
-      const nameInput = document.getElementById('name');
-      const emailInput = document.getElementById('email');
-      const phoneInput = document.getElementById('phone');
-      const msgInput = document.getElementById('message');
-
-      let hasError = false;
-
-      function checkField(input, valid) {
-        if (!valid) {
-          input?.classList.add('is-invalid');
-          input?.setAttribute('aria-invalid', 'true');
-          hasError = true;
-        } else {
-          input?.classList.remove('is-invalid');
-          input?.removeAttribute('aria-invalid');
-        }
-      }
-
-      if (nameInput) checkField(nameInput, nameInput.value.trim().length > 0 && nameInput.value.trim().length <= 100);
-      if (emailInput) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        checkField(emailInput, emailRegex.test(emailInput.value.trim()) && emailInput.value.trim().length <= 100);
-      }
-      if (phoneInput) {
-        const phoneRegex = /^[0-9\s+\-()]{7,30}$/;
-        checkField(phoneInput, phoneRegex.test(phoneInput.value.trim()));
-      }
-      if (msgInput) checkField(msgInput, msgInput.value.trim().length >= 10 && msgInput.value.trim().length <= 3000);
-
-      if (hasError) {
-        e.preventDefault();
-        const firstInvalid = form.querySelector('.is-invalid');
-        firstInvalid?.focus();
-        return;
-      }
-
-      // Prevent double submit and update loading text
-      btn.disabled = true;
-      btn.innerHTML = '<span><%= t("contact.loading_text") %></span>';
-    });
-
-    ['name', 'email', 'phone', 'message'].forEach(function(id) {
-      const el = document.getElementById(id);
-      el?.addEventListener('input', function() {
-        if (el.classList.contains('is-invalid')) {
-          el.classList.remove('is-invalid');
-          el.removeAttribute('aria-invalid');
-        }
-      });
-    });
-  })();
-</script>
-
+<script src="/js/contact.js" defer></script>
 <% if (typeof turnstileSiteKey !== 'undefined' && turnstileSiteKey) { %>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <% } %>

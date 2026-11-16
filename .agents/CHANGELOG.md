@@ -44,3 +44,5 @@
 - 2026-11-12 | Redesain counter statistik 2x2 ber-notch, horizontal timeline slider, header linimasa admin, dan uji Playwright E2E | T-313..T-317
 
 - 2026-11-13 | Refaktor & modularisasi view publik Products, Product Detail, News & News Detail (ekstraksi partials, lokalisasi, .nwd-prose, news-detail.js, kontras AA, serta pembaruan tes regresi) | T-318..T-322
+- 2026-11-16 | Footer publik dinamis 0–4 menu & deskripsi dwibahasa terpisah dari SEO, repeater CMS /admin/settings, SweetAlert2 toast 2 detik bertema hijau Euodoo di detail berita, serta audit keamanan & refaktor service | T-323..T-327
+- 2026-11-16 | Refaktor & modularisasi frontend halaman Public About (/about) dan Contact (/contact) ke partial <=100 baris, ekstraksi public/js/contact.js, refaktor fungsi controller <=40 baris + guard product_id, perbaikan bug DOM hero & batas karakter RFQ, lokalisasi ID/EN, dan penegakan strict lint:views | T-328..T-331

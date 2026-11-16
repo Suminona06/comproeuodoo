@@ -9,7 +9,7 @@ export const loginLimiter = rateLimit({
   max: process.env.NODE_ENV === 'test' ? 1000 : 5,
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => process.env.NODE_ENV === 'test' || req.headers['x-test-bypass-rate-limit'] === 'true',
+  skip: () => process.env.NODE_ENV === 'test',
   handler: (req, res) => {
     res.status(429).render('admin/login', {
       title: 'Login Terkunci - PT Euodoo CMS',
@@ -28,7 +28,7 @@ export const leadLimiter = rateLimit({
   max: process.env.NODE_ENV === 'test' ? 1000 : 3, // Per T-58: maksimal 3 submit per IP per 10 menit
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => process.env.NODE_ENV === 'test' || req.headers['x-test-bypass-rate-limit'] === 'true',
+  skip: () => process.env.NODE_ENV === 'test',
   handler: (req, res) => {
     if (req.xhr || req.headers.accept?.includes('application/json')) {
       return res.status(429).json({

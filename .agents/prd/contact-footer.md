@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-10-30 | Kode: views/public/contact.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/contact/*.ejs, views/partials/footer.ejs, views/partials/cta-global.ejs
 
 # PRD: Modul Kontak, Footer & WhatsApp (Contact, Footer & WhatsApp)
 
@@ -10,17 +10,17 @@ Modul Kontak & Footer menangani saluran komunikasi konversi prospek B2B, penanga
 ## 2. Functional Requirements
 
 ### FR-14: Halaman Kontak Publik & Formulir RFQ (`/contact`)
-- Sistem merender antarmuka kontak terpisah dua kolom di `/contact`:
+- Sistem merender antarmuka kontak terpisah dua kolom di `/contact` melalui *thin page* `views/public/contact.ejs` (memuat `.page-hero` langsung di *thin page* dengan `<img class="page-hero-bg-img" fetchpriority="high">` dan `.page-hero-scrim[data-scrim-level]`) yang mengorkestrasikan partial `status-alerts.ejs`, `rfq-form.ejs`, dan `locations-map.ejs` tanpa inline style, tanpa inline script, tanpa komentar HTML, dan seluruh teks fallback/validasi menggunakan kamus `t('contact.*')` (`locales/id.json` & `locales/en.json`):
   1. **Kolom Kiri - Formulir RFQ Terisolasi (`.cf-*`):**
-     - Field input: Nama Lengkap (`name`, required, max 100), Nama Perusahaan (`company`, optional, max 100), Email Bisnis (`email`, required, email format), Nomor Telepon/WhatsApp (`phone`, required, min 7 max 30).
+     - Field input: Nama Lengkap (`name`, required, max 100), Nama Perusahaan (`company`, optional, max 100 sesuai skema DB), Email Bisnis (`email`, required, email format, max 100), Nomor Telepon/WhatsApp (`phone`, required, min 7 max 30).
      - Pilihan Produk Terkait (`product_id` dropdown dengan opsi auto-select).
-     - Estimasi Kuantitas Kebutuhan (`quantity`, misal "100.000 pcs / 5 ton").
+     - Estimasi Kuantitas Kebutuhan (`quantity`, max 100, misal "100.000 pcs / 5 ton").
      - Jenis Permintaan (`type`: Permintaan Penawaran / RFQ, Kemitraan Distributor, Pertanyaan Umum).
-     - Pesan Detail / Spesifikasi Custom (`message`, required, max 2000).
-     - Tombol Submit dengan indikator validasi interaktif dan proteksi anti-spam.
+     - Pesan Detail / Spesifikasi Custom (`message`, required, min 10, max 3000).
+     - Tombol Submit dengan indikator validasi interaktif terlokalisasi dan proteksi anti-spam (CSRF, honeypot, Cloudflare Turnstile).
   2. **Kolom Kanan - Dual Lokasi Kantor & Peta Google Maps:**
      - **Kartu Head Office Jakarta:** Alamat Palmerah Selatan Suite 02-07, telepon, fax, dan email kantor pusat. Ditampilkan kondisional jika setting `office_card_visible = '1'`.
-     - **Kartu Factory Bandung:** Alamat Paralon II No. 21 Cijerah/Cigondewah, hotline pabrik, fax, email pabrik, dan jam operasional kerja. Ditampilkan kondisional jika setting `factory_card_visible = '1'`.
+     - **Kartu Factory Bandung:** Alamat Paralon II No. 21 Cijerah/Cigondewah, hotline pabrik, fax, email pabrik, dan jam operasional kerja (fallback dari `t('contact.*')`). Ditampilkan kondisional jika setting `factory_card_visible = '1'`.
      - **Sematan Peta Google Maps Responsif (`.cf-maps-wrap`):** Iframe peta pabrik Cigondewah yang memuat interaktif (`loading="lazy"`). Jika kedua kartu alamat dinonaktifkan, peta mengambil ruang penuh secara proporsional tanpa kekosongan visual atau layout shift.
 
 ### FR-15: Floating Button WhatsApp & Pengaturan WA Global
@@ -49,12 +49,7 @@ Modul Kontak & Footer menangani saluran komunikasi konversi prospek B2B, penanga
 - Dapat diaktifkan/dinonaktifkan per halaman melalui konfigurasi CMS `global_cta_pages_json`.
 
 ### Master Site Footer (`.site-footer`)
-- Footer global bernuansa hijau gelap (`var(--surface-dark-footer)`) dengan komponen:
-  1. Identitas perusahaan, deskripsi singkat, dan logo footer.
-  2. Tautan cepat navigasi situs (Beranda, Tentang Kami, Produk, Kapabilitas, Berita, Kontak).
-  3. Informasi kontak dual lokasi (Palmerah & Cigondewah) di dalam kartu `.ft-office-card` yang bersifat statis (tanpa efek hover latar, border, bayangan, atau transformasi posisi) dengan baris alamat, telepon, faks, dan email (`tel:`, `mailto:`) yang mempertahankan warna teks terang footer (`var(--color-text-inverse)`) dan lolos rasio kontras WCAG AA (`>= 4.5:1`) di seluruh state (`normal`, `:hover`, `:focus-visible`, `:active`, `:visited`), serta focus ring keyboard yang jelas.
-  4. Deretan ikon media sosial resmi dengan visibilitas dinamis yang dikendalikan dari CMS (Facebook, Instagram, LinkedIn, YouTube).
-  5. Hak cipta hukum dan penandaan standar ramah lingkungan.
+- Spesifikasi fungsional lengkap Footer Global Publik (`.ft-desc` dwibahasa `FR-27`, menu kanan dinamis `0–4` item `FR-28`, visibilitas `.ft-offices` `FR-24`, `.ft-office-card`, dan ikon media sosial) berada pada sub-modul [prd/footer.md](footer.md). Homepage `views/public/index.ejs` dibekukan.
 
 ---
 
