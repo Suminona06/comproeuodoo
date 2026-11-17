@@ -49,26 +49,33 @@ retainedCssSelectors.forEach(sel => {
   console.log(`  2a. Verified retained modal selector .${sel} exists: PASSED`);
 });
 
-// 3. Verify public/js/main.js has active modal zoom preview handler
-console.log('3. Verifying public/js/main.js Modal Controller:');
-const jsPath = path.resolve('public/js/main.js');
-const jsContent = fs.readFileSync(jsPath, 'utf8');
+// 3. Verify public/js/home.js has active modal zoom preview handler (and main.js is pruned)
+console.log('3. Verifying public/js/home.js Modal Controller:');
+const homeJsContent = fs.readFileSync(path.resolve('public/js/home.js'), 'utf8');
+const mainJsContent = fs.readFileSync(path.resolve('public/js/main.js'), 'utf8');
 
-assert(jsContent.includes('brandPreviewModal'), 'main.js must contain brandPreviewModal reference');
-assert(jsContent.includes('.js-brand-preview-trigger'), 'main.js must attach listener to .js-brand-preview-trigger');
-assert(jsContent.includes('brandModalCloseBtn'), 'main.js must handle close button');
-console.log('  3a. Verified main.js brandPreviewModal event controller is active: PASSED');
+assert(homeJsContent.includes('brandPreviewModal'), 'home.js must contain brandPreviewModal reference');
+assert(homeJsContent.includes('.js-brand-preview-trigger'), 'home.js must attach listener to .js-brand-preview-trigger');
+assert(homeJsContent.includes('brandModalCloseBtn'), 'home.js must handle close button');
+assert(!mainJsContent.includes('brandPreviewModal'), 'main.js must not retain extracted brandPreviewModal handler');
+console.log('  3a. Verified home.js brandPreviewModal event controller is active & pruned from main.js: PASSED');
 
-// 4. Verify views/public/index.ejs contains brand marquee + zoom preview modal
-console.log('4. Verifying views/public/index.ejs Markup:');
-const ejsPath = path.resolve('views/public/index.ejs');
-const ejsContent = fs.readFileSync(ejsPath, 'utf8');
+// 4. Verify home templates contain brand marquee + zoom preview modal
+console.log('4. Verifying Home EJS Partials Markup:');
+const indexEjsContent = fs.readFileSync(path.resolve('views/public/index.ejs'), 'utf8');
+const brandsMarkup = [
+  fs.readFileSync(path.resolve('views/partials/home/brands-marquee.ejs'), 'utf8'),
+  fs.readFileSync(path.resolve('views/partials/home/brand-strip-item.ejs'), 'utf8'),
+  fs.readFileSync(path.resolve('views/partials/home/brand-preview-modal.ejs'), 'utf8')
+].join('\n');
 
-assert(ejsContent.includes('brand-strip-marquee'), 'index.ejs must contain brand-strip-marquee');
-assert(ejsContent.includes('brand-zoom-hint'), 'index.ejs must contain brand-zoom-hint for logo hover badge');
-assert(ejsContent.includes('id="brandPreviewModal"'), 'index.ejs must contain #brandPreviewModal element');
-assert(ejsContent.includes('js-brand-preview-trigger'), 'index.ejs must contain js-brand-preview-trigger on logos');
-console.log('  4a. Verified index.ejs contains strip marquee, zoom hint, and preview modal: PASSED');
+assert(indexEjsContent.includes('brands-marquee'), 'index.ejs must include brands-marquee partial');
+assert(indexEjsContent.includes('/js/home.js'), 'index.ejs must load /js/home.js');
+assert(brandsMarkup.includes('brand-strip-marquee'), 'brands partials must contain brand-strip-marquee');
+assert(brandsMarkup.includes('brand-zoom-hint'), 'brands partials must contain brand-zoom-hint for logo hover badge');
+assert(brandsMarkup.includes('id="brandPreviewModal"'), 'brands partials must contain #brandPreviewModal element');
+assert(brandsMarkup.includes('js-brand-preview-trigger'), 'brands partials must contain js-brand-preview-trigger on logos');
+console.log('  4a. Verified home partials contain strip marquee, zoom hint, and preview modal: PASSED');
 
 // 5. Live HTTP verification on local dev server
 console.log('5. Live HTTP Integration Testing:');

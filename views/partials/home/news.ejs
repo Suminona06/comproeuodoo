@@ -1,0 +1,29 @@
+<section class="sec-news" id="berita">
+  <div class="container">
+    <div class="news-header reveal">
+      <h2><%= t('home.news_heading') %></h2>
+      <a href="/news" class="btn-secondary"><%= t('home.news_view_all') %></a>
+    </div>
+
+    <div class="news-grid reveal">
+      <% if (news.items.length > 0) { %>
+        <% news.items.forEach((post) => { %>
+          <a href="<%= post.href %>" class="news-card">
+            <div class="bg">
+              <img src="<%= post.imageUrl %>" alt="<%= post.title %>" loading="lazy" data-fallback-src="<%= post.fallbackImage %>">
+            </div>
+            <div class="ov"></div>
+            <div class="ct">
+              <div class="news-date"><%= post.formattedDate %></div>
+              <div class="news-title"><%= post.title %></div>
+            </div>
+          </a>
+        <% }); %>
+      <% } else { %>
+        <div class="news-empty-state" role="status">
+          <p><%= t('home.news_empty') %></p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>

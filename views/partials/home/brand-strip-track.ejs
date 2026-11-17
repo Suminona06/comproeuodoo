@@ -1,0 +1,5 @@
+<div class="brand-strip-track"<% if (isDuplicate) { %> aria-hidden="true"<% } %>>
+  <% marqueeBrands.forEach((brand) => { %>
+    <%- include('./brand-strip-item', { brand, isDuplicate }) %>
+  <% }); %>
+</div>

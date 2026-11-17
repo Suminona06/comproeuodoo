@@ -1,0 +1,31 @@
+<svg viewBox="0 0 500 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wcu-grad-a" x1="110" y1="90" x2="340" y2="330" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7CBE38"/>
+      <stop offset="1" stop-color="#00755A"/>
+    </linearGradient>
+    <linearGradient id="wcu-grad-b" x1="380" y1="70" x2="200" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00906E"/>
+      <stop offset="1" stop-color="#00573F"/>
+    </linearGradient>
+  </defs>
+  <circle cx="250" cy="205" r="135" fill="#ffffff55" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>
+  <circle cx="250" cy="205" r="112" stroke="#fff" stroke-opacity=".7" stroke-dasharray="3 9" stroke-width="2"/>
+  <path d="M247 318C241 259 244 204 253 132" stroke="#176c4b" stroke-width="7" stroke-linecap="round"/>
+  <path d="M246 263C194 266 145 234 132 183C185 177 231 205 246 263Z" fill="url(#wcu-grad-a)"/>
+  <path d="m246 263-96-71" stroke="#d8efb5" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M252 211C259 151 307 109 364 117C360 171 315 208 252 211Z" fill="url(#wcu-grad-b)"/>
+  <path d="m252 211 94-76" stroke="#b9e5c8" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M247 318C202 305 181 275 184 240C222 249 245 280 247 318Z" fill="#7CBE38"/>
+  <path d="m247 318-49-62" stroke="#e2f2bf" stroke-width="2" stroke-linecap="round"/>
+  <path d="M253 132C238 105 246 75 273 60C294 89 282 115 253 132Z" fill="#00906E"/>
+  <path d="m253 132 15-57" stroke="#d2f0dc" stroke-width="2"/>
+  <circle cx="139" cy="121" r="19" fill="#fff" fill-opacity=".8"/>
+  <path d="M130 121h18m-9-9v18" stroke="#00755A" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="385" cy="254" r="24" fill="#fff" fill-opacity=".85"/>
+  <path d="M385 240c-8 9-11 16 0 27 11-11 8-18 0-27Z" fill="#00906E"/>
+  <path d="M376 258c6-1 10-5 12-11" stroke="#7CBE38" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="358" cy="80" r="5" fill="#7CBE38"/>
+  <circle cx="126" cy="287" r="7" fill="#00906E" opacity=".65"/>
+  <circle cx="350" cy="325" r="4" fill="#7CBE38"/>
+</svg>

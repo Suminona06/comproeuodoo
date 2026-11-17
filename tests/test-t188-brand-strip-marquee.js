@@ -6,13 +6,44 @@ import http from 'http';
 import settingModel from '../models/settingModel.js';
 import { clearSettingsCache } from '../middleware/settingsMiddleware.js';
 import { pool } from '../config/database.js';
+import { buildHomeViewModel } from '../services/homeService.js';
 
 const templatePath = path.resolve('views/public/index.ejs');
 const cssPath = path.resolve('public/css/components.css');
+const dictionaries = {
+  id: JSON.parse(fs.readFileSync(path.resolve('locales/id.json'), 'utf8')),
+  en: JSON.parse(fs.readFileSync(path.resolve('locales/en.json'), 'utf8'))
+};
+
+function createTranslator(lang) {
+  const dict = lang === 'en' ? dictionaries.en : dictionaries.id;
+  return (key, params = {}) => {
+    let val = dict;
+    for (const part of key.split('.')) val = val?.[part];
+    let text = typeof val === 'string' ? val : key;
+    for (const [k, v] of Object.entries(params)) {
+      text = text.replace(new RegExp(`\\{\\{?\\s*${k}\\s*\\}?}`, 'g'), v);
+    }
+    return text;
+  };
+}
 
 async function renderIndexEjs(data) {
+  const currentLang = data.currentLang || 'id';
+  const t = createTranslator(currentLang);
+  const homeView = buildHomeViewModel(data, {
+    currentLang,
+    settings: data.settings,
+    t
+  });
   return new Promise((resolve, reject) => {
-    ejs.renderFile(templatePath, data, {
+    ejs.renderFile(templatePath, {
+      ...data,
+      currentLang,
+      t,
+      __: t,
+      homeView
+    }, {
       root: path.resolve('views')
     }, (err, str) => {
       if (err) reject(err);
@@ -70,24 +101,13 @@ async function runT188Tests() {
       title: 'Test Homepage',
       path: '/',
       currentLang: 'id',
-      featuredProducts: [],
       homepageCategories: [],
       latestPosts: [],
-      homeContent: {
-        wcu_badge_id: 'Test Badge',
-        wcu_badge_en: 'Test Badge EN',
-        wcu_title_id: 'Test Title',
-        wcu_title_en: 'Test Title EN',
-        wcu_desc_id: 'Test Desc',
-        wcu_desc_en: 'Test Desc EN',
-        wcu_items: []
-      },
       settings: {
         company_name: 'PT Euodoo',
         home_brand_title_id: 'Merek Unggulan Pabrik',
         home_brand_title_en: 'Featured Factory Brands'
       },
-      formatInlineText: (t) => t || '',
       user: null,
       csrfToken: 'test-token',
       banners: []
@@ -129,14 +149,16 @@ async function runT188Tests() {
     assert.ok(!htmlScenarioB.includes('Merek Unggulan Pabrik'), 'EN mode must not render ID section title');
     console.log('  3b. Scenario B (Bilingual section title rendering): PASSED');
 
-    // Scenario C: Fallback default titles when settings are empty
+    // Scenario C: Zero hardcoded title heading when settings are empty
     const htmlScenarioC = await renderIndexEjs({
       ...baseMockData,
       settings: {},
       brands: smallBrandList
     });
-    assert.ok(htmlScenarioC.includes('Merek Paten &amp; Terdaftar') || htmlScenarioC.includes('Merek Paten & Terdaftar'), 'Default fallback must be "Merek Paten & Terdaftar" in ID mode');
-    console.log('  3c. Scenario C (Default title fallback): PASSED');
+    assert.ok(htmlScenarioC.includes('brand-strip-sec'), 'Brand strip section must still render when brands are present');
+    assert.ok(!htmlScenarioC.includes('brand-strip-title'), 'Must not render fallback section title heading when settings are empty');
+    assert.ok(htmlScenarioC.includes('aria-label="Portofolio Merek"'), 'Section must use localized fallback aria-label');
+    console.log('  3c. Scenario C (Zero fallback title heading & localized aria-label): PASSED');
 
     // Scenario D: Empty brands array renders nothing
     const htmlScenarioD = await renderIndexEjs({

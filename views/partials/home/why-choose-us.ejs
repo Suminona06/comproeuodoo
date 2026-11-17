@@ -1,0 +1,52 @@
+<section class="sec-why-us sec-pillars" id="why-us">
+  <span id="pilar" class="sec-pillars" aria-hidden="true"></span>
+  <div class="container">
+    <div class="wcu-card reveal">
+      <% if (whyChooseUs.eyebrow || whyChooseUs.titleHtml) { %>
+        <div class="wcu-header">
+          <% if (whyChooseUs.eyebrow) { %><div class="wcu-eyebrow"><%= whyChooseUs.eyebrow %></div><% } %>
+          <% if (whyChooseUs.titleHtml) { %><h2 class="wcu-title"><%- whyChooseUs.titleHtml %></h2><% } %>
+        </div>
+      <% } %>
+
+      <div class="wcu-layout">
+        <div class="wcu-copy">
+          <% if (whyChooseUs.chipLabel) { %>
+            <div class="wcu-kicker" tabindex="0" role="status" aria-label="<%= whyChooseUs.chipLabel %>">
+              <span class="wcu-kicker-icon" aria-hidden="true">
+                <% if (whyChooseUs.chipIcon === 'leaf') { %>
+                  <svg class="wcu-kicker-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                <% } else if (whyChooseUs.chipIcon === 'sparkle') { %>
+                  <svg class="wcu-kicker-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                <% } else { %>
+                  <svg class="wcu-kicker-svg wcu-tree-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 19h8a4 4 0 0 0 3.8-2.8 4 4 0 0 0-1.6-4.5A4 4 0 0 0 16 4a4 4 0 0 0-8 0 4 4 0 0 0-2.2 7.7 4 4 0 0 0-1.6 4.5A4 4 0 0 0 8 19Z" fill="currentColor" fill-opacity="0.18"/>
+                    <path d="M12 19v3"/><path d="M12 14v-4" stroke-width="1.4"/><path d="m12 12 2.4-1.8" stroke-width="1.4"/><path d="m12 13.5-2.4-1.8" stroke-width="1.4"/>
+                  </svg>
+                <% } %>
+              </span>
+              <span class="wcu-kicker-text"><%= whyChooseUs.chipLabel %></span>
+            </div>
+          <% } %>
+
+          <% if (whyChooseUs.headlineHtml) { %><h3 class="wcu-headline"><%- whyChooseUs.headlineHtml %></h3><% } %>
+          <% if (whyChooseUs.descHtml) { %><p class="wcu-desc"><%- whyChooseUs.descHtml %></p><% } %>
+        </div>
+
+        <div class="wcu-artbox" aria-label="<%= t('home.wcu_illustration_aria') %>">
+          <% if (whyChooseUs.artLabel) { %><div class="wcu-art-label"><%= whyChooseUs.artLabel %></div><% } %>
+          <img src="/images/wcu-botanical.svg" alt="" class="wcu-art" aria-hidden="true" loading="lazy" decoding="async">
+          <% if (whyChooseUs.floatEyebrow || whyChooseUs.floatTitle || whyChooseUs.floatDesc) { %>
+            <div class="wcu-float-card">
+              <% if (whyChooseUs.floatEyebrow) { %>
+                <small class="wcu-float-eyebrow"><span class="wcu-float-dot" aria-hidden="true"></span><%= whyChooseUs.floatEyebrow %></small>
+              <% } %>
+              <% if (whyChooseUs.floatTitle) { %><strong class="wcu-float-title"><%= whyChooseUs.floatTitle %></strong><% } %>
+              <% if (whyChooseUs.floatDesc) { %><span class="wcu-float-desc"><%= whyChooseUs.floatDesc %></span><% } %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

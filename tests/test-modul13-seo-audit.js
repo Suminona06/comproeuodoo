@@ -103,11 +103,15 @@ async function runModul13Tests() {
   const homeHtml = await (await fetch(`${BASE_URL}/`)).text();
   assert.ok(homeHtml.includes('loading="lazy"'), 'Homepage must contain native loading="lazy" for below-fold images');
 
-  // Verify video banner specification: template must enforce preload="metadata" and poster image fallback
+  // Verify video banner specification: thin index -> hero-slider -> hero-slide enforces preload="metadata" and poster fallback
   const fs = await import('fs');
   const indexTemplate = fs.readFileSync(new URL('../views/public/index.ejs', import.meta.url), 'utf8');
-  assert.ok(indexTemplate.includes('preload="metadata"'), 'Video banners in template must use preload="metadata" for bandwidth efficiency');
-  assert.ok(indexTemplate.includes('poster='), 'Video banners in template must provide a poster image');
+  const heroSliderTemplate = fs.readFileSync(new URL('../views/partials/home/hero-slider.ejs', import.meta.url), 'utf8');
+  const heroSlideTemplate = fs.readFileSync(new URL('../views/partials/home/hero-slide.ejs', import.meta.url), 'utf8');
+  assert.ok(indexTemplate.includes('hero-slider'), 'Homepage index template must include hero-slider partial');
+  assert.ok(heroSliderTemplate.includes('hero-slide'), 'hero-slider partial must include hero-slide partial');
+  assert.ok(heroSlideTemplate.includes('preload="metadata"'), 'Video banners in template must use preload="metadata" for bandwidth efficiency');
+  assert.ok(heroSlideTemplate.includes('poster='), 'Video banners in template must provide a poster image');
   if (homeHtml.includes('<video')) {
     assert.ok(homeHtml.includes('preload="metadata"'), 'Rendered video must include preload="metadata"');
     assert.ok(homeHtml.includes('poster='), 'Rendered video must include poster attribute');

@@ -1,0 +1,18 @@
+<section class="sec-brands brand-strip-sec" id="merek" aria-label="<%= brands.sectionTitle || t('home.brands_default_aria') %>">
+  <div class="brand-strip-container">
+    <% if (brands.sectionTitle) { %>
+      <div class="brand-strip-header">
+        <h2 class="brand-strip-title"><%= brands.sectionTitle %></h2>
+      </div>
+    <% } %>
+
+    <div class="brand-strip-wrapper" tabindex="0" role="region" aria-label="<%= t('home.brands_marquee_aria') %>">
+      <div class="brand-strip-marquee">
+        <%- include('./brand-strip-track', { marqueeBrands: brands.marqueeBrands, isDuplicate: false }) %>
+        <%- include('./brand-strip-track', { marqueeBrands: brands.marqueeBrands, isDuplicate: true }) %>
+      </div>
+    </div>
+  </div>
+
+  <%- include('./brand-preview-modal') %>
+</section>

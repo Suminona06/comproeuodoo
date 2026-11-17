@@ -9,7 +9,7 @@ console.log('Testing T-267 via Playwright Headless Chromium: 2x Desktop Scaling,
   
   const tokensCss = fs.readFileSync('public/css/tokens.css', 'utf8');
   const componentsCss = fs.readFileSync('public/css/components.css', 'utf8');
-  const mainJs = fs.readFileSync('public/js/main.js', 'utf8');
+  const homeJs = fs.readFileSync('public/js/home.js', 'utf8');
 
   const testHtml = `
     <!DOCTYPE html>
@@ -102,7 +102,7 @@ console.log('Testing T-267 via Playwright Headless Chromium: 2x Desktop Scaling,
         </div>
       </div>
 
-      <script>${mainJs}</script>
+      <script>${homeJs}</script>
     </body>
     </html>
   `;

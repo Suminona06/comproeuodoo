@@ -62,7 +62,20 @@ async function runT237PlaywrightVerification() {
     const wcuArtLabel = page.locator('.sec-why-us .wcu-art-label');
     assert.ok(await wcuArtLabel.isVisible(), 'Desktop Why Choose Us art label MUST be visible');
     const wcuArt = page.locator('.sec-why-us .wcu-art');
-    assert.ok(await wcuArt.isVisible(), 'Desktop Why Choose Us SVG art MUST be visible');
+    await page.waitForFunction(() => {
+      const img = document.querySelector('.sec-why-us .wcu-art');
+      return Boolean(img && img.complete);
+    });
+    assert.ok(await wcuArt.isVisible(), 'Desktop Why Choose Us botanical image MUST be visible');
+    const wcuArtMeta = await wcuArt.evaluate((el) => ({
+      tagName: el.tagName,
+      src: el.getAttribute('src'),
+      complete: el.complete,
+      naturalWidth: el.naturalWidth
+    }));
+    assert.strictEqual(wcuArtMeta.tagName, 'IMG', 'WCU art must render as external <img>');
+    assert.strictEqual(wcuArtMeta.src, '/images/wcu-botanical.svg', 'WCU art must point to /images/wcu-botanical.svg');
+    assert.strictEqual(wcuArtMeta.complete && wcuArtMeta.naturalWidth > 0, true, 'WCU botanical image must load cleanly');
     console.log('  -> Desktop Why Choose Us visual elements verified intact: PASSED');
 
     // -------------------------------------------------------------
@@ -98,9 +111,16 @@ async function runT237PlaywrightVerification() {
       const isLabelVisible = await page.locator('.sec-why-us .wcu-art-label').isVisible();
       assert.strictEqual(isFloatVisible, false, `Why Choose Us float card must be hidden on ${vp.name}`);
       assert.strictEqual(isLabelVisible, false, `Why Choose Us art label must be hidden on ${vp.name}`);
-      const isArtVisible = await page.locator('.sec-why-us .wcu-art').isVisible();
-      assert.strictEqual(isArtVisible, true, `Why Choose Us SVG leaf art must be visible on ${vp.name}`);
-      console.log(`  -> ${vp.name} Why Choose Us leaf art is 100% unobstructed (floating card & chip hidden): PASSED`);
+      const wcuArtMobile = page.locator('.sec-why-us .wcu-art');
+      await page.waitForFunction(() => {
+        const img = document.querySelector('.sec-why-us .wcu-art');
+        return Boolean(img && img.complete);
+      });
+      const isArtVisible = await wcuArtMobile.isVisible();
+      const mArtLoaded = await wcuArtMobile.evaluate((el) => el.tagName === 'IMG' && el.complete && el.naturalWidth > 0);
+      assert.strictEqual(isArtVisible, true, `Why Choose Us botanical image must be visible on ${vp.name}`);
+      assert.strictEqual(mArtLoaded, true, `Why Choose Us botanical image must load on ${vp.name}`);
+      console.log(`  -> ${vp.name} Why Choose Us botanical art is 100% unobstructed (floating card & chip hidden): PASSED`);
 
       // Marquee Logo scaling on mobile
       if (vp.width <= 767) {

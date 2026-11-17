@@ -1,16 +1,16 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js [PENDING T-336]
 
 # PRD: Modul Beranda Publik (Public Home)
 
 ## 1. Ringkasan & Ruang Lingkup
-Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identitas korporat, katalog manufaktur unggulan, inovasi material ramah lingkungan, sertifikasi mutu, dan portofolio merek resmi.
+Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identitas korporat, katalog manufaktur unggulan, inovasi material ramah lingkungan, sertifikasi mutu, dan portofolio merek resmi. Rincian perilaku delapan seksi beranda dijabarkan pada sub-modul [prd/public-home-sections.md](public-home-sections.md).
 
 ---
 
 ## 2. Functional Requirements
 
 ### FR-05: Render Halaman Publik Beranda
-- Sistem merender beranda secara Server-Side Rendering (SSR) berbasis EJS dengan 8 seksi berurutan:
+- Sistem merender beranda secara Server-Side Rendering (SSR) berbasis EJS dengan 8 seksi berurutan melalui halaman ramping `views/public/index.ejs` yang mengorkestrasikan partial `views/partials/home/*.ejs` `[PENDING T-337]`:
   1. Hero Banner Slider (`.hero.hero-slider`)
   2. Company Introduction (`.sec-intro`)
   3. 4 Panel Kategori Manufaktur (`.sec-products`, `.hcat-*`)
@@ -18,57 +18,28 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
   5. Certifications & Accreditations (`.sec-evidence`)
   6. Registered Brands Marquee Strip (`.brand-strip-sec`, `.brand-strip-*`)
   7. Latest News Highlights (`.sec-news`)
-  8. Global Pre-Footer CTA (`.sec-cta`)
-- **Kebijakan Konten Fallback Beranda:** Seluruh konten fallback statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback. Pada seksi News, jika artikel kosong, judul seksi tetap dirender dan kartu berita dummy statis digantikan pesan empty-state ramah dwibahasa.
+  8. Global Pre-Footer CTA (`.sec-cta` via `views/partials/cta-global.ejs`)
+- **Kebijakan Konten Fallback & Kepatuhan CSP:** Seluruh konten fallback teks statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback dan seksi News yang merender empty-state ramah dwibahasa. Template wajib bebas inline `style`, warna hex langsung, komentar HTML, dan inline event handler (`onerror=`), serta menyajikan ilustrasi botani Why Choose Us sebagai aset eksternal `public/images/wcu-botanical.svg` `[PENDING T-337]`.
 
 ### FR-06: Dukungan Dwibahasa (i18n)
 - Setiap komponen beranda mendukung teks dwibahasa (Bahasa Indonesia `id` default & Bahasa Inggris `en`).
 - Deteksi bahasa membaca cookie `euodoo_lang` atau query string `?lang=<id|en>` via route `/lang/:code`.
+- Seluruh teks statis antarmuka, judul meta, `aria-label`, `title`, empty-state berita, dan label modal preview merek wajib bersumber dari kamus simetris `locales/id.json` & `locales/en.json` via helper `t('home.*')` `[PENDING T-336, T-337]`.
 
 ### FR-10: Hero Banner Slider Dual CTA
-- Menampilkan carousel slider banner berukuran penuh dengan auto-slide dan navigasi dot/arrow.
-- Setiap slide mendukung tombol utama (Primary CTA: `.hero-cta-btn--primary.btn-pill-solid-white`) dan tombol kedua (Secondary CTA: `.hero-cta-btn--secondary.btn-pill-white`).
+- Menampilkan carousel slider banner berukuran penuh dengan auto-slide, navigasi dot/arrow, keyboard arrow, dan touch swipe.
+- Setiap slide mendukung tombol utama (`.hero-cta-btn--primary.btn-pill-solid-white`) dan tombol kedua (`.hero-cta-btn--secondary.btn-pill-white`).
 - Format media banner mendukung gambar WebP, file video lokal MP4/WebM, dan embed video YouTube (`media_type`).
 - Di layar mobile (`< 768px`), tata letak tombol CTA bertransisi otomatis ke susunan vertikal (stack 100% width).
-- Kontrol navigasi slider (`.hero-slider-controls`) diposisikan terpusat secara horizontal di area bawah (`left: 50%; transform: translateX(-50%)`) untuk menjamin tata letak simetris dan mencegah tabrakan/tumpang tindih dengan tombol CTA di berbagai ukuran viewport, termasuk layar laptop 14 inci (1920x1080 dengan scaling 125%/150%).
+- Kontrol navigasi slider (`.hero-slider-controls`) diposisikan terpusat secara horizontal di area bawah (`left: 50%; transform: translateX(-50%)`) untuk menjamin tata letak simetris tanpa tabrakan dengan tombol CTA pada berbagai viewport, termasuk laptop 14 inci (1920x1080 dengan scaling 125%/150%).
 
 ### FR-11: Pengelolaan Banner Hero (CMS)
 - Admin dapat mengelola slide banner (judul, subtitle, caption, media upload/URL, tombol utama, tombol kedua, status aktif, urutan tampilan).
-- Validasi URL tombol CTA mengizinkan format aman: tautan relatif (`/products`, `/contact`), URL absolut HTTPS, `tel:`, `mailto:`, dan `https://wa.me/...`.
-
-### 4 Panel Kategori Manufaktur Primer (`.hcat-*`)
-- Menampilkan 4 panel kategori produk berukuran besar dalam grid responsif CSS Variable `--hcat-cols`.
-- Setiap panel memuat gambar segmen, scrim overlay gelap, nama kategori, dan jumlah produk terpublikasi.
-- Klik panel mengarahkan pengguna ke katalog dengan deep-link filter: `/products?category=<slug>`.
-- Header seksi menampilkan judul dan deskripsi dengan pemisahan margin vertikal adaptif berbasis token; navigasi katalog tunggal dipusatkan pada tombol bawah seksi (`.prod-more-wrap .btn-see-more`), tanpa tombol redundan di kanan header.
-
-### Why Choose Us (`.wcu-*`)
-- Seksi editorial B2B yang menonjolkan inovasi aditif ramah lingkungan (*100% degradable*) dan kepatuhan standar SNI. Seksi ini bersifat kondisional: tampil jika toggle CMS aktif dan data teks terisi; jika kosong atau dinonaktifkan, seksi tidak dirender (zero-render) tanpa fallback teks statis.
-- Terdiri atas header (`.wcu-header`), kicker status chip (`.wcu-kicker`), teks editorial (`.wcu-headline`, `.wcu-desc`), serta ilustrasi SVG statis (`.wcu-artbox`) dengan floating badge (`.wcu-float-card`).
-- Khusus pada viewport mobile (`< 768px`), elemen floating badge (`.wcu-float-card`) dan chip label (`.wcu-art-label`) disembunyikan sehingga ilustrasi daun botani SVG tampil 100% utuh dan leluasa tanpa elemen penutup. Desktop tetap mempertahankan kartu melayang dan chip label.
-- Batas atas dan bawah seksi Why Choose Us menggunakan transisi gradasi lembut berbasis token semantik tanpa garis batas kaku (*hard edge*).
-- Anchor `#pilar` dipertahankan sebagai alias navigasi backward-compatible.
-
-### Certifications & Accreditations (`.sec-evidence`)
-- Menampilkan daftar logo sertifikasi mutu dan akreditasi resmi (mis. SNI 7188.7:2011, OXIUM Technology, InSWA).
-- Seksi ini bersifat kondisional: tampil pada public view jika toggle CMS `home_cert_is_active` bernilai `1`.
-
-### FR-17: Registered Brands Marquee Strip (`.brand-strip-*`)
-- Menampilkan portofolio merek dagang resmi perusahaan dalam bentuk strip horizontal berjalan kontinu (*continuous marquee*). Seksi ini bersifat kondisional: tampil jika terdapat data merek aktif; jika kosong, seksi tidak dirender tanpa fallback teks judul statis.
-- Menggunakan struktur 2 track identik (`.brand-strip-track`) untuk efek looping mulus tanpa celah (*gapless*).
-- **Penskalaan Dimensi Logo & Harmonisasi Spasi:**
-  - Desktop: Tinggi logo diperbesar 2x menjadi `height: clamp(168px, 16vw, 220px)` dengan `max-width: 440px` dan `min-width: clamp(260px, 24vw, 360px)` per item, menjaga `object-fit: contain` (CLS = 0).
-  - Mobile (`<= 768px`): Tinggi logo diperbesar proporsional ~1.5x menjadi `height: clamp(90px, 20vw, 120px)` dengan `max-width: 240px` dan `min-width: clamp(150px, 32vw, 190px)`, menjamin 2-3 logo terlihat seimbang pada viewport 320px-375px tanpa overflow.
-  - Spasi Antar-Logo: Jarak `--brand-gap` dirapatkan proporsional menjadi `clamp(1.5rem, 3.5vw, 3rem)` (24px s/d 48px) agar komposisi marquee tampak padat, penuh, dan mewah.
-  - Kecepatan Jelajah: Durasi animasi dikalibrasi menjadi `48s` linear infinite agar kecepatan gerak linier per piksel tetap stabil dan nyaman dibaca.
-- Berhenti bergulir (*pause on hover/focus*) saat kursor diarahkan ke area strip atau logo difokuskan keyboard.
-- Mendukung preferensi aksesibilitas `prefers-reduced-motion` (animasi dinonaktifkan, logo disusun flex-wrap statis rapi).
-- **Modal Zoom Preview Retained:** Klik logo atau tekan Space/Enter membuka dialog modal lightbox preview (`#brandPreviewModal`) untuk melihat logo resolusi tinggi.
+- Validasi URL tombol CTA mengizinkan tautan relatif (`/products`, `/contact`), URL absolut HTTPS, `tel:`, `mailto:`, dan `https://wa.me/...`.
 
 ### FR-18: Pengelolaan Merek Terdaftar di CMS (CRUD Brands)
 - Admin dapat menambah, menyunting, mengunggah file logo, mengaktifkan/menonaktifkan, dan menghapus data merek dagang di `/admin/brands`.
-- Admin dapat memperbarui judul seksi merek beranda dwibahasa secara dinamis melalui endpoint `/admin/brands/section-title` (disimpan ke `home_brand_title_id` dan `home_brand_title_en`).
-
+- Admin dapat memperbarui judul seksi merek beranda dwibahasa melalui endpoint `/admin/brands/section-title` (disimpan ke `home_brand_title_id` dan `home_brand_title_en`).
 
 ---
 

@@ -33,6 +33,8 @@
   --trans-wcu-to-subtle: linear-gradient(to bottom, #def0e6 0%, rgba(248, 250, 252, 0) 100%);
   --trans-soft-green-to-subtle: linear-gradient(to bottom, #f3f6f3 0%, #f8fafc 100%);
   --trans-subtle-to-soft-green: linear-gradient(to bottom, #f8fafc 0%, #f3f6f3 100%);
+  --wcu-bg-gradient: radial-gradient(circle at 12% 15%, #f4fbf6 0%, #ebf7f0 45%, #def0e6 100%);
+  --wcu-artbox-gradient: linear-gradient(145deg, #dff0df 0%, #a9d3b6 56%, #4e9877 100%);
 
   /* Typography / Text Neutrals */
   --color-text-main: #0f172a;
@@ -41,6 +43,9 @@
   --color-text-muted-on-soft: #475569;
   --color-text-variant: #424753;
   --color-text-inverse: #ffffff;
+  --color-home-prod-title: #090d16;
+  --color-home-prod-subtitle: #334155;
+  --wcu-text-strong: #173c30;
   --color-inverse-surface: #283044;
   --color-inverse-on-surface: #f8fafc;
 
@@ -109,6 +114,9 @@
   --color-warning-bg: #fef3c7;
   --color-error: #ba1a1a;
   --color-error-bg: #ffdad6;
+  --color-danger-hover-bg: #fee2e2;
+  --color-danger-hover-text: #dc2626;
+  --color-danger-hover-border: #fca5a5;
   --color-info: #334155;
   --color-info-bg: #f1f5f9;
   --color-info-border: #cbd5e1;
