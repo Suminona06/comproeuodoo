@@ -135,7 +135,8 @@ node tests/test-admin-crud.js
 ## 🤖 CI Quality Gate (GitHub Actions)
 Workflow [.github/workflows/ci.yml](.github/workflows/ci.yml) memvalidasi setiap PR/push ke `main`:
 - Lint kode JS (`npm run lint`), lint template EJS/CSS (`npm run lint:views`), dan audit kamus i18n (`npm run lint:i18n`).
-- Dry-run `npm run migrate` (2x untuk uji idempoten), `npm run seed`, verifikasi aset video/favicon, serta `npm test`.
+- Verifikasi integritas `snapshot.json`, kelengkapan 34 aset media baseline di `database/seed-assets/uploads/`, serta validasi urutan migrasi (`npm run test:seed`).
+- Uji integrasi MySQL dan SSR penuh (`npm test`) dijalankan di lokal sebelum merge/deploy.
 
 ---
 
