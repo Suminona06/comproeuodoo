@@ -21,6 +21,7 @@ Website profil perusahaan manufaktur plastik presisi dan sistem Content Manageme
 ## 🚀 Panduan Menjalankan di Lokal (Local Development)
 
 ### 1. Kloning & Instalasi Dependensi
+
 ```bash
 git clone <repository-url>
 cd Euodoo
@@ -28,20 +29,26 @@ npm install
 ```
 
 ### 2. Konfigurasi Lingkungan (`.env`)
+
 Salin file konfigurasi environment dan sesuaikan kredensial MySQL lokal Anda:
+
 ```bash
 cp .env.example .env # atau edit langsung file .env
 ```
+
 Pastikan variabel `DB_HOST`, `DB_USER`, `DB_PASSWORD`, dan `DB_NAME` terisi dengan benar.
 
 ### 3. Migrasi & Seeder Database
+
 Jalankan migrasi tabel, sinkronisasi konten terkini (`020_seed_current_content_v1.sql`), dan pemulihan aset gambar/video baseline dari `database/seed-assets/uploads/` ke `public/uploads/` (non-destruktif):
+
 ```bash
 npm run migrate
 npm run seed
 ```
 
 Jika Anda menyunting konten, gambar, atau video melalui CMS lokal dan ingin memperbarui snapshot untuk disimpan ke GitHub:
+
 ```bash
 # Memperbarui database/seeds/snapshot.json & database/seed-assets/uploads/
 npm run seed:export
@@ -51,29 +58,38 @@ npm run seed:export -- --write-migration database/migrations/021_nama_snapshot.s
 ```
 
 Kredensial Default Admin:
+
 - **URL Login:** `http://localhost:3000/admin/login`
 - **Email:** `admin@euodoo.com`
 - **Kata Sandi:** `AdminEuodoo2026!`
 
 ### 4. Menjalankan Server Pengembangan
+
 ```bash
 npm run dev
 ```
+
 Akses website melalui peramban:
+
 - **Local (PC ini):** `http://localhost:3000`
 - **Jaringan Lokal (Akses dari HP / Laptop lain via Wi-Fi/LAN):**
   Untuk mengakses server dari perangkat lain melalui IP Address PC Windows Anda:
+
   ```bash
   npm run port-forward
   ```
-  *(Atau double-click file `port-forward.bat` dari Windows Explorer).*
+
+  _(Atau double-click file `port-forward.bat` dari Windows Explorer)._
   Perintah ini otomatis mengonfigurasi `netsh portproxy` dan Windows Firewall sehingga server dapat diakses melalui `http://<IP_PC_WINDOWS>:3000`.
 
   Untuk mengecek status port forwarding:
+
   ```bash
   npm run port-forward:status
   ```
+
   Untuk membersihkan rule port forwarding:
+
   ```bash
   npm run port-forward:clean
   ```
@@ -132,11 +148,13 @@ node tests/test-admin-crud.js
 
 ---
 
-## 🤖 CI Quality Gate (GitHub Actions)
-Workflow [.github/workflows/ci.yml](.github/workflows/ci.yml) memvalidasi setiap PR/push ke `main`:
-- Lint kode JS (`npm run lint`), lint template EJS/CSS (`npm run lint:views`), dan audit kamus i18n (`npm run lint:i18n`).
-- Verifikasi integritas `snapshot.json`, kelengkapan 34 aset media baseline di `database/seed-assets/uploads/`, serta validasi urutan migrasi (`npm run test:seed`).
-- Uji integrasi MySQL dan SSR penuh (`npm test`) dijalankan di lokal sebelum merge/deploy.
+## 🤖 CI Quality Gate & Deploy Staging (GitHub Actions)
+
+- **CI Quality Gate** ([.github/workflows/ci.yml](.github/workflows/ci.yml)) memvalidasi setiap PR/push ke `main`:
+  - Lint kode JS (`npm run lint`), lint template EJS/CSS (`npm run lint:views`), dan audit kamus i18n (`npm run lint:i18n`).
+  - Verifikasi integritas `snapshot.json`, kelengkapan 34 aset media baseline di `database/seed-assets/uploads/`, serta validasi urutan migrasi (`npm run test:seed`).
+  - Uji integrasi MySQL dan SSR penuh (`npm test`) dijalankan di lokal sebelum merge/deploy.
+- **Deploy Staging cPanel** ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) berjalan otomatis setelah `CI Quality Gate` sukses pada push ke `main` (atau manual lewat `workflow_dispatch` dengan opsi `run_seed`): menyinkronkan kode `origin/main`, menjaga blok Passenger `.htaccess`, menjalankan `npm install --omit=dev` & `npm run migrate`, lalu me-restart Passenger via `tmp/restart.txt`.
 
 ---
 
@@ -161,11 +179,3 @@ Euodoo/
 ├── server.js             # Entry Point HTTP Server & Passenger Support
 └── .htaccess             # Konfigurasi Apache & CloudLinux Passenger
 ```
-
----
-
-## 🛡️ Standar Kepatuhan Antislop
-- Bebas karakter em dash (`—`) pada seluruh teks antarmuka dan basis data.
-- Ukuran target interaksi minimal 44 x 44 px untuk kenyamanan peranti layar sentuh.
-- Kontras warna teks memenuhi kriteria minimum WCAG AA (rasio kontras > 4.5:1).
-- Navigasi keyboard penuh (`:focus-visible` dan tombol `Escape` untuk menutup drawer/modal).

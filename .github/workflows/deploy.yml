@@ -1,32 +1,87 @@
 name: Deploy Express to Staging cPanel
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI Quality Gate"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_seed:
+        description: "Jalankan npm run seed (isi user default & snapshot ulang)"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH to cPanel
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          RUN_SEED: ${{ inputs.run_seed == true }}
+          REPO_SLUG: ${{ github.repository }}
         with:
           host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
+          port: ${{ secrets.SSH_PORT || 22 }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 5m
+          envs: RUN_SEED,REPO_SLUG
           script: |
             set -e
-            cd ~/staging.euodoo.co.id
+            APP_DIR="$HOME/staging.euodoo.co.id"
+            VENV_ACTIVATE="$HOME/nodevenv/staging.euodoo.co.id/24/bin/activate"
+
+            cd "$APP_DIR"
+
+            if [ ! -d .git ]; then
+              git init -b main
+              git remote add origin "https://github.com/${REPO_SLUG}.git"
+            fi
+
+            # Pertahankan blok CloudLinux Passenger cPanel pada .htaccess jika ada
+            PASSENGER_BLOCK=""
+            if [ -f .htaccess ] && grep -q "CLOUDLINUX PASSENGER CONFIGURATION BEGIN" .htaccess; then
+              PASSENGER_BLOCK=$(sed -n '/# DO NOT REMOVE.*CLOUDLINUX PASSENGER CONFIGURATION BEGIN/,/# DO NOT REMOVE.*CLOUDLINUX PASSENGER CONFIGURATION END/p' .htaccess)
+            fi
 
             # Tarik kode terbaru dari branch main
             git fetch origin main
             git reset --hard origin/main
 
-            # Aktifkan virtual environment Node 24 cPanel & update dependency
-            source ~/nodevenv/staging.euodoo.co.id/24/bin/activate
-            npm install --production
+            if [ -n "$PASSENGER_BLOCK" ] && ! grep -q "CLOUDLINUX PASSENGER CONFIGURATION BEGIN" .htaccess; then
+              { printf '%s\n\n' "$PASSENGER_BLOCK"; cat .htaccess; } > .htaccess.tmp
+              mv .htaccess.tmp .htaccess
+            fi
+
+            # Aktifkan virtual environment Node 24 cPanel & pasang dependency produksi
+            if [ ! -f "$VENV_ACTIVATE" ]; then
+              echo "ERROR: Virtualenv Node cPanel tidak ditemukan di $VENV_ACTIVATE"
+              exit 1
+            fi
+            source "$VENV_ACTIVATE"
+            node -v
+            npm install --omit=dev
+
+            # Jalankan migrasi SQL & sinkronisasi aset gambar/video/favicon non-destruktif
+            npm run migrate
+
+            # Opsional saat setup awal atau reset manual via workflow_dispatch
+            if [ "${RUN_SEED:-false}" = "true" ]; then
+              npm run seed
+            fi
 
             # Restart aplikasi Phusion Passenger / LiteSpeed
             mkdir -p tmp
