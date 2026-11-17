@@ -1,0 +1,27 @@
+<section class="sec-intro" id="intro">
+  <div class="container">
+    <div class="intro-layout reveal <%= intro.imageUrl ? 'has-media' : '' %>">
+      <div>
+        <% if (intro.eyebrow) { %>
+          <span class="intro-eyebrow home-intro-eyebrow"><%= intro.eyebrow %></span>
+        <% } %>
+        <% if (intro.title) { %>
+          <h2><%= intro.title %></h2>
+        <% } %>
+        <% if (intro.imageUrl) { %>
+          <div class="intro-media-wrap home-intro-media">
+            <img src="<%= intro.imageUrl %>" alt="<%= intro.title %>" loading="lazy" class="home-intro-img">
+          </div>
+        <% } %>
+      </div>
+      <div>
+        <% if (intro.paragraph1) { %>
+          <p class="home-intro-lead"><%= intro.paragraph1 %></p>
+        <% } %>
+        <% if (intro.paragraph2) { %>
+          <p><%= intro.paragraph2 %></p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>

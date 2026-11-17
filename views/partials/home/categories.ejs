@@ -1,0 +1,42 @@
+<section class="sec-products" id="produk">
+  <div class="container">
+    <% if (categories.title || categories.subtitle) { %>
+      <div class="prod-header reveal">
+        <% if (categories.title) { %>
+          <h2 class="prod-title"><%= categories.title %></h2>
+        <% } %>
+        <% if (categories.subtitle) { %>
+          <p class="prod-subtitle"><%= categories.subtitle %></p>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (categories.items.length > 0) { %>
+      <div class="hcat-grid <%= categories.colsClass %> reveal">
+        <% categories.items.forEach((cat) => { %>
+          <a href="/products?category=<%= cat.slug %>" class="hcat-panel" aria-label="<%= cat.ariaLabel %>">
+            <img class="hcat-img" src="<%= cat.imageUrl %>" alt="<%= cat.name %>" loading="lazy" width="600" height="800">
+            <div class="hcat-scrim" aria-hidden="true"></div>
+            <div class="hcat-content">
+              <h3 class="hcat-title"><%= cat.name %></h3>
+              <div class="hcat-count">
+                <span><%= cat.countLabel %></span>
+                <svg class="hcat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <div class="prod-more-wrap reveal">
+      <a href="/products" class="btn-see-more">
+        <span><%= t('home.categories_explore_cta') %></span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>

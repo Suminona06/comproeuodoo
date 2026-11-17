@@ -1,0 +1,50 @@
+<div class="hero-slide <%= slide.isActiveSlide ? 'is-active' : '' %> hero-slide-<%= slide.mediaType %>" data-slide-index="<%= index %>" role="group" aria-roledescription="slide" aria-label="<%= slide.slideAria %>">
+  <div class="hero-bg">
+    <% if (slide.mediaType === 'youtube') { %>
+      <div class="hero-youtube-wrapper">
+        <iframe
+          class="hero-youtube-iframe"
+          src="https://www.youtube.com/embed/<%= slide.youtubeId %>?autoplay=<%= slide.isActiveSlide ? '1' : '0' %>&mute=1&controls=0&playsinline=1&rel=0&showinfo=0&modestbranding=1&disablekb=1&fs=0&iv_load_policy=3&enablejsapi=1"
+          title="<%= slide.title %>"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+          tabindex="-1"
+          aria-hidden="true"
+        ></iframe>
+      </div>
+      <% if (slide.posterUrl) { %>
+        <img src="<%= slide.posterUrl %>" alt="<%= slide.title %>" class="hero-youtube-poster" aria-hidden="true">
+      <% } %>
+      <div class="hero-video-shield" aria-hidden="true"></div>
+    <% } else if (slide.mediaType === 'video') { %>
+      <video <%= slide.isActiveSlide ? 'autoplay' : '' %> muted loop playsinline preload="metadata" poster="<%= slide.videoPosterUrl %>">
+        <source src="<%= slide.mediaUrl %>" type="video/mp4">
+      </video>
+    <% } else { %>
+      <img src="<%= slide.mediaUrl %>" alt="<%= slide.title %>" <%= slide.isActiveSlide ? 'fetchpriority="high"' : 'loading="lazy"' %>>
+    <% } %>
+    <div class="hero-grad"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-inner">
+      <div class="hero-welcome"><%= t('home.hero_welcome') %></div>
+      <h1><%= slide.title %></h1>
+      <% if (slide.caption) { %>
+        <p class="hero-body"><%= slide.caption %></p>
+      <% } %>
+      <% if (slide.primaryCta || slide.secondaryCta) { %>
+        <div class="hero-actions hero-cta-wrap">
+          <% if (slide.primaryCta) { %>
+            <a href="<%= slide.primaryCta.url %>" class="hero-cta-btn hero-cta-btn--primary btn-pill-solid-white"<% if (slide.primaryCta.isExternal) { %> target="_blank" rel="noopener noreferrer"<% } %>><%= slide.primaryCta.text %></a>
+          <% } %>
+          <% if (slide.secondaryCta) { %>
+            <a href="<%= slide.secondaryCta.url %>" class="hero-cta-btn hero-cta-btn--secondary btn-pill-white"<% if (slide.secondaryCta.isExternal) { %> target="_blank" rel="noopener noreferrer"<% } %>><%= slide.secondaryCta.text %></a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>

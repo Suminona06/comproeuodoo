@@ -269,7 +269,7 @@ export async function getHomePageData(context = {}) {
     latestPosts: latestPosts || [],
     homeContent: homeContent || homeContentModel.getDefaults()
   };
-  return { raw, homeView: buildHomeViewModel(raw, context) };
+  return buildHomeViewModel(raw, context);
 }
 
 export function buildHomeFallbackData(context = {}) {
@@ -280,7 +280,7 @@ export function buildHomeFallbackData(context = {}) {
     latestPosts: [],
     homeContent: homeContentModel.getDefaults()
   };
-  return { raw, homeView: buildHomeViewModel(raw, context) };
+  return buildHomeViewModel(raw, context);
 }
 
 export default {

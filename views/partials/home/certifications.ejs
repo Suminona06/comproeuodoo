@@ -1,0 +1,38 @@
+<section class="sec-evidence" id="sertifikasi">
+  <div class="container">
+    <div class="ev-layout">
+      <div class="reveal">
+        <% if (certifications.title) { %>
+          <h2><%= certifications.title %></h2>
+        <% } %>
+        <% if (certifications.body) { %>
+          <p class="ev-body"><%= certifications.body %></p>
+        <% } %>
+        <% if (certifications.showBtn) { %>
+          <a href="<%= certifications.btnUrl %>" class="btn btn-primary">
+            <span><%= certifications.btnText %></span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        <% } %>
+      </div>
+
+      <% if (certifications.items.length > 0) { %>
+        <div class="cert-grid reveal">
+          <% certifications.items.forEach((item) => { %>
+            <div class="cert-item">
+              <% if (item.logoUrl) { %>
+                <img src="<%= item.logoUrl %>" alt="<%= item.name %>" class="cert-logo-img home-cert-logo" loading="lazy">
+              <% } else { %>
+                <span class="cert-chk" aria-hidden="true">&#10003;</span>
+              <% } %>
+              <div>
+                <div class="cert-name"><%= item.name %></div>
+                <% if (item.desc) { %><div class="cert-desc"><%= item.desc %></div><% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>

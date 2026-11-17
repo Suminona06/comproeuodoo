@@ -1,0 +1,38 @@
+<section class="hero hero-slider" id="heroSlider" aria-roledescription="carousel" aria-label="<%= t('home.hero_slider_aria') %>" tabindex="0">
+  <div class="hero-slides-wrapper" id="heroSlidesTrack">
+    <% hero.slides.forEach((slide, index) => { %>
+      <%- include('./hero-slide', { slide, index }) %>
+    <% }); %>
+  </div>
+
+  <% if (hero.hasControls) { %>
+    <button type="button" class="hero-slider-nav hero-slider-prev" id="heroPrevBtn" aria-label="<%= t('home.hero_prev_aria') %>">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button type="button" class="hero-slider-nav hero-slider-next" id="heroNextBtn" aria-label="<%= t('home.hero_next_aria') %>">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
+    <div class="hero-slider-controls">
+      <div class="hero-slider-dots" id="heroDots" role="tablist" aria-label="<%= t('home.hero_dots_aria') %>">
+        <% hero.slides.forEach((_, idx) => { %>
+          <button type="button" class="hero-dot <%= idx === 0 ? 'is-active' : '' %>" data-slide-target="<%= idx %>" role="tab" aria-selected="<%= idx === 0 ? 'true' : 'false' %>" aria-label="<%= t('home.hero_dot_aria', { num: idx + 1 }) %>"></button>
+        <% }); %>
+      </div>
+      <div class="hero-slide-counter" id="heroCounter" aria-live="polite">
+        <span class="hero-counter-current" id="heroCurrentNum">01</span>
+        <span class="hero-counter-sep">/</span>
+        <span class="hero-counter-total"><%= hero.totalLabel %></span>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="hero-explore-indicator" aria-hidden="true">
+    <span class="hero-explore-text"><%= t('home.hero_explore_more') %></span>
+    <span class="hero-explore-line"></span>
+  </div>
+</section>

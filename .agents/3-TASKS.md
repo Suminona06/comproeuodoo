@@ -2,7 +2,7 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 5 Task (`T-337` s/d `T-341`; `T-336` selesai, menunggu Close)
+- **Task Aktif Terbuka:** 4 Task (`T-338` s/d `T-341`; `T-336..T-337` selesai, menunggu Close)
 - **Total Task Selesai:** 335 Task (T-01 s/d T-335)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-342**.
@@ -24,7 +24,7 @@
   4. Seluruh kunci `home.*` simetris di `locales/id.json` & `locales/en.json`.
 - **Verifikasi:** `npx eslint services/homeService.js controllers/public/homeController.js` dan `npm run lint:i18n` (0 error/warning).
 
-### [ ] T-337: Modularisasi `views/public/index.ejs` ke `views/partials/home/*.ejs`, Ekstraksi `wcu-botanical.svg`, & Eliminasi Pelanggaran `lint:views` / CSP
+### [x] T-337: Modularisasi `views/public/index.ejs` ke `views/partials/home/*.ejs`, Ekstraksi `wcu-botanical.svg`, & Eliminasi Pelanggaran `lint:views` / CSP
 - **Prioritas:** High | **Modul:** Public Home, Public Home Sections | **Dependensi:** `T-336` | **Skill:** `antislop-code`, `polish`
 - **File Terdampak:** `views/public/index.ejs`, `views/partials/home/hero-slider.ejs` (+ `hero-slide.ejs` bila perlu), `views/partials/home/intro.ejs`, `views/partials/home/categories.ejs`, `views/partials/home/why-choose-us.ejs`, `views/partials/home/certifications.ejs`, `views/partials/home/brands-marquee.ejs` (+ `brand-preview-modal.ejs` bila perlu), `views/partials/home/news.ejs`, `public/images/wcu-botanical.svg` (baru)
 - **Temuan Teknis / Akar Masalah:** `views/public/index.ejs` (582 baris) melanggar `lint:views` dengan 33 temuan: 6 inline `style` (`L175,179,180,185,216,392`), 23 baris raw hex (`L175,179` + 21 baris `<svg class="wcu-art">` `L315-341`), 3 komentar HTML (`L434,466,500`), dan 1 inline `onerror=` (`L560`), plus teks hardcoded tanpa `t('home.*')`.

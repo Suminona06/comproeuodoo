@@ -1,0 +1,24 @@
+<div id="brandPreviewModal" class="brand-preview-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="brandModalTitle" data-default-brand-name="<%= t('home.brand_modal_default_name') %>">
+  <div class="brand-modal-backdrop" id="brandModalBackdrop"></div>
+  <div class="brand-modal-dialog">
+    <div class="brand-modal-header">
+      <div class="brand-modal-header-info">
+        <span class="brand-reg-tag"><%= t('home.brand_modal_tag') %></span>
+        <h3 id="brandModalTitle" class="brand-modal-title"><%= t('home.brand_modal_title_placeholder') %></h3>
+      </div>
+      <button type="button" class="brand-modal-close" id="brandModalCloseBtn" aria-label="<%= t('home.brand_modal_close_aria') %>">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="brand-modal-body">
+      <div class="brand-modal-img-wrap" id="brandModalImgWrap"></div>
+    </div>
+    <div class="brand-modal-footer">
+      <span class="brand-modal-caption"><%= t('home.brand_modal_caption') %></span>
+      <button type="button" class="btn btn-secondary btn-sm" id="brandModalCloseAction"><%= t('home.brand_modal_close_btn') %></button>
+    </div>
+  </div>
+</div>
