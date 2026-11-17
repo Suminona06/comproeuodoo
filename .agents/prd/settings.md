@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/admin/settingController.js, views/admin/settings/, models/settingModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: controllers/admin/settingController.js, views/admin/settings/, models/settingModel.js
 
 # PRD: Modul Pengaturan Situs (Site Settings)
 
@@ -13,7 +13,7 @@ Modul Pengaturan Situs berfungsi sebagai pusat kendali variabel global aplikasi 
 - Dikelola melalui antarmuka khusus di `/admin/settings` (khusus peran Superadmin).
 - Fitur konfigurasi terbagi dalam 4 kelompok:
   1. **Identitas & Branding Perusahaan:**
-     - Nama Perusahaan (`company_name`, default resmi `PT Euodoo Plastic` `[PENDING T-343]`), Tagline Perusahaan dwibahasa (`company_tagline_id`, `company_tagline_en`).
+     - Nama Perusahaan (`company_name`, default resmi `PT Euodoo Plastic`), Tagline Perusahaan dwibahasa (`company_tagline_id`, `company_tagline_en`).
      - Unggah/Pilih Favicon Situs (`site_favicon`): kolom unggah/pilih khusus **simbol logo persegi `1:1` tanpa teks** yang terpisah dari Logo Utama, dengan fallback otomatis ke Logo Utama bila Favicon khusus dikosongkan. Sistem wajib mempertahankan proporsi asli simbol (`fit: 'contain'`, latar transparan, padding seimbang) tanpa distorsi/gepeng, serta menghasilkan paket ukuran ikon standar (`16x16`, `32x32`, `180x180` Apple Touch Icon, `192x192`, dan `512x512` PNG) untuk halaman publik maupun dashboard admin.
      - Unggah Logo Header (`site_logo_header`): logo berlatar transparan untuk bilah navigasi atas.
      - Unggah Logo Footer (`site_logo_footer`): logo dengan kontras tinggi untuk latar belakang hijau gelap footer.

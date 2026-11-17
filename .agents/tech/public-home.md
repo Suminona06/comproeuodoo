@@ -64,7 +64,7 @@ Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> M
 - **`certifications`:** Menyaring item aktif, mengurutkan berdasarkan `sort_order`, dan menyiapkan tombol CTA opsional (`btnUrl` disanitasi via `resolveSafeHref`).
 - **`brands`:** Menyaring merek aktif, menggandakan daftar hingga minimal 8 item per track marquee, menyiapkan `initials`, dan membaca `brandSectionTitle` sesuai bahasa.
 - **`news`:** Membatasi maksimal 2 artikel terbaru, memilih `fallbackImage` aman (mengganti placeholder lama bila perlu), serta memformat tanggal publikasi sesuai locale (`id-ID`/`en-US`).
-- **Kamus `locales/id.json` & `locales/en.json` (`home.*`):** Seluruh teks statis, judul meta (`meta_title_suffix`, `meta_title_fallback` serta `common.company_name` & `DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic'` di `services/homeService.js` `[PENDING T-343/T-344]`), ARIA/title kontrol slider, hitungan kategori, label WCU, marquee & modal merek, serta heading/CTA/empty-state berita didaftarkan simetris dan diaudit `npm run lint:i18n`.
+- **Kamus `locales/id.json` & `locales/en.json` (`home.*`):** Seluruh teks statis, judul meta (`meta_title_suffix`, `meta_title_fallback` serta `common.company_name` & `DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic'` di `services/homeService.js`), ARIA/title kontrol slider, hitungan kategori, label WCU, marquee & modal merek, serta heading/CTA/empty-state berita didaftarkan simetris dan diaudit `npm run lint:i18n`.
 
 ---
 

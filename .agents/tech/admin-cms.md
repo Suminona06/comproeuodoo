@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-02 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
 
 # Tech Spec: Modul Admin & CMS (Admin CMS & Users)
 
@@ -57,7 +57,7 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 4. **Proteksi Brute-Force:**
    - Setelah 5 kali gagal memasukkan kata sandi, kolom `locked_until` diisi `NOW() + INTERVAL 15 MINUTE`.
    - Selama masa terkunci, sistem menolak seluruh upaya login untuk akun tersebut dan mengembalikan pesan error countdown.
-5. **Proteksi Noindex Total (`FR-35`) `[PENDING T-345]`:**
+5. **Proteksi Noindex Total (`FR-35`):**
    - `app.js` memasang header `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet` di `/admin` sebelum `csrfProtection`, sehingga mencakup seluruh rute admin, `loginLimiter`, `requireAuth`, `roleMiddleware`, CSRF HTML/JSON, API JSON, ekspor CSV, serta error 401/403/429/404/500.
    - `views/admin/login.ejs`, `views/partials/admin-header.ejs`, `views/admin/403.ejs`, serta fallback HTML `csrfMiddleware.js`/`roleMiddleware.js`/`errorHandler.js` wajib menyertakan `<meta name="robots" content="noindex, nofollow">` (detail pada [tech/seo-security.md](seo-security.md)).
 

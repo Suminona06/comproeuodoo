@@ -24,7 +24,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 ### FR-06: Dukungan Dwibahasa (i18n)
 - Setiap komponen beranda mendukung teks dwibahasa (Bahasa Indonesia `id` default & Bahasa Inggris `en`).
 - Deteksi bahasa membaca cookie `euodoo_lang` atau query string `?lang=<id|en>` via route `/lang/:code`.
-- Seluruh teks statis antarmuka, judul meta (`PT Euodoo Plastic` `[PENDING T-343/T-344]`), `aria-label`, `title`, empty-state berita, dan label modal preview merek wajib bersumber dari kamus simetris `locales/id.json` & `locales/en.json` via helper `t('home.*')`.
+- Seluruh teks statis antarmuka, judul meta (`PT Euodoo Plastic`), `aria-label`, `title`, empty-state berita, dan label modal preview merek wajib bersumber dari kamus simetris `locales/id.json` & `locales/en.json` via helper `t('home.*')`.
 
 ### FR-10: Hero Banner Slider Dual CTA
 - Menampilkan carousel slider banner berukuran penuh dengan auto-slide, navigasi dot/arrow, keyboard arrow, dan touch swipe.

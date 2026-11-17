@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
 
 # Tech Spec: Modul Pengaturan Situs (Site Settings)
 
@@ -19,7 +19,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ## 3. Skema Data Terkait
 
 ### Tabel `settings`
-*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql`, `021_update_company_name_euodoo_plastic.sql` `[PENDING T-343]`
+*File Migrasi:* `database/migrations/001_create_initial_schema.sql`, `009_revisi_footer_pengaturan_v1.sql`, `010_revisi_kontak_footer_v1.sql`, `011_revisi_footer_wa_filter_v1.sql`, `019_footer_dynamic_content_v1.sql`, `021_update_company_name_euodoo_plastic.sql`
 
 | Kolom | Tipe | Nullable | Default | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ## 4. Registri Kunci Pengaturan Aktif (Setting Keys Registry)
 
 ### A. Identitas & Branding
-- `company_name`: Nama resmi korporat (`PT Euodoo Plastic`, migrasi `021` & `snapshot.json`) `[PENDING T-343]`.
+- `company_name`: Nama resmi korporat (`PT Euodoo Plastic`, migrasi `021` & `snapshot.json`).
 - `company_tagline_id`, `company_tagline_en`: Slogan resmi korporat.
 - `site_favicon`: Path berkas utama ikon browser persegi (simbol logo saja tanpa teks), disertai kunci ukuran turunan `site_favicon_16`, `site_favicon_32`, `site_favicon_180`, `site_favicon_192`, dan `site_favicon_512` di tabel `settings` (tanpa migrasi DDL baru).
 - `site_logo_header`: Path berkas logo header navigasi atas.
@@ -56,7 +56,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 - `whatsapp_button_theme`: Variasi styling tema tombol mengambang.
 
 ### E. SEO Fallback Global
-- `meta_title_id`, `meta_title_en`: Judul fallback global berawalan `PT Euodoo Plastic` `[PENDING T-343]`.
+- `meta_title_id`, `meta_title_en`: Judul fallback global berawalan `PT Euodoo Plastic`.
 - `meta_description_id`, `meta_description_en`: Deskripsi fallback global (`<head>` saja; terpisah dari `footer_desc_*`).
 
 ### F. Konten Footer Publik
@@ -65,7 +65,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 ---
 
 ## 5. Middleware Pemuat Pengaturan (`settingsMiddleware.js`)
-- Middleware mengeksekusi `settingModel.getAllAsMap()` saat permintaan masuk dan menginjeksinya ke `res.locals.settings` (fallback default `company_name` adalah `'PT Euodoo Plastic'` `[PENDING T-344]`).
+- Middleware mengeksekusi `settingModel.getAllAsMap()` saat permintaan masuk dan menginjeksinya ke `res.locals.settings` (fallback default `company_name` adalah `'PT Euodoo Plastic'`).
 - Menggunakan mekanisme caching internal sederhana (atau query cepat terindeks PK) sehingga seluruh template EJS dapat mengakses nilai pengaturan secara langsung tanpa query berulang di controller masing-masing halaman.
 
 ---
@@ -87,7 +87,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 - **Orkestrator Halaman Ramping:** `views/admin/settings/index.ejs` bertindak sebagai template ramping (<50 baris) yang mengorkestrasikan partial per kartu section.
 - **Daftar Partial Modular (`views/admin/settings/partials/`):**
   1. `visual-identity-card.ejs`: Favicon, logo header navbar, dan logo footer berkontras tinggi (panjang <= 100 baris).
-  2. `corporate-identity-card.ejs`: Nama perusahaan (fallback default `PT Euodoo Plastic` `[PENDING T-343]`), tagline, email, dan telepon (panjang <= 100 baris).
+  2. `corporate-identity-card.ejs`: Nama perusahaan (fallback default `PT Euodoo Plastic`), tagline, email, dan telepon (panjang <= 100 baris).
   3. `dual-location-card.ejs`: Alamat dual lokasi (Kantor Jakarta & Pabrik Bandung) serta embed Google Maps dengan placeholder aman (panjang <= 100 baris).
   4. `whatsapp-service-card.ejs`: Nomor resmi, tema tombol floating, salam pembuka, dan repeater rotasi multi-nomor (panjang <= 100 baris).
   5. `social-media-card.ejs`: Akun LinkedIn, Instagram, Facebook, dan YouTube serta toggle visibilitas (panjang <= 100 baris).

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
 
 # PRD: Modul Admin & CMS (Admin CMS & Users)
 
@@ -60,7 +60,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 - Pembuatan akun baru (`/admin/users/create`), daftar pengguna (`/admin/users`), pengeditan peran, dan penonaktifan/penghapusan akun.
 - Pencegahan penghapusan akun diri sendiri yang sedang login.
 
-### FR-35: Proteksi Noindex Total Portal & Login Admin `[PENDING T-345]`
+### FR-35: Proteksi Noindex Total Portal & Login Admin
 
 - Seluruh halaman login (`/admin/login`), dashboard, modul CMS, halaman 401/403/429/404/500, penolakan CSRF `/admin/*`, JSON API admin, dan ekspor CSV wajib tidak dapat diindeks oleh mesin pencari melalui header HTTP `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet`, meta tag `<meta name="robots" content="noindex, nofollow">`, serta aturan `Disallow: /admin` & `Disallow: /admin/*` pada `/robots.txt` (rincian lengkap pada [prd/seo-security.md](seo-security.md)).
 
@@ -77,4 +77,4 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 | **Pemisahan Peran 3 Tingkat (Superadmin/Admin/Editor)**     | Mencegah staf konten mengubah pengaturan sensitif dan memastikan privasi data kontak prospek terjaga.                                                  | 2026-10-05 |
 | **Tabel Resmi Tunggal `inquiries`**                         | Memusatkan pencatatan seluruh saluran formulir RFQ ke satu tabel database terstruktur.                                                                 | 2026-10-06 |
 | **Cookie Session HttpOnly & SameSite Lax**                  | Melindungi kredensial sesi admin dari pencurian skrip jahat (anti-XSS).                                                                                | 2026-09-29 |
-| **Proteksi Noindex Total Rute `/admin*` (`FR-35`)** `[PENDING T-345]` | Menjamin tidak ada halaman login, endpoint CMS, API JSON, ekspor CSV, maupun halaman error admin yang dapat terindeks mesin pencari.                  | 2026-11-17 |
+| **Proteksi Noindex Total Rute `/admin*` (`FR-35`)** | Menjamin tidak ada halaman login, endpoint CMS, API JSON, ekspor CSV, maupun halaman error admin yang dapat terindeks mesin pencari.                  | 2026-11-17 |

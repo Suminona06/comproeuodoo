@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (5 Task: T-342..T-346) & ringkasan 341 task selesai.
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task) & ringkasan 346 task selesai.
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -25,13 +25,13 @@
 | **News Detail** | ACTIVE | 2026-11-16 | [prd/news-detail.md](prd/news-detail.md) | [tech/news-detail.md](tech/news-detail.md) | `views/public/news-detail.ejs`, `public/js/news-detail.js` |
 | **Contact, Footer & WA** | ACTIVE | 2026-11-16 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs`, `views/partials/contact/*.ejs`, `public/js/contact.js`, `controllers/public/contactController.js` |
 | **Public Footer** | ACTIVE | 2026-11-16 | [prd/footer.md](prd/footer.md) | [tech/footer.md](tech/footer.md) | `views/partials/footer.ejs`, `public/css/layout.css` |
-| **Admin CMS & Users** | ACTIVE | 2026-11-10 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
+| **Admin CMS & Users** | ACTIVE | 2026-11-17 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
 | **Admin Products & RFQ** | ACTIVE | 2026-11-10 | [prd/admin-products-rfq.md](prd/admin-products-rfq.md) | [tech/admin-products-rfq.md](tech/admin-products-rfq.md) | `controllers/admin/productController.js`, `controllers/admin/inquiryController.js` |
 | **Admin UI, Buttons, Pagination & Validation** | ACTIVE | 2026-11-11 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin.css`, `public/js/pagination.js`, `public/js/admin-form-validation.js` |
 | **Admin UI Dropdown Component** | ACTIVE | 2026-11-03 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui-dropdown.md](tech/admin-ui-dropdown.md) | `public/css/admin.css`, `public/js/admin-dropdown.js` |
 | **Media Library** | ACTIVE | 2026-11-16 | [prd/media-library.md](prd/media-library.md) | [tech/media-library.md](tech/media-library.md) | `views/admin/media/` |
-| **SEO & Security** | ACTIVE | 2026-10-21 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
-| **Site Settings** | ACTIVE | 2026-11-16 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
+| **SEO & Security** | ACTIVE | 2026-11-17 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
+| **Site Settings** | ACTIVE | 2026-11-17 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
 | **Site Settings Footer** | ACTIVE | 2026-11-16 | [prd/settings.md](prd/settings.md) | [tech/settings-footer.md](tech/settings-footer.md) | `services/settingService.js`, `views/admin/settings/partials/footer-content-card.ejs`, `public/js/admin-settings.js` |
 | **Site Settings Branding Assets** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings-assets.md](tech/settings-assets.md) | `middleware/uploadMiddleware.js`, `views/admin/settings/partials/visual-identity-card.ejs` |
 | **Code Conventions & Standards** | ACTIVE | 2026-11-17 | - | [tech/conventions.md](tech/conventions.md) | `eslint.config.js`, `scripts/lint-*.js` |
