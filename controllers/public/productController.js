@@ -4,6 +4,8 @@ import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import { query } from '../../config/database.js';
 import logger from '../../utils/logger.js';
 
+const DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic';
+
 export const productController = {
   /**
    * Display product catalog with category filter, search, sorting, and SSR/AJAX pagination
@@ -107,7 +109,7 @@ export const productController = {
         });
       }
 
-      const pageTitle = (lang === 'en' ? 'Product Catalog' : 'Katalog Produk') + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
+      const pageTitle = (lang === 'en' ? 'Product Catalog' : 'Katalog Produk') + ' | ' + (res.locals.settings?.company_name || DEFAULT_COMPANY_NAME);
 
       res.render('public/products', {
         title: pageTitle,
@@ -130,7 +132,7 @@ export const productController = {
         return res.status(500).send('');
       }
       res.status(500).render('public/products', {
-        title: 'Katalog Produk | PT. EUODOO',
+        title: `Katalog Produk | ${DEFAULT_COMPANY_NAME}`,
         path: '/products',
         categories: [],
         selectedCategory: null,
@@ -162,7 +164,7 @@ export const productController = {
 
       if (!product || product.status !== 'published' || product.is_active === 0) {
         return res.status(404).render('public/404', {
-          title: 'Produk Tidak Ditemukan | PT. EUODOO',
+          title: `Produk Tidak Ditemukan | ${DEFAULT_COMPANY_NAME}`,
           path: '/products',
           message: 'Produk yang Anda cari tidak tersedia atau sedang diperbarui.'
         });
@@ -209,7 +211,7 @@ export const productController = {
 
       const lang = res.locals.currentLang || 'id';
       const prodName = lang === 'en' ? (product.name_en || product.name_id) : product.name_id;
-      const title = prodName + ' | ' + (res.locals.settings?.company_name || 'PT. EUODOO');
+      const title = prodName + ' | ' + (res.locals.settings?.company_name || DEFAULT_COMPANY_NAME);
 
       const rawMetaDesc = lang === 'en'
         ? (product.meta_description_en || product.meta_description_id || product.short_description_en || product.short_description_id || product.description_en || product.description_id || '')
@@ -248,7 +250,7 @@ export const productController = {
     } catch (err) {
       logger.error('Public productController.detail error:', { message: err.message, stack: err.stack });
       res.status(500).render('public/404', {
-        title: 'Error | PT. EUODOO',
+        title: `Error | ${DEFAULT_COMPANY_NAME}`,
         path: '/products',
         message: 'Gagal memuat rincian produk.'
       });

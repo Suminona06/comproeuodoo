@@ -23,7 +23,7 @@
 - **Skill:** `animate`, `antislop-code`, `polish`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `node tests/test-brand-marquee-scaling.js`, `node tests/test-homepage-hero-cta-merek-qa.js`, `node tests/test-t188-brand-strip-marquee.js`
 
-### [ ] `T-343` — [B1] Pembaruan `settings.company_name` (`021` Migrasi & Snapshot), Default Card CMS, dan Kamus i18n
+### [x] `T-343` — [B1] Pembaruan `settings.company_name` (`021` Migrasi & Snapshot), Default Card CMS, dan Kamus i18n
 - **Acceptance Criteria (Keputusan 1: Opsi a & 2: Opsi a):**
   - Buat migrasi `database/migrations/021_update_company_name_euodoo_plastic.sql` yang memperbarui `settings` untuk `company_name` (`'PT Euodoo Plastic'`), `meta_title_id` (`'PT Euodoo Plastic - Manufaktur Kantong Plastik Ramah Lingkungan 100% Degradable'`), dan `meta_title_en` (`'PT Euodoo Plastic - 100% Degradable Eco-Friendly Plastic Bag Manufacturer'`).
   - Perbarui `database/seeds/snapshot.json` untuk kunci `settings` yang sama tanpa menyentuh `users`/`inquiries`, tetap lulus `npm run test:seed` dan `validateMigrationSequence`.
@@ -34,7 +34,7 @@
 - **Skill:** `antislop-code`
 - **Verifikasi:** `npm run migrate`, `npm run test:seed`, `npm run lint:views`, `npm run lint:i18n`
 
-### [ ] `T-344` — [B1] Penyeragaman Pembentukan `<title>`, `og:site_name`, `alt` Logo & Fallback Error Publik ke `PT Euodoo Plastic`
+### [x] `T-344` — [B1] Penyeragaman Pembentukan `<title>`, `og:site_name`, `alt` Logo & Fallback Error Publik ke `PT Euodoo Plastic`
 - **Acceptance Criteria (Keputusan 1: Opsi a & 2: Opsi a):**
   - Seluruh fallback merek di `views/partials/head.ejs` (`resolvedTitle`, `author`, `og:site_name`), `views/partials/navbar.ejs` & `views/partials/footer.ejs` (`alt` logo), `middleware/settingsMiddleware.js`, `middleware/seoMiddleware.js` (`Organization.name` & `author`), `middleware/errorHandler.js`, `middleware/csrfMiddleware.js`, `services/homeService.js`, `controllers/public/pageController.js`, `productController.js`, `postController.js`, dan `contactController.js` diseragamkan ke `PT Euodoo Plastic`, tanpa mengubah perilaku pembacaan custom `meta_title_id`/`meta_title_en` pada detail produk/berita.
   - Tidak ada lagi `<title>` rute publik (ID & EN, termasuk 404/error) yang menampilkan `PT Euodoo Presisi Indonesia`, `PT. EUODOO`, atau `PT Euodoo` tanpa `Plastic`.

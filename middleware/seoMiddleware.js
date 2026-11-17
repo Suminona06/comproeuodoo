@@ -89,7 +89,7 @@ function buildOrganizationSchema(baseUrl, currentLang, settings = {}) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: settings.company_name || 'PT Euodoo',
+    name: settings.company_name || 'PT Euodoo Plastic',
     alternateName: 'PT Euodoo',
     url: baseUrl,
     logo: resolveOrgLogo(baseUrl, settings),
@@ -104,7 +104,7 @@ function createSeoObject(baseUrl, canonicalUrl, currentLang, schemas) {
     title: '',
     description: '',
     keywords: 'kantong plastik ramah lingkungan, 100% degradable, oxium, kantong belanja hdpe, lldpe industri, karung woven, pt euodoo',
-    author: 'PT Euodoo',
+    author: 'PT Euodoo Plastic',
     robots: 'index, follow',
     canonicalUrl,
     ogType: 'website',

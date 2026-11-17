@@ -119,7 +119,7 @@ async function runQAVerification() {
     const initialSettings = await settingModel.getAll();
 
     // Isi perubahan uji coba
-    await page.fill('#company_name', 'PT Euodoo Presisi Indonesia (QA Test)');
+    await page.fill('#company_name', 'PT Euodoo Plastic (QA Test)');
     await page.fill('#company_email', 'qa-test@euodoo.com');
 
     const [response] = await Promise.all([
@@ -129,12 +129,12 @@ async function runQAVerification() {
 
     assert.strictEqual(response.status(), 200, 'POST /admin/settings harus redirect dan kembali 200 OK');
     const updatedCompanyName = await page.inputValue('#company_name');
-    assert.strictEqual(updatedCompanyName, 'PT Euodoo Presisi Indonesia (QA Test)', 'Nilai baru harus tersimpan dan tampil di form');
+    assert.strictEqual(updatedCompanyName, 'PT Euodoo Plastic (QA Test)', 'Nilai baru harus tersimpan dan tampil di form');
     console.log('  ✓ Data berhasil disimpan ke database via form POST dan tampil kembali.');
 
     // Pulihkan kembali data asli agar database tetap bersih
     console.log('  -> Memulihkan data pengaturan kembali ke kondisi semula...');
-    await page.fill('#company_name', initialSettings.company_name || 'PT Euodoo Presisi Indonesia');
+    await page.fill('#company_name', initialSettings.company_name || 'PT Euodoo Plastic');
     await page.fill('#company_email', initialSettings.company_email || 'info@euodoo.com');
     await Promise.all([
       page.waitForNavigation({ waitUntil: 'domcontentloaded' }),

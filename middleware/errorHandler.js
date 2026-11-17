@@ -18,7 +18,7 @@ export const notFoundHandler = (req, res, next) => {
   res.status(404);
   try {
     return res.render('public/404', {
-      title: 'Halaman Tidak Ditemukan - PT Euodoo',
+      title: 'Halaman Tidak Ditemukan | PT Euodoo Plastic',
       path: req.originalUrl
     });
   } catch (err) {
@@ -27,7 +27,7 @@ export const notFoundHandler = (req, res, next) => {
       <html lang="id">
       <head>
         <meta charset="UTF-8">
-        <title>404 - Halaman Tidak Ditemukan | PT Euodoo</title>
+        <title>404 - Halaman Tidak Ditemukan | PT Euodoo Plastic</title>
         <style>
           body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #131b2e; }
           .container { text-align: center; padding: 2rem; }
@@ -58,7 +58,7 @@ function renderDevErrorHtml(statusCode, err, showDebugDetails) {
     <html lang="id">
     <head>
       <meta charset="UTF-8">
-      <title>${statusCode} - Terjadi Kesalahan | PT Euodoo</title>
+      <title>${statusCode} - Terjadi Kesalahan | PT Euodoo Plastic</title>
       <style>
         body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #131b2e; }
         .container { text-align: center; padding: 2rem; max-width: 600px; }

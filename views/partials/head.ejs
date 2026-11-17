@@ -6,7 +6,7 @@
   // Resolve title
   const resolvedTitle = seoObj.title || (typeof title !== 'undefined' ? title : '') || 
     (currentLanguage === 'en' ? settingsObj.meta_title_en : settingsObj.meta_title_id) || 
-    'PT Euodoo - Manufaktur Kantong Plastik Ramah Lingkungan 100% Degradable';
+    'PT Euodoo Plastic - Manufaktur Kantong Plastik Ramah Lingkungan 100% Degradable';
 
   // Resolve description
   const resolvedDescription = seoObj.description || (typeof metaDescription !== 'undefined' ? metaDescription : '') || 
@@ -33,7 +33,7 @@
 <title><%= resolvedTitle %></title>
 <meta name="description" content="<%= resolvedDescription %>">
 <meta name="keywords" content="<%= seoObj.keywords || 'kantong plastik ramah lingkungan, oxium, hdpe, lldpe, karung plastik, pt euodoo' %>">
-<meta name="author" content="PT Euodoo">
+<meta name="author" content="PT Euodoo Plastic">
 <meta name="robots" content="<%= seoObj.robots || 'index, follow' %>">
 
 <% 
@@ -56,7 +56,7 @@
 <meta property="og:title" content="<%= ogTitle %>">
 <meta property="og:description" content="<%= ogDesc %>">
 <meta property="og:url" content="<%= canonicalUrl %>">
-<meta property="og:site_name" content="PT Euodoo">
+<meta property="og:site_name" content="PT Euodoo Plastic">
 <meta property="og:image" content="<%= ogImg %>">
 
 <meta name="twitter:card" content="summary_large_image">
