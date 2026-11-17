@@ -57,36 +57,16 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 4. **Proteksi Brute-Force:**
    - Setelah 5 kali gagal memasukkan kata sandi, kolom `locked_until` diisi `NOW() + INTERVAL 15 MINUTE`.
    - Selama masa terkunci, sistem menolak seluruh upaya login untuk akun tersebut dan mengembalikan pesan error countdown.
+5. **Proteksi Noindex Total (`FR-35`) `[PENDING T-345]`:**
+   - `app.js` memasang header `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet` di `/admin` sebelum `csrfProtection`, sehingga mencakup seluruh rute admin, `loginLimiter`, `requireAuth`, `roleMiddleware`, CSRF HTML/JSON, API JSON, ekspor CSV, serta error 401/403/429/404/500.
+   - `views/admin/login.ejs`, `views/partials/admin-header.ejs`, `views/admin/403.ejs`, serta fallback HTML `csrfMiddleware.js`/`roleMiddleware.js`/`errorHandler.js` wajib menyertakan `<meta name="robots" content="noindex, nofollow">` (detail pada [tech/seo-security.md](seo-security.md)).
 
 ---
 
-## 5. Dashboard RFQ & Paginasi Tanpa Reload (`/admin/dashboard`, `/admin/inquiries`, `/admin/products`)
-
-1. **Tabel RFQ Dashboard (`/admin/dashboard`):**
-   - `controllers/admin/dashboardController.js` memanggil `inquiryModel.findAll({ limit: 10 })` (`ORDER BY i.created_at DESC, i.id DESC LIMIT 10` di query SQL, tanpa paginasi).
-   - Pada `views/admin/dashboard.ejs`, pembungkus `#rfqDataTable` menggunakan class `.table-scroll-wrapper--mobile-only` yang menonaktifkan scroll pada desktop (`> 768px`: `overflow: visible; max-height: none`) dan mempertahankan `overflow-x: auto` pada mobile (`<= 768px`).
-2. **Validasi Whitelist Paginasi Server (`/admin/inquiries` & `/admin/products`):**
-   - `per_page`: di-whitelist ke `[10, 25, 50, 100]` (default `10`, maksimal `100`); nilai di luar daftar (mis. `?per_page=1000`, `0`, negatif, huruf) dinormalkan ke `10`.
-   - `page`: bilangan bulat `>= 1`; nilai tidak valid dinormalkan ke `1` dan dibatasi ke `totalPages = Math.max(1, Math.ceil(totalRows / perPage))`.
-   - Query di `models/inquiryModel.js` dan `models/productModel.js` menggunakan *prepared statements* terparameter (`LIMIT ? OFFSET ?`, filter `status` / `category_id`, dan pencarian `q`).
-3. **Kontrak Respons Fetch Tanpa Reload:**
-   - Saat menerima header `Accept: application/json` (atau `X-Requested-With: fetch`), `GET /admin/inquiries` dan `GET /admin/products` mengembalikan JSON `{ ok: true, rowsHtml, inquiriesData (khusus RFQ), pagination: { page, perPage, totalRows, totalPages } }`.
-   - Klien (`public/js/pagination.js`, `public/js/admin-inquiries.js`, `public/js/admin-products.js`) memperbarui `<tbody>`, menyinkronkan URL via `history.pushState` (`?page=&per_page=`), re-init `window.initEuDropdowns()`, memperbarui `inquiriesData` modal `#inquiryQuickModal`, serta memundurkan halaman aktif bila penghapusan data membuat halaman terakhir kosong.
+## 5. Dashboard RFQ, Paginasi Dinamis & Formulir Produk CMS
+Spesifikasi teknis tabel RFQ dashboard (`LIMIT 10`), validasi whitelist & kontrak Fetch paginasi tanpa reload (`/admin/inquiries`, `/admin/products`), serta builder formulir produk & tabel ukuran dinamis dipisahkan ke sub-modul [tech/admin-products-rfq.md](admin-products-rfq.md).
 
 ---
 
-## 6. Spesifikasi Formulir Produk CMS & Multi-Picker Gallery
-
-1. **Komponen Form Produk (`views/admin/products/create.ejs` & `edit.ejs`):**
-   - **Thumbnail Utama & Galeri Multi-Picker:** Input hidden `image_url` (single-select) dan `gallery_images` (JSON array URL dengan tombol geser kiri/kanan dan hapus).
-   - **Short & Full Description (ID & EN):** Textarea `maxlength="200"` dengan `.char-counter` serta editor TinyMCE (`#description_id`, `#description_en`).
-   - **Kustomisasi Tombol CTA Produk:** Input `#cta_text_id` dan `#cta_text_en` (`maxlength="50"`, fallback ke teks default WhatsApp).
-   - **Varian & Builder Tabel Ukuran Dinamis:** Kontainer `#variantsContainer` (`variant_labels[]`) dan `#dynamicSizeEditor` (`.prod-size-builder`, batas 1-8 kolom, 0-30 baris, label maks 40 char, sel maks 80 char, modal `#modalCopySizeColumns` via `GET /admin/products/:id/size-table-columns`, konfirmasi SweetAlert2, navigasi panah keyboard antar sel `.prod-size-cell`, dan serialisasi JSON `{ columns, rows }`).
-   - **Layout Responsif Modal & Form:** Header form sticky, area form scrollable, tombol aksi selalu terlihat pada zoom 100%, 125%, 150%.
-2. **Validasi Server-Side Controller (`controllers/admin/productController.js`):**
-   - Sanitasi batas 200 karakter pada deskripsi singkat, 50 karakter pada teks CTA, validasi JSON array `variants` & `gallery_images`, serta verifikasi whitelist kunci sel terhadap daftar kolom aktif via `parseDynamicSizeTable`.
-
----
-
-## 7. Standar Komponen UI, Tombol, Paginasi & Validasi Form Admin
+## 6. Standar Komponen UI, Tombol, Paginasi & Validasi Form Admin
 Spesifikasi teknis sistem tombol (`.adm-btn-*`), tampilan slug 1 baris (`.adm-slug-text`), validasi form (`public/js/admin-form-validation.js`), SweetAlert2 bertema, serta komponen paginasi bersama Varian 1 (`.pgn-*`) didokumentasikan pada sub-modul [tech/admin-ui.md](admin-ui.md).
