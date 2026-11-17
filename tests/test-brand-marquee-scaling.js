@@ -115,8 +115,6 @@ console.log('Testing T-267 via Playwright Headless Chromium: 2x Desktop Scaling,
 
   const desktopLogo = await pageDesktop.locator('.brand-strip-logo').first();
   const desktopLogoBox = await desktopLogo.boundingBox();
-  const desktopItem = await pageDesktop.locator('.brand-strip-item').first();
-  const desktopItemBox = await desktopItem.boundingBox();
 
   const trackStyles = await pageDesktop.evaluate(() => {
     const track = document.getElementById('track1');
@@ -172,7 +170,6 @@ console.log('Testing T-267 via Playwright Headless Chromium: 2x Desktop Scaling,
 
     const logo = await page.locator('.brand-strip-logo').first();
     const logoBox = await logo.boundingBox();
-    const item = await page.locator('.brand-strip-item').first();
 
     const mobileStyles = await page.evaluate(() => {
       const item = document.querySelector('.brand-strip-item');
@@ -226,49 +223,126 @@ console.log('Testing T-267 via Playwright Headless Chromium: 2x Desktop Scaling,
   assert.strictEqual(tabletStyles.scrollWidth, tabletStyles.clientWidth, 'No horizontal overflow at 768px');
   await ctxTablet.close();
 
-  // 3. Modal Zoom Lightbox Test
-  console.log('3. Verifikasi Modal Zoom Lightbox Preview (#brandPreviewModal):');
+  // 3. Modal Zoom Lightbox Test & Auto-Resume Marquee (T-342)
+  console.log('3. Verifikasi Modal Zoom Lightbox Preview & Auto-Resume Marquee (#brandPreviewModal):');
   const pageModal = await contextDesktop.newPage();
+  const modalConsoleErrors = [];
+  const modalPageErrors = [];
+  pageModal.on('console', (msg) => {
+    if (msg.type() === 'error') modalConsoleErrors.push(msg.text());
+  });
+  pageModal.on('pageerror', (err) => modalPageErrors.push(err.message));
   await pageModal.setContent(testHtml);
 
-  // Click first brand trigger via DOM dispatch
+  const readModalAndTrackState = () => pageModal.evaluate(() => {
+    const modal = document.getElementById('brandPreviewModal');
+    const wrapper = document.querySelector('.brand-strip-wrapper');
+    const track = document.getElementById('track1');
+    const active = document.activeElement;
+    return {
+      isOpen: modal.classList.contains('is-open'),
+      ariaHidden: modal.getAttribute('aria-hidden'),
+      playState: window.getComputedStyle(track).animationPlayState,
+      focusInsideModal: Boolean(active && modal.contains(active)),
+      focusInsideStrip: Boolean(active && wrapper && wrapper.contains(active))
+    };
+  });
+
+  // 3a. Open via click & close via Escape (cursor not parked on strip)
+  await pageModal.mouse.move(10, 10);
   await pageModal.evaluate(() => {
-    const trigger = document.querySelector('.brand-strip-item.js-brand-preview-trigger');
-    trigger.click();
+    document.querySelector('.brand-strip-item.js-brand-preview-trigger').click();
   });
 
   const modalState = await pageModal.evaluate(() => {
     const modal = document.getElementById('brandPreviewModal');
     const title = document.getElementById('brandModalTitle');
     const imgWrap = document.getElementById('brandModalImgWrap');
-    const style = window.getComputedStyle(modal);
     return {
-      display: style.display,
       isOpen: modal.classList.contains('is-open'),
       titleText: title ? title.textContent : '',
       hasImg: imgWrap ? Boolean(imgWrap.querySelector('img')) : false,
       ariaHidden: modal.getAttribute('aria-hidden')
     };
   });
-  console.log('   - Modal isOpen after click:', modalState.isOpen);
-  console.log('   - Modal title text:', modalState.titleText);
   assert.ok(modalState.isOpen, 'Modal must have class is-open after click');
   assert.strictEqual(modalState.titleText, 'Brand A', 'Modal title should show brand name');
   assert.strictEqual(modalState.ariaHidden, 'false', 'Modal aria-hidden should be false');
   assert.ok(modalState.hasImg, 'Modal should render zoom image');
 
-  // Press Escape to close modal
   await pageModal.keyboard.press('Escape');
-  const modalAriaAfterEscape = await pageModal.evaluate(() => {
+  const afterEscape = await readModalAndTrackState();
+  console.log('   - After Escape close:', afterEscape);
+  assert.strictEqual(afterEscape.ariaHidden, 'true', 'Modal should be closed on Escape');
+  assert.strictEqual(afterEscape.isOpen, false, 'Modal is-open class should be removed on Escape');
+  assert.strictEqual(afterEscape.focusInsideModal, false, 'Focus must not stay inside hidden modal');
+  assert.strictEqual(afterEscape.focusInsideStrip, false, 'Focus must not return to strip wrapper after Escape');
+  assert.strictEqual(afterEscape.playState, 'running', 'Marquee must auto-resume after closing modal with Escape');
+
+  // 3b. Open via focused keyboard trigger & close via X button, Close button, and Backdrop
+  for (const closeSelector of ['#brandModalCloseBtn', '#brandModalCloseAction', '#brandModalBackdrop']) {
+    await pageModal.evaluate(() => {
+      const trigger = document.querySelector('.brand-strip-item.js-brand-preview-trigger');
+      trigger.focus();
+      trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    });
+    const opened = await readModalAndTrackState();
+    assert.strictEqual(opened.isOpen, true, `Modal must open before closing with ${closeSelector}`);
+
+    await pageModal.mouse.move(10, 10);
+    await pageModal.evaluate((sel) => {
+      document.querySelector(sel).click();
+    }, closeSelector);
+
+    const closed = await readModalAndTrackState();
+    console.log(`   - After ${closeSelector} close:`, closed);
+    assert.strictEqual(closed.isOpen, false, `Modal must close via ${closeSelector}`);
+    assert.strictEqual(closed.ariaHidden, 'true', `aria-hidden must be true after ${closeSelector}`);
+    assert.strictEqual(closed.focusInsideModal, false, `Focus cleared from modal after ${closeSelector}`);
+    assert.strictEqual(closed.focusInsideStrip, false, `Focus cleared from strip after ${closeSelector}`);
+    assert.strictEqual(closed.playState, 'running', `Marquee must auto-resume after ${closeSelector}`);
+  }
+
+  // 3c. Intentional keyboard focus on strip still pauses marquee, and blur resumes it
+  await pageModal.evaluate(() => {
+    document.querySelector('.brand-strip-item.js-brand-preview-trigger').focus();
+  });
+  const pausedOnFocus = await readModalAndTrackState();
+  assert.strictEqual(pausedOnFocus.focusInsideStrip, true, 'Trigger should receive focus when intentionally focused');
+  assert.strictEqual(pausedOnFocus.playState, 'paused', 'Marquee must pause when user intentionally focuses strip');
+
+  await pageModal.evaluate(() => {
+    document.activeElement.blur();
+  });
+  const resumedAfterBlur = await readModalAndTrackState();
+  assert.strictEqual(resumedAfterBlur.playState, 'running', 'Marquee must resume after leaving focus');
+
+  // 3d. Touch device simulation (hasTouch: true, hover: none) must not leave sticky hover after tap + close
+  const contextTouch = await browser.newContext({
+    viewport: { width: 375, height: 667 },
+    hasTouch: true,
+    isMobile: true
+  });
+  const pageTouch = await contextTouch.newPage();
+  await pageTouch.setContent(testHtml);
+  const touchBox = await pageTouch.locator('.brand-strip-item.js-brand-preview-trigger').first().boundingBox();
+  await pageTouch.touchscreen.tap(touchBox.x + touchBox.width / 2, touchBox.y + touchBox.height / 2);
+  await pageTouch.locator('#brandModalCloseBtn').tap();
+  const touchAfterClose = await pageTouch.evaluate(() => {
     const modal = document.getElementById('brandPreviewModal');
+    const track = document.getElementById('track1');
     return {
-      ariaHidden: modal.getAttribute('aria-hidden'),
-      isOpen: modal.classList.contains('is-open')
+      isOpen: modal.classList.contains('is-open'),
+      playState: window.getComputedStyle(track).animationPlayState
     };
   });
-  console.log('   - Modal aria-hidden after Escape:', modalAriaAfterEscape.ariaHidden);
-  assert.strictEqual(modalAriaAfterEscape.ariaHidden, 'true', 'Modal should be closed on Escape');
-  assert.strictEqual(modalAriaAfterEscape.isOpen, false, 'Modal is-open class should be removed on Escape');
+  console.log('   - Touch tap open + close result:', touchAfterClose);
+  assert.strictEqual(touchAfterClose.isOpen, false, 'Touch tap close button must close modal');
+  assert.strictEqual(touchAfterClose.playState, 'running', 'Touch tap close must not freeze marquee via sticky hover');
+  await contextTouch.close();
+
+  assert.strictEqual(modalConsoleErrors.length, 0, `No console errors allowed: ${JSON.stringify(modalConsoleErrors)}`);
+  assert.strictEqual(modalPageErrors.length, 0, `No page errors allowed: ${JSON.stringify(modalPageErrors)}`);
 
   // 4. Reduced Motion Test
   console.log('4. Verifikasi Fallback prefers-reduced-motion:');

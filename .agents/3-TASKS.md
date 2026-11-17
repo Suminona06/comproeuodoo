@@ -12,7 +12,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [ ] `T-342` — [Bug A1] Perbaikan Auto-Resume Marquee Merek (`#merek`) Setelah Menutup `#brandPreviewModal`
+### [x] `T-342` — [Bug A1] Perbaikan Auto-Resume Marquee Merek (`#merek`) Setelah Menutup `#brandPreviewModal`
 - **Akar Masalah Dugaan:** `closeBrandPreview(state)` di `public/js/home.js` (baris 236–243) selalu memanggil `state.lastActiveTrigger.focus()` kembali ke `.brand-strip-item` di dalam `.brand-strip-wrapper`, sementara `public/css/components.css` (baris 3730–3733) menjeda `.brand-strip-track` via `.brand-strip-wrapper:hover` dan `.brand-strip-wrapper:focus-within`; aturan `:hover` belum dibungkus `@media (hover: hover)` sehingga berisiko *sticky hover* sentuh, dan `.brand-strip-wrapper` (`views/partials/home/brands-marquee.ejs`) memiliki `tabindex="0"`.
 - **Acceptance Criteria (Keputusan 3: Opsi b):**
   - `closeBrandPreview(state)` di `public/js/home.js` tidak mengembalikan fokus ke `state.lastActiveTrigger`; sebelum menyetel `aria-hidden="true"` pada `#brandPreviewModal`, fungsi memanggil `.blur()` pada elemen terfokus di dalam modal maupun `.brand-strip-wrapper` (jika ada) dan mereset `state.lastActiveTrigger = null`.

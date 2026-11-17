@@ -219,6 +219,13 @@
     });
   }
 
+  function blurFocusedWithin(container) {
+    const active = document.activeElement;
+    if (active && container && container.contains(active) && typeof active.blur === 'function') {
+      active.blur();
+    }
+  }
+
   function openBrandPreview(state, trigger) {
     const defaultName = state.modal.getAttribute('data-default-brand-name') || 'Merek Resmi';
     const name = trigger.getAttribute('data-brand-name') || defaultName;
@@ -226,7 +233,6 @@
     const initials = trigger.getAttribute('data-brand-initials') || name.substring(0, 2).toUpperCase();
     if (state.titleEl) state.titleEl.textContent = name;
     renderBrandModalMedia(state.imgWrapEl, name, logoUrl, initials);
-    state.lastActiveTrigger = trigger;
     state.modal.classList.add('is-open');
     state.modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -234,12 +240,12 @@
   }
 
   function closeBrandPreview(state) {
+    // Release focus from both modal and strip wrapper so :focus-within does not stall marquee auto-resume.
+    blurFocusedWithin(state.modal);
+    blurFocusedWithin(state.stripWrapper);
     state.modal.classList.remove('is-open');
     state.modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    if (!state.lastActiveTrigger) return;
-    state.lastActiveTrigger.focus();
-    state.lastActiveTrigger = null;
   }
 
   function initBrandPreviewModal() {
@@ -247,12 +253,12 @@
     if (!modal) return;
     const state = {
       modal,
+      stripWrapper: document.querySelector('.brand-strip-wrapper'),
       backdrop: document.getElementById('brandModalBackdrop'),
       closeBtn: document.getElementById('brandModalCloseBtn'),
       closeAction: document.getElementById('brandModalCloseAction'),
       titleEl: document.getElementById('brandModalTitle'),
-      imgWrapEl: document.getElementById('brandModalImgWrap'),
-      lastActiveTrigger: null
+      imgWrapEl: document.getElementById('brandModalImgWrap')
     };
     const close = () => closeBrandPreview(state);
     document.querySelectorAll('.js-brand-preview-trigger').forEach((el) => bindBrandTrigger(el, (t) => openBrandPreview(state, t)));
