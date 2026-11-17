@@ -66,7 +66,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 
 ### D. Strategi Penegakan Baseline Lint (Keputusan 1)
 - **File Legacy:** Ditandai *warning* (non-blocking).
-- **File Baru & Refaktor:** Ditandai *error* ketat (blocking) dalam `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js` (mencakup view/partial Admin serta view/partial publik hasil refaktor termasuk `views/public/about.ejs`, `views/partials/about/`, `views/public/contact.ejs`, `views/partials/contact/`). Wajib lolos hijau sebelum task *Close*.
+- **File Baru & Refaktor:** Ditandai *error* ketat (blocking) dalam `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js` (mencakup view/partial Admin serta view/partial publik hasil refaktor termasuk `views/public/index.ejs` dan `views/partials/home/` `[PENDING T-340]`, `views/public/about.ejs`, `views/partials/about/`, `views/public/contact.ejs`, `views/partials/contact/`). Wajib lolos hijau sebelum task *Close*.
 
 ---
 
@@ -83,6 +83,6 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 ### C. Refaktor Massal View Admin & Pembersihan Skrip/CSS
 - **Cakupan Bersamaan (Keputusan Opsi B):** Pada setiap modul admin yang direfaktor, selain template `.ejs`, berkas CSS (`public/css/admin.css`) dan skrip (`public/js/admin-*.js`) yang disentuh wajib sekaligus dibersihkan dari komentar tak perlu (`antislop-code`) dan warna hex lama (wajib dipetakan ke token CSS).
 - **Status Tampilan Dinamis:** Seluruh logika toggle tampilan berbasis database menggunakan class status semantik statis (`.adm-d-none` / `.adm-d-block`, `.is-empty` / `.has-preview`) tanpa atribut `style="..."`.
-- **Prefix Unik per Modul:** Auth: `.err403-*`, `.adm-login-*`, `.chpwd-*` | Kategori: `.adm-pcat-*`, `.adm-postcat-*` | Pengguna: `.adm-usr-*` | Merek: `.adm-brd-*` | Kapabilitas & Kontak: `.adm-cap-*`, `.adm-ctc-*` | Hero & Leads: `.adm-hbn-*`, `.adm-leads-*` | Inquiries & Dashboard: `.adm-inq-*`, `.adm-dash-*` | Shell & Partials: `.adm-shell-*`, `.adm-picker-*` | Paginasi Bersama: `.pgn-*` | Media & Banner: `.adm-media-*`, `.adm-banner-*` | Artikel & Produk: `.adm-post-*`, `.adm-prod-*` | Home & About: `.adm-home-*`, `.adm-abt-*`.
+- **Prefix Unik per Modul:** Auth: `.err403-*`, `.adm-login-*`, `.chpwd-*` | Kategori: `.adm-pcat-*`, `.adm-postcat-*` | Pengguna: `.adm-usr-*` | Merek: `.adm-brd-*` | Kapabilitas & Kontak: `.adm-cap-*`, `.adm-ctc-*` | Hero & Leads: `.adm-hbn-*`, `.adm-leads-*` | Inquiries & Dashboard: `.adm-inq-*`, `.adm-dash-*` | Shell & Partials: `.adm-shell-*`, `.adm-picker-*` | Paginasi Bersama: `.pgn-*` | Media & Banner: `.adm-media-*`, `.adm-banner-*` | Artikel & Produk: `.adm-post-*`, `.adm-prod-*` | Home & About Admin: `.adm-home-*`, `.adm-abt-*` | Public Home (`[PENDING T-339]`): `.home-intro-*`, `.home-cert-logo`, `.hcat-grid--1..4` (dilarang mengubah perilaku class bersama `.sec-products`, `.btn-secondary`, `.btn-pill-solid-white`, `.btn-primary`).
 - **Strategi Eksekusi:** Satu batch per siklus dengan 5 gerbang verifikasi (lint views zero error/warning, npm run lint hijau, unit tests pass, bukti visual Playwright sebelum vs sesudah, CRUD tanpa error konsol).
 

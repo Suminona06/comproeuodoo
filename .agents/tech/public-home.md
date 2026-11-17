@@ -1,9 +1,12 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js [PENDING T-336]
 
 # Tech Spec: Modul Beranda Publik (Public Home)
 
 ## 1. Arsitektur & Komponen
-Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands`, `posts`, dan `settings` melalui controller tunggal `controllers/public/homeController.js`.
+Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> Model` `[PENDING T-336]`:
+- **Controller (`controllers/public/homeController.js`):** Menerima request `GET /`, mendelegasikan orkestrasi query paralel & penyusunan *view-model* ke `services/homeService.js`, menyiapkan judul meta terlokalisasi (`t('home.*')`), dan merender *thin page* `views/public/index.ejs` (termasuk fallback status 500 yang terlokalisasi). Import mati `productModel` dan properti mati `featuredProducts` dihapus `[PENDING T-336]`.
+- **Service (`services/homeService.js`):** Mengambil data paralel dari `bannerModel`, `brandModel`, `postModel`, `homeContentModel`, dan `productCategoryModel`, serta mengekspor *pure view-model builder* agar seluruh transformasi data berada di luar EJS dan dapat diuji terpisah oleh unit test (`<= 40` baris/fungsi, `<= 300` baris/berkas, `max-depth <= 2`, `complexity <= 8`) `[PENDING T-336]`.
+- **View & Skrip:** `views/public/index.ejs` (`<= 100` baris, nesting `<= 2`) hanya mengorkestrasikan partial di `views/partials/home/*.ejs` dan memuat `/js/home.js` (`defer`) `[PENDING T-337, T-338]`. Rincian partial, CSS, dan skrip klien dijabarkan di [tech/public-home-sections.md](public-home-sections.md).
 
 ---
 
@@ -12,7 +15,7 @@ Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/` | `homeController.index` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR beranda utama |
-| `GET` | `/lang/:code` | Inline router handler di `routes/publicRoutes.js` | - | Mengubah cookie `euodoo_lang` (`id` atau `en`) lalu redirect |
+| `GET` | `/lang/:code` | Inline router handler di `routes/publicRoutes.js` | - | Mengubah cookie `euodoo_lang` (`id` atau `en`) lalu redirect aman |
 | `POST` | `/admin/brands/section-title` | `brandController.updateSectionTitle` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | Mengubah judul seksi merek beranda |
 
 ---
@@ -45,43 +48,27 @@ Modul Beranda memadukan data dari tabel `banners`, `product_categories`, `brands
 
 ### B. Kunci Pengaturan Beranda (`settings`)
 - `home_intro_title_*`, `home_intro_paragraph_1_*`, `home_intro_paragraph_2_*`, `home_intro_eyebrow_*`, `home_intro_image_url`, `home_intro_is_active`.
-- `home_cat_title_*`, `home_cat_subtitle_*`.
-- `home_wcu_title_*`, `home_wcu_eyebrow_*`, `home_wcu_headline_*`, `home_wcu_desc_*`, `home_wcu_chip_label_*`, `home_wcu_chip_icon`, `home_wcu_art_label_*`, `home_wcu_float_title_*`, `home_wcu_float_desc_*`, `home_wcu_is_active`.
+- `home_cat_title_*`, `home_cat_subtitle_*`, `home_categories_json`.
+- `home_wcu_title_*`, `home_wcu_eyebrow_*`, `home_wcu_headline_*`, `home_wcu_desc_*`, `home_wcu_chip_label_*`, `home_wcu_chip_icon`, `home_wcu_art_label_*`, `home_wcu_float_eyebrow_*`, `home_wcu_float_title_*`, `home_wcu_float_desc_*`, `home_wcu_is_active`.
 - `home_cert_title_*`, `home_cert_body_*`, `home_cert_btn_text_*`, `home_cert_btn_url`, `home_cert_show_btn`, `home_cert_is_active` (default `0`), `home_cert_items_json`.
 - `home_brand_title_id`, `home_brand_title_en`.
 
 ---
 
-## 4. Komponen Antarmuka & Prefix CSS
-
-- **Header & Navigasi Publik:**
-  - Top Bar & Transisi Blur: `.top-bar` menyertakan transisi `backdrop-filter 0.3s ease` dan `-webkit-backdrop-filter 0.3s ease`. Saat `.header-wrap.is-scrolled` aktif, filter memudar bertahap dari `blur(4px)` menuju `blur(0px)` beriringan dengan `opacity: 0` dan penciutan baris grid `.top-bar-wrap`.
-  - Drawer Navigasi Mobile: Panel `.nav-menu` dan `.menu-backdrop` dikendalikan via tweening Anime.js v3.2.2. Buka: `translateY: [-12, 0]` dan `opacity: [0, 1]` dengan cascade staggered link navigasi. Tutup: `translateY: [0, -12]` dan `opacity: [1, 0]` diselesaikan tuntas sebelum status visibilitas dicabut. Mendukung fallback instan pada `prefers-reduced-motion: reduce`.
-- **Hero Slider & Dual CTA:** `.hero.hero-slider`, `.hero-slide`, `.hero-content`, `.hero-actions.hero-cta-wrap`, `.hero-cta-btn--primary`, `.hero-cta-btn--secondary`, `.hero-slider-controls`.
-  - Responsive rule: Desktop horizontal flex (`width: fit-content; max-width: 100%`), Mobile (`< 768px`) stack vertikal 100% width. Tombol memiliki `min-height: 48px`, `min-width: 150px`, dan `white-space: nowrap` agar konsisten tanpa deformasi/bantet.
-  - Centering kontrol: `.hero-slider-controls` diposisikan terpusat secara horizontal di area bawah (`left: 50%; transform: translateX(-50%); bottom: clamp(20px, 3.5vh, 36px)`) untuk menjamin bebas tabrakan (*zero overlap*) pada resolusi layar laptop 14 inci (1920x1080 display scale 125%/150%) dan desktop.
-- **4 Panel Kategori Primer:** `.sec-products`, `.prod-header`, `.prod-title`, `.prod-subtitle`, `.hcat-grid`, `.hcat-panel`, `.hcat-img`, `.hcat-scrim`, `.hcat-title`, `.hcat-count`, `.hcat-arrow`, `.prod-more-wrap`, `.btn-see-more`.
-  - Grid rule: Menggunakan `--hcat-cols: 4;` responsif.
-  - Spacing & CTA: `.prod-title` memiliki margin bawah berbasis token `--space-sm` hingga `--space-md` untuk memisahkan judul dan deskripsi. Markup tombol kanan di `.prod-header` ditiadakan; CTA diarahkan tunggal via `.prod-more-wrap .btn-see-more` di bawah grid.
-  - Kebijakan fallback: Fallback string judul dan subtitle dihapus; jika CMS kosong maka header/seksi ditangani kondisional.
-- **Why Choose Us:** `.sec-why-us.sec-pillars`, `.wcu-card`, `.wcu-header`, `.wcu-layout`, `.wcu-copy`, `.wcu-kicker`, `.wcu-headline`, `.wcu-desc`, `.wcu-artbox`, `.wcu-art`, `.wcu-art-label`, `.wcu-float-card`.
-  - Anchor alias: `<span id="pilar" class="sec-pillars" aria-hidden="true"></span>`.
-  - Mobile rule (`< 768px`): `.wcu-float-card { display: none; }` dan `.wcu-art-label { display: none; }` agar ilustrasi SVG daun botani bersih dan utuh. Desktop tetap menampilkan floating card dan chip label.
-  - Token transisi background: Batas atas dan bawah seksi menggunakan token gradasi semantik `--trans-subtle-to-wcu` dan `--trans-wcu-to-subtle` di `tokens.css` tanpa hardcode hex.
-  - Kebijakan fallback: 13 variabel fallback string dihapus; seksi dibungkus kondisional ketat dan tidak dirender jika data CMS kosong atau nonaktif.
-- **Certifications / Evidence:** `.sec-evidence`, `.ev-layout`, `.cert-grid`, `.cert-item`, `.cert-name`, `.cert-desc`.
-- **Strip Marquee Merek & Modal Zoom:**
-  - Strip Marquee: `.sec-brands.brand-strip-sec`, `.brand-strip-wrapper`, `.brand-strip-marquee`, `.brand-strip-track`, `.brand-strip-item`, `.brand-strip-logo-box`, `.brand-strip-logo`, `.brand-zoom-hint`.
-  - Penskalaan Desktop (2x): `.brand-strip-logo` berukuran `height: clamp(168px, 16vw, 220px); max-width: 440px;` dengan `.brand-strip-item` berukuran `min-width: clamp(260px, 24vw, 360px);`.
-  - Responsive mobile rule (`<= 768px`): `.brand-strip-logo` berukuran `height: clamp(90px, 20vw, 120px); max-width: 240px;` dengan `.brand-strip-item` berukuran `min-width: clamp(150px, 32vw, 190px);` (~1.5x proporsional).
-  - Gap & Kecepatan: `--brand-gap: clamp(1.5rem, 3.5vw, 3rem);` dengan animasi marquee dikalibrasi menjadi `48s linear infinite` agar kecepatan gerak linier konstan.
-  - Lightbox Preview Modal: `#brandPreviewModal.brand-preview-modal`, `.brand-modal-backdrop`, `.brand-modal-dialog`, `.brand-modal-header`, `.brand-modal-close`, `.brand-modal-body`, `.brand-modal-img-wrap`.
-  - Script interaktivitas: `public/js/main.js` mengikat `.js-brand-preview-trigger`, Escape key listener, dan backdrop click.
-  - Kebijakan fallback: Fallback string judul dihapus; seksi tidak dirender jika `marqueeBrands.length === 0`.
-- **Latest News Highlights:** `.sec-news`, `.news-grid`, `.news-card`. Dua kartu berita dummy dengan tanggal statis dieliminasi; jika artikel kosong (`latestPosts.length === 0`), dirender pesan empty-state `.news-empty-state` dengan teks ramah dwibahasa.
+## 4. Kontrak View-Model & Lokalisasi (`home.*`) `[PENDING T-336]`
+`services/homeService.js` membangun objek view-model terstruktur sebelum `res.render('public/index', ...)`:
+- **`hero` (`banners`):** Menyaring banner aktif, menyediakan safety-net fallback jika kosong, mengekstrak `youtubeId` secara aman dari URL `embed/`/`watch?v=`/`youtu.be/`, memilih teks lokal, serta menormalkan `primaryCta` & `secondaryCta` beserta flag `isExternal`.
+- **`intro`:** Menentukan status aktif (`isActive`) dan konten terlokalisasi (`eyebrow`, `title`, `paragraph1`, `paragraph2`, `imageUrl`).
+- **`categories`:** Menyiapkan header (`title`, `subtitle`), daftar maksimal 4 kategori dengan gambar fallback per segmen, label hitungan terlokalisasi (`t`), dan `colsClass` (`hcat-grid--1` s/d `hcat-grid--4`).
+- **`whyChooseUs`:** Menormalkan seluruh field editorial & floating card, serta menerapkan `formatInlineText` di server untuk `titleHtml`, `headlineHtml`, dan `descHtml`.
+- **`certifications`:** Menyaring item aktif, mengurutkan berdasarkan `sort_order`, dan menyiapkan tombol CTA opsional.
+- **`brands`:** Menyaring merek aktif, menggandakan daftar hingga minimal 8 item per track marquee, menyiapkan `initials`, dan membaca `brandSectionTitle` sesuai bahasa.
+- **`news`:** Membatasi maksimal 2 artikel terbaru, memilih `fallbackImage` aman (mengganti placeholder lama bila perlu), serta memformat tanggal publikasi sesuai locale (`id-ID`/`en-US`).
+- **Kamus `locales/id.json` & `locales/en.json` (`home.*`):** Seluruh teks statis, judul meta (`meta_title_suffix`, `meta_title_fallback`), ARIA/title kontrol slider, hitungan kategori, label WCU, marquee & modal merek, serta heading/CTA/empty-state berita didaftarkan simetris dan diaudit `npm run lint:i18n`.
 
 ---
 
-## 5. Keamanan & Sanitasi
-- **Validasi URL CTA:** Fungsi `isValidCtaUrl()` di `controllers/admin/bannerController.js` hanya menerima path relatif (`/products`, `/contact`), URL absolut `https://`, serta protokol komunikasi aman `tel:`, `mailto:`, dan `https://wa.me/`. Skema berbahaya seperti `javascript:`, `data:`, `vbscript:` ditolak secara otomatis.
-- **Aksesibilitas WCAG AA:** Warna dan kontras mengacu pada `Design/DESIGN.md` dan `public/css/tokens.css`. Fallback `prefers-reduced-motion` menonaktifkan animasi continuous translate pada marquee track.
+## 5. Keamanan, CSP, & Sanitasi
+- **Validasi URL CTA:** `isValidCtaUrl()` di `controllers/admin/bannerController.js` hanya menerima path relatif (`/products`, `/contact`), URL `https://`, `tel:`, `mailto:`, dan `https://wa.me/`.
+- **Kepatuhan CSP & Anti-XSS Frontend `[PENDING T-337, T-338]`:** Zero inline `style`, zero `<script>` inline, zero handler `on*=`, dan zero raw hex di `views/public/index.ejs` serta `views/partials/home/*.ejs` (ditegakkan via `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js`). Pada `public/js/home.js`, listener `postMessage` YouTube memvalidasi `event.origin` (`https://www.youtube.com` / `https://www.youtube-nocookie.com`) dan modal `#brandPreviewModal` membangun elemen DOM via `createElement` + `textContent` tanpa `innerHTML` interpolasi.
+- **Aksesibilitas WCAG AA:** Warna mengacu pada `public/css/tokens.css`; `prefers-reduced-motion` menonaktifkan transisi & marquee continuous translate.

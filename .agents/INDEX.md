@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task) & ringkasan 335 task selesai.
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (6 Task) & ringkasan 335 task selesai.
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -13,7 +13,8 @@
 
 | Modul | Status | Verifikasi | Spesifikasi PRD | Spesifikasi Teknis | Path Kode Utama |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Public Home** | ACTIVE | 2026-11-03 | [prd/public-home.md](prd/public-home.md) | [tech/public-home.md](tech/public-home.md) | `views/public/index.ejs` |
+| **Public Home** | ACTIVE | 2026-11-03 | [prd/public-home.md](prd/public-home.md) | [tech/public-home.md](tech/public-home.md) | `views/public/index.ejs`, `controllers/public/homeController.js`, `services/homeService.js` `[PENDING T-336]` |
+| **Public Home Sections** | ACTIVE | 2026-11-03 | [prd/public-home-sections.md](prd/public-home-sections.md) | [tech/public-home-sections.md](tech/public-home-sections.md) | `views/partials/home/*.ejs`, `public/js/home.js`, `public/images/wcu-botanical.svg` `[PENDING T-337..T-339]` |
 | **Public About** | ACTIVE | 2026-11-16 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs`, `views/partials/about/vision-mission.ejs`, `views/partials/about/gallery-bento.ejs`, `controllers/public/pageController.js` |
 | **Public About Story & Timeline** | ACTIVE | 2026-11-16 | [prd/public-about-timeline.md](prd/public-about-timeline.md) | [tech/public-about-timeline.md](tech/public-about-timeline.md) | `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `public/js/about-story.js` |
 | **Public About Ticket Accordion** | ACTIVE | 2026-11-16 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |
