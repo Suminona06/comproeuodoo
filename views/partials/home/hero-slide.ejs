@@ -31,7 +31,11 @@
   <div class="hero-content">
     <div class="hero-inner">
       <div class="hero-welcome"><%= t('home.hero_welcome') %></div>
-      <h1><%= slide.title %></h1>
+      <% if (index === 0) { %>
+        <h1 class="hero-heading"><%= slide.title %></h1>
+      <% } else { %>
+        <h2 class="hero-heading"><%= slide.title %></h2>
+      <% } %>
       <% if (slide.caption) { %>
         <p class="hero-body"><%= slide.caption %></p>
       <% } %>

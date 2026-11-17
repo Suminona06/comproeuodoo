@@ -1175,6 +1175,7 @@
   min-height: 92vh;
   display: block;
   padding: 0;
+  touch-action: pan-y;
 }
 
 .hero-slides-wrapper {
@@ -1212,7 +1213,8 @@
   animation: heroFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
-.hero-slide.is-active h1 {
+.hero-slide.is-active h1,
+.hero-slide.is-active .hero-heading {
   animation: heroFadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
@@ -1395,7 +1397,8 @@
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
-.hero h1 {
+.hero h1,
+.hero .hero-heading {
   font-size: clamp(2.1rem, 4.2vw, 3.5rem);
   font-weight: 700;
   line-height: 1.15;
@@ -1552,7 +1555,7 @@
   background: rgba(7, 31, 23, 0.55);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: 8px 18px;
+  padding: 4px 16px;
   border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
@@ -1561,25 +1564,46 @@
 .hero-slider-dots {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
 }
 
 .hero-dot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.hero-dot::before {
+  content: '';
   width: 8px;
   height: 8px;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.35);
-  border: none;
-  padding: 0;
-  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.hero-dot:hover {
+.hero-dot:hover::before {
   background: rgba(255, 255, 255, 0.7);
 }
 
+.hero-dot:focus-visible {
+  outline: 2px solid var(--color-text-inverse);
+  outline-offset: 2px;
+}
+
 .hero-dot.is-active {
+  width: 28px;
+}
+
+.hero-dot.is-active::before {
   width: 28px;
   background: var(--bg-base);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
@@ -1648,6 +1672,11 @@
   grid-template-columns: 1fr 1fr;
   gap: 64px;
   align-items: start;
+}
+
+.intro-layout > div {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .intro-layout h2 {
@@ -3849,12 +3878,14 @@
   visibility: hidden;
   opacity: 0;
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
-              visibility 250ms cubic-bezier(0.4, 0, 0.2, 1);
+              visibility 0s linear 250ms;
 }
 
 .brand-preview-modal.is-open {
   visibility: visible;
   opacity: 1;
+  transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0s linear 0s;
 }
 
 .brand-modal-backdrop {
@@ -3907,8 +3938,8 @@
 }
 
 .brand-modal-close {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--r-md);
   border: 1px solid var(--border);
   background: var(--bg-base);
@@ -3918,6 +3949,11 @@
   justify-content: center;
   cursor: pointer;
   transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.brand-modal-close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .brand-modal-close:hover {
@@ -4082,7 +4118,7 @@
 .news-date {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-primary-bright);
+  color: var(--color-inverse-primary);
   margin-bottom: 8px;
   letter-spacing: .05em;
 }
@@ -4552,8 +4588,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 6px 16px;
+    gap: 10px;
+    padding: 4px 14px;
     background: rgba(7, 31, 23, 0.72);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -4564,10 +4600,17 @@
     z-index: 10;
   }
   .hero-dot {
+    width: 24px;
+    height: 24px;
+  }
+  .hero-dot::before {
     width: 6px;
     height: 6px;
   }
   .hero-dot.is-active {
+    width: 24px;
+  }
+  .hero-dot.is-active::before {
     width: 20px;
     background: var(--bg-base);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
@@ -4595,7 +4638,8 @@
     margin-bottom: 12px;
     max-width: 100%;
   }
-  .hero h1 {
+  .hero h1,
+  .hero .hero-heading {
     font-size: clamp(1.55rem, 5.8vw, 2.1rem);
     line-height: 1.22;
     margin-bottom: 14px;
@@ -4664,7 +4708,8 @@
     padding: 4px 10px;
     margin-bottom: 10px;
   }
-  .hero h1 {
+  .hero h1,
+  .hero .hero-heading {
     font-size: clamp(1.45rem, 6.2vw, 1.85rem);
     line-height: 1.22;
     margin-bottom: 12px;
@@ -4870,7 +4915,8 @@
     padding-left: 14px;
     padding-right: 14px;
   }
-  .hero h1 {
+  .hero h1,
+  .hero .hero-heading {
     font-size: 1.45rem;
     line-height: 1.24;
   }

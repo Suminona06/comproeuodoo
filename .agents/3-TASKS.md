@@ -2,7 +2,7 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 1 Task (`T-341`; `T-336..T-340` selesai, menunggu Close)
+- **Task Aktif Terbuka:** 0 Task (`T-336..T-341` selesai, menunggu TAHAP 5: CLOSE)
 - **Total Task Selesai:** 335 Task (T-01 s/d T-335)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-342**.
@@ -67,9 +67,9 @@
   4. `test-t237-playwright-verification.js` memverifikasi `<img class="wcu-art">` mengarah ke `/images/wcu-botanical.svg`, `complete && naturalWidth > 0`, serta visibilitas desktop & mobile.
 - **Verifikasi:** `npm run lint:views`, `npm run lint:i18n`, serta eksekusi seluruh berkas test di atas lulus.
 
-### [ ] T-341: Audit Visual Pra/Pasca Refaktor & Regresi End-to-End Penuh
+### [x] T-341: Audit Visual Pra/Pasca Refaktor & Regresi End-to-End Penuh
 - **Prioritas:** High | **Modul:** Public Home, Public Home Sections | **Dependensi:** `T-340` | **Skill:** `polish`, `antislop-code`
-- **File Terdampak:** Verifikasi runtime, screenshot/DOM audit, dan gerbang CI
+- **File Terdampak:** `public/css/components.css`, `views/partials/home/hero-slide.ejs`, `tests/test-homepage-major-update-qa.js` (beserta verifikasi runtime, screenshot/DOM audit, dan gerbang CI)
 - **Acceptance Criteria:**
   1. Seluruh 8 seksi beranda identik secara visual dan fungsional pra vs pasca-refaktor (hero slider image/video/YouTube, dual CTA, keyboard & swipe; intro; 4 panel kategori; Why Choose Us + `wcu-botanical.svg` + mobile hide float/chip; sertifikasi; marquee merek + `#brandPreviewModal`; latest news + empty state + fallback gambar; global CTA/footer).
   2. Nol horizontal overflow dan tata letak tepat pada `320px`, `375px`, `768px`, `1024px`, `1440px` (serta `1536x720` dan `1280x650`) untuk ID & EN.

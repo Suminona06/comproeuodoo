@@ -1,15 +1,24 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
+import ejs from 'ejs';
+import homeContentModel from '../models/homeContentModel.js';
+import { buildHomeViewModel } from '../services/homeService.js';
 
 const BASE_URL = 'http://localhost:3000';
+
+function createTranslator(dict) {
+  return (key, params = {}) => {
+    const val = key.split('.').reduce((acc, k) => (acc && acc[k] !== undefined ? acc[k] : undefined), dict);
+    if (typeof val !== 'string') return key;
+    return Object.entries(params).reduce((s, [k, v]) => s.replace(new RegExp(`\\{${k}\\}`, 'g'), v), val);
+  };
+}
 
 async function runQaTests() {
   console.log('=== STARTING QA & REGRESSION TEST SUITE (T-179, T-180, T-181) ===');
 
-  // =========================================================================
   // T-179: Multi-Breakpoint CSS, Tap Targets, Focus-Visible, Reduced Motion
-  // =========================================================================
   console.log('\n[TEST 1: T-179] Verifying Multi-Breakpoint CSS, Tap Targets & Accessibility...');
   const cssPath = path.resolve('public/css/components.css');
   const cssContent = fs.readFileSync(cssPath, 'utf8');
@@ -49,9 +58,16 @@ async function runQaTests() {
   assert.ok(allReducedMotionText.includes('.wcu-art'), 'Reduced motion must cover .wcu-art');
   console.log('  1e. prefers-reduced-motion verified for all new animations: PASSED');
 
-  // =========================================================================
+  // 1f. T-341 accessibility polish invariants (modal focus timing, dot target, news date contrast, single h1)
+  assert.ok(cssContent.includes('visibility 0s linear 0s'), 'Active modal must open visibility at t=0 for immediate focus');
+  assert.ok(cssContent.includes('.brand-modal-close:focus-visible'), 'Modal close button must define focus-visible style');
+  assert.ok(/\.hero-dot\s*\{[\s\S]*?width:\s*24px;[\s\S]*?height:\s*24px;/.test(cssContent), '.hero-dot touch target must be >= 24x24px');
+  assert.ok(/\.news-date\s*\{[\s\S]*?color:\s*var\(--color-inverse-primary\)/.test(cssContent), '.news-date must use high-contrast inverse primary token');
+  const heroSlideEjs = fs.readFileSync(path.resolve('views/partials/home/hero-slide.ejs'), 'utf8');
+  assert.ok(heroSlideEjs.includes("index === 0") && heroSlideEjs.includes('<h1'), 'Hero slider must reserve <h1> for the primary slide only');
+  console.log('  1f. T-341 accessibility & contrast polish invariants verified: PASSED');
+
   // T-180: Deep Link Category Filter & Empty State Fallback
-  // =========================================================================
   console.log('\n[TEST 2: T-180] Testing End-to-End Category Deep Links & Fallback State...');
 
   // 2a. Fetch Homepage and parse category links
@@ -69,23 +85,23 @@ async function runQaTests() {
 
   console.log(`  2a. Discovered ${categorySlugs.length} primary category deep links: ${categorySlugs.join(', ')}: PASSED`);
 
-  // 2b. Test each category deep link
+  // 2b. Test each category deep link on updated PLP (/products uses .plp-sidebar-link & .plp-card since T-193)
   for (const slug of categorySlugs) {
     const resCat = await fetch(`${BASE_URL}/products?category=${slug}`);
     assert.strictEqual(resCat.status, 200, `Category deep link for '${slug}' must return HTTP 200`);
     const catHtml = await resCat.text();
 
     assert.ok(
-      catHtml.includes(`href="/products?category=${slug}"`) || catHtml.includes(`class="pill-filter active"`),
-      `Pill filter for '${slug}' must be active`
+      catHtml.includes(`href="/products?category=${slug}"`) || catHtml.includes('plp-sidebar-link active'),
+      `Category filter link for '${slug}' must be present and active`
     );
 
     assert.ok(
-      catHtml.includes('bento-card') || catHtml.includes('Produk Tidak Ditemukan'),
-      `Category '${slug}' must render either products or graceful empty state`
+      catHtml.includes('plp-card') || catHtml.includes('plp-empty-state') || catHtml.includes('Produk Tidak Ditemukan'),
+      `Category '${slug}' must render .plp-card items or graceful empty state`
     );
   }
-  console.log('  2b. All category deep links load successfully with active filter pills: PASSED');
+  console.log('  2b. All category deep links load successfully with active filter state: PASSED');
 
   // 2c. Test empty category fallback
   const resEmptyCat = await fetch(`${BASE_URL}/products?category=kategori-kosong-qa-test`);
@@ -115,40 +131,63 @@ async function runQaTests() {
   assert.ok(hreflangEn, 'Must have en alternate hreflang');
   console.log('  2d. Canonical URL and hreflang validity on deep link verified: PASSED');
 
-  // =========================================================================
-  // T-181: Zero Regression, Bilingual ID/EN, Admin Health, Delivery Gate
-  // =========================================================================
-  console.log('\n[TEST 3: T-181] Testing Zero Regression, Bilingual Integrity & Delivery Gate...');
+  // T-181 & T-341: Refactored 8-section parity, bilingual integrity, and admin CMS health
+  console.log('\n[TEST 3: T-181 / T-341] Testing Zero Regression, Bilingual Integrity & Delivery Gate...');
 
-  // 3a. Verify all 8 homepage sections intact
-  const requiredSections = [
+  // 3a. Verify active live sections plus full 8-section parity via homeService when certifications enabled
+  const baseRequiredSections = [
     { selector: 'class="hero hero-slider"', name: 'Hero Banner Slider' },
     { selector: 'class="sec-intro"', name: 'Company Introduction' },
     { selector: 'class="sec-products"', name: 'Category Showcase' },
     { selector: 'class="sec-why-us sec-pillars"', name: 'Why Choose Us' },
-    { selector: 'class="sec-evidence"', name: 'Certifications & Accreditations' },
     { selector: 'sec-brands', name: 'Our Registered Brands Marquee' },
     { selector: 'class="sec-news"', name: 'Latest News & Insights' },
     { selector: 'class="site-footer"', name: 'Master Site Footer' }
   ];
 
-  for (const sec of requiredSections) {
+  for (const sec of baseRequiredSections) {
     assert.ok(homeHtml.includes(sec.selector), `Homepage must contain intact section: ${sec.name}`);
   }
-  console.log('  3a. Zero visual regression across all 8 homepage sections: PASSED');
+  assert.ok(homeHtml.includes('/js/home.js'), 'Homepage must load extracted /js/home.js bundle');
+  assert.ok(homeHtml.includes('/images/wcu-botanical.svg'), 'Homepage WCU section must reference extracted SVG asset');
+  assert.strictEqual((homeHtml.match(/<h1\b/g) || []).length, 1, 'Homepage must render exactly one <h1> tag');
 
-  // 3b. Bilingual SSR Validation (ID vs EN)
+  const idDict = JSON.parse(fs.readFileSync(path.resolve('locales/id.json'), 'utf8'));
+  const tId = createTranslator(idDict);
+  const fullDefaults = homeContentModel.getDefaults();
+  fullDefaults.certifications.is_active = 1;
+  const fullView = buildHomeViewModel(
+    { banners: [], homepageCategories: [], brands: [{ name: 'PB', is_active: 1 }], latestPosts: [], homeContent: fullDefaults },
+    { currentLang: 'id', settings: { company_name: 'PT. EUODOO' }, t: tId }
+  );
+  const fullHtml = await ejs.renderFile(path.resolve('views/public/index.ejs'), {
+    title: 'PT. EUODOO',
+    path: '/',
+    homeView: fullView,
+    currentLang: 'id',
+    t: tId,
+    settings: { company_name: 'PT. EUODOO' },
+    csrfToken: 'test-csrf',
+    canonicalUrl: `${BASE_URL}/`,
+    metaDescription: 'QA',
+    ogImage: '/images/hero-factory.jpg',
+    alternateLinks: { id: `${BASE_URL}/`, en: `${BASE_URL}/?lang=en` }
+  });
+  assert.ok(fullHtml.includes('class="sec-evidence"'), 'All-active showcase must render Certifications section (.sec-evidence)');
+  console.log('  3a. Zero regression across refactored 8-section homepage pipeline: PASSED');
+
+  // 3b. Bilingual SSR Validation (ID vs EN, aligned with T-237 & T-336 i18n keys)
   const resHomeId = await fetch(`${BASE_URL}/?lang=id`);
   assert.strictEqual(resHomeId.status, 200);
   const homeIdHtml = await resHomeId.text();
-  assert.ok(homeIdHtml.includes('Lihat Seluruh Katalog'), 'Indonesian homepage must display ID catalog CTA');
   assert.ok(homeIdHtml.includes('Jelajahi Seluruh Katalog Produk'), 'Indonesian homepage must display ID explore CTA');
+  assert.ok(homeIdHtml.includes('Informasi Terbaru'), 'Indonesian homepage must display ID news heading');
 
   const resHomeEn = await fetch(`${BASE_URL}/?lang=en`);
   assert.strictEqual(resHomeEn.status, 200);
   const homeEnHtml = await resHomeEn.text();
-  assert.ok(homeEnHtml.includes('View All Catalog'), 'English homepage must display EN catalog CTA');
   assert.ok(homeEnHtml.includes('Explore Complete Product Catalog'), 'English homepage must display EN explore CTA');
+  assert.ok(homeEnHtml.includes('Latest News'), 'English homepage must display EN news heading');
 
   // Check for raw template leak or unrendered keys
   const forbiddenLeaks = ['<%=', '<%-', 'undefined', '[object Object]', 'home.feat_'];
