@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
+import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import express from 'express';
 
 import { pool } from '../config/database.js';
@@ -255,5 +257,55 @@ test('6. Image memory upload is capped at 10MB, disk upload streams cleanly, and
     assert.equal(xssRes.bodyChunks.join('').includes('<img src=x'), false, 'Dev error HTML must escape err.message');
   } finally {
     setEnv(prevEnv);
+  }
+});
+
+test('7. Mailer loads .env standalone with quoted #/$ pass and reports SMTP rejections/errors', async () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'euodoo-mailer-test-'));
+  try {
+    fs.writeFileSync(
+      path.join(tmpDir, '.env'),
+      "SMTP_HOST=smtp.example.test\nSMTP_PORT=465\nSMTP_SECURE=true\nSMTP_USER=bot@example.test\nSMTP_PASS='@#123$pass'\n",
+      'utf8'
+    );
+    const mailerUrl = pathToFileURL(path.resolve('config/mailer.js')).href;
+    const probeScript = `
+      import mailer from ${JSON.stringify(mailerUrl)};
+      const o = mailer.transporter.options;
+      console.log(JSON.stringify({ host: o.host, port: o.port, secure: o.secure, user: o.auth?.user, pass: o.auth?.pass }));
+    `;
+    const cleanEnv = { PATH: process.env.PATH, HOME: process.env.HOME };
+    const stdout = execFileSync(process.execPath, ['--input-type=module', '-e', probeScript], {
+      cwd: tmpDir,
+      env: cleanEnv,
+      encoding: 'utf8'
+    });
+    const parsed = JSON.parse(stdout.trim());
+    assert.deepEqual(parsed, {
+      host: 'smtp.example.test',
+      port: 465,
+      secure: true,
+      user: 'bot@example.test',
+      pass: '@#123$pass'
+    });
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+
+  const origSendMail = mailer.transporter.sendMail.bind(mailer.transporter);
+  try {
+    mailer.transporter.sendMail = async () => ({ messageId: 'rej-1', accepted: [], rejected: ['sales@euodoo.com'] });
+    const rejectedRes = await mailer.sendLeadNotification({ name: 'Budi', email: 'budi@test.com', phone: '08123456', message: 'Halo' });
+    assert.equal(rejectedRes.success, false);
+    assert.deepEqual(rejectedRes.rejected, ['sales@euodoo.com']);
+
+    mailer.transporter.sendMail = async () => {
+      throw Object.assign(new Error('535 Incorrect authentication data'), { code: 'EAUTH', responseCode: 535 });
+    };
+    const errRes = await mailer.sendLeadNotification({ name: 'Budi', email: 'budi@test.com', phone: '08123456', message: 'Halo' });
+    assert.equal(errRes.success, false);
+    assert.equal(errRes.code, 'EAUTH');
+  } finally {
+    mailer.transporter.sendMail = origSendMail;
   }
 });

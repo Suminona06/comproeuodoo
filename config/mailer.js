@@ -1,15 +1,19 @@
+import 'dotenv/config';
 import nodemailer from 'nodemailer';
 import escapeHtml from 'escape-html';
 import logger from '../utils/logger.js';
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'mail.euodoo.com',
+  host: process.env.SMTP_HOST || 'mail.euodoo.co.id',
   port: parseInt(process.env.SMTP_PORT || '465', 10),
   secure: process.env.SMTP_SECURE === 'true' || process.env.SMTP_PORT === '465',
   auth: {
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || ''
   },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
   tls: {
     rejectUnauthorized: process.env.NODE_ENV === 'production' || process.env.SMTP_ALLOW_INSECURE_TLS !== 'true'
   }
@@ -78,6 +82,30 @@ function buildLeadEmailHtml(lead) {
   `;
 }
 
+function hasDeliveryRejection(info) {
+  const rejected = Array.isArray(info?.rejected) ? info.rejected : [];
+  const emptyAccepted = Array.isArray(info?.accepted) && info.accepted.length === 0;
+  return rejected.length > 0 || emptyAccepted;
+}
+
+function buildLeadMailOptions(lead) {
+  const recipient = process.env.SALES_NOTIFICATION_EMAIL || 'sales@euodoo.com';
+  const mailFrom = process.env.MAIL_FROM || '"PT Euodoo Web" <notification@euodoo.com>';
+  const companyPart = lead.company_name ? `${stripCrLf(lead.company_name)} - ` : '';
+  return {
+    from: mailFrom,
+    to: recipient,
+    subject: `[Permintaan Penawaran B2B] ${companyPart}${stripCrLf(lead.name)}`,
+    html: buildLeadEmailHtml(lead)
+  };
+}
+
+function handleRejectedDelivery(info) {
+  const { messageId, accepted, rejected = [] } = info || {};
+  logger.warn('Lead notification email rejected by SMTP server:', { messageId, accepted, rejected });
+  return { success: false, messageId, rejected };
+}
+
 export const mailer = {
   transporter,
 
@@ -86,24 +114,22 @@ export const mailer = {
    */
   async sendLeadNotification(lead) {
     try {
-      const recipient = process.env.SALES_NOTIFICATION_EMAIL || 'sales@euodoo.com';
-      const mailFrom = process.env.MAIL_FROM || '"PT Euodoo Web" <notification@euodoo.com>';
-      const companyPart = lead.company_name ? `${stripCrLf(lead.company_name)} - ` : '';
-      const subject = `[Permintaan Penawaran B2B] ${companyPart}${stripCrLf(lead.name)}`;
-      const htmlContent = buildLeadEmailHtml(lead);
-
-      const info = await transporter.sendMail({
-        from: mailFrom,
-        to: recipient,
-        subject,
-        html: htmlContent
+      const info = await transporter.sendMail(buildLeadMailOptions(lead));
+      if (hasDeliveryRejection(info)) {
+        return handleRejectedDelivery(info);
+      }
+      logger.info('Lead notification email sent successfully:', {
+        messageId: info.messageId,
+        accepted: info.accepted
       });
-
-      logger.info('Lead notification email sent successfully:', { messageId: info.messageId });
       return { success: true, messageId: info.messageId };
     } catch (err) {
-      logger.warn('Failed to send lead email notification (non-fatal):', { message: err.message });
-      return { success: false, error: err.message };
+      logger.warn('Failed to send lead email notification (non-fatal):', {
+        code: err.code,
+        responseCode: err.responseCode,
+        message: err.message
+      });
+      return { success: false, error: err.message, code: err.code };
     }
   }
 };
