@@ -12,6 +12,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/partials/admin-header.ejs',
   'views/partials/admin-footer.ejs',
   'views/partials/media-picker-modal.ejs',
+  'views/public/index.ejs',
+  'views/partials/home/',
   'views/public/about.ejs',
   'views/partials/about/',
   'views/public/contact.ejs',

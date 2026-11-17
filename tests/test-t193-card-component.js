@@ -50,8 +50,10 @@ async function run() {
 
   // 2. Check Homepage isolation: homepage must NOT be broken or changed to .plp
   const indexEjs = fs.readFileSync('views/public/index.ejs', 'utf8');
-  assert(indexEjs.includes('.prod-header') || indexEjs.includes('class="prod-header'), 'Homepage must keep .prod-header');
-  assert(indexEjs.includes('.prod-title') || indexEjs.includes('class="prod-title'), 'Homepage must keep .prod-title');
+  const homeCatsEjs = fs.readFileSync('views/partials/home/categories.ejs', 'utf8');
+  assert(indexEjs.includes('categories'), 'Homepage must include categories partial');
+  assert(homeCatsEjs.includes('class="prod-header'), 'Homepage categories partial must keep .prod-header');
+  assert(homeCatsEjs.includes('class="prod-title'), 'Homepage categories partial must keep .prod-title');
   assert(css.includes('.prod-header'), 'components.css must preserve .prod-header for homepage');
   console.log('  [PASS] Homepage isolation preserved: .prod-* remains intact');
 

@@ -3,13 +3,44 @@ import ejs from 'ejs';
 import path from 'path';
 import fs from 'fs';
 import http from 'http';
+import { buildHomeViewModel } from '../services/homeService.js';
 
 const templatePath = path.resolve('views/public/index.ejs');
 const cssPath = path.resolve('public/css/components.css');
+const dictionaries = {
+  id: JSON.parse(fs.readFileSync(path.resolve('locales/id.json'), 'utf8')),
+  en: JSON.parse(fs.readFileSync(path.resolve('locales/en.json'), 'utf8'))
+};
+
+function createTranslator(lang) {
+  const dict = lang === 'en' ? dictionaries.en : dictionaries.id;
+  return (key, params = {}) => {
+    let val = dict;
+    for (const part of key.split('.')) val = val?.[part];
+    let text = typeof val === 'string' ? val : key;
+    for (const [k, v] of Object.entries(params)) {
+      text = text.replace(new RegExp(`\\{\\{?\\s*${k}\\s*\\}?}`, 'g'), v);
+    }
+    return text;
+  };
+}
 
 async function renderIndexEjs(data) {
+  const currentLang = data.currentLang || 'id';
+  const t = createTranslator(currentLang);
+  const homeView = buildHomeViewModel(data, {
+    currentLang,
+    settings: data.settings,
+    t
+  });
   return new Promise((resolve, reject) => {
-    ejs.renderFile(templatePath, data, {
+    ejs.renderFile(templatePath, {
+      ...data,
+      currentLang,
+      t,
+      __: t,
+      homeView
+    }, {
       root: path.resolve('views')
     }, (err, str) => {
       if (err) reject(err);
@@ -47,25 +78,14 @@ async function runT187Tests() {
     title: 'Test Homepage',
     path: '/',
     currentLang: 'id',
-    featuredProducts: [],
     homepageCategories: [],
     brands: [],
     latestPosts: [],
-    homeContent: {
-      wcu_badge_id: 'Test Badge',
-      wcu_badge_en: 'Test Badge EN',
-      wcu_title_id: 'Test Title',
-      wcu_title_en: 'Test Title EN',
-      wcu_desc_id: 'Test Desc',
-      wcu_desc_en: 'Test Desc EN',
-      wcu_items: []
-    },
     settings: {
       company_name: 'PT Euodoo',
       home_brand_title_id: 'Merek Terdaftar',
       home_brand_title_en: 'Registered Trademarks'
     },
-    formatInlineText: (t) => t || '',
     user: null,
     csrfToken: 'test-token'
   };

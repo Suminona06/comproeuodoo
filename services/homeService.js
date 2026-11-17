@@ -30,12 +30,18 @@ function pickBilingual(obj, baseKey, lang, crossFallback = false) {
   return crossFallback ? (obj[`${baseKey}_en`] || '') : '';
 }
 
+function resolveSafeHref(rawUrl, fallback) {
+  const trimmed = rawUrl ? String(rawUrl).trim() : '';
+  if (!trimmed) return fallback;
+  return /^(?:\/(?!\/)|https?:\/\/|mailto:|tel:|#)/i.test(trimmed) ? trimmed : fallback;
+}
+
 function extractYoutubeId(rawUrl) {
   const url = typeof rawUrl === 'string' ? rawUrl.trim() : '';
   if (!url) return '';
   const match = url.match(/(?:embed\/|shorts\/|youtu\.be\/|[?&]v=)([^"&?/\s#]+)/);
   if (match) return match[1];
-  return url.includes('/') ? '' : url;
+  return !url.includes('/') && /^[a-zA-Z0-9_-]+$/.test(url) ? url : '';
 }
 
 function resolveBannerCta(banner, isSecondary, lang) {
@@ -43,7 +49,7 @@ function resolveBannerCta(banner, isSecondary, lang) {
   const text = pickBilingual(banner, textKey, lang, true).trim();
   if (!text) return null;
   const rawUrl = isSecondary ? banner.cta_secondary_url : (banner.cta_url || banner.link_url);
-  const url = (rawUrl && String(rawUrl).trim()) || (isSecondary ? '/about' : '/contact');
+  const url = resolveSafeHref(rawUrl, isSecondary ? '/about' : '/contact');
   return { text, url, isExternal: /^https?:\/\//i.test(url) };
 }
 
@@ -175,7 +181,7 @@ export function buildCertificationsViewModel(certData, lang) {
     body,
     showBtn: isActiveFlag(cert.show_btn) && Boolean(btnText),
     btnText,
-    btnUrl: cert.btn_url || '/about#sertifikasi',
+    btnUrl: resolveSafeHref(cert.btn_url, '/about#sertifikasi'),
     items
   };
 }

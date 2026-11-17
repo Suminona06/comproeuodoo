@@ -2,7 +2,7 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 4 Task (`T-338` s/d `T-341`; `T-336..T-337` selesai, menunggu Close)
+- **Task Aktif Terbuka:** 1 Task (`T-341`; `T-336..T-340` selesai, menunggu Close)
 - **Total Task Selesai:** 335 Task (T-01 s/d T-335)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-342**.
@@ -35,7 +35,7 @@
   4. Seluruh teks statis, `aria-label`, `title`, modal `#brandPreviewModal` (`data-default-brand-name`), dan empty-state menggunakan `t('home.*')`; class scoped baru `.home-intro-*`, `.hcat-grid--1..4`, `.home-cert-logo` terpasang tanpa mengubah selektor eksisting.
 - **Verifikasi:** `node scripts/lint-views.js views/public/index.ejs`, `node scripts/lint-views.js views/partials/home`, dan `npm run lint:i18n` (0 error, 0 warning).
 
-### [ ] T-338: Ekstraksi & Pengerasan Skrip Beranda ke `public/js/home.js`
+### [x] T-338: Ekstraksi & Pengerasan Skrip Beranda ke `public/js/home.js`
 - **Prioritas:** High | **Modul:** Public Home Sections | **Dependensi:** `T-337` | **Skill:** `antislop-code`, `polish`
 - **File Terdampak:** `public/js/home.js` (baru), `public/js/main.js`
 - **Temuan Teknis / Akar Masalah:** `public/js/main.js` (987 baris, `DOMContentLoaded` 833 baris) menampung `initHeroYouTube` (`L271-308`: empty catch `L283`, `complexity: 14`, `max-depth: 3`, tanpa cek `event.origin`), `initHeroSlider` (`L311-479`), dan `#brandPreviewModal` (`L482-546`: `innerHTML` interpolasi `L501,503` & fallback `'Merek Resmi'` hardcoded `L494`).
@@ -46,7 +46,7 @@
   4. `public/js/home.js` lulus ESLint ketat (`<= 40` baris/fungsi, `<= 300` baris/berkas, `max-depth <= 2`, `complexity <= 8`, 0 warning/error).
 - **Verifikasi:** `npx eslint public/js/home.js` (0 error, 0 warning) dan pengecekan diff ESLint `public/js/main.js`.
 
-### [ ] T-339: Pembersihan CSS Beranda & Penyelarasan Token (`components.css` & `tokens.css`)
+### [x] T-339: Pembersihan CSS Beranda & Penyelarasan Token (`components.css` & `tokens.css`)
 - **Prioritas:** High | **Modul:** Public Home Sections, Code Conventions | **Dependensi:** `T-337` | **Skill:** `polish`, `antislop-code`
 - **File Terdampak:** `public/css/components.css`, `public/css/tokens.css`
 - **Temuan Teknis / Akar Masalah:** Inline style intro (`index.ejs:179`) merujuk `--shadow-sm` yang tidak ada di `tokens.css`; `.sec-why-us .wcu-art` (`components.css:3350-3358`) memerlukan `object-fit: contain;` untuk `<img>`; ~103 baris deklarasi warna + 1 komentar (`L1352`) di blok selektor beranda `components.css` (`L1162-1935`, `L3065-4080`, `L4529`) masih mengandung raw hex / fallback hex dalam `var(--token, #hex)`.
@@ -56,9 +56,9 @@
   3. Selektor non-beranda tidak disentuh; perilaku class bersama (`.sec-products`, `.btn-secondary`, `.btn-pill-solid-white`, `.btn-primary`) dan seluruh aturan yang diaudit test (`test-homepage-major-update-qa.js`, `test-homepage-hero-cta-merek-qa.js`) tetap utuh.
 - **Verifikasi:** Scan hex blok beranda `components.css` (0 temuan), cek diff selektor non-beranda, dan audit computed styles Playwright.
 
-### [ ] T-340: Penegakan Strict Path `lint:views` & Penyesuaian Test Suite Beranda
+### [x] T-340: Penegakan Strict Path `lint:views` & Penyesuaian Test Suite Beranda
 - **Prioritas:** High | **Modul:** Code Conventions, Public Home | **Dependensi:** `T-336`, `T-337`, `T-338`, `T-339` | **Skill:** `adapt`, `antislop-code`
-- **File Terdampak:** `scripts/lint-views.js`, `tests/test-t187-hero-cta-public.js`, `tests/test-t188-brand-strip-marquee.js`, `tests/test-t189-dead-code-cleanup.js`, `tests/test-homepage-hero-cta-merek-qa.js`, `tests/test-brand-marquee-scaling.js`, `tests/test-t237-playwright-verification.js`, `tests/test-t193-card-component.js`
+- **File Terdampak:** `scripts/lint-views.js`, `tests/test-t187-hero-cta-public.js`, `tests/test-t188-brand-strip-marquee.js`, `tests/test-t189-dead-code-cleanup.js`, `tests/test-homepage-hero-cta-merek-qa.js`, `tests/test-brand-marquee-scaling.js`, `tests/test-t237-playwright-verification.js`, `tests/test-t193-card-component.js`, `tests/test-modul13-seo-audit.js`
 - **Temuan Teknis / Akar Masalah:** `DEFAULT_STRICT_PATHS` belum mencakup `views/public/index.ejs` dan `views/partials/home/`; `test-t187` & `test-t188` merender `index.ejs` tanpa `homeService` & `t()` (dan `test-t188` cek fallback judul lama); `test-t189`, `test-homepage-hero-cta-merek-qa`, & `test-brand-marquee-scaling` menginspeksi/menginjeksi `main.js`/`index.ejs` langsung; `test-t237` perlu verifikasi `<img class="wcu-art" src="/images/wcu-botanical.svg">`; `test-t193` mencari `.prod-header`/`.prod-title` langsung di `index.ejs`.
 - **Acceptance Criteria:**
   1. `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js` memasukkan `'views/public/index.ejs'` dan `'views/partials/home/'`.

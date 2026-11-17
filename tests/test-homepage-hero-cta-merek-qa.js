@@ -125,13 +125,13 @@ async function runComprehensiveQa() {
   console.log('  4b. Tampilan bilingual English (?lang=en) & modal zoom verified: PASSED');
 
   // =========================================================================
-  // 5. Verifikasi Integritas Handler JavaScript di public/js/main.js
+  // 5. Verifikasi Integritas Handler JavaScript di public/js/home.js
   // =========================================================================
-  console.log('5. Verifikasi Script Controller Modal di public/js/main.js:');
-  const jsContent = fs.readFileSync(path.resolve('public/js/main.js'), 'utf8');
-  assert(jsContent.includes('document.getElementById(\'brandPreviewModal\')'), 'main.js harus menautkan elemen brandPreviewModal');
-  assert(jsContent.includes('.js-brand-preview-trigger'), 'main.js harus memasang listener pada .js-brand-preview-trigger');
-  assert(jsContent.includes('e.key === \'Escape\''), 'main.js harus mendukung penutupan modal via tombol Escape');
+  console.log('5. Verifikasi Script Controller Modal di public/js/home.js:');
+  const jsContent = fs.readFileSync(path.resolve('public/js/home.js'), 'utf8');
+  assert(jsContent.includes('document.getElementById(\'brandPreviewModal\')'), 'home.js harus menautkan elemen brandPreviewModal');
+  assert(jsContent.includes('.js-brand-preview-trigger'), 'home.js harus memasang listener pada .js-brand-preview-trigger');
+  assert(jsContent.includes('e.key === \'Escape\''), 'home.js harus mendukung penutupan modal via tombol Escape');
   console.log('  5a. Controller JS modal (klik logo, keyboard Enter/Space, tombol Escape, dan backdrop): PASSED');
 
   console.log('=== ALL T-191 HOMEPAGE HERO CTA & MEREK QA REGRESSION TESTS PASSED! ===');
