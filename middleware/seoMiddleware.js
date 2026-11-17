@@ -130,6 +130,11 @@ function createSeoObject(baseUrl, canonicalUrl, currentLang, schemas) {
   };
 }
 
+function isAdminPath(rawPath) {
+  const normalized = String(rawPath || '/').toLowerCase();
+  return normalized === '/admin' || normalized.startsWith('/admin/');
+}
+
 /**
  * Dynamic SEO Engine Middleware
  * Injects meta tags, Open Graph, Twitter Cards, canonical links, hreflang, and JSON-LD schema into res.locals.seo
@@ -146,6 +151,9 @@ export const seoMiddleware = (req, res, next) => {
   }
 
   res.locals.seo = createSeoObject(baseUrl, canonicalUrl, currentLang, schemas);
+  if (isAdminPath(currentPath)) {
+    res.locals.seo.robots = 'noindex, nofollow';
+  }
   next();
 };
 

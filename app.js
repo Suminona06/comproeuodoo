@@ -112,6 +112,12 @@ app.use(
   })
 );
 
+// Enforce noindex across every /admin response (including CSRF 403, rate limits, auth redirects, API, and CSV exports)
+app.use('/admin', (req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+  next();
+});
+
 // CSRF Protection & Global Auth Context & i18n
 app.use(csrfProtection);
 app.use(optionalAuth);

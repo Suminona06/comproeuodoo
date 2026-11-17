@@ -27,6 +27,7 @@ export const notFoundHandler = (req, res, next) => {
       <html lang="id">
       <head>
         <meta charset="UTF-8">
+        <meta name="robots" content="noindex, nofollow">
         <title>404 - Halaman Tidak Ditemukan | PT Euodoo Plastic</title>
         <style>
           body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #131b2e; }
@@ -58,6 +59,7 @@ function renderDevErrorHtml(statusCode, err, showDebugDetails) {
     <html lang="id">
     <head>
       <meta charset="UTF-8">
+      <meta name="robots" content="noindex, nofollow">
       <title>${statusCode} - Terjadi Kesalahan | PT Euodoo Plastic</title>
       <style>
         body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #131b2e; }

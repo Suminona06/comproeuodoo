@@ -44,7 +44,7 @@
 - **Skill:** `antislop-code`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm run test:public`, `npm run test:security`, `node tests/test-public-ssr.js`, `node tests/test-admin-crud.js`, `node tests/test-revisi-admin-v1.js`, `node tests/test-t276-conventions-refactor-qa.js`
 
-### [ ] `T-345` — [B2 / FR-35] Proteksi Noindex Total Rute `/admin`, `/admin/login`, `/admin/*` & Retensi `Disallow` di `/robots.txt`
+### [x] `T-345` — [B2 / FR-35] Proteksi Noindex Total Rute `/admin`, `/admin/login`, `/admin/*` & Retensi `Disallow` di `/robots.txt`
 - **Acceptance Criteria (Keputusan 4: Opsi a):**
   - Pasang middleware `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet` di `app.js` pada mount `/admin` **sebelum** `csrfProtection` sehingga mencakup `/admin`, `/admin/login`, seluruh rute `adminRoutes.js`, `429` `loginLimiter`, `401`/`403` `requireAuth`/`roleMiddleware`, `403` CSRF HTML/JSON, `404` `notFoundHandler`, `500` `errorHandler`, JSON API admin, serta ekspor CSV.
   - Tambahkan `<meta name="robots" content="noindex, nofollow">` pada `views/admin/login.ejs`, `views/partials/admin-header.ejs`, `views/admin/403.ejs`, dan HTML fallback error/CSRF pada `middleware/csrfMiddleware.js`, `middleware/roleMiddleware.js`, serta `middleware/errorHandler.js` (bebas inline style/hex/handler baru di template EJS strict).

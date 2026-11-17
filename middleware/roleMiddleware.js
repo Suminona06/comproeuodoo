@@ -39,13 +39,21 @@ export const roleMiddleware = (allowedRoles = []) => {
         message: `Role Anda (${userRole}) tidak memiliki izin untuk mengakses halaman ini.`
       }, (err, html) => {
         if (err) {
-          return res.status(403).send(`
-            <div style="font-family: system-ui, sans-serif; max-width: 500px; margin: 80px auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; background: #ffffff;">
-              <h2 style="color: #b91c1c; margin-bottom: 8px;">403 - Akses Ditolak</h2>
-              <p style="color: #4b5563; margin-bottom: 24px;">Role akun Anda (${userRole}) tidak memiliki wewenang untuk membuka halaman ini.</p>
-              <a href="/admin/dashboard" style="display: inline-block; padding: 10px 20px; background: #00755a; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600;">Kembali ke Dashboard</a>
-            </div>
-          `);
+          return res.status(403).send(`<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <title>403 - Akses Ditolak | PT Euodoo Plastic</title>
+</head>
+<body>
+  <div style="font-family: system-ui, sans-serif; max-width: 500px; margin: 80px auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; background: #ffffff;">
+    <h2 style="color: #b91c1c; margin-bottom: 8px;">403 - Akses Ditolak</h2>
+    <p style="color: #4b5563; margin-bottom: 24px;">Role akun Anda (${userRole}) tidak memiliki wewenang untuk membuka halaman ini.</p>
+    <a href="/admin/dashboard" style="display: inline-block; padding: 10px 20px; background: #00755a; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600;">Kembali ke Dashboard</a>
+  </div>
+</body>
+</html>`);
         }
         res.send(html);
       });
