@@ -132,11 +132,12 @@ node tests/test-admin-crud.js
 
 ---
 
-## 🤖 CI Quality Gate (GitHub Actions)
-Workflow [.github/workflows/ci.yml](.github/workflows/ci.yml) memvalidasi setiap PR/push ke `main`:
-- Lint kode JS (`npm run lint`), lint template EJS/CSS (`npm run lint:views`), dan audit kamus i18n (`npm run lint:i18n`).
-- Verifikasi integritas `snapshot.json`, kelengkapan 34 aset media baseline di `database/seed-assets/uploads/`, serta validasi urutan migrasi (`npm run test:seed`).
-- Uji integrasi MySQL dan SSR penuh (`npm test`) dijalankan di lokal sebelum merge/deploy.
+## 🤖 CI Quality Gate & Deploy Staging (GitHub Actions)
+- **CI Quality Gate** ([.github/workflows/ci.yml](.github/workflows/ci.yml)) memvalidasi setiap PR/push ke `main`:
+  - Lint kode JS (`npm run lint`), lint template EJS/CSS (`npm run lint:views`), dan audit kamus i18n (`npm run lint:i18n`).
+  - Verifikasi integritas `snapshot.json`, kelengkapan 34 aset media baseline di `database/seed-assets/uploads/`, serta validasi urutan migrasi (`npm run test:seed`).
+  - Uji integrasi MySQL dan SSR penuh (`npm test`) dijalankan di lokal sebelum merge/deploy.
+- **Deploy Staging cPanel** ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) berjalan otomatis setelah `CI Quality Gate` sukses pada push ke `main` (atau manual lewat `workflow_dispatch` dengan opsi `run_seed`): menyinkronkan kode `origin/main`, menjaga blok Passenger `.htaccess`, menjalankan `npm install --omit=dev` & `npm run migrate`, lalu me-restart Passenger via `tmp/restart.txt`.
 
 ---
 
