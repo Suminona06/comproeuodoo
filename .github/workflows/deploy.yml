@@ -1,0 +1,33 @@
+name: Deploy Express to Staging cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH to cPanel
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd ~/staging.euodoo.co.id
+
+            # Tarik kode terbaru dari branch main
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Aktifkan virtual environment Node 24 cPanel & update dependency
+            source ~/nodevenv/staging.euodoo.co.id/24/bin/activate
+            npm install --production
+
+            # Restart aplikasi Phusion Passenger / LiteSpeed
+            mkdir -p tmp
+            touch tmp/restart.txt
