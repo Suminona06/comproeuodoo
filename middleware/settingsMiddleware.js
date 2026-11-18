@@ -24,13 +24,13 @@ const SOCIAL_PLATFORMS = ['linkedin', 'instagram', 'facebook', 'youtube'];
 
 const OFFICE_DEFAULTS = [
   ['company_name', ['company_name'], 'PT Euodoo Plastic'],
-  ['office_name_id', ['office_name_id'], 'Kantor Pusat (Jakarta)'],
-  ['office_name_en', ['office_name_en'], 'Head Office (Jakarta)'],
-  ['office_address', ['office_address', 'about_office_address'], 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270'],
+  ['office_name_id', ['office_name_id'], 'Kantor Pusat (Bandung)'],
+  ['office_name_en', ['office_name_en'], 'Head Office (Bandung)'],
+  ['office_address', ['office_address', 'about_office_address'], 'Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214'],
   ['office_phone', ['office_phone', 'company_phone', 'about_office_phone'], '(021) 53668626'],
   ['company_phone', ['office_phone'], '(021) 53668626'],
-  ['company_email', ['company_email'], 'info@euodoo.com'],
-  ['office_email', ['office_email', 'company_email'], 'info@euodoo.com']
+  ['company_email', ['company_email'], 'sales@euodoo.co.id'],
+  ['office_email', ['office_email', 'company_email'], 'sales@euodoo.co.id']
 ];
 
 const FACTORY_DEFAULTS = [
