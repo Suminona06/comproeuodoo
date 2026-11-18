@@ -5,7 +5,7 @@ import postModel from '../models/postModel.js';
 import homeContentModel from '../models/homeContentModel.js';
 import { formatInlineText } from '../utils/textFormatter.js';
 
-const DEFAULT_COMPANY_NAME = 'PT. EUODOO';
+const DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic';
 const DEFAULT_HERO_IMAGE = '/images/hero-factory.jpg';
 const DEFAULT_NEWS_YEAR = '2026';
 const MIN_MARQUEE_BRANDS = 8;

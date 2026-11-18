@@ -23,7 +23,7 @@ const DEFAULT_CTA_PAGES = {
 const SOCIAL_PLATFORMS = ['linkedin', 'instagram', 'facebook', 'youtube'];
 
 const OFFICE_DEFAULTS = [
-  ['company_name', ['company_name'], 'PT. EUODOO'],
+  ['company_name', ['company_name'], 'PT Euodoo Plastic'],
   ['office_name_id', ['office_name_id'], 'Kantor Pusat (Jakarta)'],
   ['office_name_en', ['office_name_en'], 'Head Office (Jakarta)'],
   ['office_address', ['office_address', 'about_office_address'], 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270'],

@@ -249,7 +249,7 @@ async function runTests() {
     }
     console.log('  ✓ Settings view loaded');
 
-    const settingsUpdatePayload = `company_name=PT+Euodoo+Presisi+Indonesia&company_phone=%2B62+21+8990+1234&whatsapp_number=6281122334455&_csrf=${encodeURIComponent(cookieJar['_csrf_token'])}`;
+    const settingsUpdatePayload = `company_name=PT+Euodoo+Plastic&company_phone=%2B62+21+8990+1234&whatsapp_number=6281122334455&_csrf=${encodeURIComponent(cookieJar['_csrf_token'])}`;
     const updateSetRes = await request(
       { path: '/admin/settings', method: 'POST' },
       settingsUpdatePayload,
@@ -260,7 +260,7 @@ async function runTests() {
     }
     const nameSettingRows = await query("SELECT setting_value FROM settings WHERE setting_key = 'company_name'");
     const nameSetting = nameSettingRows[0];
-    if (nameSetting.setting_value !== 'PT Euodoo Presisi Indonesia') {
+    if (nameSetting.setting_value !== 'PT Euodoo Plastic') {
       throw new Error(`Setting not updated in DB! Got: ${nameSetting.setting_value}`);
     }
     console.log(`  ✓ Setting updated in database: company_name = "${nameSetting.setting_value}"`);

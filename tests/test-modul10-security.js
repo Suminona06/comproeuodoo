@@ -125,6 +125,23 @@ async function runModul10Tests() {
   }
   console.log('  4c. JSON-LD Organization schema generated: PASSED');
 
+  for (const adminUrl of ['/admin', '/admin/login', '/admin/settings?tab=general']) {
+    const adminSeoRes = { locals: {} };
+    seoMiddleware({ cookies: {}, protocol: 'https', get: () => 'euodoo.co.id', originalUrl: adminUrl, headers: {} }, adminSeoRes, () => {});
+    if (adminSeoRes.locals.seo.robots !== 'noindex, nofollow') {
+      throw new Error(`Expected noindex, nofollow for ${adminUrl}, got ${adminSeoRes.locals.seo.robots}`);
+    }
+    if (adminSeoRes.locals.seo.renderJsonLd() !== '') {
+      throw new Error(`Expected empty JSON-LD for ${adminUrl}`);
+    }
+  }
+  const nonAdminSeoRes = { locals: {} };
+  seoMiddleware({ cookies: {}, protocol: 'https', get: () => 'euodoo.co.id', originalUrl: '/admin-info', headers: {} }, nonAdminSeoRes, () => {});
+  if (nonAdminSeoRes.locals.seo.robots !== 'index, follow') {
+    throw new Error('Non-/admin prefix path should remain index, follow');
+  }
+  console.log('  4d. Admin routes enforce robots noindex, nofollow in seoMiddleware: PASSED');
+
   console.log('\n--- ALL MODUL 10 TESTS PASSED SUCCESSFULLY! ---');
   process.exit(0);
 }

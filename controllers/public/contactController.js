@@ -8,7 +8,7 @@ import logger from '../../utils/logger.js';
 const MAX_TEXT_LENGTH = 100;
 const MIN_MESSAGE_LENGTH = 10;
 const MAX_MESSAGE_LENGTH = 3000;
-const DEFAULT_COMPANY_NAME = 'PT Euodoo';
+const DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic';
 const DEFAULT_TURNSTILE_SITE_KEY = '1x00000000000000000000AA';
 const VALID_INQUIRY_TYPES = ['inquiry', 'partnership', 'general'];
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

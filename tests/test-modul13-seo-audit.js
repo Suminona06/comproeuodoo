@@ -1,7 +1,11 @@
 import assert from 'assert';
+import http from 'http';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+import app from '../app.js';
+import { APP_CONFIG } from '../config/constants.js';
+import { getJwtSecret } from '../config/secrets.js';
 import { generateSitemap, invalidateSitemapCache } from '../utils/sitemapGenerator.js';
-import productModel from '../models/productModel.js';
-import postModel from '../models/postModel.js';
 
 const BASE_URL = process.env.TEST_BASE_URL || 'http://127.0.0.1:3000';
 
@@ -18,6 +22,7 @@ async function runModul13Tests() {
   const robotsText = await resRobots.text();
   assert.ok(robotsText.includes('User-agent: *'), 'Must declare User-agent');
   assert.ok(robotsText.includes('Disallow: /admin'), 'Must disallow admin area');
+  assert.ok(robotsText.includes('Disallow: /admin/*'), 'Must disallow admin wildcard routes');
   assert.ok(robotsText.includes('Disallow: /api/*'), 'Must disallow api routes');
   assert.ok(robotsText.includes('/sitemap.xml'), 'Must reference sitemap.xml location');
   console.log('  1a. robots.txt structure and crawler directives verified: PASSED');
@@ -45,6 +50,7 @@ async function runModul13Tests() {
   // Verify dynamic products & news in sitemap
   assert.ok(sitemapXml.includes('/products/soft-loop-handle-shopping-bag'), 'Must include published product');
   assert.ok(sitemapXml.includes('/news/mengenal-teknologi-oxium-plastik-biodegradable'), 'Must include published post');
+  assert.ok(!sitemapXml.includes('/admin'), 'sitemap.xml must never contain /admin URLs');
   console.log('  2a. sitemap.xml dynamic routes and bilingual alternates verified: PASSED');
 
   console.log('\n[TEST 3] Testing sitemap cache invalidation & noindex filter...');
@@ -135,6 +141,78 @@ async function runModul13Tests() {
   assert.ok(newsDetailHtml.includes('"headline":'), 'Article schema must contain headline');
   assert.ok(newsDetailHtml.includes('"datePublished":'), 'Article schema must contain datePublished');
   console.log('  8a. Organization and Article JSON-LD structured data verified: PASSED');
+
+  // ==========================================
+  // SECTION 5: Admin Noindex Defense-in-Depth (FR-35)
+  // ==========================================
+  console.log('\n[TEST 9] Testing FR-35 X-Robots-Tag & Meta Robots across /admin*...');
+  const server = http.createServer(app);
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const localBase = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const EXPECTED_X_ROBOTS = 'noindex, nofollow, noarchive, nosnippet';
+    const superToken = jwt.sign({ id: 1, email: 'admin@euodoo.com', name: 'Super Admin', role: 'superadmin' }, getJwtSecret(), { expiresIn: '15m' });
+    const editorToken = jwt.sign({ id: 2, email: 'editor@euodoo.com', name: 'Editor', role: 'editor' }, getJwtSecret(), { expiresIn: '15m' });
+
+    const resAdminRoot = await fetch(`${localBase}/admin`, { redirect: 'manual' });
+    assert.strictEqual(resAdminRoot.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, '/admin redirect must carry X-Robots-Tag');
+
+    const resLogin = await fetch(`${localBase}/admin/login`);
+    assert.strictEqual(resLogin.status, 200);
+    assert.strictEqual(resLogin.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, '/admin/login must carry X-Robots-Tag');
+    const loginHtml = await resLogin.text();
+    assert.ok(loginHtml.includes('<meta name="robots" content="noindex, nofollow">'), '/admin/login must contain meta robots noindex');
+
+    const resCsrfFail = await fetch(`${localBase}/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'email=a@b.c&password=x'
+    });
+    assert.strictEqual(resCsrfFail.status, 403);
+    assert.strictEqual(resCsrfFail.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, 'POST /admin/login CSRF 403 must carry X-Robots-Tag');
+    const csrfHtml = await resCsrfFail.text();
+    assert.ok(csrfHtml.includes('<meta name="robots" content="noindex, nofollow">'), 'CSRF 403 HTML must include meta robots noindex');
+
+    const resDash = await fetch(`${localBase}/admin/dashboard`, {
+      headers: { Cookie: `${APP_CONFIG.SESSION_COOKIE_NAME}=${superToken}` }
+    });
+    assert.strictEqual(resDash.status, 200);
+    assert.strictEqual(resDash.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, '/admin/dashboard must carry X-Robots-Tag');
+    const dashHtml = await resDash.text();
+    assert.ok(dashHtml.includes('<meta name="robots" content="noindex, nofollow">'), 'Admin dashboard must include meta robots noindex');
+
+    const resForbidden = await fetch(`${localBase}/admin/users`, {
+      headers: { Cookie: `${APP_CONFIG.SESSION_COOKIE_NAME}=${editorToken}` }
+    });
+    assert.strictEqual(resForbidden.status, 403);
+    assert.strictEqual(resForbidden.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, '/admin/users 403 must carry X-Robots-Tag');
+    const html403 = await resForbidden.text();
+    assert.ok(html403.includes('<meta name="robots" content="noindex, nofollow">'), 'Admin 403 page must include meta robots noindex');
+
+    const resJsonApi = await fetch(`${localBase}/admin/api/media`, {
+      headers: { Cookie: `${APP_CONFIG.SESSION_COOKIE_NAME}=${superToken}`, Accept: 'application/json' }
+    });
+    assert.strictEqual(resJsonApi.status, 200);
+    assert.strictEqual(resJsonApi.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, '/admin/api/media JSON must carry X-Robots-Tag');
+
+    const resCsv = await fetch(`${localBase}/admin/inquiries/export`, {
+      headers: { Cookie: `${APP_CONFIG.SESSION_COOKIE_NAME}=${superToken}` }
+    });
+    assert.strictEqual(resCsv.status, 200);
+    assert.strictEqual(resCsv.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, '/admin/inquiries/export CSV must carry X-Robots-Tag');
+
+    const resAdmin404 = await fetch(`${localBase}/admin/nonexistent-route-fr35`);
+    assert.strictEqual(resAdmin404.status, 404);
+    assert.strictEqual(resAdmin404.headers.get('x-robots-tag'), EXPECTED_X_ROBOTS, '/admin/* 404 must carry X-Robots-Tag');
+    const html404 = await resAdmin404.text();
+    assert.ok(html404.includes('<meta name="robots" content="noindex, nofollow">'), '/admin/* 404 HTML must have meta robots noindex');
+
+    const resPublic = await fetch(`${localBase}/`);
+    assert.strictEqual(resPublic.headers.get('x-robots-tag'), null, 'Public homepage must NOT carry X-Robots-Tag');
+    console.log('  9a. All /admin* endpoints (HTML, 403, CSRF, 404, JSON, CSV) enforce noindex: PASSED');
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 
   console.log('\n--- ALL MODUL 13 TESTS PASSED SUCCESSFULLY! ---');
   process.exit(0);

@@ -6,7 +6,7 @@ import capabilityModel from '../../models/capabilityModel.js';
 import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import logger from '../../utils/logger.js';
 
-const DEFAULT_COMPANY_NAME = 'PT Euodoo';
+const DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic';
 const DEFAULT_TICKET_ACRONYM = 'T - I - C - K - E - T';
 
 function translate(res, key) {

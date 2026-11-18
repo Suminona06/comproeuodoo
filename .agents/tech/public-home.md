@@ -1,12 +1,12 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js [PENDING T-336]
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js
 
 # Tech Spec: Modul Beranda Publik (Public Home)
 
 ## 1. Arsitektur & Komponen
-Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> Model` `[PENDING T-336]`:
-- **Controller (`controllers/public/homeController.js`):** Menerima request `GET /`, mendelegasikan orkestrasi query paralel & penyusunan *view-model* ke `services/homeService.js`, menyiapkan judul meta terlokalisasi (`t('home.*')`), dan merender *thin page* `views/public/index.ejs` (termasuk fallback status 500 yang terlokalisasi). Import mati `productModel` dan properti mati `featuredProducts` dihapus `[PENDING T-336]`.
-- **Service (`services/homeService.js`):** Mengambil data paralel dari `bannerModel`, `brandModel`, `postModel`, `homeContentModel`, dan `productCategoryModel`, serta mengekspor *pure view-model builder* agar seluruh transformasi data berada di luar EJS dan dapat diuji terpisah oleh unit test (`<= 40` baris/fungsi, `<= 300` baris/berkas, `max-depth <= 2`, `complexity <= 8`) `[PENDING T-336]`.
-- **View & Skrip:** `views/public/index.ejs` (`<= 100` baris, nesting `<= 2`) hanya mengorkestrasikan partial di `views/partials/home/*.ejs` dan memuat `/js/home.js` (`defer`) `[PENDING T-337, T-338]`. Rincian partial, CSS, dan skrip klien dijabarkan di [tech/public-home-sections.md](public-home-sections.md).
+Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> Model`:
+- **Controller (`controllers/public/homeController.js`):** Menerima request `GET /`, mendelegasikan orkestrasi query paralel & penyusunan *view-model* ke `services/homeService.js`, menyiapkan judul meta terlokalisasi (`t('home.*')`), dan merender *thin page* `views/public/index.ejs` (termasuk fallback status 500 yang terlokalisasi). Import mati `productModel` dan properti mati `featuredProducts` dihapus.
+- **Service (`services/homeService.js`):** Mengambil data paralel dari `bannerModel`, `brandModel`, `postModel`, `homeContentModel`, dan `productCategoryModel`, serta mengekspor *pure view-model builder* agar seluruh transformasi data berada di luar EJS dan dapat diuji terpisah oleh unit test (`<= 40` baris/fungsi, `<= 300` baris/berkas, `max-depth <= 2`, `complexity <= 8`).
+- **View & Skrip:** `views/public/index.ejs` (`<= 100` baris, nesting `<= 2`) hanya mengorkestrasikan partial di `views/partials/home/*.ejs` dan memuat `/js/home.js` (`defer`). Rincian partial, CSS, dan skrip klien dijabarkan di [tech/public-home-sections.md](public-home-sections.md).
 
 ---
 
@@ -55,20 +55,20 @@ Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> M
 
 ---
 
-## 4. Kontrak View-Model & Lokalisasi (`home.*`) `[PENDING T-336]`
+## 4. Kontrak View-Model & Lokalisasi (`home.*`)
 `services/homeService.js` membangun objek view-model terstruktur sebelum `res.render('public/index', ...)`:
-- **`hero` (`banners`):** Menyaring banner aktif, menyediakan safety-net fallback jika kosong, mengekstrak `youtubeId` secara aman dari URL `embed/`/`watch?v=`/`youtu.be/`, memilih teks lokal, serta menormalkan `primaryCta` & `secondaryCta` beserta flag `isExternal`.
+- **`hero` (`banners`):** Menyaring banner aktif, menyediakan safety-net fallback jika kosong, mengekstrak `youtubeId` aman (`embed/`/`shorts/`/`youtu.be/`/`[?&]v=` atau ID `[a-zA-Z0-9_-]+`), memilih teks lokal, serta menormalkan `primaryCta` & `secondaryCta` melalui `resolveSafeHref` (`/`, `https?://`, `mailto:`, `tel:`, `#`) + flag `isExternal`.
 - **`intro`:** Menentukan status aktif (`isActive`) dan konten terlokalisasi (`eyebrow`, `title`, `paragraph1`, `paragraph2`, `imageUrl`).
 - **`categories`:** Menyiapkan header (`title`, `subtitle`), daftar maksimal 4 kategori dengan gambar fallback per segmen, label hitungan terlokalisasi (`t`), dan `colsClass` (`hcat-grid--1` s/d `hcat-grid--4`).
 - **`whyChooseUs`:** Menormalkan seluruh field editorial & floating card, serta menerapkan `formatInlineText` di server untuk `titleHtml`, `headlineHtml`, dan `descHtml`.
-- **`certifications`:** Menyaring item aktif, mengurutkan berdasarkan `sort_order`, dan menyiapkan tombol CTA opsional.
+- **`certifications`:** Menyaring item aktif, mengurutkan berdasarkan `sort_order`, dan menyiapkan tombol CTA opsional (`btnUrl` disanitasi via `resolveSafeHref`).
 - **`brands`:** Menyaring merek aktif, menggandakan daftar hingga minimal 8 item per track marquee, menyiapkan `initials`, dan membaca `brandSectionTitle` sesuai bahasa.
 - **`news`:** Membatasi maksimal 2 artikel terbaru, memilih `fallbackImage` aman (mengganti placeholder lama bila perlu), serta memformat tanggal publikasi sesuai locale (`id-ID`/`en-US`).
-- **Kamus `locales/id.json` & `locales/en.json` (`home.*`):** Seluruh teks statis, judul meta (`meta_title_suffix`, `meta_title_fallback`), ARIA/title kontrol slider, hitungan kategori, label WCU, marquee & modal merek, serta heading/CTA/empty-state berita didaftarkan simetris dan diaudit `npm run lint:i18n`.
+- **Kamus `locales/id.json` & `locales/en.json` (`home.*`):** Seluruh teks statis, judul meta (`meta_title_suffix`, `meta_title_fallback` serta `common.company_name` & `DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic'` di `services/homeService.js`), ARIA/title kontrol slider, hitungan kategori, label WCU, marquee & modal merek, serta heading/CTA/empty-state berita didaftarkan simetris dan diaudit `npm run lint:i18n`.
 
 ---
 
 ## 5. Keamanan, CSP, & Sanitasi
 - **Validasi URL CTA:** `isValidCtaUrl()` di `controllers/admin/bannerController.js` hanya menerima path relatif (`/products`, `/contact`), URL `https://`, `tel:`, `mailto:`, dan `https://wa.me/`.
-- **Kepatuhan CSP & Anti-XSS Frontend `[PENDING T-337, T-338]`:** Zero inline `style`, zero `<script>` inline, zero handler `on*=`, dan zero raw hex di `views/public/index.ejs` serta `views/partials/home/*.ejs` (ditegakkan via `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js`). Pada `public/js/home.js`, listener `postMessage` YouTube memvalidasi `event.origin` (`https://www.youtube.com` / `https://www.youtube-nocookie.com`) dan modal `#brandPreviewModal` membangun elemen DOM via `createElement` + `textContent` tanpa `innerHTML` interpolasi.
+- **Kepatuhan CSP & Anti-XSS Frontend:** Zero inline `style`, zero `<script>` inline, zero handler `on*=`, dan zero raw hex di `views/public/index.ejs` serta `views/partials/home/*.ejs` (`DEFAULT_STRICT_PATHS` di `scripts/lint-views.js`). Pada `public/js/home.js`, komunikasi `postMessage` YouTube memakai origin eksplisit (`getYoutubeOrigin`, memvalidasi `event.origin` `youtube.com`/`youtube-nocookie.com`) dan `#brandPreviewModal` membangun elemen DOM via `createElement` + `textContent` tanpa `innerHTML` interpolasi.
 - **Aksesibilitas WCAG AA:** Warna mengacu pada `public/css/tokens.css`; `prefers-reduced-motion` menonaktifkan transisi & marquee continuous translate.

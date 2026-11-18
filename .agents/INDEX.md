@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (6 Task) & ringkasan 335 task selesai.
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task) & ringkasan 346 task selesai.
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -13,8 +13,8 @@
 
 | Modul | Status | Verifikasi | Spesifikasi PRD | Spesifikasi Teknis | Path Kode Utama |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Public Home** | ACTIVE | 2026-11-03 | [prd/public-home.md](prd/public-home.md) | [tech/public-home.md](tech/public-home.md) | `views/public/index.ejs`, `controllers/public/homeController.js`, `services/homeService.js` `[PENDING T-336]` |
-| **Public Home Sections** | ACTIVE | 2026-11-03 | [prd/public-home-sections.md](prd/public-home-sections.md) | [tech/public-home-sections.md](tech/public-home-sections.md) | `views/partials/home/*.ejs`, `public/js/home.js`, `public/images/wcu-botanical.svg` `[PENDING T-337..T-339]` |
+| **Public Home** | ACTIVE | 2026-11-17 | [prd/public-home.md](prd/public-home.md) | [tech/public-home.md](tech/public-home.md) | `views/public/index.ejs`, `controllers/public/homeController.js`, `services/homeService.js` |
+| **Public Home Sections** | ACTIVE | 2026-11-17 | [prd/public-home-sections.md](prd/public-home-sections.md) | [tech/public-home-sections.md](tech/public-home-sections.md) | `views/partials/home/*.ejs`, `public/js/home.js`, `public/images/wcu-botanical.svg` |
 | **Public About** | ACTIVE | 2026-11-16 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs`, `views/partials/about/vision-mission.ejs`, `views/partials/about/gallery-bento.ejs`, `controllers/public/pageController.js` |
 | **Public About Story & Timeline** | ACTIVE | 2026-11-16 | [prd/public-about-timeline.md](prd/public-about-timeline.md) | [tech/public-about-timeline.md](tech/public-about-timeline.md) | `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `public/js/about-story.js` |
 | **Public About Ticket Accordion** | ACTIVE | 2026-11-16 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |
@@ -25,15 +25,16 @@
 | **News Detail** | ACTIVE | 2026-11-16 | [prd/news-detail.md](prd/news-detail.md) | [tech/news-detail.md](tech/news-detail.md) | `views/public/news-detail.ejs`, `public/js/news-detail.js` |
 | **Contact, Footer & WA** | ACTIVE | 2026-11-16 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs`, `views/partials/contact/*.ejs`, `public/js/contact.js`, `controllers/public/contactController.js` |
 | **Public Footer** | ACTIVE | 2026-11-16 | [prd/footer.md](prd/footer.md) | [tech/footer.md](tech/footer.md) | `views/partials/footer.ejs`, `public/css/layout.css` |
-| **Admin CMS & Users** | ACTIVE | 2026-11-10 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
+| **Admin CMS & Users** | ACTIVE | 2026-11-17 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
+| **Admin Products & RFQ** | ACTIVE | 2026-11-10 | [prd/admin-products-rfq.md](prd/admin-products-rfq.md) | [tech/admin-products-rfq.md](tech/admin-products-rfq.md) | `controllers/admin/productController.js`, `controllers/admin/inquiryController.js` |
 | **Admin UI, Buttons, Pagination & Validation** | ACTIVE | 2026-11-11 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin.css`, `public/js/pagination.js`, `public/js/admin-form-validation.js` |
 | **Admin UI Dropdown Component** | ACTIVE | 2026-11-03 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui-dropdown.md](tech/admin-ui-dropdown.md) | `public/css/admin.css`, `public/js/admin-dropdown.js` |
 | **Media Library** | ACTIVE | 2026-11-16 | [prd/media-library.md](prd/media-library.md) | [tech/media-library.md](tech/media-library.md) | `views/admin/media/` |
-| **SEO & Security** | ACTIVE | 2026-10-21 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
-| **Site Settings** | ACTIVE | 2026-11-16 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
+| **SEO & Security** | ACTIVE | 2026-11-17 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
+| **Site Settings** | ACTIVE | 2026-11-17 | [prd/settings.md](prd/settings.md) | [tech/settings.md](tech/settings.md) | `controllers/admin/settingController.js` |
 | **Site Settings Footer** | ACTIVE | 2026-11-16 | [prd/settings.md](prd/settings.md) | [tech/settings-footer.md](tech/settings-footer.md) | `services/settingService.js`, `views/admin/settings/partials/footer-content-card.ejs`, `public/js/admin-settings.js` |
 | **Site Settings Branding Assets** | ACTIVE | 2026-11-03 | [prd/settings.md](prd/settings.md) | [tech/settings-assets.md](tech/settings-assets.md) | `middleware/uploadMiddleware.js`, `views/admin/settings/partials/visual-identity-card.ejs` |
-| **Code Conventions & Standards** | ACTIVE | 2026-11-16 | - | [tech/conventions.md](tech/conventions.md) | `eslint.config.js`, `scripts/lint-*.js` |
+| **Code Conventions & Standards** | ACTIVE | 2026-11-17 | - | [tech/conventions.md](tech/conventions.md) | `eslint.config.js`, `scripts/lint-*.js` |
 | **CI/CD & Seed Snapshot** | ACTIVE | 2026-11-16 | - | [tech/ci-cd-seeding.md](tech/ci-cd-seeding.md) | `database/migrate.js`, `database/seeds/`, `.github/workflows/ci.yml` |
 
 ## 3. Direktori Pendukung

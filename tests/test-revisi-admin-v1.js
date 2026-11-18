@@ -280,7 +280,7 @@ async function runTests() {
 
     const settingsMultipartBody = buildMultipartWithFiles(
       {
-        company_name: 'PT Euodoo Presisi Indonesia',
+        company_name: 'PT Euodoo Plastic',
         company_email: 'info@euodoo.com',
         _csrf: csrfToken
       },

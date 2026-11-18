@@ -1,10 +1,10 @@
+import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 
 import { APP_CONFIG } from './config/constants.js';
 import publicRoutes from './routes/publicRoutes.js';
@@ -19,7 +19,6 @@ import { getCookieSecret, validateProductionSecrets } from './config/secrets.js'
 import { safeJsonForHtml } from './utils/sanitizer.js';
 import logger from './utils/logger.js';
 
-dotenv.config();
 validateProductionSecrets();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -111,6 +110,12 @@ app.use(
     etag: true
   })
 );
+
+// Enforce noindex across every /admin response (including CSRF 403, rate limits, auth redirects, API, and CSV exports)
+app.use('/admin', (req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+  next();
+});
 
 // CSRF Protection & Global Auth Context & i18n
 app.use(csrfProtection);

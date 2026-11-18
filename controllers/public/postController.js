@@ -4,6 +4,8 @@ import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
 import slugRedirectModel from '../../models/slugRedirectModel.js';
 import logger from '../../utils/logger.js';
 
+const DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic';
+
 async function fetchRelatedPosts(post) {
   const sameType = await postModel.findAll({ status: 'published', type: post.type, limit: 10 });
   const related = sameType.filter(p => p.id !== post.id).slice(0, 3);
@@ -26,7 +28,7 @@ async function renderMissingPost(res, slug) {
   const redirectUrl = await findPostRedirectUrl(slug);
   if (redirectUrl) return res.redirect(301, redirectUrl);
   return res.status(404).render('public/404', {
-    title: 'Artikel Tidak Ditemukan | PT Euodoo',
+    title: `Artikel Tidak Ditemukan | ${DEFAULT_COMPANY_NAME}`,
     path: '/news'
   });
 }
@@ -34,7 +36,7 @@ async function renderMissingPost(res, slug) {
 function resolveDetailTitle(post, locals) {
   const currentLang = locals.currentLang || 'id';
   const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
-  const companyName = locals.settings?.company_name || 'PT Euodoo';
+  const companyName = locals.settings?.company_name || DEFAULT_COMPANY_NAME;
   return `${postTitle} | ${companyName}`;
 }
 
@@ -95,7 +97,7 @@ export const postController = {
         });
       }
 
-      const title = res.locals.t('news.page_title') + ' | ' + (res.locals.settings?.company_name || 'PT Euodoo');
+      const title = res.locals.t('news.page_title') + ' | ' + (res.locals.settings?.company_name || DEFAULT_COMPANY_NAME);
 
       res.render('public/news', {
         title,
@@ -119,7 +121,7 @@ export const postController = {
         return res.status(500).json({ success: false, message: 'Server error' });
       }
       res.status(500).render('public/news', {
-        title: 'Publikasi & Berita | PT Euodoo',
+        title: `Publikasi & Berita | ${DEFAULT_COMPANY_NAME}`,
         path: '/news',
         posts: [],
         headlinePost: null,
@@ -156,7 +158,7 @@ export const postController = {
     } catch (err) {
       logger.error('Public postController.detail error:', { message: err.message, stack: err.stack });
       res.status(500).render('public/404', {
-        title: 'Error | PT Euodoo',
+        title: `Error | ${DEFAULT_COMPANY_NAME}`,
         path: '/news'
       });
     }

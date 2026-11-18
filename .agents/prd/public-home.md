@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-03 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js [PENDING T-336]
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js
 
 # PRD: Modul Beranda Publik (Public Home)
 
@@ -10,7 +10,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 ## 2. Functional Requirements
 
 ### FR-05: Render Halaman Publik Beranda
-- Sistem merender beranda secara Server-Side Rendering (SSR) berbasis EJS dengan 8 seksi berurutan melalui halaman ramping `views/public/index.ejs` yang mengorkestrasikan partial `views/partials/home/*.ejs` `[PENDING T-337]`:
+- Sistem merender beranda secara Server-Side Rendering (SSR) berbasis EJS dengan 8 seksi berurutan melalui halaman ramping `views/public/index.ejs` yang mengorkestrasikan partial `views/partials/home/*.ejs`:
   1. Hero Banner Slider (`.hero.hero-slider`)
   2. Company Introduction (`.sec-intro`)
   3. 4 Panel Kategori Manufaktur (`.sec-products`, `.hcat-*`)
@@ -19,12 +19,12 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
   6. Registered Brands Marquee Strip (`.brand-strip-sec`, `.brand-strip-*`)
   7. Latest News Highlights (`.sec-news`)
   8. Global Pre-Footer CTA (`.sec-cta` via `views/partials/cta-global.ejs`)
-- **Kebijakan Konten Fallback & Kepatuhan CSP:** Seluruh konten fallback teks statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback dan seksi News yang merender empty-state ramah dwibahasa. Template wajib bebas inline `style`, warna hex langsung, komentar HTML, dan inline event handler (`onerror=`), serta menyajikan ilustrasi botani Why Choose Us sebagai aset eksternal `public/images/wcu-botanical.svg` `[PENDING T-337]`.
+- **Kebijakan Konten Fallback & Kepatuhan CSP:** Seluruh konten fallback teks statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback dan seksi News yang merender empty-state ramah dwibahasa. Template wajib bebas inline `style`, warna hex langsung, komentar HTML, dan inline event handler (`onerror=`), serta menyajikan ilustrasi botani Why Choose Us sebagai aset eksternal `public/images/wcu-botanical.svg`.
 
 ### FR-06: Dukungan Dwibahasa (i18n)
 - Setiap komponen beranda mendukung teks dwibahasa (Bahasa Indonesia `id` default & Bahasa Inggris `en`).
 - Deteksi bahasa membaca cookie `euodoo_lang` atau query string `?lang=<id|en>` via route `/lang/:code`.
-- Seluruh teks statis antarmuka, judul meta, `aria-label`, `title`, empty-state berita, dan label modal preview merek wajib bersumber dari kamus simetris `locales/id.json` & `locales/en.json` via helper `t('home.*')` `[PENDING T-336, T-337]`.
+- Seluruh teks statis antarmuka, judul meta (`PT Euodoo Plastic`), `aria-label`, `title`, empty-state berita, dan label modal preview merek wajib bersumber dari kamus simetris `locales/id.json` & `locales/en.json` via helper `t('home.*')`.
 
 ### FR-10: Hero Banner Slider Dual CTA
 - Menampilkan carousel slider banner berukuran penuh dengan auto-slide, navigasi dot/arrow, keyboard arrow, dan touch swipe.

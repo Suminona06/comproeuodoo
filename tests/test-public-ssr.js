@@ -189,6 +189,38 @@ async function runTests() {
     assert.strictEqual(spamRows.length, 0, 'Spam honeypot submission must NOT be saved to database');
   });
 
+  // Test 6: Standardized Meta Title & og:site_name (PT Euodoo Plastic) across public routes (ID & EN)
+  await test('T-344: Public routes render PT Euodoo Plastic in <title> and og:site_name', async () => {
+    const [prods] = await pool.query('SELECT slug FROM products WHERE is_active = 1 AND status = "published" LIMIT 1');
+    const [posts] = await pool.query('SELECT slug FROM posts WHERE status = "published" LIMIT 1');
+    const routesToCheck = ['/', '/about', '/products', '/capabilities', '/news', '/contact', '/non-existent-page-t344'];
+    if (prods.length > 0) routesToCheck.push(`/products/${prods[0].slug}`);
+    if (posts.length > 0) routesToCheck.push(`/news/${posts[0].slug}`);
+
+    for (const lang of ['id', 'en']) {
+      for (const route of routesToCheck) {
+        const res = await fetch(`${BASE_URL}${route}`, {
+          headers: { Cookie: `euodoo_lang=${lang}` }
+        });
+        const html = await res.text();
+        const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+        assert.ok(titleMatch, `Missing <title> on ${route} (${lang})`);
+        assert.ok(
+          titleMatch[1].includes('PT Euodoo Plastic'),
+          `Expected PT Euodoo Plastic in <title> on ${route} (${lang}), got: ${titleMatch[1]}`
+        );
+        assert.ok(
+          !titleMatch[1].includes('PT Euodoo Presisi Indonesia'),
+          `Legacy name still present in <title> on ${route} (${lang})`
+        );
+        assert.ok(
+          html.includes('<meta property="og:site_name" content="PT Euodoo Plastic">'),
+          `Expected og:site_name PT Euodoo Plastic on ${route} (${lang})`
+        );
+      }
+    }
+  });
+
   console.log(`\n========================================`);
   console.log(`🏁 Test Summary: ${passed} passed, ${failed} failed`);
   console.log(`========================================\n`);
