@@ -58,8 +58,8 @@ function buildLeadEmailHtml(lead) {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background-color: #00573F; color: #ffffff; padding: 20px; text-align: center;">
-        <h2 style="margin: 0; font-size: 20px;">PT Euodoo Presisi Indonesia</h2>
-        <p style="margin: 5px 0 0 0; color: #a3e0d0; font-size: 14px;">Notifikasi Permintaan Penawaran Harga (RFQ)</p>
+        <h2 style="margin: 0; font-size: 20px;">PT Euodoo Plastic</h2>
+        <p style="margin: 5px 0 0 0; color: #a3e0d0; font-size: 14px;">Permintaan Penawaran Harga (RFQ)</p>
       </div>
       <div style="padding: 24px; background-color: #ffffff;">
         <p style="font-size: 15px; color: #334155; margin-top: 0;">
@@ -76,7 +76,7 @@ function buildLeadEmailHtml(lead) {
         </div>
       </div>
       <div style="background-color: #f8fafc; padding: 14px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;">
-        Email ini dikirim otomatis oleh sistem CMS PT Euodoo Presisi Indonesia.
+        Email ini dikirim otomatis oleh sistem CMS PT Euodoo.
       </div>
     </div>
   `;
