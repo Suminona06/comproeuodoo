@@ -63,7 +63,7 @@ function buildLeadEmailHtml(lead) {
       </div>
       <div style="padding: 24px; background-color: #ffffff;">
         <p style="font-size: 15px; color: #334155; margin-top: 0;">
-          Terdapat prospek / lead penawaran harga baru yang masuk melalui formulir situs web:
+          Terdapat prospek / lead penawaran harga baru yang masuk melalui website:
         </p>
         <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px;">
           <tbody>${renderLeadRows(lead)}</tbody>
