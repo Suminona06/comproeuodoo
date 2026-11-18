@@ -1,19 +1,19 @@
-import aboutModel from '../../models/aboutModel.js';
-import aboutGalleryModel from '../../models/aboutGalleryModel.js';
-import aboutStatsModel from '../../models/aboutStatsModel.js';
-import aboutTimelineModel from '../../models/aboutTimelineModel.js';
 import {
-  buildAboutUpdatePayload,
-  parseGallerySlideCreate,
-  parseGallerySlideUpdate,
-  parseStatCreate,
-  parseStatUpdate,
-  parseTimelineCreate,
-  parseTimelineUpdate
+  getAdminAboutPageData,
+  updateAdminAboutContent
 } from '../../services/aboutService.js';
+import {
+  createGallerySlide,
+  updateGallerySlide,
+  deleteGallerySlide,
+  createStat,
+  updateStat,
+  deleteStat,
+  createTimeline,
+  updateTimeline,
+  deleteTimeline
+} from '../../services/aboutCrudService.js';
 import logger from '../../utils/logger.js';
-import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
-import { TICKET_ICONS, TICKET_ICON_KEYS } from '../../utils/ticketIcons.js';
 
 const wantsJson = (req) => Boolean(req.xhr || req.headers?.accept?.includes('application/json'));
 
@@ -31,33 +31,30 @@ function sendTabError(req, res, { tab, statusCode = 500, message }) {
   return res.redirect(`/admin/about?tab=${tab}&error=${encodeURIComponent(message)}`);
 }
 
+async function handleTabMutation(req, res, { tab, action, successMessage, logLabel }) {
+  try {
+    const result = await action();
+    if (result.status === 'not_found') {
+      return sendTabError(req, res, { tab, statusCode: 404, message: result.error });
+    }
+    if (result.status === 'validation_error') {
+      return sendTabError(req, res, { tab, statusCode: 400, message: result.error });
+    }
+    return sendTabSuccess(req, res, { tab, message: successMessage, id: result.id });
+  } catch (err) {
+    logger.error(`aboutController.${logLabel} error:`, { message: err.message });
+    return sendTabError(req, res, { tab, message: err.message });
+  }
+}
+
 export const aboutController = {
   async index(req, res) {
     try {
-      const [about, gallerySlides, stats, timeline, galleryHeader, storyHeader, timelineHeader, visionMissionImages] = await Promise.all([
-        aboutModel.getAboutData(),
-        aboutGalleryModel.findAll(),
-        aboutStatsModel.findAll(),
-        aboutTimelineModel.findAll(),
-        aboutModel.getGalleryHeader(),
-        aboutModel.getStoryHeader(),
-        aboutModel.getTimelineHeader(),
-        aboutModel.getVisionMissionImages()
-      ]);
-
+      const pageData = await getAdminAboutPageData();
       res.render('admin/about/index', {
         title: 'Manajemen Halaman Tentang Kami - PT Euodoo CMS',
         activeNav: 'about',
-        about,
-        ticketIcons: TICKET_ICONS,
-        ticketIconKeys: TICKET_ICON_KEYS,
-        gallerySlides,
-        stats,
-        timeline,
-        galleryHeader,
-        storyHeader,
-        timelineHeader,
-        visionMissionImages,
+        ...pageData,
         error: req.query.error || null,
         success: req.query.success || null,
         csrfToken: res.locals.csrfToken || ''
@@ -70,17 +67,7 @@ export const aboutController = {
 
   async update(req, res) {
     try {
-      const currentAbout = await aboutModel.getAboutData();
-      const defaults = aboutModel.getDefaults();
-      const updatePayload = buildAboutUpdatePayload(req.body, currentAbout?.values || defaults.values, defaults.certifications);
-
-      if (req.file) {
-        updatePayload.image_url = await processAndSaveWebP(req.file.buffer, 'pages', { maxWidth: 1920, maxHeight: 1080 });
-      } else if (req.body.image_url !== undefined) {
-        updatePayload.image_url = req.body.image_url ? req.body.image_url.trim() : null;
-      }
-
-      await aboutModel.updateAboutData(updatePayload);
+      await updateAdminAboutContent(req.body, req.file);
       logger.info('aboutController: About content successfully updated by admin');
       return res.redirect('/admin/about?success=Konten+halaman+tentang+kami+berhasil+diperbarui.');
     } catch (err) {
@@ -89,115 +76,85 @@ export const aboutController = {
     }
   },
 
-  async storeGallerySlide(req, res) {
-    try {
-      const parsed = parseGallerySlideCreate(req.body);
-      if (parsed.error) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 400, message: parsed.error });
-      const id = await aboutGalleryModel.create(parsed.data);
-      return sendTabSuccess(req, res, { tab: 'tab-gallery', message: 'Slide galeri berhasil ditambahkan.', id });
-    } catch (err) {
-      logger.error('aboutController.storeGallerySlide error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-gallery', message: err.message });
-    }
+  storeGallerySlide(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-gallery',
+      action: () => createGallerySlide(req.body),
+      successMessage: 'Slide galeri berhasil ditambahkan.',
+      logLabel: 'storeGallerySlide'
+    });
   },
 
-  async updateGallerySlide(req, res) {
-    try {
-      const slide = await aboutGalleryModel.findById(req.params.id);
-      if (!slide) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 404, message: 'Slide tidak ditemukan.' });
-      const parsed = parseGallerySlideUpdate(req.body);
-      if (parsed.error) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 400, message: parsed.error });
-      await aboutGalleryModel.update(req.params.id, parsed.data);
-      return sendTabSuccess(req, res, { tab: 'tab-gallery', message: 'Slide galeri berhasil diperbarui.' });
-    } catch (err) {
-      logger.error('aboutController.updateGallerySlide error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-gallery', message: err.message });
-    }
+  updateGallerySlide(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-gallery',
+      action: () => updateGallerySlide(req.params.id, req.body),
+      successMessage: 'Slide galeri berhasil diperbarui.',
+      logLabel: 'updateGallerySlide'
+    });
   },
 
-  async deleteGallerySlide(req, res) {
-    try {
-      const slide = await aboutGalleryModel.findById(req.params.id);
-      if (!slide) return sendTabError(req, res, { tab: 'tab-gallery', statusCode: 404, message: 'Slide tidak ditemukan.' });
-      await aboutGalleryModel.delete(req.params.id);
-      return sendTabSuccess(req, res, { tab: 'tab-gallery', message: 'Slide galeri berhasil dihapus.' });
-    } catch (err) {
-      logger.error('aboutController.deleteGallerySlide error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-gallery', message: err.message });
-    }
+  deleteGallerySlide(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-gallery',
+      action: () => deleteGallerySlide(req.params.id),
+      successMessage: 'Slide galeri berhasil dihapus.',
+      logLabel: 'deleteGallerySlide'
+    });
   },
 
-  async storeStats(req, res) {
-    try {
-      const existing = await aboutStatsModel.findAll();
-      const parsed = parseStatCreate(req.body, existing.length);
-      if (parsed.error) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 400, message: parsed.error });
-      const id = await aboutStatsModel.create(parsed.data);
-      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Statistik berhasil ditambahkan.', id });
-    } catch (err) {
-      logger.error('aboutController.storeStats error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
-    }
+  storeStats(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-sejarah',
+      action: () => createStat(req.body),
+      successMessage: 'Statistik berhasil ditambahkan.',
+      logLabel: 'storeStats'
+    });
   },
 
-  async updateStats(req, res) {
-    try {
-      const stat = await aboutStatsModel.findById(req.params.id);
-      if (!stat) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Statistik tidak ditemukan.' });
-      await aboutStatsModel.update(req.params.id, parseStatUpdate(req.body));
-      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Statistik berhasil diperbarui.' });
-    } catch (err) {
-      logger.error('aboutController.updateStats error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
-    }
+  updateStats(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-sejarah',
+      action: () => updateStat(req.params.id, req.body),
+      successMessage: 'Statistik berhasil diperbarui.',
+      logLabel: 'updateStats'
+    });
   },
 
-  async deleteStats(req, res) {
-    try {
-      const stat = await aboutStatsModel.findById(req.params.id);
-      if (!stat) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Statistik tidak ditemukan.' });
-      await aboutStatsModel.delete(req.params.id);
-      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Statistik berhasil dihapus.' });
-    } catch (err) {
-      logger.error('aboutController.deleteStats error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
-    }
+  deleteStats(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-sejarah',
+      action: () => deleteStat(req.params.id),
+      successMessage: 'Statistik berhasil dihapus.',
+      logLabel: 'deleteStats'
+    });
   },
 
-  async storeTimeline(req, res) {
-    try {
-      const parsed = parseTimelineCreate(req.body);
-      if (parsed.error) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 400, message: parsed.error });
-      const id = await aboutTimelineModel.create(parsed.data);
-      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Item timeline berhasil ditambahkan.', id });
-    } catch (err) {
-      logger.error('aboutController.storeTimeline error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
-    }
+  storeTimeline(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-sejarah',
+      action: () => createTimeline(req.body),
+      successMessage: 'Item timeline berhasil ditambahkan.',
+      logLabel: 'storeTimeline'
+    });
   },
 
-  async updateTimeline(req, res) {
-    try {
-      const item = await aboutTimelineModel.findById(req.params.id);
-      if (!item) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Timeline tidak ditemukan.' });
-      await aboutTimelineModel.update(req.params.id, parseTimelineUpdate(req.body));
-      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Item timeline berhasil diperbarui.' });
-    } catch (err) {
-      logger.error('aboutController.updateTimeline error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
-    }
+  updateTimeline(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-sejarah',
+      action: () => updateTimeline(req.params.id, req.body),
+      successMessage: 'Item timeline berhasil diperbarui.',
+      logLabel: 'updateTimeline'
+    });
   },
 
-  async deleteTimeline(req, res) {
-    try {
-      const item = await aboutTimelineModel.findById(req.params.id);
-      if (!item) return sendTabError(req, res, { tab: 'tab-sejarah', statusCode: 404, message: 'Timeline tidak ditemukan.' });
-      await aboutTimelineModel.delete(req.params.id);
-      return sendTabSuccess(req, res, { tab: 'tab-sejarah', message: 'Item timeline berhasil dihapus.' });
-    } catch (err) {
-      logger.error('aboutController.deleteTimeline error:', { message: err.message });
-      return sendTabError(req, res, { tab: 'tab-sejarah', message: err.message });
-    }
+  deleteTimeline(req, res) {
+    return handleTabMutation(req, res, {
+      tab: 'tab-sejarah',
+      action: () => deleteTimeline(req.params.id),
+      successMessage: 'Item timeline berhasil dihapus.',
+      logLabel: 'deleteTimeline'
+    });
   }
 };
 

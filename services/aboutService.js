@@ -1,4 +1,18 @@
-import { isValidTicketIconKey } from '../utils/ticketIcons.js';
+import aboutModel from '../models/aboutModel.js';
+import aboutGalleryModel from '../models/aboutGalleryModel.js';
+import aboutStatsModel from '../models/aboutStatsModel.js';
+import aboutTimelineModel from '../models/aboutTimelineModel.js';
+import { processAndSaveWebP } from '../middleware/uploadMiddleware.js';
+import { isValidTicketIconKey, TICKET_ICONS, TICKET_ICON_KEYS } from '../utils/ticketIcons.js';
+
+export {
+  parseGallerySlideCreate,
+  parseGallerySlideUpdate,
+  parseStatCreate,
+  parseStatUpdate,
+  parseTimelineCreate,
+  parseTimelineUpdate
+} from './aboutCrudService.js';
 
 const TRIMMED_ABOUT_FIELDS = [
   'founded_year',
@@ -41,7 +55,6 @@ const readRawField = (body, primaryKey, aliasKey) =>
 
 const optTrim = (val) => (val !== undefined ? String(val).trim() : undefined);
 const trimOrNull = (val) => (val ? String(val).trim() : undefined);
-const parseActiveFlag = (val) => (val === '1' || val === 1 || val === true ? 1 : 0);
 
 export function sanitizeSafePath(val, fallback = '') {
   if (typeof val !== 'string') return fallback;
@@ -93,7 +106,8 @@ export function parseTicketValues(body, defaultValues) {
   return TICKET_LETTERS.map((defLetter, idx) => parseSingleTicketValue(body, defLetter, idx, defaultValues));
 }
 
-export function parseTicketHeader(body = {}) {
+export function parseTicketHeader(rawBody) {
+  const body = rawBody || {};
   const rawBg = readRawField(body, 'about_values_bg_image', 'values_bg_image');
   return {
     about_values_bg_image: sanitizeOptionalBgImage(rawBg),
@@ -104,7 +118,8 @@ export function parseTicketHeader(body = {}) {
   };
 }
 
-export function parseTimelineHeader(body = {}) {
+export function parseTimelineHeader(rawBody) {
+  const body = rawBody || {};
   return {
     about_timeline_tagline_id: trimSliceOptional(body.about_timeline_tagline_id, 50),
     about_timeline_tagline_en: trimSliceOptional(body.about_timeline_tagline_en, 50),
@@ -115,7 +130,18 @@ export function parseTimelineHeader(body = {}) {
   };
 }
 
-export function buildAboutUpdatePayload(body = {}, defaultValues = [], defaultCerts = []) {
+function mapCertifications(body, defaultCerts) {
+  return defaultCerts.map((cert, idx) => ({
+    name: body[`cert_name_${idx}`] || cert.name,
+    issuer: body[`cert_issuer_${idx}`] || cert.issuer,
+    badge: body[`cert_badge_${idx}`] || cert.badge,
+    desc_id: body[`cert_desc_id_${idx}`] || cert.desc_id,
+    desc_en: body[`cert_desc_en_${idx}`] || cert.desc_en
+  }));
+}
+
+export function buildAboutUpdatePayload(rawBody, defaultValues, defaultCerts) {
+  const body = rawBody || {};
   const payload = {};
   for (const key of TRIMMED_ABOUT_FIELDS) payload[key] = trimOrNull(body[key]);
   for (const key of OPTIONAL_ABOUT_FIELDS) payload[key] = optTrim(body[key]);
@@ -124,111 +150,65 @@ export function buildAboutUpdatePayload(body = {}, defaultValues = [], defaultCe
     ...payload,
     ...parseTimelineHeader(body),
     ...parseTicketHeader(body),
-    values: parseTicketValues(body, defaultValues),
-    certifications: defaultCerts.map((cert, idx) => ({
-      name: body[`cert_name_${idx}`] || cert.name,
-      issuer: body[`cert_issuer_${idx}`] || cert.issuer,
-      badge: body[`cert_badge_${idx}`] || cert.badge,
-      desc_id: body[`cert_desc_id_${idx}`] || cert.desc_id,
-      desc_en: body[`cert_desc_en_${idx}`] || cert.desc_en
-    }))
+    values: parseTicketValues(body, defaultValues || []),
+    certifications: mapCertifications(body, defaultCerts || [])
   };
 }
 
-const trimOrEmpty = (val) => trimOrNull(val) || '';
-const parseSortOrder = (val, fallback = '0') => parseInt(val || fallback, 10);
-const resolveCreateActive = (val) => (val === undefined ? 1 : parseActiveFlag(val));
+export async function getAdminAboutPageData() {
+  const [
+    about, gallerySlides, stats, timeline,
+    galleryHeader, storyHeader, timelineHeader, visionMissionImages
+  ] = await Promise.all([
+    aboutModel.getAboutData(),
+    aboutGalleryModel.findAll(),
+    aboutStatsModel.findAll(),
+    aboutTimelineModel.findAll(),
+    aboutModel.getGalleryHeader(),
+    aboutModel.getStoryHeader(),
+    aboutModel.getTimelineHeader(),
+    aboutModel.getVisionMissionImages()
+  ]);
 
-export function parseGallerySlideCreate(body = {}) {
-  const imageUrl = trimOrNull(body.image_url);
-  if (!imageUrl) return { error: 'Gambar slide galeri wajib diisi.' };
   return {
-    data: {
-      image_url: imageUrl,
-      category_id: trimOrEmpty(body.category_id),
-      category_en: trimOrEmpty(body.category_en),
-      title_id: trimOrEmpty(body.title_id),
-      title_en: trimOrEmpty(body.title_en),
-      subtitle_id: trimOrEmpty(body.subtitle_id),
-      subtitle_en: trimOrEmpty(body.subtitle_en),
-      sort_order: parseSortOrder(body.sort_order),
-      is_active: resolveCreateActive(body.is_active)
-    }
+    about,
+    ticketIcons: TICKET_ICONS,
+    ticketIconKeys: TICKET_ICON_KEYS,
+    gallerySlides,
+    stats,
+    timeline,
+    galleryHeader,
+    storyHeader,
+    timelineHeader,
+    visionMissionImages
   };
 }
 
-export function parseGallerySlideUpdate(body = {}) {
-  if (body.image_url !== undefined && !String(body.image_url).trim()) {
-    return { error: 'Gambar slide galeri wajib diisi.' };
+async function resolveAboutImageUrl(body, file) {
+  if (file) {
+    return await processAndSaveWebP(file.buffer, 'pages', { maxWidth: 1920, maxHeight: 1080 });
   }
-  return {
-    data: {
-      image_url: optTrim(body.image_url),
-      category_id: optTrim(body.category_id),
-      category_en: optTrim(body.category_en),
-      title_id: optTrim(body.title_id),
-      title_en: optTrim(body.title_en),
-      subtitle_id: optTrim(body.subtitle_id),
-      subtitle_en: optTrim(body.subtitle_en),
-      sort_order: body.sort_order !== undefined ? parseInt(body.sort_order, 10) : undefined,
-      is_active: body.is_active !== undefined ? parseActiveFlag(body.is_active) : undefined
-    }
-  };
+  if (body.image_url !== undefined) {
+    return body.image_url ? body.image_url.trim() : null;
+  }
+  return undefined;
 }
 
-export function parseStatCreate(body = {}, existingCount = 0) {
-  const statVal = trimOrNull(body.stat_value);
-  const labelId = trimOrNull(body.label_id);
-  if (!statVal || !labelId) return { error: 'Nilai statistik dan label wajib diisi.' };
-  if (existingCount >= 8) return { error: 'Batas maksimal 8 item statistik telah tercapai.' };
-  return {
-    data: {
-      stat_value: statVal,
-      label_id: labelId,
-      label_en: trimOrEmpty(body.label_en),
-      sort_order: parseSortOrder(body.sort_order),
-      is_active: resolveCreateActive(body.is_active)
-    }
-  };
-}
+export async function updateAdminAboutContent(rawBody, file) {
+  const body = rawBody || {};
+  const currentAbout = await aboutModel.getAboutData();
+  const defaults = aboutModel.getDefaults();
+  const updatePayload = buildAboutUpdatePayload(
+    body,
+    currentAbout?.values || defaults.values,
+    defaults.certifications
+  );
 
-export function parseStatUpdate(body = {}) {
-  return {
-    stat_value: optTrim(body.stat_value),
-    label_id: optTrim(body.label_id),
-    label_en: optTrim(body.label_en),
-    sort_order: body.sort_order !== undefined ? parseInt(body.sort_order, 10) : undefined,
-    is_active: body.is_active !== undefined ? parseActiveFlag(body.is_active) : undefined
-  };
-}
+  const resolvedImageUrl = await resolveAboutImageUrl(body, file);
+  if (resolvedImageUrl !== undefined) {
+    updatePayload.image_url = resolvedImageUrl;
+  }
 
-export function parseTimelineCreate(body = {}) {
-  const yearLabelId = trimOrNull(body.year_label_id);
-  const titleId = trimOrNull(body.title_id);
-  if (!yearLabelId || !titleId) return { error: 'Label tahun dan judul item timeline wajib diisi.' };
-  return {
-    data: {
-      year_label_id: yearLabelId,
-      year_label_en: trimOrEmpty(body.year_label_en),
-      title_id: titleId,
-      title_en: trimOrEmpty(body.title_en),
-      description_id: trimOrEmpty(body.description_id),
-      description_en: trimOrEmpty(body.description_en),
-      sort_order: parseSortOrder(body.sort_order),
-      is_active: resolveCreateActive(body.is_active)
-    }
-  };
-}
-
-export function parseTimelineUpdate(body = {}) {
-  return {
-    year_label_id: optTrim(body.year_label_id),
-    year_label_en: optTrim(body.year_label_en),
-    title_id: optTrim(body.title_id),
-    title_en: optTrim(body.title_en),
-    description_id: optTrim(body.description_id),
-    description_en: optTrim(body.description_en),
-    sort_order: body.sort_order !== undefined ? parseInt(body.sort_order, 10) : undefined,
-    is_active: body.is_active !== undefined ? parseActiveFlag(body.is_active) : undefined
-  };
+  await aboutModel.updateAboutData(updatePayload);
+  return updatePayload;
 }

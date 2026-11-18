@@ -8,8 +8,13 @@ import storage from '../config/storage.js';
 import homeContentModel from '../models/homeContentModel.js';
 import productCategoryModel from '../models/productCategoryModel.js';
 import mediaModel from '../models/mediaModel.js';
+import aboutModel from '../models/aboutModel.js';
+import aboutGalleryModel from '../models/aboutGalleryModel.js';
+import aboutStatsModel from '../models/aboutStatsModel.js';
+import aboutTimelineModel from '../models/aboutTimelineModel.js';
 import { homeContentController } from '../controllers/admin/homeContentController.js';
 import { mediaController } from '../controllers/admin/mediaController.js';
+import { aboutController } from '../controllers/admin/aboutController.js';
 import {
   ALLOWED_KICKER_ICONS,
   buildIntroSection,
@@ -31,6 +36,8 @@ import {
   checkMediaUsage,
   deleteMediaItem
 } from '../services/mediaService.js';
+import * as aboutService from '../services/aboutService.js';
+import * as aboutCrudService from '../services/aboutCrudService.js';
 
 after(async () => {
   await pool.end();
@@ -461,4 +468,252 @@ describe('T-348: mediaService & mediaController', () => {
     }
   });
 });
+
+describe('T-349: aboutService, aboutCrudService & aboutController', () => {
+  it('re-exports sub-item parsers from aboutService for backward compatibility', () => {
+    for (const fn of [
+      'parseGallerySlideCreate',
+      'parseGallerySlideUpdate',
+      'parseStatCreate',
+      'parseStatUpdate',
+      'parseTimelineCreate',
+      'parseTimelineUpdate'
+    ]) {
+      assert.equal(typeof aboutService[fn], 'function');
+    }
+  });
+
+  it('loads admin about page data and updates content with WebP file or image_url', async () => {
+    const origGetAbout = aboutModel.getAboutData;
+    const origUpdateAbout = aboutModel.updateAboutData;
+    const origGetGalleryHdr = aboutModel.getGalleryHeader;
+    const origGetStoryHdr = aboutModel.getStoryHeader;
+    const origGetTimelineHdr = aboutModel.getTimelineHeader;
+    const origGetVm = aboutModel.getVisionMissionImages;
+    const origGalAll = aboutGalleryModel.findAll;
+    const origStatAll = aboutStatsModel.findAll;
+    const origTimeAll = aboutTimelineModel.findAll;
+    const origSave = storage.save;
+
+    const payloads = [];
+    aboutModel.getAboutData = async () => ({ founded_year: '1990', values: aboutModel.getDefaults().values });
+    aboutModel.getGalleryHeader = async () => ({ title_id: 'Gal' });
+    aboutModel.getStoryHeader = async () => ({ kicker_id: 'Kisah' });
+    aboutModel.getTimelineHeader = async () => ({ title_id: 'Timeline' });
+    aboutModel.getVisionMissionImages = async () => ({ vision_image_url: '', mission_image_url: '' });
+    aboutGalleryModel.findAll = async () => [{ id: 1 }];
+    aboutStatsModel.findAll = async () => [{ id: 2 }];
+    aboutTimelineModel.findAll = async () => [{ id: 3 }];
+    aboutModel.updateAboutData = async (p) => { payloads.push(p); };
+    storage.save = async (_buf, filename) => ({ url: `/uploads/pages/${filename}`, size: 100, driver: 'local' });
+
+    try {
+      const pageData = await aboutService.getAdminAboutPageData();
+      assert.equal(pageData.about.founded_year, '1990');
+      assert.equal(pageData.ticketIconKeys.length, 6);
+      assert.equal(pageData.gallerySlides.length, 1);
+      assert.equal(pageData.stats.length, 1);
+      assert.equal(pageData.timeline.length, 1);
+
+      await aboutService.updateAdminAboutContent({ vision_id: 'Visi Baru' }, { buffer: TINY_PNG_BUFFER });
+      assert.ok(payloads[0].image_url.startsWith('/uploads/pages/'));
+      assert.equal(payloads[0].vision_id, 'Visi Baru');
+
+      await aboutService.updateAdminAboutContent({ image_url: ' /images/plant.webp ' }, null);
+      assert.equal(payloads[1].image_url, '/images/plant.webp');
+
+      await aboutService.updateAdminAboutContent({ image_url: '' }, null);
+      assert.equal(payloads[2].image_url, null);
+    } finally {
+      aboutModel.getAboutData = origGetAbout;
+      aboutModel.updateAboutData = origUpdateAbout;
+      aboutModel.getGalleryHeader = origGetGalleryHdr;
+      aboutModel.getStoryHeader = origGetStoryHdr;
+      aboutModel.getTimelineHeader = origGetTimelineHdr;
+      aboutModel.getVisionMissionImages = origGetVm;
+      aboutGalleryModel.findAll = origGalAll;
+      aboutStatsModel.findAll = origStatAll;
+      aboutTimelineModel.findAll = origTimeAll;
+      storage.save = origSave;
+    }
+  });
+
+  it('handles CRUD validation, 404, and persistence in aboutCrudService', async () => {
+    const origGal = { findById: aboutGalleryModel.findById, create: aboutGalleryModel.create, update: aboutGalleryModel.update, delete: aboutGalleryModel.delete };
+    const origStat = { findAll: aboutStatsModel.findAll, findById: aboutStatsModel.findById, create: aboutStatsModel.create, update: aboutStatsModel.update, delete: aboutStatsModel.delete };
+    const origTime = { findById: aboutTimelineModel.findById, create: aboutTimelineModel.create, update: aboutTimelineModel.update, delete: aboutTimelineModel.delete };
+
+    aboutGalleryModel.findById = async (id) => (id === '1' ? { id: 1 } : null);
+    aboutGalleryModel.create = async () => 11;
+    aboutGalleryModel.update = async () => true;
+    aboutGalleryModel.delete = async () => true;
+
+    aboutStatsModel.findAll = async () => [];
+    aboutStatsModel.findById = async (id) => (id === '2' ? { id: 2 } : null);
+    aboutStatsModel.create = async () => 22;
+    aboutStatsModel.update = async () => true;
+    aboutStatsModel.delete = async () => true;
+
+    aboutTimelineModel.findById = async (id) => (id === '3' ? { id: 3 } : null);
+    aboutTimelineModel.create = async () => 33;
+    aboutTimelineModel.update = async () => true;
+    aboutTimelineModel.delete = async () => true;
+
+    try {
+      assert.equal((await aboutCrudService.createGallerySlide({})).status, 'validation_error');
+      assert.deepEqual(await aboutCrudService.createGallerySlide({ image_url: '/img.webp' }), { status: 'ok', id: 11 });
+      assert.equal((await aboutCrudService.updateGallerySlide('999', {})).status, 'not_found');
+      assert.equal((await aboutCrudService.updateGallerySlide('1', { image_url: '' })).status, 'validation_error');
+      assert.deepEqual(await aboutCrudService.updateGallerySlide('1', { title_id: 'Baru' }), { status: 'ok' });
+      assert.equal((await aboutCrudService.deleteGallerySlide('999')).status, 'not_found');
+      assert.deepEqual(await aboutCrudService.deleteGallerySlide('1'), { status: 'ok' });
+
+      assert.equal((await aboutCrudService.createStat({})).status, 'validation_error');
+      assert.deepEqual(await aboutCrudService.createStat({ stat_value: '35+', label_id: 'Tahun' }), { status: 'ok', id: 22 });
+      aboutStatsModel.findAll = async () => new Array(8).fill({});
+      assert.equal((await aboutCrudService.createStat({ stat_value: '99%', label_id: 'X' })).status, 'validation_error');
+      assert.equal((await aboutCrudService.updateStat('999', {})).status, 'not_found');
+      assert.deepEqual(await aboutCrudService.updateStat('2', { stat_value: '40+' }), { status: 'ok' });
+      assert.equal((await aboutCrudService.deleteStat('999')).status, 'not_found');
+      assert.deepEqual(await aboutCrudService.deleteStat('2'), { status: 'ok' });
+
+      assert.equal((await aboutCrudService.createTimeline({})).status, 'validation_error');
+      assert.deepEqual(await aboutCrudService.createTimeline({ year_label_id: '1990', title_id: 'Berdiri' }), { status: 'ok', id: 33 });
+      assert.equal((await aboutCrudService.updateTimeline('999', {})).status, 'not_found');
+      assert.deepEqual(await aboutCrudService.updateTimeline('3', { title_id: 'Revisi' }), { status: 'ok' });
+      assert.equal((await aboutCrudService.deleteTimeline('999')).status, 'not_found');
+      assert.deepEqual(await aboutCrudService.deleteTimeline('3'), { status: 'ok' });
+    } finally {
+      Object.assign(aboutGalleryModel, origGal);
+      Object.assign(aboutStatsModel, origStat);
+      Object.assign(aboutTimelineModel, origTime);
+    }
+  });
+
+  it('preserves aboutController JSON/redirect responses and error handling', async () => {
+    const origGetAbout = aboutModel.getAboutData;
+    const origUpdateAbout = aboutModel.updateAboutData;
+    const origGalFind = aboutGalleryModel.findById;
+    const origStatCreate = aboutStatsModel.create;
+    const origStatAll = aboutStatsModel.findAll;
+    const origTimeFind = aboutTimelineModel.findById;
+
+    aboutGalleryModel.findById = async () => null;
+    aboutStatsModel.findAll = async () => [];
+    aboutStatsModel.create = async () => 88;
+    aboutTimelineModel.findById = async () => { throw new Error('DB timeline fail'); };
+
+    try {
+      let out = null;
+      let statusCode = 200;
+      const makeRes = () => ({
+        locals: {},
+        status(c) { statusCode = c; return this; },
+        json(b) { out = b; return this; },
+        redirect(u) { out = { redirect: u }; return this; },
+        render() {}
+      });
+
+      await aboutController.updateGallerySlide(
+        { params: { id: '404' }, body: {}, xhr: true, headers: { accept: 'application/json' } },
+        makeRes()
+      );
+      assert.equal(statusCode, 404);
+      assert.equal(out.success, false);
+
+      await aboutController.storeStats(
+        { body: { stat_value: '10+', label_id: 'Produk' }, xhr: false, headers: {} },
+        makeRes()
+      );
+      assert.ok(out.redirect.includes('/admin/about?tab=tab-sejarah&success='));
+
+      statusCode = 200;
+      await aboutController.deleteTimeline(
+        { params: { id: '1' }, xhr: true, headers: { accept: 'application/json' } },
+        makeRes()
+      );
+      assert.equal(statusCode, 500);
+      assert.equal(out.message, 'DB timeline fail');
+
+      aboutModel.getAboutData = async () => { throw new Error('Load err'); };
+      await aboutController.index({ query: {} }, makeRes());
+      assert.equal(out.redirect, '/admin/dashboard?error=Gagal+memuat+halaman+tentang+kami.');
+
+      aboutModel.getAboutData = origGetAbout;
+      aboutModel.updateAboutData = async () => { throw new Error('Save err'); };
+      await aboutController.update({ body: {} }, makeRes());
+      assert.ok(out.redirect.startsWith('/admin/about?error='));
+    } finally {
+      aboutModel.getAboutData = origGetAbout;
+      aboutModel.updateAboutData = origUpdateAbout;
+      aboutGalleryModel.findById = origGalFind;
+      aboutStatsModel.create = origStatCreate;
+      aboutStatsModel.findAll = origStatAll;
+      aboutTimelineModel.findById = origTimeFind;
+    }
+  });
+});
+
+describe('T-350: strict ESLint enforcement & boundary checks', () => {
+  it('enforces strict error-level rules in eslint.config.js on all 7 refactored files', async () => {
+    const { default: eslintConfig } = await import('../eslint.config.js');
+    const strictTargets = [
+      'controllers/admin/aboutController.js',
+      'controllers/admin/homeContentController.js',
+      'controllers/admin/mediaController.js',
+      'services/aboutService.js',
+      'services/aboutCrudService.js',
+      'services/homeContentService.js',
+      'services/mediaService.js'
+    ];
+    const strictBlock = eslintConfig.find(
+      (entry) => Array.isArray(entry.files) && strictTargets.every((f) => entry.files.includes(f))
+    );
+    assert.ok(strictBlock, 'Strict override block for all 7 refactored files must exist in eslint.config.js');
+    assert.equal(strictBlock.files.length, 7);
+    for (const ruleName of ['max-lines', 'max-lines-per-function', 'max-depth', 'complexity', 'no-unused-vars']) {
+      const ruleVal = strictBlock.rules?.[ruleName];
+      assert.equal(Array.isArray(ruleVal) ? ruleVal[0] : ruleVal, 'error', `${ruleName} must be set to error`);
+    }
+  });
+
+  it('handles mediaController.index fallback and bodyless DELETE safely', async () => {
+    const origFindAll = mediaModel.findAll;
+    const origFindById = mediaModel.findById;
+    const origDelete = mediaModel.delete;
+
+    mediaModel.findAll = async () => { throw new Error('Query failed'); };
+    mediaModel.findById = async () => ({ id: 21, media_type: 'youtube', file_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' });
+    mediaModel.delete = async () => true;
+
+    try {
+      let rendered = null;
+      let statusCode = 200;
+      await mediaController.index(
+        { query: {}, user: { id: 1 } },
+        {
+          status(code) { statusCode = code; return this; },
+          render(view, data) { rendered = { view, data }; }
+        }
+      );
+      assert.equal(statusCode, 500);
+      assert.equal(rendered.view, 'admin/media/index');
+      assert.deepEqual(rendered.data.mediaList, []);
+      assert.equal(rendered.data.error, 'Gagal memuat media library.');
+
+      let jsonRes = null;
+      await mediaController.destroy(
+        { params: { id: '21' }, query: {}, headers: { accept: 'application/json' } },
+        { status() { return this; }, json(b) { jsonRes = b; return this; } }
+      );
+      assert.equal(jsonRes.success, true);
+    } finally {
+      mediaModel.findAll = origFindAll;
+      mediaModel.findById = origFindById;
+      mediaModel.delete = origDelete;
+    }
+  });
+});
+
+
 

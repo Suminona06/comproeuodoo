@@ -84,5 +84,23 @@ export default [
       'no-useless-escape': 'error',
       'max-depth': ['error', 2]
     }
+  },
+  {
+    files: [
+      'controllers/admin/aboutController.js',
+      'controllers/admin/homeContentController.js',
+      'controllers/admin/mediaController.js',
+      'services/aboutService.js',
+      'services/aboutCrudService.js',
+      'services/homeContentService.js',
+      'services/mediaService.js'
+    ],
+    rules: {
+      'max-lines': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['error', { max: 40, skipBlankLines: true, skipComments: true }],
+      'max-depth': ['error', 2],
+      'complexity': ['error', 8],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^(req|res|next|_)', varsIgnorePattern: '^_' }]
+    }
   }
 ];
