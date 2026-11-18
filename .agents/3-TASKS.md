@@ -20,7 +20,7 @@
   - **Acceptance Criteria:** Controller bebas impor `homeContentModel` & `productCategoryModel`; `services/homeService.js` tetap 297 baris tanpa perubahan; tiap fungsi `<= 40` baris kode, `max-depth <= 2`, `complexity <= 8`, berkas `<= 300` baris kode; kontrak `ALLOWED_KICKER_ICONS`, default URL, locals render, dan redirect flash 100% identik; unit test builder 6 seksi lulus; 0 error & 0 warning ESLint; bebas komentar AI-slop.
   - **Verifikasi:** `npx eslint controllers/admin/homeContentController.js services/homeContentService.js`, `node --test tests/test-t347-t349-admin-services.js`, dan `npm run test:admin-http`.
 
-- [ ] **T-348: Pembuatan `services/mediaService.js` & Perampingan `mediaController`**
+- [x] **T-348: Pembuatan `services/mediaService.js` & Perampingan `mediaController`**
   - **Prioritas:** High | **Dependensi:** - | **Skill:** `antislop-code`
   - **Deskripsi:** Mengekstrak `getMediaLibraryViewData`, `buildEmptyMediaLibraryViewData`, `getMediaPickerList`, `uploadAndCreateMedia` (menyatukan `upload` & `apiUpload`), `registerYoutubeMedia`, `checkMediaUsage`, dan `deleteMediaItem` (`{ status: 'not_found' | 'in_use' | 'deleted', usages }`) ke `services/mediaService.js`, serta merampingkan `controllers/admin/mediaController.js` (`max-depth <= 2`).
   - **File:** `services/mediaService.js` *(baru)*, `controllers/admin/mediaController.js`, `tests/test-t347-t349-admin-services.js`

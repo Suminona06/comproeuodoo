@@ -1,9 +1,15 @@
 import { describe, it, after } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import pool from '../config/database.js';
+import storage from '../config/storage.js';
 import homeContentModel from '../models/homeContentModel.js';
 import productCategoryModel from '../models/productCategoryModel.js';
+import mediaModel from '../models/mediaModel.js';
 import { homeContentController } from '../controllers/admin/homeContentController.js';
+import { mediaController } from '../controllers/admin/mediaController.js';
 import {
   ALLOWED_KICKER_ICONS,
   buildIntroSection,
@@ -16,6 +22,15 @@ import {
   getAdminHomeContentData,
   updateAdminHomeContent
 } from '../services/homeContentService.js';
+import {
+  getMediaLibraryViewData,
+  buildEmptyMediaLibraryViewData,
+  getMediaPickerList,
+  uploadAndCreateMedia,
+  registerYoutubeMedia,
+  checkMediaUsage,
+  deleteMediaItem
+} from '../services/mediaService.js';
 
 after(async () => {
   await pool.end();
@@ -199,3 +214,251 @@ describe('T-347: homeContentService & homeContentController', () => {
     }
   });
 });
+
+const TINY_PNG_BUFFER = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64'
+);
+
+describe('T-348: mediaService & mediaController', () => {
+  it('computes pagination and fallback view data cleanly', async () => {
+    const origFindAll = mediaModel.findAll;
+    const origCount = mediaModel.count;
+    const origCountByType = mediaModel.countByType;
+    let capturedArgs = null;
+
+    mediaModel.findAll = async (args) => {
+      capturedArgs = args;
+      return [{ id: 1, filename: 'a.webp' }];
+    };
+    mediaModel.count = async () => 85;
+    mediaModel.countByType = async () => ({ all: 85, image: 80, video: 3, document: 1, youtube: 1 });
+
+    try {
+      const viewData = await getMediaLibraryViewData({ type: 'image', search: 'box', page: '0' });
+      assert.equal(capturedArgs.limit, 40);
+      assert.equal(capturedArgs.offset, 0);
+      assert.equal(viewData.currentPage, 1);
+      assert.equal(viewData.totalPages, 3);
+
+      const picker = await getMediaPickerList({ type: 'video', page: '2', limit: '500' });
+      assert.equal(capturedArgs.limit, 100);
+      assert.equal(capturedArgs.offset, 100);
+      assert.equal(picker.pagination.page, 2);
+      assert.equal(picker.pagination.limit, 100);
+      assert.equal(picker.pagination.totalPages, 1);
+
+      const empty = buildEmptyMediaLibraryViewData();
+      assert.equal(empty.totalPages, 1);
+      assert.deepEqual(empty.countsByType, { all: 0, image: 0, video: 0, document: 0, youtube: 0 });
+    } finally {
+      mediaModel.findAll = origFindAll;
+      mediaModel.count = origCount;
+      mediaModel.countByType = origCountByType;
+    }
+  });
+
+  it('handles image, video, pdf, missing, and unsupported uploads via unified uploadAndCreateMedia', async () => {
+    const origSave = storage.save;
+    const origCreate = mediaModel.create;
+    const origFindById = mediaModel.findById;
+    const createdRecords = [];
+
+    storage.save = async (_buf, filename, mimeType, subFolder) => ({
+      driver: 'local',
+      filename,
+      subFolder,
+      url: `/uploads/${subFolder}/${filename}`,
+      size: 123,
+      mimeType
+    });
+    mediaModel.create = async (payload) => {
+      createdRecords.push(payload);
+      return createdRecords.length;
+    };
+    mediaModel.findById = async (id) => ({ id, ...createdRecords[id - 1] });
+
+    try {
+      assert.equal((await uploadAndCreateMedia(null, 1)).status, 'missing_file');
+      assert.equal(
+        (await uploadAndCreateMedia({ mimetype: 'application/zip', originalname: 'a.zip', size: 10 }, 1)).status,
+        'unsupported_type'
+      );
+
+      const imgRes = await uploadAndCreateMedia(
+        { mimetype: 'image/png', originalname: 'pic.png', size: TINY_PNG_BUFFER.length, buffer: TINY_PNG_BUFFER },
+        7,
+        { includeRecord: true }
+      );
+      assert.equal(imgRes.status, 'created');
+      assert.equal(imgRes.media.media_type, 'image');
+      assert.equal(imgRes.media.created_by, 7);
+
+      const vidRes = await uploadAndCreateMedia(
+        { mimetype: 'video/mp4', originalname: 'clip.mp4', size: 3, buffer: Buffer.from('mp4') },
+        7
+      );
+      assert.equal(vidRes.status, 'created');
+      assert.equal(vidRes.media, null);
+      assert.equal(createdRecords[1].media_type, 'video');
+
+      const docRes = await uploadAndCreateMedia(
+        { mimetype: 'application/pdf', originalname: 'spec.pdf', size: 4, buffer: Buffer.from('%PDF') },
+        null
+      );
+      assert.equal(docRes.status, 'created');
+      assert.equal(createdRecords[2].media_type, 'document');
+    } finally {
+      storage.save = origSave;
+      mediaModel.create = origCreate;
+      mediaModel.findById = origFindById;
+    }
+  });
+
+  it('registers YouTube media and checks usage', async () => {
+    const origCreate = mediaModel.create;
+    const origCheckUsage = mediaModel.checkUsage;
+    let saved = null;
+
+    mediaModel.create = async (data) => { saved = data; return 55; };
+    mediaModel.checkUsage = async (url) => (url === '/used.webp' ? [{ source: 'Banner', label: 'Hero' }] : []);
+
+    try {
+      assert.equal((await registerYoutubeMedia({ youtubeUrl: 'https://example.com' })).status, 'invalid_url');
+      const ok = await registerYoutubeMedia({
+        youtubeUrl: 'https://youtu.be/dQw4w9WgXcQ',
+        title: '  Company Tour  ',
+        userId: 3
+      });
+      assert.equal(ok.status, 'created');
+      assert.equal(ok.id, 55);
+      assert.equal(saved.filename, 'Company Tour');
+      assert.equal(saved.youtube_id, 'dQw4w9WgXcQ');
+      assert.equal(saved.file_url, 'https://www.youtube.com/embed/dQw4w9WgXcQ');
+
+      assert.deepEqual(await checkMediaUsage(''), { inUse: false, usages: [] });
+      assert.deepEqual(await checkMediaUsage('/used.webp'), {
+        inUse: true,
+        usages: [{ source: 'Banner', label: 'Hero' }]
+      });
+    } finally {
+      mediaModel.create = origCreate;
+      mediaModel.checkUsage = origCheckUsage;
+    }
+  });
+
+  it('returns structured statuses in deleteMediaItem for not_found, in_use, force, and youtube', async () => {
+    const origFindById = mediaModel.findById;
+    const origCheckUsage = mediaModel.checkUsage;
+    const origDelete = mediaModel.delete;
+    const origStorageDelete = storage.delete;
+    const storageDeletes = [];
+    const dbDeletes = [];
+
+    storage.delete = async (url) => { storageDeletes.push(url); return true; };
+    mediaModel.delete = async (id) => { dbDeletes.push(id); return true; };
+
+    try {
+      mediaModel.findById = async () => null;
+      assert.deepEqual(await deleteMediaItem(999), { status: 'not_found', usages: [] });
+
+      mediaModel.findById = async () => ({ id: 10, media_type: 'image', file_url: '/uploads/media/a.webp' });
+      mediaModel.checkUsage = async () => [{ source: 'Produk', label: 'Bag' }];
+      const inUseRes = await deleteMediaItem(10);
+      assert.equal(inUseRes.status, 'in_use');
+      assert.equal(inUseRes.usages.length, 1);
+      assert.equal(dbDeletes.length, 0);
+
+      const forcedRes = await deleteMediaItem(10, { force: true });
+      assert.equal(forcedRes.status, 'deleted');
+      assert.deepEqual(storageDeletes, ['/uploads/media/a.webp']);
+      assert.deepEqual(dbDeletes, [10]);
+
+      mediaModel.findById = async () => ({ id: 11, media_type: 'youtube', file_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' });
+      const ytRes = await deleteMediaItem(11, { force: true });
+      assert.equal(ytRes.status, 'deleted');
+      assert.equal(storageDeletes.length, 1);
+      assert.deepEqual(dbDeletes, [10, 11]);
+    } finally {
+      mediaModel.findById = origFindById;
+      mediaModel.checkUsage = origCheckUsage;
+      mediaModel.delete = origDelete;
+      storage.delete = origStorageDelete;
+    }
+  });
+
+  it('preserves mediaController HTTP responses, JSON formats, and temp file cleanup', async () => {
+    const origFindById = mediaModel.findById;
+    const origCheckUsage = mediaModel.checkUsage;
+    const origDelete = mediaModel.delete;
+    const origStorageDelete = storage.delete;
+    const origSave = storage.save;
+    const origCreate = mediaModel.create;
+
+    const tmpPath = path.join(os.tmpdir(), `euodoo-test-${Date.now()}.png`);
+    fs.writeFileSync(tmpPath, TINY_PNG_BUFFER);
+
+    storage.save = async (_buf, filename) => ({ url: `/uploads/media/${filename}` });
+    mediaModel.create = async () => 77;
+    mediaModel.findById = async (id) => (id === 77 ? { id: 77, filename: 'ok.png' } : null);
+    mediaModel.checkUsage = async () => [{ source: 'Banner', label: 'Home' }];
+    mediaModel.delete = async () => true;
+    storage.delete = async () => true;
+
+    try {
+      let jsonOut = null;
+      let statusCode = 200;
+      const makeRes = () => ({
+        status(code) { statusCode = code; return this; },
+        json(body) { jsonOut = body; return this; },
+        redirect(url) { jsonOut = { redirect: url }; return this; }
+      });
+
+      await mediaController.apiUpload(
+        { file: { mimetype: 'image/png', originalname: 'ok.png', size: 10, path: tmpPath }, user: { id: 2 } },
+        makeRes()
+      );
+      assert.equal(jsonOut.success, true);
+      assert.equal(jsonOut.data.id, 77);
+      assert.equal(fs.existsSync(tmpPath), false, 'Temp file must be cleaned up in finally block');
+
+      statusCode = 200;
+      await mediaController.apiUpload({ file: null }, makeRes());
+      assert.equal(statusCode, 400);
+      assert.equal(jsonOut.success, false);
+
+      statusCode = 200;
+      await mediaController.destroy(
+        { params: { id: '99' }, query: {}, headers: { accept: 'application/json' } },
+        makeRes()
+      );
+      assert.equal(statusCode, 404);
+
+      mediaModel.findById = async () => ({ id: 12, media_type: 'image', file_url: '/uploads/media/x.webp' });
+      statusCode = 200;
+      await mediaController.destroy(
+        { params: { id: '12' }, query: {}, headers: { accept: 'application/json' } },
+        makeRes()
+      );
+      assert.equal(statusCode, 409);
+      assert.equal(jsonOut.inUse, true);
+
+      statusCode = 200;
+      await mediaController.destroy(
+        { params: { id: '12' }, query: { force: 'true' }, headers: { accept: 'application/json' } },
+        makeRes()
+      );
+      assert.equal(statusCode, 200);
+      assert.equal(jsonOut.success, true);
+    } finally {
+      if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
+      mediaModel.findById = origFindById;
+      mediaModel.checkUsage = origCheckUsage;
+      mediaModel.delete = origDelete;
+      storage.delete = origStorageDelete;
+      storage.save = origSave;
+      mediaModel.create = origCreate;
+    }
+  });
+});
+
