@@ -1663,10 +1663,9 @@
 /* ═══ COMPANY INTRO ═══ */
 .sec-intro {
   padding: 96px 0;
-  background: var(--bg-base);
+  background: var(--bg-soft-green);
   position: relative;
 }
-
 .intro-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1722,7 +1721,7 @@
   margin-bottom: 16px;
 }
 
-/* ═══ FEATURED PRODUCTS CATALOG (Symmetrical Bento Grid) ═══ */
+/* ═══ FEATURED PRODUCTS CATALOG ═══ */
 .sec-products {
   padding: 96px 0;
   background: var(--bg-subtle);
@@ -1737,7 +1736,7 @@
   left: 0;
   right: 0;
   height: 44px;
-  background: linear-gradient(to bottom, var(--bg-base) 0%, rgba(248, 250, 252, 0) 100%);
+  background: linear-gradient(to bottom, var(--bg-soft-green) 0%, rgba(248, 250, 252, 0) 100%);
   pointer-events: none;
 }
 
@@ -3663,7 +3662,7 @@
 
 /* Section Merek Marquee Minimalis (.brand-strip-*) */
 .brand-strip-sec {
-  background-color: var(--bg-base);
+  background-color: var(--bg-soft-green);
   padding: clamp(3rem, 5vw, 4.5rem) 0;
   position: relative;
   overflow: hidden;
@@ -4061,7 +4060,7 @@
   left: 0;
   right: 0;
   height: 44px;
-  background: linear-gradient(to bottom, var(--bg-base) 0%, rgba(248, 250, 252, 0) 100%);
+  background: linear-gradient(to bottom, var(--bg-soft-green) 0%, rgba(248, 250, 252, 0) 100%);
   pointer-events: none;
 }
 
