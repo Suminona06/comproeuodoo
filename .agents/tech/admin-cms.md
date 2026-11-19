@@ -5,7 +5,7 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: routes/adminRoutes.js
 ## 1. Arsitektur & Keamanan Autentikasi
 Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang disimpan dalam Cookie HttpOnly, validasi peran RBAC, pembatasan serangan brute-force, serta pengelolaan data pengguna, katalog produk admin, dan formulir penawaran (RFQ).
 
-- **Arsitektur Berlapis Controller & Service:** Modul CMS refaktor (`about`, `homeContent`, `media`, `auth`, `banner`, `brand`, `inquiry`, serta `[PENDING T-356..T-361]` `product`, `productCategory`, `lead`, `post`, `postCategory`) mengikuti `Route -> Controller -> Service -> Model` dan aturan ketat blok strict `error` di `eslint.config.js` (lihat [tech/conventions.md](conventions.md)).
+- **Arsitektur Berlapis Controller & Service:** Modul CMS refaktor (`about`, `homeContent`, `media`, `auth`, `banner`, `brand`, `inquiry`, serta `product`, `productCategory`, `lead`, `post`, `postCategory`) mengikuti `Route -> Controller -> Service -> Model` dan aturan ketat blok strict `error` di `eslint.config.js` (lihat [tech/conventions.md](conventions.md)).
 
 ---
 
@@ -19,10 +19,10 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 | `GET` | `/admin` / `/admin/dashboard`| `dashboardController.index` | `requireAuth` | Metrik operasional & 10 RFQ terbaru (`LIMIT 10`) |
 | `GET/POST`| `/admin/users` | `userController.*` | `requireAuth`, `roleMiddleware(['superadmin'])` | CRUD akun pengguna |
 | `GET/POST`| `/admin/inquiries*` | `inquiryController.*` (`inquiryService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar RFQ (SSR + Fetch), detail, status, hapus & CSV (lihat [tech/admin-products-rfq.md](admin-products-rfq.md)) |
-| `GET/POST`| `/admin/products*` | `productController.*` (`productService`, `productCrudService`, `productSizeTableService`) `[PENDING T-356]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Produk, Fetch & CSV (lihat [tech/admin-products-rfq.md](admin-products-rfq.md)) |
-| `GET/POST`| `/admin/product-categories*` | `productCategoryController.*` (`productCategoryService`, `utils/slugHelper.js`) `[PENDING T-357]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Kategori Produk & toggle aktif (guard `NaN` & `not_found`) |
-| `GET/POST`| `/admin/leads*` | `leadController.*` (`leadService`) `[PENDING T-358]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Leads B2B (whitelist `status` `['baru','diproses','selesai','ditolak']`, `type` `['inquiry','partnership','general']`), update & CSV |
-| `GET/POST`| `/admin/posts*`, `/admin/post-categories*` | `postController.*` (`postService`), `postCategoryController.*` (`postCategoryService`) `[PENDING T-359..T-360]` | `requireAuth`, `roleMiddleware` | Artikel, TinyMCE, slug 301 & Kategori (lihat [tech/news.md](news.md)) |
+| `GET/POST`| `/admin/products*` | `productController.*` (`productService`, `productCrudService`, `productSizeTableService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Produk, Fetch & CSV (lihat [tech/admin-products-rfq.md](admin-products-rfq.md)) |
+| `GET/POST`| `/admin/product-categories*` | `productCategoryController.*` (`productCategoryService`, `utils/slugHelper.js`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Kategori Produk & toggle aktif (guard `NaN` & `not_found`) |
+| `GET/POST`| `/admin/leads*` | `leadController.*` (`leadService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Leads B2B (whitelist `status` `['baru','diproses','selesai','ditolak']`, `type` `['inquiry','partnership','general']`), update & CSV |
+| `GET/POST`| `/admin/posts*`, `/admin/post-categories*` | `postController.*` (`postService`), `postCategoryController.*` (`postCategoryService`) | `requireAuth`, `roleMiddleware` | Artikel, TinyMCE, slug 301 & Kategori (lihat [tech/news.md](news.md)) |
 | `GET/POST`| `/admin/banners*` | `bannerController.*` (`bannerService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Hero Banner & toggle aktif (rincian di [tech/public-home.md](public-home.md)) |
 | `GET/POST`| `/admin/brands*` | `brandController.*` (`brandService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Merek & judul seksi merek (rincian di [tech/public-home.md](public-home.md)) |
 | `GET/POST`| `/admin/about*` | `aboutController.*` (`aboutService` & `aboutCrudService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Tentang Kami & sub-item (rincian di [tech/public-about.md](public-about.md)) |

@@ -52,3 +52,5 @@
 - 2026-11-19 | Refaktor arsitektur berlapis Admin Controllers & Services (About, Home Content, Media Library), penegakan ESLint strict, dan perbaikan 5 temuan keamanan/keandalan | T-347..T-350
 
 - 2026-11-19 | Refaktor arsitektur berlapis Admin Controllers & Services Batch 2 (Auth, Banner, Brand, Inquiry), penegakan ESLint strict, unit test service, dan perbaikan 4 kelompok bug keandalan/validasi | T-351..T-355
+
+- 2026-11-19 | Refaktor arsitektur berlapis (Service layer) & penegakan ESLint strict untuk 5 Admin Controller Batch 2 (Product, ProductCategory, Lead, Post, PostCategory) | T-356..T-362

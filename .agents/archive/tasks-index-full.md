@@ -1507,3 +1507,54 @@
 - **File Terdampak:** `eslint.config.js`, `tests/test-admin-batch2-services.js`, `package.json`, `services/bannerService.js`
 - **Skill:** `antislop-code`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm run test:seed`, `npm test`
+
+
+### [x] `T-356` — Refaktor `productController.js` & Lapisan Service Produk (`productService.js`, `productCrudService.js`, `productSizeTableService.js`)
+- **Acceptance Criteria:**
+  - `productController.js` tidak lagi mengimpor `productModel`, `productCategoryModel`, `processAndSaveWebP`, `storage`, maupun `invalidateSitemapCache`; re-export `parseDynamicSizeTable`, `parseSizeTable`, `getProductsWithSizeTable` tetap dipertahankan.
+  - `productService.js` menambahkan guard `NaN` (`parseSortOrder`); `productCrudService.js` mengelola list/paginasi, CRUD, upload WebP aman (hapus aset lama setelah DB sukses), `invalidateSitemapCache`, CSV export, `getProductSizeTableColumns`, dan guard `not_found` pada `destroy`.
+- **File Terdampak:** `controllers/admin/productController.js`, `services/productCrudService.js`, `services/productService.js`, `services/productSizeTableService.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0`, `npm test`, uji regresi HTTP `/admin/products*`
+
+### [x] `T-357` — Refaktor `productCategoryController.js` ke `services/productCategoryService.js` & `utils/slugHelper.js`
+- **Acceptance Criteria:**
+  - `utils/slugHelper.js` diekstrak bebas warning `no-useless-escape`; `productCategoryService.js` mengelola normalisasi payload, guard `NaN` `sort_order`, dan guard `not_found` pada `destroy`.
+- **File Terdampak:** `controllers/admin/productCategoryController.js`, `services/productCategoryService.js`, `utils/slugHelper.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0`, `npm test`, uji regresi HTTP `/admin/product-categories*`
+
+### [x] `T-358` — Refaktor `leadController.js` ke `services/leadService.js`
+- **Acceptance Criteria:**
+  - `leadService.js` menerapkan whitelist `LEAD_STATUSES` & `LEAD_TYPES`, guard tanggal CSV (`formatLeadCsvDate`), dan validasi `updateLeadStatus`; `leadController.js` bebas JSDoc generik dengan `max-depth <= 2`.
+- **File Terdampak:** `controllers/admin/leadController.js`, `services/leadService.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0`, `node --test tests/test-t356-t360-admin-services.js`
+
+### [x] `T-359` — Refaktor `postController.js` ke `services/postService.js`
+- **Acceptance Criteria:**
+  - `postService.js` mengisolasi `formatSlug` artikel, memvalidasi judul/slug unik sebelum upload WebP, mensanitasi HTML TinyMCE (`sanitizeArticleHtml`), menjalankan `postModel.update`/`delete` sebelum `slugRedirectModel.createRedirect` & `storage.delete`, serta menangani `uploadPostEditorImage` dan `invalidateSitemapCache`.
+- **File Terdampak:** `controllers/admin/postController.js`, `services/postService.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0`, `npm test`, uji regresi HTTP `/admin/posts*` & `/news/:slug` 301
+
+### [x] `T-360` — Refaktor `postCategoryController.js` ke `services/postCategoryService.js`
+- **Acceptance Criteria:**
+  - `postCategoryService.js` memakai `utils/slugHelper.js`, guard `NaN` `sort_order`, whitelist `POST_CATEGORY_TYPES = ['berita', 'blog']`, dan guard `not_found` pada `destroy`; `postCategoryController.js` mengirim `csrfToken` konsisten pada semua `res.render`.
+- **File Terdampak:** `controllers/admin/postCategoryController.js`, `services/postCategoryService.js`, `utils/slugHelper.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0`, `npm test`, uji regresi HTTP `/admin/post-categories*`
+
+### [x] `T-361` — Penegakan ESLint Ketat & Pembaruan Dokumentasi Spek Modul
+- **Acceptance Criteria:**
+  - 13 berkas Batch 2 terdaftar di blok strict `error` pada `eslint.config.js` (total 28 berkas, 0 error & 0 warning); 4 modul `tech/*.md` diperbarui di tempat (`<= ~8 KB`) dan `INDEX.md <= 60` baris.
+- **File Terdampak:** `eslint.config.js`, `.agents/tech/conventions.md`, `.agents/tech/admin-cms.md`, `.agents/tech/admin-products-rfq.md`, `.agents/tech/news.md`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npm run lint`, `npx eslint --max-warnings=0`, `wc -c -l`
+
+### [x] `T-362` — Verifikasi Regresi, Gerbang Kualitas CI & Unit Test Service
+- **Acceptance Criteria:**
+  - `tests/test-t356-t360-admin-services.js` terintegrasi di `package.json`; `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, dan uji regresi HTTP in-process seluruh 5 modul admin lulus 100% tanpa perubahan pada `views/`, `public/`, maupun `database/`.
+- **File Terdampak:** `tests/test-t356-t360-admin-services.js`, `package.json`, `services/productCrudService.js`, `services/postService.js`, `services/leadService.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, uji regresi HTTP in-process
