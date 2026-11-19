@@ -11,7 +11,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-_Proposal rujukan:_ [changes/2026-11-19_refactor-admin-controllers-batch3.md](changes/2026-11-19_refactor-admin-controllers-batch3.md) (Keputusan terkunci: `1a, 2b, 3a, 4a, 5a`).
+*Proposal rujukan:* [changes/2026-11-19_refactor-admin-controllers-batch3.md](changes/2026-11-19_refactor-admin-controllers-batch3.md) (Keputusan terkunci: `1a, 2b, 3a, 4a, 5a`).
 
 - [x] **T-363:** Ekstraksi `services/userService.js` & refaktor `controllers/admin/userController.js` (guard ID positif, trim & format/duplikasi email pada store/update, whitelist role `['superadmin','admin','editor']`, proteksi self-delete & superadmin terakhir, `currentUser` pada error fallback `index`, aturan password setara `authService.changeAdminPassword` tanpa trim spasi valid, pembersihan komentar `antislop-code`).
 - [x] **T-364:** Modularisasi `services/settingService.js` menjadi 3 berkas (`settingService.js` + `settingMediaService.js` + `settingFooterService.js` dengan re-export penuh) & refaktor `controllers/admin/settingController.js` murni via service (`getSettingsMap`, `updateSettings` + `clearSettingsCache()`), pemisahan pesan error validasi vs error sistem generik, dan pembersihan komentar `antislop-code`.
