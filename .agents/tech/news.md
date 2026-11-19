@@ -42,7 +42,7 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
 ## 5. Keamanan, Sanitasi & Validasi
 - Konten HTML disanitasi menggunakan `sanitize-html` di server sebelum disimpan.
 - Query parameter (`type`, `category`, `search`, `page`) divalidasi whitelist di server.
-- `[PENDING T-360]` `services/postCategoryService.js` memakai `utils/slugHelper.js` untuk normalisasi slug kategori, menerapkan guard `NaN` pada `sort_order`, memvalidasi whitelist `type` selaras `postCategoryModel` pada `index`/`store`/`update`, serta menerapkan guard `not_found` pada `destroy`.
+- `[PENDING T-360]` `services/postCategoryService.js` memakai `utils/slugHelper.js` untuk normalisasi slug kategori, menerapkan guard `NaN` pada `sort_order`, memvalidasi whitelist `type` (`['berita', 'blog']`) selaras `postCategoryModel` pada `index`/`store`/`update`, serta menerapkan guard `not_found` pada `destroy`.
 
 ---
 

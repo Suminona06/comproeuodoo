@@ -5,7 +5,7 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: routes/adminRoutes.js
 ## 1. Arsitektur & Keamanan Autentikasi
 Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang disimpan dalam Cookie HttpOnly, validasi peran RBAC, pembatasan serangan brute-force, serta pengelolaan data pengguna, katalog produk admin, dan formulir penawaran (RFQ).
 
-- **Arsitektur Berlapis Controller & Service:** Seluruh modul CMS hasil refaktor (termasuk `aboutController`, `homeContentController`, `mediaController`, `authController`, `bannerController`, `brandController`, `inquiryController`, serta `[PENDING T-356..T-361]` `productController`, `productCategoryController`, `leadController`, `postController`, dan `postCategoryController`) mengikuti alur `Route -> Controller -> Service -> Model`. Controller hanya mem-parsing `req.params`/`req.query`/`req.body`, memanggil lapisan `services/`, dan mengirim respons (`res.render`, `res.json`, `res.redirect`) dengan batasan metrik `tech/conventions.md` serta penegakan ESLint ketat berstatus `error` di `eslint.config.js`.
+- **Arsitektur Berlapis Controller & Service:** Modul CMS refaktor (`about`, `homeContent`, `media`, `auth`, `banner`, `brand`, `inquiry`, serta `[PENDING T-356..T-361]` `product`, `productCategory`, `lead`, `post`, `postCategory`) mengikuti `Route -> Controller -> Service -> Model` dan aturan ketat blok strict `error` di `eslint.config.js` (lihat [tech/conventions.md](conventions.md)).
 
 ---
 
@@ -18,14 +18,11 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 | `GET/POST`| `/admin/change-password` | `authController.*` (`authService`) | `requireAuth` | Perbarui kata sandi mandiri |
 | `GET` | `/admin` / `/admin/dashboard`| `dashboardController.index` | `requireAuth` | Metrik operasional & 10 RFQ terbaru (`LIMIT 10`) |
 | `GET/POST`| `/admin/users` | `userController.*` | `requireAuth`, `roleMiddleware(['superadmin'])` | CRUD akun pengguna |
-| `GET` | `/admin/inquiries` | `inquiryController.index` (`inquiryService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar RFQ (SSR + JSON Fetch tanpa reload) |
-| `GET` | `/admin/inquiries/export` | `inquiryController.exportCsv` (`inquiryService`) | `requireAuth`, `roleMiddleware` | Ekspor data prospek CSV |
-| `POST` | `/admin/inquiries/:id/status`| `inquiryController.updateStatus` (`inquiryService`) | `requireAuth`, `roleMiddleware` | Update status & catatan sales |
-| `POST` | `/admin/inquiries/:id/delete`| `inquiryController.destroy` (`inquiryService`) | `requireAuth`, `roleMiddleware` | Hapus rekaman RFQ |
-| `GET/POST`| `/admin/products*` | `productController.*` (`productService`, `productCrudService`, `productSizeTableService`) `[PENDING T-356]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Katalog & CRUD Produk Admin (SSR + JSON Fetch, CSV export; rincian di [tech/admin-products-rfq.md](admin-products-rfq.md)) |
-| `GET/POST`| `/admin/product-categories*` | `productCategoryController.*` (`productCategoryService`, `utils/slugHelper.js`) `[PENDING T-357]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Kategori Produk & toggle aktif (guard `NaN` `sort_order` & `not_found`) |
-| `GET/POST`| `/admin/leads*` | `leadController.*` (`leadService`) `[PENDING T-358]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar Lead B2B (whitelist `status`/`type`), update status & ekspor CSV |
-| `GET/POST`| `/admin/posts*`, `/admin/post-categories*` | `postController.*` (`postService`), `postCategoryController.*` (`postCategoryService`) `[PENDING T-359..T-360]` | `requireAuth`, `roleMiddleware` | CRUD Artikel, TinyMCE, slug 301 & Kategori Berita (rincian di [tech/news.md](news.md)) |
+| `GET/POST`| `/admin/inquiries*` | `inquiryController.*` (`inquiryService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar RFQ (SSR + Fetch), detail, status, hapus & CSV (lihat [tech/admin-products-rfq.md](admin-products-rfq.md)) |
+| `GET/POST`| `/admin/products*` | `productController.*` (`productService`, `productCrudService`, `productSizeTableService`) `[PENDING T-356]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Produk, Fetch & CSV (lihat [tech/admin-products-rfq.md](admin-products-rfq.md)) |
+| `GET/POST`| `/admin/product-categories*` | `productCategoryController.*` (`productCategoryService`, `utils/slugHelper.js`) `[PENDING T-357]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Kategori Produk & toggle aktif (guard `NaN` & `not_found`) |
+| `GET/POST`| `/admin/leads*` | `leadController.*` (`leadService`) `[PENDING T-358]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Leads B2B (whitelist `status` `['baru','diproses','selesai','ditolak']`, `type` `['inquiry','partnership','general']`), update & CSV |
+| `GET/POST`| `/admin/posts*`, `/admin/post-categories*` | `postController.*` (`postService`), `postCategoryController.*` (`postCategoryService`) `[PENDING T-359..T-360]` | `requireAuth`, `roleMiddleware` | Artikel, TinyMCE, slug 301 & Kategori (lihat [tech/news.md](news.md)) |
 | `GET/POST`| `/admin/banners*` | `bannerController.*` (`bannerService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Hero Banner & toggle aktif (rincian di [tech/public-home.md](public-home.md)) |
 | `GET/POST`| `/admin/brands*` | `brandController.*` (`brandService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Merek & judul seksi merek (rincian di [tech/public-home.md](public-home.md)) |
 | `GET/POST`| `/admin/about*` | `aboutController.*` (`aboutService` & `aboutCrudService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Tentang Kami & sub-item (rincian di [tech/public-about.md](public-about.md)) |
@@ -74,10 +71,10 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 
 ---
 
-## 5. Dashboard RFQ, Paginasi Dinamis & Formulir Produk CMS
-Spesifikasi teknis tabel RFQ dashboard (`LIMIT 10`), validasi whitelist & kontrak Fetch paginasi tanpa reload (`/admin/inquiries`, `/admin/products`), serta builder formulir produk & tabel ukuran dinamis dipisahkan ke sub-modul [tech/admin-products-rfq.md](admin-products-rfq.md).
+## 5. Dashboard RFQ, Paginasi & Produk CMS
+Tabel RFQ dashboard (`LIMIT 10`), paginasi Fetch (`/admin/inquiries`, `/admin/products`), serta form produk & tabel ukuran lihat [tech/admin-products-rfq.md](admin-products-rfq.md).
 
 ---
 
-## 6. Standar Komponen UI, Tombol, Paginasi & Validasi Form Admin
-Spesifikasi teknis sistem tombol (`.adm-btn-*`), tampilan slug 1 baris (`.adm-slug-text`), validasi form (`public/js/admin-form-validation.js`), SweetAlert2 bertema, serta komponen paginasi bersama Varian 1 (`.pgn-*`) didokumentasikan pada sub-modul [tech/admin-ui.md](admin-ui.md).
+## 6. Standar UI, Tombol, Paginasi & Validasi Admin
+Sistem tombol (`.adm-btn-*`), slug 1 baris (`.adm-slug-text`), validasi form (`public/js/admin-form-validation.js`), SweetAlert2, serta paginasi `.pgn-*` lihat [tech/admin-ui.md](admin-ui.md).
