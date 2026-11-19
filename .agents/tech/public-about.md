@@ -1,10 +1,10 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, views/partials/about/vision-mission.ejs, views/partials/about/ticket-accordion.ejs, views/partials/about/gallery-bento.ejs, controllers/public/pageController.js, controllers/admin/aboutController.js, services/aboutService.js, services/aboutCrudService.js [PENDING T-349], public/js/about-story.js, public/js/ticket-accordion.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, views/partials/about/vision-mission.ejs, views/partials/about/ticket-accordion.ejs, views/partials/about/gallery-bento.ejs, controllers/public/pageController.js, controllers/admin/aboutController.js, services/aboutService.js, services/aboutCrudService.js, public/js/about-story.js, public/js/ticket-accordion.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
 ## 1. Arsitektur & Komponen
 Halaman Tentang Kami (`/about`) memadukan profil korporat dari tabel `settings` dengan data relasional `about_gallery_slides`, `about_stats`, dan `about_timeline` (`models/aboutModel.js`), dirender SSR melalui *thin page* dan partial modular serta dilengkapi paginasi galeri bento + Lightbox PhotoSwipe v5 (`.lbx-*`).
-- **Arsitektur CMS Admin About (`Route -> Controller -> Service -> Model`) `[PENDING T-349]`:** `controllers/admin/aboutController.js` bertindak sebagai *thin controller* (`<= 40` baris/fungsi, `max-depth <= 2`, `complexity <= 8`) pengelola HTTP request/response (`res.render`, `res.redirect`, `sendTabSuccess`, `sendTabError` untuk form redirect & JSON XHR) tanpa mengimpor model maupun `processAndSaveWebP`. `services/aboutService.js` menangani orkestrasi halaman utama (`getAdminAboutPageData`, `updateAdminAboutContent` via `aboutModel.updateAboutData`), parser profil/T-I-C-K-E-T/header, dan re-export parser sub-item; `services/aboutCrudService.js` menangani parser & CRUD sub-item Gallery/Stats/Timeline dengan status terstruktur (`ok` | `validation_error` | `not_found`).
+- **Arsitektur CMS Admin About (`Route -> Controller -> Service -> Model`):** `controllers/admin/aboutController.js` bertindak sebagai *thin controller* (`<= 40` baris/fungsi, `max-depth <= 2`, `complexity <= 8`) pengelola HTTP request/response (`res.render`, `res.redirect`, `sendTabSuccess`, `sendTabError` untuk form redirect & JSON XHR) tanpa mengimpor model maupun `processAndSaveWebP`. `services/aboutService.js` menangani orkestrasi halaman utama (`getAdminAboutPageData`, `updateAdminAboutContent` via `aboutModel.updateAboutData`), parser profil/T-I-C-K-E-T/header, dan re-export parser sub-item; `services/aboutCrudService.js` menangani parser & CRUD sub-item Gallery/Stats/Timeline dengan status terstruktur (`ok` | `validation_error` | `not_found`).
 
 ---
 
@@ -13,11 +13,11 @@ Halaman Tentang Kami (`/about`) memadukan profil korporat dari tabel `settings` 
 | Method | Path | Controller | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/about` | `pageController.about` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR `/about` (`<= 40` baris/fungsi, fallback `t('about.*')`) |
-| `GET` | `/admin/about` | `aboutController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS Tentang Kami via `aboutService.getAdminAboutPageData` `[PENDING T-349]` |
-| `POST` | `/admin/about` | `aboutController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update profil, visi misi, T-I-C-K-E-T, & foto WebP via `aboutService.updateAdminAboutContent` `[PENDING T-349]` |
-| `POST` | `/admin/about/gallery` & `/:id/{update,delete}` | `aboutController.{store,update,delete}GallerySlide` | `requireAuth`, `roleMiddleware` | CRUD slide galeri bento via `aboutCrudService` (HTML redirect / XHR JSON `200/400/404/500`) `[PENDING T-349]` |
-| `POST` | `/admin/about/stats` & `/:id/{update,delete}` | `aboutController.{store,update,delete}Stats` | `requireAuth`, `roleMiddleware` | CRUD angka statistik (maks 8) via `aboutCrudService` (HTML redirect / XHR JSON `200/400/404/500`) `[PENDING T-349]` |
-| `POST` | `/admin/about/timeline` & `/:id/{update,delete}` | `aboutController.{store,update,delete}Timeline` | `requireAuth`, `roleMiddleware` | CRUD simpul sejarah via `aboutCrudService` (HTML redirect / XHR JSON `200/400/404/500`) `[PENDING T-349]` |
+| `GET` | `/admin/about` | `aboutController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS Tentang Kami via `aboutService.getAdminAboutPageData` |
+| `POST` | `/admin/about` | `aboutController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update profil, visi misi, T-I-C-K-E-T, & foto WebP via `aboutService.updateAdminAboutContent` |
+| `POST` | `/admin/about/gallery` & `/:id/{update,delete}` | `aboutController.{store,update,delete}GallerySlide` | `requireAuth`, `roleMiddleware` | CRUD slide galeri bento via `aboutCrudService` (HTML redirect / XHR JSON `200/400/404/500`) |
+| `POST` | `/admin/about/stats` & `/:id/{update,delete}` | `aboutController.{store,update,delete}Stats` | `requireAuth`, `roleMiddleware` | CRUD angka statistik (maks 8) via `aboutCrudService` (HTML redirect / XHR JSON `200/400/404/500`) |
+| `POST` | `/admin/about/timeline` & `/:id/{update,delete}` | `aboutController.{store,update,delete}Timeline` | `requireAuth`, `roleMiddleware` | CRUD simpul sejarah via `aboutCrudService` (HTML redirect / XHR JSON `200/400/404/500`) |
 
 ---
 

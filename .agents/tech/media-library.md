@@ -1,11 +1,11 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/admin/mediaController.js, services/mediaService.js [PENDING T-348], middleware/uploadMiddleware.js, models/mediaModel.js, utils/seedAssetsSync.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: controllers/admin/mediaController.js, services/mediaService.js, middleware/uploadMiddleware.js, models/mediaModel.js, utils/seedAssetsSync.js
 
 # Tech Spec: Modul Media Library (Media & Storage)
 
 ## 1. Arsitektur & Pipa Pemrosesan Berkas
 Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke format WebP menggunakan library Sharp, pembuatan thumbnail, integrasi YouTube, serta antarmuka pemilih berkas terpadu (Universal Media Picker) mengikuti pola `Route -> Controller -> Service -> Model`:
-- **Controller (`controllers/admin/mediaController.js`) `[PENDING T-348]`:** Bertindak sebagai *thin controller* (`<= 40` baris/fungsi, `max-depth <= 2`, `complexity <= 8`) yang mem-parsing request, menjaga `cleanupTempFile(req.file)` pada blok `finally`, serta mengirim respons HTML redirect atau JSON (`200/400/404/409/500`).
-- **Service (`services/mediaService.js`) `[PENDING T-348]`:** Mengorkestrasi `getMediaLibraryViewData`, `buildEmptyMediaLibraryViewData`, `getMediaPickerList`, `uploadAndCreateMedia` (pipa tunggal image/video/PDF dipakai bersama oleh `upload` & `apiUpload`), `registerYoutubeMedia`, `checkMediaUsage`, dan `deleteMediaItem` (mengembalikan status terstruktur `{ status: 'not_found' | 'in_use' | 'deleted', usages }`).
+- **Controller (`controllers/admin/mediaController.js`):** Bertindak sebagai *thin controller* (`<= 40` baris/fungsi, `max-depth <= 2`, `complexity <= 8`) yang mem-parsing request, menjaga `cleanupTempFile(req.file)` pada blok `finally`, serta mengirim respons HTML redirect atau JSON (`200/400/404/409/500`).
+- **Service (`services/mediaService.js`):** Mengorkestrasi `getMediaLibraryViewData`, `buildEmptyMediaLibraryViewData`, `getMediaPickerList`, `uploadAndCreateMedia` (pipa tunggal image/video/PDF dipakai bersama oleh `upload` & `apiUpload`), `registerYoutubeMedia`, `checkMediaUsage`, dan `deleteMediaItem` (mengembalikan status terstruktur `{ status: 'not_found' | 'in_use' | 'deleted', usages }`).
 
 ---
 
@@ -13,13 +13,13 @@ Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke fo
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/admin/media` | `mediaController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin','editor'])` | Antarmuka galeri berkas via `mediaService.getMediaLibraryViewData` `[PENDING T-348]` |
-| `GET` | `/admin/media/api`, `/admin/api/media` | `mediaController.apiList` | `requireAuth`, `roleMiddleware` | API JSON daftar berkas untuk picker via `mediaService.getMediaPickerList` `[PENDING T-348]` |
-| `POST` | `/admin/media/upload` | `mediaController.upload` | `requireAuth`, `roleMiddleware`, `uploadLargeMedia.single('file')` | Upload form via `mediaService.uploadAndCreateMedia` + `cleanupTempFile` `[PENDING T-348]` |
-| `POST` | `/admin/api/media/upload`| `mediaController.apiUpload`| `requireAuth`, `roleMiddleware`, `uploadLargeMedia.single('file')` | Upload asinkron picker via `mediaService.uploadAndCreateMedia` + `cleanupTempFile` `[PENDING T-348]` |
-| `POST` | `/admin/media/youtube` | `mediaController.addYoutube`| `requireAuth`, `roleMiddleware` | Daftarkan video YouTube via `mediaService.registerYoutubeMedia` `[PENDING T-348]` |
-| `POST` | `/admin/api/media/check-usage`| `mediaController.apiCheckUsage`| `requireAuth`, `roleMiddleware` | Audit penggunaan via `mediaService.checkMediaUsage` `[PENDING T-348]` |
-| `POST` / `DELETE` | `/admin/media/:id/delete`, `/admin/api/media/:id` | `mediaController.destroy` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Hapus berkas via `mediaService.deleteMediaItem` (`200/404/409/500`, dukung `force=true`) `[PENDING T-348]` |
+| `GET` | `/admin/media` | `mediaController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin','editor'])` | Antarmuka galeri berkas via `mediaService.getMediaLibraryViewData` |
+| `GET` | `/admin/media/api`, `/admin/api/media` | `mediaController.apiList` | `requireAuth`, `roleMiddleware` | API JSON daftar berkas untuk picker via `mediaService.getMediaPickerList` |
+| `POST` | `/admin/media/upload` | `mediaController.upload` | `requireAuth`, `roleMiddleware`, `uploadLargeMedia.single('file')` | Upload form via `mediaService.uploadAndCreateMedia` + `cleanupTempFile` |
+| `POST` | `/admin/api/media/upload`| `mediaController.apiUpload`| `requireAuth`, `roleMiddleware`, `uploadLargeMedia.single('file')` | Upload asinkron picker via `mediaService.uploadAndCreateMedia` + `cleanupTempFile` |
+| `POST` | `/admin/media/youtube` | `mediaController.addYoutube`| `requireAuth`, `roleMiddleware` | Daftarkan video YouTube via `mediaService.registerYoutubeMedia` |
+| `POST` | `/admin/api/media/check-usage`| `mediaController.apiCheckUsage`| `requireAuth`, `roleMiddleware` | Audit penggunaan via `mediaService.checkMediaUsage` |
+| `POST` / `DELETE` | `/admin/media/:id/delete`, `/admin/api/media/:id` | `mediaController.destroy` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Hapus berkas via `mediaService.deleteMediaItem` (`200/404/409/500`, dukung `force=true`) |
 
 ---
 
@@ -63,8 +63,8 @@ Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke fo
 ---
 
 ## 5. Audit Ketergantungan Media (`check-usage`)
-Fungsi `mediaController.apiCheckUsage` dan `mediaController.destroy` mendelegasikan audit penggunaan ke `mediaService.checkMediaUsage` / `mediaService.deleteMediaItem` -> `mediaModel.checkUsage` `[PENDING T-348]`, yang menjalankan query agregasi ke 7 tabel database:
-`banners (file_url)`, `page_hero_banners (image_url)`, `settings (site_logo_*, site_favicon)`, `products (main_image)`, `brands (logo_url)`, `posts (cover_image)`, dan `capabilities (image_url)`.
+Fungsi `mediaController.apiCheckUsage` dan `mediaController.destroy` mendelegasikan audit penggunaan ke `mediaService.checkMediaUsage` / `mediaService.deleteMediaItem` -> `mediaModel.checkUsage`, yang menjalankan query agregasi ke 8 tabel database:
+`banners (file_url)`, `page_hero_banners (image_url)`, `settings (site_logo_*, site_favicon)`, `products (main_image)`, `brands (logo_url)`, `posts (cover_image)`, `capabilities (image_url)`, dan `about_gallery_slides (image_url)`.
 Jika ditemukan referensi aktif, sistem mengembalikan daftar lokasi keterkaitan dan mencegah penghapusan tanpa konfirmasi eksplisit dari admin.
 
 ---

@@ -49,3 +49,4 @@
 - 2026-11-16 | Snapshot seed konten terkini (15 tabel), 34 aset upload baseline di `database/seed-assets/uploads/`, migrasi `020_seed_current_content_v1.sql`, sinkronisasi aset non-destruktif pada `migrate`/`seed`, serta CI quality gate `.github/workflows/ci.yml` | T-332..T-335
 - 2026-11-17 | Refaktor Beranda Publik: ekstraksi `homeService.js`, perampingan `homeController.js`, modularisasi 11 partial & `wcu-botanical.svg`, ekstraksi `home.js`, tokenisasi CSS, strict `lint:views`, serta polish aksesibilitas WCAG AA & regresi | T-336..T-341
 - 2026-11-17 | Penyeragaman meta title frontend & `company_name` (`PT Euodoo Plastic`), perbaikan auto-resume slider merek `#merek` pasca tutup `#brandPreviewModal`, dan proteksi noindex total rute `/admin*` (FR-35) | T-342..T-346
+- 2026-11-19 | Refaktor arsitektur berlapis Admin Controllers & Services (About, Home Content, Media Library), penegakan ESLint strict, dan perbaikan 5 temuan keamanan/keandalan | T-347..T-350
