@@ -1471,3 +1471,39 @@
 - **File Terdampak:** `eslint.config.js`, `tests/test-t347-t349-admin-services.js`
 - **Skill:** `antislop-code`
 - **Verifikasi:** `npm run lint -- --quiet`, `npm run lint:views`, `npm run lint:i18n`, `node --test tests/test-t347-t349-admin-services.js`, `npm run test:admin-http`, `npm test`
+
+
+### [x] `T-351` — Ekstraksi `services/authService.js`, Perampingan `controllers/admin/authController.js`, & Perbaikan Bug Brute-Force Lock / `changePassword`
+- **Acceptance Criteria:**
+  - `services/authService.js` mengekspor `authenticateAdmin`, `changeAdminPassword`, `validateLoginInput`, `validatePasswordChangeInput`, `hasExpiredBruteForceLock`, `getRemainingLockMinutes`, `buildSessionCookieOptions`, dan `signAdminSessionToken` dengan return status terstruktur; `locked_until` yang kedaluwarsa mereset counter sebelum mencatat kegagalan baru; `changeAdminPassword` menolak input kosong/hanya spasi, `< 8` karakter tanpa memotong spasi valid, atau sama persis dengan kata sandi lama; `authController.js` mematuhi batas metrik `tech/conventions.md`.
+- **File Terdampak:** `services/authService.js`, `controllers/admin/authController.js`, `models/userModel.js`, `tests/test-admin-batch2-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0 controllers/admin/authController.js services/authService.js`, `node --test tests/test-admin-batch2-services.js`
+
+### [x] `T-352` — Ekstraksi `services/bannerService.js`, Perampingan `controllers/admin/bannerController.js`, & Perbaikan Bug `toggleStatus`, Validasi YouTube/CTA URL, serta Proteksi Aset
+- **Acceptance Criteria:**
+  - `isValidCtaUrl` menerima `/`, `#`, `http:`, `https:`, `mailto:`, dan `tel:` serta menolak skema berbahaya; `updateBanner` memvalidasi YouTube secara ketat; `toggleBannerStatus` & `deleteBanner` mengembalikan `not_found` tanpa `TypeError`; `deleteOrphanUploadFile` hanya menghapus berkas lokal `/uploads/...` yang bukan YouTube ID, tidak terdaftar di tabel `media` (`mediaModel.isRegisteredByUrl`), dan tidak dipakai entitas lain (`mediaModel.checkUsage`); `bannerController.js` menjaga `cleanupTempFile(req.file)` di `finally`.
+- **File Terdampak:** `services/bannerService.js`, `controllers/admin/bannerController.js`, `models/bannerModel.js`, `models/mediaModel.js`, `tests/test-admin-batch2-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0 controllers/admin/bannerController.js services/bannerService.js`, `node --test tests/test-admin-batch2-services.js`
+
+### [x] `T-353` — Ekstraksi `services/brandService.js`, Perampingan `controllers/admin/brandController.js`, & Perbaikan Bug `toggleStatus`, Sanitasi `logo_url`, serta Normalisasi `sort_order`
+- **Acceptance Criteria:**
+  - `brandService.js` mengelola `updateBrandSectionTitle`, `sanitizeBrandLogoUrl` (`sanitizeSafePath`), normalisasi `sort_order` bebas `NaN`, penghapusan logo yatim via `deleteOrphanUploadFile`, dan `toggleBrandStatus`/`deleteBrand` dengan status `not_found` (HTTP 404 JSON pada `brandController.toggleStatus`).
+- **File Terdampak:** `services/brandService.js`, `controllers/admin/brandController.js`, `models/mediaModel.js`, `tests/test-admin-batch2-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0 controllers/admin/brandController.js services/brandService.js`, `node --test tests/test-admin-batch2-services.js`
+
+### [x] `T-354` — Ekstraksi `services/inquiryService.js`, Perampingan `controllers/admin/inquiryController.js`, Helper `renderPartialAsync`, & Validasi Whitelist Status Inquiry
+- **Acceptance Criteria:**
+  - `INQUIRY_STATUSES = ['baru', 'dibaca', 'ditindaklanjuti', 'ditolak']` diseragamkan pada `inquiryService.js` dan `inquiryModel.js`; `updateInquiryStatus` menolak status di luar whitelist (`validation_error` / HTTP 400); `deleteInquiry` menangani `not_found`; `inquiryController.index` memakai `renderPartialAsync` + `Promise.all` tanpa callback bersarang.
+- **File Terdampak:** `services/inquiryService.js`, `controllers/admin/inquiryController.js`, `models/inquiryModel.js`, `tests/test-admin-batch2-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint --max-warnings=0 controllers/admin/inquiryController.js services/inquiryService.js`, `node --test tests/test-admin-batch2-services.js`
+
+### [x] `T-355` — Penegakan Blok Strict ESLint di `eslint.config.js`, Unit Test 4 Service Baru, & Verifikasi Regresi Menyeluruh
+- **Acceptance Criteria:**
+  - `eslint.config.js` menegakkan aturan strict `error` untuk 4 controller dan 4 service Batch 2; `tests/test-admin-batch2-services.js` (13 test) terintegrasi di `npm test`; seluruh gerbang kualitas (`npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm run test:seed`, `npm test`) dan uji regresi HTTP admin/publik lulus hijau tanpa drift DB.
+- **File Terdampak:** `eslint.config.js`, `tests/test-admin-batch2-services.js`, `package.json`, `services/bannerService.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm run test:seed`, `npm test`
