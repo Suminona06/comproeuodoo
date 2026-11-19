@@ -15,7 +15,7 @@
     "seed:export": "node database/seeds/exportSnapshot.js",
     "seed:v1": "node database/seeds/initial_seed.js",
     "seed:v2": "node database/seeds/v2_seed.js",
-    "test": "node --test tests/test-seed-snapshot.js tests/test-admin-batch2-services.js tests/test-t356-t360-admin-services.js && node tests/test-storage-driver.js && node tests/test-modul10-security.js && node tests/test-modul11-cms.js && node tests/test-modul12-public.js && node tests/test-modul13-seo-audit.js",
+    "test": "node --test tests/test-seed-snapshot.js tests/test-admin-batch2-services.js tests/test-admin-batch3-services.js tests/test-t356-t360-admin-services.js && node tests/test-storage-driver.js && node tests/test-modul10-security.js && node tests/test-modul11-cms.js && node tests/test-modul12-public.js && node tests/test-modul13-seo-audit.js",
     "test:seed": "node --test tests/test-seed-snapshot.js",
     "test:storage": "node tests/test-storage-driver.js",
     "test:security": "node tests/test-modul10-security.js",

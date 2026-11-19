@@ -46,14 +46,14 @@ function validateRequiredFields(body) {
   return { titleId, machineType };
 }
 
-async function resolveImageUrl(body, file, deps, isUpdate) {
+async function resolveImageUrl(body, file, deps) {
   if (file) {
     return { imageUrl: await useSaveWebP(deps)(file.buffer, 'products', WEBP_OPTIONS) };
   }
   if (body.image_url === undefined) return { imageUrl: undefined };
 
   const trimmed = asTrimmed(body.image_url);
-  if (!trimmed) return { imageUrl: isUpdate ? null : null };
+  if (!trimmed) return { imageUrl: null };
   if (!isSafeImageUrl(trimmed)) {
     return { error: 'URL gambar tidak valid. Gunakan path / atau http(s):// yang aman.' };
   }
@@ -82,7 +82,7 @@ export async function createCapability(rawBody, file, deps = {}) {
   const reqFields = validateRequiredFields(body);
   if (reqFields.error) return { status: 'validation_error', error: reqFields.error };
 
-  const imgResult = await resolveImageUrl(body, file, deps, false);
+  const imgResult = await resolveImageUrl(body, file, deps);
   if (imgResult.error) return { status: 'validation_error', error: imgResult.error };
 
   const payload = buildCapabilityPayload(body, reqFields, 0);
@@ -96,7 +96,7 @@ async function prepareCapabilityPayload(body, file, deps, sortFallback) {
   const reqFields = validateRequiredFields(body);
   if (reqFields.error) return { error: reqFields.error };
 
-  const imgResult = await resolveImageUrl(body, file, deps, true);
+  const imgResult = await resolveImageUrl(body, file, deps);
   if (imgResult.error) return { error: imgResult.error };
 
   const payload = buildCapabilityPayload(body, reqFields, sortFallback);
