@@ -138,35 +138,34 @@ export const mediaModel = {
 
   async checkUsage(fileUrl) {
     if (!fileUrl) return [];
-    try {
-      const sql = `
-        SELECT 'Banner' as source, title_id as label FROM banners WHERE file_url = ? OR poster_url = ?
-        UNION ALL
-        SELECT 'Hero Banner' as source, page_key as label FROM page_hero_banners WHERE image_url = ?
-        UNION ALL
-        SELECT 'Katalog Produk' as source, name_id as label FROM products WHERE main_image = ? OR gallery_images LIKE ?
-        UNION ALL
-        SELECT 'Artikel Berita' as source, title_id as label FROM posts WHERE cover_image = ?
-        UNION ALL
-        SELECT 'Merek' as source, name as label FROM brands WHERE logo_url = ?
-        UNION ALL
-        SELECT 'Kapabilitas' as source, title_id as label FROM capabilities WHERE image_url = ?
-        UNION ALL
-        SELECT 'Pengaturan' as source, setting_key as label FROM settings WHERE setting_value = ?
-      `;
-      const params = [
-        fileUrl, fileUrl,
-        fileUrl,
-        fileUrl, `%${fileUrl}%`,
-        fileUrl,
-        fileUrl,
-        fileUrl,
-        fileUrl
-      ];
-      return await query(sql, params);
-    } catch {
-      return [];
-    }
+    const sql = `
+      SELECT 'Banner' as source, title_id as label FROM banners WHERE file_url = ? OR poster_url = ?
+      UNION ALL
+      SELECT 'Hero Banner' as source, page_key as label FROM page_hero_banners WHERE image_url = ?
+      UNION ALL
+      SELECT 'Katalog Produk' as source, name_id as label FROM products WHERE main_image = ? OR gallery_images LIKE ?
+      UNION ALL
+      SELECT 'Artikel Berita' as source, title_id as label FROM posts WHERE cover_image = ?
+      UNION ALL
+      SELECT 'Merek' as source, name as label FROM brands WHERE logo_url = ?
+      UNION ALL
+      SELECT 'Kapabilitas' as source, title_id as label FROM capabilities WHERE image_url = ?
+      UNION ALL
+      SELECT 'Galeri Tentang Kami' as source, title_id as label FROM about_gallery_slides WHERE image_url = ?
+      UNION ALL
+      SELECT 'Pengaturan' as source, setting_key as label FROM settings WHERE setting_value = ?
+    `;
+    const params = [
+      fileUrl, fileUrl,
+      fileUrl,
+      fileUrl, `%${fileUrl}%`,
+      fileUrl,
+      fileUrl,
+      fileUrl,
+      fileUrl,
+      fileUrl
+    ];
+    return await query(sql, params);
   }
 };
 

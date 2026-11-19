@@ -1,6 +1,11 @@
 import settingModel from './settingModel.js';
 import logger from '../utils/logger.js';
 
+function normalizeSettingValue(val) {
+  if (val === null) return '';
+  return typeof val === 'string' ? val.trim() : String(val);
+}
+
 export const aboutModel = {
   /**
    * Return default fallback data based directly on authentic Company Profile
@@ -189,6 +194,8 @@ export const aboutModel = {
         }
       }
 
+      const rawAboutImage = allSettings.about_image_url === 'null' ? '' : allSettings.about_image_url;
+
       return {
         founded_year: allSettings.about_founded_year || defaults.founded_year,
         former_names: allSettings.about_former_names || defaults.former_names,
@@ -214,7 +221,7 @@ export const aboutModel = {
         factory_address: allSettings.about_factory_address || defaults.factory_address,
         factory_phone: allSettings.about_factory_phone || defaults.factory_phone,
         factory_fax: allSettings.about_factory_fax || defaults.factory_fax,
-        image_url: allSettings.about_image_url || defaults.image_url,
+        image_url: rawAboutImage !== undefined ? rawAboutImage : defaults.image_url,
         vision_image_url: allSettings.vision_image_url || '',
         mission_image_url: allSettings.mission_image_url || '',
         values,
@@ -348,7 +355,7 @@ export const aboutModel = {
 
     stringFields.forEach((field) => {
       if (data[field] !== undefined) {
-        updateObj[`about_${field}`] = typeof data[field] === 'string' ? data[field].trim() : String(data[field]);
+        updateObj[`about_${field}`] = normalizeSettingValue(data[field]);
       }
     });
 
@@ -378,7 +385,7 @@ export const aboutModel = {
 
     directSettingKeys.forEach((key) => {
       if (data[key] !== undefined) {
-        updateObj[key] = typeof data[key] === 'string' ? data[key].trim() : String(data[key]);
+        updateObj[key] = normalizeSettingValue(data[key]);
       }
     });
 
@@ -386,7 +393,7 @@ export const aboutModel = {
     valuesAliases.forEach((aliasKey) => {
       const fullKey = `about_${aliasKey}`;
       if (data[aliasKey] !== undefined && data[fullKey] === undefined) {
-        updateObj[fullKey] = typeof data[aliasKey] === 'string' ? data[aliasKey].trim() : String(data[aliasKey]);
+        updateObj[fullKey] = normalizeSettingValue(data[aliasKey]);
       }
     });
 

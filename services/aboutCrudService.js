@@ -1,20 +1,43 @@
 import aboutGalleryModel from '../models/aboutGalleryModel.js';
 import aboutStatsModel from '../models/aboutStatsModel.js';
 import aboutTimelineModel from '../models/aboutTimelineModel.js';
+import { sanitizeSafePath } from '../utils/sanitizer.js';
 
 const trimOrNull = (val) => (val ? String(val).trim() : undefined);
 const trimOrEmpty = (val) => trimOrNull(val) || '';
 const optTrim = (val) => (val !== undefined ? String(val).trim() : undefined);
 const parseActiveFlag = (val) => (val === '1' || val === 1 || val === true ? 1 : 0);
-const parseSortOrder = (val, fallback = '0') => parseInt(val || fallback, 10);
 const resolveCreateActive = (val) => (val === undefined ? 1 : parseActiveFlag(val));
-const optSortOrder = (val) => (val !== undefined ? parseInt(val, 10) : undefined);
 const optActiveFlag = (val) => (val !== undefined ? parseActiveFlag(val) : undefined);
+
+function parseSortOrder(val, fallback = 0) {
+  const parsed = parseInt(val, 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+}
+
+function optSortOrder(val) {
+  if (val === undefined || val === null) return undefined;
+  const trimmed = String(val).trim();
+  if (trimmed === '') return undefined;
+  const parsed = parseInt(trimmed, 10);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+function validateOptionalImagePath(rawVal) {
+  if (rawVal === undefined) return { value: undefined };
+  const trimmed = String(rawVal).trim();
+  if (!trimmed) return { error: 'Gambar slide galeri wajib diisi.' };
+  const safe = sanitizeSafePath(trimmed, '');
+  if (!safe) return { error: 'URL gambar slide galeri tidak valid.' };
+  return { value: safe };
+}
 
 export function parseGallerySlideCreate(rawBody) {
   const body = rawBody || {};
-  const imageUrl = trimOrNull(body.image_url);
-  if (!imageUrl) return { error: 'Gambar slide galeri wajib diisi.' };
+  const rawImageUrl = trimOrNull(body.image_url);
+  if (!rawImageUrl) return { error: 'Gambar slide galeri wajib diisi.' };
+  const imageUrl = sanitizeSafePath(rawImageUrl, '');
+  if (!imageUrl) return { error: 'URL gambar slide galeri tidak valid.' };
   return {
     data: {
       image_url: imageUrl,
@@ -32,12 +55,11 @@ export function parseGallerySlideCreate(rawBody) {
 
 export function parseGallerySlideUpdate(rawBody) {
   const body = rawBody || {};
-  if (body.image_url !== undefined && !String(body.image_url).trim()) {
-    return { error: 'Gambar slide galeri wajib diisi.' };
-  }
+  const imgCheck = validateOptionalImagePath(body.image_url);
+  if (imgCheck.error) return { error: imgCheck.error };
   return {
     data: {
-      image_url: optTrim(body.image_url),
+      image_url: imgCheck.value,
       category_id: optTrim(body.category_id),
       category_en: optTrim(body.category_en),
       title_id: optTrim(body.title_id),

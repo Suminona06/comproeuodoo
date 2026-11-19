@@ -26,6 +26,15 @@ async function runModul12Tests() {
   console.log('  1a. Homepage full 8-section layout verified: PASSED');
   console.log('  1b. Why Choose Us asymmetric 2-column layout & artbox verified: PASSED');
 
+  const resHomeEn = await fetch(`${BASE_URL}/?lang=en`);
+  assert.strictEqual(resHomeEn.status, 200, 'English homepage must return HTTP 200');
+  const homeEnHtml = await resHomeEn.text();
+  assert.ok(homeEnHtml.includes('sec-intro'), 'English homepage must render Intro section');
+  assert.ok(homeEnHtml.includes('sec-why-us'), 'English homepage must render Why Choose Us section');
+  assert.ok(homeEnHtml.includes('hcat-panel'), 'English homepage must render category panels');
+  assert.ok(homeEnHtml.includes('id="global-cta"'), 'English homepage must render Global CTA section');
+  console.log('  1c. English homepage copywriting & sections verified: PASSED');
+
   // Test 2: About Us Page
   console.log('\n[TEST 2] Testing About Us (/about) SSR...');
   const resAbout = await fetch(`${BASE_URL}/about`);

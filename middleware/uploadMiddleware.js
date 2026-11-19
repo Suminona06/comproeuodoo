@@ -11,7 +11,8 @@ const memoryStorage = multer.memoryStorage();
 const tempDiskStorage = multer.diskStorage({
   destination: os.tmpdir(),
   filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
+    const rawExt = path.extname(file.originalname || '').toLowerCase();
+    const ext = /^\.[a-z0-9]{1,8}$/.test(rawExt) ? rawExt : '';
     cb(null, `euodoo-tmp-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
   }
 });
@@ -33,30 +34,43 @@ function isSvgUpload(originalName = '', mimeType = '') {
   return SVG_EXTENSION_RE.test(ext) || String(mimeType).toLowerCase().includes('svg');
 }
 
-const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm'];
+const ALLOWED_IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.jfif', '.png', '.webp', '.gif', '.ico']);
+const VIDEO_MIME_TO_EXT = { 'video/mp4': '.mp4', 'video/webm': '.webm' };
+const VIDEO_EXT_TO_MIME = { '.mp4': 'video/mp4', '.webm': 'video/webm', '': 'video/mp4' };
 const ALLOWED_DOCUMENT_TYPES = ['application/pdf'];
+const ALLOWED_DOCUMENT_EXTS = new Set(['.pdf']);
+
+function isAllowedImageUpload(ext, mime) {
+  if (ALLOWED_IMAGE_TYPES.includes(mime) && ALLOWED_IMAGE_EXTS.has(ext)) return true;
+  return ext === '.ico' && (ALLOWED_IMAGE_TYPES.includes(mime) || mime === 'application/octet-stream');
+}
+
+function isAllowedVideoUpload(ext, mime) {
+  return Boolean(VIDEO_MIME_TO_EXT[mime]) && VIDEO_MIME_TO_EXT[mime] === ext;
+}
+
+function isAllowedDocumentUpload(ext, mime) {
+  return ALLOWED_DOCUMENT_TYPES.includes(mime) && ALLOWED_DOCUMENT_EXTS.has(ext);
+}
 
 // File filter validator
-const mediaFilter = (req, file, cb) => {
+export const mediaFilter = (req, file, cb) => {
   if (isSvgUpload(file.originalname, file.mimetype)) {
     return cb(new Error('Format berkas SVG tidak diizinkan demi keamanan.'), false);
   }
-  const ext = path.extname(file.originalname).toLowerCase();
-  const isIco = ext === '.ico';
-  const isImage = ALLOWED_IMAGE_TYPES.includes(file.mimetype) || isIco;
-  const isVideo = ALLOWED_VIDEO_TYPES.includes(file.mimetype);
-  const isDoc = ALLOWED_DOCUMENT_TYPES.includes(file.mimetype);
+  const ext = path.extname(file.originalname || '').toLowerCase();
+  const mime = String(file.mimetype || '').toLowerCase();
+  const allowed = isAllowedImageUpload(ext, mime)
+    || isAllowedVideoUpload(ext, mime)
+    || isAllowedDocumentUpload(ext, mime);
 
-  if (isImage || isVideo || isDoc) {
-    cb(null, true);
-  } else {
-    cb(
-      new Error(
-        'Format berkas tidak didukung. Harap unggah gambar (JPG, PNG, WebP, ICO), video (MP4, WebM), atau PDF.'
-      ),
-      false
-    );
-  }
+  if (allowed) return cb(null, true);
+  return cb(
+    new Error(
+      'Format berkas tidak didukung. Harap unggah gambar (JPG, PNG, WebP, ICO), video (MP4, WebM), atau PDF.'
+    ),
+    false
+  );
 };
 
 export const uploadMedia = multer({
@@ -136,31 +150,45 @@ export const processAndSaveImage = async (buffer, subFolder = 'media', originalN
   return await saveWebpAsset(buffer, subFolder, options);
 };
 
-export const saveVideoFile = async (source, originalName = '', subFolder = 'banners') => {
-  const ext = path.extname(originalName).toLowerCase() || '.mp4';
-  const mimeType = ext === '.webm' ? 'video/webm' : 'video/mp4';
+function resolveVideoFormat(originalName = '', mimeType = '') {
+  if (mimeType) {
+    const normalizedMime = String(mimeType).toLowerCase();
+    const ext = VIDEO_MIME_TO_EXT[normalizedMime];
+    if (!ext) throw new Error('Format video tidak didukung. Hanya MP4 dan WebM yang diizinkan.');
+    return { ext, mimeType: normalizedMime };
+  }
+  const rawExt = path.extname(originalName).toLowerCase();
+  const fallbackMime = VIDEO_EXT_TO_MIME[rawExt];
+  if (!fallbackMime) throw new Error('Ekstensi video tidak didukung. Hanya .mp4 dan .webm yang diizinkan.');
+  return { ext: rawExt || '.mp4', mimeType: fallbackMime };
+}
+
+export const saveVideoFile = async (source, originalName = '', subFolder = 'banners', mimeType = '') => {
+  const { ext, mimeType: resolvedMime } = resolveVideoFormat(originalName, mimeType);
   const filename = `video-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
 
-  const saved = await persistUploadSource(source, filename, mimeType, subFolder);
+  const saved = await persistUploadSource(source, filename, resolvedMime, subFolder);
   logger.info(`Saved video file: ${saved.url} (${saved.size} bytes via ${saved.driver})`);
   return saved.url;
 };
 
-export const saveDocumentFile = async (source, originalName = '', subFolder = 'media') => {
-  const ext = path.extname(originalName).toLowerCase() || '.pdf';
-  const filename = `doc-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+export const saveDocumentFile = async (source, _originalName = '', subFolder = 'media') => {
+  const filename = `doc-${Date.now()}-${Math.round(Math.random() * 1e9)}.pdf`;
 
   const saved = await persistUploadSource(source, filename, 'application/pdf', subFolder);
   logger.info(`Saved document file: ${saved.url} (${saved.size} bytes via ${saved.driver})`);
   return saved;
 };
 
-export const processAndSaveVideo = async (source, originalName = '', _mimeType = 'video/mp4', subFolder = 'media') => {
-  const url = await saveVideoFile(source, originalName, subFolder);
+export const processAndSaveVideo = async (source, originalName = '', mimeType = 'video/mp4', subFolder = 'media') => {
+  const url = await saveVideoFile(source, originalName, subFolder, mimeType);
   return { url };
 };
 
-export const processAndSaveDocument = async (source, originalName = '', _mimeType = 'application/pdf', subFolder = 'media') => {
+export const processAndSaveDocument = async (source, originalName = '', mimeType = 'application/pdf', subFolder = 'media') => {
+  if (String(mimeType || '').toLowerCase() !== 'application/pdf') {
+    throw new Error('Hanya dokumen PDF yang diizinkan.');
+  }
   return await saveDocumentFile(source, originalName, subFolder);
 };
 
@@ -251,6 +279,7 @@ export const generateFaviconSet = async (source) => {
 };
 
 export default {
+  mediaFilter,
   uploadMedia,
   uploadLargeMedia,
   cleanupTempFile,

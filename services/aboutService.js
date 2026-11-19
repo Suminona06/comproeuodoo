@@ -4,6 +4,9 @@ import aboutStatsModel from '../models/aboutStatsModel.js';
 import aboutTimelineModel from '../models/aboutTimelineModel.js';
 import { processAndSaveWebP } from '../middleware/uploadMiddleware.js';
 import { isValidTicketIconKey, TICKET_ICONS, TICKET_ICON_KEYS } from '../utils/ticketIcons.js';
+import { sanitizeSafePath } from '../utils/sanitizer.js';
+
+export { sanitizeSafePath };
 
 export {
   parseGallerySlideCreate,
@@ -36,8 +39,6 @@ const TRIMMED_ABOUT_FIELDS = [
 ];
 
 const OPTIONAL_ABOUT_FIELDS = [
-  'vision_image_url',
-  'mission_image_url',
   'about_gallery_kicker_id',
   'about_gallery_kicker_en',
   'about_gallery_title_id',
@@ -56,16 +57,9 @@ const readRawField = (body, primaryKey, aliasKey) =>
 const optTrim = (val) => (val !== undefined ? String(val).trim() : undefined);
 const trimOrNull = (val) => (val ? String(val).trim() : undefined);
 
-export function sanitizeSafePath(val, fallback = '') {
-  if (typeof val !== 'string') return fallback;
-  const trimmed = val.trim();
-  const valid = /^(\/uploads\/|\/images\/)[a-zA-Z0-9_.\-/]+$/.test(trimmed) && trimmed.length <= 500;
-  return valid ? trimmed : fallback;
-}
-
-function sanitizeOptionalBgImage(rawBg) {
-  if (rawBg === undefined) return undefined;
-  const trimmed = String(rawBg || '').trim();
+function sanitizeOptionalImagePath(rawImg) {
+  if (rawImg === undefined) return undefined;
+  const trimmed = String(rawImg || '').trim();
   return trimmed === '' ? '' : sanitizeSafePath(trimmed, '');
 }
 
@@ -110,7 +104,7 @@ export function parseTicketHeader(rawBody) {
   const body = rawBody || {};
   const rawBg = readRawField(body, 'about_values_bg_image', 'values_bg_image');
   return {
-    about_values_bg_image: sanitizeOptionalBgImage(rawBg),
+    about_values_bg_image: sanitizeOptionalImagePath(rawBg),
     about_values_pill_id: trimSliceOptional(readRawField(body, 'about_values_pill_id', 'values_pill_id'), 50, 'Budaya Kerja'),
     about_values_pill_en: trimSliceOptional(readRawField(body, 'about_values_pill_en', 'values_pill_en'), 50, 'Corporate Culture'),
     about_values_subtitle_id: trimSliceOptional(readRawField(body, 'about_values_subtitle_id', 'values_subtitle_id'), 150),
@@ -148,6 +142,8 @@ export function buildAboutUpdatePayload(rawBody, defaultValues, defaultCerts) {
 
   return {
     ...payload,
+    vision_image_url: sanitizeOptionalImagePath(body.vision_image_url),
+    mission_image_url: sanitizeOptionalImagePath(body.mission_image_url),
     ...parseTimelineHeader(body),
     ...parseTicketHeader(body),
     values: parseTicketValues(body, defaultValues || []),
@@ -189,7 +185,7 @@ async function resolveAboutImageUrl(body, file) {
     return await processAndSaveWebP(file.buffer, 'pages', { maxWidth: 1920, maxHeight: 1080 });
   }
   if (body.image_url !== undefined) {
-    return body.image_url ? body.image_url.trim() : null;
+    return sanitizeOptionalImagePath(body.image_url);
   }
   return undefined;
 }

@@ -10,14 +10,24 @@ import { extractYouTubeId } from '../utils/youtube.js';
 const MEDIA_LIBRARY_LIMIT = 40;
 const EMPTY_MEDIA_COUNTS = { all: 0, image: 0, video: 0, document: 0, youtube: 0 };
 
+const ALLOWED_IMAGE_MIMES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/x-icon',
+  'image/vnd.microsoft.icon'
+]);
+const ALLOWED_VIDEO_MIMES = new Set(['video/mp4', 'video/webm']);
+
 const MEDIA_PROCESSORS = [
   {
-    match: (mime) => mime.startsWith('image/'),
+    match: (mime) => ALLOWED_IMAGE_MIMES.has(mime),
     mediaType: 'image',
     process: (source, file) => processAndSaveImage(source, 'media', file.originalname, file.mimetype)
   },
   {
-    match: (mime) => mime.startsWith('video/'),
+    match: (mime) => ALLOWED_VIDEO_MIMES.has(mime),
     mediaType: 'video',
     process: (source, file) => processAndSaveVideo(source, file.originalname, file.mimetype, 'media')
   },
@@ -34,7 +44,7 @@ function parsePositiveInt(rawValue, fallback) {
 }
 
 function resolveMediaProcessor(mimeType) {
-  const mime = mimeType || '';
+  const mime = String(mimeType || '').toLowerCase();
   return MEDIA_PROCESSORS.find((entry) => entry.match(mime));
 }
 

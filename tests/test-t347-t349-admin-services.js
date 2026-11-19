@@ -3,8 +3,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import ejs from 'ejs';
 import pool from '../config/database.js';
 import storage from '../config/storage.js';
+import settingModel from '../models/settingModel.js';
+import { mediaFilter, saveDocumentFile, saveVideoFile } from '../middleware/uploadMiddleware.js';
+import { sanitizeSafeHref, sanitizeSafePath } from '../utils/sanitizer.js';
 import homeContentModel from '../models/homeContentModel.js';
 import productCategoryModel from '../models/productCategoryModel.js';
 import mediaModel from '../models/mediaModel.js';
@@ -73,14 +77,17 @@ describe('T-347: homeContentService & homeContentController', () => {
   it('builds categories section and filters valid homepage category slots', () => {
     const categories = buildCategoriesSection({
       cat_title_id: '  Kategori  ',
+      cat_title_en: '',
       cat_subtitle_en: '  Sub  '
     });
     assert.deepEqual(categories, {
       title_id: 'Kategori',
       title_en: '',
-      subtitle_id: '',
+      subtitle_id: undefined,
       subtitle_en: 'Sub'
     });
+
+    assert.equal(buildHomepageCategories({}), undefined);
 
     const slots = buildHomepageCategories({
       home_cat_0_id: '4',
@@ -102,6 +109,7 @@ describe('T-347: homeContentService & homeContentController', () => {
       cert_1_name: '   ',
       cert_2_name: 'OXIUM',
       cert_2_sort_order: '9',
+      cert_btn_url: '',
       cert_show_btn: 'on',
       cert_is_active: '1'
     });
@@ -115,6 +123,7 @@ describe('T-347: homeContentService & homeContentController', () => {
 
     const cta = buildCtaSection({
       cta_title_id: 'Hubungi',
+      cta_btn1_url: '',
       cta_page_home: '1',
       cta_page_404: 'on',
       cta_is_active: '1'
@@ -124,6 +133,19 @@ describe('T-347: homeContentService & homeContentController', () => {
     assert.equal(cta.pages['404'], 1);
     assert.equal(cta.pages.contact, 0);
     assert.equal(cta.is_active, 1);
+  });
+
+  it('preserves omitted EN/ID fields on partial payload without wiping existing content', () => {
+    const partial = buildHomeContentPayload({ intro_title_id: 'Only ID' });
+    assert.equal(partial.intro.title_id, 'Only ID');
+    assert.equal(partial.intro.title_en, undefined);
+    assert.equal(partial.intro.paragraph_1_id, undefined);
+    assert.equal(partial.why_choose_us.title_en, undefined);
+    assert.equal(partial.why_choose_us.is_active, undefined);
+    assert.equal(partial.homepage_categories, undefined);
+    assert.equal(partial.certifications.items, undefined);
+    assert.equal(partial.cta.pages, undefined);
+    assert.equal(partial.cta.title_en, undefined);
   });
 
   it('assembles full 6-section payload via buildHomeContentPayload', () => {
@@ -523,7 +545,7 @@ describe('T-349: aboutService, aboutCrudService & aboutController', () => {
       assert.equal(payloads[1].image_url, '/images/plant.webp');
 
       await aboutService.updateAdminAboutContent({ image_url: '' }, null);
-      assert.equal(payloads[2].image_url, null);
+      assert.equal(payloads[2].image_url, '');
     } finally {
       aboutModel.getAboutData = origGetAbout;
       aboutModel.updateAboutData = origUpdateAbout;
@@ -561,7 +583,7 @@ describe('T-349: aboutService, aboutCrudService & aboutController', () => {
 
     try {
       assert.equal((await aboutCrudService.createGallerySlide({})).status, 'validation_error');
-      assert.deepEqual(await aboutCrudService.createGallerySlide({ image_url: '/img.webp' }), { status: 'ok', id: 11 });
+      assert.deepEqual(await aboutCrudService.createGallerySlide({ image_url: '/uploads/media/img.webp' }), { status: 'ok', id: 11 });
       assert.equal((await aboutCrudService.updateGallerySlide('999', {})).status, 'not_found');
       assert.equal((await aboutCrudService.updateGallerySlide('1', { image_url: '' })).status, 'validation_error');
       assert.deepEqual(await aboutCrudService.updateGallerySlide('1', { title_id: 'Baru' }), { status: 'ok' });
@@ -715,5 +737,227 @@ describe('T-350: strict ESLint enforcement & boundary checks', () => {
   });
 });
 
+function runMediaFilterCheck(originalname, mimetype) {
+  return new Promise((resolve, reject) => {
+    mediaFilter({}, { originalname, mimetype }, (err, accepted) => {
+      if (err) reject(err);
+      else resolve(accepted);
+    });
+  });
+}
+
+describe('Security & Correctness Audit Fixes', () => {
+  it('Fix #1: enforces MIME-to-extension matching and safe extensions in uploadMiddleware & mediaService', async () => {
+    for (const [name, mime] of [
+      ['evil.html', 'application/pdf'],
+      ['evil.html', 'video/mp4'],
+      ['evil.svg', 'image/svg+xml'],
+      ['mismatch.webm', 'video/mp4']
+    ]) {
+      await assert.rejects(runMediaFilterCheck(name, mime));
+    }
+
+    for (const [name, mime] of [
+      ['brochure.pdf', 'application/pdf'],
+      ['clip.mp4', 'video/mp4'],
+      ['clip.webm', 'video/webm'],
+      ['pic.png', 'image/png'],
+      ['favicon.ico', 'image/x-icon']
+    ]) {
+      assert.equal(await runMediaFilterCheck(name, mime), true);
+    }
+
+    const origSave = storage.save;
+    const origCreate = mediaModel.create;
+    const savedNames = [];
+    storage.save = async (_buf, filename, _mime, subFolder) => {
+      savedNames.push(filename);
+      return { driver: 'local', filename, url: `/uploads/${subFolder}/${filename}`, size: 4 };
+    };
+    mediaModel.create = async () => 99;
+
+    try {
+      const doc = await saveDocumentFile(Buffer.from('%PDF'), 'evil.html', 'media');
+      assert.ok(doc.url.endsWith('.pdf'));
+
+      const mp4Url = await saveVideoFile(Buffer.from('v'), 'evil.html', 'media', 'video/mp4');
+      const webmUrl = await saveVideoFile(Buffer.from('v'), 'evil.html', 'media', 'video/webm');
+      assert.ok(mp4Url.endsWith('.mp4'));
+      assert.ok(webmUrl.endsWith('.webm'));
+      await assert.rejects(saveVideoFile(Buffer.from('v'), 'evil.html', 'media'));
+
+      assert.equal(
+        (await uploadAndCreateMedia({ mimetype: 'image/svg+xml', originalname: 'x.svg', size: 10 }, 1)).status,
+        'unsupported_type'
+      );
+      assert.equal(
+        (await uploadAndCreateMedia({ mimetype: 'video/quicktime', originalname: 'x.mov', size: 10 }, 1)).status,
+        'unsupported_type'
+      );
+      const forgedPdf = await uploadAndCreateMedia(
+        { mimetype: 'application/pdf', originalname: 'evil.html', size: 4, buffer: Buffer.from('%PDF') },
+        1
+      );
+      assert.equal(forgedPdf.status, 'created');
+      assert.ok(savedNames.at(-1).endsWith('.pdf'));
+    } finally {
+      storage.save = origSave;
+      mediaModel.create = origCreate;
+    }
+  });
+
+  it('Fix #2: blocks javascript:/data:/traversal URLs across homeContent, about, and cta-global', async () => {
+    assert.equal(sanitizeSafeHref('javascript:alert(1)', '/fallback'), '/fallback');
+    assert.equal(sanitizeSafeHref('data:text/html,<script>', '/fallback'), '/fallback');
+    assert.equal(sanitizeSafeHref('//evil.com', '/fallback'), '/fallback');
+    assert.equal(sanitizeSafeHref('/contact\nX-Test: 1', '/fallback'), '/fallback');
+    assert.equal(sanitizeSafeHref('https://euodoo.co.id/promo', ''), 'https://euodoo.co.id/promo');
+    assert.equal(sanitizeSafeHref('mailto:sales@euodoo.co.id', ''), 'mailto:sales@euodoo.co.id');
+    assert.equal(sanitizeSafeHref('tel:+62211234', ''), 'tel:+62211234');
+    assert.equal(sanitizeSafeHref('#sertifikasi', ''), '#sertifikasi');
+
+    assert.equal(sanitizeSafePath('/uploads/../secret.js', ''), '');
+    assert.equal(sanitizeSafePath('javascript:alert(1)', ''), '');
+    assert.equal(sanitizeSafePath('https://evil.com/x.png', ''), '');
+    assert.equal(sanitizeSafePath('/uploads/media/ok.webp', ''), '/uploads/media/ok.webp');
+
+    const cert = buildCertificationsSection({ cert_btn_url: 'javascript:alert(1)' });
+    assert.equal(cert.btn_url, '/about#sertifikasi');
+    const cta = buildCtaSection({ cta_btn1_url: 'javascript:alert(1)', cta_btn2_url: 'data:text/html,1' });
+    assert.equal(cta.btn1_url, '/contact');
+    assert.equal(cta.btn2_url, '');
+    const intro = buildIntroSection({ intro_image_url: 'javascript:alert(1)' });
+    assert.equal(intro.image_url, '');
+    const cats = buildHomepageCategories({ home_cat_0_id: '1', home_cat_0_image_url: 'https://evil.com/x.jpg' });
+    assert.equal(cats[0].image_url, '');
+
+    const aboutPayload = aboutService.buildAboutUpdatePayload({
+      vision_image_url: 'javascript:alert(1)',
+      mission_image_url: '/uploads/media/mission.webp'
+    });
+    assert.equal(aboutPayload.vision_image_url, '');
+    assert.equal(aboutPayload.mission_image_url, '/uploads/media/mission.webp');
+
+    assert.ok(aboutCrudService.parseGallerySlideCreate({ image_url: 'javascript:alert(1)' }).error);
+    assert.ok(aboutCrudService.parseGallerySlideUpdate({ image_url: '/etc/passwd' }).error);
+
+    const renderedCta = await ejs.renderFile(path.resolve('views/partials/cta-global.ejs'), {
+      path: '/',
+      currentLang: 'en',
+      settings: { whatsapp_url: 'https://wa.me/628112117123' },
+      globalCta: {
+        title_en: 'Need custom bags?',
+        btn1_title_en: 'Contact',
+        btn1_url: 'javascript:alert(1)',
+        btn2_title_en: 'Chat',
+        btn2_url: 'javascript:alert(2)',
+        pages: { home: 1 },
+        is_active: 1
+      }
+    });
+    assert.ok(!renderedCta.includes('javascript:'));
+    assert.ok(renderedCta.includes('href="/contact"'));
+    assert.ok(renderedCta.includes('href="https://wa.me/628112117123"'));
+  });
+
+  it('Fix #3: prevents literal "null" in about_image_url on clear and guards stale "null"', async () => {
+    const origUpdateMany = settingModel.updateMany;
+    const origGetAll = settingModel.getAll;
+    let written = null;
+    settingModel.updateMany = async (obj) => { written = obj; };
+
+    try {
+      await aboutModel.updateAboutData({
+        image_url: null,
+        vision_image_url: null,
+        values_bg_image: null
+      });
+      assert.equal(written.about_image_url, '');
+      assert.equal(written.vision_image_url, '');
+      assert.equal(written.about_values_bg_image, '');
+
+      settingModel.getAll = async () => ({ about_image_url: '' });
+      assert.equal((await aboutModel.getAboutData()).image_url, '');
+
+      settingModel.getAll = async () => ({ about_image_url: 'null' });
+      assert.equal((await aboutModel.getAboutData()).image_url, '');
+    } finally {
+      settingModel.updateMany = origUpdateMany;
+      settingModel.getAll = origGetAll;
+    }
+  });
+
+  it('Fix #4: prevents NaN sort_order in About CRUD create and update parsers', () => {
+    assert.equal(aboutCrudService.parseGallerySlideCreate({ image_url: '/uploads/a.webp', sort_order: '' }).data.sort_order, 0);
+    assert.equal(aboutCrudService.parseGallerySlideCreate({ image_url: '/uploads/a.webp', sort_order: 'abc' }).data.sort_order, 0);
+    assert.equal(aboutCrudService.parseStatCreate({ stat_value: '10+', label_id: 'A', sort_order: '  ' }).data.sort_order, 0);
+    assert.equal(aboutCrudService.parseTimelineCreate({ year_label_id: '2026', title_id: 'T', sort_order: 'xyz' }).data.sort_order, 0);
+
+    for (const badVal of ['', '   ', 'abc', null]) {
+      assert.equal(aboutCrudService.parseGallerySlideUpdate({ sort_order: badVal }).data.sort_order, undefined);
+      assert.equal(aboutCrudService.parseStatUpdate({ sort_order: badVal }).sort_order, undefined);
+      assert.equal(aboutCrudService.parseTimelineUpdate({ sort_order: badVal }).sort_order, undefined);
+    }
+    assert.equal(aboutCrudService.parseGallerySlideUpdate({ sort_order: '0' }).data.sort_order, 0);
+    assert.equal(aboutCrudService.parseStatUpdate({ sort_order: '5' }).sort_order, 5);
+    assert.equal(aboutCrudService.parseTimelineUpdate({ sort_order: '12' }).sort_order, 12);
+  });
+
+  it('Fix #5: checks about_gallery_slides usage and propagates DB errors instead of returning []', async () => {
+    const testUrl = `/uploads/media/test-fix5-${Date.now()}.webp`;
+    let slideId = null;
+    try {
+      slideId = await aboutGalleryModel.create({
+        image_url: testUrl,
+        title_id: 'Slide Audit Fix 5',
+        sort_order: 99,
+        is_active: 1
+      });
+      const usages = await mediaModel.checkUsage(testUrl);
+      assert.ok(
+        usages.some((u) => u.source === 'Galeri Tentang Kami' && u.label === 'Slide Audit Fix 5'),
+        'about_gallery_slides usage must be reported by mediaModel.checkUsage'
+      );
+    } finally {
+      if (slideId) await aboutGalleryModel.delete(slideId);
+    }
+
+    const origPoolQuery = pool.query;
+    const origFindById = mediaModel.findById;
+    const origMediaDelete = mediaModel.delete;
+    const origStorageDelete = storage.delete;
+    let deletedFromStorage = false;
+    let deletedFromDb = false;
+
+    pool.query = async () => { throw new Error('Simulated DB error'); };
+    mediaModel.findById = async () => ({ id: 55, media_type: 'image', file_url: '/uploads/media/protected.webp' });
+    storage.delete = async () => { deletedFromStorage = true; return true; };
+    mediaModel.delete = async () => { deletedFromDb = true; return true; };
+
+    try {
+      await assert.rejects(mediaModel.checkUsage('/uploads/media/protected.webp'), /Simulated DB error/);
+      await assert.rejects(deleteMediaItem(55), /Simulated DB error/);
+      assert.equal(deletedFromStorage, false);
+      assert.equal(deletedFromDb, false);
+
+      let statusCode = 200;
+      let jsonOut = null;
+      await mediaController.destroy(
+        { params: { id: '55' }, query: {}, headers: { accept: 'application/json' } },
+        {
+          status(code) { statusCode = code; return this; },
+          json(body) { jsonOut = body; return this; }
+        }
+      );
+      assert.equal(statusCode, 500);
+      assert.equal(jsonOut.success, false);
+    } finally {
+      pool.query = origPoolQuery;
+      mediaModel.findById = origFindById;
+      mediaModel.delete = origMediaDelete;
+      storage.delete = origStorageDelete;
+    }
+  });
+});
 
 

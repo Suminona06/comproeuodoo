@@ -7,6 +7,7 @@ import {
   isExternalFooterUrl,
   stripHtmlMax
 } from '../services/settingService.js';
+import { sanitizeSafeHref } from '../utils/sanitizer.js';
 import logger from '../utils/logger.js';
 
 let cachedSettings = null;
@@ -187,12 +188,12 @@ function buildGlobalCta(settings) {
     btn1_title_en: str('global_cta_btn1_title_en'),
     btn1_sub_id: str('global_cta_btn1_sub_id'),
     btn1_sub_en: str('global_cta_btn1_sub_en'),
-    btn1_url: settings.global_cta_btn1_url || '/contact',
+    btn1_url: sanitizeSafeHref(settings.global_cta_btn1_url, '/contact'),
     btn2_title_id: str('global_cta_btn2_title_id'),
     btn2_title_en: str('global_cta_btn2_title_en'),
     btn2_sub_id: str('global_cta_btn2_sub_id'),
     btn2_sub_en: str('global_cta_btn2_sub_en'),
-    btn2_url: settings.global_cta_btn2_url || settings.whatsapp_url,
+    btn2_url: sanitizeSafeHref(settings.global_cta_btn2_url, '') || settings.whatsapp_url,
     pages: parseGlobalCtaPages(settings.global_cta_pages_json),
     is_active: isGlobalCtaActive(settings.global_cta_is_active)
   };
