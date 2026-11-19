@@ -149,8 +149,9 @@ async function resolveBannerMediaForCreate(body, file, deps = {}) {
 }
 
 function resolveYoutubeCandidateForUpdate(banner, body) {
-  const directInput = trimOrNull(body.youtube_url) || trimOrNull(body.file_url);
-  if (directInput) return directInput;
+  if (body.youtube_url !== undefined || body.file_url !== undefined) {
+    return trimOrNull(body.youtube_url) || trimOrNull(body.file_url) || '';
+  }
   return banner.media_type === 'youtube' ? banner.file_url : '';
 }
 
@@ -181,7 +182,7 @@ function resolvePosterForCreate(body) {
 function resolvePosterForUpdate(banner, body) {
   if (body.poster_url === undefined) return banner.poster_url;
   const trimmed = trimOrNull(body.poster_url);
-  if (!trimmed) return '';
+  if (!trimmed) return null;
   return sanitizeOptionalLocalPath(trimmed, banner.poster_url);
 }
 

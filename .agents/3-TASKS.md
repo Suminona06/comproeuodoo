@@ -2,9 +2,9 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 1 Task (`T-355`)
-- **Task Selesai pada Batch Ini:** 4 Task (`T-351` s/d `T-354`)
-- **Total Task Selesai:** 354 Task (`T-01` s/d `T-354`)
+- **Task Aktif Terbuka:** 0 Task
+- **Task Selesai pada Batch Ini:** 5 Task (`T-351` s/d `T-355`)
+- **Total Task Selesai:** 355 Task (`T-01` s/d `T-355`)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
 - **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-356**.
 
@@ -58,9 +58,9 @@
   3. `updateInquiryStatus` menolak nilai `status` di luar `INQUIRY_STATUSES` dengan `{ status: 'validation_error', error: 'Status inquiry tidak valid.' }` (HTTP 400 JSON / redirect error), dan `deleteInquiry` menangani ID tidak ditemukan dengan `{ status: 'not_found', error: 'Inquiry tidak ditemukan.' }`.
   4. `controllers/admin/inquiryController.js` membungkus `req.app.render` dengan helper Promise `renderPartialAsync` sehingga bebas callback bersarang (`max-depth <= 2`) dan setiap fungsi `<= 40` baris (`<= 300` baris/berkas, `complexity <= 8`).
 
-### [ ] T-355: Penegakan Blok Strict ESLint di `eslint.config.js`, Unit Test 4 Service Baru, & Verifikasi Regresi Menyeluruh (B5, C1, C2)
+### [x] T-355: Penegakan Blok Strict ESLint di `eslint.config.js`, Unit Test 4 Service Baru, & Verifikasi Regresi Menyeluruh (B5, C1, C2)
 - **Modul:** `tech/conventions.md`, `tech/admin-cms.md`
-- **Prioritas:** High | **Status:** Todo | **Dependensi:** `T-351`, `T-352`, `T-353`, `T-354` | **Tanggal:** 2026-11-19
+- **Prioritas:** High | **Status:** Done | **Dependensi:** `T-351`, `T-352`, `T-353`, `T-354` | **Tanggal:** 2026-11-19
 - **Skill:** `antislop-code`
 - **File Terdampak:** `eslint.config.js`, `tests/test-admin-batch2-services.js` (baru), `package.json`
 - **Deskripsi & Acceptance Criteria:**

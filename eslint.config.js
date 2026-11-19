@@ -88,11 +88,19 @@ export default [
   {
     files: [
       'controllers/admin/aboutController.js',
+      'controllers/admin/authController.js',
+      'controllers/admin/bannerController.js',
+      'controllers/admin/brandController.js',
       'controllers/admin/homeContentController.js',
+      'controllers/admin/inquiryController.js',
       'controllers/admin/mediaController.js',
       'services/aboutService.js',
       'services/aboutCrudService.js',
+      'services/authService.js',
+      'services/bannerService.js',
+      'services/brandService.js',
       'services/homeContentService.js',
+      'services/inquiryService.js',
       'services/mediaService.js'
     ],
     rules: {
