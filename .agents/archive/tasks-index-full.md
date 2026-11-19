@@ -1441,3 +1441,33 @@
 - **File Terdampak:** Seluruh berkas tersentuh `T-342` s/d `T-345`
 - **Skill:** `polish`, `animate`, `antislop-code`
 - **Verifikasi:** `npm run lint && npm run lint:views && npm run lint:i18n && npm run test:seed`, `npm test`, `node tests/test-brand-marquee-scaling.js`, `node tests/test-homepage-major-update-qa.js`, `node tests/test-t276-conventions-refactor-qa.js`
+
+### [x] `T-347` — Ekstraksi `services/homeContentService.js` & Perampingan `homeContentController`
+- **Acceptance Criteria:**
+  - `homeContentController.js` menjadi thin controller bebas impor model, `services/homeService.js` tetap 297 baris tanpa perubahan, dan `services/homeContentService.js` menampung builder 6 seksi (`<= 40` baris/fungsi, `max-depth <= 2`, `complexity <= 8`, `<= 300` baris/berkas).
+  - Kontrak `ALLOWED_KICKER_ICONS`, default URL, partial-update safe (`undefined` preserved), dan sanitasi path/CTA href (`sanitizeSafePath`/`sanitizeSafeHref`) terjaga 100%.
+- **File Terdampak:** `controllers/admin/homeContentController.js`, `services/homeContentService.js`, `utils/sanitizer.js`, `middleware/settingsMiddleware.js`, `views/partials/cta-global.ejs`, `tests/test-t347-t349-admin-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint controllers/admin/homeContentController.js services/homeContentService.js`, `node --test tests/test-t347-t349-admin-services.js`, `npm run test:admin-http`
+
+### [x] `T-348` — Pembuatan `services/mediaService.js` & Perampingan `mediaController`
+- **Acceptance Criteria:**
+  - `mediaController.js` bebas impor model/storage/processor upload/youtube helper dan menjaga `cleanupTempFile(req.file)` di `finally`.
+  - `uploadAndCreateMedia` menyatukan pipa image/video/PDF, `deleteMediaItem` mengembalikan status terstruktur, `mediaFilter`/processor menegakkan whitelist MIME-ekstensi & ekstensi `.pdf`/`.mp4`/`.webm` aman, serta `mediaModel.checkUsage` mencakup `about_gallery_slides` dan meneruskan error DB ke HTTP 500.
+- **File Terdampak:** `services/mediaService.js`, `controllers/admin/mediaController.js`, `middleware/uploadMiddleware.js`, `models/mediaModel.js`, `controllers/admin/bannerController.js`, `tests/test-t347-t349-admin-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint controllers/admin/mediaController.js services/mediaService.js`, `node --test tests/test-t347-t349-admin-services.js`, `node tests/test-storage-driver.js`
+
+### [x] `T-349` — Pemecahan Layanan About (`aboutService.js` & `aboutCrudService.js`) & Perampingan `aboutController`
+- **Acceptance Criteria:**
+  - `aboutController.js` bebas impor 4 model & `processAndSaveWebP` dengan 11 handler rute utuh, `aboutService.js` mengorkestrasi halaman utama & re-export parser sub-item, dan `aboutCrudService.js` mengelola parser & CRUD Gallery/Stats/Timeline (dengan guard `sort_order` non-`NaN`, `sanitizeSafePath`, dan guard `''` alih-alih literal `'null'` pada `about_image_url`).
+- **File Terdampak:** `controllers/admin/aboutController.js`, `services/aboutService.js`, `services/aboutCrudService.js`, `models/aboutModel.js`, `tests/test-t347-t349-admin-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npx eslint controllers/admin/aboutController.js services/aboutService.js services/aboutCrudService.js`, `node --test tests/test-t347-t349-admin-services.js`, `npm run test:admin-http`
+
+### [x] `T-350` — Penegakan ESLint Strict di `eslint.config.js` & Audit Regresi Terpadu
+- **Acceptance Criteria:**
+  - Blok strict `'error'` di `eslint.config.js` mencakup tepat 7 berkas refaktor; `npm run lint`, `npm run lint:views`, dan `npm run lint:i18n` hijau; seluruh suite unit, storage, security, CMS, SEO audit, dan admin HTTP lulus tanpa drift DB terhadap `database/seeds/snapshot.json`.
+- **File Terdampak:** `eslint.config.js`, `tests/test-t347-t349-admin-services.js`
+- **Skill:** `antislop-code`
+- **Verifikasi:** `npm run lint -- --quiet`, `npm run lint:views`, `npm run lint:i18n`, `node --test tests/test-t347-t349-admin-services.js`, `npm run test:admin-http`, `npm test`

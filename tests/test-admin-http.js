@@ -136,8 +136,11 @@ async function testHttpEndpoints() {
     }
   }
 
-  // Step 4: Test POST /admin/home-content update
+  // Step 4: Test POST /admin/home-content partial update safely (with snapshot & restore)
   console.log('\nStep 4: Testing POST /admin/home-content update...');
+  const { default: settingModel } = await import('../models/settingModel.js');
+  const settingsSnapshot = await settingModel.getAll();
+
   const getHomeRes = await makeRequest({
     path: '/admin/home-content',
     headers: { 'Cookie': `${sessionCookie}; ${csrfCookie}` }
@@ -151,47 +154,46 @@ async function testHttpEndpoints() {
   const m = getHomeRes.data.match(/name="_csrf"\s+value="([^"]+)"/);
   const homeCsrf = m ? m[1] : csrfToken;
 
-  const homeUpdateBody = new URLSearchParams({
-    _csrf: homeCsrf,
-    intro_title_id: 'Dedikasi Manufaktur Plastik Berkualitas Sejak 1990',
-    intro_eyebrow_id: 'TENTANG PT EUODOO',
-    intro_is_active: '1',
-    wcu_is_active: '1',
-    wcu_title_id: 'Why choose us[accent]?[/accent]',
-    wcu_chip_icon: 'tree',
-    wcu_chip_label_id: 'Solusi ramah lingkungan',
-    wcu_headline_id: 'Inovasi material, dengan [mark]dampak yang lebih baik.[/mark]',
-    wcu_desc_id: 'Sebagai [strong]pionir penerapan aditif ramah lingkungan[/strong], kami menghadirkan solusi teruji SNI.',
-    wcu_art_label_id: 'Material · Alam · Masa depan',
-    wcu_float_eyebrow_id: 'Berorientasi masa depan',
-    wcu_float_title_id: 'Better by design.',
-    wcu_float_desc_id: 'Inovasi material untuk langkah yang lebih bertanggung jawab.',
-    cat_title_id: 'Produk Unggulan Manufaktur',
-    cat_subtitle_id: 'Kantong plastik HDPE dan LLDPE berkualitas tinggi untuk berbagai kebutuhan retail dan industri.',
-    home_cat_0_id: '4',
-    home_cat_1_id: '5',
-    home_cat_2_id: '6',
-    home_cat_3_id: '7',
-    cert_is_active: '1',
-    cta_is_active: '1',
-    cta_page_home: '1'
-  }).toString();
+  try {
+    const homeUpdateBody = new URLSearchParams({
+      _csrf: homeCsrf,
+      intro_title_id: settingsSnapshot.home_intro_title_id || 'Dedikasi Manufaktur Plastik Berkualitas Sejak 1990',
+      wcu_chip_icon: settingsSnapshot.home_wcu_chip_icon || 'tree'
+    }).toString();
 
-  const postHomeRes = await makeRequest({
-    method: 'POST',
-    path: '/admin/home-content',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(homeUpdateBody),
-      'Cookie': `${sessionCookie}; ${csrfCookie}`
-    },
-    body: homeUpdateBody
-  });
+    const postHomeRes = await makeRequest({
+      method: 'POST',
+      path: '/admin/home-content',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(homeUpdateBody),
+        'Cookie': `${sessionCookie}; ${csrfCookie}`
+      },
+      body: homeUpdateBody
+    });
 
-  if (postHomeRes.statusCode !== 302 || !postHomeRes.headers.location.includes('success')) {
-    throw new Error(`POST /admin/home-content failed: status ${postHomeRes.statusCode}, location: ${postHomeRes.headers.location}`);
+    if (postHomeRes.statusCode !== 302 || !postHomeRes.headers.location.includes('success')) {
+      throw new Error(`POST /admin/home-content failed: status ${postHomeRes.statusCode}, location: ${postHomeRes.headers.location}`);
+    }
+    const introTitleEnAfter = await settingModel.get('home_intro_title_en');
+    if (introTitleEnAfter !== settingsSnapshot.home_intro_title_en) {
+      throw new Error('Partial POST /admin/home-content must NOT wipe omitted English copywriting');
+    }
+    console.log('  [OK 302] POST /admin/home-content persisted safely without wiping omitted EN/ID copy');
+  } finally {
+    await settingModel.updateMany(settingsSnapshot);
+    const cacheBustBody = new URLSearchParams({ _csrf: homeCsrf }).toString();
+    await makeRequest({
+      method: 'POST',
+      path: '/admin/home-content',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(cacheBustBody),
+        'Cookie': `${sessionCookie}; ${csrfCookie}`
+      },
+      body: cacheBustBody
+    });
   }
-  console.log('  [OK 302] POST /admin/home-content persisted successfully (Location:', postHomeRes.headers.location, ')');
 
   // Step 5: Test POST /admin/products (Create & Edit without featured flag)
   console.log('\nStep 5: Testing POST /admin/products store & update without featured flag...');

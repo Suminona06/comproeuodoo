@@ -65,7 +65,42 @@ export function safeJsonForHtml(value, space) {
   return serialized.replace(HTML_UNSAFE_JSON_CHARS, (ch) => HTML_JSON_ESCAPE_MAP[ch]);
 }
 
+const SAFE_MEDIA_PATH_RE = /^(\/uploads\/|\/images\/)[a-zA-Z0-9_.\-/]+$/;
+const SAFE_HREF_RE = /^(\/(?!\/)|https?:\/\/|mailto:|tel:|#)/i;
+
+function hasControlChars(value) {
+  return [...value].some((ch) => ch.charCodeAt(0) <= 31 || ch.charCodeAt(0) === 127);
+}
+
+/**
+ * Validate internal upload/image paths and block traversal or dangerous schemes.
+ * @param {string} val
+ * @param {string} [fallback='']
+ * @returns {string}
+ */
+export function sanitizeSafePath(val, fallback = '') {
+  if (typeof val !== 'string') return fallback;
+  const trimmed = val.trim();
+  if (trimmed.includes('..')) return fallback;
+  return SAFE_MEDIA_PATH_RE.test(trimmed) && trimmed.length <= 500 ? trimmed : fallback;
+}
+
+/**
+ * Validate anchor href targets (relative path, http/https, mailto, tel, or fragment).
+ * @param {string} val
+ * @param {string} [fallback='']
+ * @returns {string}
+ */
+export function sanitizeSafeHref(val, fallback = '') {
+  if (typeof val !== 'string') return fallback;
+  const trimmed = val.trim().slice(0, 500);
+  if (!trimmed || hasControlChars(trimmed)) return fallback;
+  return SAFE_HREF_RE.test(trimmed) ? trimmed : fallback;
+}
+
 export default {
   sanitizeArticleHtml,
-  safeJsonForHtml
+  safeJsonForHtml,
+  sanitizeSafePath,
+  sanitizeSafeHref
 };

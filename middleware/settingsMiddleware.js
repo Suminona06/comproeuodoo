@@ -7,6 +7,7 @@ import {
   isExternalFooterUrl,
   stripHtmlMax
 } from '../services/settingService.js';
+import { sanitizeSafeHref } from '../utils/sanitizer.js';
 import logger from '../utils/logger.js';
 
 let cachedSettings = null;
@@ -24,13 +25,13 @@ const SOCIAL_PLATFORMS = ['linkedin', 'instagram', 'facebook', 'youtube'];
 
 const OFFICE_DEFAULTS = [
   ['company_name', ['company_name'], 'PT Euodoo Plastic'],
-  ['office_name_id', ['office_name_id'], 'Kantor Pusat (Jakarta)'],
-  ['office_name_en', ['office_name_en'], 'Head Office (Jakarta)'],
-  ['office_address', ['office_address', 'about_office_address'], 'Karindra Building Jl. Palmerah Selatan 30 A Suite 02 - 07, Jakarta Pusat 10270'],
+  ['office_name_id', ['office_name_id'], 'Kantor Pusat (Bandung)'],
+  ['office_name_en', ['office_name_en'], 'Head Office (Bandung)'],
+  ['office_address', ['office_address', 'about_office_address'], 'Jl. Cigondewah Kaler No. 88, Kota Bandung, Jawa Barat 40214'],
   ['office_phone', ['office_phone', 'company_phone', 'about_office_phone'], '(021) 53668626'],
   ['company_phone', ['office_phone'], '(021) 53668626'],
-  ['company_email', ['company_email'], 'info@euodoo.com'],
-  ['office_email', ['office_email', 'company_email'], 'info@euodoo.com']
+  ['company_email', ['company_email'], 'sales@euodoo.co.id'],
+  ['office_email', ['office_email', 'company_email'], 'sales@euodoo.co.id']
 ];
 
 const FACTORY_DEFAULTS = [
@@ -187,12 +188,12 @@ function buildGlobalCta(settings) {
     btn1_title_en: str('global_cta_btn1_title_en'),
     btn1_sub_id: str('global_cta_btn1_sub_id'),
     btn1_sub_en: str('global_cta_btn1_sub_en'),
-    btn1_url: settings.global_cta_btn1_url || '/contact',
+    btn1_url: sanitizeSafeHref(settings.global_cta_btn1_url, '/contact'),
     btn2_title_id: str('global_cta_btn2_title_id'),
     btn2_title_en: str('global_cta_btn2_title_en'),
     btn2_sub_id: str('global_cta_btn2_sub_id'),
     btn2_sub_en: str('global_cta_btn2_sub_en'),
-    btn2_url: settings.global_cta_btn2_url || settings.whatsapp_url,
+    btn2_url: sanitizeSafeHref(settings.global_cta_btn2_url, '') || settings.whatsapp_url,
     pages: parseGlobalCtaPages(settings.global_cta_pages_json),
     is_active: isGlobalCtaActive(settings.global_cta_is_active)
   };

@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js, controllers/admin/homeContentController.js, services/homeContentService.js
 
 # Tech Spec: Modul Beranda Publik (Public Home)
 
@@ -6,6 +6,7 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: views/public/index.ej
 Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> Model`:
 - **Controller (`controllers/public/homeController.js`):** Menerima request `GET /`, mendelegasikan orkestrasi query paralel & penyusunan *view-model* ke `services/homeService.js`, menyiapkan judul meta terlokalisasi (`t('home.*')`), dan merender *thin page* `views/public/index.ejs` (termasuk fallback status 500 yang terlokalisasi). Import mati `productModel` dan properti mati `featuredProducts` dihapus.
 - **Service (`services/homeService.js`):** Mengambil data paralel dari `bannerModel`, `brandModel`, `postModel`, `homeContentModel`, dan `productCategoryModel`, serta mengekspor *pure view-model builder* agar seluruh transformasi data berada di luar EJS dan dapat diuji terpisah oleh unit test (`<= 40` baris/fungsi, `<= 300` baris/berkas, `max-depth <= 2`, `complexity <= 8`).
+- **CMS Admin:** `controllers/admin/homeContentController.js` (*thin controller* `index`/`update`) mendelegasikan query paralel (`homeContentModel`, `productCategoryModel`), sanitasi payload 6 seksi (`intro`, `why_choose_us`, `categories`, `homepage_categories`, `certifications`, `cta`), serta penyimpanan ke `services/homeContentService.js` (sesuai metrik `conventions.md`, tanpa menyentuh `services/homeService.js`).
 - **View & Skrip:** `views/public/index.ejs` (`<= 100` baris, nesting `<= 2`) hanya mengorkestrasikan partial di `views/partials/home/*.ejs` dan memuat `/js/home.js` (`defer`). Rincian partial, CSS, dan skrip klien dijabarkan di [tech/public-home-sections.md](public-home-sections.md).
 
 ---
@@ -17,6 +18,8 @@ Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> M
 | `GET` | `/` | `homeController.index` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR beranda utama |
 | `GET` | `/lang/:code` | Inline router handler di `routes/publicRoutes.js` | - | Mengubah cookie `euodoo_lang` (`id` atau `en`) lalu redirect aman |
 | `POST` | `/admin/brands/section-title` | `brandController.updateSectionTitle` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | Mengubah judul seksi merek beranda |
+| `GET` | `/admin/home-content` | `homeContentController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | Form CMS via `homeContentService` |
+| `POST` | `/admin/home-content` | `homeContentController.update` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | Simpan 6 seksi via `homeContentService` |
 
 ---
 

@@ -1,9 +1,11 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: routes/adminRoutes.js, controllers/admin/, middleware/authMiddleware.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: routes/adminRoutes.js, controllers/admin/, services/, middleware/authMiddleware.js
 
 # Tech Spec: Modul Admin & CMS (Admin CMS & Users)
 
 ## 1. Arsitektur & Keamanan Autentikasi
 Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang disimpan dalam Cookie HttpOnly, validasi peran RBAC, pembatasan serangan brute-force, serta pengelolaan data pengguna, katalog produk admin, dan formulir penawaran (RFQ).
+
+- **Arsitektur Berlapis Controller & Service:** Seluruh modul CMS hasil refaktor (termasuk `aboutController`, `homeContentController`, dan `mediaController`) mengikuti alur `Route -> Controller -> Service -> Model`. Controller hanya mem-parsing `req.params`/`req.query`/`req.body`, memanggil lapisan `services/`, dan mengirim respons (`res.render`, `res.json`, `res.redirect`) dengan batasan metrik `tech/conventions.md` serta penegakan ESLint ketat berstatus `error` di `eslint.config.js`.
 
 ---
 
@@ -21,6 +23,9 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 | `POST` | `/admin/inquiries/:id/status`| `inquiryController.updateStatus` | `requireAuth`, `roleMiddleware` | Update status & catatan sales |
 | `POST` | `/admin/inquiries/:id/delete`| `inquiryController.destroy` | `requireAuth`, `roleMiddleware` | Hapus rekaman RFQ |
 | `GET` | `/admin/products` | `productController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Katalog Produk Admin (SSR + JSON Fetch tanpa reload) |
+| `GET/POST`| `/admin/about*` | `aboutController.*` (`aboutService` & `aboutCrudService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Tentang Kami & sub-item (rincian di [tech/public-about.md](public-about.md)) |
+| `GET/POST`| `/admin/home-content` | `homeContentController.*` (`homeContentService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Konten Homepage (rincian di [tech/public-home.md](public-home.md)) |
+| `GET/POST/DELETE`| `/admin/media*`, `/admin/api/media*` | `mediaController.*` (`mediaService`) | `requireAuth`, `roleMiddleware` | Media Library & Picker API (rincian di [tech/media-library.md](media-library.md)) |
 
 ---
 

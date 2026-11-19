@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
 
 # Tech Spec: Konvensi Kode & Standar Kualitas (Code Conventions & Standards)
 
@@ -56,6 +56,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 ### A. Flat ESLint (`eslint.config.js`)
 - ESLint v9 Flat Config native ESM terpisah untuk Node backend dan browser frontend (`public/js/`).
 - Terpasang eksklusif pada `devDependencies` (`eslint`, `@eslint/js`, `globals`). Dijalankan via `npm run lint`.
+- **Blok Strict Backend Refaktor:** Berkas `controllers/admin/{about,homeContent,media}Controller.js` dan `services/{about,aboutCrud,homeContent,media}Service.js` ditegakkan dengan severity `error` pada `max-lines` (300), `max-lines-per-function` (40), `max-depth` (2), `complexity` (8), dan `no-unused-vars` di `eslint.config.js`.
 
 ### B. Skrip Pemeriksa Template (`scripts/lint-views.js`)
 - Memindai `views/**/*.ejs` dan CSS komponen terhadap: (1) `style="..."`, (2) warna hex mentah (kecuali `tokens.css`), (3) `<script>` inline tanpa `src`, (4) komentar HTML `<!-- ... -->`, (5) handler inline `on*=`, (6) peringatan teks literal publik.

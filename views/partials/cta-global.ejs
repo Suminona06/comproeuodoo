@@ -35,17 +35,18 @@
   const shouldShowCta = isCtaActive && isPageEnabled && !(typeof hideGlobalCta !== 'undefined' && hideGlobalCta);
 %>
 <% 
+  const isSafeHref = (u) => typeof u === 'string' && /^(\/(?!\/)|https?:\/\/|mailto:|tel:|#)/i.test(u.trim());
   const ctaTitle = ctaData ? (lang === 'en' ? ctaData.title_en : ctaData.title_id) : '';
   const ctaSub = ctaData ? (lang === 'en' ? ctaData.subtitle_en : ctaData.subtitle_id) : '';
   
   const btn1Title = ctaData ? (lang === 'en' ? ctaData.btn1_title_en : ctaData.btn1_title_id) : '';
   const btn1Sub = ctaData ? (lang === 'en' ? ctaData.btn1_sub_en : ctaData.btn1_sub_id) : '';
-  const btn1Url = (ctaData && ctaData.btn1_url) ? ctaData.btn1_url : '/contact';
+  const btn1Url = (ctaData && isSafeHref(ctaData.btn1_url)) ? ctaData.btn1_url.trim() : '/contact';
 
   const btn2Title = ctaData ? (lang === 'en' ? ctaData.btn2_title_en : ctaData.btn2_title_id) : '';
   const btn2Sub = ctaData ? (lang === 'en' ? ctaData.btn2_sub_en : ctaData.btn2_sub_id) : '';
   const defaultWa = (typeof settings !== 'undefined' && settings?.whatsapp_url) ? settings.whatsapp_url : 'https://wa.me/628123456789';
-  const btn2Url = (ctaData && ctaData.btn2_url) ? ctaData.btn2_url : defaultWa;
+  const btn2Url = (ctaData && isSafeHref(ctaData.btn2_url)) ? ctaData.btn2_url.trim() : defaultWa;
   const hasCtaContent = Boolean(ctaTitle || ctaSub || btn1Title || btn2Title);
 %>
 <% if (shouldShowCta && hasCtaContent) { %>

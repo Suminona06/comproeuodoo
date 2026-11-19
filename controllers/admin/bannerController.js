@@ -143,7 +143,7 @@ export const bannerController = {
       } else if (req.file) {
         const mediaSource = req.file.path || req.file.buffer;
         if (req.file.mimetype.startsWith('video/')) {
-          finalMediaUrl = await saveVideoFile(mediaSource, req.file.originalname, 'banners');
+          finalMediaUrl = await saveVideoFile(mediaSource, req.file.originalname, 'banners', req.file.mimetype);
           type = 'video';
         } else {
           finalMediaUrl = await processAndSaveWebP(mediaSource, 'banners', { maxWidth: 1920, maxHeight: 1080, quality: 80 });
@@ -262,7 +262,7 @@ export const bannerController = {
         const mediaSource = req.file.path || req.file.buffer;
         if (req.file.mimetype.startsWith('video/')) {
           if (banner.video_url) await storage.delete(banner.video_url);
-          finalMediaUrl = await saveVideoFile(mediaSource, req.file.originalname, 'banners');
+          finalMediaUrl = await saveVideoFile(mediaSource, req.file.originalname, 'banners', req.file.mimetype);
           type = 'video';
         } else {
           if (banner.image_url) await storage.delete(banner.image_url);
