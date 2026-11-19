@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: controllers/admin/settingController.js, models/settingModel.js, views/admin/settings/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: controllers/admin/settingController.js, services/settingService.js, services/settingMediaService.js, services/settingFooterService.js, models/settingModel.js, views/admin/settings/
 
 # Tech Spec: Modul Pengaturan Situs (Site Settings)
 
@@ -70,16 +70,15 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 
 ---
 
-## 6. Penanganan Controller & Service (`settingController` & `settingService.js`)
-- **Ekstraksi Service:** Logika validasi payload, whitelist URL, dan penyimpanan diekstrak ke `services/settingService.js` agar `settingController.js` dan `settingService.js` masing-masing `<= 300` baris dengan fungsi `<= 40` baris (detail validasi footer pada [tech/settings-footer.md](settings-footer.md)).
-- **Validasi Toggle Switch Visibilitas:** Nilai `office_card_visible` dan `factory_card_visible` dipaksa ke format biner string `'1'` atau `'0'`.
-- **Validasi Skema JSON Multi-Nomor WhatsApp:**
-  1. Parsing aman payload JSON `whatsapp_numbers_json`.
-  2. Setiap baris wajib memiliki `number` (hanya karakter angka dan simbol plus dengan panjang 9-16 digit), `label` (string internal yang ditrim dan disanitasi dari tag HTML, maks 50 karakter), dan `percentage` (integer 1-100).
-  3. Validasi akumulasi matematis: $\sum \text{percentage} === 100$. Jika tidak sama dengan 100, lempar error validasi dan batalkan penyimpanan.
-  4. Fallback transparan: Jika payload tidak disertakan / kosong, nilai legacy `whatsapp_number` tetap dipertahankan.
-- **Pipeline Generator Multi-Ukuran Favicon (`generateFaviconSet`):** Dipecah ke sub-modul [tech/settings-assets.md](settings-assets.md) (Sharp transparan 16/32/180/192/512 PNG & fallback `/favicon.ico`).
-- **Cache Invalidation:** Memanggil `clearSettingsCache()` untuk membersihkan memory cache segera setelah update berhasil dieksekusi.
+## 6. Penanganan Controller & Service (`settingController` & `setting*Service.js`) `[PENDING T-364]`
+- **Modularisasi 3 Service:** `settingController.js` hanya memanggil `services/settingService.js` (`getSettingsMap`, `updateSettings`) tanpa akses langsung ke `settingModel` / `clearSettingsCache()`. Domain dipecah ke `settingService.js` (orkestrator, teks/kontak, WA, sosmed + re-export penuh kompatibel `settingsMiddleware.js` & test), `settingMediaService.js` (logo & favicon), dan `settingFooterService.js` (footer; [tech/settings-footer.md](settings-footer.md)), masing-masing `<= 300` baris dan fungsi `<= 40` baris.
+- **Error Redirect Aman:** Error validasi/domain (`ValidationError`) menampilkan pesan spesifik di `?error=...`; error sistem/DB memakai pesan generik aman (detail dicatat via `logger.error`).
+- **Toggle Visibilitas:** `office_card_visible` dan `factory_card_visible` dipaksa ke `'1'` atau `'0'`.
+- **Validasi JSON Multi-Nomor WhatsApp:**
+  1. Parsing aman `whatsapp_numbers_json`; tiap baris wajib berisi `number` (9–16 digit), `label` (trim & strip HTML, maks 50 char), dan `percentage` (integer 1–100).
+  2. Akumulasi $\sum \text{percentage} === 100$; jika tidak, tolak penyimpanan. Bila kosong, nilai legacy `whatsapp_number` dipertahankan.
+- **Generator Favicon (`generateFaviconSet`):** Dikelola `settingMediaService.js` ([tech/settings-assets.md](settings-assets.md): PNG 16/32/180/192/512 & `/favicon.ico`).
+- **Cache Invalidation:** `settingService.js` memanggil `clearSettingsCache()` tepat setelah `settingModel.updateMany()` sukses.
 
 ---
 

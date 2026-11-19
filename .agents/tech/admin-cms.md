@@ -5,7 +5,7 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: routes/adminRoutes.js
 ## 1. Arsitektur & Keamanan Autentikasi
 Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang disimpan dalam Cookie HttpOnly, validasi peran RBAC, pembatasan serangan brute-force, serta pengelolaan data pengguna, katalog produk admin, dan formulir penawaran (RFQ).
 
-- **Arsitektur Berlapis Controller & Service:** Modul CMS refaktor (`about`, `homeContent`, `media`, `auth`, `banner`, `brand`, `inquiry`, serta `product`, `productCategory`, `lead`, `post`, `postCategory`) mengikuti `Route -> Controller -> Service -> Model` dan aturan ketat blok strict `error` di `eslint.config.js` (lihat [tech/conventions.md](conventions.md)).
+- **Arsitektur Berlapis Controller & Service:** Modul CMS refaktor Batch 1–3 (`about`, `homeContent`, `media`, `auth`, `banner`, `brand`, `inquiry`, `product`, `productCategory`, `lead`, `post`, `postCategory`, `user`, `setting`, `pageHeroBanner`, `capability` `[PENDING T-363..T-367]`) mengikuti `Route -> Controller -> Service -> Model` dan blok strict `error` `eslint.config.js` ([tech/conventions.md](conventions.md)).
 
 ---
 
@@ -17,17 +17,18 @@ Modul Admin CMS mengamankan akses backoffice melalui JWT (JSON Web Token) yang d
 | `GET/POST`| `/admin/logout` | `authController.logout` | `requireAuth` | Mengakhiri sesi pengguna |
 | `GET/POST`| `/admin/change-password` | `authController.*` (`authService`) | `requireAuth` | Perbarui kata sandi mandiri |
 | `GET` | `/admin` / `/admin/dashboard`| `dashboardController.index` | `requireAuth` | Metrik operasional & 10 RFQ terbaru (`LIMIT 10`) |
-| `GET/POST`| `/admin/users` | `userController.*` | `requireAuth`, `roleMiddleware(['superadmin'])` | CRUD akun pengguna |
-| `GET/POST`| `/admin/inquiries*` | `inquiryController.*` (`inquiryService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar RFQ (SSR + Fetch), detail, status, hapus & CSV (lihat [tech/admin-products-rfq.md](admin-products-rfq.md)) |
-| `GET/POST`| `/admin/products*` | `productController.*` (`productService`, `productCrudService`, `productSizeTableService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Produk, Fetch & CSV (lihat [tech/admin-products-rfq.md](admin-products-rfq.md)) |
-| `GET/POST`| `/admin/product-categories*` | `productCategoryController.*` (`productCategoryService`, `utils/slugHelper.js`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Kategori Produk & toggle aktif (guard `NaN` & `not_found`) |
-| `GET/POST`| `/admin/leads*` | `leadController.*` (`leadService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Leads B2B (whitelist `status` `['baru','diproses','selesai','ditolak']`, `type` `['inquiry','partnership','general']`), update & CSV |
-| `GET/POST`| `/admin/posts*`, `/admin/post-categories*` | `postController.*` (`postService`), `postCategoryController.*` (`postCategoryService`) | `requireAuth`, `roleMiddleware` | Artikel, TinyMCE, slug 301 & Kategori (lihat [tech/news.md](news.md)) |
-| `GET/POST`| `/admin/banners*` | `bannerController.*` (`bannerService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Hero Banner & toggle aktif (rincian di [tech/public-home.md](public-home.md)) |
-| `GET/POST`| `/admin/brands*` | `brandController.*` (`brandService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Merek & judul seksi merek (rincian di [tech/public-home.md](public-home.md)) |
-| `GET/POST`| `/admin/about*` | `aboutController.*` (`aboutService` & `aboutCrudService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Tentang Kami & sub-item (rincian di [tech/public-about.md](public-about.md)) |
-| `GET/POST`| `/admin/home-content` | `homeContentController.*` (`homeContentService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Konten Homepage (rincian di [tech/public-home.md](public-home.md)) |
-| `GET/POST/DELETE`| `/admin/media*`, `/admin/api/media*` | `mediaController.*` (`mediaService`) | `requireAuth`, `roleMiddleware` | Media Library & Picker API (rincian di [tech/media-library.md](media-library.md)) |
+| `GET/POST`| `/admin/users` | `userController.*` (`userService`) `[PENDING T-363]` | `requireAuth`, `roleMiddleware(['superadmin'])` | CRUD pengguna (ID positif, whitelist role, email unik, anti self-delete, password setara `authService`) |
+| `GET/POST`| `/admin/hero-banners*` | `pageHeroBannerController.*` (`pageHeroBannerService`) `[PENDING T-365]` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Hero banner halaman (clamp `overlay_opacity` `0..1`/fallback `0.60`, URL aman, error generik DB) |
+| `GET/POST`| `/admin/inquiries*` | `inquiryController.*` (`inquiryService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Daftar RFQ (SSR+Fetch), detail, status, hapus & CSV ([tech/admin-products-rfq.md](admin-products-rfq.md)) |
+| `GET/POST`| `/admin/products*` | `productController.*` (`product*Service`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Produk, Fetch & CSV ([tech/admin-products-rfq.md](admin-products-rfq.md)) |
+| `GET/POST`| `/admin/product-categories*` | `productCategoryController.*` (`productCategoryService`, `slugHelper`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Kategori Produk & toggle aktif (`NaN` & `not_found`) |
+| `GET/POST`| `/admin/leads*` | `leadController.*` (`leadService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | Leads B2B (whitelist `status` & `type`), update & CSV |
+| `GET/POST`| `/admin/posts*`, `/admin/post-categories*` | `postController.*`, `postCategoryController.*` (`post*Service`) | `requireAuth`, `roleMiddleware` | Artikel, TinyMCE, slug 301 & Kategori ([tech/news.md](news.md)) |
+| `GET/POST`| `/admin/banners*` | `bannerController.*` (`bannerService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Hero Banner & toggle aktif ([tech/public-home.md](public-home.md)) |
+| `GET/POST`| `/admin/brands*` | `brandController.*` (`brandService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CRUD Merek & judul seksi merek ([tech/public-home.md](public-home.md)) |
+| `GET/POST`| `/admin/about*` | `aboutController.*` (`aboutService`, `aboutCrudService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Tentang Kami & sub-item ([tech/public-about.md](public-about.md)) |
+| `GET/POST`| `/admin/home-content` | `homeContentController.*` (`homeContentService`) | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS Konten Homepage ([tech/public-home.md](public-home.md)) |
+| `GET/POST/DELETE`| `/admin/media*`, `/admin/api/media*` | `mediaController.*` (`mediaService`) | `requireAuth`, `roleMiddleware` | Media Library & Picker API ([tech/media-library.md](media-library.md)) |
 
 ---
 
