@@ -92,6 +92,7 @@ export default [
       'controllers/admin/bannerController.js',
       'controllers/admin/brandController.js',
       'controllers/admin/capabilityController.js',
+      'controllers/admin/contactCmsController.js',
       'controllers/admin/homeContentController.js',
       'controllers/admin/inquiryController.js',
       'controllers/admin/leadController.js',

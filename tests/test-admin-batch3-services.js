@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import userController from '../controllers/admin/userController.js';
 import settingController from '../controllers/admin/settingController.js';
+import contactCmsController from '../controllers/admin/contactCmsController.js';
 import pageHeroBannerController from '../controllers/admin/pageHeroBannerController.js';
 import capabilityController from '../controllers/admin/capabilityController.js';
 import {
@@ -221,6 +222,40 @@ describe('Batch 3 Admin Services Unit Tests (T-363..T-368)', () => {
       const resVal = createMockRes();
       await settingController.update({ body: { office_email: 'bad-email' }, user: { email: 'a@b.com' } }, resVal);
       assert.equal(decodeURIComponent(resVal.redirectedTo).includes('email kantor Jakarta'), true);
+    });
+
+    it('2d. updateContactSettings & contactCmsController reject non-string payloads and hide DB errors', async () => {
+      await assert.rejects(
+        () => settingService.updateContactSettings({ contact_form_title_id: ['array-injection'] }),
+        (err) => err?.isValidationError === true
+      );
+
+      let savedContact = null;
+      let cacheCleared = false;
+      await settingService.updateContactSettings(
+        { contact_working_hours_id: '  Senin - Jumat  ', contact_form_title_id: 'Judul Baru' },
+        {
+          settingModel: { async updateMany(u) { savedContact = u; } },
+          clearSettingsCache: () => { cacheCleared = true; }
+        }
+      );
+      assert.equal(savedContact.factory_working_hours_id, 'Senin - Jumat');
+      assert.equal(cacheCleared, true);
+
+      const resArr = createMockRes();
+      await contactCmsController.update({ body: { contact_form_title_id: { nested: 'obj' } }, user: { email: 'a@b.com' } }, resArr);
+      assert.equal(decodeURIComponent(resArr.redirectedTo).includes('Format input pengaturan kontak tidak valid.'), true);
+
+      const origUpdateMany = settingModel.updateMany;
+      settingModel.updateMany = async () => { throw new Error('ER_BAD_DB_SECRET'); };
+      const resDb = createMockRes();
+      try {
+        await contactCmsController.update({ body: { contact_form_title_id: 'Valid' }, user: { email: 'a@b.com' } }, resDb);
+      } finally {
+        settingModel.updateMany = origUpdateMany;
+      }
+      assert.equal(resDb.redirectedTo.includes('ER_BAD_DB_SECRET'), false);
+      assert.equal(decodeURIComponent(resDb.redirectedTo).includes('Gagal memperbarui pengaturan halaman kontak.'), true);
     });
   });
 

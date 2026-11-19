@@ -82,7 +82,8 @@ const mockSettings = {
 const footerRenderedId = ejs.render(footerContent, {
   settings: mockSettings,
   currentLang: 'id',
-  currentYear: 2026
+  currentYear: 2026,
+  t: (k) => k
 });
 
 assert.ok(footerRenderedId.includes('Kantor Pusat PT Euodoo (Jakarta)'), 'Footer must render dynamic office_name_id');
@@ -97,7 +98,8 @@ console.log('  2a. Footer dual location rendering (ID): PASSED');
 const footerRenderedEn = ejs.render(footerContent, {
   settings: mockSettings,
   currentLang: 'en',
-  currentYear: 2026
+  currentYear: 2026,
+  t: (k) => k
 });
 
 assert.ok(footerRenderedEn.includes('PT Euodoo Head Office (Jakarta)'), 'Footer must render dynamic office_name_en');
@@ -126,7 +128,8 @@ const mockSettingsAllOff = {
 const footerAllOff = ejs.render(footerContent, {
   settings: mockSettingsAllOff,
   currentLang: 'id',
-  currentYear: 2026
+  currentYear: 2026,
+  t: (k) => k
 });
 
 assert.ok(!footerAllOff.includes('class="social-row"'), 'Empty/all-hidden socials must omit social-row');
@@ -142,7 +145,8 @@ const mockSettingsInsecure = {
 const footerInsecure = ejs.render(footerContent, {
   settings: mockSettingsInsecure,
   currentLang: 'id',
-  currentYear: 2026
+  currentYear: 2026,
+  t: (k) => k
 });
 
 assert.ok(!footerInsecure.includes('http://linkedin.com/insecure'), 'Non-https social link must not be rendered');
@@ -166,8 +170,12 @@ const contactRendered = ejs.render(contactContent, {
   csrfToken: 'test-csrf-token',
   turnstileSiteKey: '',
   products: [],
-  selectedProduct: null
-});
+  selectedProduct: null,
+  success: false,
+  error: false,
+  errorMsg: null,
+  heroBanner: null
+}, { filename: contactPath });
 
 assert.ok(contactRendered.includes('Kantor Pusat PT Euodoo (Jakarta)'), 'Contact page must render dynamic office name');
 assert.ok(contactRendered.includes('Gedung Wisma 46 Kota BNI Lt. 12'), 'Contact page must render dynamic office address');

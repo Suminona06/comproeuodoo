@@ -192,10 +192,59 @@ export async function getSettingsMap(deps = {}) {
   return model.getAllAsMap();
 }
 
+const CONTACT_CMS_KEYS = [
+  'contact_address_id',
+  'contact_address_en',
+  'contact_email',
+  'contact_phone',
+  'contact_working_hours_id',
+  'contact_working_hours_en',
+  'contact_maps_embed_url',
+  'contact_form_title_id',
+  'contact_form_title_en',
+  'contact_form_subtitle_id',
+  'contact_form_subtitle_en'
+];
+
+function finalizeContactCmsUpdates(updates) {
+  validatePatternFields(updates, [['contact_email', 'kontak']], EMAIL_REGEX, (l) => `Format alamat email ${l} tidak valid.`);
+  validatePatternFields(updates, [['contact_phone', 'telepon kontak']], PHONE_REGEX, (l) => `Nomor ${l} hanya boleh berisi angka, spasi, tanda plus, tanda hubung, dan kurung.`);
+  if (updates.contact_maps_embed_url) {
+    updates.contact_maps_embed_url = parseAndValidateGoogleMapsUrl(updates.contact_maps_embed_url);
+  }
+  if (updates.contact_working_hours_id) updates.factory_working_hours_id = updates.contact_working_hours_id;
+  if (updates.contact_working_hours_en) updates.factory_working_hours_en = updates.contact_working_hours_en;
+  return updates;
+}
+
+function extractContactCmsUpdates(rawBody) {
+  const body = rawBody || {};
+  const updates = {};
+  for (const key of CONTACT_CMS_KEYS) {
+    if (body[key] === undefined) continue;
+    if (typeof body[key] !== 'string' && typeof body[key] !== 'number') {
+      throw new SettingValidationError('Format input pengaturan kontak tidak valid.');
+    }
+    updates[key] = String(body[key]).trim();
+  }
+  return finalizeContactCmsUpdates(updates);
+}
+
 export async function updateSettings(req, textKeys, deps = {}) {
   const model = deps.settingModel || settingModel;
   const invalidateCache = deps.clearSettingsCache || clearSettingsCache;
   const updates = await buildSettingUpdates(req, textKeys, deps);
+  if (Object.keys(updates).length > 0) {
+    await model.updateMany(updates);
+    invalidateCache();
+  }
+  return updates;
+}
+
+export async function updateContactSettings(rawBody, deps = {}) {
+  const model = deps.settingModel || settingModel;
+  const invalidateCache = deps.clearSettingsCache || clearSettingsCache;
+  const updates = extractContactCmsUpdates(rawBody);
   if (Object.keys(updates).length > 0) {
     await model.updateMany(updates);
     invalidateCache();
