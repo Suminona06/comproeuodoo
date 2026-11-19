@@ -1,7 +1,7 @@
-import settingModel from '../../models/settingModel.js';
-import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
 import {
-  buildSettingUpdates,
+  getSettingsMap,
+  updateSettings,
+  SettingValidationError,
   parseAndValidateGoogleMapsUrl,
   parseAndValidateWhatsAppNumbers
 } from '../../services/settingService.js';
@@ -18,10 +18,17 @@ const TEXT_SETTING_KEYS = [
   'whatsapp_default_message', 'whatsapp_button_theme', 'whatsapp_floating_enabled'
 ];
 
+function formatSettingErrorMessage(err) {
+  if (err instanceof SettingValidationError || err?.isValidationError) {
+    return 'Gagal memperbarui pengaturan: ' + err.message;
+  }
+  return 'Gagal memperbarui pengaturan. Silakan coba lagi.';
+}
+
 export const settingController = {
   async index(req, res) {
     try {
-      const settings = await settingModel.getAllAsMap();
+      const settings = await getSettingsMap();
       res.render('admin/settings/index', {
         title: 'Pengaturan Situs & Kontak',
         pageTitle: 'Pengaturan Situs & Kontak',
@@ -39,16 +46,12 @@ export const settingController = {
 
   async update(req, res) {
     try {
-      const updates = await buildSettingUpdates(req, TEXT_SETTING_KEYS);
-      if (Object.keys(updates).length > 0) {
-        await settingModel.updateMany(updates);
-        clearSettingsCache();
-      }
+      await updateSettings(req, TEXT_SETTING_KEYS);
       logger.info('Settings updated successfully by ' + (req.user?.email || 'admin'));
       res.redirect('/admin/settings?success=' + encodeURIComponent('Pengaturan situs berhasil diperbarui.'));
     } catch (err) {
       logger.error('Setting update error:', err);
-      res.redirect('/admin/settings?error=' + encodeURIComponent('Gagal memperbarui pengaturan: ' + err.message));
+      res.redirect('/admin/settings?error=' + encodeURIComponent(formatSettingErrorMessage(err)));
     }
   }
 };

@@ -57,7 +57,7 @@ export const pageHeroBannerModel = {
         data.title_en || '',
         data.subtitle_id || '',
         data.subtitle_en || '',
-        parseFloat(data.overlay_opacity) || 0.60,
+        Number.isFinite(parseFloat(data.overlay_opacity)) ? parseFloat(data.overlay_opacity) : 0.60,
         data.cta_text_id || '',
         data.cta_text_en || '',
         data.cta_url || '',
