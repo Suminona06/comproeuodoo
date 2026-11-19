@@ -56,7 +56,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 ### A. Flat ESLint (`eslint.config.js`)
 - ESLint v9 Flat Config native ESM terpisah untuk Node backend dan browser frontend (`public/js/`).
 - Terpasang eksklusif pada `devDependencies` (`eslint`, `@eslint/js`, `globals`). Dijalankan via `npm run lint`.
-- **Blok Strict Backend Refaktor:** Berkas `controllers/admin/{about,homeContent,media}Controller.js` dan `services/{about,aboutCrud,homeContent,media}Service.js` ditegakkan dengan severity `error` pada `max-lines` (300), `max-lines-per-function` (40), `max-depth` (2), `complexity` (8), dan `no-unused-vars` di `eslint.config.js`.
+- **Blok Strict Backend Refaktor:** Berkas `controllers/admin/{about,homeContent,media,auth,banner,brand,inquiry}Controller.js` dan `services/{about,aboutCrud,homeContent,media,auth,banner,brand,inquiry}Service.js` ditegakkan dengan severity `error` pada `max-lines` (300), `max-lines-per-function` (40), `max-depth` (2), `complexity` (8), dan `no-unused-vars` di `eslint.config.js`. `[PENDING T-355]`
 
 ### B. Skrip Pemeriksa Template (`scripts/lint-views.js`)
 - Memindai `views/**/*.ejs` dan CSS komponen terhadap: (1) `style="..."`, (2) warna hex mentah (kecuali `tokens.css`), (3) `<script>` inline tanpa `src`, (4) komentar HTML `<!-- ... -->`, (5) handler inline `on*=`, (6) peringatan teks literal publik.

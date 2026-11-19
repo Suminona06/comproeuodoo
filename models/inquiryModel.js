@@ -1,5 +1,7 @@
 import { query, execute } from '../config/database.js';
 
+export const INQUIRY_STATUSES = ['baru', 'dibaca', 'ditindaklanjuti', 'ditolak'];
+
 export const inquiryModel = {
   async findAll(options = {}) {
     const { status, search, limit, offset } = options;
@@ -72,11 +74,10 @@ export const inquiryModel = {
 
   async create(data) {
     const validSources = ['contact_form', 'wa_product'];
-    const validStatuses = ['baru', 'dibaca', 'ditindaklanjuti'];
     const validTypes = ['inquiry', 'partnership', 'general'];
 
     const source = validSources.includes(data.source) ? data.source : 'contact_form';
-    const status = validStatuses.includes(data.status) ? data.status : 'baru';
+    const status = INQUIRY_STATUSES.includes(data.status) ? data.status : 'baru';
     const type = validTypes.includes(data.type) ? data.type : 'inquiry';
 
     const sql = `
