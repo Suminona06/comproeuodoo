@@ -1,6 +1,10 @@
 import { sendCsvResponse } from '../../utils/csvExporter.js';
 import logger from '../../utils/logger.js';
 import {
+  parseGalleryImages,
+  resolveGalleryItems
+} from '../../services/productService.js';
+import {
   parseDynamicSizeTable,
   parseSizeTable,
   getProductsWithSizeTable
@@ -50,7 +54,11 @@ function buildSharedListState(data, csrfToken) {
 }
 
 async function renderCreateFormError(req, res, errorMsg) {
-  const { categories, productsList } = await getProductCreateFormData();
+  const body = req.body || {};
+  const [{ categories, productsList }, galleryItems] = await Promise.all([
+    getProductCreateFormData(),
+    resolveGalleryItems(parseGalleryImages(body))
+  ]);
   return res.status(400).render('admin/products/create', {
     title: 'Tambah Produk Baru',
     pageTitle: 'Tambah Produk',
@@ -58,7 +66,7 @@ async function renderCreateFormError(req, res, errorMsg) {
     categories,
     productsList,
     error: errorMsg,
-    formData: req.body,
+    formData: { ...body, gallery_items: galleryItems },
     csrfToken: res.locals?.csrfToken || ''
   });
 }

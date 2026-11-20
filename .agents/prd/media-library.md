@@ -24,9 +24,10 @@ Modul Media Library mengelola penyimpanan, optimasi, dan penggunaan aset visual 
 ### Universal Media Picker Modal (`views/partials/media-picker-modal.ejs`)
 - Komponen antarmuka yang dapat dipanggil dari formulir modul lain (Banner Hero, Produk, Artikel, Tentang Kami, Pengaturan Situs).
 - Memungkinkan admin memilih gambar dari pustaka media yang sudah ada atau mengunggah berkas baru langsung dari modal tanpa meninggalkan halaman yang sedang disunting.
+- Hint format pada tab Upload diselaraskan dengan aturan server: gambar (JPG, PNG, WebP, GIF, ICO), video (MP4, WebM), atau PDF maksimal 30 MB per berkas; berkas SVG diblokir demi keamanan `[PENDING T-377]`.
 
 ### Audit Penggunaan Media (`check-usage`)
-- Sebelum berkas media dihapus permanen, sistem memeriksa apakah berkas tersebut sedang ditautkan pada produk, banner, artikel, galeri tentang kami, atau logo perusahaan.
+- Sebelum berkas media dihapus permanen, sistem memeriksa apakah berkas tersebut sedang ditautkan pada produk (`products.main_image` dan `products.gallery_images` baik format ID media maupun URL `[PENDING T-376]`), banner, artikel, galeri tentang kami, kapabilitas, atau logo/pengaturan perusahaan.
 - Jika berkas masih digunakan, sistem menampilkan peringatan lokasi penggunaan untuk mencegah rusaknya tampilan visual publik.
 
 ### Fleksibilitas Storage Driver
@@ -41,6 +42,15 @@ Modul Media Library mengelola penyimpanan, optimasi, dan penggunaan aset visual 
   2. Kartu terpilih ditandai dengan border hijau brand `var(--color-primary)` dan badge indikator centang atau nomor urut pilihan.
   3. Bagian footer menampilkan ringkasan jumlah ("N media dipilih") dan tombol konfirmasi mengembalikan seluruh array item yang dipilih ke callback form pemanggil.
   4. Kompatibilitas mundur penuh (*backward compatible*): mode default tanpa flag `multiple` tetap berfungsi sebagai single-select untuk Banner, Merek, dan Tentang Kami.
+
+### FR-28: Unggah Banyak Berkas Sekaligus (`Multi-Upload`) dengan Progres & Ringkasan `[PENDING T-377]` `[PENDING T-378]`
+- Tab **Upload** pada Universal Media Picker Modal dan modal unggah di halaman `/admin/media` mendukung pemilihan banyak berkas sekaligus melalui dialog file (`multiple`) maupun *drag & drop*, tanpa batas jumlah berkas per sesi unggahan.
+- Setiap berkas dikirim secara berurutan ke pipa validasi & optimasi yang sama (`uploadAndCreateMedia`: batas 30 MB per berkas, blokir SVG, transformasi Sharp WebP untuk gambar raster).
+- Antarmuka menampilkan progres per berkas (`"x dari N"`) dengan wilayah `aria-live="polite"` dan status sukses/gagal masing-masing item; berkas yang gagal tidak membatalkan berkas lain dan diakhiri ringkasan jumlah berhasil/gagal.
+- Perilaku seleksi pasca-unggah pada Universal Media Picker:
+  1. **Mode Single-Select:** Berkas sukses **terakhir** otomatis terpilih di pratinjau footer, dan admin tetap mengklik tombol konfirmasi (`Gunakan Media Ini`) sebelum modal tertutup.
+  2. **Mode Multi-Select:** Seluruh berkas baru yang berhasil diunggah otomatis tercentang dan ditambahkan ke daftar pilihan yang sudah ada pada `selectedMediaList`.
+- Seluruh kontrol baru mematuhi token desain, kontras WCAG AA, focus ring `:focus-visible`, target sentuh minimal `44px`, serta label dwibahasa ID dan EN.
 
 ---
 

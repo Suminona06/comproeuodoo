@@ -87,7 +87,7 @@
               </button>
 
               <% if (['superadmin', 'admin'].includes(user?.role)) { %>
-                <form action="/admin/media/<%= item.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus berkas media ini secara permanen?" data-confirm-title="Hapus Media" data-media-url="<%= item.file_url %>" class="adm-media-delete-form">
+                <form action="/admin/media/<%= item.id %>/delete?_csrf=<%= csrfToken %>" method="POST" data-confirm-delete="true" data-confirm-message="Hapus berkas media ini secara permanen?" data-confirm-title="Hapus Media" data-media-url="<%= item.file_url %>" data-media-id="<%= item.id %>" class="adm-media-delete-form">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn-action btn-action-delete" title="Hapus Berkas">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
@@ -134,12 +134,12 @@
         </svg>
       </button>
     </div>
-    <form action="/admin/media/upload?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+    <form id="mediaLibraryUploadForm" action="/admin/media/upload?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
       <div class="admin-modal-body">
         <div class="form-group adm-media-mb-0">
           <label class="form-label" for="file">Pilih Berkas *</label>
           <div class="custom-file-upload">
-            <input type="file" id="file" name="file" required accept="image/*,video/mp4,video/webm,application/pdf">
+            <input type="file" id="file" name="file" multiple required accept="image/*,video/mp4,video/webm,application/pdf">
             <div class="file-upload-dropzone" tabindex="0" role="button" aria-label="Pilih atau seret berkas">
               <div class="file-upload-preview">
                 <img src="" alt="Pratinjau" class="adm-d-none">
@@ -153,17 +153,23 @@
                     <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                     <span>Pilih Berkas</span>
                   </span>
-                  <span class="file-upload-label">atau seret ke sini</span>
+                  <span class="file-upload-label">atau seret banyak berkas ke sini</span>
                 </div>
                 <div class="file-upload-filename">Belum ada berkas dipilih</div>
-                <div class="file-upload-meta">Gambar (JPG, PNG, WebP), Video (MP4, WebM maks 30MB), PDF.</div>
+                <div class="file-upload-meta">Gambar (JPG, PNG, WebP, GIF, ICO), Video (MP4, WebM), PDF (Maks 30MB per berkas).</div>
               </div>
-              <button type="button" class="file-upload-clear-btn adm-d-none" title="Hapus berkas">
-                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <button type="button" class="file-upload-clear-btn adm-d-none" title="Hapus berkas" aria-label="Hapus berkas terpilih">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
           </div>
         </div>
+        <div id="mediaUploadProgress" class="adm-picker-upload-progress adm-d-none" aria-live="polite">
+          <div id="mediaUploadProgressText" class="adm-picker-progress-text">Mengunggah berkas...</div>
+          <progress id="mediaUploadProgressBar" class="adm-picker-progress" max="100" value="0" aria-label="Progres unggahan media"></progress>
+        </div>
+        <div id="mediaUploadSummary" class="adm-picker-upload-summary adm-d-none" aria-live="polite"></div>
+        <ul id="mediaUploadQueue" class="adm-picker-upload-queue adm-d-none"></ul>
       </div>
       <div class="admin-modal-footer">
         <button type="button" class="adm-btn adm-btn-neutral" data-modal-close="uploadModal" aria-label="Batalkan pengunggahan berkas">

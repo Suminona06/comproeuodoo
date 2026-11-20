@@ -39,6 +39,42 @@
   const uploadProgress = document.getElementById('pickerUploadProgress');
   const uploadProgressBar = document.getElementById('pickerUploadProgressBar');
   const uploadProgressText = document.getElementById('pickerUploadProgressText');
+  const uploadQueue = document.getElementById('pickerUploadQueue');
+  const uploadSummary = document.getElementById('pickerUploadSummary');
+  const viewUploadedBtn = document.getElementById('btnViewUploadedInLibrary');
+
+  function isEnglish() {
+    return (document.documentElement.lang || 'id').toLowerCase().startsWith('en');
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function setEmptySelectionHint() {
+    if (!selectedInfo) return;
+    const hint = document.createElement('span');
+    hint.className = 'media-picker-empty-hint';
+    hint.textContent = isEnglish() ? 'No media selected' : 'Belum ada media dipilih';
+    selectedInfo.replaceChildren(hint);
+  }
+
+  function showPreviewEl(el, displayClass) {
+    if (!el) return;
+    el.classList.remove('hidden', 'adm-d-none', 'stg-d-none');
+    el.classList.add(displayClass || 'adm-d-block');
+  }
+
+  function hidePreviewEl(el) {
+    if (!el) return;
+    el.classList.remove('adm-d-block', 'adm-d-flex', 'adm-d-inline-flex', 'stg-d-block', 'stg-d-flex');
+    el.classList.add('hidden', 'adm-d-none');
+  }
 
   function openModal(options = {}) {
     currentTargetInputId = options.targetInputId || null;
@@ -48,20 +84,18 @@
     currentPage = 1;
     selectedMedia = null;
     selectedMediaList = [];
-    if (selectedInfo) selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
+    setEmptySelectionHint();
     updateConfirmButton();
 
-    // Activate the appropriate tab
     tabs.forEach(tab => {
       const tabType = tab.getAttribute('data-type');
-      if (tabType === currentFilterType || (currentFilterType === 'all' && tabType === 'all')) {
-        tab.classList.add('active');
-      } else {
-        tab.classList.remove('active');
-      }
+      const isMatch = tabType === currentFilterType || (currentFilterType === 'all' && tabType === 'all');
+      tab.classList.toggle('active', isMatch);
+      tab.setAttribute('aria-selected', isMatch ? 'true' : 'false');
     });
 
     switchTab('library');
+    resetPickerUploadUi();
     loadMedia();
 
     modal.classList.add('open');
@@ -71,29 +105,34 @@
   function closeModal() {
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
+    resetPickerUploadUi();
     currentTargetInputId = null;
     currentTargetCallback = null;
     selectedMedia = null;
     selectedMediaList = [];
     isMultiple = false;
-    if (selectedInfo) selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
+    setEmptySelectionHint();
   }
 
   function switchTab(tabName) {
-    if (tabName === 'upload') {
-      tabLibrary.style.display = 'none';
-      tabUpload.style.display = 'block';
-    } else {
-      tabLibrary.style.display = 'block';
-      tabUpload.style.display = 'none';
-    }
+    const isUpload = tabName === 'upload';
+    tabLibrary.classList.toggle('adm-d-none', isUpload);
+    tabUpload.classList.toggle('adm-d-none', !isUpload);
+    tabs.forEach(t => {
+      const active = isUpload
+        ? t.getAttribute('data-tab') === 'upload'
+        : t.getAttribute('data-tab') === 'library' && (t.getAttribute('data-type') || 'all') === currentFilterType;
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
   }
 
   async function loadMedia() {
     if (!grid) return;
-    grid.innerHTML = '';
-    loading.style.display = 'block';
-    empty.style.display = 'none';
+    const en = isEnglish();
+    grid.replaceChildren();
+    loading.classList.remove('adm-d-none');
+    empty.classList.add('adm-d-none');
 
     try {
       const params = new URLSearchParams({
@@ -113,11 +152,11 @@
       });
       const data = await res.json();
 
-      loading.style.display = 'none';
+      loading.classList.add('adm-d-none');
 
       if (!data.success || !data.data || data.data.length === 0) {
-        empty.style.display = 'block';
-        pageInfo.textContent = 'Halaman 1 dari 1';
+        empty.classList.remove('adm-d-none');
+        pageInfo.textContent = en ? 'Page 1 of 1' : 'Halaman 1 dari 1';
         prevBtn.disabled = true;
         nextBtn.disabled = true;
         return;
@@ -126,72 +165,97 @@
       renderGrid(data.data);
 
       const p = data.pagination || { page: 1, totalPages: 1 };
-      pageInfo.textContent = `Halaman ${p.page} dari ${p.totalPages || 1} (${p.total || data.data.length} media)`;
+      pageInfo.textContent = en
+        ? `Page ${p.page} of ${p.totalPages || 1} (${p.total || data.data.length} media)`
+        : `Halaman ${p.page} dari ${p.totalPages || 1} (${p.total || data.data.length} media)`;
       prevBtn.disabled = p.page <= 1;
       nextBtn.disabled = p.page >= p.totalPages;
     } catch (err) {
-      loading.style.display = 'none';
-      empty.style.display = 'block';
-      if (window.adminToast) window.adminToast('error', 'Gagal memuat daftar media: ' + err.message);
+      loading.classList.add('adm-d-none');
+      empty.classList.remove('adm-d-none');
+      if (window.adminToast) {
+        const msg = en ? `Failed to load media list: ${err.message}` : `Gagal memuat daftar media: ${err.message}`;
+        window.adminToast('error', msg);
+      }
     }
+  }
+
+  function createCardPreview(item) {
+    const displayName = item.filename || item.original_name || 'Media';
+    if (item.media_type === 'image') {
+      const img = document.createElement('img');
+      img.src = item.file_url;
+      img.alt = displayName;
+      img.className = 'media-picker-card-thumb';
+      img.loading = 'lazy';
+      return img;
+    }
+    if (item.media_type === 'youtube') {
+      const ytId = item.youtube_id || (item.file_url && item.file_url.includes('embed/') ? item.file_url.split('embed/')[1] : '');
+      if (ytId) {
+        const img = document.createElement('img');
+        img.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+        img.alt = displayName;
+        img.className = 'media-picker-card-thumb';
+        img.loading = 'lazy';
+        return img;
+      }
+      const ytBox = document.createElement('div');
+      ytBox.className = 'adm-picker-card-placeholder adm-picker-card-placeholder--yt';
+      ytBox.textContent = 'YT';
+      return ytBox;
+    }
+    const box = document.createElement('div');
+    box.className = item.media_type === 'video'
+      ? 'adm-picker-card-placeholder adm-picker-card-placeholder--video'
+      : 'adm-picker-card-placeholder adm-picker-card-placeholder--doc';
+    box.innerHTML = item.media_type === 'video'
+      ? '<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'
+      : '<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>';
+    return box;
   }
 
   function renderGrid(items) {
     grid.innerHTML = '';
     items.forEach(item => {
+      const displayName = item.filename || item.original_name || 'Media';
       const card = document.createElement('div');
       card.className = 'media-picker-card';
+      card.tabIndex = 0;
       card.setAttribute('data-id', item.id);
       card.setAttribute('data-url', item.file_url);
       card.setAttribute('data-type', item.media_type);
-      card.setAttribute('data-name', item.filename || item.original_name);
-
-      let mediaHtml = '';
-      if (item.media_type === 'image') {
-        mediaHtml = `<img src="${item.file_url}" alt="${item.filename}" class="media-picker-card-thumb" loading="lazy">`;
-      } else if (item.media_type === 'video') {
-        mediaHtml = `
-          <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #0f172a; color: #00906e;">
-            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-          </div>
-        `;
-      } else if (item.media_type === 'youtube') {
-        const ytId = item.youtube_id || (item.file_url.includes('embed/') ? item.file_url.split('embed/')[1] : '');
-        const ytThumb = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : '';
-        mediaHtml = ytThumb
-          ? `<img src="${ytThumb}" alt="${item.filename}" class="media-picker-card-thumb" loading="lazy">`
-          : `<div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #991b1b; color: #fff;">YT</div>`;
-      } else {
-        mediaHtml = `
-          <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #64748b;">
-            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-          </div>
-        `;
-      }
+      card.setAttribute('data-name', displayName);
 
       if (isMultiple) {
-        const isSelected = selectedMediaList.some(m => m.id === item.id);
+        const isSelected = selectedMediaList.some(m => Number(m.id) === Number(item.id));
         if (isSelected) card.classList.add('selected');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.className = 'media-picker-checkbox';
         checkbox.checked = isSelected;
-        checkbox.setAttribute('aria-label', `Pilih ${item.filename || item.original_name}`);
+        checkbox.setAttribute('aria-label', `Pilih ${displayName}`);
         card.appendChild(checkbox);
       }
 
-      card.innerHTML += `
-        ${mediaHtml}
-        <div class="media-picker-card-name" title="${item.filename || item.original_name}">
-          ${item.filename || item.original_name}
-        </div>
-      `;
+      card.appendChild(createCardPreview(item));
 
-      card.addEventListener('click', (e) => {
-        if (isMultiple && e.target.classList.contains('media-picker-checkbox')) {
-          e.stopPropagation();
-        }
+      const nameEl = document.createElement('div');
+      nameEl.className = 'media-picker-card-name';
+      nameEl.title = displayName;
+      nameEl.textContent = displayName;
+      card.appendChild(nameEl);
+
+      card.addEventListener('click', () => {
         selectCard(card, item);
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (e.target.classList.contains('media-picker-checkbox')) return;
+          e.preventDefault();
+          selectCard(card, item);
+        }
       });
 
       card.addEventListener('dblclick', () => {
@@ -207,7 +271,7 @@
 
   function selectCard(card, item) {
     if (isMultiple) {
-      const idx = selectedMediaList.findIndex(m => m.id === item.id);
+      const idx = selectedMediaList.findIndex(m => Number(m.id) === Number(item.id));
       const checkbox = card ? card.querySelector('.media-picker-checkbox') : null;
       if (idx > -1) {
         selectedMediaList.splice(idx, 1);
@@ -230,50 +294,74 @@
 
     let thumbSrc = item.file_url;
     if (item.media_type === 'youtube') {
-      const ytId = item.youtube_id || (item.file_url.includes('embed/') ? item.file_url.split('embed/')[1] : '');
+      const ytId = item.youtube_id || (item.file_url && item.file_url.includes('embed/') ? item.file_url.split('embed/')[1] : '');
       thumbSrc = ytId ? `https://img.youtube.com/vi/${ytId}/default.jpg` : '';
     }
 
-    selectedInfo.innerHTML = `
-      <img src="${thumbSrc}" class="media-picker-selected-thumb" onerror="this.style.display='none'">
-      <div style="overflow: hidden;">
-        <strong style="color: var(--surface-dark, #071F17); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px;">${item.filename || item.original_name}</strong>
-        <span style="font-size: 11.5px; color: #64748b; font-family: monospace;">${item.file_url}</span>
-      </div>
-    `;
+    if (selectedInfo) {
+      const nodes = [];
+      if (thumbSrc) {
+        const thumbImg = document.createElement('img');
+        thumbImg.src = thumbSrc;
+        thumbImg.alt = '';
+        thumbImg.className = 'media-picker-selected-thumb';
+        thumbImg.addEventListener('error', () => thumbImg.classList.add('adm-d-none'));
+        nodes.push(thumbImg);
+      }
+      const meta = document.createElement('div');
+      meta.className = 'adm-picker-selected-meta';
+      const titleEl = document.createElement('strong');
+      titleEl.className = 'adm-picker-selected-name';
+      titleEl.textContent = item.filename || item.original_name || 'Media';
+      const urlEl = document.createElement('span');
+      urlEl.className = 'adm-picker-selected-url';
+      urlEl.textContent = item.file_url || '';
+      meta.appendChild(titleEl);
+      meta.appendChild(urlEl);
+      nodes.push(meta);
+      selectedInfo.replaceChildren(...nodes);
+    }
   }
 
   function updateSelectedInfoMultiple() {
     if (!selectedInfo) return;
     if (selectedMediaList.length === 0) {
-      selectedInfo.innerHTML = '<span class="media-picker-empty-hint">Belum ada media dipilih</span>';
-    } else {
-      selectedInfo.innerHTML = `
-        <span style="font-size: 13px; font-weight: 600; color: var(--primary, #00755a);">
-          ${selectedMediaList.length} foto dipilih
-        </span>
-      `;
+      setEmptySelectionHint();
+      return;
     }
+    const countSpan = document.createElement('span');
+    countSpan.className = 'adm-picker-selected-count';
+    countSpan.textContent = isEnglish()
+      ? `${selectedMediaList.length} photos selected`
+      : `${selectedMediaList.length} foto dipilih`;
+    selectedInfo.replaceChildren(countSpan);
   }
 
   function updateConfirmButton() {
+    const en = isEnglish();
     if (isMultiple) {
       confirmBtn.disabled = selectedMediaList.length === 0;
-      confirmBtn.textContent = selectedMediaList.length > 0 ? `Pilih ${selectedMediaList.length} Foto` : 'Pilih Foto';
+      if (selectedMediaList.length > 0) {
+        confirmBtn.textContent = en ? `Select ${selectedMediaList.length} Photos` : `Pilih ${selectedMediaList.length} Foto`;
+      } else {
+        confirmBtn.textContent = en ? 'Select Photos' : 'Pilih Foto';
+      }
     } else {
       confirmBtn.disabled = !selectedMedia;
-      confirmBtn.textContent = 'Gunakan Media Ini';
+      confirmBtn.textContent = en ? 'Use This Media' : 'Gunakan Media Ini';
     }
   }
 
   function confirmSelection() {
+    const en = isEnglish();
     if (isMultiple) {
       if (selectedMediaList.length === 0) return;
       if (typeof currentTargetCallback === 'function') {
         currentTargetCallback(selectedMediaList);
       }
       if (window.adminToast) {
-        window.adminToast('success', `${selectedMediaList.length} foto dipilih.`);
+        const msg = en ? `${selectedMediaList.length} photos selected.` : `${selectedMediaList.length} foto dipilih.`;
+        window.adminToast('success', msg);
       }
       closeModal();
       return;
@@ -296,42 +384,21 @@
 
           if (selectedMedia.media_type === 'image' && img) {
             img.src = selectedMedia.file_url;
-            img.classList.remove('hidden');
-            img.style.display = 'block';
-            if (video) {
-              video.classList.add('hidden');
-              video.style.display = 'none';
-            }
-            if (emptyPlaceholder) {
-              emptyPlaceholder.classList.add('hidden');
-              emptyPlaceholder.style.display = 'none';
-            }
+            showPreviewEl(img, 'adm-d-block');
+            hidePreviewEl(video);
+            hidePreviewEl(emptyPlaceholder);
           } else if (selectedMedia.media_type === 'video' && video) {
             video.src = selectedMedia.file_url;
-            video.classList.remove('hidden');
-            video.style.display = 'block';
-            if (img) {
-              img.classList.add('hidden');
-              img.style.display = 'none';
-            }
-            if (emptyPlaceholder) {
-              emptyPlaceholder.classList.add('hidden');
-              emptyPlaceholder.style.display = 'none';
-            }
+            showPreviewEl(video, 'adm-d-block');
+            hidePreviewEl(img);
+            hidePreviewEl(emptyPlaceholder);
           } else if (img) {
             img.src = selectedMedia.file_url;
-            img.classList.remove('hidden');
-            img.style.display = 'block';
-            if (emptyPlaceholder) {
-              emptyPlaceholder.classList.add('hidden');
-              emptyPlaceholder.style.display = 'none';
-            }
+            showPreviewEl(img, 'adm-d-block');
+            hidePreviewEl(emptyPlaceholder);
           }
 
-          if (clearBtn) {
-            clearBtn.classList.remove('hidden');
-            clearBtn.style.display = 'inline-flex';
-          }
+          showPreviewEl(clearBtn, 'adm-d-inline-flex');
         }
       }
     }
@@ -341,88 +408,147 @@
     }
 
     if (window.adminToast) {
-      window.adminToast('success', `Media "${selectedMedia.filename || 'berkas'}" dipilih.`);
+      const label = selectedMedia.filename || (en ? 'file' : 'berkas');
+      const msg = en ? `Media "${label}" selected.` : `Media "${label}" dipilih.`;
+      window.adminToast('success', msg);
     }
 
     closeModal();
   }
 
-  // Upload Handler
-  async function handleFileUpload(file) {
-    if (!file) return;
+  function resetPickerUploadUi() {
+    uploadProgress.classList.add('adm-d-none');
+    if (uploadProgressBar) uploadProgressBar.value = 0;
+    if (uploadQueue) {
+      uploadQueue.replaceChildren();
+      uploadQueue.classList.add('adm-d-none');
+    }
+    if (uploadSummary) {
+      uploadSummary.textContent = '';
+      uploadSummary.classList.add('adm-d-none');
+      uploadSummary.classList.remove('is-error', 'is-warning', 'is-success');
+    }
+    if (viewUploadedBtn) viewUploadedBtn.classList.add('adm-d-none');
+  }
 
-    uploadProgress.style.display = 'block';
-    uploadProgressBar.style.width = '35%';
-    uploadProgressText.textContent = `Mengunggah ${file.name}...`;
+  function buildQueueRow(file, en) {
+    const li = document.createElement('li');
+    li.className = 'adm-picker-queue-item';
 
-    const formData = new FormData();
-    formData.append('file', file);
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'adm-picker-queue-name';
+    nameSpan.textContent = file.name;
 
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    if (csrfMeta && csrfMeta.content) {
-      formData.append('_csrf', csrfMeta.content);
+    const statusSpan = document.createElement('span');
+    statusSpan.className = 'adm-picker-queue-status';
+    statusSpan.textContent = en ? 'Waiting...' : 'Menunggu...';
+
+    li.appendChild(nameSpan);
+    li.appendChild(statusSpan);
+    return { li, statusSpan };
+  }
+
+  function applyPostUploadSelection(uploadedItems) {
+    if (uploadedItems.length === 0) return;
+    if (isMultiple) {
+      uploadedItems.forEach((item) => {
+        if (!selectedMediaList.some((m) => Number(m.id) === Number(item.id))) {
+          selectedMediaList.push(item);
+        }
+      });
+      updateConfirmButton();
+      updateSelectedInfoMultiple();
     }
 
-    try {
-      const res = await fetch('/admin/api/media/upload', {
-        method: 'POST',
-        headers: {
-          'X-CSRF-Token': csrfMeta ? csrfMeta.content : ''
-        },
-        body: formData
-      });
+    currentFilterType = 'all';
+    currentPage = 1;
+    currentSearchQuery = '';
+    if (searchInput) searchInput.value = '';
 
-      uploadProgressBar.style.width = '85%';
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || 'Gagal mengunggah berkas.');
+    loadMedia().then(() => {
+      if (!isMultiple) {
+        const lastItem = uploadedItems[uploadedItems.length - 1];
+        const uploadedCard = grid.querySelector(`.media-picker-card[data-id="${lastItem.id}"]`);
+        selectCard(uploadedCard || null, lastItem);
       }
+    });
+  }
 
-      uploadProgressBar.style.width = '100%';
-      uploadProgressText.textContent = 'Unggahan selesai!';
+  function showUploadSummary(summary, en) {
+    if (!uploadSummary) return;
+    const text = en
+      ? `Completed: ${summary.successCount} uploaded, ${summary.failedCount} failed.`
+      : `Selesai: ${summary.successCount} berhasil diunggah, ${summary.failedCount} gagal.`;
+    uploadSummary.textContent = text;
+    uploadSummary.classList.remove('adm-d-none', 'is-error', 'is-warning', 'is-success');
+    if (summary.successCount === 0) uploadSummary.classList.add('is-error');
+    else if (summary.failedCount > 0) uploadSummary.classList.add('is-warning');
+    else uploadSummary.classList.add('is-success');
+  }
 
+  async function handleFilesUpload(fileList) {
+    const files = Array.from(fileList || []);
+    if (files.length === 0 || !window.EuMediaUpload) return;
+
+    const en = window.EuMediaUpload.isEnglish();
+    resetPickerUploadUi();
+    uploadProgress.classList.remove('adm-d-none');
+
+    const rows = files.map((f) => buildQueueRow(f, en));
+    if (uploadQueue) {
+      rows.forEach((r) => uploadQueue.appendChild(r.li));
+      uploadQueue.classList.remove('adm-d-none');
+    }
+
+    const summary = await window.EuMediaUpload.runUploadQueue(files, {
+      onFileStart: (idx, total, file) => {
+        if (uploadProgressBar) uploadProgressBar.value = Math.round((idx / total) * 100);
+        uploadProgressText.textContent = en
+          ? `Uploading ${idx + 1} of ${total}: ${file.name}`
+          : `Mengunggah ${idx + 1} dari ${total}: ${file.name}`;
+        rows[idx].li.classList.add('is-uploading');
+        rows[idx].statusSpan.textContent = en ? 'Uploading...' : 'Mengunggah...';
+      },
+      onFileDone: (idx, total, entry) => {
+        if (uploadProgressBar) uploadProgressBar.value = Math.round(((idx + 1) / total) * 100);
+        rows[idx].li.classList.remove('is-uploading');
+        rows[idx].li.classList.add(entry.ok ? 'is-success' : 'is-error');
+        rows[idx].statusSpan.textContent = entry.ok
+          ? (en ? 'Uploaded' : 'Berhasil')
+          : entry.message;
+      }
+    });
+
+    uploadProgressText.textContent = en ? 'Upload queue finished.' : 'Antrean unggahan selesai.';
+    showUploadSummary(summary, en);
+
+    if (window.adminToast) {
+      const toastType = summary.successCount === 0 ? 'error' : (summary.failedCount > 0 ? 'warning' : 'success');
+      window.adminToast(toastType, uploadSummary ? uploadSummary.textContent : uploadProgressText.textContent);
+    }
+
+    applyPostUploadSelection(summary.uploadedItems);
+
+    if (summary.failedCount === 0 && summary.uploadedItems.length > 0) {
       setTimeout(() => {
-        uploadProgress.style.display = 'none';
-        uploadProgressBar.style.width = '0%';
+        resetPickerUploadUi();
         switchTab('library');
-        currentFilterType = 'all';
-        currentPage = 1;
-        currentSearchQuery = '';
-        if (searchInput) searchInput.value = '';
-        tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-type') === 'all'));
-        loadMedia().then(() => {
-          if (data.data) {
-            const uploadedCard = grid.querySelector(`.media-picker-card[data-id="${data.data.id}"]`);
-            selectCard(uploadedCard || null, data.data);
-          }
-        });
       }, 600);
-    } catch (err) {
-      uploadProgress.style.display = 'none';
-      if (window.adminToast) {
-        window.adminToast('error', err.message || 'Gagal mengunggah file.');
-      } else if (window.showAdminAlert) {
-        window.showAdminAlert('Gagal', err.message || 'Gagal mengunggah file.', 'error');
-      } else {
-        console.error(err);
-      }
+    } else if (viewUploadedBtn && summary.uploadedItems.length > 0) {
+      viewUploadedBtn.classList.remove('adm-d-none');
     }
   }
 
   // Tab Events
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
       const targetTab = tab.getAttribute('data-tab');
       if (targetTab === 'upload') {
         switchTab('upload');
       } else {
-        switchTab('library');
         currentFilterType = tab.getAttribute('data-type') || 'all';
         currentPage = 1;
+        switchTab('library');
         loadMedia();
       }
     });
@@ -472,28 +598,34 @@
 
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      dropzone.style.borderColor = 'var(--secondary, #0b281e)';
-      dropzone.style.background = '#e6f7f2';
+      dropzone.classList.add('is-dragover');
     });
     dropzone.addEventListener('dragleave', (e) => {
       e.preventDefault();
-      dropzone.style.borderColor = 'var(--primary, #00755a)';
-      dropzone.style.background = '#f8fafc';
+      if (!dropzone.contains(e.relatedTarget)) {
+        dropzone.classList.remove('is-dragover');
+      }
     });
     dropzone.addEventListener('drop', (e) => {
       e.preventDefault();
-      dropzone.style.borderColor = 'var(--primary, #00755a)';
-      dropzone.style.background = '#f8fafc';
+      dropzone.classList.remove('is-dragover');
       if (e.dataTransfer && e.dataTransfer.files.length > 0) {
-        handleFileUpload(e.dataTransfer.files[0]);
+        handleFilesUpload(e.dataTransfer.files);
       }
     });
 
     fileInput.addEventListener('change', () => {
       if (fileInput.files.length > 0) {
-        handleFileUpload(fileInput.files[0]);
+        handleFilesUpload(fileInput.files);
         fileInput.value = '';
       }
+    });
+  }
+
+  if (viewUploadedBtn) {
+    viewUploadedBtn.addEventListener('click', () => {
+      resetPickerUploadUi();
+      switchTab('library');
     });
   }
 
@@ -532,20 +664,16 @@
         }
         if (img) {
           img.src = '';
-          img.classList.add('hidden');
-          img.style.display = 'none';
+          hidePreviewEl(img);
         }
         if (video) {
           video.src = '';
-          video.classList.add('hidden');
-          video.style.display = 'none';
+          hidePreviewEl(video);
         }
         if (emptyPlaceholder) {
-          emptyPlaceholder.classList.remove('hidden');
-          emptyPlaceholder.style.display = 'flex';
+          showPreviewEl(emptyPlaceholder, 'adm-d-flex');
         }
-        clearBtn.classList.add('hidden');
-        clearBtn.style.display = 'none';
+        hidePreviewEl(clearBtn);
       }
     }
   });
@@ -555,7 +683,8 @@
     const form = e.target;
     if (!form || !form.matches || !form.matches('form[data-confirm-delete]')) return;
     const mediaUrl = form.getAttribute('data-media-url');
-    if (!mediaUrl || form.dataset.forceConfirmed === 'true') return;
+    const mediaId = form.getAttribute('data-media-id');
+    if ((!mediaUrl && !mediaId) || form.dataset.forceConfirmed === 'true') return;
 
     // Check if media is currently in use
     e.preventDefault();
@@ -569,26 +698,21 @@
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfMeta ? csrfMeta.content : ''
         },
-        body: JSON.stringify({ file_url: mediaUrl })
+        body: JSON.stringify({ file_url: mediaUrl, media_id: mediaId || null })
       });
       const checkData = await res.json();
 
       if (checkData.inUse && checkData.usages && checkData.usages.length > 0) {
-        // Option 3 Pilihan B: Soft Warning with Force Delete
-        const listItems = checkData.usages.map(u => `<li><strong>${u.source}:</strong> ${u.label}</li>`).join('');
+        const isEn = isEnglish();
+        const listItems = checkData.usages
+          .map(u => `<li><strong>${escapeHtml(u.source)}:</strong> ${escapeHtml(u.label)}</li>`)
+          .join('');
         const warningHtml = `
-          <p style="margin-bottom: 0.75rem; text-align: left; color: #dc2626; font-weight: 600;">
-            ⚠️ Peringatan: Berkas ini sedang aktif digunakan oleh:
-          </p>
-          <ul style="text-align: left; margin: 0 0 1rem 1.25rem; font-size: 0.85rem; color: #334155; line-height: 1.6;">
-            ${listItems}
-          </ul>
-          <p style="text-align: left; font-size: 0.85rem; color: #64748b;">
-            Menghapus berkas ini dapat menyebabkan tampilan gambar kosong (broken link) pada halaman publik.
-          </p>
+          <p class="adm-picker-usage-warn">${isEn ? 'Warning: This file is actively used by:' : 'Peringatan: Berkas ini sedang aktif digunakan oleh:'}</p>
+          <ul class="adm-picker-usage-list">${listItems}</ul>
+          <p class="adm-picker-usage-note">${isEn ? 'Deleting this file may cause broken images or links on public pages.' : 'Menghapus berkas ini dapat menyebabkan tampilan gambar kosong (broken link) pada halaman publik.'}</p>
         `;
 
-        const isEn = (document.documentElement.lang || 'id').toLowerCase() === 'en';
         const confirmed = window.showAdminConfirm
           ? await window.showAdminConfirm({
               title: isEn ? 'Media Is In Use!' : 'Media Sedang Digunakan!',

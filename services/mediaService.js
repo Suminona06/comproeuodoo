@@ -49,8 +49,8 @@ function resolveMediaProcessor(mimeType) {
 }
 
 async function findBlockingUsages(media, force) {
-  if (force || !media.file_url) return [];
-  return await mediaModel.checkUsage(media.file_url);
+  if (force || (!media.file_url && !media.id)) return [];
+  return await mediaModel.checkUsage(media.file_url, media.id);
 }
 
 export async function getMediaLibraryViewData(rawQuery) {
@@ -152,9 +152,9 @@ export async function registerYoutubeMedia(input) {
   return { status: 'created', id };
 }
 
-export async function checkMediaUsage(fileUrl) {
-  if (!fileUrl) return { inUse: false, usages: [] };
-  const usages = await mediaModel.checkUsage(fileUrl);
+export async function checkMediaUsage(fileUrl, mediaId = null) {
+  if (!fileUrl && !mediaId) return { inUse: false, usages: [] };
+  const usages = await mediaModel.checkUsage(fileUrl, mediaId);
   return { inUse: usages.length > 0, usages };
 }
 
