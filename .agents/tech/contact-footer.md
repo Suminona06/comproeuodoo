@@ -1,9 +1,9 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/contact/status-alerts.ejs, views/partials/contact/rfq-form.ejs, views/partials/contact/locations-map.ejs, public/js/contact.js, controllers/public/contactController.js, views/partials/footer.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: views/public/contact.ejs, views/partials/contact/status-alerts.ejs, views/partials/contact/rfq-form.ejs, views/partials/contact/locations-map.ejs, public/js/contact.js, controllers/public/contactController.js, services/publicContactService.js, views/partials/footer.ejs
 
 # Tech Spec: Modul Kontak, Footer & WhatsApp
 
 ## 1. Arsitektur & Komponen
-Menangani penerimaan prospek B2B melalui formulir RFQ (`inquiries`), notifikasi email via Nodemailer, dual lokasi, footer global, dan floating WhatsApp.
+Menangani penerimaan prospek B2B melalui formulir RFQ (`inquiries`), notifikasi email via Nodemailer, dual lokasi, footer global, dan floating WhatsApp dengan arsitektur berlapis `contactController` -> `services/publicContactService.js` -> Model/Mailer `[PENDING T-372]`.
 
 ---
 
@@ -11,9 +11,9 @@ Menangani penerimaan prospek B2B melalui formulir RFQ (`inquiries`), notifikasi 
 
 | Method | Path | Controller | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/contact` | `contactController.index` | `seoMiddleware`, `i18nMiddleware` | Render halaman Kontak (`<= 40` baris/fungsi, pesan via `t('contact.*')`) |
-| `POST` | `/contact` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Proses RFQ (helper `<= 40` baris, `company` max 100, `message` 10..3000, validasi `product_id` DB via `resolveProductSelection` -> `400` bila tak ada, pesan `t('contact.*')`) |
-| `POST` | `/leads` | `contactController.submit` | `leadLimiter`, `csrfMiddleware` | Alias kompatibilitas formulir |
+| `GET` | `/contact` | `contactController.index` (`publicContactService`) `[PENDING T-372]` | `seoMiddleware`, `i18nMiddleware` | Render halaman Kontak (`<= 40` baris/fungsi, fetch produk+hero & fallback di `publicContactService`, pesan via `t('contact.*')`) |
+| `POST` | `/contact` | `contactController.submit` (`publicContactService`) `[PENDING T-372]` | `leadLimiter`, `csrfMiddleware` | Proses RFQ via `publicContactService` (honeypot, normalisasi & validasi `company` max 100 / `message` 10..3000, guard `product_id` DB via `resolveProductSelection`, Turnstile, `persistAndNotifyInquiry` mailer background non-blocking, respons redirect/JSON `t('contact.*')`) |
+| `POST` | `/leads` | `contactController.submit` (`publicContactService`) `[PENDING T-372]` | `leadLimiter`, `csrfMiddleware` | Alias kompatibilitas formulir |
 | `GET` | `/admin/contact` | `contactCmsController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin'])` | CMS teks hero kontak |
 | `POST` | `/admin/contact` | `contactCmsController.update` | `requireAuth`, `roleMiddleware` | Update teks hero kontak |
 

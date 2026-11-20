@@ -142,6 +142,16 @@ export const mediaModel = {
     return rows.length > 0;
   },
 
+  async findUrlsByIds(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return [];
+    const validIds = [...new Set(
+      ids.map((id) => parseInt(id, 10)).filter((id) => Number.isInteger(id) && id > 0)
+    )];
+    if (validIds.length === 0) return [];
+    const placeholders = validIds.map(() => '?').join(',');
+    return await query(`SELECT id, file_url FROM media WHERE id IN (${placeholders})`, validIds);
+  },
+
   async checkUsage(fileUrl) {
     if (!fileUrl) return [];
     const sql = `

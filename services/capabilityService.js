@@ -77,6 +77,10 @@ export async function listCapabilities(deps = {}) {
   return useModel(deps).findAll(false);
 }
 
+export async function listActiveCapabilities(deps = {}) {
+  return useModel(deps).findAll(true);
+}
+
 export async function createCapability(rawBody, file, deps = {}) {
   const body = rawBody || {};
   const reqFields = validateRequiredFields(body);
@@ -136,6 +140,7 @@ export default {
   parseSortOrder,
   isSafeImageUrl,
   listCapabilities,
+  listActiveCapabilities,
   createCapability,
   updateCapability,
   deleteCapability

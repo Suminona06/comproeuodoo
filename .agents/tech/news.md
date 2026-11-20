@@ -1,9 +1,9 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: controllers/public/postController.js, controllers/admin/postController.js, controllers/admin/postCategoryController.js, services/postService.js, services/postCategoryService.js, utils/slugHelper.js, models/slugRedirectModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: controllers/public/postController.js, services/publicPostService.js, controllers/admin/postController.js, controllers/admin/postCategoryController.js, services/postService.js, services/postCategoryService.js, utils/slugHelper.js, models/slugRedirectModel.js
 
 # Tech Spec: Modul Berita & Publikasi (News & Articles)
 
 ## 1. Arsitektur & Komponen
-Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, kompresi sampul otomatis, HTTP 301 Redirect slug, serta penyajian portal `/news` (SSR + Fetch API). Rincian teknis halaman detail (`/news/:slug`) berada pada [tech/news-detail.md](news-detail.md).
+Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, kompresi sampul otomatis, HTTP 301 Redirect slug, serta penyajian portal `/news` (SSR + Fetch API) dengan arsitektur berlapis `postController` -> `services/publicPostService.js` -> Model `[PENDING T-369]`. Rincian teknis halaman detail (`/news/:slug`) berada pada [tech/news-detail.md](news-detail.md).
 
 ---
 
@@ -11,8 +11,8 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/news` | `postController.index` | `seoMiddleware`, `i18nMiddleware` | Portal berita & headline; JSON jika fetch/ajax |
-| `GET` | `/news/:slug` | `postController.detail` | `seoMiddleware`, `i18nMiddleware` | Detail artikel G2 / cek 301 (lihat `tech/news-detail.md`) |
+| `GET` | `/news` | `postController.index` (`publicPostService`) `[PENDING T-369]` | `seoMiddleware`, `i18nMiddleware` | Portal berita & headline; JSON jika fetch/ajax; fallback 500 simetris (`headlinePosts: []`, `heroBanner: null`) & judul via `t(...)` |
+| `GET` | `/news/:slug` | `postController.detail` (`publicPostService`) `[PENDING T-369]` | `seoMiddleware`, `i18nMiddleware` | Detail artikel G2 / cek 301 (lihat `tech/news-detail.md`) |
 | `GET` | `/admin/posts` | `admin/postController.index` (`postService`) | `requireAuth`, `roleMiddleware(['superadmin','admin','editor'])` | Daftar artikel admin |
 | `POST` | `/admin/posts` | `admin/postController.store` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Simpan artikel baru |
 | `POST` | `/admin/posts/:id` | `admin/postController.update` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update artikel & catat slug 301 |

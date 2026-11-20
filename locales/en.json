@@ -15,7 +15,8 @@
     "status_active": "Available for Production",
     "whatsapp_consult": "WhatsApp Consultation",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "error_title": "Error"
   },
   "nav": {
     "home": "Home",
@@ -105,7 +106,8 @@
     "empty_desc": "Try adjusting your search query or selecting a different product category.",
     "reset_filter": "RESET ALL FILTERS",
     "hero_default_title": "Eco-Friendly & Industrial Plastic Bags",
-    "hero_default_desc": "Discover our complete range of certified degradable shopping bags, heavy-duty industrial liners, and commercial wholesale packaging produced in Bandung, West Java."
+    "hero_default_desc": "Discover our complete range of certified degradable shopping bags, heavy-duty industrial liners, and commercial wholesale packaging produced in Bandung, West Java.",
+    "catalog_title": "Product Catalog"
   },
   "capabilities": {
     "page_title": "Manufacturing Plant Capabilities",
@@ -175,7 +177,8 @@
     "headline_title_blog": "Blog",
     "headline_aria_berita": "Featured News",
     "headline_aria_pers": "Featured Press Releases",
-    "headline_aria_blog": "Featured Blog"
+    "headline_aria_blog": "Featured Blog",
+    "not_found_title": "Article Not Found"
   },
   "contact": {
     "page_title": "Official Contact & RFQ Inquiry",
@@ -254,7 +257,11 @@
     "variants_aria": "Available variants",
     "related_kicker": "RECOMMENDED PRODUCTS",
     "related_title": "Related Products You May Need",
-    "view_category": "View Category"
+    "view_category": "View Category",
+    "not_found_title": "Product Not Found",
+    "not_found_message": "The product you are looking for is unavailable or currently being updated.",
+    "load_error_message": "Failed to load product details.",
+    "whatsapp_quote_message": "Hello, I am interested in {name}. Could I request more information?"
   },
   "footer": {
     "default_desc": "PT. EUODOO is a manufacturing and trading enterprise of eco-certified HDPE and LLDPE plastic bags. Established in 1990, we supply modern retail chains, industrial sectors, and traditional wholesale markets from our production plant in Bandung, West Java.",

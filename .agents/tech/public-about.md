@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, views/partials/about/vision-mission.ejs, views/partials/about/ticket-accordion.ejs, views/partials/about/gallery-bento.ejs, controllers/public/pageController.js, controllers/admin/aboutController.js, services/aboutService.js, services/aboutCrudService.js, public/js/about-story.js, public/js/ticket-accordion.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: views/public/about.ejs, views/partials/about/story-counter.ejs, views/partials/about/history-timeline.ejs, views/partials/about/vision-mission.ejs, views/partials/about/ticket-accordion.ejs, views/partials/about/gallery-bento.ejs, controllers/public/pageController.js, services/publicPageService.js, controllers/admin/aboutController.js, services/aboutService.js, services/aboutCrudService.js, public/js/about-story.js, public/js/ticket-accordion.js, public/js/main.js, public/js/lightbox.js, public/css/lightbox.css
 
 # Tech Spec: Modul Tentang Kami (Public About)
 
@@ -12,7 +12,7 @@ Halaman Tentang Kami (`/about`) memadukan profil korporat dari tabel `settings` 
 
 | Method | Path | Controller | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/about` | `pageController.about` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR `/about` (`<= 40` baris/fungsi, fallback `t('about.*')`) |
+| `GET` | `/about` | `pageController.about` (`publicPageService`) `[PENDING T-370]` | `seoMiddleware`, `settingsMiddleware`, `i18nMiddleware` | Render SSR `/about` via `services/publicPageService.js` (`<= 40` baris/fungsi, fetch paralel + `ticketAcronym` + fallback `t('about.*')`) |
 | `GET` | `/admin/about` | `aboutController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS Tentang Kami via `aboutService.getAdminAboutPageData` |
 | `POST` | `/admin/about` | `aboutController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update profil, visi misi, T-I-C-K-E-T, & foto WebP via `aboutService.updateAdminAboutContent` |
 | `POST` | `/admin/about/gallery` & `/:id/{update,delete}` | `aboutController.{store,update,delete}GallerySlide` | `requireAuth`, `roleMiddleware` | CRUD slide galeri bento via `aboutCrudService` (HTML redirect / XHR JSON `200/400/404/500`) |

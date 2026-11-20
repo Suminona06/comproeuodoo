@@ -1,166 +1,53 @@
-import postModel from '../../models/postModel.js';
-import postCategoryModel from '../../models/postCategoryModel.js';
-import pageHeroBannerModel from '../../models/pageHeroBannerModel.js';
-import slugRedirectModel from '../../models/slugRedirectModel.js';
+import {
+  getNewsListData,
+  buildNewsFallbackPayload,
+  getPostDetailData,
+  buildPostErrorData
+} from '../../services/publicPostService.js';
 import logger from '../../utils/logger.js';
 
-const DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic';
-
-async function fetchRelatedPosts(post) {
-  const sameType = await postModel.findAll({ status: 'published', type: post.type, limit: 10 });
-  const related = sameType.filter(p => p.id !== post.id).slice(0, 3);
-  if (related.length >= 3) return related;
-
-  const otherRecent = await postModel.findAll({ status: 'published', limit: 10 });
-  const existingIds = new Set([post.id, ...related.map(p => p.id)]);
-  const fillers = otherRecent.filter(p => !existingIds.has(p.id));
-  return related.concat(fillers).slice(0, 3);
+function buildContext(res) {
+  return {
+    currentLang: res.locals?.currentLang,
+    settings: res.locals?.settings,
+    t: res.locals?.t
+  };
 }
 
-async function findPostRedirectUrl(slug) {
-  const redirect = await slugRedirectModel.findRedirect('post', slug);
-  if (!redirect || !redirect.new_slug) return null;
-  logger.info(`Redirecting 301 from /news/${slug} to /news/${redirect.new_slug}`);
-  return `/news/${redirect.new_slug}`;
-}
-
-async function renderMissingPost(res, slug) {
-  const redirectUrl = await findPostRedirectUrl(slug);
-  if (redirectUrl) return res.redirect(301, redirectUrl);
-  return res.status(404).render('public/404', {
-    title: `Artikel Tidak Ditemukan | ${DEFAULT_COMPANY_NAME}`,
-    path: '/news'
-  });
-}
-
-function resolveDetailTitle(post, locals) {
-  const currentLang = locals.currentLang || 'id';
-  const postTitle = currentLang === 'en' ? (post.title_en || post.title_id) : post.title_id;
-  const companyName = locals.settings?.company_name || DEFAULT_COMPANY_NAME;
-  return `${postTitle} | ${companyName}`;
+function isAjaxRequest(req) {
+  return Boolean(req.xhr || req.headers?.accept?.includes('application/json') || req.query?.ajax === '1');
 }
 
 export const postController = {
   async index(req, res) {
+    const context = buildContext(res);
+    const isAjax = isAjaxRequest(req);
     try {
-      const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-      const limit = 9;
-      const offset = (page - 1) * limit;
-      const type = ['berita', 'pers', 'blog'].includes(req.query.type) ? req.query.type : 'all';
-      const categorySlug = req.query.category ? String(req.query.category).trim() : null;
-      const search = req.query.search ? String(req.query.search).trim() : null;
-
-      let categoryId = null;
-      if (categorySlug) {
-        const activeCategoryObj = await postCategoryModel.findBySlug(categorySlug);
-        if (activeCategoryObj) {
-          categoryId = activeCategoryObj.id;
-        }
-      }
-
-      const queryOptions = {
-        status: 'published',
-        type: type !== 'all' ? type : null,
-        categoryId: categoryId || undefined,
-        search: search || undefined
-      };
-
-      const [posts, totalPosts, categories, headlinePosts, heroBanner] = await Promise.all([
-        postModel.findAll({
-          ...queryOptions,
-          limit,
-          offset
-        }),
-        postModel.countAll(queryOptions),
-        postCategoryModel.findAll({ type: type !== 'all' ? type : null }),
-        (page === 1 && !search)
-          ? postModel.findAll({ status: 'published', isHeadline: true, limit: 5 })
-          : Promise.resolve([]),
-        pageHeroBannerModel.getByPageKey('news')
-      ]);
-
-      const headlinePost = headlinePosts.length > 0 ? headlinePosts[0] : null;
-      const totalPages = Math.ceil(totalPosts / limit) || 1;
-
-      const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.query.ajax === '1';
-      if (isAjax) {
-        return res.json({
-          success: true,
-          posts,
-          categories,
-          currentPage: page,
-          totalPages,
-          totalPosts,
-          activeType: type,
-          activeCategory: categorySlug,
-          search
-        });
-      }
-
-      const title = res.locals.t('news.page_title') + ' | ' + (res.locals.settings?.company_name || DEFAULT_COMPANY_NAME);
-
-      res.render('public/news', {
-        title,
-        path: '/news',
-        posts,
-        headlinePosts,
-        headlinePost,
-        categories,
-        activeType: type,
-        activeCategory: categorySlug,
-        search,
-        currentPage: page,
-        totalPages,
-        totalPosts,
-        heroBanner
-      });
+      const { ajaxPayload, viewData } = await getNewsListData(req.query, context);
+      if (isAjax) return res.json(ajaxPayload);
+      return res.render('public/news', viewData);
     } catch (err) {
       logger.error('Public postController.index error:', { message: err.message, stack: err.stack });
-      const isAjax = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.query.ajax === '1';
-      if (isAjax) {
-        return res.status(500).json({ success: false, message: 'Server error' });
-      }
-      res.status(500).render('public/news', {
-        title: `Publikasi & Berita | ${DEFAULT_COMPANY_NAME}`,
-        path: '/news',
-        posts: [],
-        headlinePost: null,
-        categories: [],
-        activeType: 'all',
-        activeCategory: null,
-        search: null,
-        currentPage: 1,
-        totalPages: 1,
-        totalPosts: 0
-      });
+      if (isAjax) return res.status(500).json({ success: false, message: 'Server error' });
+      return res.status(500).render('public/news', buildNewsFallbackPayload(context));
     }
   },
 
   async detail(req, res) {
+    const context = buildContext(res);
     try {
-      const { slug } = req.params;
-      const post = await postModel.findBySlug(slug);
-
-      if (!post || post.status !== 'published') {
-        return renderMissingPost(res, slug);
+      const result = await getPostDetailData(req.params.slug, context);
+      if (result.status === 'redirect') {
+        logger.info(`Redirecting 301 from /news/${result.slug} to ${result.redirectUrl}`);
+        return res.redirect(301, result.redirectUrl);
       }
-
-      const recentPosts = await fetchRelatedPosts(post);
-
-      res.render('public/news-detail', {
-        title: resolveDetailTitle(post, res.locals),
-        path: '/news',
-        headerSolid: true,
-        useSweetAlert: true,
-        post,
-        recentPosts
-      });
+      if (result.status === 'not_found') {
+        return res.status(404).render('public/404', result.notFoundData);
+      }
+      return res.render('public/news-detail', result.viewData);
     } catch (err) {
       logger.error('Public postController.detail error:', { message: err.message, stack: err.stack });
-      res.status(500).render('public/404', {
-        title: `Error | ${DEFAULT_COMPANY_NAME}`,
-        path: '/news'
-      });
+      return res.status(500).render('public/404', buildPostErrorData(context));
     }
   }
 };

@@ -29,7 +29,7 @@ function resolveProtocol(req) {
   return req.protocol === 'https' ? 'https' : 'http';
 }
 
-function resolveBaseUrl(req) {
+export function resolveBaseUrl(req) {
   const configured = parseSafeBaseUrl(process.env.APP_BASE_URL);
   if (configured) return configured;
   const fallback = process.env.NODE_ENV === 'production' ? 'https://euodoo.co.id' : 'http://localhost:3000';
