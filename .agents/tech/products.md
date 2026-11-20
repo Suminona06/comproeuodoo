@@ -1,9 +1,9 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-13 | Kode: controllers/public/productController.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-20 | Kode: controllers/public/productController.js, services/publicProductService.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
 
 # Tech Spec: Modul Produk & Katalog Manufaktur (Products Catalog)
 
 ## 1. Arsitektur & Komponen
-Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi teknis di `/products/:slug`, navigasi kategori dinamis, pencarian debounced, pengurutan multi-kriteria, pemuatan fragmen via AJAX, serta operasi CMS produk di `/admin/products`.
+Modul ini mengelola katalog produk manufaktur di `/products` (`productController` -> `services/publicProductService.js` -> Model), detail spesifikasi teknis di `/products/:slug`, navigasi kategori dinamis, pencarian debounced, pengurutan multi-kriteria, pemuatan fragmen via AJAX, serta operasi CMS produk di `/admin/products`.
 
 ---
 
@@ -11,8 +11,8 @@ Modul ini mengelola katalog produk manufaktur di `/products`, detail spesifikasi
 
 | Method | Path | Controller / Handler | Middleware | Keterangan |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/products` | `productController.index` | `seoMiddleware`, `i18nMiddleware` | Render katalog SSR atau fragmen AJAX `[COMPLETED T-192]` |
-| `GET` | `/products/:slug` | `productController.detail` | `seoMiddleware`, `i18nMiddleware` | Render detail spesifikasi produk (Rincian lengkap: `tech/products-detail.md`) |
+| `GET` | `/products` | `productController.index` (`publicProductService`) | `seoMiddleware`, `i18nMiddleware` | Render katalog SSR (judul via `t('products.catalog_title')`, fallback 500 `heroBanner: null`) atau fragmen AJAX (HTML/JSON + 5 header `X-*`) |
+| `GET` | `/products/:slug` | `productController.detail` (`publicProductService`) | `seoMiddleware`, `i18nMiddleware` | Render detail spesifikasi produk (Rincian lengkap: `tech/products-detail.md`) |
 | `GET` | `/admin/products` | `admin/productController.index` | `requireAuth`, `roleMiddleware(['superadmin', 'admin'])` | CMS daftar produk |
 | `GET` | `/admin/products/export` | `admin/productController.exportCsv` | `requireAuth`, `roleMiddleware` | Ekspor CSV katalog (kolom gabungan dinamis) [COMPLETED T-216] |
 | `GET` | `/admin/products/:id/size-table-columns` | `admin/productController.getSizeTableColumns` | `requireAuth`, `roleMiddleware` | API ambil kolom ukuran produk [COMPLETED T-216] |

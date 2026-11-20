@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-20 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
 
 # Tech Spec: Konvensi Kode & Standar Kualitas (Code Conventions & Standards)
 
@@ -52,22 +52,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 ---
 
 ## 4. Tooling Linting & Skrip Otomasi
-
-### A. Flat ESLint (`eslint.config.js`)
-- ESLint v9 Flat Config native ESM terpisah untuk Node backend dan browser frontend (`public/js/`).
-- Terpasang eksklusif pada `devDependencies` (`eslint`, `@eslint/js`, `globals`). Dijalankan via `npm run lint`.
-- **Blok Strict Backend Refaktor:** Berkas `controllers/admin/{about,homeContent,media,auth,banner,brand,inquiry,product,productCategory,lead,post,postCategory}Controller.js`, `services/{about,aboutCrud,homeContent,media,auth,banner,brand,inquiry,product,productSizeTable,productCrud,productCategory,lead,post,postCategory}Service.js`, `utils/slugHelper.js`, serta Batch 3 (`controllers/admin/{user,setting,contactCms,pageHeroBanner,capability}Controller.js`, `services/{user,setting,settingMedia,settingFooter,pageHeroBanner,capability}Service.js`) ditegakkan dengan severity `error` pada `max-lines` (300), `max-lines-per-function` (40), `max-depth` (2), `complexity` (8), dan `no-unused-vars` di `eslint.config.js`.
-
-### B. Skrip Pemeriksa Template (`scripts/lint-views.js`)
-- Memindai `views/**/*.ejs` dan CSS komponen terhadap: (1) `style="..."`, (2) warna hex mentah (kecuali `tokens.css`), (3) `<script>` inline tanpa `src`, (4) komentar HTML `<!-- ... -->`, (5) handler inline `on*=`, (6) peringatan teks literal publik.
-- Format: `file:baris:kolom - pesan`. Dijalankan via `npm run lint:views`.
-
-### C. Skrip Audit Kamus Bahasa (`scripts/lint-i18n.js`)
-- Memverifikasi simetri rekursif kunci antara `locales/id.json` dan `locales/en.json`, serta validasi `t('...')`. Dijalankan via `npm run lint:i18n`.
-
-### D. Strategi Penegakan Baseline Lint (Keputusan 1)
-- **File Legacy:** Ditandai *warning* (non-blocking).
-- **File Baru & Refaktor:** Ditandai *error* ketat (blocking) dalam `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js` (mencakup view/partial Admin serta view/partial publik hasil refaktor termasuk `views/public/index.ejs`, `views/partials/home/`, `views/public/about.ejs`, `views/partials/about/`, `views/public/contact.ejs`, `views/partials/contact/`). Wajib lolos hijau sebelum task *Close*.
+- Rincian konfigurasi ESLint v9 Flat Config, daftar **Blok Strict Backend Refaktor** (Admin & Public), `scripts/lint-views.js`, `scripts/lint-i18n.js`, serta strategi baseline `DEFAULT_STRICT_PATHS` dipisahkan ke sub-modul [tech/conventions-lint.md](conventions-lint.md).
 
 ---
 
