@@ -45,9 +45,13 @@ assert(
   'FAIL: whatsapp-btn.ejs must contain whatsapp trigger'
 );
 
-// Verify settings index still has whatsapp_number
+// Verify settings partials retain whatsapp_number & dual-location inputs
 const adminSettingsPath = path.join(rootDir, 'views/admin/settings/index.ejs');
-const adminSettingsContent = fs.readFileSync(adminSettingsPath, 'utf8');
+const adminSettingsContent = [
+  fs.readFileSync(adminSettingsPath, 'utf8'),
+  fs.readFileSync(path.join(rootDir, 'views/admin/settings/partials/whatsapp-service-card.ejs'), 'utf8'),
+  fs.readFileSync(path.join(rootDir, 'views/admin/settings/partials/dual-location-card.ejs'), 'utf8')
+].join('\n');
 assert(
   adminSettingsContent.includes('whatsapp_number'),
   'FAIL: admin settings must still retain whatsapp_number'
@@ -122,7 +126,8 @@ const fullSettings = {
 const renderedFooterFull = ejs.render(strippedFooter, {
   settings: fullSettings,
   currentLang: 'id',
-  currentYear: 2026
+  currentYear: 2026,
+  t: (k) => k
 });
 
 // Assert full render
@@ -152,7 +157,8 @@ const minimalSettings = {
 const renderedFooterMin = ejs.render(strippedFooter, {
   settings: minimalSettings,
   currentLang: 'id',
-  currentYear: 2026
+  currentYear: 2026,
+  t: (k) => k
 });
 
 assert(renderedFooterMin.includes('info@euodoo.com'), 'FAIL: office_email must fallback to company_email');
@@ -165,8 +171,12 @@ assert(
 assert(!bandungSection.includes('Faks:'), 'FAIL: no empty fax row in Bandung');
 assert(!bandungSection.includes('Email:'), 'FAIL: no empty email row in Bandung');
 
-// 2.5 Check Contact Page Rendering
-const strippedContact = contactEjsContent.replace(/<%[-=]\s*include\([^)]+\)\s*;?\s*%>/g, '');
+// 2.5 Check Contact Page Rendering (preserve partials/contact/* includes)
+const strippedContact = contactEjsContent.replace(
+  /<%[-=]\s*include\(['"]\.\.\/partials\/(header|navbar|footer)['"]\)\s*;?\s*%>/g,
+  ''
+);
+const contactRenderOpts = { filename: contactEjsPath };
 const renderedContactFull = ejs.render(strippedContact, {
   settings: fullSettings,
   currentLang: 'id',
@@ -179,7 +189,7 @@ const renderedContactFull = ejs.render(strippedContact, {
   errorMsg: null,
   heroBanner: null,
   turnstileSiteKey: 'test-key'
-});
+}, contactRenderOpts);
 
 assert(renderedContactFull.includes('+6221–53668648'), 'FAIL: office fax must render in contact');
 assert(renderedContactFull.includes('jkt@euodoo.com'), 'FAIL: office email must render in contact');
@@ -198,7 +208,7 @@ const renderedContactMin = ejs.render(strippedContact, {
   errorMsg: null,
   heroBanner: null,
   turnstileSiteKey: 'test-key'
-});
+}, contactRenderOpts);
 
 const contactBdgSection = renderedContactMin.split('Pabrik Manufaktur (Bandung)')[1] || '';
 assert(!contactBdgSection.includes('info@euodoo.com'), 'FAIL: contact Bandung factory email must have zero fallback');
@@ -214,11 +224,8 @@ const contactCtrlPath = path.join(rootDir, 'controllers/public/contactController
 const contactCtrlContent = fs.readFileSync(contactCtrlPath, 'utf8');
 
 // Check length validations
-assert(contactCtrlContent.includes('cleanName.length > 100'), 'FAIL: name max 100 validation missing');
-assert(contactCtrlContent.includes('cleanCompany.length > 150'), 'FAIL: company max 150 validation missing');
-assert(contactCtrlContent.includes('cleanEmail.length > 100'), 'FAIL: email max 100 validation missing');
-assert(contactCtrlContent.includes('cleanQuantity.length > 100'), 'FAIL: quantity max 100 validation missing');
-assert(contactCtrlContent.includes('cleanMessage.length > 3000'), 'FAIL: message max 3000 validation missing');
+assert(contactCtrlContent.includes('MAX_TEXT_LENGTH = 100'), 'FAIL: text max 100 validation missing');
+assert(contactCtrlContent.includes('MAX_MESSAGE_LENGTH = 3000'), 'FAIL: message max 3000 validation missing');
 
 // Check phone regex
 assert(
@@ -244,8 +251,14 @@ assert(
   'FAIL: Turnstile verification missing'
 );
 
-// Verify NO unescaped user inputs (<%-) in contact.ejs
-const unescapedMatches = contactEjsContent.match(/<%-\s*(name|company|email|phone|quantity|message|errorMsg)\b/g);
+// Verify NO unescaped user inputs (<%-) in contact.ejs or its partials
+const contactAllTemplates = [
+  contactEjsContent,
+  fs.readFileSync(path.join(rootDir, 'views/partials/contact/status-alerts.ejs'), 'utf8'),
+  fs.readFileSync(path.join(rootDir, 'views/partials/contact/rfq-form.ejs'), 'utf8'),
+  fs.readFileSync(path.join(rootDir, 'views/partials/contact/locations-map.ejs'), 'utf8')
+].join('\n');
+const unescapedMatches = contactAllTemplates.match(/<%-\s*(name|company|email|phone|quantity|message|errorMsg)\b/g);
 assert(!unescapedMatches, `FAIL: Found unescaped user input: ${unescapedMatches}`);
 
 console.log('✅ PASS: T-149 server-side validation & CSP/XSS compliance verified.');

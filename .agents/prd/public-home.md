@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js, controllers/admin/bannerController.js, controllers/admin/brandController.js, services/bannerService.js, services/brandService.js
 
 # PRD: Modul Beranda Publik (Public Home)
 
@@ -34,11 +34,11 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Kontrol navigasi slider (`.hero-slider-controls`) diposisikan terpusat secara horizontal di area bawah (`left: 50%; transform: translateX(-50%)`) untuk menjamin tata letak simetris tanpa tabrakan dengan tombol CTA pada berbagai viewport, termasuk laptop 14 inci (1920x1080 dengan scaling 125%/150%).
 
 ### FR-11: Pengelolaan Banner Hero (CMS)
-- Admin dapat mengelola slide banner (judul, subtitle, caption, media upload/URL, tombol utama, tombol kedua, status aktif, urutan tampilan).
-- Validasi URL tombol CTA mengizinkan tautan relatif (`/products`, `/contact`), URL absolut HTTPS, `tel:`, `mailto:`, dan `https://wa.me/...`.
+- Admin dapat mengelola slide banner (judul, subtitle, caption, media upload/URL, tombol utama, tombol kedua, status aktif, urutan tampilan) dengan penjagaan minimal 1 banner aktif serta respons error yang akurat bila ID banner tidak ditemukan saat toggle/hapus.
+- Validasi URL tombol CTA mengizinkan tautan relatif (`/products`, `/contact`, `#anchor`), URL absolut `http://` / `https://` (`https://wa.me/...`), `tel:`, dan `mailto:`; validasi URL video YouTube ditegakkan konsisten baik saat tambah maupun edit banner; serta penghapusan file fisik lokal (`/uploads/...`) hanya dijalankan bila bukan YouTube ID dan tidak sedang terdaftar di tabel `media` atau dipakai entitas lain.
 
 ### FR-18: Pengelolaan Merek Terdaftar di CMS (CRUD Brands)
-- Admin dapat menambah, menyunting, mengunggah file logo, mengaktifkan/menonaktifkan, dan menghapus data merek dagang di `/admin/brands`.
+- Admin dapat menambah, menyunting, mengunggah file logo (atau memilih dari Media Picker yang disanitasi), mengaktifkan/menonaktifkan (dengan respons 404/error akurat bila ID tidak ditemukan), dan menghapus data merek dagang di `/admin/brands`; penghapusan file fisik logo lokal hanya dilakukan bila tidak terdaftar di tabel `media` dan tidak dipakai entitas lain.
 - Admin dapat memperbarui judul seksi merek beranda dwibahasa melalui endpoint `/admin/brands/section-title` (disimpan ke `home_brand_title_id` dan `home_brand_title_en`).
 
 ---

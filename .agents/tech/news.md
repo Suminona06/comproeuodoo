@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-16 | Kode: controllers/public/postController.js, controllers/admin/postController.js, models/slugRedirectModel.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: controllers/public/postController.js, controllers/admin/postController.js, controllers/admin/postCategoryController.js, services/postService.js, services/postCategoryService.js, utils/slugHelper.js, models/slugRedirectModel.js
 
 # Tech Spec: Modul Berita & Publikasi (News & Articles)
 
@@ -13,11 +13,11 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/news` | `postController.index` | `seoMiddleware`, `i18nMiddleware` | Portal berita & headline; JSON jika fetch/ajax |
 | `GET` | `/news/:slug` | `postController.detail` | `seoMiddleware`, `i18nMiddleware` | Detail artikel G2 / cek 301 (lihat `tech/news-detail.md`) |
-| `GET` | `/admin/posts` | `admin/postController.index` | `requireAuth`, `roleMiddleware(['superadmin','admin','editor'])` | Daftar artikel admin |
-| `POST` | `/admin/posts` | `admin/postController.store` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Simpan artikel baru |
-| `POST` | `/admin/posts/:id` | `admin/postController.update` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update artikel & catat slug 301 |
-| `POST` | `/admin/posts/upload-image` | `admin/postController.uploadEditorImage` | `requireAuth`, `roleMiddleware`, `uploadMedia` | Upload gambar TinyMCE |
-| `GET/POST`| `/admin/post-categories` | `postCategoryController.*`| `requireAuth`, `roleMiddleware` | Kelola kategori berita |
+| `GET` | `/admin/posts` | `admin/postController.index` (`postService`) | `requireAuth`, `roleMiddleware(['superadmin','admin','editor'])` | Daftar artikel admin |
+| `POST` | `/admin/posts` | `admin/postController.store` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Simpan artikel baru |
+| `POST` | `/admin/posts/:id` | `admin/postController.update` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update artikel & catat slug 301 |
+| `POST` | `/admin/posts/upload-image` | `admin/postController.uploadEditorImage` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Upload gambar TinyMCE |
+| `GET/POST`| `/admin/post-categories` | `postCategoryController.*` (`postCategoryService`, `utils/slugHelper.js`) | `requireAuth`, `roleMiddleware` | Kelola kategori berita |
 
 ---
 
@@ -34,7 +34,7 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
 ---
 
 ## 4. Alur Logika Custom Slug & Auto Redirect 301
-1. Pada `admin/postController.update`: jika `slug` baru berbeda dari yang lama pada artikel `published`, simpan entri baru ke `slug_redirects` dan perbarui rantai redirect lama agar menunjuk langsung ke `new_slug`.
+1. `services/postService.js` (dipanggil dari `admin/postController`) menangani validasi format slug ketat (`formatSlug` terisolasi) & keunikan slug, sanitasi HTML TinyMCE (`sanitizeArticleHtml`), upload/hapus cover WebP & gambar TinyMCE, guard `not_found` pada `destroy`, invalidasi sitemap, serta pencatatan entri baru ke `slug_redirects` dan pembaruan rantai redirect lama agar menunjuk langsung ke `new_slug` saat `slug` berubah pada `update`.
 2. Pada `postController.detail`: jika artikel tidak ditemukan, cek `slugRedirectModel.findByOldSlug('post', slug)`. Jika ada, kirim HTTP `301 Moved Permanently` ke `/news/${redirect.new_slug}`.
 
 ---
@@ -42,6 +42,7 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
 ## 5. Keamanan, Sanitasi & Validasi
 - Konten HTML disanitasi menggunakan `sanitize-html` di server sebelum disimpan.
 - Query parameter (`type`, `category`, `search`, `page`) divalidasi whitelist di server.
+- `services/postCategoryService.js` memakai `utils/slugHelper.js` untuk normalisasi slug kategori, menerapkan guard `NaN` pada `sort_order`, memvalidasi whitelist `type` (`['berita', 'blog']`) selaras `postCategoryModel` pada `index`/`store`/`update`, serta menerapkan guard `not_found` pada `destroy`.
 
 ---
 

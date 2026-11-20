@@ -136,6 +136,12 @@ export const mediaModel = {
     };
   },
 
+  async isRegisteredByUrl(fileUrl) {
+    if (!fileUrl) return false;
+    const rows = await query('SELECT id FROM media WHERE file_url = ? LIMIT 1', [fileUrl]);
+    return rows.length > 0;
+  },
+
   async checkUsage(fileUrl) {
     if (!fileUrl) return [];
     const sql = `

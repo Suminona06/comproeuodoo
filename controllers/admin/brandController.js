@@ -1,15 +1,35 @@
-import brandModel from '../../models/brandModel.js';
-import settingModel from '../../models/settingModel.js';
-import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
-import { processAndSaveWebP } from '../../middleware/uploadMiddleware.js';
-import storage from '../../config/storage.js';
+import {
+  listBrands,
+  getBrandById,
+  updateBrandSectionTitle,
+  createBrand,
+  updateBrand,
+  deleteBrand,
+  toggleBrandStatus
+} from '../../services/brandService.js';
 import logger from '../../utils/logger.js';
+
+const wantsJson = (req) => Boolean(req.xhr || req.headers?.accept?.includes('application/json'));
+
+const brandRedirect = (res, type, message) =>
+  res.redirect(`/admin/brands?${type}=${encodeURIComponent(message)}`);
+
+function renderCreateBrandView(res, { statusCode, error = null, formData } = {}) {
+  const target = statusCode ? res.status(statusCode) : res;
+  return target.render('admin/brands/create', {
+    title: 'Tambah Merek Baru',
+    pageTitle: 'Tambah Merek',
+    activeNav: 'brands',
+    error,
+    formData
+  });
+}
 
 export const brandController = {
   async index(req, res) {
     try {
-      const brands = await brandModel.findAll();
-      res.render('admin/brands/index', {
+      const brands = await listBrands();
+      return res.render('admin/brands/index', {
         title: 'Manajemen Merek Terdaftar',
         pageTitle: 'Merek Terdaftar (Our Brands)',
         activeNav: 'brands',
@@ -21,7 +41,7 @@ export const brandController = {
       });
     } catch (err) {
       logger.error('Brand controller index error:', err);
-      res.status(500).render('admin/brands/index', {
+      return res.status(500).render('admin/brands/index', {
         title: 'Manajemen Merek',
         pageTitle: 'Merek Terdaftar',
         activeNav: 'brands',
@@ -35,73 +55,36 @@ export const brandController = {
 
   async updateSectionTitle(req, res) {
     try {
-      const { home_brand_title_id, home_brand_title_en } = req.body;
-      const titleId = home_brand_title_id ? home_brand_title_id.trim() : '';
-      const titleEn = home_brand_title_en ? home_brand_title_en.trim() : '';
-
-      if (titleId.length > 150 || titleEn.length > 150) {
-        return res.redirect('/admin/brands?error=' + encodeURIComponent('Judul section tidak boleh melebihi 150 karakter.'));
+      const result = await updateBrandSectionTitle(req.body);
+      if (result.status !== 'ok') {
+        return brandRedirect(res, 'error', result.error);
       }
-
-      await settingModel.updateMany({
-        home_brand_title_id: titleId,
-        home_brand_title_en: titleEn
-      });
-      clearSettingsCache();
-
-      res.redirect('/admin/brands?success=' + encodeURIComponent('Judul section merek beranda berhasil diperbarui.'));
+      return brandRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Brand updateSectionTitle error:', err);
-      res.redirect('/admin/brands?error=' + encodeURIComponent('Gagal memperbarui judul section merek: ' + err.message));
+      return brandRedirect(res, 'error', 'Gagal memperbarui judul section merek: ' + err.message);
     }
   },
 
   createView(req, res) {
-    res.render('admin/brands/create', {
-      title: 'Tambah Merek Baru',
-      pageTitle: 'Tambah Merek',
-      activeNav: 'brands',
-      error: null
-    });
+    return renderCreateBrandView(res);
   },
 
   async store(req, res) {
     try {
-      const { name, description_id, description_en, sort_order, is_active } = req.body;
-
-      if (!name || name.trim() === '') {
-        return res.status(400).render('admin/brands/create', {
-          title: 'Tambah Merek Baru',
-          pageTitle: 'Tambah Merek',
-          activeNav: 'brands',
-          error: 'Nama merek wajib diisi.',
+      const result = await createBrand(req.body, req.file);
+      if (result.status === 'validation_error') {
+        return renderCreateBrandView(res, {
+          statusCode: 400,
+          error: result.error,
           formData: req.body
         });
       }
-
-      let logoUrl = null;
-      if (req.file) {
-        logoUrl = await processAndSaveWebP(req.file.buffer, 'brands');
-      } else if (req.body.logo_url) {
-        logoUrl = req.body.logo_url.trim();
-      }
-
-      await brandModel.create({
-        name: name.trim(),
-        logo_url: logoUrl,
-        description_id: description_id ? description_id.trim() : null,
-        description_en: description_en ? description_en.trim() : null,
-        sort_order: parseInt(sort_order || '0', 10),
-        is_active: is_active === 'on' || is_active === '1' || is_active === true
-      });
-
-      res.redirect('/admin/brands?success=' + encodeURIComponent('Merek baru berhasil ditambahkan.'));
+      return brandRedirect(res, 'success', 'Merek baru berhasil ditambahkan.');
     } catch (err) {
       logger.error('Brand controller store error:', err);
-      res.status(500).render('admin/brands/create', {
-        title: 'Tambah Merek Baru',
-        pageTitle: 'Tambah Merek',
-        activeNav: 'brands',
+      return renderCreateBrandView(res, {
+        statusCode: 500,
         error: 'Gagal menyimpan merek: ' + err.message,
         formData: req.body
       });
@@ -110,12 +93,11 @@ export const brandController = {
 
   async editView(req, res) {
     try {
-      const brand = await brandModel.findById(req.params.id);
+      const brand = await getBrandById(req.params.id);
       if (!brand) {
-        return res.redirect('/admin/brands?error=' + encodeURIComponent('Merek tidak ditemukan.'));
+        return brandRedirect(res, 'error', 'Merek tidak ditemukan.');
       }
-
-      res.render('admin/brands/edit', {
+      return res.render('admin/brands/edit', {
         title: 'Edit Merek - ' + brand.name,
         pageTitle: 'Edit Merek',
         activeNav: 'brands',
@@ -124,74 +106,53 @@ export const brandController = {
       });
     } catch (err) {
       logger.error('Brand controller editView error:', err);
-      res.redirect('/admin/brands?error=' + encodeURIComponent('Gagal membuka form edit merek.'));
+      return brandRedirect(res, 'error', 'Gagal membuka form edit merek.');
     }
   },
 
   async update(req, res) {
     try {
-      const { id } = req.params;
-      const { name, description_id, description_en, sort_order, is_active } = req.body;
-
-      const brand = await brandModel.findById(id);
-      if (!brand) {
-        return res.redirect('/admin/brands?error=' + encodeURIComponent('Merek tidak ditemukan.'));
+      const result = await updateBrand(req.params.id, req.body, req.file);
+      if (result.status !== 'ok') {
+        return brandRedirect(res, 'error', result.error);
       }
-
-      const updateData = {
-        name: name ? name.trim() : brand.name,
-        description_id: description_id !== undefined ? description_id.trim() : brand.description_id,
-        description_en: description_en !== undefined ? description_en.trim() : brand.description_en,
-        sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : brand.sort_order,
-        is_active: is_active === 'on' || is_active === '1' || is_active === true
-      };
-
-      if (req.file) {
-        if (brand.logo_url) {
-          await storage.delete(brand.logo_url);
-        }
-        updateData.logo_url = await processAndSaveWebP(req.file.buffer, 'brands');
-      } else if (req.body.logo_url !== undefined) {
-        updateData.logo_url = req.body.logo_url ? req.body.logo_url.trim() : null;
-      }
-
-      await brandModel.update(id, updateData);
-      res.redirect('/admin/brands?success=' + encodeURIComponent('Data merek berhasil diperbarui.'));
+      return brandRedirect(res, 'success', 'Data merek berhasil diperbarui.');
     } catch (err) {
       logger.error('Brand controller update error:', err);
-      res.redirect('/admin/brands?error=' + encodeURIComponent('Gagal memperbarui merek.'));
+      return brandRedirect(res, 'error', 'Gagal memperbarui merek.');
     }
   },
 
   async destroy(req, res) {
     try {
-      const { id } = req.params;
-      const brand = await brandModel.findById(id);
-      if (brand && brand.logo_url) {
-        await storage.delete(brand.logo_url);
+      const result = await deleteBrand(req.params.id);
+      if (result.status !== 'ok') {
+        return brandRedirect(res, 'error', result.error);
       }
-      await brandModel.delete(id);
-      res.redirect('/admin/brands?success=' + encodeURIComponent('Merek berhasil dihapus.'));
+      return brandRedirect(res, 'success', 'Merek berhasil dihapus.');
     } catch (err) {
       logger.error('Brand controller destroy error:', err);
-      res.redirect('/admin/brands?error=' + encodeURIComponent('Gagal menghapus merek.'));
+      return brandRedirect(res, 'error', 'Gagal menghapus merek.');
     }
   },
 
   async toggleStatus(req, res) {
+    const isJson = wantsJson(req);
     try {
-      const { id } = req.params;
-      const result = await brandModel.toggleActive(id);
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.json({ success: true, is_active: result });
+      const result = await toggleBrandStatus(req.params.id);
+      if (result.status === 'not_found') {
+        return isJson
+          ? res.status(404).json({ success: false, message: result.error })
+          : brandRedirect(res, 'error', result.error);
       }
-      res.redirect('/admin/brands?success=' + encodeURIComponent('Status merek berhasil diperbarui.'));
+      return isJson
+        ? res.json({ success: true, is_active: result.isActive })
+        : brandRedirect(res, 'success', 'Status merek berhasil diperbarui.');
     } catch (err) {
       logger.error('Brand controller toggleStatus error:', err);
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(500).json({ success: false, message: err.message });
-      }
-      res.redirect('/admin/brands?error=' + encodeURIComponent('Gagal mengubah status merek.'));
+      return isJson
+        ? res.status(500).json({ success: false, message: err.message })
+        : brandRedirect(res, 'error', 'Gagal mengubah status merek.');
     }
   }
 };

@@ -1,5 +1,10 @@
 import { query, execute } from '../config/database.js';
 
+function parseSortOrder(val, fallback = 0) {
+  const parsed = parseInt(val, 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+}
+
 export const bannerModel = {
   async findAll(onlyActive = false) {
     const sql = onlyActive
@@ -48,7 +53,7 @@ export const bannerModel = {
       data.cta_secondary_text_id || null,
       data.cta_secondary_text_en || null,
       data.cta_secondary_url || null,
-      parseInt(data.sort_order || '0', 10),
+      parseSortOrder(data.sort_order, 0),
       data.is_active !== undefined ? (data.is_active ? 1 : 0) : 1
     ];
 
@@ -76,7 +81,7 @@ export const bannerModel = {
       cta_secondary_text_id: data.cta_secondary_text_id,
       cta_secondary_text_en: data.cta_secondary_text_en,
       cta_secondary_url: data.cta_secondary_url,
-      sort_order: data.sort_order !== undefined ? parseInt(data.sort_order, 10) : undefined,
+      sort_order: data.sort_order !== undefined ? parseSortOrder(data.sort_order, 0) : undefined,
       is_active: data.is_active !== undefined ? (data.is_active ? 1 : 0) : undefined
     };
 

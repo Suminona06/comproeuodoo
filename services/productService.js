@@ -68,14 +68,22 @@ function normalizeGalleryObject(item) {
   return typeof item.file_url === 'string' ? item.file_url.trim() : null;
 }
 
+function normalizeStringGalleryEntry(item) {
+  const str = item.trim();
+  if (/^\d+$/.test(str)) return parseInt(str, 10);
+  return /^(https?:\/\/|\/)/i.test(str) ? str : null;
+}
+
 function normalizeGalleryEntry(item) {
   if (typeof item === 'number' && Number.isInteger(item)) return item;
-  if (typeof item === 'string') {
-    const str = item.trim();
-    if (/^\d+$/.test(str)) return parseInt(str, 10);
-    return /^(https?:\/\/|\/)/i.test(str) ? str : null;
-  }
+  if (typeof item === 'string') return normalizeStringGalleryEntry(item);
   return item && typeof item === 'object' ? normalizeGalleryObject(item) : null;
+}
+
+export function parseSortOrder(val, fallback = 0) {
+  if (val == null) return fallback;
+  const parsed = parseInt(String(val).trim(), 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
 }
 
 export function parseGalleryImages(body) {
@@ -237,7 +245,7 @@ export function buildProductCreateData(body, { cleanCtaId, cleanCtaEn, imageUrl,
     main_image: imageUrl,
     gallery_images: parseGalleryImages(body),
     status: body.status || 'published',
-    sort_order: parseInt(body.sort_order || '0', 10),
+    sort_order: parseSortOrder(body.sort_order, 0),
     ...buildProductSeoFields(body)
   };
 }
@@ -275,7 +283,7 @@ export function buildProductUpdateData(body, product, { cleanCtaId, cleanCtaEn }
     cta_text_id: resolveOptionalCta(body.cta_text_id, cleanCtaId, product.cta_text_id),
     cta_text_en: resolveOptionalCta(body.cta_text_en, cleanCtaEn, product.cta_text_en),
     status: body.status || product.status,
-    sort_order: body.sort_order !== undefined ? parseInt(body.sort_order, 10) : product.sort_order,
+    sort_order: body.sort_order !== undefined ? parseSortOrder(body.sort_order, product.sort_order) : product.sort_order,
     ...buildProductSeoFields(body)
   };
   applyOptionalStructuredUpdates(updateData, body);

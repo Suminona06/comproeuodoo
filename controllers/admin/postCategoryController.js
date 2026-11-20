@@ -1,82 +1,72 @@
-import postCategoryModel from '../../models/postCategoryModel.js';
+import {
+  listPostCategories,
+  createPostCategory,
+  getPostCategoryById,
+  updatePostCategory,
+  deletePostCategory
+} from '../../services/postCategoryService.js';
 import logger from '../../utils/logger.js';
 
-function slugify(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-');
+const postCategoryRedirect = (res, type, message) =>
+  res.redirect(`/admin/post-categories?${type}=${encodeURIComponent(message)}`);
+
+function renderCreateView(req, res, statusCode, { pageTitle, error = null, formData } = {}) {
+  return res.status(statusCode).render('admin/post-categories/create', {
+    title: 'Tambah Kategori Berita',
+    pageTitle: pageTitle || 'Tambah Kategori Berita',
+    activeNav: 'post-categories',
+    error,
+    ...(formData !== undefined ? { formData } : {}),
+    csrfToken: res.locals.csrfToken || ''
+  });
 }
 
 export const postCategoryController = {
   async index(req, res) {
     try {
-      const type = req.query.type || null;
-      const categories = await postCategoryModel.findAll({ type });
-      res.render('admin/post-categories/index', {
+      const data = await listPostCategories(req.query);
+      return res.render('admin/post-categories/index', {
         title: 'Kategori Berita & Artikel',
         pageTitle: 'Kategori Publikasi',
         activeNav: 'post-categories',
-        categories,
-        currentType: type,
+        ...data,
         error: req.query.error || null,
-        success: req.query.success || null
+        success: req.query.success || null,
+        csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
       logger.error('Post category index error:', err);
-      res.status(500).render('admin/post-categories/index', {
+      return res.status(500).render('admin/post-categories/index', {
         title: 'Kategori Berita',
         pageTitle: 'Kategori Publikasi',
         activeNav: 'post-categories',
         categories: [],
         currentType: null,
-        error: 'Gagal memuat kategori artikel.'
+        error: 'Gagal memuat kategori artikel.',
+        csrfToken: res.locals.csrfToken || ''
       });
     }
   },
 
   createView(req, res) {
-    res.render('admin/post-categories/create', {
-      title: 'Tambah Kategori Berita',
-      pageTitle: 'Tambah Kategori Berita',
-      activeNav: 'post-categories',
-      error: null
-    });
+    renderCreateView(req, res, 200);
   },
 
   async store(req, res) {
     try {
-      const { name_id, name_en, type, sort_order } = req.body;
-
-      if (!name_id || name_id.trim() === '') {
-        return res.status(400).render('admin/post-categories/create', {
-          title: 'Tambah Kategori Berita',
+      const result = await createPostCategory(req.body);
+      if (result.status === 'validation_error') {
+        return renderCreateView(req, res, 400, {
           pageTitle: 'Tambah Kategori',
-          activeNav: 'post-categories',
-          error: 'Nama kategori wajib diisi.',
+          error: result.error,
           formData: req.body
         });
       }
-
-      const slug = slugify(name_id);
-      await postCategoryModel.create({
-        name_id: name_id.trim(),
-        name_en: name_en ? name_en.trim() : name_id.trim(),
-        slug,
-        type: type || 'berita',
-        sort_order: parseInt(sort_order || '0', 10)
-      });
-
-      res.redirect('/admin/post-categories?success=' + encodeURIComponent('Kategori berita berhasil ditambahkan.'));
+      return postCategoryRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Post category store error:', err);
-      res.status(500).render('admin/post-categories/create', {
-        title: 'Tambah Kategori Berita',
+      return renderCreateView(req, res, 500, {
         pageTitle: 'Tambah Kategori',
-        activeNav: 'post-categories',
         error: 'Gagal menyimpan kategori: ' + err.message,
         formData: req.body
       });
@@ -85,57 +75,42 @@ export const postCategoryController = {
 
   async editView(req, res) {
     try {
-      const category = await postCategoryModel.findById(req.params.id);
-      if (!category) {
-        return res.redirect('/admin/post-categories?error=' + encodeURIComponent('Kategori tidak ditemukan.'));
-      }
+      const result = await getPostCategoryById(req.params.id);
+      if (result.status === 'not_found') return postCategoryRedirect(res, 'error', result.error);
 
-      res.render('admin/post-categories/edit', {
-        title: 'Edit Kategori - ' + category.name_id,
+      return res.render('admin/post-categories/edit', {
+        title: 'Edit Kategori - ' + result.category.name_id,
         pageTitle: 'Edit Kategori Berita',
         activeNav: 'post-categories',
-        category,
-        error: null
+        category: result.category,
+        error: null,
+        csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
       logger.error('Post category editView error:', err);
-      res.redirect('/admin/post-categories?error=' + encodeURIComponent('Gagal membuka halaman edit.'));
+      return postCategoryRedirect(res, 'error', 'Gagal membuka halaman edit.');
     }
   },
 
   async update(req, res) {
     try {
-      const { id } = req.params;
-      const { name_id, name_en, type, sort_order } = req.body;
-
-      const category = await postCategoryModel.findById(id);
-      if (!category) {
-        return res.redirect('/admin/post-categories?error=' + encodeURIComponent('Kategori tidak ditemukan.'));
-      }
-
-      await postCategoryModel.update(id, {
-        name_id: name_id ? name_id.trim() : category.name_id,
-        name_en: name_en ? name_en.trim() : category.name_en,
-        slug: name_id ? slugify(name_id) : category.slug,
-        type: type || category.type,
-        sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : category.sort_order
-      });
-
-      res.redirect('/admin/post-categories?success=' + encodeURIComponent('Kategori berita berhasil diperbarui.'));
+      const result = await updatePostCategory(req.params.id, req.body);
+      if (result.status !== 'ok') return postCategoryRedirect(res, 'error', result.error);
+      return postCategoryRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Post category update error:', err);
-      res.redirect('/admin/post-categories?error=' + encodeURIComponent('Gagal memperbarui kategori.'));
+      return postCategoryRedirect(res, 'error', 'Gagal memperbarui kategori.');
     }
   },
 
   async destroy(req, res) {
     try {
-      const { id } = req.params;
-      await postCategoryModel.delete(id);
-      res.redirect('/admin/post-categories?success=' + encodeURIComponent('Kategori berita berhasil dihapus.'));
+      const result = await deletePostCategory(req.params.id);
+      if (result.status === 'not_found') return postCategoryRedirect(res, 'error', result.error);
+      return postCategoryRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Post category destroy error:', err);
-      res.redirect('/admin/post-categories?error=' + encodeURIComponent('Gagal menghapus kategori.'));
+      return postCategoryRedirect(res, 'error', 'Gagal menghapus kategori.');
     }
   }
 };

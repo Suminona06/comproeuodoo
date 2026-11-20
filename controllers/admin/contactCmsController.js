@@ -1,11 +1,21 @@
-import settingModel from '../../models/settingModel.js';
-import { clearSettingsCache } from '../../middleware/settingsMiddleware.js';
+import {
+  getSettingsMap,
+  updateContactSettings,
+  SettingValidationError
+} from '../../services/settingService.js';
 import logger from '../../utils/logger.js';
+
+function formatContactErrorMessage(err) {
+  if (err instanceof SettingValidationError || err?.isValidationError) {
+    return 'Gagal memperbarui pengaturan: ' + err.message;
+  }
+  return 'Gagal memperbarui pengaturan halaman kontak.';
+}
 
 export const contactCmsController = {
   async index(req, res) {
     try {
-      const settings = await settingModel.getAllAsMap();
+      const settings = await getSettingsMap();
       res.render('admin/contact/index', {
         title: 'Manajemen Konten Halaman Kontak',
         pageTitle: 'CMS Halaman Kontak & Inquiry',
@@ -23,42 +33,12 @@ export const contactCmsController = {
 
   async update(req, res) {
     try {
-      const allowedKeys = [
-        'contact_address_id',
-        'contact_address_en',
-        'contact_email',
-        'contact_phone',
-        'contact_working_hours_id',
-        'contact_working_hours_en',
-        'contact_maps_embed_url',
-        'contact_form_title_id',
-        'contact_form_title_en',
-        'contact_form_subtitle_id',
-        'contact_form_subtitle_en'
-      ];
-
-      const updates = {};
-      for (const key of allowedKeys) {
-        if (req.body[key] !== undefined) {
-          updates[key] = req.body[key].trim();
-        }
-      }
-
-      if (updates.contact_working_hours_id) {
-        updates.factory_working_hours_id = updates.contact_working_hours_id;
-      }
-      if (updates.contact_working_hours_en) {
-        updates.factory_working_hours_en = updates.contact_working_hours_en;
-      }
-
-      await settingModel.updateMany(updates);
-      clearSettingsCache();
-
+      await updateContactSettings(req.body);
       logger.info('Contact page settings updated by ' + (req.user?.email || 'admin'));
       res.redirect('/admin/contact?success=' + encodeURIComponent('Pengaturan halaman kontak berhasil diperbarui.'));
     } catch (err) {
       logger.error('Contact CMS update error:', err);
-      res.redirect('/admin/contact?error=' + encodeURIComponent('Gagal memperbarui pengaturan: ' + err.message));
+      res.redirect('/admin/contact?error=' + encodeURIComponent(formatContactErrorMessage(err)));
     }
   }
 };

@@ -1,20 +1,31 @@
-import productCategoryModel from '../../models/productCategoryModel.js';
+import {
+  listProductCategories,
+  createProductCategory,
+  getProductCategoryById,
+  updateProductCategory,
+  toggleProductCategoryStatus,
+  deleteProductCategory
+} from '../../services/productCategoryService.js';
 import logger from '../../utils/logger.js';
 
-function slugify(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-');
+const categoryRedirect = (res, type, message) =>
+  res.redirect(`/admin/product-categories?${type}=${encodeURIComponent(message)}`);
+
+function renderCreateView(req, res, statusCode, { pageTitle, error = null, formData } = {}) {
+  return res.status(statusCode).render('admin/product-categories/create', {
+    title: 'Tambah Kategori Produk',
+    pageTitle: pageTitle || 'Tambah Kategori Produk',
+    activeNav: 'product-categories',
+    error,
+    ...(formData !== undefined ? { formData } : {}),
+    csrfToken: res.locals.csrfToken || ''
+  });
 }
 
 export const productCategoryController = {
   async index(req, res) {
     try {
-      const categories = await productCategoryModel.findAll();
+      const categories = await listProductCategories();
       res.render('admin/product-categories/index', {
         title: 'Kategori Produk',
         pageTitle: 'Kategori Produk',
@@ -38,129 +49,79 @@ export const productCategoryController = {
   },
 
   createView(req, res) {
-    res.render('admin/product-categories/create', {
-      title: 'Tambah Kategori Produk',
-      pageTitle: 'Tambah Kategori Produk',
-      activeNav: 'product-categories',
-      error: null,
-      csrfToken: res.locals.csrfToken || ''
-    });
+    renderCreateView(req, res, 200);
   },
 
   async store(req, res) {
     try {
-      const { name_id, name_en, description_id, description_en, sort_order, is_active } = req.body;
-
-      if (!name_id || name_id.trim() === '') {
-        return res.status(400).render('admin/product-categories/create', {
-          title: 'Tambah Kategori Produk',
+      const result = await createProductCategory(req.body);
+      if (result.status === 'validation_error') {
+        return renderCreateView(req, res, 400, {
           pageTitle: 'Tambah Kategori',
-          activeNav: 'product-categories',
-          error: 'Nama kategori wajib diisi.',
-          formData: req.body,
-          csrfToken: res.locals.csrfToken || ''
+          error: result.error,
+          formData: req.body
         });
       }
-
-      const isActive = (is_active === '1' || is_active === 'on' || is_active === 1 || is_active === true) ? 1 : 0;
-      const slug = slugify(name_id);
-      await productCategoryModel.create({
-        name_id: name_id.trim(),
-        name_en: name_en ? name_en.trim() : name_id.trim(),
-        slug,
-        description_id: description_id ? description_id.trim() : null,
-        description_en: description_en ? description_en.trim() : null,
-        sort_order: parseInt(sort_order || '0', 10),
-        is_active: isActive
-      });
-
-      res.redirect('/admin/product-categories?success=' + encodeURIComponent('Kategori berhasil ditambahkan.'));
+      return categoryRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Product category store error:', err);
-      res.status(500).render('admin/product-categories/create', {
-        title: 'Tambah Kategori Produk',
+      return renderCreateView(req, res, 500, {
         pageTitle: 'Tambah Kategori',
-        activeNav: 'product-categories',
         error: 'Gagal menyimpan kategori: ' + err.message,
-        formData: req.body,
-        csrfToken: res.locals.csrfToken || ''
+        formData: req.body
       });
     }
   },
 
   async editView(req, res) {
     try {
-      const category = await productCategoryModel.findById(req.params.id);
-      if (!category) {
-        return res.redirect('/admin/product-categories?error=' + encodeURIComponent('Kategori tidak ditemukan.'));
-      }
+      const result = await getProductCategoryById(req.params.id);
+      if (result.status === 'not_found') return categoryRedirect(res, 'error', result.error);
 
-      res.render('admin/product-categories/edit', {
-        title: 'Edit Kategori - ' + category.name_id,
+      return res.render('admin/product-categories/edit', {
+        title: 'Edit Kategori - ' + result.category.name_id,
         pageTitle: 'Edit Kategori Produk',
         activeNav: 'product-categories',
-        category,
+        category: result.category,
         error: null,
         csrfToken: res.locals.csrfToken || ''
       });
     } catch (err) {
       logger.error('Product category editView error:', err);
-      res.redirect('/admin/product-categories?error=' + encodeURIComponent('Gagal membuka halaman edit kategori.'));
+      return categoryRedirect(res, 'error', 'Gagal membuka halaman edit kategori.');
     }
   },
 
   async update(req, res) {
     try {
-      const { id } = req.params;
-      const { name_id, name_en, description_id, description_en, sort_order, is_active } = req.body;
-
-      const category = await productCategoryModel.findById(id);
-      if (!category) {
-        return res.redirect('/admin/product-categories?error=' + encodeURIComponent('Kategori tidak ditemukan.'));
-      }
-
-      const isActive = (is_active === '1' || is_active === 'on' || is_active === 1 || is_active === true) ? 1 : 0;
-
-      await productCategoryModel.update(id, {
-        name_id: name_id ? name_id.trim() : category.name_id,
-        name_en: name_en ? name_en.trim() : category.name_en,
-        slug: name_id ? slugify(name_id) : category.slug,
-        description_id: description_id !== undefined ? description_id.trim() : category.description_id,
-        description_en: description_en !== undefined ? description_en.trim() : category.description_en,
-        sort_order: sort_order !== undefined ? parseInt(sort_order, 10) : category.sort_order,
-        is_active: isActive
-      });
-
-      res.redirect('/admin/product-categories?success=' + encodeURIComponent('Kategori berhasil diperbarui.'));
+      const result = await updateProductCategory(req.params.id, req.body);
+      if (result.status === 'not_found') return categoryRedirect(res, 'error', result.error);
+      return categoryRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Product category update error:', err);
-      res.redirect('/admin/product-categories?error=' + encodeURIComponent('Gagal memperbarui kategori.'));
+      return categoryRedirect(res, 'error', 'Gagal memperbarui kategori.');
     }
   },
 
   async toggleStatus(req, res) {
     try {
-      const { id } = req.params;
-      const result = await productCategoryModel.toggleActive(id);
-      if (!result) {
-        return res.redirect('/admin/product-categories?error=' + encodeURIComponent('Kategori tidak ditemukan.'));
-      }
-      const statusText = result.is_active ? 'diaktifkan' : 'dinonaktifkan';
-      res.redirect('/admin/product-categories?success=' + encodeURIComponent(`Kategori "${result.name_id}" berhasil ${statusText}.`));
+      const result = await toggleProductCategoryStatus(req.params.id);
+      if (result.status === 'not_found') return categoryRedirect(res, 'error', result.error);
+      return categoryRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Product category toggleStatus error:', err);
-      res.redirect('/admin/product-categories?error=' + encodeURIComponent('Gagal mengubah status kategori.'));
+      return categoryRedirect(res, 'error', 'Gagal mengubah status kategori.');
     }
   },
 
   async destroy(req, res) {
     try {
-      const { id } = req.params;
-      await productCategoryModel.delete(id);
-      res.redirect('/admin/product-categories?success=' + encodeURIComponent('Kategori berhasil dihapus.'));
+      const result = await deleteProductCategory(req.params.id);
+      if (result.status === 'not_found') return categoryRedirect(res, 'error', result.error);
+      return categoryRedirect(res, 'success', result.message);
     } catch (err) {
       logger.error('Product category destroy error:', err);
-      res.redirect('/admin/product-categories?error=' + encodeURIComponent('Gagal menghapus kategori.'));
+      return categoryRedirect(res, 'error', 'Gagal menghapus kategori.');
     }
   }
 };

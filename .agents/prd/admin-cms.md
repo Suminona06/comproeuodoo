@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: routes/adminRoutes.js, controllers/admin/, views/admin/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: routes/adminRoutes.js, controllers/admin/, services/, views/admin/
 
 # PRD: Modul Admin & CMS (Admin CMS & Users)
 
@@ -15,7 +15,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 - Akses melalui antarmuka khusus di `/admin/login`.
 - Input kredensial: Email dan Password.
 - Mekanisme session berbasis JWT yang disimpan di Cookie HttpOnly aman.
-- Proteksi brute-force login: pembatasan percobaan gagal maksimal 5 kali dalam 15 menit. Jika terlampaui, akun terkunci sementara (`locked_until`).
+- Proteksi brute-force login: pembatasan percobaan gagal maksimal 5 kali dalam 15 menit. Jika terlampaui, akun terkunci sementara (`locked_until`). Setelah masa kunci `locked_until` kedaluwarsa, counter kesalahan sebelumnya direset otomatis sehingga percobaan login berikutnya memperoleh kuota 5 percobaan baru.
 
 ### FR-02: Logout Admin
 
@@ -25,7 +25,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 ### FR-03: Ganti Password Pengguna
 
 - Pengguna yang telah diautentikasi dapat memperbarui kata sandi mandiri di `/admin/change-password`.
-- Validasi kata sandi saat ini dan penegakan kekuatan kata sandi baru (minimal 8 karakter).
+- Validasi kata sandi saat ini dan penegakan kekuatan kata sandi baru minimal 8 karakter yang konsisten dengan nilai yang di-hash (menolak input kosong/hanya spasi atau `< 8` karakter tanpa memotong spasi valid secara diam-diam) serta menolak kata sandi baru yang sama persis dengan kata sandi lama.
 
 ### FR-04: Role-Based Access Control (RBAC)
 
@@ -49,7 +49,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 ### FR-16: Pengelolaan Inquiries / Permintaan Penawaran RFQ
 
 - Tinjauan seluruh formulir masuk di `/admin/inquiries` (dengan alias `/admin/leads`).
-- Filter status data: Semua (`all`), Baru (`baru`), Diproses (`diproses`), Selesai (`selesai`), Ditolak (`ditolak`), serta pencarian kata kunci.
+- Filter status data: Semua (`all`), Baru (`baru`), Dibaca (`dibaca`), Ditindaklanjuti (`ditindaklanjuti`), Ditolak (`ditolak`), serta pencarian kata kunci; whitelist status `['baru', 'dibaca', 'ditindaklanjuti', 'ditolak']` ditegakkan seragam pada filter, pembuatan record, pembaruan status, dan ekspor CSV.
 - Modal rincian pratinjau cepat (`#inquiryQuickModal`) dan halaman detail (`/admin/inquiries/:id`) untuk memeriksa spesifikasi kebutuhan produk mitra.
 - Kolom catatan internal admin (`admin_notes`) untuk mencatat tindak lanjut tim sales.
 - Fitur Ekspor Data ke berkas `.csv` melalui `/admin/inquiries/export`.
