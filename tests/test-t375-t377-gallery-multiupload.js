@@ -213,6 +213,12 @@ describe('T-375..T-377: Product Gallery, Check-Usage & Multi-Upload', () => {
       assert.ok(calls[1].params.includes('"/uploads/media/test.webp"'));
       assert.ok(calls[1].params.includes('96'));
 
+      calls.length = 0;
+      await mediaModel.checkUsage(null, 96);
+      assert.equal(calls.length, 1);
+      assert.equal(calls[0].params[0], null);
+      assert.ok(!calls[0].params.includes(''));
+
       let passedArgs = null;
       const origCheck = mediaModel.checkUsage;
       const origFindById = mediaModel.findById;

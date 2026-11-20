@@ -161,8 +161,9 @@ export const mediaModel = {
   async checkUsage(fileUrl, mediaId = null) {
     if (!fileUrl && !mediaId) return [];
     const resolvedId = mediaId || (fileUrl ? await this.findIdByUrl(fileUrl) : null);
-    const urlTarget = fileUrl || '';
-    const jsonUrlParam = JSON.stringify(urlTarget);
+    const trimmedUrl = typeof fileUrl === 'string' ? fileUrl.trim() : '';
+    const urlTarget = trimmedUrl || null;
+    const jsonUrlParam = trimmedUrl ? JSON.stringify(trimmedUrl) : null;
     const parsedId = parseInt(resolvedId, 10);
     const hasId = Number.isInteger(parsedId) && parsedId > 0;
     const idJsonParam = hasId ? String(parsedId) : 'null';

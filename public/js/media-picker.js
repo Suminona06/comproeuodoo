@@ -464,7 +464,6 @@
     currentPage = 1;
     currentSearchQuery = '';
     if (searchInput) searchInput.value = '';
-    tabs.forEach((t) => t.classList.toggle('active', t.getAttribute('data-type') === 'all'));
 
     loadMedia().then(() => {
       if (!isMultiple) {
