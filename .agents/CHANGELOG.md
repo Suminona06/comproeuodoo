@@ -55,3 +55,4 @@
 
 - 2026-11-19 | Refaktor arsitektur berlapis (Service layer) & penegakan ESLint strict untuk 5 Admin Controller Batch 2 (Product, ProductCategory, Lead, Post, PostCategory) | T-356..T-362
 - 2026-11-19 | Refaktor arsitektur berlapis Admin Controllers & Services Batch 3 (User, Setting, ContactCMS, PageHeroBanner, Capability) + Strict ESLint & unit test | T-363..T-368
+- 2026-11-20 | Refaktor arsitektur berlapis 4 public controller (Post, Page, Product, Contact) + penegakan ESLint strict & unit test service publik | T-369..T-374

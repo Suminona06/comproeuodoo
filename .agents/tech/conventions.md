@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-20 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
 
 # Tech Spec: Konvensi Kode & Standar Kualitas (Code Conventions & Standards)
 
@@ -52,7 +52,7 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 ---
 
 ## 4. Tooling Linting & Skrip Otomasi
-- Rincian konfigurasi ESLint v9 Flat Config, daftar **Blok Strict Backend Refaktor** (Admin & Public `[PENDING T-373]`), `scripts/lint-views.js`, `scripts/lint-i18n.js`, serta strategi baseline `DEFAULT_STRICT_PATHS` dipisahkan ke sub-modul [tech/conventions-lint.md](conventions-lint.md).
+- Rincian konfigurasi ESLint v9 Flat Config, daftar **Blok Strict Backend Refaktor** (Admin & Public), `scripts/lint-views.js`, `scripts/lint-i18n.js`, serta strategi baseline `DEFAULT_STRICT_PATHS` dipisahkan ke sub-modul [tech/conventions-lint.md](conventions-lint.md).
 
 ---
 

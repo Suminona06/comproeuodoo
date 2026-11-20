@@ -1594,3 +1594,39 @@
   - `tests/test-admin-batch3-services.js` (15/15) lulus via `node --test` dan terdaftar di `package.json`; perbaikan asersi partial/i18n pada `test-kelompok-b-specs.js` & `test-t142-t143-specs.js` lulus; `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, dan `npm test` lulus 100%.
 - **File Terdampak:** `tests/test-admin-batch3-services.js`, `tests/test-kelompok-b-specs.js`, `tests/test-t142-t143-specs.js`, `package.json`
 - **Verifikasi:** `node --test tests/test-admin-batch3-services.js`, `npm test`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`
+
+### [x] `T-369` — Refaktor `controllers/public/postController.js` & Ekstraksi `services/publicPostService.js` + Bug A1/A2 (News)
+- **Acceptance Criteria:**
+  - `postController.js` ramping (55 baris, 0 impor model), delegasi listing/headline/hero/related/301 redirect ke `publicPostService.js`, fallback 500 simetris (`headlinePosts: []`, `heroBanner: null`), serta kunci i18n `news.not_found_title` & `common.error_title`.
+- **File Terdampak:** `controllers/public/postController.js`, `services/publicPostService.js`, `locales/{id,en}.json`
+- **Verifikasi:** `npx eslint`, `npm run lint:i18n`, `tests/test-public-services.js`
+
+### [x] `T-370` — Refaktor `controllers/public/pageController.js` & Ekstraksi `services/publicPageService.js`
+- **Acceptance Criteria:**
+  - `pageController.js` ramping (40 baris, 0 impor model), `/about` didelegasikan ke `publicPageService.js`, `/capabilities` me-reuse `capabilityService.listActiveCapabilities`.
+- **File Terdampak:** `controllers/public/pageController.js`, `services/publicPageService.js`, `services/capabilityService.js`
+- **Verifikasi:** `npx eslint`, `tests/test-admin-batch3-services.js`, `tests/test-public-services.js`
+
+### [x] `T-371` — Refaktor `controllers/public/productController.js` & Ekstraksi `services/publicProductService.js` + `mediaModel.findUrlsByIds` + Bug A1/A2/A3
+- **Acceptance Criteria:**
+  - `productController.js` ramping (89 baris, 0 raw SQL/model), galeri via `mediaModel.findUrlsByIds(ids)`, `canonicalUrl` via `seoMiddleware.resolveBaseUrl(req)`, fallback 500 `heroBanner: null`, konstanta `DEFAULT_WHATSAPP_NUMBER`, serta kunci i18n `products.catalog_title` & `product_detail.*`.
+- **File Terdampak:** `controllers/public/productController.js`, `services/publicProductService.js`, `models/mediaModel.js`, `middleware/seoMiddleware.js`, `locales/{id,en}.json`
+- **Verifikasi:** `npx eslint`, `npm run lint:i18n`, `tests/test-public-services.js`
+
+### [x] `T-372` — Refaktor `controllers/public/contactController.js` & Ekstraksi `services/publicContactService.js`
+- **Acceptance Criteria:**
+  - `contactController.js` ramping (100 baris, 0 impor model/`mailer`), orkestrasi honeypot, validasi, `resolveProductSelection`, Turnstile, `persistAndNotifyInquiry` (background non-blocking) di `publicContactService.js`, serta konstanta `DEFAULT_TURNSTILE_SITE_KEY`.
+- **File Terdampak:** `controllers/public/contactController.js`, `services/publicContactService.js`
+- **Verifikasi:** `npx eslint`, `tests/test-public-services.js`
+
+### [x] `T-373` — Penegakan Blok Strict ESLint & Unit Test Service Publik (`tests/test-public-services.js`)
+- **Acceptance Criteria:**
+  - Keempat controller & service publik masuk blok strict `eslint.config.js` (0 error); `tests/test-public-services.js` lulus via `node --test` dan terdaftar di `package.json`.
+- **File Terdampak:** `eslint.config.js`, `tests/test-public-services.js`, `package.json`
+- **Verifikasi:** `npm run lint`, `node --test tests/test-public-services.js`
+
+### [x] `T-374` — Verifikasi Regresi Kontrak Respons, CI Gates, & Bukti Visual Playwright
+- **Acceptance Criteria:**
+  - `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test` hijau; regresi kontrak (`/news`, `/products` fragment + header `X-*`, 301, 404, `noindex`, canonical tepercaya, `/contact` AJAX/non-AJAX) & 42 cek Playwright (`320px`/`768px`/`1440px`, ID & EN, 0 console error) lulus.
+- **File Terdampak:** *(verifikasi runtime & dokumentasi close)*
+- **Verifikasi:** `npm test`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, Playwright multi-viewport & HTTP contract checks
