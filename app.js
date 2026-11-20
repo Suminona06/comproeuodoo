@@ -111,9 +111,12 @@ app.use(
   })
 );
 
-// Enforce noindex across every /admin response (including CSRF 403, rate limits, auth redirects, API, and CSV exports)
+// Enforce noindex & zero-cache across every /admin response (CSRF 403, rate limits, auth redirects, API, HTML, and CSV)
 app.use('/admin', (req, res, next) => {
   res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   next();
 });
 
@@ -141,9 +144,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Mount Routes
+// Mount Routes (prevent proxy/CDN caching of bilingual HTML while keeping ETag validation & long-lived static assets)
 app.use('/admin', adminRoutes);
-app.use('/', publicRoutes);
+app.use('/', (req, res, next) => {
+  res.setHeader('Cache-Control', 'private, no-cache, must-revalidate');
+  res.vary('Cookie');
+  next();
+}, publicRoutes);
 
 // Error Handlers
 app.use(notFoundHandler);
