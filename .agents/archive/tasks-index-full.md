@@ -1558,3 +1558,39 @@
 - **File Terdampak:** `tests/test-t356-t360-admin-services.js`, `package.json`, `services/productCrudService.js`, `services/postService.js`, `services/leadService.js`
 - **Skill:** `antislop-code`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, uji regresi HTTP in-process
+
+### [x] `T-363` — Ekstraksi `services/userService.js` & Refaktor `controllers/admin/userController.js`
+- **Acceptance Criteria:**
+  - Guard ID positif, trim & format/duplikasi email pada store/update, whitelist role `['superadmin','admin','editor']`, proteksi self-delete & superadmin terakhir, `currentUser` pada fallback error `index`, aturan password setara `authService.changeAdminPassword` tanpa trim spasi valid, dan bersih komentar slop (`antislop-code`).
+- **File Terdampak:** `services/userService.js`, `controllers/admin/userController.js`
+- **Verifikasi:** `npx eslint`, unit test `tests/test-admin-batch3-services.js`
+
+### [x] `T-364` — Modularisasi `services/settingService.js` (3 File) & Refaktor `settingController.js` + `contactCmsController.js`
+- **Acceptance Criteria:**
+  - Dipecah ke `services/settingService.js`, `services/settingMediaService.js`, dan `services/settingFooterService.js` dengan re-export penuh; `settingController.js` & `contactCmsController.js` murni memanggil service, menolak input non-string pada CMS kontak, dan memisahkan `SettingValidationError` vs pesan error DB generik aman.
+- **File Terdampak:** `services/settingService.js`, `services/settingMediaService.js`, `services/settingFooterService.js`, `controllers/admin/settingController.js`, `controllers/admin/contactCmsController.js`
+- **Verifikasi:** `npx eslint`, `test-t239-backend-validation.js`, `test-t323-setting-footer-service.js`, `tests/test-admin-batch3-services.js`
+
+### [x] `T-365` — Ekstraksi `services/pageHeroBannerService.js` & Refaktor `controllers/admin/pageHeroBannerController.js`
+- **Acceptance Criteria:**
+  - Clamp `overlay_opacity` `0..1` (fallback `0.60`), guard `Number.isFinite` pada `models/pageHeroBannerModel.js:60` agar nilai `0` tidak tertimpa, sanitasi URL aman `cta_url` & `image_url`, serta pesan generik aman untuk error DB.
+- **File Terdampak:** `services/pageHeroBannerService.js`, `controllers/admin/pageHeroBannerController.js`, `models/pageHeroBannerModel.js`
+- **Verifikasi:** `npx eslint`, unit test `tests/test-admin-batch3-services.js`
+
+### [x] `T-366` — Ekstraksi `services/capabilityService.js` & Refaktor `controllers/admin/capabilityController.js` + Sinkronisasi Skema
+- **Acceptance Criteria:**
+  - Hapus 6 baris dead code, guard ID positif & `not_found` pada `update`/`destroy`, trim wajib `title_id` & `machine_type`, guard `NaN` `sort_order`, sanitasi `image_url`, pesan generik aman untuk error DB, dan sinkronisasi tabel skema `.agents/tech/capabilities.md`.
+- **File Terdampak:** `services/capabilityService.js`, `controllers/admin/capabilityController.js`, `.agents/tech/capabilities.md`
+- **Verifikasi:** `npx eslint`, unit test `tests/test-admin-batch3-services.js`
+
+### [x] `T-367` — Penegakan Blok Strict ESLint Batch 3 & Audit Komentar (`antislop-code`)
+- **Acceptance Criteria:**
+  - Seluruh controller & service Batch 3 + `contactCmsController.js` terdaftar di blok strict `error` `eslint.config.js` dan lulus `0` error.
+- **File Terdampak:** `eslint.config.js`, `.agents/tech/conventions.md`
+- **Verifikasi:** `npm run lint -- --quiet`
+
+### [x] `T-368` — Unit Test Service Batch 3 & Perbaikan Test Spek Lama + Verifikasi Gerbang Kualitas
+- **Acceptance Criteria:**
+  - `tests/test-admin-batch3-services.js` (15/15) lulus via `node --test` dan terdaftar di `package.json`; perbaikan asersi partial/i18n pada `test-kelompok-b-specs.js` & `test-t142-t143-specs.js` lulus; `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, dan `npm test` lulus 100%.
+- **File Terdampak:** `tests/test-admin-batch3-services.js`, `tests/test-kelompok-b-specs.js`, `tests/test-t142-t143-specs.js`, `package.json`
+- **Verifikasi:** `node --test tests/test-admin-batch3-services.js`, `npm test`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`

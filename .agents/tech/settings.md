@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-17 | Kode: controllers/admin/settingController.js, services/settingService.js, services/settingMediaService.js, services/settingFooterService.js, models/settingModel.js, views/admin/settings/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: controllers/admin/settingController.js, controllers/admin/contactCmsController.js, services/settingService.js, services/settingMediaService.js, services/settingFooterService.js, models/settingModel.js, views/admin/settings/
 
 # Tech Spec: Modul Pengaturan Situs (Site Settings)
 
@@ -70,7 +70,7 @@ Modul Pengaturan Situs bertindak sebagai penyimpan terpusat pasangan kunci-nilai
 
 ---
 
-## 6. Penanganan Controller & Service (`settingController` & `setting*Service.js`) `[PENDING T-364]`
+## 6. Penanganan Controller & Service (`settingController` & `setting*Service.js`)
 - **Modularisasi 3 Service:** `settingController.js` hanya memanggil `services/settingService.js` (`getSettingsMap`, `updateSettings`) tanpa akses langsung ke `settingModel` / `clearSettingsCache()`. Domain dipecah ke `settingService.js` (orkestrator, teks/kontak, WA, sosmed + re-export penuh kompatibel `settingsMiddleware.js` & test), `settingMediaService.js` (logo & favicon), dan `settingFooterService.js` (footer; [tech/settings-footer.md](settings-footer.md)), masing-masing `<= 300` baris dan fungsi `<= 40` baris.
 - **Error Redirect Aman:** Error validasi/domain (`ValidationError`) menampilkan pesan spesifik di `?error=...`; error sistem/DB memakai pesan generik aman (detail dicatat via `logger.error`).
 - **Toggle Visibilitas:** `office_card_visible` dan `factory_card_visible` dipaksa ke `'1'` atau `'0'`.
