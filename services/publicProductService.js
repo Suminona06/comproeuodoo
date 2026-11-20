@@ -39,6 +39,7 @@ export function parseCatalogQuery(rawQuery = {}) {
 
 export async function resolveCatalogCategory(categoryParam, categoryModel) {
   if (!categoryParam) return { selectedCategory: null, categoryId: undefined };
+  if (typeof categoryParam !== 'string') return { selectedCategory: null, categoryId: INVALID_CATEGORY_ID };
 
   const found = /^\d+$/.test(categoryParam)
     ? await categoryModel.findById(parseInt(categoryParam, 10))
@@ -208,9 +209,10 @@ export function buildMetaDescription(product, lang) {
   return String(raw).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, MAX_META_DESC_LENGTH);
 }
 
-function resolveWhatsappNumber(settings = {}) {
-  if (settings.whatsapp_formatted_number) return settings.whatsapp_formatted_number;
-  if (settings.whatsapp_number) return String(settings.whatsapp_number).replace(/[^0-9]/g, '');
+function resolveWhatsappNumber(settings) {
+  const safeSettings = settings || {};
+  if (safeSettings.whatsapp_formatted_number) return safeSettings.whatsapp_formatted_number;
+  if (safeSettings.whatsapp_number) return String(safeSettings.whatsapp_number).replace(/[^0-9]/g, '');
   return DEFAULT_WHATSAPP_NUMBER;
 }
 

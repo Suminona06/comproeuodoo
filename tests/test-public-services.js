@@ -219,6 +219,7 @@ describe('Public Services & Thin Controllers Unit Tests (T-369..T-373)', () => {
 
       assert.deepEqual(await resolveCatalogCategory('6', catModel), { selectedCategory: null, categoryId: INVALID_CATEGORY_ID });
       assert.deepEqual(await resolveCatalogCategory('missing', catModel), { selectedCategory: null, categoryId: INVALID_CATEGORY_ID });
+      assert.deepEqual(await resolveCatalogCategory(['hdpe', 'lldpe'], catModel), { selectedCategory: null, categoryId: INVALID_CATEGORY_ID });
       assert.equal((await resolveCatalogCategory('lldpe', catModel)).categoryId, 7);
 
       assert.equal(shouldNoIndexCatalog({ page: 1, search: '', rawSort: 'newest', category: '' }, null), false);
@@ -284,7 +285,7 @@ describe('Public Services & Thin Controllers Unit Tests (T-369..T-373)', () => {
       assert.equal(meta.includes('<'), false);
       assert.equal(meta.length, 160);
 
-      const defaultWa = buildWhatsappQuoteUrl('HDPE Bag', {}, mockTranslator({
+      const defaultWa = buildWhatsappQuoteUrl('HDPE Bag', null, mockTranslator({
         'product_detail.whatsapp_quote_message': 'Hello, interested in {name}'
       }));
       assert.equal(defaultWa, `https://wa.me/${DEFAULT_WHATSAPP_NUMBER}?text=Hello%2C%20interested%20in%20HDPE%20Bag`);
