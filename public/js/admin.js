@@ -264,7 +264,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       function updatePreviewState() {
         if (!input) return;
-        const file = input.files && input.files[0];
+        const fileList = input.files ? Array.from(input.files) : [];
+        const file = fileList[0];
+
+        if (fileList.length > 1) {
+          const isEn = (document.documentElement.lang || 'id').toLowerCase().startsWith('en');
+          const totalBytes = fileList.reduce((sum, f) => sum + (f.size || 0), 0);
+          if (filenameEl) {
+            filenameEl.textContent = isEn
+              ? `${fileList.length} files selected (${formatBytes(totalBytes)})`
+              : `${fileList.length} berkas dipilih (${formatBytes(totalBytes)})`;
+            filenameEl.title = fileList.map(f => f.name).join(', ');
+          }
+          if (clearBtn) clearBtn.style.display = 'inline-flex';
+          if (previewImg) previewImg.style.display = 'none';
+          if (placeholderIcon) {
+            placeholderIcon.style.display = 'flex';
+            const badge = document.createElement('span');
+            badge.className = 'adm-media-multi-badge';
+            badge.textContent = String(fileList.length);
+            placeholderIcon.replaceChildren(badge);
+          }
+          return;
+        }
 
         if (file) {
           // File selected
@@ -289,7 +311,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (previewImg) previewImg.style.display = 'none';
             if (placeholderIcon) {
               placeholderIcon.style.display = 'flex';
-              placeholderIcon.innerHTML = `<span style="font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase;">${file.name.split('.').pop() || 'FILE'}</span>`;
+              const extBadge = document.createElement('span');
+              extBadge.className = 'adm-media-file-ext-badge';
+              extBadge.textContent = file.name.split('.').pop() || 'FILE';
+              placeholderIcon.replaceChildren(extBadge);
             }
           }
         } else if (initialPreview) {

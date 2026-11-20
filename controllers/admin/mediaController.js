@@ -134,8 +134,11 @@ export const mediaController = {
 
   async apiCheckUsage(req, res) {
     try {
-      const fileUrl = req.body?.file_url || req.query?.file_url;
-      const usage = await checkMediaUsage(fileUrl);
+      const body = req.body || {};
+      const query = req.query || {};
+      const fileUrl = body.file_url || query.file_url;
+      const mediaId = body.media_id || query.media_id || null;
+      const usage = await checkMediaUsage(fileUrl, mediaId);
       return res.json(usage);
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });

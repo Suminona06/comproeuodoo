@@ -152,14 +152,32 @@ export const mediaModel = {
     return await query(`SELECT id, file_url FROM media WHERE id IN (${placeholders})`, validIds);
   },
 
-  async checkUsage(fileUrl) {
-    if (!fileUrl) return [];
+  async findIdByUrl(fileUrl) {
+    if (!fileUrl) return null;
+    const rows = await query('SELECT id FROM media WHERE file_url = ? LIMIT 1', [fileUrl]);
+    return rows[0]?.id || null;
+  },
+
+  async checkUsage(fileUrl, mediaId = null) {
+    if (!fileUrl && !mediaId) return [];
+    const resolvedId = mediaId || (fileUrl ? await this.findIdByUrl(fileUrl) : null);
+    const urlTarget = fileUrl || '';
+    const jsonUrlParam = JSON.stringify(urlTarget);
+    const parsedId = parseInt(resolvedId, 10);
+    const hasId = Number.isInteger(parsedId) && parsedId > 0;
+    const idJsonParam = hasId ? String(parsedId) : 'null';
+
     const sql = `
       SELECT 'Banner' as source, title_id as label FROM banners WHERE file_url = ? OR poster_url = ?
       UNION ALL
       SELECT 'Hero Banner' as source, page_key as label FROM page_hero_banners WHERE image_url = ?
       UNION ALL
-      SELECT 'Katalog Produk' as source, name_id as label FROM products WHERE main_image = ? OR gallery_images LIKE ?
+      SELECT 'Katalog Produk' as source, name_id as label FROM products
+      WHERE main_image = ?
+         OR (gallery_images IS NOT NULL AND JSON_VALID(gallery_images) AND (
+              JSON_CONTAINS(gallery_images, CAST(? AS JSON))
+              OR (? = 1 AND JSON_CONTAINS(gallery_images, CAST(? AS JSON)))
+            ))
       UNION ALL
       SELECT 'Artikel Berita' as source, title_id as label FROM posts WHERE cover_image = ?
       UNION ALL
@@ -172,14 +190,14 @@ export const mediaModel = {
       SELECT 'Pengaturan' as source, setting_key as label FROM settings WHERE setting_value = ?
     `;
     const params = [
-      fileUrl, fileUrl,
-      fileUrl,
-      fileUrl, `%${fileUrl}%`,
-      fileUrl,
-      fileUrl,
-      fileUrl,
-      fileUrl,
-      fileUrl
+      urlTarget, urlTarget,
+      urlTarget,
+      urlTarget, jsonUrlParam, hasId ? 1 : 0, idJsonParam,
+      urlTarget,
+      urlTarget,
+      urlTarget,
+      urlTarget,
+      urlTarget
     ];
     return await query(sql, params);
   }

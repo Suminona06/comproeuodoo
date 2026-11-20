@@ -11,12 +11,12 @@
     </div>
 
     <div class="media-picker-tabs" role="tablist">
-      <button type="button" class="media-picker-tab-btn active" data-tab="library" data-type="all">Semua Media</button>
-      <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="image">Gambar</button>
-      <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="video">Video</button>
-      <button type="button" class="media-picker-tab-btn" data-tab="library" data-type="youtube">YouTube</button>
-      <button type="button" class="media-picker-tab-btn adm-picker-tab-upload" data-tab="upload">
-        <svg class="adm-picker-tab-upload-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+      <button type="button" class="media-picker-tab-btn active" role="tab" aria-selected="true" data-tab="library" data-type="all">Semua Media</button>
+      <button type="button" class="media-picker-tab-btn" role="tab" aria-selected="false" data-tab="library" data-type="image">Gambar</button>
+      <button type="button" class="media-picker-tab-btn" role="tab" aria-selected="false" data-tab="library" data-type="video">Video</button>
+      <button type="button" class="media-picker-tab-btn" role="tab" aria-selected="false" data-tab="library" data-type="youtube">YouTube</button>
+      <button type="button" class="media-picker-tab-btn adm-picker-tab-upload" role="tab" aria-selected="false" data-tab="upload">
+        <svg class="adm-picker-tab-upload-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
         Unggah Berkas Baru
       </button>
     </div>
@@ -57,27 +57,31 @@
 
       <div id="mediaPickerTabUpload" class="adm-d-none">
         <div id="pickerUploadDropzone" class="adm-picker-dropzone">
-          <svg class="adm-picker-dropzone-icon" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <svg class="adm-picker-dropzone-icon" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           <div class="adm-picker-dropzone-title">Pilih Berkas atau Tarik ke Sini</div>
-          <p class="adm-picker-dropzone-hint">Mendukung format gambar (JPG, PNG, WebP, SVG), video (MP4, WebM), atau PDF (Maks 15MB).</p>
-          <input type="file" id="pickerFileInput" class="adm-d-none" accept="image/*,video/*,application/pdf">
+          <p class="adm-picker-dropzone-hint">Mendukung format gambar (JPG, PNG, WebP, GIF, ICO), video (MP4, WebM), atau PDF (Maks 30MB per berkas; dukung unggah banyak berkas sekaligus).</p>
+          <input type="file" id="pickerFileInput" class="adm-d-none" multiple accept="image/*,video/mp4,video/webm,application/pdf">
           <button type="button" class="adm-btn adm-btn-primary adm-btn-sm" id="btnTriggerBrowseFile" aria-label="Pilih berkas dari komputer">
-            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <svg class="adm-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             <span>Pilih Berkas</span>
           </button>
         </div>
 
-        <div id="pickerUploadProgress" class="adm-picker-upload-progress adm-d-none">
+        <div id="pickerUploadProgress" class="adm-picker-upload-progress adm-d-none" aria-live="polite">
           <div id="pickerUploadProgressText" class="adm-picker-progress-text">Mengunggah &amp; mengoptimasi berkas...</div>
-          <div class="adm-picker-progress-track">
-            <div id="pickerUploadProgressBar" class="adm-picker-progress-bar"></div>
-          </div>
+          <progress id="pickerUploadProgressBar" class="adm-picker-progress" max="100" value="0" aria-label="Progres unggahan berkas"></progress>
+        </div>
+
+        <div id="pickerUploadSummary" class="adm-picker-upload-summary adm-d-none" aria-live="polite"></div>
+        <ul id="pickerUploadQueue" class="adm-picker-upload-queue adm-d-none"></ul>
+        <div class="adm-picker-queue-actions">
+          <button type="button" id="btnViewUploadedInLibrary" class="adm-btn adm-btn-secondary adm-btn-sm adm-d-none">Lihat di Library</button>
         </div>
       </div>
     </div>
 
     <div class="media-picker-footer">
-      <div class="media-picker-selected-info" id="pickerSelectedInfo">
+      <div class="media-picker-selected-info" id="pickerSelectedInfo" aria-live="polite">
         <span class="media-picker-empty-hint">Belum ada media dipilih</span>
       </div>
       <div class="adm-picker-footer-actions">
