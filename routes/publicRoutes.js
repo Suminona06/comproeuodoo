@@ -39,6 +39,7 @@ function resolveSafeReturnPath(referrer, reqHost) {
   if (isRejectedReturnRaw(clean)) return '/';
   const info = parseReturnTarget(clean);
   if (!isAllowedReturnTarget(info, reqHost)) return '/';
+  info.url.searchParams.delete('lang');
   return `${info.url.pathname}${info.url.search}${info.url.hash}`;
 }
 
@@ -55,6 +56,7 @@ router.get('/lang/:code', (req, res) => {
     secure: process.env.NODE_ENV === 'production'
   });
 
+  res.setHeader('Cache-Control', 'no-store');
   const returnTo = resolveSafeReturnPath(req.get('Referrer'), req.get('host'));
   res.redirect(returnTo);
 });

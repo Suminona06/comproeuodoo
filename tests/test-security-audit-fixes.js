@@ -293,6 +293,37 @@ test('6. Open redirect via Referrer header on /lang/:code is blocked', async () 
     const localRel = await fetch(`${baseUrl}/lang/id`, { redirect: 'manual', headers: { Referrer: '/news?type=pers' } });
     assert.equal(localRel.status, 302);
     assert.equal(localRel.headers.get('location'), '/news?type=pers');
+
+    const staleLangRef = await fetch(`${baseUrl}/lang/en`, { redirect: 'manual', headers: { Referrer: '/products?lang=id&page=2' } });
+    assert.equal(staleLangRef.status, 302);
+    assert.equal(staleLangRef.headers.get('location'), '/products?page=2');
+    assert.equal(staleLangRef.headers.get('cache-control'), 'no-store');
+  } finally {
+    await closeServer(server);
+  }
+});
+
+test('7. Admin enforces no-store headers while public HTML uses private no-cache with Vary: Cookie and static keeps max-age', async () => {
+  const { server, baseUrl } = await startTempServer(app);
+  try {
+    const adminRes = await fetch(`${baseUrl}/admin/login`);
+    assert.equal(adminRes.status, 200);
+    assert.equal(adminRes.headers.get('cache-control'), 'no-store, no-cache, must-revalidate, private');
+    assert.equal(adminRes.headers.get('pragma'), 'no-cache');
+    assert.equal(adminRes.headers.get('expires'), '0');
+
+    const pubRes = await fetch(`${baseUrl}/contact`);
+    assert.equal(pubRes.status, 200);
+    assert.equal(pubRes.headers.get('cache-control'), 'private, no-cache, must-revalidate');
+    assert.ok((pubRes.headers.get('vary') || '').toLowerCase().includes('cookie'));
+
+    const staticRes = await fetch(`${baseUrl}/css/tokens.css`);
+    assert.equal(staticRes.status, 200);
+    assert.ok((staticRes.headers.get('cache-control') || '').includes('public, max-age=86400'));
+
+    const robotsRes = await fetch(`${baseUrl}/robots.txt`);
+    assert.equal(robotsRes.status, 200);
+    assert.equal(robotsRes.headers.get('cache-control'), 'public, max-age=86400');
   } finally {
     await closeServer(server);
   }

@@ -100,11 +100,16 @@
         type: currentFilterType,
         search: currentSearchQuery,
         page: currentPage,
-        limit: 24
+        limit: 24,
+        _t: Date.now()
       });
 
       const res = await fetch(`/admin/api/media?${params.toString()}`, {
-        headers: { 'Accept': 'application/json' }
+        cache: 'no-store',
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
       });
       const data = await res.json();
 
@@ -203,14 +208,14 @@
   function selectCard(card, item) {
     if (isMultiple) {
       const idx = selectedMediaList.findIndex(m => m.id === item.id);
-      const checkbox = card.querySelector('.media-picker-checkbox');
+      const checkbox = card ? card.querySelector('.media-picker-checkbox') : null;
       if (idx > -1) {
         selectedMediaList.splice(idx, 1);
-        card.classList.remove('selected');
+        if (card) card.classList.remove('selected');
         if (checkbox) checkbox.checked = false;
       } else {
         selectedMediaList.push(item);
-        card.classList.add('selected');
+        if (card) card.classList.add('selected');
         if (checkbox) checkbox.checked = true;
       }
       updateConfirmButton();
@@ -219,7 +224,7 @@
     }
 
     grid.querySelectorAll('.media-picker-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
+    if (card) card.classList.add('selected');
     selectedMedia = item;
     updateConfirmButton();
 
@@ -382,11 +387,14 @@
         uploadProgressBar.style.width = '0%';
         switchTab('library');
         currentFilterType = 'all';
+        currentPage = 1;
+        currentSearchQuery = '';
+        if (searchInput) searchInput.value = '';
         tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-type') === 'all'));
         loadMedia().then(() => {
           if (data.data) {
             const uploadedCard = grid.querySelector(`.media-picker-card[data-id="${data.data.id}"]`);
-            if (uploadedCard) selectCard(uploadedCard, data.data);
+            selectCard(uploadedCard || null, data.data);
           }
         });
       }, 600);
