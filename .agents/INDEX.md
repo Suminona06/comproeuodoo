@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task) & ringkasan 379 task selesai.
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (7 Task: T-380 s/d T-386) & ringkasan 379 task selesai.
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -19,7 +19,8 @@
 | **Public About Story & Timeline** | ACTIVE | 2026-11-16 | [prd/public-about-timeline.md](prd/public-about-timeline.md) | [tech/public-about-timeline.md](tech/public-about-timeline.md) | `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `public/js/about-story.js` |
 | **Public About Ticket Accordion** | ACTIVE | 2026-11-16 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |
 | **Products Catalog** | ACTIVE | 2026-11-20 | [prd/products.md](prd/products.md) | [tech/products.md](tech/products.md) | `views/public/products.ejs`, `controllers/public/productController.js`, `services/publicProductService.js` |
-| **Products Detail** | ACTIVE | 2026-11-20 | [prd/products.md](prd/products.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs`, `controllers/public/productController.js`, `services/publicProductService.js` |
+| **Products Detail** | ACTIVE | 2026-11-20 | [prd/products-detail.md](prd/products-detail.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs`, `views/partials/products/spec-tabs.ejs`, `views/partials/products/size-table.ejs`, `controllers/public/productController.js`, `services/publicProductService.js` |
+| **Products Detail Gallery** | ACTIVE | 2026-11-20 | [prd/products-detail.md](prd/products-detail.md) | [tech/products-detail-gallery.md](tech/products-detail-gallery.md) | `views/partials/products/gallery.ejs`, `services/publicProductService.js`, `public/js/product-detail.js`, `public/js/lightbox.js`, `public/css/lightbox.css` |
 | **Manufacturing Capabilities** | ACTIVE | 2026-11-20 | [prd/capabilities.md](prd/capabilities.md) | [tech/capabilities.md](tech/capabilities.md) | `views/public/capabilities.ejs`, `controllers/public/pageController.js`, `services/publicPageService.js`, `controllers/admin/capabilityController.js`, `services/capabilityService.js` |
 | **News & Articles** | ACTIVE | 2026-11-20 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs`, `controllers/public/postController.js`, `services/publicPostService.js` |
 | **News Detail** | ACTIVE | 2026-11-20 | [prd/news-detail.md](prd/news-detail.md) | [tech/news-detail.md](tech/news-detail.md) | `views/public/news-detail.ejs`, `public/js/news-detail.js`, `controllers/public/postController.js`, `services/publicPostService.js` |

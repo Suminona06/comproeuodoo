@@ -2,6 +2,9 @@ import productModel, { normalizeSizeTable } from '../models/productModel.js';
 import productCategoryModel from '../models/productCategoryModel.js';
 import pageHeroBannerModel from '../models/pageHeroBannerModel.js';
 import mediaModel from '../models/mediaModel.js';
+import { resolveProductGallery, buildProductSpecPayload } from './publicProductDetailHelper.js';
+
+export { resolveProductGallery, buildProductSpecPayload };
 
 export const PAGE_SIZE = 9;
 export const ALLOWED_SORTS = ['newest', 'alpha-asc', 'alpha-desc', 'catalog'];
@@ -20,10 +23,6 @@ function translate(t, key, fallback, params) {
 
 function resolveCompanyName(settings) {
   return settings?.company_name || DEFAULT_COMPANY_NAME;
-}
-
-function isNumericToken(value) {
-  return typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value.trim()));
 }
 
 export function parseCatalogQuery(rawQuery = {}) {
@@ -166,35 +165,6 @@ async function findPublishedProduct(slug, pModel) {
   return product;
 }
 
-function parseRawGallery(product, mainImage) {
-  let raw = product.gallery_images || product.gallery || null;
-  if (typeof raw === 'string') {
-    try { raw = JSON.parse(raw); } catch { raw = null; }
-  }
-  if (Array.isArray(raw) && raw.length > 0) return raw;
-  return mainImage ? [mainImage] : [];
-}
-
-function mapResolvedGallery(gallery, mediaRows, mainImage) {
-  const mediaMap = {};
-  for (const row of mediaRows) mediaMap[row.id] = row.file_url;
-
-  const resolved = gallery
-    .map((item) => (isNumericToken(item) ? (mediaMap[parseInt(item, 10)] || null) : item))
-    .filter(Boolean);
-  return resolved.length === 0 && mainImage ? [mainImage] : resolved;
-}
-
-export async function resolveProductGallery(product, medModel) {
-  const mainImage = product.main_image || product.image_url || null;
-  const gallery = parseRawGallery(product, mainImage);
-  const ids = gallery.filter(isNumericToken).map((item) => parseInt(item, 10));
-  if (ids.length === 0) return gallery;
-
-  const mediaRows = await medModel.findUrlsByIds(ids);
-  return mapResolvedGallery(gallery, mediaRows || [], mainImage);
-}
-
 const META_DESC_KEYS_EN = [
   'meta_description_en', 'meta_description_id',
   'short_description_en', 'short_description_id',
@@ -245,6 +215,7 @@ function buildDetailResult(product, gallery, relatedRaw, context) {
   const whatsappQuoteUrl = buildWhatsappQuoteUrl(prodName, context.settings, context.t);
   applyNormalizedFields(product, gallery, whatsappQuoteUrl);
 
+  const specPayload = buildProductSpecPayload(product, lang);
   const cleanMetaDesc = buildMetaDescription(product, lang);
   const canonicalUrl = product.canonical_url || `${context.baseUrl}/products/${product.slug || product.id}`;
   const relatedProducts = (relatedRaw || [])
@@ -260,6 +231,8 @@ function buildDetailResult(product, gallery, relatedRaw, context) {
       path: '/products',
       headerSolid: true,
       product,
+      sanitizedDescription: specPayload.sanitizedDescription,
+      specDisplayMode: specPayload.specDisplayMode,
       canonicalUrl,
       whatsappQuoteUrl,
       relatedProducts

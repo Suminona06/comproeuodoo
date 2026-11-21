@@ -80,6 +80,11 @@ function normalizeGalleryEntry(item) {
   return item && typeof item === 'object' ? normalizeGalleryObject(item) : null;
 }
 
+export function parseShowDescriptionTab(val) {
+  const raw = Array.isArray(val) ? val[val.length - 1] : val;
+  return raw === 1 || raw === '1' || raw === true || raw === 'true' || raw === 'on' ? 1 : 0;
+}
+
 export function parseSortOrder(val, fallback = 0) {
   if (val == null) return fallback;
   const parsed = parseInt(String(val).trim(), 10);
@@ -240,6 +245,7 @@ export function buildProductCreateData(body, { cleanCtaId, cleanCtaEn, imageUrl,
     description_en: trimOpt(body.description_en),
     cta_text_id: cleanCtaId || null,
     cta_text_en: cleanCtaEn || null,
+    show_description_tab: parseShowDescriptionTab(body.show_description_tab),
     variants: pickProductVariants(body),
     size_table: sizeTable,
     main_image: imageUrl,
@@ -282,6 +288,7 @@ export function buildProductUpdateData(body, product, { cleanCtaId, cleanCtaEn }
     description_en: resolveOptionalTrim(body.description_en, product.description_en),
     cta_text_id: resolveOptionalCta(body.cta_text_id, cleanCtaId, product.cta_text_id),
     cta_text_en: resolveOptionalCta(body.cta_text_en, cleanCtaEn, product.cta_text_en),
+    show_description_tab: parseShowDescriptionTab(body.show_description_tab),
     status: body.status || product.status,
     sort_order: body.sort_order !== undefined ? parseSortOrder(body.sort_order, product.sort_order) : product.sort_order,
     ...buildProductSeoFields(body)

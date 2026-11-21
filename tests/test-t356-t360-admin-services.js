@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 import { slugify } from '../utils/slugHelper.js';
 import {
   parseSortOrder,
+  parseShowDescriptionTab,
   buildProductCreateData,
   buildProductUpdateData
 } from '../services/productService.js';
@@ -99,6 +100,20 @@ describe('Batch 2 Refactored Admin Services & Controllers Unit Tests (T-356..T-3
         { cleanCtaId: null, cleanCtaEn: null }
       );
       assert.equal(updated.sort_order, 8);
+      assert.equal(updated.show_description_tab, 0);
+
+      assert.equal(parseShowDescriptionTab('1'), 1);
+      assert.equal(parseShowDescriptionTab(1), 1);
+      assert.equal(parseShowDescriptionTab(true), 1);
+      assert.equal(parseShowDescriptionTab(undefined), 0);
+      assert.equal(parseShowDescriptionTab('0'), 0);
+      assert.equal(parseShowDescriptionTab('99'), 0);
+
+      const createdWithTab = buildProductCreateData(
+        { name_id: 'Tas HDPE', show_description_tab: '1' },
+        { cleanCtaId: null, cleanCtaEn: null, imageUrl: null, sizeTable: null }
+      );
+      assert.equal(createdWithTab.show_description_tab, 1);
     });
 
     it('1b. normalizes pagination, exports CSV with dynamic size columns, and returns size columns', async () => {

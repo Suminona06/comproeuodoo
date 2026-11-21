@@ -1,0 +1,40 @@
+<% if (specDisplayMode === 'tabs') { %>
+  <section class="pd-size-sec" data-pd-tabs>
+    <div class="pd-tablist" role="tablist" aria-label="<%= t('product_detail.spec_tabs_aria') %>">
+      <button type="button"
+              class="pd-tab-btn"
+              role="tab"
+              id="pdTabDesc"
+              aria-controls="pdPanelDesc"
+              aria-selected="true"
+              tabindex="0">
+        <%= t('product_detail.tab_overview') %>
+      </button>
+      <button type="button"
+              class="pd-tab-btn"
+              role="tab"
+              id="pdTabSize"
+              aria-controls="pdPanelSize"
+              aria-selected="false"
+              tabindex="-1">
+        <%= t('product_detail.tab_size_chart') %>
+      </button>
+    </div>
+    <div class="pd-tabpanel" role="tabpanel" id="pdPanelDesc" aria-labelledby="pdTabDesc" tabindex="0">
+      <div class="pd-rich-desc"><%- sanitizedDescription %></div>
+    </div>
+    <div class="pd-tabpanel" role="tabpanel" id="pdPanelSize" aria-labelledby="pdTabSize" tabindex="0">
+      <%- include('size-table', { product }) %>
+    </div>
+  </section>
+<% } else if (specDisplayMode === 'description-only') { %>
+  <section class="pd-size-sec" id="pdPanelDesc">
+    <h2 class="pd-size-heading"><%= t('product_detail.tab_overview') %></h2>
+    <div class="pd-rich-desc"><%- sanitizedDescription %></div>
+  </section>
+<% } else if (specDisplayMode === 'size-only') { %>
+  <section class="pd-size-sec" id="pdPanelSize">
+    <h2 class="pd-size-heading"><%= t('product_detail.tab_size_chart') %></h2>
+    <%- include('size-table', { product }) %>
+  </section>
+<% } %>

@@ -44,7 +44,11 @@
       <%- include('../partials/products/info-cta', { prodName, shortDesc, variants, waUrl, ctaText, rfqText, product }) %>
     </div>
 
-    <%- include('../partials/products/size-table', { product }) %>
+    <%- include('../partials/products/spec-tabs', {
+      product,
+      sanitizedDescription: typeof sanitizedDescription !== 'undefined' ? sanitizedDescription : '',
+      specDisplayMode: typeof specDisplayMode !== 'undefined' ? specDisplayMode : 'size-only'
+    }) %>
   </section>
 
   <%- include('../partials/products/related-section', { relatedProducts: typeof relatedProducts !== 'undefined' ? relatedProducts : [], catSlug, lang }) %>
