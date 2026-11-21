@@ -3,12 +3,12 @@
 ## Ringkasan Status Task
 
 - **Task Aktif Terbuka:** 0 Task
-- **Total Task Selesai:** 386 Task (T-01 s/d T-386)
+- **Total Task Selesai:** 394 Task (T-01 s/d T-394)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
-- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-387**.
+- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-395**.
 
 ---
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-*(Tidak ada task aktif yang tersisa saat ini. Seluruh 386 task pada daftar kerja telah selesai dan diarsipkan.)*
+*Belum ada task aktif terbuka. Gunakan alur pada [WORKFLOW.md](WORKFLOW.md) (PROPOSE -> APPROVE -> MERGE KE SPEC -> IMPLEMENT -> CLOSE) sebelum menambahkan task baru.*

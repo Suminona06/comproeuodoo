@@ -20,12 +20,26 @@ function setElText(id, text) {
   if (el) el.textContent = text;
 }
 
+function formatModalVariants(item) {
+  if (item.selected_variants_text) return item.selected_variants_text;
+  if (!Array.isArray(item.selected_variants) || item.selected_variants.length === 0) return '-';
+  return item.selected_variants
+    .map((g) => {
+      const gName = g.group_name_id || g.name_id || '';
+      const opts = Array.isArray(g.options) ? g.options.map((o) => o.label_id || o.label_en || '').filter(Boolean) : [];
+      return gName && opts.length > 0 ? `${gName}: ${opts.join(', ')}` : '';
+    })
+    .filter(Boolean)
+    .join('; ') || '-';
+}
+
 function populateModalFields(item) {
   setElText('mClientCompany', item.company || 'Retail / Personal');
   setElText('mClientName', item.name);
   setElText('mClientPhone', item.phone);
   setElText('mClientEmail', item.email);
   setElText('mClientProduct', item.product_name_id || 'Umum (Katalog)');
+  setElText('mClientVariants', formatModalVariants(item));
   setElText('mClientMessage', item.message || 'Tidak ada catatan tertulis.');
 
   const notesEl = document.getElementById('mAdminNotes');

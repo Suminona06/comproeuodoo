@@ -39,10 +39,15 @@ function renderLeadRows(lead) {
     ['Perusahaan:', escapeField(lead.company_name)],
     ['Email:', `<a href="mailto:${safeMailto}">${safeEmailText}</a>`],
     ['Telepon / WA:', escapeField(lead.phone)],
-    ['Produk:', escapeField(lead.product_name, 'Kebutuhan Custom / Umum')],
+    ['Produk:', escapeField(lead.product_name, 'Kebutuhan Custom / Umum')]
+  ];
+  if (lead.selected_variants_text) {
+    rows.push(['Varian Produk:', escapeField(lead.selected_variants_text)]);
+  }
+  rows.push(
     ['Estimasi Kuantitas:', escapeField(lead.estimated_quantity)],
     ['Pesan / Kebutuhan:', escapeField(lead.message), true]
-  ];
+  );
   return rows
     .map(([label, val, multiline], idx) => {
       const rowBorder = idx < rows.length - 1 ? 'border-bottom: 1px solid #f1f5f9;' : '';

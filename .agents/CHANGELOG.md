@@ -58,3 +58,4 @@
 - 2026-11-20 | Refaktor arsitektur berlapis 4 public controller (Post, Page, Product, Contact) + penegakan ESLint strict & unit test service publik | T-369..T-374
 - 2026-11-21 | Perbaikan galeri foto produk admin (`admin-product-form.js`, `media-picker.js`), audit `check-usage` `products.gallery_images`, multi-upload berurutan (`EuMediaUpload`) di Universal Media Picker & `/admin/media`, serta polish token, a11y, ID/EN & regresi | T-375..T-379
 - 2026-11-21 | Perbaikan toolbar search mobile katalog, galeri swipe + foto utama detail produk, dan tab Deskripsi Lengkap dengan toggle admin | T-380..T-386
+- 2026-11-21 | Corner wipe drawer mobile, anti-jitter header tanpa inline style, grup varian dinamis multi-pilih (CMS, PDP, WA & RFQ), serta polish ikon & dropdown admin | T-387..T-394

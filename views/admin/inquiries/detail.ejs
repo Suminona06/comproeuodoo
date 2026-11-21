@@ -85,6 +85,10 @@
           <div><%= inquiry.product_name_id || 'Umum (Katalog)' %></div>
         </div>
         <div>
+          <div class="adm-inq-info-label">VARIAN PRODUK</div>
+          <div class="adm-inq-info-val"><%= inquiry.selected_variants_text || '-' %></div>
+        </div>
+        <div>
           <div class="adm-inq-info-label">SUMBER INQUIRY</div>
           <div><%= inquiry.source || 'Website' %></div>
         </div>

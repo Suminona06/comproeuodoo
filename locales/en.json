@@ -196,6 +196,10 @@
     "phone_placeholder": "+62 812 3456 7890",
     "product_label": "Product of Interest",
     "product_select_default": "-- Select Product (Optional) --",
+    "variants_selected_label": "Selected Product Variants",
+    "variants_picker_hint": "Click the pills below to select or change product variants:",
+    "variants_remove_aria": "Remove variant",
+    "variants_empty_hint": "Choose from the options below if needed.",
     "inquiry_type_label": "Inquiry Type",
     "inquiry_type_rfq": "Request for Quotation (RFQ)",
     "inquiry_type_partnership": "Distributor / Reseller Partnership",
@@ -265,7 +269,8 @@
     "not_found_title": "Product Not Found",
     "not_found_message": "The product you are looking for is unavailable or currently being updated.",
     "load_error_message": "Failed to load product details.",
-    "whatsapp_quote_message": "Hello, I am interested in {name}. Could I request more information?"
+    "whatsapp_quote_message": "Hello, I am interested in {name}. Could I request more information?",
+    "whatsapp_quote_with_variants": "Hello, I am interested in {name}. Variants: {variants}. Could I request more information?"
   },
   "footer": {
     "default_desc": "PT. EUODOO is a manufacturing and trading enterprise of eco-certified HDPE and LLDPE plastic bags. Established in 1990, we supply modern retail chains, industrial sectors, and traditional wholesale markets from our production plant in Bandung, West Java.",

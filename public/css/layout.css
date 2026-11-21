@@ -422,53 +422,53 @@
 /* ========================================================
    PT Euodoo Prototype v2 Header & Navigation Layout
    ======================================================== */
+:root {
+  --topbar-h: 32px;
+  --site-header-h: 64px;
+  --header-actual-height: 96px;
+}
+
 .header-wrap {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: var(--z-header, 1000);
+  --topbar-h: 32px;
+  --site-header-h: 64px;
+  --header-actual-height: 96px;
   transition: transform var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.top-bar-wrap {
-  display: grid;
-  grid-template-rows: 1fr;
-  overflow: hidden;
-  transition: grid-template-rows var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
+.header-wrap.is-scrolled {
+  transform: translate3d(0, calc(-1 * var(--topbar-h, 32px)), 0);
 }
 
-.header-wrap.is-scrolled .top-bar-wrap {
-  grid-template-rows: 0fr;
+.top-bar-wrap {
+  overflow: hidden;
+  height: var(--topbar-h, 32px);
 }
 
 .top-bar {
-  min-height: 0;
-  overflow: hidden;
   background: var(--topbar-bg, rgba(0, 87, 63, 0.35));
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-inverse);
   font-size: 11.5px;
-  padding: 5px 0;
+  line-height: 18px;
+  height: var(--topbar-h, 32px);
+  display: flex;
+  align-items: center;
+  padding: 0;
   border: none;
-  transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
-              backdrop-filter 0.3s ease,
-              -webkit-backdrop-filter 0.3s ease;
+  transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .header-wrap--solid .top-bar {
-  background: var(--surface-dark-footer, #00573f);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: var(--surface-dark-footer);
 }
 
 .header-wrap.is-scrolled .top-bar {
   opacity: 0;
-  padding: 0;
   pointer-events: none;
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
 }
 
 .top-bar-inner {
@@ -523,21 +523,34 @@
 
 /* ═══ NAVBAR (Transparent to Semi-Transparent Frosted Glass) ═══ */
 .site-header {
+  position: relative;
   background: transparent;
   border: none;
-  transition: background var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
-              border-color var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
-              box-shadow var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1)),
-              backdrop-filter var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-.header-wrap.is-scrolled .site-header,
-.header-wrap--solid .site-header {
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border, #e2e8f0);
-  box-shadow: var(--shadow-1, 0 1px 3px rgba(7, 31, 23, 0.06));
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-level-1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.header-wrap.is-scrolled .site-header::before {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.header-wrap.is-scrolled .site-header::before,
+.header-wrap--solid .site-header::before,
+.header-wrap.menu-open .site-header::before {
+  opacity: 1;
 }
 
 /* Detail Page Content Offset for Solid Fixed Header */
@@ -723,13 +736,6 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Open menu header styling */
-.header-wrap.menu-open .site-header {
-  background: #ffffff !important;
-  border-bottom: 1px solid var(--border, #e2e8f0) !important;
-  box-shadow: 0 4px 16px rgba(7, 31, 23, 0.06) !important;
-}
-
 .header-wrap.menu-open .brand-name {
   color: var(--navy, #071f17) !important;
 }
@@ -746,21 +752,53 @@
 .menu-backdrop {
   display: none;
   position: fixed;
-  inset: 0;
-  background: rgba(7, 31, 23, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  top: var(--header-actual-height, 96px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(7, 31, 23, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   opacity: 0;
   z-index: calc(var(--z-header, 1000) - 1);
   pointer-events: none;
-  will-change: opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+}
+
+.header-wrap.is-scrolled ~ .menu-backdrop {
+  top: var(--site-header-h, 64px);
 }
 
 .menu-backdrop.open {
   display: block;
+  opacity: 1;
   pointer-events: auto;
+}
+
+body.menu-scroll-locked {
+  overflow: hidden;
+}
+
+@media (min-width: 1025px) {
+  .menu-backdrop,
+  .menu-backdrop.open {
+    display: none !important;
+  }
+}
+
+.hdr-wipe-panel.hdr-wipe-animating,
+.hdr-wipe-backdrop.hdr-wipe-animating {
+  will-change: clip-path, transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-wrap,
+  .top-bar,
+  .site-header::before,
+  .mobile-toggle span,
+  .hdr-wipe-panel,
+  .hdr-wipe-backdrop {
+    transition: none !important;
+  }
 }
 
 /* ========================================================
@@ -1101,20 +1139,24 @@
   .site-header {
     position: relative;
   }
-  /* Mobile slide-down drawer */
+  /* Mobile corner-wipe drawer */
   .nav-menu {
-    display: none;
+    display: flex !important;
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    clip-path: circle(0% at 100% 0%);
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
     width: 100% !important;
-    background: #ffffff;
+    background: var(--color-surface);
     border-radius: 0 0 16px 16px;
     padding: 16px !important;
-    border-bottom: 1px solid var(--border, #e2e8f0);
-    box-shadow: 0 16px 36px rgba(7, 31, 23, 0.12);
-    max-height: calc(100vh - 80px);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-level-3);
+    max-height: calc(100dvh - 80px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     flex-direction: column !important;
@@ -1122,12 +1164,12 @@
     gap: 4px;
     box-sizing: border-box;
     z-index: var(--z-header, 1000);
-    will-change: transform, opacity;
-    transform: translateZ(0);
-    backface-visibility: hidden;
   }
   .nav-menu.open {
-    display: flex !important;
+    visibility: visible;
+    pointer-events: auto;
+    opacity: 1;
+    clip-path: circle(145% at 100% 0%);
   }
   .nav-menu li {
     width: 100% !important;
@@ -1324,6 +1366,7 @@
 }
 
 .brand-logo-header {
+  height: 38px;
   max-height: 38px;
   width: auto;
   object-fit: contain;

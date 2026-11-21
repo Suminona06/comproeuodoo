@@ -1,4 +1,5 @@
 import inquiryModel, { INQUIRY_STATUSES } from '../models/inquiryModel.js';
+import { formatSelectedVariantsText } from './productVariantService.js';
 
 export { INQUIRY_STATUSES };
 export const ALLOWED_PER_PAGE = [10, 25, 50, 100];
@@ -20,6 +21,7 @@ export const INQUIRY_CSV_COLUMNS = [
   { label: 'Alamat Email', key: 'email' },
   { label: 'Nomor Telepon / WhatsApp', key: 'phone' },
   { label: 'Produk Terkait', key: (r) => r.product_name_id || 'Umum' },
+  { label: 'Varian Produk', key: (r) => r.selected_variants_text || formatSelectedVariantsText(r.selected_variants, 'id') || '-' },
   { label: 'Pesan / Rincian Kebutuhan', key: 'message' },
   { label: 'Status', key: 'status' },
   { label: 'Catatan Internal Admin', key: (r) => r.admin_notes || '-' },

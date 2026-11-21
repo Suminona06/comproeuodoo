@@ -14,6 +14,7 @@ Modul Kontak & Footer menangani saluran komunikasi konversi prospek B2B, penanga
   1. **Kolom Kiri - Formulir RFQ Terisolasi (`.cf-*`):**
      - Field input: Nama Lengkap (`name`, required, max 100), Nama Perusahaan (`company`, optional, max 100 sesuai skema DB), Email Bisnis (`email`, required, email format, max 100), Nomor Telepon/WhatsApp (`phone`, required, min 7 max 30).
      - Pilihan Produk Terkait (`product_id` dropdown dengan opsi auto-select).
+     - Konteks Varian Produk Terpilih (`.cf-var-*`): menerima parameter varian dari halaman detail produk, menampilkan chip varian terpilih yang dapat dihapus maupun dipilih ulang sesuai produk aktif pada dropdown `product_id` (otomatis reset/sinkron saat produk diganti), serta disimpan bersama inquiry.
      - Estimasi Kuantitas Kebutuhan (`quantity`, max 100, misal "100.000 pcs / 5 ton").
      - Jenis Permintaan (`type`: Permintaan Penawaran / RFQ, Kemitraan Distributor, Pertanyaan Umum).
      - Pesan Detail / Spesifikasi Custom (`message`, required, min 10, max 3000).

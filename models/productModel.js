@@ -384,8 +384,13 @@ export const productModel = {
           variantsJson = JSON.stringify([data.variants]);
         }
       } else if (Array.isArray(data.variants)) {
-        const strVariants = data.variants.map(v => typeof v === 'string' ? v : (v.size_label || v.name_id || ''));
-        variantsJson = JSON.stringify(strVariants);
+        const isGroupFormat = data.variants.some((v) => v && typeof v === 'object' && Array.isArray(v.options));
+        if (isGroupFormat) {
+          variantsJson = JSON.stringify(data.variants);
+        } else {
+          const strVariants = data.variants.map(v => typeof v === 'string' ? v : (v.size_label || v.name_id || ''));
+          variantsJson = JSON.stringify(strVariants);
+        }
       }
     }
 
@@ -492,6 +497,8 @@ export const productModel = {
           }
         }
         if (Array.isArray(v)) {
+          const isGroupFormat = v.some((item) => item && typeof item === 'object' && Array.isArray(item.options));
+          if (isGroupFormat) return JSON.stringify(v);
           const strVariants = v.map(item => typeof item === 'string' ? item : (item.size_label || item.name_id || ''));
           return JSON.stringify(strVariants);
         }
@@ -603,6 +610,9 @@ export const productModel = {
 
   async saveVariantsWithConnection(connection, productId, variants) {
     await connection.execute('DELETE FROM product_variants WHERE product_id = ?', [productId]);
+    if (Array.isArray(variants) && variants.some((v) => v && typeof v === 'object' && Array.isArray(v.options))) {
+      return;
+    }
     for (let i = 0; i < variants.length; i++) {
       const v = variants[i];
       if (!v) continue;

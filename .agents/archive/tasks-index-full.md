@@ -1693,3 +1693,35 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 
 ### T-386: Verifikasi Regresi End-to-End (320px–1440px, ID/EN, Lint & Test) [DONE]
 - **Verifikasi:** `npm run migrate`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, dan Playwright E2E lintas viewport `320px–1440px` (ID & EN) lulus tanpa console/page error. Selesai 2026-11-21.
+
+### T-387: Perbaikan Akar Masalah Jitter/Lag Header & Scroll Mobile [DONE]
+- **File Terdampak:** `public/css/layout.css`, `public/js/main.js`
+- **Verifikasi:** Playwright 390px (`CLS = 0`, 0px height jump, nol atribut `style=` inline pada header/backdrop), `npm run lint`. Selesai 2026-11-21.
+
+### T-388: Animasi Corner Wipe Drawer Menu Mobile & Backdrop Blur [DONE]
+- **File Terdampak:** `views/partials/navbar.ejs`, `views/partials/head.ejs`, `views/partials/footer.ejs`, `public/css/layout.css`, `public/js/main.js`
+- **Verifikasi:** `clip-path: circle(0% at 100% 0%)` <-> `circle(145% at 100% 0%)`, `backdrop-filter: blur(8px)` aktif saat terbuka & hilang saat tertutup, `prefers-reduced-motion: reduce`. Selesai 2026-11-21.
+
+### T-389: Skema Data, Migrasi DB (023 & 024), Shared Validator & Snapshot Seed Varian Dinamis [DONE]
+- **File Terdampak:** `database/migrations/023_migrate_product_variants_to_groups.sql`, `database/migrations/024_add_selected_variants_to_inquiries.sql`, `services/productVariantService.js`, `models/productModel.js`, `database/seeds/snapshot.json`, `eslint.config.js`
+- **Verifikasi:** `node database/migrate.js`, `npm run test:seed` (4/4 lulus). Selesai 2026-11-21.
+
+### T-390: Admin CMS Builder Grup Varian Dinamis (.adm-var-*) [DONE]
+- **File Terdampak:** `views/admin/products/partials/variants.ejs`, `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `views/partials/admin-header.ejs`, `public/js/admin-product-variants.js`, `public/css/admin.css`, `services/productService.js`
+- **Verifikasi:** Preset dropdown `.eu-dd--sm` (38px), ikon trash SVG & chevron SVG terpadu, validasi batas 5 grup/20 opsi, `npx eslint public/js/admin-product-variants.js` (0 error, 0 warning). Selesai 2026-11-21.
+
+### T-391: Publik PDP Multi-Pilih Opsional, Polish Pil & Tautan WA/RFQ Dinamis [DONE]
+- **File Terdampak:** `views/partials/products/variant-group.ejs`, `views/partials/products/info-cta.ejs`, `views/public/product-detail.ejs`, `public/js/product-variants.js`, `public/css/components.css`, `services/publicProductService.js`, `locales/id.json`, `locales/en.json`
+- **Verifikasi:** Playwright 320px/390px/1440px (ID & EN), `npm run lint:i18n` (325 kunci simetris). Selesai 2026-11-21.
+
+### T-392: Konteks Varian pada Form RFQ /contact & Validasi Whitelist Server [DONE]
+- **File Terdampak:** `views/partials/contact/rfq-variants-picker.ejs`, `views/partials/contact/rfq-form.ejs`, `public/js/contact.js`, `services/publicContactService.js`, `models/inquiryModel.js`, `config/mailer.js`
+- **Verifikasi:** `tests/test-t387-t394-variants-and-header.js` (5/5 lulus), `tests/test-public-services.js`. Selesai 2026-11-21.
+
+### T-393: Tampilan Varian Terpilih pada Admin RFQ (Detail, Modal & Ekspor CSV) [DONE]
+- **File Terdampak:** `views/admin/inquiries/detail.ejs`, `views/admin/inquiries/index.ejs`, `public/js/admin-inquiries.js`, `services/inquiryService.js`, `tests/test-admin-batch2-services.js`
+- **Verifikasi:** `INQUIRY_CSV_COLUMNS` 12 kolom (`Varian Produk`), `npm test` unit test (54/54 lulus). Selesai 2026-11-21.
+
+### T-394: QA Regresi Menyeluruh & Gerbang Kualitas CI [DONE]
+- **File Terdampak:** `tests/test-t387-t394-variants-and-header.js`
+- **Verifikasi:** `npm run lint` (0 error), `npm run lint:views` (0 error), `npm run lint:i18n` (0 error), `npm run test:seed`, Playwright multi-viewport. Selesai 2026-11-21.

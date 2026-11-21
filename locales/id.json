@@ -196,6 +196,10 @@
     "phone_placeholder": "081234567890",
     "product_label": "Produk yang Diminati",
     "product_select_default": "-- Pilih Produk (Opsional) --",
+    "variants_selected_label": "Varian Produk yang Dipilih",
+    "variants_picker_hint": "Klik pil di bawah untuk memilih atau mengubah varian produk:",
+    "variants_remove_aria": "Hapus varian",
+    "variants_empty_hint": "Pilih dari opsi di bawah bila diperlukan.",
     "inquiry_type_label": "Tipe Permintaan",
     "inquiry_type_rfq": "Permintaan Penawaran Harga (RFQ)",
     "inquiry_type_partnership": "Kemitraan Distributor / Reseller",
@@ -265,7 +269,8 @@
     "not_found_title": "Produk Tidak Ditemukan",
     "not_found_message": "Produk yang Anda cari tidak tersedia atau sedang diperbarui.",
     "load_error_message": "Gagal memuat rincian produk.",
-    "whatsapp_quote_message": "Halo, saya tertarik dengan produk {name}. Boleh saya minta informasi lebih lanjut?"
+    "whatsapp_quote_message": "Halo, saya tertarik dengan produk {name}. Boleh saya minta informasi lebih lanjut?",
+    "whatsapp_quote_with_variants": "Halo, saya tertarik dengan produk {name}. Varian: {variants}. Boleh saya minta informasi lebih lanjut?"
   },
   "footer": {
     "default_desc": "PT. EUODOO adalah perusahaan manufaktur dan perdagangan kantong plastik HDPE dan LLDPE bersertifikasi ramah lingkungan. Didirikan tahun 1990, kami melayani retail modern, sektor industri, dan pasar tradisional dari fasilitas produksi di Bandung, Jawa Barat.",
