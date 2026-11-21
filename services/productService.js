@@ -1,5 +1,10 @@
 import { query } from '../config/database.js';
 import { parseDynamicSizeTable } from './productSizeTableService.js';
+import {
+  isVariantGroupObject,
+  normalizeVariantGroups,
+  validateRawVariantGroups
+} from './productVariantService.js';
 
 const ALLOWED_STATUSES = new Set(['published', 'draft', 'archived']);
 const ALLOWED_PER_PAGE = new Set([10, 25, 50, 100]);
@@ -139,9 +144,13 @@ const cleanOptionalCta = (raw) => {
 };
 
 export function validateProductFields(body = {}, { requireNameId = false } = {}) {
-  const { name_id, short_description_id, short_description_en, cta_text_id, cta_text_en } = body;
+  const { name_id, short_description_id, short_description_en, cta_text_id, cta_text_en, variants_json } = body;
   if (requireNameId && !trimOpt(name_id)) {
     return { error: 'Nama produk (Bahasa Indonesia) wajib diisi.' };
+  }
+  if (variants_json !== undefined) {
+    const varCheck = validateRawVariantGroups(variants_json);
+    if (varCheck.error) return { error: varCheck.error };
   }
 
   const cleanCtaId = cleanOptionalCta(cta_text_id);
@@ -227,6 +236,12 @@ const buildProductSeoFields = (body) => ({
 });
 
 const pickProductVariants = (body) => {
+  if (body.variants_json !== undefined) {
+    return validateRawVariantGroups(body.variants_json).groups || [];
+  }
+  if (Array.isArray(body.variants) && body.variants.some(isVariantGroupObject)) {
+    return normalizeVariantGroups(body.variants);
+  }
   const variantLabels = parseVariantLabels(body);
   return variantLabels.length > 0 ? variantLabels : parseVariants(body);
 };
@@ -265,7 +280,12 @@ const resolveOptionalTrim = (newVal, existingVal) => (newVal !== undefined ? tri
 const resolveOptionalCta = (rawVal, cleanVal, existingVal) => (rawVal !== undefined ? (cleanVal || null) : existingVal);
 
 function applyOptionalStructuredUpdates(updateData, body) {
-  if (body.variant_labels !== undefined || body.variants !== undefined || body.var_size !== undefined) {
+  if (
+    body.variants_json !== undefined ||
+    body.variant_labels !== undefined ||
+    body.variants !== undefined ||
+    body.var_size !== undefined
+  ) {
     updateData.variants = pickProductVariants(body);
   }
   if (SIZE_TABLE_BODY_KEYS.some((k) => body[k] !== undefined)) {

@@ -16,6 +16,7 @@
 <form action="/admin/products?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" id="productCreateForm" novalidate>
   <%- include('partials/basic-info') %>
   <%- include('partials/gallery') %>
+  <%- include('partials/variants') %>
   <%- include('partials/size-table') %>
   <%- include('partials/seo') %>
 
@@ -33,6 +34,7 @@
 
 <script src="/js/admin-products.js"></script>
 <script src="/js/admin-product-form.js"></script>
+<script src="/js/admin-product-variants.js"></script>
 <script src="/js/admin-size-table.js"></script>
 <script src="/tinymce/tinymce.min.js"></script>
 <script src="/js/admin-editor.js"></script>

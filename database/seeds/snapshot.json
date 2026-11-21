@@ -491,10 +491,23 @@
         "cta_text_id": "Hubungi Sales",
         "cta_text_en": "Contact Sales",
         "variants": [
-          "Drum Liner 200 Liter",
-          "Drum Liner 200 Liter",
-          "Pallet Hood 120 x 120 cm",
-          "Pallet Hood 120 x 120 cm"
+          {
+            "id": "grp_ukuran",
+            "name_id": "Ukuran",
+            "name_en": "Size",
+            "options": [
+              {
+                "id": "opt_1",
+                "label_id": "Drum Liner 200 Liter",
+                "label_en": "Drum Liner 200 Liter"
+              },
+              {
+                "id": "opt_2",
+                "label_id": "Pallet Hood 120 x 120 cm",
+                "label_en": "Pallet Hood 120 x 120 cm"
+              }
+            ]
+          }
         ],
         "size_table": {
           "rows": [
@@ -561,9 +574,28 @@
         "cta_text_id": null,
         "cta_text_en": null,
         "variants": [
-          "25 x 35 cm",
-          "30 x 40 cm",
-          "35 x 45 cm"
+          {
+            "id": "grp_ukuran",
+            "name_id": "Ukuran",
+            "name_en": "Size",
+            "options": [
+              {
+                "id": "opt_1",
+                "label_id": "25 x 35 cm",
+                "label_en": "25 x 35 cm"
+              },
+              {
+                "id": "opt_2",
+                "label_id": "30 x 40 cm",
+                "label_en": "30 x 40 cm"
+              },
+              {
+                "id": "opt_3",
+                "label_id": "35 x 45 cm",
+                "label_en": "35 x 45 cm"
+              }
+            ]
+          }
         ],
         "size_table": {
           "rows": [

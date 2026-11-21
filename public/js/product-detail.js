@@ -265,19 +265,6 @@
     }
   }
 
-  var variantGroups = document.querySelectorAll('[data-variants]');
-  variantGroups.forEach(function (group) {
-    group.addEventListener('click', function (e) {
-      var pill = e.target.closest('.pd-pill');
-      if (!pill) return;
-      var pills = group.querySelectorAll('.pd-pill');
-      pills.forEach(function (p) {
-        p.setAttribute('aria-pressed', 'false');
-      });
-      pill.setAttribute('aria-pressed', 'true');
-    });
-  });
-
   var tabContainers = document.querySelectorAll('[data-pd-tabs]');
   tabContainers.forEach(function (container) {
     var tabs = Array.from(container.querySelectorAll('[role="tab"]'));

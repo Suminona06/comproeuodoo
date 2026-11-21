@@ -1,0 +1,29 @@
+<%
+  const p = typeof product !== 'undefined' ? product : (typeof formData !== 'undefined' ? formData : {});
+  const isEdit = typeof product !== 'undefined' && product && product.id;
+  const defaultVariants = isEdit
+    ? []
+    : [{
+      id: 'grp_ukuran',
+      name_id: 'Ukuran',
+      name_en: 'Size',
+      options: [
+        { id: 'opt_1', label_id: '24 x 40 cm (40 Micron)', label_en: '24 x 40 cm (40 Micron)' },
+        { id: 'opt_2', label_id: '28 x 48 cm (45 Micron)', label_en: '28 x 48 cm (45 Micron)' }
+      ]
+    }];
+  const rawVariants = (Array.isArray(p.variants) && p.variants.length > 0) ? p.variants : defaultVariants;
+  const initialVariantsJson = JSON.stringify(rawVariants).replace(/</g, '\\u003c').replace(/'/g, '&#39;');
+%>
+<div class="form-card adm-var-card">
+  <div class="admin-card-header-flex">
+    <div class="form-card-title admin-card-title-plain">3. Grup Variasi Produk (ID &amp; EN)</div>
+    <button type="button" id="btnAddVariantGroup" class="btn-add-row">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Tambah Grup Varian</span>
+    </button>
+  </div>
+  <p class="admin-field-hint">Kelola grup variasi produk (Warna, Ukuran, Tipe, Jenis, atau Lainnya). Maksimal 5 grup dan 20 opsi per grup.</p>
+  <div id="adminVariantsBuilder" class="adm-var-builder" data-initial='<%- initialVariantsJson %>'></div>
+  <input type="hidden" name="variants_json" id="inputVariantsJson" value="">
+</div>

@@ -3,6 +3,7 @@ import productCategoryModel from '../models/productCategoryModel.js';
 import pageHeroBannerModel from '../models/pageHeroBannerModel.js';
 import mediaModel from '../models/mediaModel.js';
 import { resolveProductGallery, buildProductSpecPayload } from './publicProductDetailHelper.js';
+import { normalizeVariantGroups } from './productVariantService.js';
 
 export { resolveProductGallery, buildProductSpecPayload };
 
@@ -196,7 +197,7 @@ export function buildWhatsappQuoteUrl(prodName, settings, t) {
 function applyNormalizedFields(product, gallery, waUrl) {
   product.short_description_id = product.short_description_id || null;
   product.short_description_en = product.short_description_en || null;
-  product.variants = Array.isArray(product.variants) ? product.variants : [];
+  product.variants = normalizeVariantGroups(product.variants);
   product.size_table = normalizeSizeTable(product.size_table);
   product.gallery_images = gallery;
   product.gallery = gallery;

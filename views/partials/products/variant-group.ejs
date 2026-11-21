@@ -1,0 +1,30 @@
+<%
+  const isEnGroup = lang === 'en';
+  const isGroupObj = grp && typeof grp === 'object' && Array.isArray(grp.options);
+  const grpName = isGroupObj
+    ? (isEnGroup ? (grp.name_en || grp.name_id) : (grp.name_id || grp.name_en))
+    : (typeof grp === 'string' ? grp : '');
+  const grpId = isGroupObj && grp.id ? grp.id : 'grp_ukuran';
+  const opts = isGroupObj
+    ? grp.options
+    : (typeof grp === 'string' && grp ? [{ id: 'opt_1', label_id: grp, label_en: grp }] : []);
+%>
+<% if (grpName && opts.length > 0) { %>
+  <fieldset class="pd-var-group" data-group-id="<%= grpId %>" data-group-name="<%= grpName %>">
+    <legend class="pd-v-label pd-var-legend"><%= grpName %></legend>
+    <div class="pd-v-pills pd-var-pills">
+      <% opts.forEach(function(opt) {
+        const optLabel = isEnGroup ? (opt.label_en || opt.label_id) : (opt.label_id || opt.label_en);
+        if (optLabel) {
+      %>
+        <button type="button"
+                class="pd-pill pd-var-pill"
+                data-option-id="<%= opt.id %>"
+                data-option-label="<%= optLabel %>"
+                aria-pressed="false">
+          <%= optLabel %>
+        </button>
+      <% } }); %>
+    </div>
+  </fieldset>
+<% } %>

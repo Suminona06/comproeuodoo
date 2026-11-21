@@ -1,3 +1,23 @@
+<%
+  const activeLang = typeof currentLang !== 'undefined' ? currentLang : 'id';
+  const rawList = Array.isArray(variants) ? variants : [];
+  const hasGroupObjects = rawList.some(function(item) {
+    return item && typeof item === 'object' && Array.isArray(item.options);
+  });
+  const normalizedGroups = hasGroupObjects
+    ? rawList
+    : (rawList.length > 0
+      ? [{
+        id: 'grp_ukuran',
+        name_id: t('product_detail.variants_label'),
+        name_en: t('product_detail.variants_label'),
+        options: rawList.map(function(v, idx) {
+          const lbl = typeof v === 'string' ? v : (v.size_label || v.name_id || v.name_en || '');
+          return { id: 'opt_' + (idx + 1), label_id: lbl, label_en: lbl };
+        }).filter(function(o) { return Boolean(o.label_id); })
+      }]
+      : []);
+%>
 <div>
   <h1 class="pd-title"><%= prodName %></h1>
 
@@ -5,21 +25,17 @@
     <p class="pd-short-desc"><%= shortDesc.trim() %></p>
   <% } %>
 
-  <% if (variants && variants.length > 0) { %>
-    <div class="pd-variants" data-variants>
-      <div class="pd-v-label"><%= t('product_detail.variants_label') %></div>
-      <div class="pd-v-pills" role="group" aria-label="<%= t('product_detail.variants_aria') %>">
-        <% variants.forEach(function(v, idx) { 
-          const vLabel = typeof v === 'string' ? v : (v.size_label || v.name_id || v.name_en || '');
-          if (vLabel) {
-        %>
-          <button type="button"
-                  class="pd-pill"
-                  aria-pressed="<%= idx === 0 ? 'true' : 'false' %>">
-            <%= vLabel %>
-          </button>
-        <% } }); %>
-      </div>
+  <% if (normalizedGroups.length > 0) { %>
+    <div class="pd-variants pd-var-wrap"
+         data-variants
+         data-product-id="<%= product.id %>"
+         data-product-name="<%= prodName %>"
+         data-wa-default-href="<%= waUrl %>"
+         data-wa-variant-tpl="<%= t('product_detail.whatsapp_quote_with_variants') %>"
+         data-rfq-base-href="/contact?product=<%= product.id %>">
+      <% normalizedGroups.forEach(function(grp) { %>
+        <%- include('./variant-group', { grp, lang: activeLang }) %>
+      <% }); %>
     </div>
   <% } %>
 
@@ -34,4 +50,3 @@
     </a>
   </div>
 </div>
-
