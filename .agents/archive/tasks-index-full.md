@@ -1666,3 +1666,30 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
   - Seluruh pemakai single-select picker, `/admin/media`, `/products/:slug`, viewport `320px`–`1440px`, mode ID/EN, homepage beku, dan gerbang kualitas CI lulus tanpa console/CSP error.
 - **File Terdampak:** *(verifikasi regresi & dokumentasi close)*
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm run test:seed`, `node --test`, Playwright E2E
+
+### T-380: Perbaikan Toolbar Katalog Mobile 2 Baris (`/products`) [DONE]
+- **File Terdampak:** `public/css/components.css`
+- **Verifikasi:** Playwright 320/375/480/768/1440px (overflow: false, search 44px full-width, Filter+Urutkan 50/50 di `<= 767px`, 1 baris di `>= 768px`), `npm run lint`, `npm run lint:views`. Selesai 2026-11-21.
+
+### T-381: Inklusi Otomatis `main_image` di Indeks 0 Galeri Detail Produk + Deduplikasi [DONE]
+- **File Terdampak:** `services/publicProductService.js`, `services/publicProductDetailHelper.js`, `tests/test-public-services.js`
+- **Verifikasi:** Unit test `tests/test-public-services.js` (lulus 11/11). Selesai 2026-11-21.
+
+### T-382: Galeri Detail Produk — CSS Scroll-Snap Swipe/Drag, Panah Prev/Next Desktop & Strip Thumbnail Geser [DONE]
+- **File Terdampak:** `views/partials/products/gallery.ejs`, `public/css/components.css`, `public/js/product-detail.js`, `locales/id.json`, `locales/en.json`
+- **Verifikasi:** Playwright CDP touch swipe (`375px`), desktop mouse drag (`1440px`), `min-width: 0` fix untuk 8–10 foto di `320px–1440px`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`. Selesai 2026-11-21.
+
+### T-383: Migrasi DB `022`, Model & Validasi Server `show_description_tab` (`DEFAULT 0`) [DONE]
+- **File Terdampak:** `database/migrations/022_add_show_description_tab_to_products.sql`, `models/productModel.js`, `services/productService.js`, `tests/test-t356-t360-admin-services.js`
+- **Verifikasi:** `npm run migrate` & unit test `tests/test-t356-t360-admin-services.js`. Selesai 2026-11-21.
+
+### T-384: Toggle Admin Tampil/Sembunyi Tab Deskripsi Lengkap di Form Produk [DONE]
+- **File Terdampak:** `views/admin/products/partials/basic-info.ejs`
+- **Verifikasi:** `npm run lint:views`, `npm run lint`. Selesai 2026-11-21.
+
+### T-385: Tab "Deskripsi Lengkap" & "Tabel Ukuran" di Detail Produk Publik [DONE]
+- **File Terdampak:** `services/publicProductDetailHelper.js`, `services/publicProductService.js`, `views/public/product-detail.ejs`, `views/partials/products/spec-tabs.ejs`, `views/partials/products/size-table.ejs`, `public/css/components.css`, `public/js/product-detail.js`, `locales/id.json`, `locales/en.json`
+- **Verifikasi:** Unit test `buildProductSpecPayload`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`. Selesai 2026-11-21.
+
+### T-386: Verifikasi Regresi End-to-End (320px–1440px, ID/EN, Lint & Test) [DONE]
+- **Verifikasi:** `npm run migrate`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, dan Playwright E2E lintas viewport `320px–1440px` (ID & EN) lulus tanpa console/page error. Selesai 2026-11-21.

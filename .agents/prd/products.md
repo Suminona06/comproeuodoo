@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-13 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-21 | Kode: controllers/public/productController.js, views/public/products.ejs, views/public/product-detail.ejs
 
 # PRD: Modul Produk & Katalog Manufaktur (Products Catalog)
 
@@ -15,7 +15,7 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - **Kartu Produk Potret Minimalis:** Rasio potret tetap 3:4 dengan `object-fit: cover` (CLS = 0), garis tipis `border-bottom: 1px solid var(--color-border)`, nama produk kapital kecil rata kiri, tombol selebar kartu outline hijau brand `var(--color-primary)` menuju `/products/:slug`, bebas harga (zero-price B2B).
 - **Toolbar Atas, Pencarian & Pengurutan:** Pencarian debounced 350ms, 4 opsi urutan (Terbaru, A-Z, Z-A, Katalog), live region aksesibel (`.sr-only`), pesan hasil kosong dwibahasa.
 - **Progressive Enhancement Load More:** Tombol "Muat Lebih Banyak" tampil jika total > 9, memuat 9 kartu via AJAX tanpa reload, animasi transisi transform/opacity (`prefers-reduced-motion` statis).
-- **Tata Letak Mobile & Filter Drawer:** Mobile (<= 767px) reflow 2 kolom kompak; `[PENDING T-380]` toolbar atas 2 baris (baris 1 search lebar penuh, baris 2 Filter & Urutkan berdampingan 50/50); filter kategori disajikan via drawer samping (*offcanvas*) dengan target sentuh min 44 x 44 px.
+- **Tata Letak Mobile & Filter Drawer:** Mobile (<= 767px) reflow 2 kolom kompak; toolbar atas 2 baris (baris 1 search lebar penuh, baris 2 Filter & Urutkan berdampingan 50/50); filter kategori disajikan via drawer samping (*offcanvas*) dengan target sentuh min 44 x 44 px.
 - **Modularitas Template & Standar View:** Template `views/public/products.ejs` mempertahankan section hero banner di file utama dan mengorkestrasi 3 partial modular di `views/partials/products/` (`sidebar.ejs`, `toolbar.ejs`, `empty-state.ejs`) masing-masing <= 100 baris. Seluruh elemen visual menggunakan token desain CSS tanpa inline style, zero raw hex, zero komentar HTML, dan seluruh teks antarmuka menggunakan helper `t('products.*')`.
 
 ### FR-09: Ekspor Data Produk ke Format CSV (CMS)
@@ -23,7 +23,7 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 - Kolom CSV mencakup metadata produk (ID, SKU/Slug, Nama Produk ID/EN, Kategori, Teks CTA ID/EN, Status Publikasi, Tanggal Dibuat) serta penggabungan dinamis (*union of columns*) dari seluruh kolom tabel ukuran produk aktif. Produk tanpa tabel ukuran atau tanpa kolom tertentu diisi string kosong `""`.
 
 ### FR-25: Skema Kolom Database Produk
-- Skema tabel `products`: `short_description_id/en`, `variants`, `size_table`, `gallery_images`, `cta_text_id/en`, `[PENDING T-383]` `show_description_tab`. Kolom legacy `material_specs` dan `technical_specs` telah di-drop. Kolom `size_table` (JSON) menyimpan objek dinamis `{ columns, rows }` yang dimigrasi dari format lama via migrasi `018`.
+- Skema tabel `products`: `short_description_id/en`, `variants`, `size_table`, `gallery_images`, `cta_text_id/en`, `show_description_tab`. Kolom legacy `material_specs` dan `technical_specs` telah di-drop. Kolom `size_table` (JSON) menyimpan objek dinamis `{ columns, rows }` yang dimigrasi dari format lama via migrasi `018`.
 
 ### FR-29: Struktur Tabel Ukuran Dinamis Per Produk (Admin CMS)
 - Setiap produk memiliki definisi struktur kolom dan baris sendiri (tanpa master kolom global, isolasi data 100%).
@@ -44,7 +44,7 @@ Modul Produk mengelola etalase katalog publik manufaktur plastik (HDPE, LLDPE, P
 
 | Keputusan | Alasan 1 Kalimat | Tanggal |
 | :--- | :--- | :--- |
-| **Toolbar Katalog Mobile 2 Baris (`<= 767px`) `[PENDING T-380]`** | Memberi lebar penuh pada kolom search di mobile sementara Filter dan Urutkan berbagi baris kedua 50/50. | 2026-11-21 |
+| **Toolbar Katalog Mobile 2 Baris (`<= 767px`)** | Memberi lebar penuh pada kolom search di mobile sementara Filter dan Urutkan berbagi baris kedua 50/50. | 2026-11-21 |
 | **Tabel Ukuran Dinamis Per Produk** | Memberikan fleksibilitas spesifikasi dimensi tanpa batasan kolom kaku antar jenis produk. | 2026-10-27 |
 | **Grid 2 Kolom Mobile & Drawer** | Efisiensi ruang layar ponsel dengan drawer filter ergonomis. | 2026-10-21 |
 | **Gambar Potret 3:4 Cover** | Keteraturan visual kartu produk tanpa variasi tinggi gambar. | 2026-10-21 |
