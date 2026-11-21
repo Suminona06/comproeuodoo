@@ -95,14 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
     menu.classList.add('hdr-wipe-animating');
     menu.style.clipPath = 'circle(0% at 100% 0%)';
     menu.style.opacity = '0';
-    menu.style.transform = 'translate3d(0, -6px, 0)';
     if (menuBackdrop) {
       menuBackdrop.classList.add('hdr-wipe-animating');
       menuBackdrop.style.opacity = '0';
     }
     navItems.forEach((li) => {
       li.style.opacity = '0';
-      li.style.transform = 'translate3d(0, -4px, 0)';
+      li.style.transform = 'translateY(-4px)';
     });
   }
 
@@ -115,27 +114,48 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     if (menuBackdrop) {
-      tl.add({ targets: menuBackdrop, opacity: [0, 1], duration: 240, easing: 'easeOutQuad' }, 0);
+      tl.add({ targets: menuBackdrop, opacity: [0, 1], duration: 360, easing: 'easeOutQuad' }, 0);
     }
     tl.add({
       targets: menu,
-      clipPath: ['circle(0% at 100% 0%)', 'circle(150% at 100% 0%)'],
+      clipPath: ['circle(0% at 100% 0%)', 'circle(145% at 100% 0%)'],
       opacity: [0, 1],
-      translateY: [-6, 0],
-      duration: 360,
-      easing: 'cubicBezier(0.22, 1, 0.36, 1)'
+      duration: 560,
+      easing: 'easeOutCubic'
     }, 0);
     if (navItems.length > 0) {
       tl.add({
         targets: navItems,
         opacity: [0, 1],
         translateY: [-4, 0],
-        duration: 200,
-        delay: animeLib.stagger(20),
-        easing: 'easeOutQuad'
-      }, 60);
+        duration: 280,
+        delay: animeLib.stagger(32),
+        easing: 'easeOutCubic'
+      }, 120);
     }
     return tl;
+  }
+
+  function lockBodyScroll() {
+    const scrollbarW = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+    document.body.style.overflow = 'hidden';
+    if (scrollbarW > 0) {
+      document.body.style.paddingRight = `${scrollbarW}px`;
+      if (headerWrap) headerWrap.style.paddingRight = `${scrollbarW}px`;
+    }
+  }
+
+  function unlockBodyScroll() {
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    if (headerWrap) headerWrap.style.paddingRight = '';
+  }
+
+  function syncBackdropTop() {
+    if (!menuBackdrop || !headerWrap) return;
+    const siteHeader = headerWrap.querySelector('.site-header') || headerWrap;
+    const rect = siteHeader.getBoundingClientRect();
+    menuBackdrop.style.setProperty('--menu-backdrop-top', `${Math.max(0, Math.round(rect.bottom))}px`);
   }
 
   function openMobileMenu() {
@@ -145,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navItems = Array.from(menu.querySelectorAll('li'));
 
     cancelMenuAnimations(animeLib);
+    syncBackdropTop();
     if (useMotion) {
       setMenuToggleLocked(true);
       prepareOpenMenuStyles(navItems);
@@ -155,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle.setAttribute('aria-expanded', 'true');
     if (headerWrap) headerWrap.classList.add('menu-open');
     if (menuBackdrop) menuBackdrop.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
 
     if (!useMotion) {
       clearMenuInlineStyles();
@@ -180,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (headerWrap) headerWrap.classList.remove('menu-open');
       if (menuBackdrop) menuBackdrop.classList.remove('open');
       clearMenuInlineStyles();
-      document.body.style.overflow = '';
+      unlockBodyScroll();
       setMenuToggleLocked(false);
       if (typeof onComplete === 'function') onComplete();
     }
@@ -194,17 +215,26 @@ document.addEventListener('DOMContentLoaded', () => {
     menu.classList.add('hdr-wipe-animating');
     if (menuBackdrop) menuBackdrop.classList.add('hdr-wipe-animating');
 
+    const navItems = Array.from(menu.querySelectorAll('li'));
     const tl = animeLib.timeline({ complete: finalizeClose });
+    if (navItems.length > 0) {
+      tl.add({
+        targets: navItems,
+        opacity: [1, 0],
+        translateY: [0, -4],
+        duration: 200,
+        easing: 'easeOutQuad'
+      }, 0);
+    }
     tl.add({
       targets: menu,
-      clipPath: ['circle(150% at 100% 0%)', 'circle(0% at 100% 0%)'],
+      clipPath: ['circle(145% at 100% 0%)', 'circle(0% at 100% 0%)'],
       opacity: [1, 0],
-      translateY: [0, -6],
-      duration: 240,
-      easing: 'cubicBezier(0.4, 0, 1, 1)'
+      duration: 480,
+      easing: 'easeOutCubic'
     }, 0);
     if (menuBackdrop) {
-      tl.add({ targets: menuBackdrop, opacity: [1, 0], duration: 200, easing: 'easeInQuad' }, 0);
+      tl.add({ targets: menuBackdrop, opacity: [1, 0], duration: 380, easing: 'easeOutQuad' }, 60);
     }
     activeMenuTimeline = tl;
   }
