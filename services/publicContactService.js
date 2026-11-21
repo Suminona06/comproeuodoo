@@ -3,6 +3,11 @@ import productModel from '../models/productModel.js';
 import pageHeroBannerModel from '../models/pageHeroBannerModel.js';
 import mailer from '../config/mailer.js';
 import logger from '../utils/logger.js';
+import {
+  normalizeVariantGroups,
+  matchSelectedVariantsWhitelist,
+  formatSelectedVariantsText
+} from './productVariantService.js';
 
 export const MAX_TEXT_LENGTH = 100;
 export const MIN_MESSAGE_LENGTH = 10;
@@ -43,15 +48,34 @@ export function findSelectedProduct(products, productParam) {
   return products.find((p) => String(p.id) === target || p.slug === target) || null;
 }
 
+function buildProductVariantsMap(products = []) {
+  const map = {};
+  for (const prod of products) {
+    const groups = normalizeVariantGroups(prod.variants);
+    prod.variant_groups = groups;
+    if (groups.length > 0) map[prod.id] = groups;
+  }
+  return map;
+}
+
+function resolveInitialSelectedVariants(selectedProduct, rawVariants) {
+  if (!selectedProduct) return [];
+  return matchSelectedVariantsWhitelist(rawVariants, selectedProduct.variant_groups);
+}
+
 export async function getContactPageData(rawQuery = {}, context = {}, deps = {}) {
   const pModel = deps.productModel || productModel;
   const heroModel = deps.pageHeroBannerModel || pageHeroBannerModel;
-  const { product, success, error } = rawQuery;
+  const { product, variants, success, error } = rawQuery;
 
   const [products, heroBanner] = await Promise.all([
     pModel.findAll({ isActive: true }),
     heroModel.getByPageKey('contact')
   ]);
+
+  const productVariantsMap = buildProductVariantsMap(products);
+  const selectedProduct = findSelectedProduct(products, product);
+  const selectedVariants = resolveInitialSelectedVariants(selectedProduct, variants);
 
   const errorKey = ERROR_QUERY_KEYS[error] || null;
   const errorMsg = errorKey ? translate(context.t, errorKey) : null;
@@ -60,7 +84,9 @@ export async function getContactPageData(rawQuery = {}, context = {}, deps = {})
     title: `${translate(context.t, 'contact.page_title')} | ${resolveCompanyName(context.settings)}`,
     path: '/contact',
     products,
-    selectedProduct: findSelectedProduct(products, product),
+    selectedProduct,
+    selectedVariants,
+    productVariantsMap,
     success: success === '1',
     error: Boolean(errorMsg),
     errorMsg,
@@ -75,6 +101,8 @@ export function buildContactFallbackPayload(context = {}) {
     path: '/contact',
     products: [],
     selectedProduct: null,
+    selectedVariants: [],
+    productVariantsMap: {},
     success: false,
     error: true,
     errorMsg: translate(context.t, 'contact.err_system_load'),
@@ -91,6 +119,7 @@ export function normalizeRfqPayload(body = {}) {
     email: (trimNullable(body.email) || '').toLowerCase(),
     phone: trimNullable(body.phone) || '',
     productId: body.product_id,
+    selectedVariantsRaw: body.selected_variants || '',
     quantity: trimNullable(body.quantity),
     message: trimNullable(body.message) || '',
     type: VALID_INQUIRY_TYPES.includes(body.type) ? body.type : 'inquiry',
@@ -125,6 +154,13 @@ function getLocalizedProductName(product, currentLang, defaultName) {
   return currentLang === 'en' ? (product.name_en || product.name_id) : product.name_id;
 }
 
+function buildValidProductSelection(parsedId, product, context, defaultName) {
+  const productName = getLocalizedProductName(product, context.currentLang, defaultName);
+  const selection = { valid: true, productId: parsedId, productName };
+  if (product.variants !== undefined) selection.productVariants = product.variants;
+  return selection;
+}
+
 export async function resolveProductSelection(rawProductId, context = {}, deps = {}) {
   const pModel = deps.productModel || productModel;
   const defaultName = translate(context.t, 'contact.default_product_name');
@@ -140,14 +176,17 @@ export async function resolveProductSelection(rawProductId, context = {}, deps =
   if (!product) {
     return { valid: false, errorKey: 'contact.err_product_invalid' };
   }
-  const productName = getLocalizedProductName(product, context.currentLang, defaultName);
-  return { valid: true, productId: parsedId, productName };
+  return buildValidProductSelection(parsedId, product, context, defaultName);
 }
 
 export async function persistAndNotifyInquiry(payload, productInfo, ipAddress, deps = {}) {
   const inqModel = deps.inquiryModel || inquiryModel;
   const mailClient = deps.mailer || mailer;
   const log = deps.logger || logger;
+  const validatedVariants = productInfo.productId
+    ? matchSelectedVariantsWhitelist(payload.selectedVariantsRaw, productInfo.productVariants)
+    : [];
+  const variantsText = formatSelectedVariantsText(validatedVariants, 'id');
 
   const inquiryId = await inqModel.create({
     type: payload.type,
@@ -156,6 +195,7 @@ export async function persistAndNotifyInquiry(payload, productInfo, ipAddress, d
     email: payload.email,
     phone: payload.phone,
     product_id: productInfo.productId,
+    selected_variants: validatedVariants.length > 0 ? validatedVariants : null,
     quantity: payload.quantity,
     message: payload.message,
     source: 'contact_form',
@@ -172,6 +212,7 @@ export async function persistAndNotifyInquiry(payload, productInfo, ipAddress, d
     email: payload.email,
     phone: payload.phone,
     product_name: productInfo.productName,
+    selected_variants_text: variantsText || null,
     estimated_quantity: payload.quantity,
     message: payload.message
   }).catch((err) => {

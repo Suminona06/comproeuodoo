@@ -24,26 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', onScroll, { passive: true });
   applyScrollState();
 
-  function updateHeaderOffset() {
-    if (!headerWrap) return;
-    const topBarWrap = headerWrap.querySelector('.top-bar-wrap');
-    const siteHeader = headerWrap.querySelector('.site-header');
-    const topBarH = topBarWrap ? (topBarWrap.offsetHeight || 28) : (window.innerWidth <= 768 ? 24 : 28);
-    const siteH = siteHeader ? siteHeader.offsetHeight : 64;
-    headerWrap.style.setProperty('--topbar-h', `${topBarH}px`);
-    const totalH = headerWrap.classList.contains('is-scrolled') ? siteH : topBarH + siteH;
-    if (totalH > 0) {
-      document.documentElement.style.setProperty('--header-actual-height', `${totalH}px`);
-    }
-  }
-  updateHeaderOffset();
-  let resizeTimer = null;
-  window.addEventListener('resize', () => {
-    if (resizeTimer) clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(updateHeaderOffset, 100);
-  }, { passive: true });
-  window.addEventListener('load', updateHeaderOffset, { passive: true, once: true });
-
   const toggle = document.getElementById('mobileToggle');
   const menu = document.getElementById('navMenu');
   const menuBackdrop = document.getElementById('menuBackdrop');
@@ -60,17 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function clearMenuInlineStyles() {
     if (menu) {
-      menu.style.clipPath = '';
-      menu.style.opacity = '';
-      menu.style.transform = '';
+      menu.removeAttribute('style');
       menu.classList.remove('hdr-wipe-animating');
       menu.querySelectorAll('li').forEach((li) => {
-        li.style.opacity = '';
-        li.style.transform = '';
+        li.removeAttribute('style');
       });
     }
     if (menuBackdrop) {
-      menuBackdrop.style.opacity = '';
+      menuBackdrop.removeAttribute('style');
       menuBackdrop.classList.remove('hdr-wipe-animating');
     }
   }
@@ -137,25 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function lockBodyScroll() {
-    const scrollbarW = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
-    document.body.style.overflow = 'hidden';
-    if (scrollbarW > 0) {
-      document.body.style.paddingRight = `${scrollbarW}px`;
-      if (headerWrap) headerWrap.style.paddingRight = `${scrollbarW}px`;
-    }
+    document.body.classList.add('menu-scroll-locked');
   }
 
   function unlockBodyScroll() {
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
-    if (headerWrap) headerWrap.style.paddingRight = '';
-  }
-
-  function syncBackdropTop() {
-    if (!menuBackdrop || !headerWrap) return;
-    const siteHeader = headerWrap.querySelector('.site-header') || headerWrap;
-    const rect = siteHeader.getBoundingClientRect();
-    menuBackdrop.style.setProperty('--menu-backdrop-top', `${Math.max(0, Math.round(rect.bottom))}px`);
+    document.body.classList.remove('menu-scroll-locked');
   }
 
   function openMobileMenu() {
@@ -165,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navItems = Array.from(menu.querySelectorAll('li'));
 
     cancelMenuAnimations(animeLib);
-    syncBackdropTop();
     if (useMotion) {
       setMenuToggleLocked(true);
       prepareOpenMenuStyles(navItems);

@@ -26,10 +26,17 @@ export function isVariantGroupObject(item) {
   return Boolean(item && typeof item === 'object' && Array.isArray(item.options));
 }
 
+function pickLegacyBaseText(item) {
+  for (const key of ['size_label', 'name_id', 'label_id', 'name_en']) {
+    if (item[key]) return stripHtml(item[key]);
+  }
+  return '';
+}
+
 function extractLegacyLabel(item) {
   if (typeof item === 'string') return stripHtml(item);
   if (!item || typeof item !== 'object') return '';
-  const base = stripHtml(item.size_label || item.name_id || item.label_id || item.name_en || '');
+  const base = pickLegacyBaseText(item);
   const thick = stripHtml(item.thickness || '');
   if (!base) return '';
   return thick && !base.includes(thick) ? `${base} (${thick})` : base;
@@ -151,14 +158,7 @@ function checkSingleOptionLimits(opt) {
   return null;
 }
 
-function checkSingleGroupLimits(grp) {
-  if (!grp || typeof grp !== 'object') return 'Format grup varian tidak valid.';
-  const nId = stripHtml(grp.name_id);
-  const nEn = stripHtml(grp.name_en);
-  if (nId.length > MAX_GROUP_NAME_LENGTH || nEn.length > MAX_GROUP_NAME_LENGTH) {
-    return `Nama grup varian maksimal ${MAX_GROUP_NAME_LENGTH} karakter.`;
-  }
-  const opts = Array.isArray(grp.options) ? grp.options : [];
+function checkOptionListLimits(opts) {
   if (opts.length > MAX_OPTIONS_PER_GROUP) {
     return `Maksimal ${MAX_OPTIONS_PER_GROUP} opsi per grup varian.`;
   }
@@ -167,6 +167,16 @@ function checkSingleGroupLimits(grp) {
     if (optErr) return optErr;
   }
   return null;
+}
+
+function checkSingleGroupLimits(grp) {
+  if (!grp || typeof grp !== 'object') return 'Format grup varian tidak valid.';
+  const nId = stripHtml(grp.name_id);
+  const nEn = stripHtml(grp.name_en);
+  if (nId.length > MAX_GROUP_NAME_LENGTH || nEn.length > MAX_GROUP_NAME_LENGTH) {
+    return `Nama grup varian maksimal ${MAX_GROUP_NAME_LENGTH} karakter.`;
+  }
+  return checkOptionListLimits(Array.isArray(grp.options) ? grp.options : []);
 }
 
 export function validateRawVariantGroups(rawInput) {
@@ -203,14 +213,18 @@ function parseCompactVariantString(rawStr) {
   return map;
 }
 
+function extractOptionIdList(item) {
+  const rawOpts = Array.isArray(item.option_ids) ? item.option_ids : item.options;
+  if (!Array.isArray(rawOpts)) return [];
+  return rawOpts.map((o) => String(typeof o === 'object' ? o?.id : o || '').trim()).filter(Boolean);
+}
+
 function parseArrayVariantSelection(list) {
   const map = new Map();
   for (const item of list) {
     if (!item || typeof item !== 'object') continue;
     const gId = String(item.group_id || item.id || '').trim();
-    if (!gId) continue;
-    const rawOpts = Array.isArray(item.option_ids) ? item.option_ids : (Array.isArray(item.options) ? item.options : []);
-    const ids = rawOpts.map((o) => String(typeof o === 'object' ? o?.id : o || '').trim()).filter(Boolean);
+    const ids = gId ? extractOptionIdList(item) : [];
     if (ids.length > 0) map.set(gId, new Set(ids));
   }
   return map;
@@ -258,23 +272,36 @@ export function matchSelectedVariantsWhitelist(rawSelection, productVariants) {
   return matched;
 }
 
+function pickFirstNonEmpty(obj, keys) {
+  for (const k of keys) {
+    if (obj[k]) return obj[k];
+  }
+  return '';
+}
+
+function pickGroupDisplayName(grp, isEn) {
+  const keys = isEn
+    ? ['group_name_en', 'name_en', 'group_name_id', 'name_id']
+    : ['group_name_id', 'name_id', 'group_name_en', 'name_en'];
+  return pickFirstNonEmpty(grp, keys);
+}
+
+function pickOptionDisplayLabel(opt, isEn) {
+  if (!opt || typeof opt !== 'object') return '';
+  return pickFirstNonEmpty(opt, isEn ? ['label_en', 'label_id'] : ['label_id', 'label_en']);
+}
+
+function formatGroupSummary(grp, isEn) {
+  if (!grp || typeof grp !== 'object' || !Array.isArray(grp.options)) return '';
+  const gName = pickGroupDisplayName(grp, isEn);
+  const labels = grp.options.map((o) => pickOptionDisplayLabel(o, isEn)).filter(Boolean);
+  return gName && labels.length > 0 ? `${gName}: ${labels.join(', ')}` : '';
+}
+
 export function formatSelectedVariantsText(selectedVariants, lang = 'id') {
   const list = parseJsonIfNeeded(selectedVariants);
-  if (list.length === 0) return '';
   const isEn = String(lang).toLowerCase() === 'en';
-  const parts = [];
-
-  for (const grp of list) {
-    if (!grp || typeof grp !== 'object' || !Array.isArray(grp.options)) continue;
-    const gName = isEn ? (grp.group_name_en || grp.group_name_id || grp.name_en || grp.name_id) : (grp.group_name_id || grp.name_id);
-    const labels = grp.options
-      .map((o) => (isEn ? (o?.label_en || o?.label_id) : (o?.label_id || o?.label_en)))
-      .filter(Boolean);
-    if (gName && labels.length > 0) {
-      parts.push(`${gName}: ${labels.join(', ')}`);
-    }
-  }
-  return parts.join('; ');
+  return list.map((grp) => formatGroupSummary(grp, isEn)).filter(Boolean).join('; ');
 }
 
 export default {

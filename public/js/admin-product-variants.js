@@ -33,19 +33,26 @@
     return found ? found.key : 'custom';
   }
 
+  function pickFirstText(raw, keys) {
+    for (const k of keys) {
+      if (raw[k]) return String(raw[k]).trim().slice(0, MAX_OPT_LEN);
+    }
+    return '';
+  }
+
   function normalizeInitialOption(raw, idx) {
     if (typeof raw === 'string') {
       const val = raw.trim().slice(0, MAX_OPT_LEN);
       return { id: `opt_${idx + 1}`, label_id: val, label_en: val };
     }
     if (!raw || typeof raw !== 'object') return { id: nextUid('opt'), label_id: '', label_en: '' };
-    const lId = String(raw.label_id || raw.size_label || raw.name_id || '').trim().slice(0, MAX_OPT_LEN);
-    const lEn = String(raw.label_en || raw.name_en || lId).trim().slice(0, MAX_OPT_LEN);
+    const lId = pickFirstText(raw, ['label_id', 'size_label', 'name_id']);
+    const lEn = pickFirstText(raw, ['label_en', 'name_en']) || lId;
     return { id: String(raw.id || `opt_${idx + 1}`), label_id: lId, label_en: lEn };
   }
 
   function parseInitialGroups() {
-    let raw = [];
+    let raw;
     try {
       raw = JSON.parse(container.getAttribute('data-initial') || '[]');
     } catch {
@@ -95,28 +102,50 @@
 
   function confirmDelete(title, text, onConfirm) {
     if (typeof Swal !== 'undefined' && typeof Swal.fire === 'function') {
-      Swal.fire({
-        title,
-        text,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Hapus',
-        cancelButtonText: 'Batal'
-      }).then((res) => {
-        if (res.isConfirmed) onConfirm();
-      });
+      Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus', cancelButtonText: 'Batal' })
+        .then((res) => { if (res.isConfirmed) onConfirm(); });
       return;
     }
     onConfirm();
   }
 
-  function createIconBtn(className, label, text, disabled, onClick) {
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const ICON_SPECS = {
+    up: { cls: 'adm-var-icon-chevron', sw: '2.4', shapes: [['polyline', { points: '18 15 12 9 6 15' }]] },
+    down: { cls: 'adm-var-icon-chevron', sw: '2.4', shapes: [['polyline', { points: '6 9 12 15 18 9' }]] },
+    trash: {
+      cls: 'adm-btn-icon adm-btn-icon-trash',
+      sw: '2',
+      shapes: [
+        ['polyline', { points: '3 6 5 6 21 6' }],
+        ['path', { d: 'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' }],
+        ['line', { x1: '10', y1: '11', x2: '10', y2: '17' }],
+        ['line', { x1: '14', y1: '11', x2: '14', y2: '17' }]
+      ]
+    }
+  };
+
+  function createSvgIcon(name) {
+    const spec = ICON_SPECS[name];
+    const svg = document.createElementNS(SVG_NS, 'svg');
+    Object.entries({ class: spec.cls, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': spec.sw, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' })
+      .forEach(([k, v]) => svg.setAttribute(k, v));
+    spec.shapes.forEach(([tag, attrs]) => {
+      const node = document.createElementNS(SVG_NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      svg.appendChild(node);
+    });
+    return svg;
+  }
+
+  function createIconBtn(className, label, content, disabled, onClick) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = className;
     btn.title = label;
     btn.setAttribute('aria-label', label);
-    btn.textContent = text;
+    if (ICON_SPECS[content]) btn.appendChild(createSvgIcon(content));
+    else btn.textContent = content;
     btn.disabled = Boolean(disabled);
     btn.addEventListener('click', onClick);
     return btn;
@@ -159,9 +188,9 @@
 
     const actions = document.createElement('div');
     actions.className = 'adm-var-opt-actions';
-    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser opsi naik', '▲', oIdx === 0, () => moveArrayItem(grp.options, oIdx, -1)));
-    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser opsi turun', '▼', oIdx === grp.options.length - 1, () => moveArrayItem(grp.options, oIdx, 1)));
-    actions.appendChild(createIconBtn('btn-row-action btn-row-delete adm-var-btn-del-opt', 'Hapus opsi', '×', false, () => {
+    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser opsi naik', 'up', oIdx === 0, () => moveArrayItem(grp.options, oIdx, -1)));
+    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser opsi turun', 'down', oIdx === grp.options.length - 1, () => moveArrayItem(grp.options, oIdx, 1)));
+    actions.appendChild(createIconBtn('btn-row-action btn-row-delete adm-var-btn-del-opt', 'Hapus opsi', 'trash', false, () => {
       const hasVal = Boolean((opt.label_id || '').trim() || (opt.label_en || '').trim());
       const doRemove = () => {
         grp.options.splice(oIdx, 1);
@@ -178,6 +207,8 @@
   function buildPresetSelect(grp) {
     const select = document.createElement('select');
     select.className = 'form-select adm-var-preset-select';
+    select.setAttribute('data-eu-dropdown', 'outlined');
+    select.setAttribute('data-eu-size', 'sm');
     select.setAttribute('aria-label', 'Pilih tipe grup varian');
     PRESETS.forEach((p) => {
       const optEl = document.createElement('option');
@@ -220,9 +251,9 @@
 
     const actions = document.createElement('div');
     actions.className = 'adm-var-group-actions';
-    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser grup naik', '▲', gIdx === 0, () => moveArrayItem(groups, gIdx, -1)));
-    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser grup turun', '▼', gIdx === groups.length - 1, () => moveArrayItem(groups, gIdx, 1)));
-    actions.appendChild(createIconBtn('btn-row-action btn-row-delete adm-var-btn-del-group', 'Hapus grup varian', '×', false, () => {
+    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser grup naik', 'up', gIdx === 0, () => moveArrayItem(groups, gIdx, -1)));
+    actions.appendChild(createIconBtn('btn-row-action adm-var-btn-move', 'Geser grup turun', 'down', gIdx === groups.length - 1, () => moveArrayItem(groups, gIdx, 1)));
+    actions.appendChild(createIconBtn('btn-row-action btn-row-delete adm-var-btn-del-group', 'Hapus grup varian', 'trash', false, () => {
       const hasData = grp.options.some((o) => (o.label_id || '').trim() || (o.label_en || '').trim());
       const doRemove = () => { groups.splice(gIdx, 1); render(); };
       if (hasData) confirmDelete('Hapus Grup Varian?', `Grup "${grp.name_id || grp.name_en || gIdx + 1}" beserta seluruh opsinya akan dihapus.`, doRemove);
@@ -267,6 +298,9 @@
       groups.forEach((grp, gIdx) => frag.appendChild(buildGroupCard(grp, gIdx)));
     }
     container.replaceChildren(frag);
+    if (window.EuDropdown && typeof window.EuDropdown.init === 'function') {
+      window.EuDropdown.init(container);
+    }
     syncJsonInput();
   }
 

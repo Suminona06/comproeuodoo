@@ -487,7 +487,7 @@ describe('Batch 2 Admin Services Unit Tests (T-351..T-355)', () => {
         }
       );
       assert.equal(csvPayload.filename, 'inquiries-rfq-euodoo-2026-11-19.csv');
-      assert.equal(csvPayload.columns.length, 11);
+      assert.equal(csvPayload.columns.length, 12);
     });
   });
 });

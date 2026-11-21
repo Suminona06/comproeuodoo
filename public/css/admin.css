@@ -7640,6 +7640,186 @@ body.sidebar-open .admin-backdrop {
   }
 }
 
+.adm-var-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.adm-var-empty {
+  padding: 16px;
+  border: 1px dashed var(--border-main);
+  border-radius: var(--r-md);
+  background: var(--bg-page);
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.adm-var-group {
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-lg);
+  background: var(--bg-page);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adm-var-group-header {
+  display: grid;
+  grid-template-columns: auto minmax(150px, 190px) 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.adm-var-group-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  background: var(--primary-subtle);
+  color: var(--primary-hover);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.adm-var-gname-input[readonly] {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.adm-var-group-header .eu-dd {
+  width: 100%;
+  min-width: 0;
+}
+
+.adm-var-group-header .eu-dd--sm .eu-dd-trigger {
+  min-height: 38px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: var(--r-md);
+  font-size: 13px;
+}
+
+.adm-var-group-header .eu-dd--sm .eu-dd-value {
+  font-size: 13px;
+}
+
+.adm-var-group-header .eu-dd-item {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.adm-var-group-actions,
+.adm-var-opt-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adm-var-btn-move,
+.adm-var-btn-del-group,
+.adm-var-btn-del-opt {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: var(--r-md);
+}
+
+.adm-var-btn-move {
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  color: var(--primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.adm-var-btn-move .adm-var-icon-chevron {
+  width: 16px;
+  height: 16px;
+  display: block;
+  transition: transform var(--ease);
+}
+
+.adm-var-btn-del-group .adm-btn-icon-trash,
+.adm-var-btn-del-opt .adm-btn-icon-trash {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+@media (hover: hover) {
+  .adm-var-btn-move:hover:not(:disabled) {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+  }
+}
+
+.adm-var-btn-move:active:not(:disabled) {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: var(--bg-surface);
+  transform: translateY(0);
+}
+
+.adm-var-btn-move:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+.adm-var-btn-move:disabled {
+  background: var(--bg-subtle);
+  border-color: var(--border-main);
+  color: var(--text-tertiary);
+  box-shadow: none;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.adm-var-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 10px;
+  border-left: 2px solid var(--primary-border);
+}
+
+.adm-var-opt-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.adm-var-group-footer {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+@media (max-width: 768px) {
+  .adm-var-group-header {
+    grid-template-columns: 1fr 1fr;
+  }
+  .adm-var-opt-row {
+    grid-template-columns: 1fr;
+  }
+  .adm-var-group-actions,
+  .adm-var-opt-actions {
+    justify-content: flex-end;
+  }
+}
+
+
 
 
 

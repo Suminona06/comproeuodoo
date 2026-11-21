@@ -143,15 +143,18 @@ const cleanOptionalCta = (raw) => {
   return raw ? stripTags(raw) : '';
 };
 
+function checkVariantsJsonError(variantsJson) {
+  if (variantsJson === undefined) return null;
+  return validateRawVariantGroups(variantsJson).error || null;
+}
+
 export function validateProductFields(body = {}, { requireNameId = false } = {}) {
   const { name_id, short_description_id, short_description_en, cta_text_id, cta_text_en, variants_json } = body;
   if (requireNameId && !trimOpt(name_id)) {
     return { error: 'Nama produk (Bahasa Indonesia) wajib diisi.' };
   }
-  if (variants_json !== undefined) {
-    const varCheck = validateRawVariantGroups(variants_json);
-    if (varCheck.error) return { error: varCheck.error };
-  }
+  const varErr = checkVariantsJsonError(variants_json);
+  if (varErr) return { error: varErr };
 
   const cleanCtaId = cleanOptionalCta(cta_text_id);
   const cleanCtaEn = cleanOptionalCta(cta_text_en);

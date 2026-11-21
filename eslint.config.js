@@ -125,6 +125,7 @@ export default [
       'services/productCrudService.js',
       'services/productService.js',
       'services/productSizeTableService.js',
+      'services/productVariantService.js',
       'services/publicContactService.js',
       'services/publicPageService.js',
       'services/publicPostService.js',

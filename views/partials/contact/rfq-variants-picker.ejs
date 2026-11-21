@@ -1,0 +1,20 @@
+<%
+  const vMap = (typeof productVariantsMap !== 'undefined' && productVariantsMap) ? productVariantsMap : {};
+  const initSel = (typeof selectedVariants !== 'undefined' && Array.isArray(selectedVariants)) ? selectedVariants : [];
+  const initProdId = (typeof selectedProduct !== 'undefined' && selectedProduct && selectedProduct.id) ? selectedProduct.id : '';
+  const hasInitGroups = Boolean(initProdId && Array.isArray(vMap[initProdId]) && vMap[initProdId].length > 0);
+  const safeMapJson = JSON.stringify(vMap).replace(/</g, '\\u003c').replace(/'/g, '&#39;');
+  const safeSelJson = JSON.stringify(initSel).replace(/</g, '\\u003c').replace(/'/g, '&#39;');
+%>
+<div id="cfVariantsSection"
+     class="cf-form-group cf-var-section <%= hasInitGroups ? '' : 'cf-var-hidden' %>"
+     data-variants-map='<%- safeMapJson %>'
+     data-initial-selected='<%- safeSelJson %>'
+     data-empty-text="<%= t('contact.variants_empty_hint') %>"
+     data-remove-label="<%= t('contact.variants_remove_aria') %>">
+  <div class="cf-label"><%= t('contact.variants_selected_label') %></div>
+  <div id="cfSelectedChips" class="cf-var-chips" role="region" aria-live="polite"></div>
+  <div class="cf-var-hint"><%= t('contact.variants_picker_hint') %></div>
+  <div id="cfVariantGroupsPicker" class="cf-var-picker"></div>
+  <input type="hidden" id="cfSelectedVariantsInput" name="selected_variants" value="<%= safeSelJson %>">
+</div>

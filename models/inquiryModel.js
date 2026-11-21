@@ -1,6 +1,24 @@
 import { query, execute } from '../config/database.js';
+import { formatSelectedVariantsText } from '../services/productVariantService.js';
 
 export const INQUIRY_STATUSES = ['baru', 'dibaca', 'ditindaklanjuti', 'ditolak'];
+
+function normalizeInquiryRow(row) {
+  if (!row) return null;
+  const copy = { ...row };
+  if (typeof copy.selected_variants === 'string') {
+    try {
+      const parsed = JSON.parse(copy.selected_variants);
+      copy.selected_variants = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      copy.selected_variants = [];
+    }
+  } else if (!Array.isArray(copy.selected_variants)) {
+    copy.selected_variants = [];
+  }
+  copy.selected_variants_text = formatSelectedVariantsText(copy.selected_variants, 'id');
+  return copy;
+}
 
 export const inquiryModel = {
   async findAll(options = {}) {
@@ -37,7 +55,8 @@ export const inquiryModel = {
       }
     }
 
-    return await query(sql, params);
+    const rows = await query(sql, params);
+    return rows.map(normalizeInquiryRow);
   },
 
   async countAll(options = {}) {
@@ -69,7 +88,7 @@ export const inquiryModel = {
        WHERE i.id = ? LIMIT 1`,
       [id]
     );
-    return rows.length > 0 ? rows[0] : null;
+    return rows.length > 0 ? normalizeInquiryRow(rows[0]) : null;
   },
 
   async create(data) {
@@ -79,10 +98,13 @@ export const inquiryModel = {
     const source = validSources.includes(data.source) ? data.source : 'contact_form';
     const status = INQUIRY_STATUSES.includes(data.status) ? data.status : 'baru';
     const type = validTypes.includes(data.type) ? data.type : 'inquiry';
+    const selectedVariantsJson = data.selected_variants
+      ? (typeof data.selected_variants === 'string' ? data.selected_variants : JSON.stringify(data.selected_variants))
+      : null;
 
     const sql = `
-      INSERT INTO inquiries (type, name, company, email, phone, product_id, quantity, message, source, status, admin_notes, ip_address)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO inquiries (type, name, company, email, phone, product_id, selected_variants, quantity, message, source, status, admin_notes, ip_address)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [
       type,
@@ -91,6 +113,7 @@ export const inquiryModel = {
       data.email,
       data.phone,
       data.product_id || null,
+      selectedVariantsJson,
       data.quantity || null,
       data.message || null,
       source,
