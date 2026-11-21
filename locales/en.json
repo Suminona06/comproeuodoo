@@ -199,7 +199,7 @@
     "variants_selected_label": "Selected Product Variants",
     "variants_picker_hint": "Click the pills below to select or change product variants:",
     "variants_remove_aria": "Remove variant",
-    "variants_empty_hint": "No variants selected yet (optional). Choose from the options below if needed.",
+    "variants_empty_hint": "Choose from the options below if needed.",
     "inquiry_type_label": "Inquiry Type",
     "inquiry_type_rfq": "Request for Quotation (RFQ)",
     "inquiry_type_partnership": "Distributor / Reseller Partnership",
