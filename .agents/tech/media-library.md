@@ -1,8 +1,8 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-19 | Kode: controllers/admin/mediaController.js, services/mediaService.js, middleware/uploadMiddleware.js, models/mediaModel.js, utils/seedAssetsSync.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-21 | Kode: controllers/admin/mediaController.js, services/mediaService.js, middleware/uploadMiddleware.js, models/mediaModel.js, utils/seedAssetsSync.js
 
 # Tech Spec: Modul Media Library (Media & Storage)
 
-Dokumen ini adalah pasangan [prd/media-library.md](../prd/media-library.md) dan dipisahkan dengan sub-modul antarmuka picker di [tech/media-picker.md](media-picker.md) `[PENDING T-377]`.
+Dokumen ini adalah pasangan [prd/media-library.md](../prd/media-library.md) dan dipisahkan dengan sub-modul antarmuka picker di [tech/media-picker.md](media-picker.md).
 
 ## 1. Arsitektur & Pipa Pemrosesan Berkas
 Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke format WebP menggunakan library Sharp, pembuatan thumbnail, integrasi YouTube, serta antarmuka pemilih berkas terpadu (Universal Media Picker) mengikuti pola `Route -> Controller -> Service -> Model`:
@@ -50,7 +50,7 @@ Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke fo
 1. **Validasi Multer (`uploadMiddleware.js`):**
    - Batas ukuran berkas maksimal: 30 MB (`UPLOAD_CONFIG.MAX_MEDIA_STREAM_SIZE` pada `uploadLargeMedia`).
    - MIME Whitelist: `image/jpeg`, `image/png`, `image/webp`, `image/gif`, `image/x-icon`, `image/vnd.microsoft.icon`, `video/mp4`, `video/webm`, `application/pdf` (SVG ditolak oleh `isSvgUpload` demi mencegah stored XSS).
-   - `uploadLargeMedia` menggunakan `tempDiskStorage` (`os.tmpdir()`) dan selalu dibersihkan via `cleanupTempFile(req.file)` di blok `finally`; unggah banyak (*multi-upload*) di Universal Media Picker maupun `/admin/media` mengirim antrean berkas **satu per satu secara berurutan** dari klien ke `POST /admin/api/media/upload` dengan header `X-CSRF-Token` dan `FormData` (`_csrf`, `file`) tanpa endpoint batch baru `[PENDING T-377]`.
+   - `uploadLargeMedia` menggunakan `tempDiskStorage` (`os.tmpdir()`) dan selalu dibersihkan via `cleanupTempFile(req.file)` di blok `finally`; unggah banyak (*multi-upload*) di Universal Media Picker maupun `/admin/media` mengirim antrean berkas **satu per satu secara berurutan** dari klien ke `POST /admin/api/media/upload` dengan header `X-CSRF-Token` dan `FormData` (`_csrf`, `file`) tanpa endpoint batch baru.
 2. **Transformasi Sharp:**
    - Gambar raster otomatis dikonversi ke WebP kualitas 82% dengan metadata orientasi EXIF dipertahankan (`.rotate()`).
    - Dimensi gambar dibatasi maksimal lebar 1920px untuk gambar banner/konten.
@@ -67,10 +67,10 @@ Modul Media Library mengelola alur unggah berkas, kompresi gambar otomatis ke fo
 ## 5. Audit Ketergantungan Media (`check-usage`)
 Fungsi `mediaController.apiCheckUsage` dan `mediaController.destroy` mendelegasikan audit penggunaan ke `mediaService.checkMediaUsage` / `mediaService.deleteMediaItem` -> `mediaModel.checkUsage(fileUrl, mediaId)`, yang menjalankan query agregasi ke 8 tabel database:
 `banners (file_url, poster_url)`, `page_hero_banners (image_url)`, `settings (setting_value)`, `products (main_image, gallery_images)`, `brands (logo_url)`, `posts (cover_image)`, `capabilities (image_url)`, dan `about_gallery_slides (image_url)`.
-- Untuk `products.gallery_images` (`JSON NULL`), query menggunakan `JSON_CONTAINS` terparameter untuk mencocokkan **URL string** (`JSON_CONTAINS(gallery_images, CAST(? AS JSON))` dengan `JSON.stringify(fileUrl)`) sekaligus **ID media integer** (`OR JSON_CONTAINS(gallery_images, CAST(? AS JSON))` dengan `String(mediaId)` bila `mediaId` tersedia via parameter atau lookup `media.file_url`), dengan guard `gallery_images IS NOT NULL` `[PENDING T-376]`.
+- Untuk `products.gallery_images` (`JSON NULL`), query menggunakan `JSON_CONTAINS` terparameter untuk mencocokkan **URL string** (`JSON_CONTAINS(gallery_images, CAST(? AS JSON))` dengan `JSON.stringify(fileUrl)`) sekaligus **ID media integer** (`OR JSON_CONTAINS(gallery_images, CAST(? AS JSON))` dengan `String(mediaId)` bila `mediaId` tersedia via parameter atau lookup `media.file_url`), dengan guard `gallery_images IS NOT NULL`.
 Jika ditemukan referensi aktif, sistem mengembalikan daftar lokasi keterkaitan dan mencegah penghapusan tanpa konfirmasi eksplisit (`force=true`) dari admin.
 
 ---
 
 ## 6. Antarmuka Picker & Multi-Upload Klien
-- Kontrak klien Universal Media Picker (`public/js/media-picker.js`, `views/partials/media-picker-modal.ejs`) dan multi-upload modal `/admin/media` dirinci pada sub-modul [tech/media-picker.md](media-picker.md) `[PENDING T-377]`.
+- Kontrak klien Universal Media Picker (`public/js/media-picker.js`, `views/partials/media-picker-modal.ejs`) dan multi-upload modal `/admin/media` dirinci pada sub-modul [tech/media-picker.md](media-picker.md).
