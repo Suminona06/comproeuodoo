@@ -1630,3 +1630,66 @@
   - `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test` hijau; regresi kontrak (`/news`, `/products` fragment + header `X-*`, 301, 404, `noindex`, canonical tepercaya, `/contact` AJAX/non-AJAX) & 42 cek Playwright (`320px`/`768px`/`1440px`, ID & EN, 0 console error) lulus.
 - **File Terdampak:** *(verifikasi runtime & dokumentasi close)*
 - **Verifikasi:** `npm test`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, Playwright multi-viewport & HTTP contract checks
+
+---
+
+## DAFTAR TASK PERBAIKAN GALERI PRODUK & MULTI-UPLOAD MEDIA (T-375 s/d T-379) — 2026-11-21
+
+Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-gallery-multi-upload.md)
+
+### [x] `T-375` — Perbaikan Bug Galeri Foto Produk Admin (`/admin/products/create` & `edit`)
+- **Acceptance Criteria:**
+  - `public/js/admin-product-form.js` mengikat `#btnOpenGalleryPicker`, render `#prodGalleryStrip`, reorder `▲`/`▼`, delete `×`, dan sinkronisasi `#gallery_images_input` tanpa batas jumlah item; `media-picker.js` `renderGrid()` membangun DOM via `appendChild`; `productController.renderCreateFormError` me-resolve `gallery_items` pada error 400.
+- **File Terdampak:** `public/js/admin-product-form.js`, `public/js/media-picker.js`, `views/admin/products/create.ejs`, `views/admin/products/edit.ejs`, `controllers/admin/productController.js`
+- **Verifikasi:** `node --test tests/test-t375-t377-gallery-multiupload.js`, Playwright E2E, `npm run lint`, `npm run lint:views`
+
+### [x] `T-376` — Perbaikan Audit `check-usage` Media untuk `products.gallery_images`
+- **Acceptance Criteria:**
+  - `mediaModel.checkUsage(fileUrl, mediaId)` memeriksa `products.main_image` dan `products.gallery_images` untuk URL string maupun integer ID via `JSON_CONTAINS` terparameter serta guard `urlTarget = null` bila `fileUrl` kosong.
+- **File Terdampak:** `models/mediaModel.js`, `services/mediaService.js`, `controllers/admin/mediaController.js`, `public/js/media-picker.js`, `views/admin/media/index.ejs`
+- **Verifikasi:** `node --test tests/test-t375-t377-gallery-multiupload.js` & query MySQL riil
+
+### [x] `T-377` — Fitur Baru (`FR-28`) Multi-Upload Media Berurutan dengan Progres & Ringkasan
+- **Acceptance Criteria:**
+  - `EuMediaUpload` (`public/js/media-upload-queue.js`) mengunggah antrean tanpa batas jumlah berkas secara sekuensial ke `POST /admin/api/media/upload` dengan CSRF + validasi 30MB non-SVG, progres `"x dari N"` (`aria-live="polite"`), isolasi gagal parsial, seleksi semua item baru (mode multiple), pilih item sukses terakhir (mode single), serta dukungan di `/admin/media`.
+- **File Terdampak:** `public/js/media-upload-queue.js`, `views/partials/media-picker-modal.ejs`, `views/partials/admin-footer.ejs`, `public/js/media-picker.js`, `views/admin/media/index.ejs`, `public/js/admin-media.js`, `public/js/admin.js`, `public/css/admin.css`
+- **Verifikasi:** `node --test tests/test-t375-t377-gallery-multiupload.js`, Playwright multi-upload E2E
+
+### [x] `T-378` — UI Polish, Tokenisasi, Aksesibilitas & Label ID/EN
+- **Acceptance Criteria:**
+  - Zero inline `style` & `onerror` pada `media-picker.js` dan `initCustomFileUploads()` (`admin.js`), native `<progress>`, penghapusan `<img src="">` statis di `views/admin/media/index.ejs`, `:focus-visible`, target sentuh `>= 46px` di mobile/coarse, `prod-size-builder` bebas overflow `1280px`, easing modal `cubic-bezier(0.22, 1, 0.36, 1)`, dan kunci ID/EN simetris.
+- **File Terdampak:** `public/js/media-picker.js`, `public/js/admin.js`, `public/css/admin.css`, `views/partials/media-picker-modal.ejs`, `views/admin/media/index.ejs`, `locales/id.json`, `locales/en.json`
+- **Verifikasi:** `impeccable detect --json`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, Playwright `320px`–`1440px`
+
+### [x] `T-379` — Audit Regresi Single-Select, Halaman Publik, Responsif & Gerbang Kualitas
+- **Acceptance Criteria:**
+  - Seluruh pemakai single-select picker, `/admin/media`, `/products/:slug`, viewport `320px`–`1440px`, mode ID/EN, homepage beku, dan gerbang kualitas CI lulus tanpa console/CSP error.
+- **File Terdampak:** *(verifikasi regresi & dokumentasi close)*
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm run test:seed`, `node --test`, Playwright E2E
+
+### T-380: Perbaikan Toolbar Katalog Mobile 2 Baris (`/products`) [DONE]
+- **File Terdampak:** `public/css/components.css`
+- **Verifikasi:** Playwright 320/375/480/768/1440px (overflow: false, search 44px full-width, Filter+Urutkan 50/50 di `<= 767px`, 1 baris di `>= 768px`), `npm run lint`, `npm run lint:views`. Selesai 2026-11-21.
+
+### T-381: Inklusi Otomatis `main_image` di Indeks 0 Galeri Detail Produk + Deduplikasi [DONE]
+- **File Terdampak:** `services/publicProductService.js`, `services/publicProductDetailHelper.js`, `tests/test-public-services.js`
+- **Verifikasi:** Unit test `tests/test-public-services.js` (lulus 11/11). Selesai 2026-11-21.
+
+### T-382: Galeri Detail Produk — CSS Scroll-Snap Swipe/Drag, Panah Prev/Next Desktop & Strip Thumbnail Geser [DONE]
+- **File Terdampak:** `views/partials/products/gallery.ejs`, `public/css/components.css`, `public/js/product-detail.js`, `locales/id.json`, `locales/en.json`
+- **Verifikasi:** Playwright CDP touch swipe (`375px`), desktop mouse drag (`1440px`), `min-width: 0` fix untuk 8–10 foto di `320px–1440px`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`. Selesai 2026-11-21.
+
+### T-383: Migrasi DB `022`, Model & Validasi Server `show_description_tab` (`DEFAULT 0`) [DONE]
+- **File Terdampak:** `database/migrations/022_add_show_description_tab_to_products.sql`, `models/productModel.js`, `services/productService.js`, `tests/test-t356-t360-admin-services.js`
+- **Verifikasi:** `npm run migrate` & unit test `tests/test-t356-t360-admin-services.js`. Selesai 2026-11-21.
+
+### T-384: Toggle Admin Tampil/Sembunyi Tab Deskripsi Lengkap di Form Produk [DONE]
+- **File Terdampak:** `views/admin/products/partials/basic-info.ejs`
+- **Verifikasi:** `npm run lint:views`, `npm run lint`. Selesai 2026-11-21.
+
+### T-385: Tab "Deskripsi Lengkap" & "Tabel Ukuran" di Detail Produk Publik [DONE]
+- **File Terdampak:** `services/publicProductDetailHelper.js`, `services/publicProductService.js`, `views/public/product-detail.ejs`, `views/partials/products/spec-tabs.ejs`, `views/partials/products/size-table.ejs`, `public/css/components.css`, `public/js/product-detail.js`, `locales/id.json`, `locales/en.json`
+- **Verifikasi:** Unit test `buildProductSpecPayload`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`. Selesai 2026-11-21.
+
+### T-386: Verifikasi Regresi End-to-End (320px–1440px, ID/EN, Lint & Test) [DONE]
+- **Verifikasi:** `npm run migrate`, `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test`, dan Playwright E2E lintas viewport `320px–1440px` (ID & EN) lulus tanpa console/page error. Selesai 2026-11-21.

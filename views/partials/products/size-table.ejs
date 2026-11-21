@@ -6,32 +6,26 @@
 %>
 
 <% if (hasSizeTable) { %>
-  <div class="pd-size-sec" id="pdPanelSize">
-    <h2 class="pd-size-heading">
-      <%= t('product_detail.tab_size_chart') %>
-    </h2>
-    <div class="pd-table-wrap pd-size-scroll">
-      <table class="pd-size" data-cols="<%= sizeColumns.length %>">
-        <thead>
+  <div class="pd-table-wrap pd-size-scroll">
+    <table class="pd-size" data-cols="<%= sizeColumns.length %>">
+      <thead>
+        <tr>
+          <% sizeColumns.forEach(function(col) { %>
+            <th scope="col"><%= col.label %></th>
+          <% }); %>
+        </tr>
+      </thead>
+      <tbody>
+        <% sizeRows.forEach(function(row) { %>
           <tr>
-            <% sizeColumns.forEach(function(col) { %>
-              <th scope="col"><%= col.label %></th>
+            <% sizeColumns.forEach(function(col) {
+                 const cellVal = row[col.id] !== undefined ? row[col.id] : '';
+            %>
+              <td data-l="<%= col.label %>"><%= cellVal || '-' %></td>
             <% }); %>
           </tr>
-        </thead>
-        <tbody>
-          <% sizeRows.forEach(function(row) { %>
-            <tr>
-              <% sizeColumns.forEach(function(col) {
-                   const cellVal = row[col.id] !== undefined ? row[col.id] : '';
-              %>
-                <td data-l="<%= col.label %>"><%= cellVal || '-' %></td>
-              <% }); %>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
+        <% }); %>
+      </tbody>
+    </table>
   </div>
 <% } %>
-

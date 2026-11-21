@@ -81,6 +81,15 @@
     </div>
   </div>
 
+  <div class="form-group adm-prod-desc-toggle-wrap">
+    <label class="admin-toggle-switch" for="show_description_tab">
+      <input type="checkbox" id="show_description_tab" name="show_description_tab" value="1" <%= p.show_description_tab ? 'checked' : '' %>>
+      <span class="admin-toggle-slider" aria-hidden="true"></span>
+      <span class="admin-toggle-label">Tampilkan Tab Deskripsi Lengkap di Halaman Produk (Show Full Description Tab)</span>
+    </label>
+    <p class="admin-field-hint">Aktifkan untuk menampilkan tab Deskripsi Lengkap bersama Tabel Ukuran di halaman publik. Nonaktifkan untuk menampilkan Tabel Ukuran saja.</p>
+  </div>
+
   <div class="form-row-2">
     <div class="form-group">
       <label class="form-label" for="description_id">Deskripsi Lengkap (Bahasa Indonesia)</label>

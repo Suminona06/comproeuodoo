@@ -431,23 +431,6 @@
     if (viewUploadedBtn) viewUploadedBtn.classList.add('adm-d-none');
   }
 
-  function buildQueueRow(file, en) {
-    const li = document.createElement('li');
-    li.className = 'adm-picker-queue-item';
-
-    const nameSpan = document.createElement('span');
-    nameSpan.className = 'adm-picker-queue-name';
-    nameSpan.textContent = file.name;
-
-    const statusSpan = document.createElement('span');
-    statusSpan.className = 'adm-picker-queue-status';
-    statusSpan.textContent = en ? 'Waiting...' : 'Menunggu...';
-
-    li.appendChild(nameSpan);
-    li.appendChild(statusSpan);
-    return { li, statusSpan };
-  }
-
   function applyPostUploadSelection(uploadedItems) {
     if (uploadedItems.length === 0) return;
     if (isMultiple) {
@@ -474,18 +457,6 @@
     });
   }
 
-  function showUploadSummary(summary, en) {
-    if (!uploadSummary) return;
-    const text = en
-      ? `Completed: ${summary.successCount} uploaded, ${summary.failedCount} failed.`
-      : `Selesai: ${summary.successCount} berhasil diunggah, ${summary.failedCount} gagal.`;
-    uploadSummary.textContent = text;
-    uploadSummary.classList.remove('adm-d-none', 'is-error', 'is-warning', 'is-success');
-    if (summary.successCount === 0) uploadSummary.classList.add('is-error');
-    else if (summary.failedCount > 0) uploadSummary.classList.add('is-warning');
-    else uploadSummary.classList.add('is-success');
-  }
-
   async function handleFilesUpload(fileList) {
     const files = Array.from(fileList || []);
     if (files.length === 0 || !window.EuMediaUpload) return;
@@ -494,7 +465,7 @@
     resetPickerUploadUi();
     uploadProgress.classList.remove('adm-d-none');
 
-    const rows = files.map((f) => buildQueueRow(f, en));
+    const rows = files.map((f) => window.EuMediaUpload.buildQueueRow(f, en));
     if (uploadQueue) {
       rows.forEach((r) => uploadQueue.appendChild(r.li));
       uploadQueue.classList.remove('adm-d-none');
@@ -520,7 +491,7 @@
     });
 
     uploadProgressText.textContent = en ? 'Upload queue finished.' : 'Antrean unggahan selesai.';
-    showUploadSummary(summary, en);
+    window.EuMediaUpload.renderUploadSummary(uploadSummary, summary, en);
 
     if (window.adminToast) {
       const toastType = summary.successCount === 0 ? 'error' : (summary.failedCount > 0 ? 'warning' : 'success');

@@ -26,6 +26,7 @@ import {
   getCatalogPageData,
   buildCatalogFallbackPayload,
   resolveProductGallery,
+  buildProductSpecPayload,
   buildMetaDescription,
   buildWhatsappQuoteUrl,
   getProductDetailData
@@ -270,13 +271,57 @@ describe('Public Services & Thin Controllers Unit Tests (T-369..T-373)', () => {
         mockMediaModel
       );
       assert.deepEqual(queriedIds, [10, 20, 999]);
-      assert.deepEqual(resolved, ['/uploads/10.webp', '/uploads/20.webp', '/images/direct.webp']);
+      assert.deepEqual(resolved, ['/images/main.webp', '/uploads/10.webp', '/uploads/20.webp', '/images/direct.webp']);
+
+      const deduped = await resolveProductGallery(
+        { main_image: '/uploads/10.webp', gallery_images: '[10, 20, "/uploads/10.webp"]' },
+        mockMediaModel
+      );
+      assert.deepEqual(deduped, ['/uploads/10.webp', '/uploads/20.webp']);
 
       const fallbackGallery = await resolveProductGallery(
         { main_image: '/images/main.webp', gallery_images: '[999]' },
         { async findUrlsByIds() { return []; } }
       );
       assert.deepEqual(fallbackGallery, ['/images/main.webp']);
+
+      const emptyGallery = await resolveProductGallery(
+        { main_image: null, gallery_images: '[]' },
+        mockMediaModel
+      );
+      assert.deepEqual(emptyGallery, []);
+
+      const sizeTableSample = { columns: [{ id: 'col_1', label: 'Kode' }], rows: [{ col_1: 'A1' }] };
+      const specHidden = buildProductSpecPayload(
+        { show_description_tab: 0, description_id: '<p>Desc</p>', size_table: sizeTableSample },
+        'id'
+      );
+      assert.equal(specHidden.specDisplayMode, 'size-only');
+
+      const specTabs = buildProductSpecPayload(
+        { show_description_tab: 1, description_id: '<p>Aman</p><script>alert(1)</script>', size_table: sizeTableSample },
+        'id'
+      );
+      assert.equal(specTabs.specDisplayMode, 'tabs');
+      assert.equal(specTabs.sanitizedDescription.includes('<script>'), false);
+
+      const specDescOnly = buildProductSpecPayload(
+        { show_description_tab: 1, description_id: '<p>Isi</p>', size_table: null },
+        'id'
+      );
+      assert.equal(specDescOnly.specDisplayMode, 'description-only');
+
+      const specSizeOnly = buildProductSpecPayload(
+        { show_description_tab: 1, description_id: '<p>   </p>', size_table: sizeTableSample },
+        'id'
+      );
+      assert.equal(specSizeOnly.specDisplayMode, 'size-only');
+
+      const specNone = buildProductSpecPayload(
+        { show_description_tab: 1, description_id: '', size_table: null },
+        'id'
+      );
+      assert.equal(specNone.specDisplayMode, 'none');
 
       const meta = buildMetaDescription(
         { description_en: `<p>${'A'.repeat(180)}</p>   <b>tail</b>` },

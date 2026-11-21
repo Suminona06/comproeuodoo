@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-20 | Kode: controllers/public/productController.js, services/publicProductService.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-21 | Kode: controllers/public/productController.js, services/publicProductService.js, models/productModel.js, views/public/products.ejs, views/public/partials/product-card-fragment.ejs
 
 # Tech Spec: Modul Produk & Katalog Manufaktur (Products Catalog)
 
@@ -89,7 +89,7 @@ Modul ini mengelola katalog produk manufaktur di `/products` (`productController
 
 ### G. Adaptasi Responsif Mobile & Filter Drawer [COMPLETED T-197]
 - Desktop (>= 1024px): 2 kolom (sidebar 280px + grid 3 kolom). Tablet (768px - 1023px): grid 2 kolom + sidebar adaptif.
-- Mobile (< 768px): grid 2 kolom kompak; filter kategori disajikan via tombol trigger yang memunculkan Drawer samping (*offcanvas*), dapat ditutup via overlay click atau tombol Escape. Target sentuh minimal 44 x 44 px.
+- Mobile (<= 767px): grid 2 kolom kompak; `.plp-toolbar` reflow 2 baris (baris 1 `.plp-search-wrap` lebar penuh, baris 2 `.plp-drawer-trigger` dan `.plp-sort-wrap` berdampingan 50/50 tanpa overflow horizontal, target sentuh >= 44px, focus ring jelas, `:hover` di `@media (hover: hover)`, nol raw hex); filter kategori disajikan via tombol trigger yang memunculkan Drawer samping (*offcanvas*), dapat ditutup via overlay click atau tombol Escape. Target sentuh minimal 44 x 44 px.
 
 ### H. SEO Canonical, Pagination Noindex & Kepatuhan CSP [COMPLETED T-198]
 - Tag canonical mengarah ke URL dasar `/products` (atau kategori valid).

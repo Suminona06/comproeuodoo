@@ -209,11 +209,33 @@ document.addEventListener('DOMContentLoaded', () => {
       const input = wrapper.querySelector('input[type="file"]');
       const dropzone = wrapper.querySelector('.file-upload-dropzone');
       const filenameEl = wrapper.querySelector('.file-upload-filename');
-      const previewImg = wrapper.querySelector('.file-upload-preview img');
+      const previewBox = wrapper.querySelector('.file-upload-preview');
+      let previewImg = wrapper.querySelector('.file-upload-preview img');
       const placeholderIcon = wrapper.querySelector('.preview-placeholder-icon');
       const clearBtn = wrapper.querySelector('.file-upload-clear-btn');
       const initialPreview = wrapper.getAttribute('data-initial-preview') || '';
       const initialFilename = wrapper.getAttribute('data-initial-filename') || (initialPreview ? initialPreview.split('/').pop() : 'Belum ada berkas dipilih');
+
+      function showPreviewImage(src) {
+        if (!previewImg && previewBox) {
+          previewImg = document.createElement('img');
+          previewImg.alt = 'Pratinjau';
+          previewBox.insertBefore(previewImg, previewBox.firstChild);
+        }
+        if (previewImg) {
+          previewImg.src = src;
+          previewImg.classList.remove('adm-d-none');
+        }
+        if (placeholderIcon) placeholderIcon.classList.add('adm-d-none');
+      }
+
+      function hidePreviewImage() {
+        if (previewImg) {
+          previewImg.remove();
+          previewImg = null;
+        }
+        if (placeholderIcon) placeholderIcon.classList.remove('adm-d-none');
+      }
 
       // Click dropzone triggers file picker
       if (dropzone && input) {
@@ -276,10 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
               : `${fileList.length} berkas dipilih (${formatBytes(totalBytes)})`;
             filenameEl.title = fileList.map(f => f.name).join(', ');
           }
-          if (clearBtn) clearBtn.style.display = 'inline-flex';
-          if (previewImg) previewImg.style.display = 'none';
+          if (clearBtn) clearBtn.classList.remove('adm-d-none');
+          hidePreviewImage();
           if (placeholderIcon) {
-            placeholderIcon.style.display = 'flex';
             const badge = document.createElement('span');
             badge.className = 'adm-media-multi-badge';
             badge.textContent = String(fileList.length);
@@ -294,23 +315,18 @@ document.addEventListener('DOMContentLoaded', () => {
             filenameEl.textContent = `${file.name} (${formatBytes(file.size)})`;
             filenameEl.title = file.name;
           }
-          if (clearBtn) clearBtn.style.display = 'inline-flex';
+          if (clearBtn) clearBtn.classList.remove('adm-d-none');
 
           if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = (e) => {
-              if (previewImg) {
-                previewImg.src = e.target.result;
-                previewImg.style.display = 'block';
-              }
-              if (placeholderIcon) placeholderIcon.style.display = 'none';
+              showPreviewImage(e.target.result);
             };
             reader.readAsDataURL(file);
           } else {
             // Non-image (video / doc)
-            if (previewImg) previewImg.style.display = 'none';
+            hidePreviewImage();
             if (placeholderIcon) {
-              placeholderIcon.style.display = 'flex';
               const extBadge = document.createElement('span');
               extBadge.className = 'adm-media-file-ext-badge';
               extBadge.textContent = file.name.split('.').pop() || 'FILE';
@@ -323,27 +339,19 @@ document.addEventListener('DOMContentLoaded', () => {
             filenameEl.textContent = initialFilename;
             filenameEl.title = initialPreview;
           }
-          if (previewImg) {
-            previewImg.src = initialPreview;
-            previewImg.style.display = 'block';
-          }
-          if (placeholderIcon) placeholderIcon.style.display = 'none';
-          if (clearBtn) clearBtn.style.display = 'none';
+          showPreviewImage(initialPreview);
+          if (clearBtn) clearBtn.classList.add('adm-d-none');
         } else {
           // Empty state
           if (filenameEl) {
             filenameEl.textContent = 'Belum ada berkas dipilih';
             filenameEl.title = '';
           }
-          if (previewImg) {
-            previewImg.src = '';
-            previewImg.style.display = 'none';
-          }
+          hidePreviewImage();
           if (placeholderIcon) {
-            placeholderIcon.style.display = 'flex';
             placeholderIcon.innerHTML = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>`;
           }
-          if (clearBtn) clearBtn.style.display = 'none';
+          if (clearBtn) clearBtn.classList.add('adm-d-none');
         }
       }
 

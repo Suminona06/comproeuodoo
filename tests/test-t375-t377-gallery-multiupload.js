@@ -295,6 +295,8 @@ describe('T-375..T-377: Product Gallery, Check-Usage & Multi-Upload', () => {
     assert.equal(requests.length, 13);
     assert.equal(requests[0].csrf, 'csrf-tok-123');
     assert.equal(events.length, 14);
+    assert.equal(typeof helper.buildQueueRow, 'function');
+    assert.equal(typeof helper.renderUploadSummary, 'function');
   });
 
   it('T-377: picker modal and /admin/media views expose multiple file input and 30MB non-SVG hint', () => {
@@ -310,5 +312,6 @@ describe('T-375..T-377: Product Gallery, Check-Usage & Multi-Upload', () => {
     assert.equal(mediaIndex.includes('id="mediaLibraryUploadForm"'), true);
     assert.equal(mediaIndex.includes('id="file" name="file" multiple'), true);
     assert.equal(mediaIndex.includes('id="mediaUploadQueue"'), true);
+    assert.equal(mediaIndex.includes('<img src=""'), false);
   });
 });

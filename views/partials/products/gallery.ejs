@@ -1,3 +1,6 @@
+<%
+  const slides = (Array.isArray(gallery) && gallery.length > 0) ? gallery : (mainImage ? [mainImage] : []);
+%>
 <div class="pd-gallery" data-gallery>
   <div class="pd-gallery-main pd-main-media"
        role="button"
@@ -6,12 +9,18 @@
        data-active-index="0"
        data-caption="<%= prodName %>"
        aria-label="<%= t('product_detail.zoom_aria') + prodName %>">
-    <img id="pdMainImage"
-         src="<%= mainImage %>"
-         alt="<%= prodName %>"
-         fetchpriority="high"
-         width="560"
-         height="476">
+    <div class="pd-gallery-track" data-gallery-track>
+      <% slides.forEach(function(img, i) { %>
+        <div class="pd-gallery-slide" data-slide-index="<%= i %>">
+          <img <% if (i === 0) { %>id="pdMainImage"<% } %>
+               src="<%= img %>"
+               alt="<%= prodName %><%= slides.length > 1 ? ' - ' + (i + 1) : '' %>"
+               width="560"
+               height="476"
+               <% if (i === 0) { %>fetchpriority="high"<% } else { %>loading="lazy"<% } %>>
+        </div>
+      <% }); %>
+    </div>
     <span class="pd-zoom-hint" aria-hidden="true">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="7"></circle>
@@ -22,9 +31,38 @@
     </span>
   </div>
 
-  <% if (gallery && gallery.length > 1) { %>
+  <% if (slides.length > 1) { %>
+    <div class="pd-gallery-controls">
+      <span class="pd-gallery-counter" data-gallery-counter aria-hidden="true">1 / <%= slides.length %></span>
+      <div class="pd-gallery-nav">
+        <button type="button"
+                class="pd-gallery-nav-btn"
+                data-gallery-prev
+                aria-label="<%= t('product_detail.gallery_prev_aria') %>"
+                disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <button type="button"
+                class="pd-gallery-nav-btn"
+                data-gallery-next
+                aria-label="<%= t('product_detail.gallery_next_aria') %>">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="sr-only"
+         aria-live="polite"
+         role="status"
+         data-gallery-live
+         data-template="<%= t('product_detail.gallery_slide_status') %>"></div>
+
     <div class="pd-thumbs" role="region" aria-label="<%= t('product_detail.gallery_thumbs_aria') %>">
-      <% gallery.forEach(function(img, i) { %>
+      <% slides.forEach(function(img, i) { %>
         <button type="button"
                 class="pd-thumb-btn"
                 data-thumb
@@ -39,4 +77,3 @@
     </div>
   <% } %>
 </div>
-

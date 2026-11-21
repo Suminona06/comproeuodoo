@@ -46,36 +46,11 @@
     }
   }
 
-  function buildMediaQueueItem(file, en) {
-    const li = document.createElement('li');
-    li.className = 'adm-picker-queue-item';
-    const nameEl = document.createElement('span');
-    nameEl.className = 'adm-picker-queue-name';
-    nameEl.textContent = file.name;
-    const statusEl = document.createElement('span');
-    statusEl.className = 'adm-picker-queue-status';
-    statusEl.textContent = en ? 'Waiting...' : 'Menunggu...';
-    li.appendChild(nameEl);
-    li.appendChild(statusEl);
-    return { li, statusEl };
-  }
-
   function resetUploadButton(form) {
     const btn = form.querySelector('button[type="submit"]');
     if (!btn) return;
     btn.classList.remove('is-loading');
     btn.disabled = false;
-  }
-
-  function renderMediaSummary(summaryEl, summary, en) {
-    if (!summaryEl) return;
-    summaryEl.textContent = en
-      ? `Completed: ${summary.successCount} uploaded, ${summary.failedCount} failed.`
-      : `Selesai: ${summary.successCount} berhasil diunggah, ${summary.failedCount} gagal.`;
-    summaryEl.classList.remove('adm-d-none', 'is-error', 'is-warning', 'is-success');
-    if (summary.successCount === 0) summaryEl.classList.add('is-error');
-    else if (summary.failedCount > 0) summaryEl.classList.add('is-warning');
-    else summaryEl.classList.add('is-success');
   }
 
   function bindPartialReload(getFlag) {
@@ -115,7 +90,7 @@
     if (els.progressWrap) els.progressWrap.classList.remove('adm-d-none');
     if (els.summaryEl) els.summaryEl.classList.add('adm-d-none');
 
-    const rows = files.map((f) => buildMediaQueueItem(f, en));
+    const rows = files.map((f) => window.EuMediaUpload.buildQueueRow(f, en));
     if (els.queueEl) {
       els.queueEl.replaceChildren(...rows.map((r) => r.li));
       els.queueEl.classList.remove('adm-d-none');
@@ -123,7 +98,7 @@
 
     const summary = await window.EuMediaUpload.runUploadQueue(files, createProgressCallbacks(els, rows, en));
     resetUploadButton(form);
-    renderMediaSummary(els.summaryEl, summary, en);
+    window.EuMediaUpload.renderUploadSummary(els.summaryEl, summary, en);
 
     if (summary.failedCount === 0 && summary.successCount > 0) {
       const msg = en

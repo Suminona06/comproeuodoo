@@ -346,14 +346,14 @@ export const productModel = {
         category_id, name_id, name_en, slug,
         short_description_id, short_description_en,
         description_id, description_en,
-        cta_text_id, cta_text_en,
+        cta_text_id, cta_text_en, show_description_tab,
         main_image, gallery_images,
         variants, size_table,
         status,
         meta_title_id, meta_title_en, meta_description_id, meta_description_en,
         og_image, canonical_url, robots, jsonld,
         is_active, sort_order
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const ctaTextId = data.cta_text_id && String(data.cta_text_id).trim() ? String(data.cta_text_id).trim().slice(0, 50) : null;
@@ -410,6 +410,7 @@ export const productModel = {
       data.description_en || null,
       ctaTextId,
       ctaTextEn,
+      data.show_description_tab ? 1 : 0,
       mainImage,
       galleryJson,
       variantsJson,
@@ -466,6 +467,7 @@ export const productModel = {
       description_en: (v) => v || null,
       cta_text_id: (v) => (v && String(v).trim() ? String(v).trim().slice(0, 50) : null),
       cta_text_en: (v) => (v && String(v).trim() ? String(v).trim().slice(0, 50) : null),
+      show_description_tab: (v) => (v ? 1 : 0),
       main_image: (v) => v || null,
       gallery_images: (v) => {
         if (!v) return null;
@@ -677,6 +679,7 @@ export const productModel = {
 
     copy.short_description_id = copy.short_description_id ? String(copy.short_description_id) : null;
     copy.short_description_en = copy.short_description_en ? String(copy.short_description_en) : null;
+    copy.show_description_tab = copy.show_description_tab ? 1 : 0;
 
     copy.image_url = copy.main_image || null;
     copy.gallery = copy.gallery_images;
