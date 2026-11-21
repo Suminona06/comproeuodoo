@@ -112,12 +112,42 @@
     return { ...state, total: files.length };
   }
 
+  function buildQueueRow(file, en) {
+    const li = document.createElement('li');
+    li.className = 'adm-picker-queue-item';
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'adm-picker-queue-name';
+    nameEl.textContent = file.name;
+
+    const statusEl = document.createElement('span');
+    statusEl.className = 'adm-picker-queue-status';
+    statusEl.textContent = en ? 'Waiting...' : 'Menunggu...';
+
+    li.appendChild(nameEl);
+    li.appendChild(statusEl);
+    return { li, statusEl, statusSpan: statusEl };
+  }
+
+  function renderUploadSummary(summaryEl, summary, en) {
+    if (!summaryEl) return;
+    summaryEl.textContent = en
+      ? `Completed: ${summary.successCount} uploaded, ${summary.failedCount} failed.`
+      : `Selesai: ${summary.successCount} berhasil diunggah, ${summary.failedCount} gagal.`;
+    summaryEl.classList.remove('adm-d-none', 'is-error', 'is-warning', 'is-success');
+    if (summary.successCount === 0) summaryEl.classList.add('is-error');
+    else if (summary.failedCount > 0) summaryEl.classList.add('is-warning');
+    else summaryEl.classList.add('is-success');
+  }
+
   window.EuMediaUpload = {
     MAX_FILE_SIZE,
     isEnglish,
     getCsrfToken,
     validateMediaFile,
     uploadSingleFile,
-    runUploadQueue
+    runUploadQueue,
+    buildQueueRow,
+    renderUploadSummary
   };
 })();
