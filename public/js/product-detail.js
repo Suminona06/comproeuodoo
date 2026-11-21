@@ -10,25 +10,31 @@
     var isDown = false;
     var startX = 0;
     var startScrollLeft = 0;
+    var lastDx = 0;
     var moved = false;
     var prevSnap = '';
+    var prevBehavior = '';
 
     scroller.addEventListener('mousedown', function (e) {
       if (e.button !== 0) return;
       isDown = true;
       moved = false;
+      lastDx = 0;
       startX = e.clientX;
       startScrollLeft = scroller.scrollLeft;
       prevSnap = scroller.style.scrollSnapType || '';
+      prevBehavior = scroller.style.scrollBehavior || '';
       scroller.classList.add('is-dragging');
     });
 
     window.addEventListener('mousemove', function (e) {
       if (!isDown) return;
       var dx = e.clientX - startX;
+      lastDx = dx;
       if (Math.abs(dx) > DRAG_THRESHOLD_PX) {
         moved = true;
         scroller.style.scrollSnapType = 'none';
+        scroller.style.scrollBehavior = 'auto';
       }
       if (moved) {
         scroller.scrollLeft = startScrollLeft - dx;
@@ -40,8 +46,9 @@
       isDown = false;
       scroller.classList.remove('is-dragging');
       scroller.style.scrollSnapType = prevSnap;
+      scroller.style.scrollBehavior = prevBehavior;
       if (moved && typeof onDragEnd === 'function') {
-        onDragEnd();
+        onDragEnd(lastDx);
       }
     });
   };
@@ -130,11 +137,15 @@
         });
       }, { passive: true });
 
-      attachMouseDragScroll(track, function () {
+      attachMouseDragScroll(track, function (dx) {
         suppressLightboxClick = true;
         var width = track.clientWidth;
         if (width) {
-          goToSlide(Math.round(track.scrollLeft / width), true);
+          var targetIdx = activeIndex;
+          if (dx < -40) targetIdx = activeIndex + 1;
+          else if (dx > 40) targetIdx = activeIndex - 1;
+          else targetIdx = Math.round(track.scrollLeft / width);
+          goToSlide(targetIdx, true);
         }
         setTimeout(function () {
           suppressLightboxClick = false;

@@ -37,6 +37,6 @@
   - **File:** `services/publicProductService.js`, `views/public/product-detail.ejs`, `views/partials/products/spec-tabs.ejs` (baru), `views/partials/products/size-table.ejs`, `public/css/components.css`, `public/js/product-detail.js`, `locales/id.json`, `locales/en.json`
   - **AC:** `show_description_tab = 0`: tanpa tab bar, hanya section Tabel Ukuran biasa (hilang jika kosong). `show_description_tab = 1` & keduanya terisi: 2 tab aksesibel (`role="tablist"`, `role="tab"`, `role="tabpanel"`, `aria-selected`, `aria-controls`, panah + `Home`/`End`), urutan Deskripsi Lengkap dulu & aktif awal lalu Tabel Ukuran; mobile tetap komponen tab yang sama. Kasus tepi: jika hanya 1 konten terisi tampil sebagai section biasa tanpa tab bar; jika keduanya kosong section disembunyikan. HTML `description_id/en` disanitasi via `sanitizeArticleHtml`. Progressive enhancement tanpa JS tetap terbaca; fallback SEO `meta_description` tetap utuh.
 
-- [ ] **T-386** `[QA & Regresi]` **Verifikasi Regresi End-to-End (320px–1440px, ID/EN, Lint & Test)**
+- [x] **T-386** `[QA & Regresi]` **Verifikasi Regresi End-to-End (320px–1440px, ID/EN, Lint & Test)**
   - **File:** Seluruh berkas terdampak `T-380` s/d `T-385`
   - **AC:** Regresi katalog, detail produk (1 foto & 10+ foto), tab deskripsi/tabel ukuran & kasus tepi, serta admin create/edit produk lulus tanpa error console pada 320px–1440px di ID & EN; `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, dan `npm test` hijau.
