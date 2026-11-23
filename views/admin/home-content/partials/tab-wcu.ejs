@@ -75,25 +75,5 @@
       </div>
     </div>
   </div>
-  <div class="about-glass-card">
-    <div class="form-card-title"><span>Artbox Ilustrasi &amp; Kartu Mengambang (Kolom Kanan)</span></div>
-    <% [
-      { key: 'art_label', label: 'Label Pita Artbox', phId: 'Material · Alam · Masa depan', phEn: 'Material · Nature · Future', hint: 'Label di wadah ilustrasi SVG.' },
-      { key: 'float_eyebrow', label: 'Floating Card Eyebrow', phId: 'Berorientasi masa depan', phEn: 'Future-oriented' },
-      { key: 'float_title', label: 'Floating Card Judul', phId: 'Better by design.', phEn: 'Better by design.' },
-      { key: 'float_desc', label: 'Floating Card Keterangan', phId: 'Inovasi material untuk langkah bertanggung jawab.', phEn: 'Material innovation for a responsible path.' }
-    ].forEach(function(f, fIdx) { %>
-      <div class="form-row-2">
-        <div class="form-group <%= fIdx === 3 ? 'adm-home-mb-0' : '' %>">
-          <label for="wcu_<%= f.key %>_id" class="form-label"><%= f.label %> (Indonesia)</label>
-          <input type="text" id="wcu_<%= f.key %>_id" name="wcu_<%= f.key %>_id" class="form-input" value="<%= wcu[f.key + '_id'] || '' %>" placeholder="<%= f.phId %>">
-          <% if (f.hint) { %><div class="form-hint"><%= f.hint %></div><% } %>
-        </div>
-        <div class="form-group <%= fIdx === 3 ? 'adm-home-mb-0' : '' %>">
-          <label for="wcu_<%= f.key %>_en" class="form-label"><%= f.label %> (English)</label>
-          <input type="text" id="wcu_<%= f.key %>_en" name="wcu_<%= f.key %>_en" class="form-input" value="<%= wcu[f.key + '_en'] || '' %>" placeholder="<%= f.phEn %>">
-        </div>
-      </div>
-    <% }); %>
-  </div>
+  <%- include('wcu-media-card', { wcu }) %>
 </div>

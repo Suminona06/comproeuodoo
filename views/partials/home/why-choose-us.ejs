@@ -33,9 +33,9 @@
           <% if (whyChooseUs.descHtml) { %><p class="wcu-desc"><%- whyChooseUs.descHtml %></p><% } %>
         </div>
 
-        <div class="wcu-artbox" aria-label="<%= t('home.wcu_illustration_aria') %>">
+        <div class="wcu-artbox <%= whyChooseUs.hasCustomImage ? 'wcu-artbox--custom' : '' %>" aria-label="<%= t('home.wcu_illustration_aria') %>">
           <% if (whyChooseUs.artLabel) { %><div class="wcu-art-label"><%= whyChooseUs.artLabel %></div><% } %>
-          <img src="/images/wcu-botanical.svg" alt="" class="wcu-art" aria-hidden="true" loading="lazy" decoding="async">
+          <img src="<%= whyChooseUs.imageUrl %>" alt="" class="wcu-art <%= whyChooseUs.hasCustomImage ? 'wcu-art--custom' : '' %>" aria-hidden="true" loading="lazy" decoding="async">
           <% if (whyChooseUs.floatEyebrow || whyChooseUs.floatTitle || whyChooseUs.floatDesc) { %>
             <div class="wcu-float-card">
               <% if (whyChooseUs.floatEyebrow) { %>

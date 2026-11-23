@@ -3357,6 +3357,15 @@
               box-shadow 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.sec-why-us .wcu-artbox--custom {
+  background: var(--bg-subtle);
+}
+
+.sec-why-us .wcu-artbox--custom::before,
+.sec-why-us .wcu-artbox--custom::after {
+  display: none;
+}
+
 @media (hover: hover) {
   .sec-why-us .wcu-artbox:hover {
     transform: translateY(-4px);
@@ -3418,9 +3427,18 @@
   will-change: transform;
 }
 
+.sec-why-us .wcu-art--custom {
+  object-fit: cover;
+  z-index: 1;
+}
+
 @media (hover: hover) {
   .sec-why-us .wcu-artbox:hover .wcu-art {
     transform: scale(1.045) rotate(-0.4deg);
+  }
+
+  .sec-why-us .wcu-artbox--custom:hover .wcu-art--custom {
+    transform: scale(1.045);
   }
 }
 

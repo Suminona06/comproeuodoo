@@ -27,7 +27,7 @@
 - **Skill:** `incremental-implementation`.
 - **Verifikasi Deterministik:** `npm run lint` dan `npm run test:seed`.
 
-### [OPEN] T-404: Form Media Picker Tab 2 Why Choose Us CMS Admin `[Tier: Hydrogen Medium]`
+### [DONE] T-404: Form Media Picker Tab 2 Why Choose Us CMS Admin `[Tier: Hydrogen Medium]`
 - **Proposal:** [2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md](../changes/2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md)
 - **File Terdampak (2 file):** `views/admin/home-content/partials/tab-wcu.ejs`, `views/admin/home-content/partials/wcu-media-card.ejs` (partial baru agar kedua file `<= 100` baris sesuai `conventions.md`).
 - **Langkah Kerja:**
@@ -44,7 +44,7 @@
 - **Skill:** `frontend-ui-engineering`, `antislop-ui`.
 - **Verifikasi Deterministik:** `npm run lint:views` dan `npm run lint`.
 
-### [OPEN] T-405: Render Gambar Penuh Dinamis WCU Bebas Inline Style di Beranda Publik `[Tier: Argon Medium]`
+### [DONE] T-405: Render Gambar Penuh Dinamis WCU Bebas Inline Style di Beranda Publik `[Tier: Argon Medium]`
 - **Proposal:** [2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md](../changes/2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md)
 - **File Terdampak (2 file):** `views/partials/home/why-choose-us.ejs`, `public/css/components.css`.
 - **Langkah Kerja:**
@@ -62,7 +62,7 @@
 - **Skill:** `frontend-ui-engineering`, `antislop-ui`.
 - **Verifikasi Deterministik:** `npm run lint:views`, `npm run lint:i18n`, `npm run lint`.
 
-### [OPEN] T-406: Penyeragaman Dimensi Dropdown Admin (`.eu-dd`) 38px Sejajar `.form-input` di `public/css/admin.css` `[Tier: Hydrogen Medium]`
+### [DONE] T-406: Penyeragaman Dimensi Dropdown Admin (`.eu-dd`) 38px Sejajar `.form-input` di `public/css/admin.css` `[Tier: Hydrogen Medium]`
 - **Proposal:** [2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md](../changes/2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md)
 - **File Terdampak (1 file):** `public/css/admin.css`.
 - **Langkah Kerja:**
