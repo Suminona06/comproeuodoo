@@ -54,7 +54,7 @@ Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> M
 ### B. Kunci Pengaturan Beranda (`settings`)
 - `home_intro_title_*`, `home_intro_paragraph_1_*`, `home_intro_paragraph_2_*`, `home_intro_eyebrow_*`, `home_intro_image_url`, `home_intro_is_active`.
 - `home_cat_title_*`, `home_cat_subtitle_*`, `home_categories_json`.
-- `home_wcu_title_*`, `home_wcu_eyebrow_*`, `home_wcu_headline_*`, `home_wcu_desc_*`, `home_wcu_chip_label_*`, `home_wcu_chip_icon`, `home_wcu_art_label_*`, `home_wcu_float_eyebrow_*`, `home_wcu_float_title_*`, `home_wcu_float_desc_*`, `home_wcu_is_active`.
+- `home_wcu_title_*`, `home_wcu_eyebrow_*`, `home_wcu_headline_*`, `home_wcu_desc_*`, `home_wcu_chip_label_*`, `home_wcu_chip_icon`, `home_wcu_image_url` [PENDING T-403], `home_wcu_art_label_*`, `home_wcu_float_eyebrow_*`, `home_wcu_float_title_*`, `home_wcu_float_desc_*`, `home_wcu_is_active`.
 - `home_cert_title_*`, `home_cert_body_*`, `home_cert_btn_text_*`, `home_cert_btn_url`, `home_cert_show_btn`, `home_cert_is_active` (default `0`), `home_cert_items_json`.
 - `home_brand_title_id`, `home_brand_title_en`.
 
@@ -65,7 +65,7 @@ Modul Beranda mengikuti arsitektur berlapis `Route -> Controller -> Service -> M
 - **`hero` (`banners`):** Menyaring banner aktif, menyediakan safety-net fallback jika kosong, mengekstrak `youtubeId` aman (`embed/`/`shorts/`/`youtu.be/`/`[?&]v=` atau ID `[a-zA-Z0-9_-]+`), memilih teks lokal, serta menormalkan `primaryCta` & `secondaryCta` melalui `resolveSafeHref` (`/`, `https?://`, `mailto:`, `tel:`, `#`) + flag `isExternal`.
 - **`intro`:** Menentukan status aktif (`isActive`) dan konten terlokalisasi (`eyebrow`, `title`, `paragraph1`, `paragraph2`, `imageUrl`).
 - **`categories`:** Menyiapkan header (`title`, `subtitle`), daftar maksimal 4 kategori dengan gambar fallback per segmen, label hitungan terlokalisasi (`t`), dan `colsClass` (`hcat-grid--1` s/d `hcat-grid--4`).
-- **`whyChooseUs`:** Menormalkan seluruh field editorial & floating card, serta menerapkan `formatInlineText` di server untuk `titleHtml`, `headlineHtml`, dan `descHtml`.
+- **`whyChooseUs`:** Menormalkan seluruh field editorial & floating card, menerapkan `formatInlineText` di server untuk `titleHtml`, `headlineHtml`, dan `descHtml`, serta [PENDING T-403] menyiapkan `imageUrl` (fallback `/images/wcu-botanical.svg`) dan `hasCustomImage` (boolean).
 - **`certifications`:** Menyaring item aktif, mengurutkan berdasarkan `sort_order`, dan menyiapkan tombol CTA opsional (`btnUrl` disanitasi via `resolveSafeHref`).
 - **`brands`:** Menyaring merek aktif, menggandakan daftar hingga minimal 8 item per track marquee, menyiapkan `initials`, dan membaca `brandSectionTitle` sesuai bahasa.
 - **`news`:** Membatasi maksimal 2 artikel terbaru, memilih `fallbackImage` aman (mengganti placeholder lama bila perlu), serta memformat tanggal publikasi sesuai locale (`id-ID`/`en-US`).

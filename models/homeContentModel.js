@@ -49,7 +49,8 @@ export const homeContentModel = {
         float_title_id: 'Better by design.',
         float_title_en: 'Better by design.',
         float_desc_id: 'Inovasi material untuk langkah yang lebih bertanggung jawab.',
-        float_desc_en: 'Material innovation for a more responsible path.'
+        float_desc_en: 'Material innovation for a more responsible path.',
+        image_url: ''
       },
       pillars: {
         title_id: 'Tiga Pilar Keunggulan Kami',
@@ -272,7 +273,8 @@ export const homeContentModel = {
         float_title_id: allSettings.home_wcu_float_title_id ?? '',
         float_title_en: allSettings.home_wcu_float_title_en ?? '',
         float_desc_id: allSettings.home_wcu_float_desc_id ?? '',
-        float_desc_en: allSettings.home_wcu_float_desc_en ?? ''
+        float_desc_en: allSettings.home_wcu_float_desc_en ?? '',
+        image_url: allSettings.home_wcu_image_url ?? ''
       };
 
       return { intro, categories, homepage_categories, pillars, why_choose_us, certifications, cta };
@@ -339,6 +341,7 @@ export const homeContentModel = {
       if (w.float_title_en !== undefined) settingsMap.home_wcu_float_title_en = w.float_title_en;
       if (w.float_desc_id !== undefined) settingsMap.home_wcu_float_desc_id = w.float_desc_id;
       if (w.float_desc_en !== undefined) settingsMap.home_wcu_float_desc_en = w.float_desc_en;
+      if (w.image_url !== undefined) settingsMap.home_wcu_image_url = w.image_url;
     }
 
 

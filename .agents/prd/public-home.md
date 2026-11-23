@@ -19,7 +19,7 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
   6. Registered Brands Marquee Strip (`.brand-strip-sec`, `.brand-strip-*`)
   7. Latest News Highlights (`.sec-news`)
   8. Global Pre-Footer CTA (`.sec-cta` via `views/partials/cta-global.ejs`)
-- **Kebijakan Konten Fallback & Kepatuhan CSP:** Seluruh konten fallback teks statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback dan seksi News yang merender empty-state ramah dwibahasa. Template wajib bebas inline `style`, warna hex langsung, komentar HTML, dan inline event handler (`onerror=`), serta menyajikan ilustrasi botani Why Choose Us sebagai aset eksternal `public/images/wcu-botanical.svg`.
+- **Kebijakan Konten Fallback & Kepatuhan CSP:** Seluruh konten fallback teks statis hardcoded dihilangkan; jika data CMS kosong, seksi bersangkutan tidak dirender ke DOM (zero-render), kecuali Hero Slider yang mempertahankan safety net fallback dan seksi News yang merender empty-state ramah dwibahasa. Template wajib bebas inline `style`, warna hex langsung, komentar HTML, dan inline event handler (`onerror=`). [PENDING T-403..T-405] Pada seksi Why Choose Us, admin dapat memilih 1 gambar dinamis (`home_wcu_image_url`) melalui Media Picker di `/admin/home-content` Tab 2; jika kosong/dihapus, sistem otomatis kembali menampilkan aset eksternal `public/images/wcu-botanical.svg` di atas gradasi token default.
 
 ### FR-06: Dukungan Dwibahasa (i18n)
 - Setiap komponen beranda mendukung teks dwibahasa (Bahasa Indonesia `id` default & Bahasa Inggris `en`).

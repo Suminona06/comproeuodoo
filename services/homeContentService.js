@@ -94,7 +94,8 @@ export function buildWcuSection(b = {}) {
     float_title_id: cleanOptStr(b.wcu_float_title_id, 100),
     float_title_en: cleanOptStr(b.wcu_float_title_en, 100),
     float_desc_id: cleanOptStr(b.wcu_float_desc_id, 255),
-    float_desc_en: cleanOptStr(b.wcu_float_desc_en, 255)
+    float_desc_en: cleanOptStr(b.wcu_float_desc_en, 255),
+    image_url: cleanOptPath(b.wcu_image_url)
   };
 }
 
