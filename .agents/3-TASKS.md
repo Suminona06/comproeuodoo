@@ -175,7 +175,7 @@
 
 ---
 
-### T-402: Audit Visual Presisi vs Referensi LRT Jakarta & Verifikasi Performa Scroll Mobile `[OPEN]` `[Tier: High]`
+### T-402: Audit Visual Presisi vs Referensi LRT Jakarta & Verifikasi Performa Scroll Mobile `[DONE]` `[Tier: High]`
 - **File Terdampak (maks 3 file bila perlu penyesuaian mikro):**
   1. `public/css/components.css`
   2. `public/js/about-story.js`
