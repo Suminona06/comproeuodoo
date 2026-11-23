@@ -61,7 +61,7 @@
 
 ---
 
-### T-397: Refactor Partial EJS `history-timeline.ejs` ke Struktur Vertikal 2 Kolom `[OPEN]` `[Tier: Argon Medium]`
+### T-397: Refactor Partial EJS `history-timeline.ejs` ke Struktur Vertikal 2 Kolom `[DONE]` `[Tier: Argon Medium]`
 - **File Terdampak (2 file):**
   1. `views/partials/about/history-timeline.ejs`
   2. `services/publicPageService.js` *(menyertakan `timelineGroups` atau helper grouping ke view payload bila diperlukan)*
@@ -89,7 +89,7 @@
 
 ---
 
-### T-398: Styling CSS Timeline Vertikal Desktop & Mobile + Pembersihan Slider Lama `[OPEN]` `[Tier: Argon Medium]`
+### T-398: Styling CSS Timeline Vertikal Desktop & Mobile + Pembersihan Slider Lama `[DONE]` `[Tier: Argon Medium]`
 - **File Terdampak (1 file):**
   1. `public/css/components.css`
 - **Langkah Implementasi:**
@@ -112,7 +112,7 @@
 
 ---
 
-### T-399: Interaksi JS Timeline Vertikal (Scroll-Spy, Progres `scaleY`, Reveal Kartu, Klik Tahun, Sort & Auto-Scroll Chip) `[OPEN]` `[Tier: Argon Medium]`
+### T-399: Interaksi JS Timeline Vertikal (Scroll-Spy, Progres `scaleY`, Reveal Kartu, Klik Tahun, Sort & Auto-Scroll Chip) `[DONE]` `[Tier: Argon Medium]`
 - **File Terdampak (1 file):**
   1. `public/js/about-story.js`
 - **Langkah Implementasi:**
@@ -133,7 +133,7 @@
 
 ---
 
-### T-400: Penyesuaian Label & Petunjuk Pengelompokan Tahun di Form Admin Sejarah `[OPEN]` `[Tier: Hydrogen Medium]`
+### T-400: Penyesuaian Label & Petunjuk Pengelompokan Tahun di Form Admin Sejarah `[DONE]` `[Tier: Hydrogen Medium]`
 - **File Terdampak (2 file):**
   1. `views/admin/about/partials/modal-timeline.ejs`
   2. `views/admin/about/partials/tab-sejarah-timeline.ejs`

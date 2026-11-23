@@ -10,7 +10,7 @@
     </button>
   </div>
   <p class="adm-abt-card-desc">
-    Daftar linimasa perjalanan sejarah korporasi dari perintisan 1990 hingga era modern berkelanjutan.
+    Daftar milestone sejarah korporasi. Milestone dengan label tahun yang sama akan dikelompokkan otomatis di bawah satu tahun pada linimasa publik.
   </p>
 
   <% if (timeline && timeline.length > 0) { %>
@@ -19,7 +19,7 @@
         <thead>
           <tr>
             <th class="adm-abt-col-order">Urutan</th>
-            <th class="adm-abt-col-era">Label Tahun / Era</th>
+            <th class="adm-abt-col-era">Label Tahun</th>
             <th>Judul Milestone (ID/EN)</th>
             <th>Deskripsi Singkat</th>
             <th class="adm-abt-col-status">Status</th>
@@ -32,23 +32,15 @@
               <td class="adm-abt-col-order"><%= item.sort_order %></td>
               <td>
                 <span class="adm-abt-timeline-era-id"><%= item.year_label_id %></span>
-                <% if (item.year_label_en) { %>
-                  <span class="adm-abt-timeline-era-en"><%= item.year_label_en %></span>
-                <% } %>
+                <span class="adm-abt-timeline-era-en"><%= item.year_label_en || '' %></span>
               </td>
               <td>
                 <div class="adm-abt-timeline-title-id"><%= item.title_id %></div>
-                <% if (item.title_en) { %>
-                  <div class="adm-abt-timeline-title-en"><%= item.title_en %></div>
-                <% } %>
+                <div class="adm-abt-timeline-title-en"><%= item.title_en || '' %></div>
               </td>
               <td class="adm-abt-timeline-desc"><%= item.description_id || '-' %></td>
               <td class="adm-abt-col-center">
-                <% if (item.is_active) { %>
-                  <span class="badge-status active">Aktif</span>
-                <% } else { %>
-                  <span class="badge-status inactive">Nonaktif</span>
-                <% } %>
+                <span class="badge-status <%= item.is_active ? 'active' : 'inactive' %>"><%= item.is_active ? 'Aktif' : 'Nonaktif' %></span>
               </td>
               <td class="adm-abt-col-right">
                 <div class="table-actions">
@@ -69,7 +61,7 @@
     </div>
   <% } else { %>
     <div class="adm-abt-empty-box">
-      Belum ada milestone linimasa ditambahkan. Klik tombol <strong>Tambah Milestone</strong> di atas untuk membuat jejak langkah baru.
+      Belum ada milestone linimasa ditambahkan. Klik tombol <strong>Tambah</strong> di atas untuk membuat jejak langkah baru.
     </div>
   <% } %>
 </div>

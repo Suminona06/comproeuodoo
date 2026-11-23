@@ -115,141 +115,196 @@ function initBadgeHover() {
   cards.forEach((card) => bindCardHover(stage, card));
 }
 
-function getVisibleColumns() {
-  if (window.innerWidth >= 1024) return 3;
-  if (window.innerWidth >= 768) return 2;
-  return 1;
+function reorderChildrenReversed(parent, selector) {
+  if (!parent) return;
+  const nodes = Array.from(parent.querySelectorAll(selector));
+  if (nodes.length < 2) return;
+  const frag = document.createDocumentFragment();
+  nodes.reverse().forEach((node) => frag.appendChild(node));
+  parent.appendChild(frag);
 }
 
-function setBtnDisabled(btn, isDisabled) {
-  if (!btn) return;
-  btn.disabled = isDisabled;
-  btn.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
-}
-
-function animateLineSegment(lineEl, shouldFill) {
-  if (!lineEl) return;
-  const wasFilled = lineEl.classList.contains('is-filled');
-  lineEl.classList.toggle('is-filled', shouldFill);
-  const fillEl = lineEl.querySelector('.abt-htl-line-fill');
-  if (!fillEl || wasFilled === shouldFill || typeof anime !== 'function' || isReducedMotion()) return;
-
-  anime.remove(fillEl);
-  anime({
-    targets: fillEl,
-    scaleX: shouldFill ? [0, 1] : [1, 0],
-    duration: 320,
-    easing: 'easeOutCubic'
-  });
-}
-
-function syncTimelineVisuals(ctx) {
-  const cols = getVisibleColumns();
-  const maxIdx = Math.max(0, ctx.items.length - cols);
-  ctx.currentIndex = Math.max(0, Math.min(ctx.currentIndex, maxIdx));
-
-  ctx.items.forEach((item, idx) => {
-    item.classList.toggle('is-active', idx === ctx.currentIndex);
-    const lineEl = item.querySelector('.abt-htl-line');
-    animateLineSegment(lineEl, idx < ctx.currentIndex);
-  });
-
-  if (ctx.nav) {
-    ctx.nav.hidden = ctx.items.length <= cols;
-  }
-  setBtnDisabled(ctx.prevBtn, ctx.currentIndex <= 0);
-  setBtnDisabled(ctx.nextBtn, ctx.currentIndex >= maxIdx);
-
-  if (ctx.liveEl) {
-    ctx.liveEl.textContent = `${ctx.labelPrefix}: ${ctx.currentIndex + 1} / ${ctx.items.length}`;
-  }
-}
-
-function scrollToTimelineIndex(ctx, nextIdx) {
-  const cols = getVisibleColumns();
-  const maxIdx = Math.max(0, ctx.items.length - cols);
-  const clamped = Math.max(0, Math.min(nextIdx, maxIdx));
-  ctx.currentIndex = clamped;
-
-  const targetItem = ctx.items[clamped];
-  const baseLeft = ctx.items[0] ? ctx.items[0].offsetLeft : 0;
-  const targetLeft = targetItem ? Math.max(0, targetItem.offsetLeft - baseLeft) : 0;
-  ctx.isProgrammatic = true;
-  ctx.viewport.scrollTo({
-    left: targetLeft,
+function centerActiveChip(yearNav, pill) {
+  if (!yearNav || !pill || window.innerWidth >= 1024) return;
+  const targetLeft = pill.offsetLeft - (yearNav.clientWidth - pill.offsetWidth) / 2;
+  yearNav.scrollTo({
+    left: Math.max(0, targetLeft),
     behavior: isReducedMotion() ? 'auto' : 'smooth'
   });
-  syncTimelineVisuals(ctx);
-
-  window.clearTimeout(ctx.scrollTimer);
-  ctx.scrollTimer = window.setTimeout(() => {
-    ctx.isProgrammatic = false;
-  }, 380);
 }
 
-function onViewportScroll(ctx) {
-  if (ctx.isProgrammatic || !ctx.items.length) return;
-  const itemWidth = ctx.items[0].offsetWidth || 1;
-  const cols = getVisibleColumns();
-  const maxIdx = Math.max(0, ctx.items.length - cols);
-  const rawIdx = Math.round(ctx.viewport.scrollLeft / itemWidth);
-  const nextIdx = Math.max(0, Math.min(rawIdx, maxIdx));
-  if (nextIdx === ctx.currentIndex) return;
-
-  ctx.currentIndex = nextIdx;
-  syncTimelineVisuals(ctx);
+function setActiveYear(ctx, yearKey) {
+  if (!yearKey || yearKey === ctx.activeKey) return;
+  ctx.activeKey = yearKey;
+  ctx.groups.forEach((group) => {
+    group.classList.toggle('is-active', group.getAttribute('data-year-key') === yearKey);
+  });
+  let activePill = null;
+  ctx.pills.forEach((pill) => {
+    const match = pill.getAttribute('data-year-key') === yearKey;
+    pill.classList.toggle('is-active', match);
+    pill.setAttribute('aria-current', match ? 'true' : 'false');
+    if (match) activePill = pill;
+  });
+  centerActiveChip(ctx.yearNav, activePill);
 }
 
-function onTimelineKeydown(ctx, evt) {
-  if (evt.key === 'ArrowRight') {
-    evt.preventDefault();
-    scrollToTimelineIndex(ctx, ctx.currentIndex + 1);
-  } else if (evt.key === 'ArrowLeft') {
-    evt.preventDefault();
-    scrollToTimelineIndex(ctx, ctx.currentIndex - 1);
+function measureTimelineGeometry(ctx) {
+  if (!ctx.rail || !ctx.groups.length) return;
+  const scrollY = window.scrollY;
+  const railRect = ctx.rail.getBoundingClientRect();
+  ctx.railStartDocY = railRect.top + scrollY;
+
+  const lastDot = ctx.groups[ctx.groups.length - 1].querySelector('.abt-htl-dot');
+  if (lastDot) {
+    const dotRect = lastDot.getBoundingClientRect();
+    const dotCenterY = dotRect.top + dotRect.height / 2 + scrollY;
+    ctx.railHeight = Math.max(0, Math.round(dotCenterY - ctx.railStartDocY));
+    ctx.rail.style.setProperty('--abt-htl-rail-height', `${ctx.railHeight}px`);
   }
+
+  ctx.groupOffsets = ctx.groups.map((el) => ({
+    key: el.getAttribute('data-year-key'),
+    top: el.getBoundingClientRect().top + scrollY
+  }));
 }
 
-function initHorizontalTimeline() {
-  const block = document.querySelector('.abt-htl-block');
-  if (!block) return;
+function syncTimelineScroll(ctx) {
+  ctx.rafId = 0;
+  if (!ctx.groupOffsets.length || !ctx.rail) return;
 
-  const viewport = block.querySelector('.abt-htl-viewport');
-  const items = Array.from(block.querySelectorAll('.abt-htl-item'));
-  if (!viewport || !items.length) return;
+  const anchorDocY = window.scrollY + window.innerHeight * 0.35;
+  const rawProgress = ctx.railHeight > 0 ? (anchorDocY - ctx.railStartDocY) / ctx.railHeight : 0;
+  const clamped = Math.max(0, Math.min(1, rawProgress));
+  ctx.rail.style.setProperty('--abt-htl-progress', clamped.toFixed(4));
 
-  const liveEl = block.querySelector('.abt-htl-live');
-  const ctx = {
-    block,
-    viewport,
-    items,
-    nav: block.querySelector('.abt-htl-nav'),
-    prevBtn: block.querySelector('.abt-htl-btn--prev'),
-    nextBtn: block.querySelector('.abt-htl-btn--next'),
-    liveEl,
-    labelPrefix: (liveEl && liveEl.getAttribute('data-label-prefix')) || 'Milestone',
-    currentIndex: 0,
-    isProgrammatic: false,
-    scrollTimer: null
+  let nextKey = ctx.groupOffsets[0].key;
+  for (let i = 0; i < ctx.groupOffsets.length; i += 1) {
+    if (ctx.groupOffsets[i].top <= anchorDocY) {
+      nextKey = ctx.groupOffsets[i].key;
+    }
+  }
+  setActiveYear(ctx, nextKey);
+}
+
+function scheduleTimelineSync(ctx) {
+  if (ctx.rafId) return;
+  ctx.rafId = window.requestAnimationFrame(() => syncTimelineScroll(ctx));
+}
+
+function handlePillClick(ctx, pill) {
+  const targetId = pill.getAttribute('data-year-target');
+  const yearKey = pill.getAttribute('data-year-key');
+  const targetEl = targetId ? document.getElementById(targetId) : null;
+  if (!targetEl) return;
+
+  setActiveYear(ctx, yearKey);
+  if (ctx.liveEl) {
+    ctx.liveEl.textContent = pill.textContent.trim();
+  }
+  targetEl.scrollIntoView({ behavior: isReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+}
+
+function handleSortClick(ctx, btn) {
+  const nextDir = btn.getAttribute('data-sort-dir');
+  if (!nextDir || nextDir === ctx.sortDir) return;
+
+  ctx.sortDir = nextDir;
+  ctx.layout.setAttribute('data-sort-dir', nextDir);
+  ctx.sortBtns.forEach((b) => {
+    const active = b === btn;
+    b.classList.toggle('is-active', active);
+    b.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+
+  if (!isReducedMotion()) {
+    ctx.list.classList.add('is-sorting');
+    window.clearTimeout(ctx.sortTimer);
+    ctx.sortTimer = window.setTimeout(() => ctx.list.classList.remove('is-sorting'), 180);
+  }
+
+  reorderChildrenReversed(ctx.list, ':scope > .abt-htl-group');
+  reorderChildrenReversed(ctx.yearNav, '.abt-htl-year-pill');
+  ctx.list.querySelectorAll('.abt-htl-cards').forEach((c) => reorderChildrenReversed(c, '.abt-htl-card'));
+  ctx.groups = Array.from(ctx.list.querySelectorAll('.abt-htl-group'));
+  ctx.pills = Array.from(ctx.yearNav.querySelectorAll('.abt-htl-year-pill'));
+  ctx.activeKey = '';
+
+  if (ctx.liveEl) ctx.liveEl.textContent = btn.textContent.trim();
+  measureTimelineGeometry(ctx);
+  syncTimelineScroll(ctx);
+}
+
+function initCardReveal(cards) {
+  if (!cards.length) return;
+  if (isReducedMotion() || !('IntersectionObserver' in window)) {
+    cards.forEach((card) => card.classList.add('is-revealed'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-revealed');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.15 });
+  cards.forEach((card) => observer.observe(card));
+}
+
+function bindTimelineEvents(ctx) {
+  ctx.pills.forEach((pill) => pill.addEventListener('click', () => handlePillClick(ctx, pill)));
+  ctx.sortBtns.forEach((btn) => btn.addEventListener('click', () => handleSortClick(ctx, btn)));
+  window.addEventListener('scroll', () => scheduleTimelineSync(ctx), { passive: true });
+
+  const refresh = () => {
+    measureTimelineGeometry(ctx);
+    scheduleTimelineSync(ctx);
   };
-
-  if (ctx.prevBtn) {
-    ctx.prevBtn.addEventListener('click', () => scrollToTimelineIndex(ctx, ctx.currentIndex - 1));
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(refresh).observe(ctx.list);
+  } else {
+    window.addEventListener('resize', refresh, { passive: true });
   }
-  if (ctx.nextBtn) {
-    ctx.nextBtn.addEventListener('click', () => scrollToTimelineIndex(ctx, ctx.currentIndex + 1));
-  }
-  viewport.addEventListener('scroll', () => onViewportScroll(ctx), { passive: true });
-  block.addEventListener('keydown', (evt) => onTimelineKeydown(ctx, evt));
-  window.addEventListener('resize', () => syncTimelineVisuals(ctx));
+}
 
-  syncTimelineVisuals(ctx);
+function initVerticalTimeline() {
+  const layout = document.querySelector('.abt-htl-layout');
+  if (!layout || layout.hidden) return;
+
+  const list = layout.querySelector('#abt-htl-list');
+  const yearNav = layout.querySelector('.abt-htl-year-nav');
+  const rail = layout.querySelector('.abt-htl-rail');
+  if (!list || !yearNav || !rail) return;
+
+  const ctx = {
+    layout,
+    list,
+    yearNav,
+    rail,
+    liveEl: document.querySelector('.abt-htl-live'),
+    sortBtns: Array.from(layout.querySelectorAll('.abt-htl-sort-btn')),
+    pills: Array.from(yearNav.querySelectorAll('.abt-htl-year-pill')),
+    groups: Array.from(list.querySelectorAll('.abt-htl-group')),
+    sortDir: layout.getAttribute('data-sort-dir') || 'asc',
+    activeKey: '',
+    railStartDocY: 0,
+    railHeight: 0,
+    groupOffsets: [],
+    rafId: 0,
+    sortTimer: 0
+  };
+  if (!ctx.groups.length) return;
+
+  initCardReveal(Array.from(list.querySelectorAll('.abt-htl-card')));
+  bindTimelineEvents(ctx);
+  measureTimelineGeometry(ctx);
+  syncTimelineScroll(ctx);
 }
 
 function initAboutStory() {
   initCounterStats();
   initBadgeHover();
-  initHorizontalTimeline();
+  initVerticalTimeline();
 }
 
 if (document.readyState === 'loading') {
