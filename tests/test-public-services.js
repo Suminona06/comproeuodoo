@@ -11,6 +11,7 @@ import {
 } from '../services/publicPostService.js';
 import {
   buildTicketAcronym,
+  groupTimelineByYear,
   getAboutPageData,
   buildAboutFallbackPayload,
   getCapabilitiesPageData,
@@ -201,6 +202,34 @@ describe('Public Services & Thin Controllers Unit Tests (T-369..T-373)', () => {
 
       const capFallback = buildCapabilitiesFallbackPayload({ t: mockTranslator({ 'capabilities.page_title': 'Capabilities' }) });
       assert.deepEqual(capFallback.capabilities, []);
+    });
+
+    it('2c. groups timeline items by exact year label, sorts numerically (asc/desc), and resolves ID/EN fallbacks (T-395)', () => {
+      assert.deepEqual(groupTimelineByYear([], 'id'), []);
+      assert.deepEqual(groupTimelineByYear(null, 'en'), []);
+
+      const items = [
+        { id: 10, year_label_id: '2000-an', year_label_en: '2000s', title_id: 'Ekspansi 2', title_en: 'Expansion 2', description_id: 'D2', description_en: 'D2 EN', sort_order: 2 },
+        { id: 11, year_label_id: 'Era Inovasi Hijau', year_label_en: '', title_id: 'Inovasi', title_en: '', description_id: 'Desc ID', description_en: '', sort_order: 5 },
+        { id: 12, year_label_id: '1990', year_label_en: '1990', title_id: 'Berdiri', title_en: 'Founded', description_id: 'Awal', description_en: 'Start', sort_order: 1 },
+        { id: 13, year_label_id: '2000-an', year_label_en: '2000s', title_id: 'Ekspansi 1', title_en: 'Expansion 1', description_id: 'D1', description_en: 'D1 EN', sort_order: 1 }
+      ];
+      const snapshot = JSON.stringify(items);
+
+      const ascId = groupTimelineByYear(items, 'id', 'asc');
+      assert.equal(JSON.stringify(items), snapshot);
+      assert.deepEqual(ascId.map((g) => g.yearLabel), ['1990', '2000-an', 'Era Inovasi Hijau']);
+      assert.deepEqual(ascId.map((g) => g.yearKey), ['1990', '2000-an', 'era-inovasi-hijau']);
+      assert.equal(ascId[0].sortYear, 1990);
+      assert.equal(ascId[1].count, 2);
+      assert.deepEqual(ascId[1].milestones.map((m) => m.id), [13, 10]);
+      assert.equal(ascId[2].sortYear, Infinity);
+
+      const descEn = groupTimelineByYear(items, 'en', 'desc');
+      assert.deepEqual(descEn.map((g) => g.yearLabel), ['Era Inovasi Hijau', '2000s', '1990']);
+      assert.equal(descEn[0].milestones[0].title, 'Inovasi');
+      assert.equal(descEn[0].milestones[0].description, 'Desc ID');
+      assert.deepEqual(descEn[1].milestones.map((m) => m.id), [10, 13]);
     });
   });
 
