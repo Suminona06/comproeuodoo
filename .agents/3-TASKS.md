@@ -80,7 +80,7 @@
 - **Skill:** `antislop-ui`, `frontend-ui-engineering`.
 - **Verifikasi Deterministik:** `npm run lint`, inspeksi visual & pengukuran bounding box Playwright di `/admin/products/create`, `/admin/home-content`, dan halaman admin lainnya.
 
-### [OPEN] T-407: Unit Test (`homeService` & `homeContentService`) dan Verifikasi Regresi Visual Playwright Multi-Viewport `[Tier: Argon Medium]`
+### [DONE] T-407: Unit Test (`homeService` & `homeContentService`) dan Verifikasi Regresi Visual Playwright Multi-Viewport `[Tier: Argon Medium]`
 - **Proposal:** [2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md](../changes/2026-11-23_wcu-dynamic-media-and-admin-dropdown-sizing.md)
 - **File Terdampak (1 file):** `tests/test-wcu-dynamic-media.js`.
 - **Langkah Kerja:**
