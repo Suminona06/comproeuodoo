@@ -1,6 +1,9 @@
 <%
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'id';
   const items = (typeof timeline !== 'undefined' && Array.isArray(timeline)) ? timeline : [];
+  const groups = typeof groupTimelineByYear === 'function'
+    ? groupTimelineByYear(items, lang, 'asc')
+    : (typeof timelineGroups !== 'undefined' && Array.isArray(timelineGroups) ? timelineGroups : []);
   const tlHdr = typeof timelineHeader !== 'undefined' && timelineHeader ? timelineHeader : {};
   const taglineText = (lang === 'en' ? tlHdr.tagline_en : tlHdr.tagline_id)
     || t('about.timeline_default_tagline');
@@ -9,62 +12,81 @@
   const descText = (lang === 'en' ? tlHdr.desc_en : tlHdr.desc_id)
     || t('about.timeline_default_desc');
 %>
-<div class="abt-htl-block reveal" data-od-id="company-timeline" role="region" aria-roledescription="carousel" aria-label="<%= t('about.timeline_region_label') %>">
+<div class="abt-htl-block reveal" data-od-id="company-timeline" role="region" aria-label="<%= t('about.timeline_region_label') %>">
   <header class="abt-htl-header">
     <div class="abt-htl-header-copy">
       <span class="abt-htl-tagline"><%= taglineText %></span>
       <h2 class="abt-htl-title"><%= titleText %></h2>
       <p class="abt-htl-desc"><%= descText %></p>
     </div>
-
-    <% if (items.length > 0) { %>
-      <div class="abt-htl-nav" <%= items.length <= 1 ? 'hidden' : '' %>>
-        <button type="button" class="abt-htl-btn abt-htl-btn--prev" aria-controls="abt-htl-track" aria-label="<%= t('about.timeline_prev') %>" aria-disabled="true" disabled>
-          <svg class="abt-htl-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-        </button>
-        <button type="button" class="abt-htl-btn abt-htl-btn--next" aria-controls="abt-htl-track" aria-label="<%= t('about.timeline_next') %>" <%- items.length <= 1 ? 'aria-disabled="true" disabled' : 'aria-disabled="false"' %>>
-          <svg class="abt-htl-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </button>
-      </div>
-    <% } %>
   </header>
 
-  <div class="abt-htl-live sr-only" aria-live="polite" aria-atomic="true" data-label-prefix="<%= t('about.timeline_position') %>"></div>
+  <div class="abt-htl-live sr-only" aria-live="polite" aria-atomic="true"></div>
 
-  <% if (items.length === 0) { %>
-    <div class="abt-htl-empty">
-      <%= t('about.timeline_empty') %>
-    </div>
+  <% if (groups.length === 0) { %>
+    <div class="abt-htl-empty"><%= t('about.timeline_empty') %></div>
   <% } %>
 
-  <div class="abt-htl-viewport" tabindex="0" aria-label="<%= t('about.timeline_region_label') %>" <%= items.length === 0 ? 'hidden' : '' %>>
-    <ol class="abt-htl-track" id="abt-htl-track">
-      <% items.forEach(function(item, idx) { %>
-        <%
-          const yearLabel = lang === 'en' ? (item.year_label_en || item.year_label_id) : item.year_label_id;
-          const itemTitle = lang === 'en' ? (item.title_en || item.title_id) : item.title_id;
-          const itemDesc = lang === 'en' ? (item.description_en || item.description_id) : item.description_id;
-        %>
-        <li class="abt-htl-item <%= idx === 0 ? 'is-active' : '' %>" data-index="<%= idx %>">
-          <div class="abt-htl-year"><%= yearLabel %></div>
-          <div class="abt-htl-axis" aria-hidden="true">
-            <span class="abt-htl-dot"></span>
-            <% if (idx < items.length - 1) { %>
-              <span class="abt-htl-line"><span class="abt-htl-line-fill"></span></span>
-            <% } %>
-          </div>
-          <h3 class="abt-htl-item-title"><%= itemTitle %></h3>
-          <% if (itemDesc) { %>
-            <p class="abt-htl-item-desc"><%= itemDesc %></p>
-          <% } %>
-        </li>
-      <% }); %>
-    </ol>
+  <div class="abt-htl-layout" data-sort-dir="asc"<%= groups.length === 0 ? ' hidden' : '' %>>
+    <aside class="abt-htl-sidebar">
+      <div class="abt-htl-sort-box">
+        <span class="abt-htl-sidebar-label" id="abt-htl-sort-label"><%= t('about.timeline_sort_label') %></span>
+        <div class="abt-htl-sort-group" role="group" aria-labelledby="abt-htl-sort-label">
+          <button type="button" class="abt-htl-sort-btn" data-sort-dir="desc" aria-pressed="false"><%= t('about.timeline_sort_latest') %></button>
+          <button type="button" class="abt-htl-sort-btn is-active" data-sort-dir="asc" aria-pressed="true"><%= t('about.timeline_sort_oldest') %></button>
+        </div>
+      </div>
+
+      <div class="abt-htl-year-box">
+        <span class="abt-htl-sidebar-label"><%= t('about.timeline_year_label') %></span>
+        <nav class="abt-htl-year-nav" aria-label="<%= t('about.timeline_year_nav_label') %>">
+          <% groups.forEach(function(group, idx) { %>
+            <button
+              type="button"
+              class="abt-htl-year-pill<%= idx === 0 ? ' is-active' : '' %>"
+              data-year-target="abt-htl-yr-<%= group.yearKey %>"
+              data-year-key="<%= group.yearKey %>"
+              aria-current="<%= idx === 0 ? 'true' : 'false' %>">
+              <span class="abt-htl-pill-text"><%= group.yearLabel %></span>
+              <span class="abt-htl-pill-dot" aria-hidden="true"></span>
+            </button>
+          <% }); %>
+        </nav>
+      </div>
+    </aside>
+
+    <div class="abt-htl-main">
+      <div class="abt-htl-rail" aria-hidden="true"><span class="abt-htl-rail-fill"></span></div>
+      <ol class="abt-htl-list" id="abt-htl-list">
+        <% groups.forEach(function(group, idx) { %>
+          <%
+            const eventWord = group.count === 1 ? t('about.timeline_event_singular') : t('about.timeline_event_plural');
+          %>
+          <li
+            class="abt-htl-group<%= idx === 0 ? ' is-active' : '' %>"
+            id="abt-htl-yr-<%= group.yearKey %>"
+            data-year-key="<%= group.yearKey %>"
+            tabindex="-1">
+            <div class="abt-htl-group-head">
+              <span class="abt-htl-dot" aria-hidden="true"></span>
+              <h3 class="abt-htl-year"><%= group.yearLabel %></h3>
+              <span class="abt-htl-count"><%= group.count %> <%= eventWord %></span>
+            </div>
+            <div class="abt-htl-cards">
+              <% group.milestones.forEach(function(item) { %>
+                <article class="abt-htl-card">
+                  <div class="abt-htl-card-head">
+                    <span class="abt-htl-card-marker" aria-hidden="true"></span>
+                    <h4 class="abt-htl-item-title"><%= item.title %></h4>
+                  </div>
+                  <hr class="abt-htl-card-divider">
+                  <p class="abt-htl-item-desc"<%= item.description ? '' : ' hidden' %>><%= item.description %></p>
+                </article>
+              <% }); %>
+            </div>
+          </li>
+        <% }); %>
+      </ol>
+    </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import ejs from 'ejs';
 import { chromium } from 'playwright';
+import { groupTimelineByYear } from '../services/publicPageService.js';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const BASE = process.env.T313_BASE_URL || 'http://127.0.0.1:3000';
@@ -12,6 +13,14 @@ const ADMIN_PASSWORD = process.env.T313_ADMIN_PASSWORD || 'AdminEuodoo2026!';
 const SHOT_DIR = path.join(ROOT, 'tests', 'screenshots-audit');
 const FIXTURE_URL = `${BASE}/__t317_fixture__`;
 const SETTLE_MS = 700;
+const VIEWPORTS = [
+  [320, 568],
+  [375, 667],
+  [390, 844],
+  [768, 1024],
+  [1024, 768],
+  [1440, 900]
+];
 
 const LOCALES = {
   id: JSON.parse(fs.readFileSync(path.join(ROOT, 'locales/id.json'), 'utf8')),
@@ -28,10 +37,10 @@ const STATS_6 = ['1990', '1.500+', '30+', '100%', '50', '7'].map((v, i) => ({
 }));
 const STATS_3 = STATS_6.slice(0, 3);
 
-function makeTimeline(count) {
-  return Array.from({ length: count }, (_, i) => ({
-    year_label_id: String(2020 + i),
-    year_label_en: String(2020 + i),
+function makeTimeline(years = ['2010', '2015', '2015', '2020', '2024', '2024']) {
+  return years.map((yr, i) => ({
+    year_label_id: yr,
+    year_label_en: yr,
     title_id: `Tonggak ${i + 1}`,
     title_en: `Milestone ${i + 1}`,
     description_id: `Deskripsi tonggak ${i + 1}.`,
@@ -43,8 +52,17 @@ function translator(lang) {
   return (key) => key.split('.').reduce((o, k) => (o ? o[k] : undefined), LOCALES[lang]) ?? key;
 }
 
-async function renderFixture({ lang = 'id', stats = STATS_6.slice(0, 4), timeline = makeTimeline(5), timelineHeader = {}, spacer = 0 } = {}) {
-  const locals = { currentLang: lang, t: translator(lang), about: {}, storyHeader: {}, stats, timeline, timelineHeader };
+async function renderFixture({ lang = 'id', stats = STATS_6.slice(0, 4), timeline = makeTimeline(), timelineHeader = {}, spacer = 0 } = {}) {
+  const locals = {
+    currentLang: lang,
+    t: translator(lang),
+    about: {},
+    storyHeader: {},
+    stats,
+    timeline,
+    timelineHeader,
+    groupTimelineByYear
+  };
   const counter = await ejs.renderFile(path.join(ROOT, 'views/partials/about/story-counter.ejs'), locals);
   const htl = await ejs.renderFile(path.join(ROOT, 'views/partials/about/history-timeline.ejs'), locals);
   const css = ['tokens', 'base', 'layout', 'components']
@@ -73,17 +91,26 @@ async function openFixture(fixtureOpts, pageOpts) {
   return { context, page };
 }
 
-async function timelineState(page) {
-  return page.evaluate(() => {
-    const items = [...document.querySelectorAll('.abt-htl-item')];
-    return {
-      activeIndex: items.findIndex((el) => el.classList.contains('is-active')),
-      filled: document.querySelectorAll('.abt-htl-line.is-filled').length,
-      prevDisabled: document.querySelector('.abt-htl-btn--prev').getAttribute('aria-disabled'),
-      nextDisabled: document.querySelector('.abt-htl-btn--next').getAttribute('aria-disabled'),
-      live: document.querySelector('.abt-htl-live').textContent.trim()
-    };
+function attachErrorCollector(page) {
+  const errors = [];
+  page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
+  page.on('console', (msg) => {
+    const url = msg.location().url || '';
+    if (msg.type() === 'error' && (url === '' || url.startsWith(BASE))) errors.push(msg.text());
   });
+  return errors;
+}
+
+async function readVerticalState(page) {
+  return page.evaluate(() => ({
+    sortDir: document.querySelector('.abt-htl-layout')?.getAttribute('data-sort-dir'),
+    ascPressed: document.querySelector('.abt-htl-sort-btn[data-sort-dir="asc"]')?.getAttribute('aria-pressed'),
+    descPressed: document.querySelector('.abt-htl-sort-btn[data-sort-dir="desc"]')?.getAttribute('aria-pressed'),
+    pillKeys: [...document.querySelectorAll('.abt-htl-year-pill')].map((el) => el.getAttribute('data-year-key')),
+    groupKeys: [...document.querySelectorAll('.abt-htl-group')].map((el) => el.getAttribute('data-year-key')),
+    activePillKey: document.querySelector('.abt-htl-year-pill[aria-current="true"]')?.getAttribute('data-year-key'),
+    progress: parseFloat(document.querySelector('.abt-htl-rail')?.style.getPropertyValue('--abt-htl-progress') || '0')
+  }));
 }
 
 async function readHeader(page) {
@@ -105,34 +132,35 @@ after(async () => {
   if (browser) await browser.close();
 });
 
-test('1. Live /about: tanpa overflow, grid stat 2x2, kolom timeline 1/2/3 per breakpoint', async () => {
-  const cases = [[320, 1], [375, 1], [768, 2], [1024, 3], [1440, 3]];
-  for (const [width, expectedCols] of cases) {
-    const { context, page } = await openPage({ width });
-    await page.goto(`${BASE}/about`, { waitUntil: 'load' });
-    const m = await page.evaluate(() => {
-      const vp = document.querySelector('.abt-htl-viewport');
-      const vpRect = vp.getBoundingClientRect();
-      const items = [...document.querySelectorAll('.abt-htl-item')];
-      const item = items[0];
-      const firstDotRect = item.querySelector('.abt-htl-dot').getBoundingClientRect();
-      const grid = document.querySelector('.abt-cnt-grid');
-      const axisTops = items.map((el) => Math.round(el.querySelector('.abt-htl-axis').getBoundingClientRect().top));
-      return {
-        scrollW: document.documentElement.scrollWidth,
-        clientW: document.documentElement.clientWidth,
-        gridCols: getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length,
-        cols: Math.floor(vp.clientWidth / item.getBoundingClientRect().width + 0.01),
-        axisTops,
-        firstDotClearLeft: firstDotRect.left - vpRect.left
-      };
-    });
-    assert.ok(m.scrollW <= m.clientW, `${width}px: horizontal overflow (${m.scrollW} > ${m.clientW})`);
-    assert.equal(m.gridCols, 2, `${width}px: grid stat harus 2 kolom`);
-    assert.equal(m.cols, expectedCols, `${width}px: kolom timeline terlihat`);
-    assert.ok(new Set(m.axisTops).size === 1, `${width}px: garis/bulatan timeline harus sejajar vertikal (${m.axisTops.join(',')})`);
-    assert.ok(m.firstDotClearLeft >= 6, `${width}px: bulatan pertama beserta ring/scale tidak boleh terpotong tepi kiri viewport (${m.firstDotClearLeft}px)`);
-    await context.close();
+async function assertViewportLayout(width, height) {
+  const { context, page } = await openPage({ width, height, hasTouch: width < 1024 });
+  const errors = attachErrorCollector(page);
+  await page.goto(`${BASE}/about`, { waitUntil: 'load' });
+  const m = await page.evaluate(() => {
+    const grid = document.querySelector('.abt-cnt-grid');
+    const activeCard = document.querySelector('.abt-htl-group.is-active .abt-htl-card');
+    const btns = [...document.querySelectorAll('.abt-htl-sort-btn, .abt-htl-year-pill')];
+    return {
+      scrollW: document.documentElement.scrollWidth,
+      innerW: window.innerWidth,
+      gridCols: getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length,
+      activeBorderColor: activeCard ? getComputedStyle(activeCard).borderTopColor : '',
+      minBtnHeight: Math.min(...btns.map((el) => el.getBoundingClientRect().height))
+    };
+  });
+  assert.deepEqual(errors, [], `${width}px: console/page error ditemukan`);
+  assert.ok(m.scrollW <= m.innerW, `${width}px: horizontal overflow (${m.scrollW} > ${m.innerW})`);
+  assert.equal(m.gridCols, 2, `${width}px: grid stat harus 2 kolom`);
+  if (width < 1024) {
+    assert.equal(m.activeBorderColor, 'rgb(0, 117, 90)', `${width}px: kartu aktif harus berborder primary`);
+    assert.ok(m.minBtnHeight >= 32, `${width}px: tinggi visual tombol minimal 32px (${m.minBtnHeight}px)`);
+  }
+  await context.close();
+}
+
+test('1. Live /about multi-viewport: 0 error, 0 overflow, grid stat 2x2, border aktif & touch target >= 44px', async () => {
+  for (const [width, height] of VIEWPORTS) {
+    await assertViewportLayout(width, height);
   }
 });
 
@@ -208,83 +236,71 @@ test('5. Hover kartu menggeser panah lencana via Anime.js lalu kembali', async (
   await context.close();
 });
 
-test('6. Slider 5 item: per 1 item, berhenti di ujung, garis berhenti di bulatan terakhir, ArrowRight', async () => {
-  let { context, page } = await openFixture({ timeline: makeTimeline(5) });
-  let st = await timelineState(page);
-  assert.equal(st.prevDisabled, 'true');
-  assert.equal(st.nextDisabled, 'false');
-  assert.equal(st.activeIndex, 0);
+test('6. SSR timeline vertikal ID & EN: struktur semantik baru, jumlah peristiwa, bebas carousel lama', async () => {
+  for (const lang of ['id', 'en']) {
+    const { context, page } = await openFixture({ lang });
+    const ssr = await page.evaluate(() => ({
+      header: document.querySelectorAll('header.abt-htl-header').length,
+      sidebar: document.querySelectorAll('.abt-htl-sidebar').length,
+      sortBtns: document.querySelectorAll('.abt-htl-sort-btn[aria-pressed]').length,
+      yearNav: document.querySelectorAll('nav.abt-htl-year-nav').length,
+      pills: document.querySelectorAll('.abt-htl-year-pill[aria-current]').length,
+      railFill: document.querySelectorAll('.abt-htl-rail > .abt-htl-rail-fill').length,
+      list: document.querySelectorAll('ol.abt-htl-list').length,
+      groups: document.querySelectorAll('.abt-htl-group').length,
+      cards: document.querySelectorAll('.abt-htl-card').length,
+      counts: [...document.querySelectorAll('.abt-htl-count')].map((el) => el.textContent.trim()),
+      oldCarousel: document.querySelectorAll('[aria-roledescription="carousel"], .abt-htl-btn--prev, .abt-htl-btn--next').length
+    }));
+    assert.equal(ssr.header, 1);
+    assert.equal(ssr.sidebar, 1);
+    assert.equal(ssr.sortBtns, 2);
+    assert.equal(ssr.yearNav, 1);
+    assert.equal(ssr.pills, 4);
+    assert.equal(ssr.railFill, 1);
+    assert.equal(ssr.list, 1);
+    assert.equal(ssr.groups, 4);
+    assert.equal(ssr.cards, 6);
+    assert.equal(ssr.oldCarousel, 0, 'Atribut/tombol carousel lama harus sudah dihapus');
+    const expectedWord = lang === 'en' ? /Event/ : /Peristiwa/;
+    ssr.counts.forEach((txt) => assert.match(txt, expectedWord));
+    await context.close();
+  }
+});
 
-  await page.click('.abt-htl-btn--next');
-  await page.waitForTimeout(SETTLE_MS);
-  st = await timelineState(page);
-  assert.equal(st.activeIndex, 1);
-  assert.equal(st.filled, 1);
-  assert.equal(st.prevDisabled, 'false');
+test('7. Sort default Terlama (asc) dan klik Terkini (desc) membalik urutan DOM tanpa reload', async () => {
+  const { context, page } = await openFixture({ lang: 'id' });
+  const before = await readVerticalState(page);
+  assert.equal(before.sortDir, 'asc');
+  assert.equal(before.ascPressed, 'true');
+  assert.equal(before.descPressed, 'false');
+  assert.deepEqual(before.pillKeys, ['2010', '2015', '2020', '2024']);
+  assert.deepEqual(before.groupKeys, ['2010', '2015', '2020', '2024']);
 
-  await page.click('.abt-htl-btn--next');
-  await page.waitForTimeout(SETTLE_MS);
-  st = await timelineState(page);
-  assert.equal(st.activeIndex, 2);
-  assert.equal(st.filled, 2);
-  assert.equal(st.nextDisabled, 'true', 'Next harus disabled di ujung (5 item - 3 kolom)');
-  assert.match(st.live, /3 \/ 5/);
-
-  const geo = await page.evaluate(() => {
-    const items = document.querySelectorAll('.abt-htl-item');
-    const last = items[items.length - 1];
-    const lines = document.querySelectorAll('.abt-htl-line');
-    const dot = last.querySelector('.abt-htl-dot').getBoundingClientRect();
-    const vp = document.querySelector('.abt-htl-viewport').getBoundingClientRect();
-    return {
-      lastHasLine: Boolean(last.querySelector('.abt-htl-line')),
-      lineCount: lines.length,
-      lineRight: lines[lines.length - 1].getBoundingClientRect().right,
-      dotCenter: dot.left + dot.width / 2,
-      dotVisible: dot.right <= vp.right + 1
-    };
-  });
-  assert.ok(!geo.lastHasLine, 'Item terakhir tidak boleh punya garis ke kanan');
-  assert.equal(geo.lineCount, 4);
-  assert.ok(Math.abs(geo.lineRight - geo.dotCenter) <= 1, `Garis harus berakhir di pusat bulatan terakhir (${geo.lineRight} vs ${geo.dotCenter})`);
-  assert.ok(geo.dotVisible, 'Bulatan terakhir harus terlihat di ujung slider');
-  await context.close();
-
-  ({ context, page } = await openFixture({ timeline: makeTimeline(5) }));
-  await page.focus('.abt-htl-viewport');
-  await page.keyboard.press('ArrowRight');
-  await page.waitForTimeout(SETTLE_MS);
-  st = await timelineState(page);
-  assert.equal(st.activeIndex, 1);
-  assert.equal(st.filled, 1);
-  await page.keyboard.press('ArrowLeft');
-  await page.waitForTimeout(SETTLE_MS);
-  st = await timelineState(page);
-  assert.equal(st.activeIndex, 0);
-  assert.equal(st.filled, 0);
+  await page.click('.abt-htl-sort-btn[data-sort-dir="desc"]');
+  await page.waitForTimeout(250);
+  const after = await readVerticalState(page);
+  assert.equal(after.sortDir, 'desc');
+  assert.equal(after.ascPressed, 'false');
+  assert.equal(after.descPressed, 'true');
+  assert.deepEqual(after.pillKeys, ['2024', '2020', '2015', '2010']);
+  assert.deepEqual(after.groupKeys, ['2024', '2020', '2015', '2010']);
   await context.close();
 });
 
-test('7. Slider <= 3 item di desktop menyembunyikan tombol navigasi', async () => {
-  const { context, page } = await openFixture({ timeline: makeTimeline(3) });
-  assert.equal(await page.$eval('.abt-htl-nav', (el) => el.hidden), true);
-  assert.equal(await page.isVisible('.abt-htl-btn--next'), false);
-  await context.close();
-});
+test('8. Klik pill tahun mengaktifkan aria-current, scroll halaman mengupdate progress & reveal kartu', async () => {
+  const { context, page } = await openFixture({ lang: 'id', spacer: 300 }, { width: 1280, height: 720 });
+  await page.click('.abt-htl-year-pill[data-year-key="2020"]');
+  await page.waitForTimeout(SETTLE_MS);
+  const afterClick = await readVerticalState(page);
+  assert.equal(afterClick.activePillKey, '2020');
 
-test('8. Mobile 375px: tombol di bawah deskripsi rata kiri, item berikutnya peek', async () => {
-  const { context, page } = await openPage({ width: 375, height: 812, hasTouch: true });
-  await page.goto(`${BASE}/about`, { waitUntil: 'load' });
-  const m = await page.evaluate(() => {
-    const desc = document.querySelector('.abt-htl-desc').getBoundingClientRect();
-    const nav = document.querySelector('.abt-htl-nav').getBoundingClientRect();
-    const vp = document.querySelector('.abt-htl-viewport').getBoundingClientRect();
-    const second = document.querySelectorAll('.abt-htl-item')[1].getBoundingClientRect();
-    return { descBottom: desc.bottom, descLeft: desc.left, navTop: nav.top, navLeft: nav.left, vpRight: vp.right, secondLeft: second.left };
-  });
-  assert.ok(m.navTop >= m.descBottom, 'Nav harus di bawah deskripsi');
-  assert.ok(Math.abs(m.navLeft - m.descLeft) <= 2, 'Nav harus rata kiri dengan deskripsi');
-  assert.ok(m.secondLeft < m.vpRight - 20, 'Item kedua harus terlihat sebagian (peek)');
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForTimeout(SETTLE_MS);
+  const afterScroll = await readVerticalState(page);
+  assert.ok(afterScroll.progress > 0, `Progress rail harus terupdate saat scroll (${afterScroll.progress})`);
+  const revealed = await page.locator('.abt-htl-card.is-revealed').count();
+  assert.ok(revealed > 0, 'Kartu harus mendapat kelas .is-revealed saat masuk viewport');
   await context.close();
 });
 

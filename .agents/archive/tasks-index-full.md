@@ -1725,3 +1725,35 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-394: QA Regresi Menyeluruh & Gerbang Kualitas CI [DONE]
 - **File Terdampak:** `tests/test-t387-t394-variants-and-header.js`
 - **Verifikasi:** `npm run lint` (0 error), `npm run lint:views` (0 error), `npm run lint:i18n` (0 error), `npm run test:seed`, Playwright multi-viewport. Selesai 2026-11-21.
+
+### T-395: Helper Grouping Timeline per Tahun di `publicPageService` & Unit Test [DONE]
+- **File Terdampak:** `services/publicPageService.js`, `tests/test-public-services.js`
+- **Verifikasi:** Helper `extractSortYear` & `groupTimelineByYear` teruji `node --test tests/test-public-services.js`. Selesai 2026-11-23.
+
+### T-396: Penambahan Key i18n Dwibahasa (ID/EN) Timeline Vertikal [DONE]
+- **File Terdampak:** `locales/id.json`, `locales/en.json`, `tests/test-i18n-keys.js`
+- **Verifikasi:** 7 kunci `about.timeline_*` simetris ID/EN, `npm run lint:i18n` lulus. Selesai 2026-11-23.
+
+### T-397: Refaktor Partial `history-timeline.ejs` ke Struktur Semantik Vertikal [DONE]
+- **File Terdampak:** `views/partials/about/history-timeline.ejs`
+- **Verifikasi:** Sidebar sticky, segmented control sort, `nav.abt-htl-year-nav`, `ol.abt-htl-list`, `<= 100` baris, `npm run lint:views` (0 error). Selesai 2026-11-23.
+
+### T-398: Styling Tokenized Timeline Vertikal, Sticky Sidebar & Mobile Chip Bar [DONE]
+- **File Terdampak:** `public/css/components.css`
+- **Verifikasi:** 100% CSS token, 0 hex baru, layout 2 kolom desktop & bar chip sticky mobile `< 1024px`. Selesai 2026-11-23.
+
+### T-399: Engine Scroll-Spy, Progres Rail, Sort In-Place & Reveal Kartu di `about-story.js` [DONE]
+- **File Terdampak:** `public/js/about-story.js`
+- **Verifikasi:** `initVerticalTimeline()`, cache geometri `ResizeObserver`, `rAF` + `{ passive: true }`, sort `DocumentFragment`, `npm run lint` (0 error). Selesai 2026-11-23.
+
+### T-400: Penyesuaian Label & Petunjuk Pengelompokan Tahun di Form Admin Sejarah [DONE]
+- **File Terdampak:** `views/admin/about/partials/modal-timeline.ejs`, `views/admin/about/partials/tab-sejarah-timeline.ejs`
+- **Verifikasi:** Placeholder & `.form-hint` pengelompokan tahun, `npm run lint:views` (0 error). Selesai 2026-11-23.
+
+### T-401: Pengujian Otomatis SSR, Interaksi & Multi-Viewport Timeline Vertikal [DONE]
+- **File Terdampak:** `tests/test-t313-about-story-htimeline.js`, `public/css/components.css`
+- **Verifikasi:** 12/12 uji Playwright 6 viewport (320px–1440px), SSR ID/EN, sort & scroll-spy lulus, fix overflow 320px. Selesai 2026-11-23.
+
+### T-402: Audit Visual Presisi vs Referensi LRT Jakarta & Verifikasi Performa Scroll Mobile [DONE]
+- **File Terdampak:** `public/css/components.css`, `tests/test-t313-about-story-htimeline.js`
+- **Verifikasi:** Audit visual & CPU 4x CLS=0, kontras WCAG AA (>= 5.69), polish ukuran tombol sort, sticky `top: var(--site-header-h, 64px)` 0px gap, dan efek glow `var(--color-primary)`. Selesai 2026-11-23.

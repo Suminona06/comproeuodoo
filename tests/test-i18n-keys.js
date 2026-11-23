@@ -124,6 +124,21 @@ function runAudit() {
 
   console.log('  -> All translation keys are properly defined in ID and EN locales: PASSED');
 
+  const verticalTimelineKeys = {
+    'about.timeline_sort_label': ['Urutkan Waktu', 'Sort Time'],
+    'about.timeline_sort_latest': ['Terkini', 'Latest'],
+    'about.timeline_sort_oldest': ['Terlama', 'Oldest'],
+    'about.timeline_year_label': ['Pilih Tahun', 'Select Year'],
+    'about.timeline_year_nav_label': ['Navigasi tahun linimasa sejarah', 'Historical timeline year navigation'],
+    'about.timeline_event_singular': ['Peristiwa', 'Event'],
+    'about.timeline_event_plural': ['Peristiwa', 'Events']
+  };
+  for (const [keyPath, [expectedId, expectedEn]] of Object.entries(verticalTimelineKeys)) {
+    assert.strictEqual(getNestedValue(idLocale, keyPath), expectedId, `Missing or mismatched ID key: ${keyPath}`);
+    assert.strictEqual(getNestedValue(enLocale, keyPath), expectedEn, `Missing or mismatched EN key: ${keyPath}`);
+  }
+  console.log('  -> Vertical timeline i18n keys (T-396): PASSED');
+
   // Verify contact view template rendering specifically
   console.log('\n[CHECK 2] Verifying EJS render for views/public/contact.ejs (T-146)...');
   const contactEjsPath = path.join(rootDir, 'views', 'public', 'contact.ejs');

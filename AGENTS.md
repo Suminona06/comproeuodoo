@@ -1,6 +1,9 @@
 <!-- antislop:start -->
+
 ## antislop
+
 For UI, copy, people, mobile layout, or code comments work, read these installed skill files directly (use these paths even if a same-named global skill exists):
+
 - Core filter, always on: `antislop`: `.agents/skills/antislop/SKILL.md`
 - UI / visual: `antislop-ui`: `.agents/skills/antislop-ui/SKILL.md`
 - Copy & text: `antislop-copywriting`: `.agents/skills/antislop-copywriting/SKILL.md`
@@ -14,16 +17,26 @@ To update antislop later: `npx antislop-ai --update`, or run `npx antislop-ai` a
 <!-- antislop:end -->
 
 ## Aturan Spesifikasi & Dokumentasi (.agents)
+
 - **Baca `.agents/INDEX.md` dulu**, lalu **hanya** baca modul `prd/<modul>.md` dan `tech/<modul>.md` yang relevan dengan tugas. Dilarang membaca seluruh PRD/Tech Spec secara bersamaan.
 - **Dilarang membaca direktori `.agents/archive/`** kecuali diminta secara eksplisit oleh pengguna.
-- **Baca `.agents/3-TASKS.md` hanya saat mengerjakan atau menutup task.**
-- **Wajib mengikuti alur kerja pada `.agents/WORKFLOW.md`** untuk setiap revisi perilaku, perubahan spek, atau penambahan fitur baru.
-- **Dilarang menambah bagian "Revisi vN"** atau menyimpan narasi riwayat di dalam dokumen modul spek. Seluruh perubahan wajib menimpa kondisi lama di tempat (*current state only*).
+- **Baca `.agents/3-TASKS.md` secara selektif:** hanya untuk cek nomor task terakhir (Propose), mendaftar task (Merge), atau membaca 1 task target saat Implement/Close.
+- **Wajib mengikuti alur kerja pada `.agents/WORKFLOW.md`** untuk setiap revisi perilaku, perubahan spek, bug fix, atau penambahan fitur baru.
+- **Dilarang menambah bagian "Revisi vN"** atau menyimpan narasi riwayat di dalam dokumen modul spek. Seluruh perubahan wajib menimpa kondisi lama di tempat (_current state only_).
 - **Batas Ukuran:** Setiap berkas modul maksimal ~8KB, `.agents/INDEX.md` maksimal 60 baris. Jika melebihi batas, wajib dipecah menjadi sub-modul yang lebih spesifik.
-- **Wajib baca `.agents/tech/conventions.md`** sebelum menulis atau merefaktor kode (view EJS, CSS, JS).
-- **Gerbang Kualitas Lint:** `npm run lint` dan `npm run lint:views` wajib hijau tanpa error pada berkas terkait sebelum Close.
+- **Wajib baca `.agents/tech/conventions.md`** hanya saat tahap Implement/refaktor kode (view EJS, CSS, JS).
+- **Gerbang Kualitas Lint:** `npm run lint`, `npm run lint:views`, dan `npm run lint:i18n` wajib hijau tanpa error pada berkas terkait sebelum menandai task `[DONE]` dan sebelum Close.
+
+## Aturan Eksekusi Multi-Sesi (Hemat Konteks & Ramah Model Medium)
+
+- **1 Sesi = 1 Task Target:** Saat menjalankan tahap Implement, kerjakan **hanya 1 `T-xxx`** yang diminta. Setelah `[DONE]`, **BERHENTI** — dilarang otomatis melanjutkan ke task berikutnya atau menjalankan tahap Close.
+- **Konteks Minimal:** Baca hanya file di daftar _File Terdampak_, _Referensi Pola_, dan maksimal 1–2 file skill yang relevan dengan task tersebut (jangan memuat seluruh daftar skill jika tidak terpakai pada task).
+- **Batas Retry Verifikasi:** Jika linter/test gagal, perbaiki maksimal **2 iterasi**. Jika masih gagal, **BERHENTI** dan tampilkan error mentah tanpa memodifikasi file di luar scope task.
+- **Stop pada Ambiguitas:** Jika ditemukan konflik dengan spek atau kontrak data tidak jelas, berhenti dan tanyakan ke Azis — jangan berasumsi.
+- **Jangan Gunakan Sandbox:** Jangan menggunakan sandbox karena akan error jika ingin membaca file, testing files dan lain sebagainya, gunakan mcp ctx yang sudah ada sesuaikan mcp ctx dengan kebutuhan / task yang dikerjakan.
 
 ## Konteks Stack, Perintah & Batasan Aset (Context Engineering)
+
 - **Stack:** Node.js >=20 (v24), Express 4.19 ESM, EJS SSR, MySQL2 (`utf8mb4`), Sharp WebP, Vanilla CSS tokens (`public/css/tokens.css`).
 - **Perintah Utama:**
   - `npm run migrate`: Eksekusi migrasi SQL (`database/migrations/`) + sinkronisasi aset baseline non-destruktif (`database/seed-assets/uploads/` -> `public/uploads/`).
