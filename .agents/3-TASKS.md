@@ -150,7 +150,7 @@
 
 ---
 
-### T-401: Pengujian Otomatis SSR, Interaksi & Multi-Viewport Timeline Vertikal `[OPEN]` `[Tier: Argon Medium]`
+### T-401: Pengujian Otomatis SSR, Interaksi & Multi-Viewport Timeline Vertikal `[DONE]` `[Tier: Argon Medium]`
 - **File Terdampak (2 file):**
   1. `tests/test-t313-about-story-htimeline.js`
   2. `tests/test-public-ssr.js` *(bila terdapat asersi class carousel horizontal lama)*
