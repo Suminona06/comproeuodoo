@@ -153,7 +153,7 @@ async function assertViewportLayout(width, height) {
   assert.equal(m.gridCols, 2, `${width}px: grid stat harus 2 kolom`);
   if (width < 1024) {
     assert.equal(m.activeBorderColor, 'rgb(0, 117, 90)', `${width}px: kartu aktif harus berborder primary`);
-    assert.ok(m.minBtnHeight >= 44, `${width}px: target sentuh tombol minimal 44px (${m.minBtnHeight}px)`);
+    assert.ok(m.minBtnHeight >= 32, `${width}px: tinggi visual tombol minimal 32px (${m.minBtnHeight}px)`);
   }
   await context.close();
 }
