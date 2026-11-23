@@ -7,6 +7,7 @@ import { formatInlineText } from '../utils/textFormatter.js';
 
 const DEFAULT_COMPANY_NAME = 'PT Euodoo Plastic';
 const DEFAULT_HERO_IMAGE = '/images/hero-factory.jpg';
+const DEFAULT_WCU_IMAGE = '/images/wcu-botanical.svg';
 const DEFAULT_NEWS_YEAR = '2026';
 const MIN_MARQUEE_BRANDS = 8;
 const MAX_HOME_CATEGORIES = 4;
@@ -157,7 +158,9 @@ export function buildWcuViewModel(wcuData, lang) {
     artLabel: pickStrictLang(wcu, 'art_label', lang),
     floatEyebrow: pickStrictLang(wcu, 'float_eyebrow', lang),
     floatTitle: pickStrictLang(wcu, 'float_title', lang),
-    floatDesc: pickStrictLang(wcu, 'float_desc', lang)
+    floatDesc: pickStrictLang(wcu, 'float_desc', lang),
+    imageUrl: wcu.image_url || DEFAULT_WCU_IMAGE,
+    hasCustomImage: Boolean(wcu.image_url)
   };
 }
 
