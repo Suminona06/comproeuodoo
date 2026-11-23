@@ -33,6 +33,7 @@ To update antislop later: `npx antislop-ai --update`, or run `npx antislop-ai` a
 - **Konteks Minimal:** Baca hanya file di daftar _File Terdampak_, _Referensi Pola_, dan maksimal 1–2 file skill yang relevan dengan task tersebut (jangan memuat seluruh daftar skill jika tidak terpakai pada task).
 - **Batas Retry Verifikasi:** Jika linter/test gagal, perbaiki maksimal **2 iterasi**. Jika masih gagal, **BERHENTI** dan tampilkan error mentah tanpa memodifikasi file di luar scope task.
 - **Stop pada Ambiguitas:** Jika ditemukan konflik dengan spek atau kontrak data tidak jelas, berhenti dan tanyakan ke Azis — jangan berasumsi.
+- **Jangan Gunakan Sandbox:** Jangan menggunakan sandbox karena akan error jika ingin membaca file, testing files dan lain sebagainya, gunakan mcp ctx yang sudah ada sesuaikan mcp ctx dengan kebutuhan / task yang dikerjakan.
 
 ## Konteks Stack, Perintah & Batasan Aset (Context Engineering)
 

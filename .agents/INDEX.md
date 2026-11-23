@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (8 Task: T-395..T-402) & ringkasan 394 task selesai.
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task aktif; 402 task selesai T-01..T-402).
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -17,7 +17,7 @@
 | **Public Home Sections** | ACTIVE | 2026-11-21 | [prd/public-home-sections.md](prd/public-home-sections.md) | [tech/public-home-sections.md](tech/public-home-sections.md) | `views/partials/home/*.ejs`, `public/js/home.js`, `public/images/wcu-botanical.svg` |
 | **Public Header & Motion** | ACTIVE | 2026-11-21 | [prd/public-home-sections.md](prd/public-home-sections.md) | [tech/public-header-motion.md](tech/public-header-motion.md) | `views/partials/navbar.ejs`, `public/js/main.js`, `public/css/layout.css` |
 | **Public About** | ACTIVE | 2026-11-20 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs`, `views/partials/about/vision-mission.ejs`, `views/partials/about/gallery-bento.ejs`, `controllers/public/pageController.js`, `services/publicPageService.js`, `controllers/admin/aboutController.js`, `services/aboutService.js`, `services/aboutCrudService.js` |
-| **Public About Story & Timeline** | ACTIVE | 2026-11-16 | [prd/public-about-timeline.md](prd/public-about-timeline.md) | [tech/public-about-timeline.md](tech/public-about-timeline.md) | `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `public/js/about-story.js` |
+| **Public About Story & Timeline** | ACTIVE | 2026-11-23 | [prd/public-about-timeline.md](prd/public-about-timeline.md) | [tech/public-about-timeline.md](tech/public-about-timeline.md) | `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `public/js/about-story.js` |
 | **Public About Ticket Accordion** | ACTIVE | 2026-11-16 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |
 | **Products Catalog** | ACTIVE | 2026-11-21 | [prd/products.md](prd/products.md) | [tech/products.md](tech/products.md) | `views/public/products.ejs`, `controllers/public/productController.js`, `services/publicProductService.js` |
 | **Products Detail** | ACTIVE | 2026-11-21 | [prd/products-detail.md](prd/products-detail.md) | [tech/products-detail.md](tech/products-detail.md) | `views/public/product-detail.ejs`, `views/partials/products/spec-tabs.ejs`, `views/partials/products/size-table.ejs`, `controllers/public/productController.js`, `services/publicProductService.js` |
