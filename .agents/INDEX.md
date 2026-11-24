@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (7 Task aktif T-408..T-414; 407 task selesai T-01..T-407).
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task aktif; 414 task selesai T-01..T-414).
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -25,7 +25,7 @@
 | **Products Detail Gallery** | ACTIVE | 2026-11-21 | [prd/products-detail.md](prd/products-detail.md) | [tech/products-detail-gallery.md](tech/products-detail-gallery.md) | `views/partials/products/gallery.ejs`, `services/publicProductService.js`, `public/js/product-detail.js`, `public/js/lightbox.js`, `public/css/lightbox.css` |
 | **Products Variants (PDP, WA & RFQ)** | ACTIVE | 2026-11-21 | [prd/products-detail.md](prd/products-detail.md) | [tech/products-variants.md](tech/products-variants.md) | `services/productVariantService.js`, `public/js/product-variants.js`, `public/js/admin-product-variants.js`, `views/admin/products/partials/variants.ejs` |
 | **Manufacturing Capabilities** | ACTIVE | 2026-11-20 | [prd/capabilities.md](prd/capabilities.md) | [tech/capabilities.md](tech/capabilities.md) | `views/public/capabilities.ejs`, `controllers/public/pageController.js`, `services/publicPageService.js`, `controllers/admin/capabilityController.js`, `services/capabilityService.js` |
-| **News & Articles** | ACTIVE | 2026-11-20 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs`, `controllers/public/postController.js`, `services/publicPostService.js` |
+| **News & Articles** | ACTIVE | 2026-11-24 | [prd/news.md](prd/news.md) | [tech/news.md](tech/news.md) | `views/public/news.ejs`, `controllers/public/postController.js`, `services/publicPostService.js` |
 | **News Card & Arrows** | ACTIVE | 2026-11-24 | [prd/news.md](prd/news.md) | [tech/news-card.md](tech/news-card.md) | `views/partials/news-card.ejs`, `views/partials/news/headline-section.ejs`, `public/js/news-filter.js` |
 | **News Detail** | ACTIVE | 2026-11-20 | [prd/news-detail.md](prd/news-detail.md) | [tech/news-detail.md](tech/news-detail.md) | `views/public/news-detail.ejs`, `public/js/news-detail.js`, `controllers/public/postController.js`, `services/publicPostService.js` |
 | **Contact, Footer & WA** | ACTIVE | 2026-11-21 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs`, `views/partials/contact/*.ejs`, `public/js/contact.js`, `controllers/public/contactController.js`, `services/publicContactService.js` |

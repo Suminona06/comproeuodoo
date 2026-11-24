@@ -1777,3 +1777,32 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-407: Unit Test (`homeService` & `homeContentService`) dan Verifikasi Regresi Visual Playwright Multi-Viewport [DONE]
 - **File Terdampak:** `tests/test-wcu-dynamic-media.js`
 - **Verifikasi:** `node --test tests/test-wcu-dynamic-media.js` (8/8 lulus), `npm run lint && npm run lint:views && npm run lint:i18n && npm test` lulus, Playwright multi-viewport (320px–1440px). Selesai 2026-11-24.
+
+
+### T-408: Backend `MAX_HOME_POSTS` (2 -> 6) & Mapping `postType`/`typeLabel` Terlokalisasi pada `homeService` + Unit Test [DONE]
+- **File Terdampak:** `services/homeService.js`, `locales/id.json`, `locales/en.json`, `tests/test-home-news-service.js`
+- **Verifikasi:** `MAX_HOME_POSTS = 6`, `VALID_NEWS_TYPES`, rotasi fallback image, key `home.news_type_*`, `node --test tests/test-home-news-service.js` lulus. Selesai 2026-11-24.
+
+### T-409: Markup Partial Beranda `views/partials/home/news.ejs`, Key i18n Aksesibilitas & Load Skrip [DONE]
+- **File Terdampak:** `views/partials/home/news.ejs`, `views/public/index.ejs`, `locales/id.json`, `locales/en.json`
+- **Verifikasi:** Header `.hnc-header`, `.hnc-view-all`, tombol panah `.hnc-arrow-btn`, struktur `.hnc-carousel`/`.hnc-card`, `npm run lint:views` & `npm run lint:i18n` lulus. Selesai 2026-11-24.
+
+### T-410: Skrip Interaksi Carousel Berita Beranda (`public/js/home-news-carousel.js`) [DONE]
+- **File Terdampak:** `public/js/home-news-carousel.js`
+- **Verifikasi:** Infinite loop edge-clone tanpa rebuild DOM, autoplay `3000ms`, pause hover/focus/hidden tab, swipe sentuh, keyboard `ArrowLeft`/`ArrowRight`, `prefers-reduced-motion`, `npm run lint` (0 error). Selesai 2026-11-24.
+
+### T-411: Gaya CSS Carousel Asimetris (16:9 + Compact), Scrim & Token Murni (`.sec-news .hnc-*`) [DONE]
+- **File Terdampak:** `public/css/components.css`
+- **Verifikasi:** Desktop `16:9` + `5:4` pada tinggi seragam (`0 CLS`), tablet `64%` (`1,5` kartu), mobile `84%` (`16:10`, judul 2 baris), label `.hnc-type` teks polos dengan scrim atas 58%, nol raw hex baru. Selesai 2026-11-24.
+
+### T-412: Penyeragaman Ikon Panah SVG Tema Hijau (`>= 44px`) pada Headline Slider `/news` [DONE]
+- **File Terdampak:** `views/partials/news/headline-section.ejs`, `public/css/components.css`
+- **Verifikasi:** SVG panah penuh `line` + `polyline`, tombol `46x46px`, zero raw hex, `:focus-visible` & `:disabled` lengkap, `npm run lint:views && npm run lint:i18n && npm run lint` lulus. Selesai 2026-11-24.
+
+### T-413: Revamp Kartu Artikel Flat Editorial (`.nwl-card`) untuk `/news` & Related `/news/:slug` [DONE]
+- **File Terdampak:** `views/partials/news-card.ejs`, `public/js/news-filter.js`, `public/css/components.css`
+- **Verifikasi:** Kartu luar transparan tanpa border/shadow, media 16:9 `var(--r-xl)`, tanpa author, `.nwl-card-action` garis penuh + tautan rata kanan `>= 44px` dengan SVG panah, sinkron SSR + `renderCard()`, lint lulus. Selesai 2026-11-24.
+
+### T-414: Verifikasi E2E Playwright Multi-Viewport, Autoplay, CLS, Reduced-Motion & Regresi ID/EN [DONE]
+- **File Terdampak:** `tests/test-news-carousel-revamp-e2e.js`
+- **Verifikasi:** Lulus 6 viewport (`320px–1440px`) x ID/EN, autoplay 3s, pause hover/focus/tab, `CLS < 0.01`, `prefers-reduced-motion`, `/news` AJAX filter & `/news/:slug` related cards, `0` console/page errors. Selesai 2026-11-24.
