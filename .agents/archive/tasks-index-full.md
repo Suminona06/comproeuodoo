@@ -1757,3 +1757,23 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-402: Audit Visual Presisi vs Referensi LRT Jakarta & Verifikasi Performa Scroll Mobile [DONE]
 - **File Terdampak:** `public/css/components.css`, `tests/test-t313-about-story-htimeline.js`
 - **Verifikasi:** Audit visual & CPU 4x CLS=0, kontras WCAG AA (>= 5.69), polish ukuran tombol sort, sticky `top: var(--site-header-h, 64px)` 0px gap, dan efek glow `var(--color-primary)`. Selesai 2026-11-23.
+
+### T-403: Backend Settings, Sanitasi & View-Model Gambar Dinamis Why Choose Us [DONE]
+- **File Terdampak:** `models/homeContentModel.js`, `services/homeContentService.js`, `services/homeService.js`
+- **Verifikasi:** Key `home_wcu_image_url`, sanitasi `cleanOptPath`, view-model `imageUrl` (fallback `/images/wcu-botanical.svg`) & `hasCustomImage`. Selesai 2026-11-23.
+
+### T-404: Form Media Picker Tab 2 Why Choose Us CMS Admin [DONE]
+- **File Terdampak:** `views/admin/home-content/partials/tab-wcu.ejs`, `views/admin/home-content/partials/wcu-media-card.ejs`
+- **Verifikasi:** `.media-picker-component` (`#home_wcu_image_url`), `<= 100` baris, bebas inline style/hex, `npm run lint:views` lulus. Selesai 2026-11-23.
+
+### T-405: Render Gambar Penuh Dinamis WCU Bebas Inline Style di Beranda Publik [DONE]
+- **File Terdampak:** `views/partials/home/why-choose-us.ejs`, `public/css/components.css`, `views/partials/head.ejs`
+- **Verifikasi:** `.wcu-artbox--custom` & `.wcu-art--custom` (`object-fit: cover`), fallback SVG `object-fit: contain`, cache-buster `?v=20261123-1`. Selesai 2026-11-24.
+
+### T-406: Penyeragaman Dimensi Dropdown Admin (`.eu-dd`) 38px Sejajar `.form-input` di `public/css/admin.css` [DONE]
+- **File Terdampak:** `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** `--eu-dd-height: 38px`, `.form-input` & `.eu-dd-trigger` `38px` desktop / `44px` mobile `<= 768px`, cache-buster `?v=20261123-1`. Selesai 2026-11-23.
+
+### T-407: Unit Test (`homeService` & `homeContentService`) dan Verifikasi Regresi Visual Playwright Multi-Viewport [DONE]
+- **File Terdampak:** `tests/test-wcu-dynamic-media.js`
+- **Verifikasi:** `node --test tests/test-wcu-dynamic-media.js` (8/8 lulus), `npm run lint && npm run lint:views && npm run lint:i18n && npm test` lulus, Playwright multi-viewport (320px–1440px). Selesai 2026-11-24.
