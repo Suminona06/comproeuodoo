@@ -83,7 +83,7 @@
 - **Skill:** `antislop-ui`, `antislop-layoutmobile`.
 - **Verifikasi Deterministik:** `npm run lint` dan cek zero raw hex pada blok `.hnc-*`.
 
-### [TODO] T-412: Penyeragaman Ikon Panah SVG Tema Hijau (`>= 44px`) pada Headline Slider `/news` `[Tier: Hydrogen Medium]`
+### [DONE] T-412: Penyeragaman Ikon Panah SVG Tema Hijau (`>= 44px`) pada Headline Slider `/news` `[Tier: Hydrogen Medium]`
 - **Proposal:** [2026-11-24_news-carousel-card-revamp.md](changes/2026-11-24_news-carousel-card-revamp.md)
 - **File Terdampak (2 file):** `views/partials/news/headline-section.ejs`, `public/css/components.css`.
 - **Langkah Kerja:**
@@ -97,7 +97,7 @@
 - **Skill:** `antislop-ui`, `antislop-human`.
 - **Verifikasi Deterministik:** `npm run lint:views && npm run lint:i18n && npm run lint`.
 
-### [TODO] T-413: Revamp Kartu Artikel Flat Editorial (`.nwl-card`) untuk `/news` & Related `/news/:slug` `[Tier: Argon Medium]`
+### [DONE] T-413: Revamp Kartu Artikel Flat Editorial (`.nwl-card`) untuk `/news` & Related `/news/:slug` `[Tier: Argon Medium]`
 - **Proposal:** [2026-11-24_news-carousel-card-revamp.md](changes/2026-11-24_news-carousel-card-revamp.md)
 - **File Terdampak (3 file):** `views/partials/news-card.ejs`, `public/js/news-filter.js`, `public/css/components.css`.
 - **Langkah Kerja:**

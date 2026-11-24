@@ -84,7 +84,10 @@
         '<div class="nwl-card-action">' +
           '<span class="nwl-card-link" aria-hidden="true">' +
             '<span>' + readMoreText + '</span>' +
-            '<span aria-hidden="true">&rarr;</span>' +
+            '<svg class="nwl-card-link-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+              '<line x1="5" y1="12" x2="19" y2="12"></line>' +
+              '<polyline points="12 5 19 12 12 19"></polyline>' +
+            '</svg>' +
           '</span>' +
         '</div>' +
       '</div>' +
