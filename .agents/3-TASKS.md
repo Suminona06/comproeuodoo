@@ -66,7 +66,7 @@
 - **Skill:** `frontend-ui-engineering`, `antislop-human`.
 - **Verifikasi Deterministik:** `npm run lint`.
 
-### [TODO] T-411: Styling CSS Carousel Latest News (`.hnc-*`), Asimetri 16:9 + Compact, Peek & Responsivitas Token `[Tier: Argon Medium]`
+### [DONE] T-411: Styling CSS Carousel Latest News (`.hnc-*`), Asimetri 16:9 + Compact, Peek & Responsivitas Token `[Tier: Argon Medium]`
 - **Proposal:** [2026-11-24_news-carousel-card-revamp.md](changes/2026-11-24_news-carousel-card-revamp.md)
 - **File Terdampak (1 file):** `public/css/components.css`.
 - **Langkah Kerja:**
