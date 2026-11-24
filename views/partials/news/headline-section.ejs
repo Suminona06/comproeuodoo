@@ -55,7 +55,10 @@
                   <div class="nwl-slide-action">
                     <a href="/news/<%= hl.slug %>" class="nwl-slide-link" <%= idx !== 0 ? 'tabindex="-1"' : '' %>>
                       <span><%= currentLangCode === 'en' ? 'Read more' : 'Baca selengkapnya' %></span>
-                      <span aria-hidden="true">&rarr;</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
                     </a>
                   </div>
                 </div>
@@ -73,13 +76,15 @@
             </div>
             <div class="nwl-slider-arrows">
               <button type="button" class="nwl-arrow-btn nwl-arrow-prev" id="nwlPrevBtn" aria-label="<%= currentLangCode === 'en' ? 'Previous slide' : 'Slide sebelumnya' %>">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="15 18 9 12 15 6"></polyline>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
               </button>
               <button type="button" class="nwl-arrow-btn nwl-arrow-next" id="nwlNextBtn" aria-label="<%= currentLangCode === 'en' ? 'Next slide' : 'Slide berikutnya' %>">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
               </button>
             </div>

@@ -60,3 +60,5 @@
 - 2026-11-21 | Perbaikan toolbar search mobile katalog, galeri swipe + foto utama detail produk, dan tab Deskripsi Lengkap dengan toggle admin | T-380..T-386
 - 2026-11-21 | Corner wipe drawer mobile, anti-jitter header tanpa inline style, grup varian dinamis multi-pilih (CMS, PDP, WA & RFQ), serta polish ikon & dropdown admin | T-387..T-394
 - 2026-11-23 | Revamp timeline sejarah /about menjadi vertikal interaktif (gaya LRT Jakarta), grouping tahun, sort Terkini/Terlama, polish mobile sticky & glow | T-395..T-402
+- 2026-11-24 | Gambar penuh dinamis Why Choose Us CMS, penyeragaman dimensi dropdown admin 38px sejajar .form-input, dan unit test/Playwright | T-403..T-407
+- 2026-11-24 | Revamp Carousel Latest News Beranda (.hnc-*, maks 6 slide, asimetris 16:9 + compact, autoplay 3s), kartu flat editorial (.nwl-card) 16:9 untuk /news & /news/:slug, penyeragaman panah SVG hijau, dan QA E2E Playwright 6 viewport ID/EN | T-408..T-414
