@@ -70,7 +70,11 @@
     "news_empty": "Belum ada artikel berita terbaru saat ini.",
     "news_type_berita": "Berita",
     "news_type_pers": "Siaran Pers",
-    "news_type_blog": "Blog"
+    "news_type_blog": "Blog",
+    "news_carousel_aria": "Carousel Berita Terbaru",
+    "news_prev_aria": "Berita sebelumnya",
+    "news_next_aria": "Berita berikutnya",
+    "news_slide_aria": "Berita {current} dari {total}"
   },
   "products": {
     "page_title": "Katalog Produk Kantong Plastik",
