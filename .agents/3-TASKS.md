@@ -30,7 +30,7 @@
 - **Skill:** `test-driven-development`, `incremental-implementation`.
 - **Verifikasi Deterministik:** `npm run lint && npm run lint:i18n && node --test tests/test-home-news-service.js && npm run test:seed`.
 
-### [TODO] T-409: Markup EJS Carousel Latest News Beranda (`.hnc-*`) & Kunci i18n Navigasi Simetris `[Tier: Hydrogen Medium]`
+### [DONE] T-409: Markup EJS Carousel Latest News Beranda (`.hnc-*`) & Kunci i18n Navigasi Simetris `[Tier: Hydrogen Medium]`
 - **Proposal:** [2026-11-24_news-carousel-card-revamp.md](changes/2026-11-24_news-carousel-card-revamp.md)
 - **File Terdampak (4 file):** `views/partials/home/news.ejs`, `views/public/index.ejs`, `locales/id.json`, `locales/en.json`.
 - **Langkah Kerja:**
@@ -47,7 +47,7 @@
 - **Skill:** `frontend-ui-engineering`, `antislop-copywriting`.
 - **Verifikasi Deterministik:** `npm run lint:views && npm run lint:i18n && npm run lint`.
 
-### [TODO] T-410: Skrip Interaksi & Loop Autoplay Carousel Latest News (`public/js/home-news-carousel.js`) `[Tier: Argon Medium]`
+### [DONE] T-410: Skrip Interaksi & Loop Autoplay Carousel Latest News (`public/js/home-news-carousel.js`) `[Tier: Argon Medium]`
 - **Proposal:** [2026-11-24_news-carousel-card-revamp.md](changes/2026-11-24_news-carousel-card-revamp.md)
 - **File Terdampak (1 file):** `public/js/home-news-carousel.js` (file baru).
 - **Langkah Kerja:**
