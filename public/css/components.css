@@ -4246,27 +4246,29 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--surface-dark-deep) 24%, transparent) 0%,
-    color-mix(in srgb, var(--surface-dark-deep) 8%, transparent) 42%,
+    color-mix(in srgb, var(--surface-dark-deep) 58%, transparent) 0%,
+    color-mix(in srgb, var(--surface-dark-deep) 24%, transparent) 26%,
+    color-mix(in srgb, var(--surface-dark-deep) 8%, transparent) 48%,
     color-mix(in srgb, var(--surface-dark-deep) 88%, transparent) 100%
   );
 }
 
 .sec-news .hnc-type {
   position: absolute;
-  top: var(--space-md);
-  left: var(--space-md);
+  top: var(--space-lg);
+  left: var(--space-lg);
   z-index: 2;
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--surface-dark-deep) 72%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-text-inverse) 22%, transparent);
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: var(--color-text-inverse);
-  font-size: var(--font-size-label-sm);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-label-sm);
+  font-size: var(--font-size-label-md);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-label-md);
   letter-spacing: var(--letter-spacing-wide);
   text-transform: uppercase;
+  text-shadow: 0 1px 3px color-mix(in srgb, var(--surface-dark-deep) 85%, transparent);
 }
 
 .sec-news .hnc-content {
@@ -4343,6 +4345,11 @@
     width: 84%;
     height: auto;
     aspect-ratio: 16 / 10;
+  }
+
+  .sec-news .hnc-type {
+    top: var(--space-md);
+    left: var(--space-md);
   }
 
   .sec-news .hnc-content {

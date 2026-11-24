@@ -112,7 +112,7 @@
 - **Skill:** `antislop-ui`, `frontend-ui-engineering`.
 - **Verifikasi Deterministik:** `npm run lint:views && npm run lint:i18n && npm run lint`.
 
-### [TODO] T-414: Verifikasi E2E Playwright Multi-Viewport, Autoplay, CLS, Reduced-Motion & Regresi ID/EN `[Tier: Argon Medium]`
+### [DONE] T-414: Verifikasi E2E Playwright Multi-Viewport, Autoplay, CLS, Reduced-Motion & Regresi ID/EN `[Tier: Argon Medium]`
 - **Proposal:** [2026-11-24_news-carousel-card-revamp.md](changes/2026-11-24_news-carousel-card-revamp.md)
 - **File Terdampak (1 file):** `tests/test-news-carousel-revamp-e2e.js` (file baru).
 - **Langkah Kerja:**
