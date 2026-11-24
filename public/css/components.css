@@ -4358,6 +4358,8 @@
 
   .sec-news .hnc-title {
     font-size: var(--font-size-body-lg);
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 }
 
