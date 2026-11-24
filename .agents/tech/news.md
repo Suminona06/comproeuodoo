@@ -56,15 +56,15 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
   1. `.nwl-sec-headline#nwlHeadlineSec`: `background-color: var(--bg-soft-green)`.
   2. `.nwl-sec-directory`: `background-color: var(--bg-subtle)` dengan `::before` gradasi pendek (`48px` mobile, `80px` desktop) memakai `var(--trans-soft-green-to-subtle)` (atau fallback `var(--bg-soft-green)` bila headline kosong).
 - **Lokalisasi Empty State:** `t('news.empty_desc')` dan `t('news.empty_reset')` simetris di ID & EN.
-- **Shared Card Component (`.nwl-card` / `.nwd-card`):** Permukaan `var(--color-surface)`, border `1px solid var(--color-border)`, elevasi `var(--shadow-level-1)`, gambar 16:9 `var(--r-xl)`, tanggal `var(--color-text-muted)`, line-clamp 3 baris, link `var(--color-primary)` (`>= 44px`). Grid: 3 col (`>=1024px`), 2 col (`640-1023px`), 1 col (`<640px`).
-- **Isolasi Class:** Prefix `.nwl-*` (listing) dan `.nwd-*` (detail). `views/public/index.ejs` dibekukan. Alias `.news-card-v2` ke `.nwl-card` dipertahankan untuk `tests/test-modul12-public.js`.
+- **Shared Card Component (`.nwl-card`):** [PENDING T-413] Gaya flat editorial 16:9 menyatu latar (garis `var(--color-border)`, tanpa author, tautan rata kanan `>= 44px`, alias `.news-card-v2` tetap dijaga, sinkron SSR + `renderCard()`) untuk `/news` & `/news/:slug`; lihat [tech/news-card.md](news-card.md).
+- **Isolasi Class:** Prefix `.nwl-*` (listing) dan `.nwd-*` (detail).
 
 ---
 
 ## 8. Headline Slider & Judul Dinamis per Slide Aktif
 - **Controller Data:** `postController.index` mengambil hingga 5 artikel (`is_headline = 1`, `status = 'published'`) lintas tipe, tidak terpengaruh filter direktori.
 - **Judul Dinamis `.nwl-headline-sec-title`:** Setiap `.nwl-slide` menyematkan `data-post-type="<%= hPost.type %>"` dan `#nwlHeadlineSlider` menyimpan atribut kamus `news.headline_title_*` & `news.headline_aria_*`. SSR memakai `headlinePosts[0].type`; saat pindah slide, JS menyinkronkan `.nwl-headline-sec-title` dan `aria-label` `#nwlHeadlineSec`.
-- **Desktop (`1440x900`) & Mobile (`<768px`):** Desktop asimetris 2 col (~420-450px max-height); mobile terpusat. Headline = 1 statis; > 1 autoplay 6 detik, pause saat hover/fokus, mati saat `prefers-reduced-motion` aktif.
+- **Desktop (`1440x900`) & Mobile (`<768px`):** Desktop asimetris 2 col (~420-450px max-height); mobile terpusat. Headline = 1 statis; > 1 autoplay 6 detik, pause saat hover/fokus, mati saat `prefers-reduced-motion` aktif. [PENDING T-412] Panah `.nwl-arrow-btn` memakai ikon panah SVG tegas tema hijau (`46x46px`) seragam dengan carousel beranda; rincian pada [tech/news-card.md](news-card.md).
 
 ---
 

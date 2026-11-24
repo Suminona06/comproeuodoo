@@ -67,7 +67,10 @@
     "brand_modal_close_btn": "Close",
     "news_heading": "Latest News",
     "news_view_all": "View All News",
-    "news_empty": "No recent articles available at this time."
+    "news_empty": "No recent articles available at this time.",
+    "news_type_berita": "News",
+    "news_type_pers": "Press Release",
+    "news_type_blog": "Blog"
   },
   "products": {
     "page_title": "Plastic Bag Product Catalog",

@@ -36,6 +36,10 @@ Modul Berita mengelola publikasi konten editorial perusahaan (berita terkini, si
 - **Baris Pill Kategori Geser Horizontal di Mobile (`FR-27`, `.nwl-cat-pills`):** Pada viewport `< 768px`, ditampilkan dalam 1 baris geser horizontal (`overflow-x: auto`, `flex-wrap: nowrap`, `scroll-snap-type: x proximity`, `scrollbar-width: none`) dengan target sentuh minimal `44x44px`, fokus keyboard jelas, dan auto-scroll pill aktif (`scrollIntoView`). `.nwl-search-form` berada di bawah baris pill selebar 100%.
 - **Paginasi Bersama Publik (`FR-28`, `.pgn-bar--public`):** Komponen `views/partials/pagination.ejs` (`limit = 9`), menyatu langsung dengan latar section tanpa card luar, selalu tampil selama `totalPosts > 0` (tombol `disabled` bila `totalPages === 1`). Desktop (`>= 768px`) menampilkan `«`, `‹`, deret nomor + `...`, `›`, `»`; Mobile (`< 768px`) menampilkan 4 tombol ikon `>= 44x44px` mengapit indikator `currentPage / totalPages`. Atribut `aria-label` memakai `t('pagination.*')` dan halaman aktif `aria-current="page"`.
 
+### FR-32: Revamp Kartu Flat Editorial & Panah SVG Headline Slider `[PENDING T-412..T-413]`
+- **Kartu Flat Editorial (`.nwl-card`):** Berlaku seragam untuk `/news` & artikel terkait `/news/:slug`. Tanpa kotak putih/border/shadow (menyatu latar section); gambar tetap **landscape 16:9** (`var(--r-xl)`); urutan: tanggal muted → judul (3 baris) → garis horizontal penuh (`var(--color-border)`) → baris bawah **tanpa author** dengan tautan `"Baca Selengkapnya →"` / `"Read More →"` rata kanan (`>= 44px`). Grid 3/2/1 kolom tetap.
+- **Panah Slider Headline (`.nwl-arrow-btn`):** Ikon panah SVG tegas bertema hijau (`>= 44x44px`) seragam dengan carousel beranda, hover (`@media (hover: hover)`), focus-visible & disabled jelas; paginasi `.pgn-*` tidak diubah.
+
 ---
 
 ## 3. Keputusan Desain & Fungsional Terkunci
@@ -48,6 +52,6 @@ Modul Berita mengelola publikasi konten editorial perusahaan (berita terkini, si
 | **Integrasi Editor TinyMCE Self-Hosted** | Menghindari ketergantungan API key cloud berbayar dan menjaga stabilitas pemformatan artikel teknis. | 2026-10-06 |
 | **Sistem Redirect 301 Otomatis pada Perubahan Slug** | Mencegah broken link (404) dan menjaga integritas backlink mesin pencari saat editor mengubah slug artikel. | 2026-10-06 |
 | **3 Tab Kategori Berita Terstruktur** | Memisahkan komunikasi korporat resmi (`pers`) dari berita utama dan artikel edukatif (`blog`). | 2026-10-09 |
-| **Komponen Kartu Bersama Identik G4** | Menjamin konsistensi visual 100% antara listing berita dan artikel terkait dengan rasio 16:9 dan line-clamp 3 baris. | 2026-10-27 |
+| **Komponen Kartu Bersama Flat Editorial 16:9** | Menyederhanakan tampilan listing `/news` & artikel terkait `/news/:slug` agar menyatu dengan latar section tanpa kotak berat, tetap rasio 16:9 dan line-clamp 3 baris. | 2026-11-24 |
 | **Headline Slider Desktop & Mobile Reference** | Membatasi tinggi desktop proporsional dan menyajikan kontrol terpusat ramah sentuh pada layar mobile. | 2026-10-27 |
 | **Filter In-Page Berbasis Fetch API** | Menghilangkan reload halaman saat menyaring berita tanpa library eksternal baru sekaligus menjaga SEO lewat fallback SSR. | 2026-10-27 |

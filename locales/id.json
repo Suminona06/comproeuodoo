@@ -67,7 +67,10 @@
     "brand_modal_close_btn": "Tutup",
     "news_heading": "Informasi Terbaru",
     "news_view_all": "Lihat Semua Berita",
-    "news_empty": "Belum ada artikel berita terbaru saat ini."
+    "news_empty": "Belum ada artikel berita terbaru saat ini.",
+    "news_type_berita": "Berita",
+    "news_type_pers": "Siaran Pers",
+    "news_type_blog": "Blog"
   },
   "products": {
     "page_title": "Katalog Produk Kantong Plastik",

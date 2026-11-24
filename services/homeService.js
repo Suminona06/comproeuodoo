@@ -11,8 +11,10 @@ const DEFAULT_WCU_IMAGE = '/images/wcu-botanical.svg';
 const DEFAULT_NEWS_YEAR = '2026';
 const MIN_MARQUEE_BRANDS = 8;
 const MAX_HOME_CATEGORIES = 4;
-const MAX_HOME_POSTS = 2;
+const MAX_HOME_POSTS = 6;
 const SEGMENT_KEYS = ['retail', 'industrial', 'traditional', 'sustainability'];
+const VALID_NEWS_TYPES = new Set(['berita', 'pers', 'blog']);
+const NEWS_FALLBACK_IMAGES = ['/images/post-eco-community.jpg', '/images/post-school-recycling.jpg'];
 
 function isActiveFlag(val) {
   return val === 1 || val === '1' || val === true;
@@ -224,21 +226,31 @@ function resolveNewsImage(post, fallbackImage) {
   return rawImg && !rawImg.includes('hero-factory-precision') ? rawImg : fallbackImage;
 }
 
-function mapNewsItem(post, index, lang) {
-  const fallbackImage = index === 0 ? '/images/post-eco-community.jpg' : '/images/post-school-recycling.jpg';
+function resolveNewsTypeLabel(rawType, t) {
+  const postType = VALID_NEWS_TYPES.has(rawType) ? rawType : '';
+  if (!postType) return { postType: '', typeLabel: '' };
+  const translate = typeof t === 'function' ? t : (key) => key;
+  return { postType, typeLabel: translate(`home.news_type_${postType}`) };
+}
+
+function mapNewsItem(post, index, lang, t) {
+  const fallbackImage = NEWS_FALLBACK_IMAGES[index % NEWS_FALLBACK_IMAGES.length];
   const slugOrId = (post && (post.slug || post.id)) || '';
+  const { postType, typeLabel } = resolveNewsTypeLabel(post?.type, t);
   return {
     href: `/news/${slugOrId}`,
     title: pickBilingual(post, 'title', lang),
+    postType,
+    typeLabel,
     imageUrl: resolveNewsImage(post, fallbackImage),
     fallbackImage,
     formattedDate: formatNewsDate(post?.published_at, lang)
   };
 }
 
-export function buildNewsViewModel(rawPosts, lang) {
+export function buildNewsViewModel(rawPosts, lang, t) {
   const list = Array.isArray(rawPosts) ? rawPosts.slice(0, MAX_HOME_POSTS) : [];
-  return { items: list.map((post, idx) => mapNewsItem(post, idx, lang)) };
+  return { items: list.map((post, idx) => mapNewsItem(post, idx, lang, t)) };
 }
 
 export function buildHomeViewModel(rawData = {}, context = {}) {
@@ -252,7 +264,7 @@ export function buildHomeViewModel(rawData = {}, context = {}) {
     whyChooseUs: buildWcuViewModel(content.why_choose_us, lang),
     certifications: buildCertificationsViewModel(content.certifications, lang),
     brands: buildBrandsViewModel(rawData.brands, context.settings, lang),
-    news: buildNewsViewModel(rawData.latestPosts, lang)
+    news: buildNewsViewModel(rawData.latestPosts, lang, translate)
   };
 }
 
@@ -271,24 +283,12 @@ export async function getHomePageData(context = {}) {
     homeContentModel.getHomeContentData(),
     productCategoryModel.getHomepageCategories()
   ]);
-  const raw = {
-    banners: banners || [],
-    homepageCategories: homepageCategories || [],
-    brands: brands || [],
-    latestPosts: latestPosts || [],
-    homeContent: homeContent || homeContentModel.getDefaults()
-  };
+  const raw = { banners: banners || [], homepageCategories: homepageCategories || [], brands: brands || [], latestPosts: latestPosts || [], homeContent: homeContent || homeContentModel.getDefaults() };
   return buildHomeViewModel(raw, context);
 }
 
 export function buildHomeFallbackData(context = {}) {
-  const raw = {
-    banners: [],
-    homepageCategories: [],
-    brands: [],
-    latestPosts: [],
-    homeContent: homeContentModel.getDefaults()
-  };
+  const raw = { banners: [], homepageCategories: [], brands: [], latestPosts: [], homeContent: homeContentModel.getDefaults() };
   return buildHomeViewModel(raw, context);
 }
 
