@@ -12,7 +12,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [ ] T-415 `[Tier: Argon Medium]` — Pembersihan 18 Dead CSS Class, Konsolidasi 7 Duplikat & Komentar Usang di `public/css/admin.css`
+### [x] T-415 `[Tier: Argon Medium]` — Pembersihan 18 Dead CSS Class, Konsolidasi 7 Duplikat & Komentar Usang di `public/css/admin.css`
 - **File Terdampak (1 file):** `public/css/admin.css`.
 - **Langkah & Kontrak Eksplisit:**
   1. Verifikasi baseline selector via skrip Node/`ctx_execute` sebelum edit (813 class, 1.128 blok rule).
