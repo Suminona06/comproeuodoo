@@ -25,7 +25,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `npm run lint && npm run lint:views && npm run lint:i18n` + verifikasi skrip Node bahwa 0 duplikat konteks sama tersisa, seluruh 18 class mati hilang, dan 795 class aktif tetap utuh.
 
-### [ ] T-416 `[Tier: Argon Medium]` — Ekstraksi Layer 1: `admin/tokens.css`, `admin/base-shell.css` & Pemuatan Modular Awal di `admin-header.ejs`
+### [x] T-416 `[Tier: Argon Medium]` — Ekstraksi Layer 1: `admin/tokens.css`, `admin/base-shell.css` & Pemuatan Modular Awal di `admin-header.ejs`
 - **File Terdampak (4 file):** `public/css/admin/tokens.css` (baru), `public/css/admin/base-shell.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Ekstrak blok `:root` dari `admin.css` (eks `L1–L81`) ke `public/css/admin/tokens.css` dan tambahkan ~14 token semantik baru sesuai `tech/admin-ui-css.md` Bagian 2 (permukaan netral `--bg-surface-alt`, `--bg-upload-tint`, `--border-strong`, `--text-heading/body-strong/slate-dark`; skala danger `--color-error`, `--danger-solid`, `--danger-hover-*`, `--danger-text-deep`; skala emerald `--emerald-*`; `--adm-btn-primary-hover-border`, `--role-superadmin-*`, `--warning-text-strong`) tanpa mengubah nilai 54 token existing.
