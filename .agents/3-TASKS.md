@@ -37,7 +37,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/base-shell.css && npm run lint && npm run lint:views && npm run lint:i18n`.
 
-### [ ] T-417 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/buttons.css` & `admin/modals-overlays.css` + Migrasi 66 Hex
+### [x] T-417 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/buttons.css` & `admin/modals-overlays.css` + Migrasi 66 Hex
 - **File Terdampak (4 file):** `public/css/admin/buttons.css` (baru), `public/css/admin/modals-overlays.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan blok `.adm-btn-*` (`admin.css` eks `L715–L999`, ~265 baris pasca T-415) ke `public/css/admin/buttons.css` (termasuk `@media (hover: hover)`, `@media (max-width: 768px)` `min-height: 44px`, dan `@media (prefers-reduced-motion: reduce)`) serta migrasikan seluruh 50 hex mentah ke token `admin/tokens.css`.
