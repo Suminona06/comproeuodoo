@@ -1999,7 +1999,7 @@
 /* Referensi Visual: media_1792567769603.png (Minimalist High-Fashion / Industrial Precise) */
 
 .plp-section {
-  background-color: var(--color-surface, #ffffff);
+  background-color: var(--bg-subtle, #ffffff);
   padding: 32px 0 80px;
 }
 
