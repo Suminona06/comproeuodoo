@@ -48,7 +48,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/buttons.css && node scripts/lint-views.js public/css/admin/modals-overlays.css && npm run lint:views`.
 
-### [ ] T-418 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/tables-badges.css` + Migrasi 57 Hex
+### [x] T-418 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/tables-badges.css` + Migrasi 57 Hex
 - **File Terdampak (3 file):** `public/css/admin/tables-badges.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan blok metrik dashboard, table card, data table, badge status, status selector, role badges, tombol aksi CRUD C2, dan footer tabel C5 (`admin.css` eks `L1000–L1496`, `L2139–L2169`, ~525 baris) ke `public/css/admin/tables-badges.css`.
