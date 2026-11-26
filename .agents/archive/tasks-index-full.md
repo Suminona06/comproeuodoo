@@ -1910,3 +1910,15 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-453: Hapus Permanen `public/css/components.css` & Verifikasi Regresi Visual + Performa Playwright [DONE]
 - **File Terdampak:** `public/css/components.css` (dihapus), `tests/test-public-css-modular.js`
 - **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-public-css-modular.js`, `test-admin-css-modular.js`, `npm test`, dan `test-public-css-visual-qa.js --verify` (11 rute, -54.3% s/d -93.6% byte CSS, 0 overflow, 0 console error) lulus. Selesai 2026-11-26.
+
+### T-454: Migrasi DB: Tambah Nilai ENUM `'ditolak'` pada Kolom `inquiries.status` [DONE]
+- **File Terdampak:** `database/migrations/025_add_ditolak_to_inquiry_status.sql`
+- **Verifikasi:** `npm run migrate` menerapkan migrasi 025; `SHOW CREATE TABLE inquiries` menampilkan `enum('baru','dibaca','ditindaklanjuti','ditolak')`; alur update status, filter, statistik, & CSV `'ditolak'` lulus dengan `npm test` & lint hijau. Selesai 2026-11-26.
+
+### T-455: Perbaikan Simetri Tombol & Ikon Modal Konfirmasi SweetAlert2 (`showAdminConfirm`) [DONE]
+- **File Terdampak:** `public/js/admin.js`, `public/css/admin/modals-overlays.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Spasi literal dihapus, ketiga ikon SVG diseragamkan (`15x15px`), `.swal2-actions .adm-btn:not([style*="display: none"])` & `@media (max-width: 768px)` (`min-height: 44px`) diterapkan; `test-admin-css-modular.js`, `npm test`, & lint hijau. Selesai 2026-11-26.
+
+### T-456: Perbaikan Tombol Hapus Foto Galeri Produk (`.prod-gallery-btn-del`) & Token CSS Admin [DONE]
+- **File Terdampak:** `views/admin/products/partials/gallery.ejs`, `public/js/admin-product-form.js`, `public/css/admin/page-catalog.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Ikon `&times;` diganti SVG `12x12px` konsisten di SSR & JS (`createDeleteIconSvg()`), token CSS diselaraskan dengan `admin/tokens.css`, badge overlap `22x22px` (`top: -7px; right: -7px;`) dengan hit-area mobile `>= 44px`; `test-admin-css-modular.js`, `test-t375-t377-gallery-multiupload.js`, `npm test`, & lint hijau. Selesai 2026-11-26.
