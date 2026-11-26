@@ -180,7 +180,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-about.css && node scripts/lint-views.js public/css/admin/page-settings.css && npm run lint:views`.
 
-### [ ] T-430 `[Tier: Argon Medium]` — Finalisasi Entry `login.ejs` & `403.ejs`, Penegakan Strict Lint (`scripts/lint-views.js`) & Unit Test Modular
+### [x] T-430 `[Tier: Argon Medium]` — Finalisasi Entry `login.ejs` & `403.ejs`, Penegakan Strict Lint (`scripts/lint-views.js`) & Unit Test Modular
 - **File Terdampak (4 file):** `views/admin/login.ejs`, `views/admin/403.ejs`, `scripts/lint-views.js`, `tests/test-admin-css-modular.js` (baru).
 - **Langkah & Kontrak Eksplisit:**
   1. Perbarui `<link>` di `views/admin/login.ejs` (ganti `/css/admin.css` ke subset minimal: `/css/admin/tokens.css`, `/css/admin/buttons.css`, `/css/admin/forms-inputs.css`, `/css/admin/page-auth.css`) dan `views/admin/403.ejs` (`/css/admin/tokens.css`, `/css/admin/buttons.css`, `/css/admin/page-auth.css`).
