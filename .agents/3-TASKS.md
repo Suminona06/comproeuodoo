@@ -147,7 +147,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-catalog.css && npm run lint:views`.
 
-### [ ] T-427 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-product-editors.css` & `admin/page-home.css`
+### [x] T-427 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-product-editors.css` & `admin/page-home.css`
 - **File Terdampak (4 file):** `public/css/admin/page-product-editors.css` (baru), `public/css/admin/page-home.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan `.prod-size-*`, `.btn-col-*`, `.btn-row-*`, dan `.adm-var-*` (`admin.css` eks `L2934–L3095`, `L7648–L7845`, ~355 baris, 0 hex) ke `public/css/admin/page-product-editors.css`.
