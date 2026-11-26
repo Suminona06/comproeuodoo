@@ -53,6 +53,8 @@
       capabilities: ['page-org-contact.css'],
       'contact-cms': ['page-org-contact.css'],
       'home-content': ['page-home.css'],
+      about: ['page-about.css'],
+      settings: ['page-settings.css'],
     };
     const navKey = typeof activeNav !== 'undefined' ? activeNav : '';
     const extraStyles = (typeof extraAdminStyles !== 'undefined' && Array.isArray(extraAdminStyles)) ? extraAdminStyles : [];
@@ -61,7 +63,6 @@
   <% activePageStyles.forEach((cssFile) => { %>
     <link rel="stylesheet" href="/css/admin/<%= cssFile %>?v=20261126-1">
   <% }); %>
-  <link rel="stylesheet" href="/css/admin.css?v=20261123-1">
   <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
 
   <script src="/js/admin-header-init.js"></script>

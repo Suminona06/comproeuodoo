@@ -168,7 +168,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-content-cms.css && npm run lint:views`.
 
-### [ ] T-429 `[Tier: Argon Medium]` — Ekstraksi `admin/page-about.css` & `admin/page-settings.css` + Penghapusan Monolit `public/css/admin.css`
+### [x] T-429 `[Tier: Argon Medium]` — Ekstraksi `admin/page-about.css` & `admin/page-settings.css` + Penghapusan Monolit `public/css/admin.css`
 - **File Terdampak (4 file):** `public/css/admin/page-about.css` (baru), `public/css/admin/page-settings.css` (baru), `public/css/admin.css` (dihapus), `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan `.adm-abt-*` (`admin.css` eks `L6535–L6950`, ~416 baris, 0 hex) ke `public/css/admin/page-about.css`.
