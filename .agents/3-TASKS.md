@@ -30,7 +30,7 @@
 
 ---
 
-### [ ] `T-434` — Konsolidasi Token Publik (`--pd-*` & Token Turunan Semantik/Netral) di `public/css/tokens.css` `[Tier: Argon Medium]`
+### [DONE] `T-434` — Konsolidasi Token Publik (`--pd-*` & Token Turunan Semantik/Netral) di `public/css/tokens.css` `[Tier: Argon Medium]`
 - **File Terdampak (2):** `public/css/tokens.css`, `Design/DESIGN.md`.
 - **Langkah Bernomor:**
   1. Baca blok `:root` baris `8158–8177` pada `public/css/components.css` (rentang terbatas 20 baris) dan pindahkan seluruh 17 token `--pd-*` ke bagian baru `/* Product Detail Surface & Ink Tokens */` di `public/css/tokens.css`.
@@ -44,7 +44,7 @@
 
 ---
 
-### [ ] `T-435` — Pembersihan 70 Class Mati, 36 Duplikat Konteks Sama & Komentar Historis di `public/css/components.css` `[Tier: Argon Medium]`
+### [DONE] `T-435` — Pembersihan 70 Class Mati, 36 Duplikat Konteks Sama & Komentar Historis di `public/css/components.css` `[Tier: Argon Medium]`
 - **File Terdampak (1):** `public/css/components.css`.
 - **Langkah Bernomor:**
   1. Verifikasi programmatic via `ctx_execute` bahwa seluruh 70 class mati (daftar di `tech/public-ui-css.md` §5) tidak dipakai di `views/**/*.ejs` maupun `public/js/**/*.js` (wajib pertahankan `.hero-slide-image`, `.hero-slide-video`, `.nwl-headline-sec`).
@@ -59,7 +59,7 @@
 
 ---
 
-### [ ] `T-436` — Ekstraksi Layer Core Always-On (`primitives.css`, `whatsapp-float.css`, `cta-reveal.css`) `[Tier: Argon Medium]`
+### [DONE] `T-436` — Ekstraksi Layer Core Always-On (`primitives.css`, `whatsapp-float.css`, `cta-reveal.css`) `[Tier: Argon Medium]`
 - **File Terdampak (3):** `public/css/components/primitives.css`, `public/css/components/whatsapp-float.css`, `public/css/components/cta-reveal.css` (semua baru).
 - **Langkah Bernomor:**
   1. Ekstrak blok primitives aktif (`.btn*`, `.card*`, `.form-*`, `.badge*`, `.table`, `.alert*`) ke `public/css/components/primitives.css` (<= ~300 baris).
