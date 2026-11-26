@@ -103,7 +103,7 @@
 
 ---
 
-### [ ] `T-439` — Ekstraksi Modul Homepage Bagian 1 (`home-hero.css`, `home-intro-categories.css`, `home-why-choose-us.css`) `[Tier: Argon Medium]`
+### [DONE] `T-439` — Ekstraksi Modul Homepage Bagian 1 (`home-hero.css`, `home-intro-categories.css`, `home-why-choose-us.css`) `[Tier: Argon Medium]`
 - **File Terdampak (3):** `public/css/components/home-hero.css`, `public/css/components/home-intro-categories.css`, `public/css/components/home-why-choose-us.css` (semua baru).
 - **Langkah Bernomor:**
   1. Ekstrak blok Hero Slider (`.hero*` termasuk `.hero-slide-image`/`.hero-slide-video`, `.hero-cta-*`, `.hero-explore-*`) + `@media` hero ke `public/css/components/home-hero.css` (<= ~560 baris).
