@@ -206,7 +206,7 @@
 
 ---
 
-### [ ] `T-446` — Aktivasi Eksplisit `pageStyle` di View Publik Batch 2 (`products.ejs`, `product-detail.ejs`, `news.ejs`) `[Tier: Hydrogen Medium]`
+### [DONE] `T-446` — Aktivasi Eksplisit `pageStyle` di View Publik Batch 2 (`products.ejs`, `product-detail.ejs`, `news.ejs`) `[Tier: Hydrogen Medium]`
 - **File Terdampak (3):** `views/public/products.ejs`, `views/public/product-detail.ejs`, `views/public/news.ejs`.
 - **Langkah Bernomor:**
   1. Perbarui `include('../partials/header')` pada `views/public/products.ejs` menjadi `include('../partials/header', { pageStyle: 'products' })`.
