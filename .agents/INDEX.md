@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task aktif; 432 task selesai T-01..T-432).
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (21 Task aktif `T-433..T-453`; 432 task selesai T-01..T-432).
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -30,6 +30,7 @@
 | **News Detail** | ACTIVE | 2026-11-20 | [prd/news-detail.md](prd/news-detail.md) | [tech/news-detail.md](tech/news-detail.md) | `views/public/news-detail.ejs`, `public/js/news-detail.js`, `controllers/public/postController.js`, `services/publicPostService.js` |
 | **Contact, Footer & WA** | ACTIVE | 2026-11-21 | [prd/contact-footer.md](prd/contact-footer.md) | [tech/contact-footer.md](tech/contact-footer.md) | `views/public/contact.ejs`, `views/partials/contact/*.ejs`, `public/js/contact.js`, `controllers/public/contactController.js`, `services/publicContactService.js` |
 | **Public Footer** | ACTIVE | 2026-11-16 | [prd/footer.md](prd/footer.md) | [tech/footer.md](tech/footer.md) | `views/partials/footer.ejs`, `public/css/layout.css` |
+| **Public UI — Modular CSS Architecture** | ACTIVE | 2026-11-26 | - | [tech/public-ui-css.md](tech/public-ui-css.md) | `public/css/components/*.css`, `public/css/tokens.css`, `views/partials/head.ejs` |
 | **Admin CMS & Users** | ACTIVE | 2026-11-19 | [prd/admin-cms.md](prd/admin-cms.md) | [tech/admin-cms.md](tech/admin-cms.md) | `controllers/admin/` |
 | **Admin Products & RFQ** | ACTIVE | 2026-11-21 | [prd/admin-products-rfq.md](prd/admin-products-rfq.md) | [tech/admin-products-rfq.md](tech/admin-products-rfq.md) | `controllers/admin/productController.js`, `controllers/admin/inquiryController.js`, `services/inquiryService.js` |
 | **Admin UI, Buttons, Pagination & Validation** | ACTIVE | 2026-11-26 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin/buttons.css`, `public/css/admin/pagination.css`, `public/js/pagination.js`, `public/js/admin-form-validation.js` |

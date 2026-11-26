@@ -61,10 +61,11 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 ### A. Hierarki terhadap Skill Otomasi
 - Aturan modularitas view **MENANG MUTLAK** atas saran perampingan berbasis skill penghemat (`ponytail`). Memecah template besar ke partial <=100 baris adalah keharusan arsitektur.
 
-### B. Isolasi Styling, Modularitas CSS Admin & Konvensi Class (Keputusan 3)
+### B. Isolasi Styling, Modularitas CSS Admin & Publik, & Konvensi Class (Keputusan 3)
 - Class baru wajib berprefix unik yang di-scope ke modul (mis. `.stg-*` untuk Settings).
-- Dilarang modifikasi class bersama (`.form-card`, `.form-group`, `.form-row-2`, `.adm-btn-*`, `.eu-dd-*`).
-- Lembar gaya Admin CMS wajib modular di bawah `public/css/admin/*.css` (target <= ~600 baris/berkas, zero raw hex di luar `public/css/admin/tokens.css`, urutan cascade resmi didefinisikan di [tech/admin-ui-css.md](admin-ui-css.md)) dengan nilai spasi/ukuran tetap piksel tanpa menambah token spasi baru di `public/css/tokens.css` publik.
+- Dilarang modifikasi class bersama lintas halaman (Admin: `.form-card`, `.form-group`, `.form-row-2`, `.adm-btn-*`, `.eu-dd-*`; Publik: `.sec-products`, `.btn-primary`, `.btn-secondary`, `.btn-pill-solid-white`, `.page-hero`, `.plp-card`, `.nwl-card`, `.eu-dd-*`, `.pgn-*`).
+- Lembar gaya Admin CMS wajib modular di bawah `public/css/admin/*.css` (target <= ~600 baris/berkas, zero raw hex di luar `public/css/admin/tokens.css`, urutan cascade resmi di [tech/admin-ui-css.md](admin-ui-css.md)) dengan nilai spasi/ukuran tetap piksel tanpa menambah token spasi baru di `public/css/tokens.css` publik.
+- `[PENDING T-436..T-453]` Lembar gaya komponen publik wajib modular di bawah `public/css/components/*.css` (target <= ~600 baris/berkas, zero raw hex di luar `public/css/tokens.css`, pemuatan kondisional per rute via `views/partials/head.ejs`, urutan cascade resmi di [tech/public-ui-css.md](public-ui-css.md)) dengan palet hijau tanpa rona biru dan latar dual-token (`--bg-base`/`--bg-subtle`, pengecualian `--bg-soft-green` khusus `/about` & `/news`).
 
 ### C. Refaktor Massal View Admin & Pembersihan Skrip/CSS
 - **Cakupan Bersamaan (Keputusan Opsi B):** Pada setiap modul admin yang direfaktor, selain template `.ejs`, berkas CSS modular (`public/css/admin/*.css`) dan skrip (`public/js/admin-*.js`) yang disentuh wajib sekaligus dibersihkan dari dead CSS, komentar tak perlu (`antislop-code`), dan warna hex mentah (wajib dipetakan ke token di `public/css/admin/tokens.css`).
