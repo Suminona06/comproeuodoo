@@ -70,7 +70,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/forms-inputs.css && npm run lint:views`.
 
-### [ ] T-420 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/dropdown.css` + Migrasi 44 Hex
+### [x] T-420 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/dropdown.css` + Migrasi 44 Hex
 - **File Terdampak (3 file):** `public/css/admin/dropdown.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan seluruh blok komponen `.eu-dd-*` (`admin.css` eks `L3632–L4126`, ~485 baris pasca T-415) ke `public/css/admin/dropdown.css` (3 varian, `--sm`, floating label, caret, panel, `.eu-dd-panel--top`, search box, listbox items, skeleton shimmer, disabled/empty/invalid states, reduced-motion).
