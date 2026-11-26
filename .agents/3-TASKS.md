@@ -136,7 +136,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-dashboard-inquiries.css && node scripts/lint-views.js public/css/admin/page-org-contact.css && npm run lint:views`.
 
-### [ ] T-426 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-catalog.css` + Migrasi 23 Hex
+### [x] T-426 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-catalog.css` + Migrasi 23 Hex
 - **File Terdampak (3 file):** `public/css/admin/page-catalog.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan `.prod-gallery-*`, `.adm-pcat-*`, `.adm-brd-*`, `.adm-prod-*`, serta responsive `.prod-gallery-*` (`admin.css` eks `L2741–L2868`, `L2904–L2908`, `L4742–L4799`, `L4910–L5029`, `L6237–L6304`, `L7557–L7570`, `L7643–L7647`, ~395 baris) ke `public/css/admin/page-catalog.css`.
