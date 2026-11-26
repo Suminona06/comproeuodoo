@@ -81,7 +81,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/dropdown.css && npm run lint:views`.
 
-### [ ] T-421 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/tabs-toggles.css` & `admin/responsive-viewport.css` + Migrasi 32 Hex
+### [x] T-421 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/tabs-toggles.css` & `admin/responsive-viewport.css` + Migrasi 32 Hex
 - **File Terdampak (4 file):** `public/css/admin/tabs-toggles.css` (baru), `public/css/admin/responsive-viewport.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan C7 liquid glass tabs, `.adm-toggle-*`, dan WhatsApp repeater `.wa-*` (`admin.css` eks `L2170–L2262`, `L3140–L3363`, ~315 baris) ke `public/css/admin/tabs-toggles.css` dan migrasikan seluruh 32 hex mentah ke token.
