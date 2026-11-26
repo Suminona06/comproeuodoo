@@ -203,7 +203,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node tests/test-rebrand-zero-blue.js && node tests/test-dropdown-css.js && node tests/test-product-admin-cta-qa.js && node tests/test-task-202-admin-form.js && npm run lint`.
 
-### [ ] T-432 `[Tier: Argon Medium]` — QA Regresi Visual & Fungsional Playwright End-to-End (16 Rute × 5 Viewport + Zoom 125%)
+### [x] T-432 `[Tier: Argon Medium]` — QA Regresi Visual & Fungsional Playwright End-to-End (16 Rute × 5 Viewport + Zoom 125%)
 - **File Terdampak (1–2 file):** `tests/test-admin-css-visual-qa.js` (baru) + bukti screenshot sementara di direktori scratch (tidak di-commit).
 - **Langkah & Kontrak Eksplisit:**
   1. Jalankan server lokal dan uji via Playwright headless pada seluruh 16 rute Admin CMS: `/admin/login`, `/admin/403` (simulasi role editor), `/admin/dashboard`, `/admin/inquiries`, `/admin/products` (+ create/edit), `/admin/product-categories`, `/admin/brands`, `/admin/posts` (+ create/edit TinyMCE), `/admin/media` (+ modal Media Picker & tab Upload), `/admin/banners`, `/admin/hero-banners`, `/admin/about`, `/admin/home-content`, `/admin/contact`, `/admin/settings`, `/admin/users`, `/admin/change-password`.
