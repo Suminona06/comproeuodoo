@@ -8,6 +8,7 @@ import { chromium } from 'playwright';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 function findFilesRecursive(dir, extList = ['.js', '.ejs']) {
   let results = [];
@@ -98,7 +99,7 @@ async function runTestSuite() {
 
   const tokensCss = fs.readFileSync('/home/itpc/Euodoo/public/css/tokens.css', 'utf-8');
   const baseCss = fs.readFileSync('/home/itpc/Euodoo/public/css/base.css', 'utf-8');
-  const adminCss = fs.readFileSync('/home/itpc/Euodoo/public/css/admin.css', 'utf-8');
+  const adminCss = readAllAdminCss();
   const adminJs = fs.readFileSync('/home/itpc/Euodoo/public/js/admin.js', 'utf-8');
   const swalJs = fs.readFileSync('/home/itpc/Euodoo/public/vendor/sweetalert2/sweetalert2.min.js', 'utf-8');
 

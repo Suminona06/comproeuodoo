@@ -17,7 +17,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/public/about.ejs',
   'views/partials/about/',
   'views/public/contact.ejs',
-  'views/partials/contact/'
+  'views/partials/contact/',
+  'public/css/admin/'
 ];
 
 function getFiles(dir, ext) {
@@ -80,9 +81,14 @@ function runLint() {
     strictPaths = args[strictIndex + 1].split(',').map(s => s.trim());
   }
 
+  const excludedTokenCss = new Set([
+    path.join(rootDir, 'public', 'css', 'tokens.css'),
+    path.join(rootDir, 'public', 'css', 'admin', 'tokens.css')
+  ]);
+
   let ejsFiles = getFiles(path.join(rootDir, 'views'), '.ejs');
   let cssFiles = getFiles(path.join(rootDir, 'public', 'css'), '.css')
-    .filter(f => !f.endsWith('tokens.css') && !f.includes('/vendor/'));
+    .filter(f => !excludedTokenCss.has(path.resolve(f)) && !f.includes('/vendor/'));
 
   if (targetArg) {
     const fullTarget = path.resolve(rootDir, targetArg);

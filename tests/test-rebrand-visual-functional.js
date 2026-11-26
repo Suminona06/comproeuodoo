@@ -140,7 +140,7 @@ async function runTestSuite() {
   console.log('\n[STEP 7] Verifying Admin Portal Rebrand Assets & Styling...');
   const adminLoginRes = await request('/admin/login');
   assert.strictEqual(adminLoginRes.statusCode, 200, 'Admin login page must return 200');
-  assert(adminLoginRes.body.includes('admin.css'), 'Admin login page must include admin.css');
+  assert(adminLoginRes.body.includes('admin/page-auth.css'), 'Admin login page must include admin/page-auth.css');
   console.log('  ✓ Admin login renders 200 OK with rebrand CSS');
 
   console.log('\n=== ALL T-168 VISUAL & FUNCTIONAL CHECKS PASSED (ZERO REGRESSION) ===\n');

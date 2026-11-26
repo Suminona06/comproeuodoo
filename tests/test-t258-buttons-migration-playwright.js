@@ -8,6 +8,7 @@ import { chromium } from 'playwright';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 const VIEWS_ADMIN_DIR = '/home/itpc/Euodoo/views/admin';
 const MEDIA_PICKER_MODAL_PATH = '/home/itpc/Euodoo/views/partials/media-picker-modal.ejs';
@@ -94,7 +95,7 @@ async function runTestSuite() {
 
   const tokensCss = fs.readFileSync('/home/itpc/Euodoo/public/css/tokens.css', 'utf-8');
   const baseCss = fs.readFileSync('/home/itpc/Euodoo/public/css/base.css', 'utf-8');
-  const adminCss = fs.readFileSync('/home/itpc/Euodoo/public/css/admin.css', 'utf-8');
+  const adminCss = readAllAdminCss();
 
   // Render a representative sample of migrated admin buttons
   const testHtml = `

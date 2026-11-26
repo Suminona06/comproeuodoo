@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 function request(pathUrl, options = {}) {
   return new Promise((resolve, reject) => {
@@ -294,8 +295,7 @@ async function runFullQA() {
     assert(!detailJs.includes('eval('), 'product-detail.js must not contain eval()');
     assert(!detailJs.includes('<!--'), 'product-detail.js must not contain HTML comments');
 
-    const adminCssPath = path.resolve('public/css/admin.css');
-    const adminCss = fs.readFileSync(adminCssPath, 'utf8');
+    const adminCss = readAllAdminCss();
     assert(adminCss.includes('.media-picker-checkbox'), 'admin.css must define .media-picker-checkbox');
     assert(adminCss.includes('.char-counter'), 'admin.css must define .char-counter');
     assert(adminCss.includes('.prod-gallery-wrap'), 'admin.css must define .prod-gallery-wrap');

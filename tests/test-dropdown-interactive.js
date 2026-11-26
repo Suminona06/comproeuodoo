@@ -1,6 +1,7 @@
 import fs from 'fs';
 import assert from 'assert';
 import { chromium } from 'playwright';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 console.log('Testing T-263 via Playwright Headless Chromium: Interactivity, Keyboard, Auto-Search & Validation...');
 
@@ -11,7 +12,7 @@ console.log('Testing T-263 via Playwright Headless Chromium: Interactivity, Keyb
 
   // Read CSS & JS assets directly
   const tokensCss = fs.readFileSync('public/css/tokens.css', 'utf8');
-  const adminCss = fs.readFileSync('public/css/admin.css', 'utf8');
+  const adminCss = readAllAdminCss();
   const dropdownJs = fs.readFileSync('public/js/admin-dropdown.js', 'utf8');
   const validationJs = fs.readFileSync('public/js/admin-form-validation.js', 'utf8');
 

@@ -23,7 +23,46 @@
   <link rel="apple-touch-icon" sizes="180x180" href="<%= fav180 %>?v=3">
   <link rel="icon" type="image/png" sizes="192x192" href="<%= fav192 %>?v=3">
   <link rel="stylesheet" href="/vendor/sweetalert2/sweetalert2.min.css">
-  <link rel="stylesheet" href="/css/admin.css?v=20261123-1">
+  <link rel="stylesheet" href="/css/admin/tokens.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/base-shell.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/buttons.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/tables-badges.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/forms-inputs.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/modals-overlays.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/tabs-toggles.css?v=20261126-1">
+  <link rel="stylesheet" href="/css/admin/dropdown.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/pagination.css?v=20261126-1">
+  <link rel="stylesheet" href="/css/admin/responsive-viewport.css?v=20261126-1">
+  <link rel="stylesheet" href="/css/admin/media-picker.css?v=20261126-1">
+  <link rel="stylesheet" href="/css/admin/media-picker-upload.css?v=20261126-1">
+  <%
+    const PAGE_STYLES = {
+      password: ['page-auth.css'],
+      dashboard: ['page-dashboard-inquiries.css'],
+      inquiries: ['page-dashboard-inquiries.css'],
+      leads: ['page-dashboard-inquiries.css'],
+      products: ['page-catalog.css', 'page-product-editors.css'],
+      'product-categories': ['page-catalog.css'],
+      brands: ['page-catalog.css'],
+      posts: ['page-content-cms.css'],
+      'post-categories': ['page-content-cms.css'],
+      media: ['page-content-cms.css'],
+      banners: ['page-content-cms.css'],
+      'hero-banners': ['page-content-cms.css'],
+      users: ['page-org-contact.css'],
+      capabilities: ['page-org-contact.css'],
+      'contact-cms': ['page-org-contact.css'],
+      'home-content': ['page-home.css'],
+      about: ['page-about.css'],
+      settings: ['page-settings.css'],
+    };
+    const navKey = typeof activeNav !== 'undefined' ? activeNav : '';
+    const extraStyles = (typeof extraAdminStyles !== 'undefined' && Array.isArray(extraAdminStyles)) ? extraAdminStyles : [];
+    const activePageStyles = [...new Set([...(PAGE_STYLES[navKey] || []), ...extraStyles])];
+  %>
+  <% activePageStyles.forEach((cssFile) => { %>
+    <link rel="stylesheet" href="/css/admin/<%= cssFile %>?v=20261126-1">
+  <% }); %>
   <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
 
   <script src="/js/admin-header-init.js"></script>
