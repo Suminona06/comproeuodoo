@@ -103,7 +103,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/pagination.css && node scripts/lint-views.js public/css/admin/page-auth.css && npm run lint:views`.
 
-### [ ] T-423 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/media-picker.css` + Migrasi 31 Hex
+### [x] T-423 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/media-picker.css` + Migrasi 31 Hex
 - **File Terdampak (3 file):** `public/css/admin/media-picker.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan `.media-grid`, `.media-picker-*`, `#btnMediaPickerPrev/Next`, `.media-picker-checkbox` (`admin.css` eks `L2057–L2126`, `L2415–L2701`, `L2710–L2725`, ~370 baris) ke `public/css/admin/media-picker.css`.
