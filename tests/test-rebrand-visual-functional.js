@@ -3,6 +3,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -92,13 +93,12 @@ async function runTestSuite() {
   console.log('  ✓ .top-bar compact padding and light backdrop blur(4px) verified');
 
   // 3. HERO OVERLAY GRADIENT CHECK
-  console.log('\n[STEP 3] Verifying Hero Overlay Gradient in components.css...');
-  const componentsCssPath = path.join(ROOT_DIR, 'public', 'css', 'components.css');
-  const componentsCss = fs.readFileSync(componentsCssPath, 'utf8');
+  console.log('\n[STEP 3] Verifying Hero Overlay Gradient in public component CSS...');
+  const componentsCss = readAllPublicComponentsCss();
 
   assert(
     componentsCss.includes('rgba(0, 87, 63, .45)') || componentsCss.includes('rgba(0, 87, 63, 0.45)'),
-    'components.css .hero-grad must use ultra-thin green overlay rgba(0, 87, 63, 0.45)'
+    'public component CSS .hero-grad must use ultra-thin green overlay rgba(0, 87, 63, 0.45)'
   );
   console.log('  ✓ .hero-grad ultra-thin #00573F gradient overlay verified');
 
@@ -106,7 +106,7 @@ async function runTestSuite() {
   console.log('\n[STEP 4] Verifying .btn-primary:hover Dark Transition...');
   assert(
     componentsCss.includes('--color-primary-dark, #00573f') || componentsCss.includes('#00573f'),
-    'components.css .btn-primary:hover must transition to #00573f'
+    'public component CSS .btn-primary:hover must transition to #00573f'
   );
   console.log('  ✓ .btn-primary:hover transitions to #00573F (WCAG AAA 8.62:1 contrast)');
 

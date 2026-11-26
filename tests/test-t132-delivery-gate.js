@@ -2,6 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,7 +48,7 @@ async function runTest() {
 
   // 2. Keyboard Navigability & Focus Indicators
   console.log('[2] Verifying Keyboard Navigability and Focus Ring Styles...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
+  const css = readAllPublicComponentsCss();
   const mainJs = fs.readFileSync(path.join(__dirname, '../public/js/main.js'), 'utf8');
   const aboutEjs = fs.readFileSync(path.join(__dirname, '../views/public/about.ejs'), 'utf8');
 

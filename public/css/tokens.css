@@ -280,6 +280,35 @@
 
   /* Header Actual Height Fallback */
   --header-actual-height: 92px;
+
+  /* Product Detail Surface & Ink Tokens */
+  --pd-bg: #faf8f3;
+  --pd-bg-soft: #f3f1ea;
+  --pd-surface: #ffffff;
+  --pd-surface-2: #f6f7f3;
+  --pd-ink: #17251f;
+  --pd-ink-2: #43534b;
+  --pd-ink-3: #71817a;
+  --pd-line: #e4e1d6;
+  --pd-line-soft: #edeae0;
+  --pd-green: var(--color-primary);
+  --pd-green-hover: var(--color-primary-hover);
+  --pd-green-bright: var(--color-primary-bright);
+  --pd-green-deep: var(--color-primary-dark);
+  --pd-sage: #e9f0e9;
+  --pd-sage-2: #dce8dc;
+  --pd-radius-lg: 20px;
+  --pd-shadow: 0 10px 30px rgba(23, 37, 31, 0.07);
+
+  /* Token Turunan Semantik & Netral Publik (Zero Blue Hue) */
+  --color-text-muted-light: #94a3b8;
+  --plp-divider: #e5e7eb;
+  --plp-btn-border: #7c8fa6;
+  --color-warning-text: #b45309;
+  --color-success-text-deep: #14532d;
+  --color-success-border: #bbf7d0;
+  --color-error-text-deep: #7f1d1d;
+  --color-error-border: #fecaca;
 }
 
 @media (max-width: 768px) {

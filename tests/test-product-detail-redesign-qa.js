@@ -3,6 +3,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { readAllAdminCss } from './helpers/readAdminCss.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 function request(pathUrl, options = {}) {
   return new Promise((resolve, reject) => {
@@ -280,15 +281,14 @@ async function runFullQA() {
 
   console.log('\n[7/7] AUDITING CSS TOKENS, RESPONSIVE CLASSES & JAVASCRIPT HYGIENE...');
   {
-    const compCssPath = path.resolve('public/css/components.css');
-    const compCss = fs.readFileSync(compCssPath, 'utf8');
+    const compCss = readAllPublicComponentsCss();
 
-    assert(compCss.includes('.pd-card'), 'components.css must define .pd-card');
-    assert(compCss.includes('.pd-grid'), 'components.css must define .pd-grid');
-    assert(compCss.includes('.pd-gallery'), 'components.css must define .pd-gallery');
-    assert(compCss.includes('.pd-pill:focus-visible'), 'components.css must define focus styles for variant pills');
-    assert(compCss.includes('.pd-tab-btn:focus-visible') || compCss.includes('.pd-tab:focus-visible'), 'components.css must define focus styles for tabs');
-    assert(!compCss.includes('.pd-sticky-cta'), 'components.css must NOT define .pd-sticky-cta (distilled)');
+    assert(compCss.includes('.pd-card'), 'public/css/components/*.css must define .pd-card');
+    assert(compCss.includes('.pd-grid'), 'public/css/components/*.css must define .pd-grid');
+    assert(compCss.includes('.pd-gallery'), 'public/css/components/*.css must define .pd-gallery');
+    assert(compCss.includes('.pd-pill:focus-visible'), 'public/css/components/*.css must define focus styles for variant pills');
+    assert(compCss.includes('.pd-tab-btn:focus-visible') || compCss.includes('.pd-tab:focus-visible'), 'public/css/components/*.css must define focus styles for tabs');
+    assert(!compCss.includes('.pd-sticky-cta'), 'public/css/components/*.css must NOT define .pd-sticky-cta (distilled)');
 
     const detailJsPath = path.resolve('public/js/product-detail.js');
     const detailJs = fs.readFileSync(detailJsPath, 'utf8');

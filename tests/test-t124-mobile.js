@@ -2,6 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,8 +11,8 @@ async function runTest() {
   console.log('=== TEST T-124: BENTO MOSAIC MOBILE ADAPTATION & TOUCH SWIPE ===\n');
 
   // 1. Verify CSS mobile responsive rules and touch-action
-  console.log('[1] Verifying components.css mobile responsive rules...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
+  console.log('[1] Verifying public/css/components/*.css mobile responsive rules...');
+  const css = readAllPublicComponentsCss();
 
   assert.ok(css.includes('@media (max-width: 768px)'), 'Must have @media (max-width: 768px)');
   assert.ok(css.includes('touch-action: pan-y'), 'Must set touch-action: pan-y for smooth vertical scroll + touch gesture');

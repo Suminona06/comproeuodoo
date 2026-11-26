@@ -7,6 +7,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import ejs from 'ejs';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const rootDir = process.cwd();
 
@@ -15,8 +16,7 @@ console.log('--- STARTING TESTS: KELOMPOK C (T-150 s/d T-156 UI POLISH) ---');
 const contactEjsPath = path.join(rootDir, 'views/public/contact.ejs');
 const contactEjsContent = fs.readFileSync(contactEjsPath, 'utf8');
 
-const componentsCssPath = path.join(rootDir, 'public/css/components.css');
-const componentsCssContent = fs.readFileSync(componentsCssPath, 'utf8');
+const componentsCssContent = readAllPublicComponentsCss();
 
 // ----------------------------------------------------
 // TEST 1: T-150 - Inline Style Elimination & Scoped .cf-*
@@ -42,7 +42,7 @@ assert(
 const inlineHandlers = contactEjsContent.match(/\son(click|submit|error|load|change|blur|focus)=/i);
 assert(!inlineHandlers, `FAIL: Found inline event handler: ${inlineHandlers}`);
 
-// Verify .cf-* classes exist in components.css
+// Verify .cf-* classes exist in public component CSS
 const requiredCfClasses = [
   '.cf-section',
   '.cf-hero-cta',
@@ -73,7 +73,7 @@ const requiredCfClasses = [
 for (const cls of requiredCfClasses) {
   assert(
     componentsCssContent.includes(cls),
-    `FAIL: Required class ${cls} is missing from components.css`
+    `FAIL: Required class ${cls} is missing from public component CSS`
   );
 }
 

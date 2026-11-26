@@ -2,22 +2,22 @@ import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const rootDir = process.cwd();
 const footerPath = path.join(rootDir, 'views/partials/footer.ejs');
 const contactPath = path.join(rootDir, 'views/public/contact.ejs');
 const layoutCssPath = path.join(rootDir, 'public/css/layout.css');
-const componentsCssPath = path.join(rootDir, 'public/css/components.css');
 
 console.log('--- TEST SUITE T-241: Public UI & Layout Show/Hide Alamat ---');
 
 // 1. CSS Rules Verification
 const layoutCss = fs.readFileSync(layoutCssPath, 'utf8');
-const componentsCss = fs.readFileSync(componentsCssPath, 'utf8');
+const componentsCss = readAllPublicComponentsCss();
 
 assert.ok(layoutCss.includes('.ft-offices:has(> :only-child)'), 'layout.css must contain .ft-offices:has(> :only-child)');
 assert.ok(layoutCss.includes('.ft-desc:last-child'), 'layout.css must contain .ft-desc:last-child');
-assert.ok(componentsCss.includes('.cf-maps-wrap:only-child'), 'components.css must contain .cf-maps-wrap:only-child');
+assert.ok(componentsCss.includes('.cf-maps-wrap:only-child'), 'public/css/components/*.css must contain .cf-maps-wrap:only-child');
 console.log('✓ Test 1 Passed: CSS rules for single child and clean omission exist.');
 
 // Mock translation function

@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import aboutGalleryModel from '../models/aboutGalleryModel.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,24 +12,24 @@ const __dirname = path.dirname(__filename);
 async function runTest() {
   console.log('=== TEST T-122: BENTO MOSAIC GALLERY ===\n');
 
-  // 1. Verify components.css has new bento classes and old slider classes removed
-  console.log('[1] Verifying components.css...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
-  assert.ok(css.includes('.bento-gallery'), 'components.css must contain .bento-gallery');
-  assert.ok(css.includes('.bento-grid'), 'components.css must contain .bento-grid');
-  assert.ok(css.includes('.bento-tile--pos-1'), 'components.css must contain .bento-tile--pos-1');
-  assert.ok(css.includes('.bento-grid--5'), 'components.css must contain .bento-grid--5');
-  assert.ok(css.includes('.bento-grid--4'), 'components.css must contain .bento-grid--4');
-  assert.ok(css.includes('.bento-grid--3'), 'components.css must contain .bento-grid--3');
-  assert.ok(css.includes('.bento-grid--2'), 'components.css must contain .bento-grid--2');
-  assert.ok(css.includes('.bento-grid--1'), 'components.css must contain .bento-grid--1');
-  assert.ok(css.includes('.bento-cap'), 'components.css must contain .bento-cap');
-  assert.ok(css.includes('.bento-cat'), 'components.css must contain .bento-cat');
-  assert.ok(css.includes('.bento-title'), 'components.css must contain .bento-title');
-  assert.ok(css.includes('.bento-pager'), 'components.css must contain .bento-pager');
-  assert.ok(!css.includes('.gal-track {'), 'components.css must NOT contain old .gal-track');
-  assert.ok(!css.includes('.gal-thumbs {'), 'components.css must NOT contain old .gal-thumbs');
-  console.log('  -> components.css verified: Bento classes present, old slider classes removed.\n');
+  // 1. Verify public/css/components/*.css has new bento classes and old slider classes removed
+  console.log('[1] Verifying public/css/components/*.css...');
+  const css = readAllPublicComponentsCss();
+  assert.ok(css.includes('.bento-gallery'), 'public/css/components/*.css must contain .bento-gallery');
+  assert.ok(css.includes('.bento-grid'), 'public/css/components/*.css must contain .bento-grid');
+  assert.ok(css.includes('.bento-tile--pos-1'), 'public/css/components/*.css must contain .bento-tile--pos-1');
+  assert.ok(css.includes('.bento-grid--5'), 'public/css/components/*.css must contain .bento-grid--5');
+  assert.ok(css.includes('.bento-grid--4'), 'public/css/components/*.css must contain .bento-grid--4');
+  assert.ok(css.includes('.bento-grid--3'), 'public/css/components/*.css must contain .bento-grid--3');
+  assert.ok(css.includes('.bento-grid--2'), 'public/css/components/*.css must contain .bento-grid--2');
+  assert.ok(css.includes('.bento-grid--1'), 'public/css/components/*.css must contain .bento-grid--1');
+  assert.ok(css.includes('.bento-cap'), 'public/css/components/*.css must contain .bento-cap');
+  assert.ok(css.includes('.bento-cat'), 'public/css/components/*.css must contain .bento-cat');
+  assert.ok(css.includes('.bento-title'), 'public/css/components/*.css must contain .bento-title');
+  assert.ok(css.includes('.bento-pager'), 'public/css/components/*.css must contain .bento-pager');
+  assert.ok(!css.includes('.gal-track {'), 'public/css/components/*.css must NOT contain old .gal-track');
+  assert.ok(!css.includes('.gal-thumbs {'), 'public/css/components/*.css must NOT contain old .gal-thumbs');
+  console.log('  -> public/css/components/*.css verified: Bento classes present, old slider classes removed.\n');
 
   // 2. Verify main.js has bento pagination logic and old slider logic removed
   console.log('[2] Verifying main.js...');

@@ -4,6 +4,7 @@ import path from 'path';
 import ejs from 'ejs';
 import homeContentModel from '../models/homeContentModel.js';
 import { buildHomeViewModel } from '../services/homeService.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -20,8 +21,7 @@ async function runQaTests() {
 
   // T-179: Multi-Breakpoint CSS, Tap Targets, Focus-Visible, Reduced Motion
   console.log('\n[TEST 1: T-179] Verifying Multi-Breakpoint CSS, Tap Targets & Accessibility...');
-  const cssPath = path.resolve('public/css/components.css');
-  const cssContent = fs.readFileSync(cssPath, 'utf8');
+  const cssContent = readAllPublicComponentsCss();
 
   // 1a. Responsive rules for .hcat-grid
   assert.ok(cssContent.includes('.hcat-grid'), 'CSS must define .hcat-grid');

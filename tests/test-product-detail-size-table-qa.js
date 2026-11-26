@@ -7,6 +7,7 @@ import path from 'path';
 import ejs from 'ejs';
 import productModel from '../models/productModel.js';
 import productController from '../controllers/public/productController.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 async function runT218DetailSizeTableQa() {
   console.log('--- STARTING TASK T-218: PDP DYNAMIC SIZE TABLE QA TESTS ---');
@@ -167,9 +168,9 @@ async function runT218DetailSizeTableQa() {
     assert(htmlXss.includes('&lt;test&gt;') || htmlXss.includes('Safe'), 'Escaped text must be rendered');
     console.log('  3a. XSS protection and HTML escaping in EJS template: PASSED');
 
-    // 4. Test CSS Styles in components.css
-    console.log('\n[TEST 4] Testing scoped CSS selectors in components.css...');
-    const cssContent = fs.readFileSync(path.join(process.cwd(), 'public/css/components.css'), 'utf8');
+    // 4. Test CSS Styles in public/css/components/*.css
+    console.log('\n[TEST 4] Testing scoped CSS selectors in public/css/components/*.css...');
+    const cssContent = readAllPublicComponentsCss();
 
     for (let c = 1; c <= 8; c++) {
       assert(cssContent.includes(`table.pd-size[data-cols="${c}"]`), `Must have selector for data-cols="${c}"`);

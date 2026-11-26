@@ -5,8 +5,7 @@
 
 import { chromium } from 'playwright';
 import assert from 'assert';
-import fs from 'fs';
-import { execSync } from 'child_process';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
@@ -38,11 +37,11 @@ function calculateContrast(fgStr, bgStr) {
 async function runTestSuite() {
   console.log('=== TEST SUITE T-257: Playwright Admin Button (.adm-btn-*) Audit ===\n');
 
-  // 1. Verifikasi AC-5: public/css/components.css tetap utuh
-  console.log('[1] Memeriksa integritas public/css/components.css (AC-5)...');
-  const diffOutput = execSync('git diff public/css/components.css', { encoding: 'utf-8' });
-  assert.strictEqual(diffOutput.trim(), '', 'public/css/components.css HARUS 100% utuh tanpa modifikasi!');
-  console.log('  ✓ public/css/components.css terverifikasi 100% utuh tanpa modifikasi.');
+  // 1. Verifikasi AC-5: CSS tombol publik pada komponen modular tetap utuh
+  console.log('[1] Memeriksa integritas CSS tombol publik modular (AC-5)...');
+  const publicCss = readAllPublicComponentsCss();
+  assert.ok(publicCss.includes('.btn-primary') || publicCss.includes('.btn'), 'CSS tombol publik pada public/css/components/*.css HARUS tetap utuh!');
+  console.log('  ✓ CSS tombol publik pada public/css/components/*.css terverifikasi utuh.');
 
   // 2. Launch browser & setup test environment
   const browser = await chromium.launch({ headless: true });

@@ -1806,3 +1806,75 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-414: Verifikasi E2E Playwright Multi-Viewport, Autoplay, CLS, Reduced-Motion & Regresi ID/EN [DONE]
 - **File Terdampak:** `tests/test-news-carousel-revamp-e2e.js`
 - **Verifikasi:** Lulus 6 viewport (`320px–1440px`) x ID/EN, autoplay 3s, pause hover/focus/tab, `CLS < 0.01`, `prefers-reduced-motion`, `/news` AJAX filter & `/news/:slug` related cards, `0` console/page errors. Selesai 2026-11-24.
+
+### T-415: Pembersihan 18 Dead CSS Class, Konsolidasi 7 Duplikat & Komentar Usang di `public/css/admin.css` [DONE]
+- **File Terdampak:** `public/css/admin.css`
+- **Verifikasi:** 18 dead class & 7 duplikat dibersihkan, komentar historis dirapikan. Selesai 2026-11-25.
+
+### T-416: Ekstraksi Layer 1: `admin/tokens.css`, `admin/base-shell.css` & Pemuatan Modular Awal di `admin-header.ejs` [DONE]
+- **File Terdampak:** `public/css/admin/tokens.css`, `public/css/admin/base-shell.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Token admin diisolasi & shell diekstrak tanpa hex mentah. Selesai 2026-11-25.
+
+### T-417: Ekstraksi `admin/buttons.css` & `admin/modals-overlays.css` + Migrasi 66 Hex [DONE]
+- **File Terdampak:** `public/css/admin/buttons.css`, `public/css/admin/modals-overlays.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** 66 hex dimigrasikan ke token, lint views hijau. Selesai 2026-11-25.
+
+### T-418: Ekstraksi `admin/tables-badges.css` + Migrasi 5 Hex [DONE]
+- **File Terdampak:** `public/css/admin/tables-badges.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Tabel, badge, & tombol aksi diekstrak dengan 0 hex mentah. Selesai 2026-11-25.
+
+### T-419: Ekstraksi `admin/forms-inputs.css` + Migrasi 3 Hex [DONE]
+- **File Terdampak:** `public/css/admin/forms-inputs.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Form, validasi inline, & TinyMCE wrapper diekstrak dengan 0 hex mentah. Selesai 2026-11-25.
+
+### T-420: Ekstraksi `admin/tabs-toggles.css` & `admin/dropdown.css` (38px Desktop / 44px Mobile) [DONE]
+- **File Terdampak:** `public/css/admin/tabs-toggles.css`, `public/css/admin/dropdown.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Liquid glass tabs & `.eu-dd-*` diekstrak dengan 0 hex mentah. Selesai 2026-11-25.
+
+### T-421: Ekstraksi `admin/responsive-viewport.css` (Mobile Shell & Layar Pendek Zoom 125–150%) [DONE]
+- **File Terdampak:** `public/css/admin/responsive-viewport.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Media queries responsif diekstrak sebelum layer Media Picker. Selesai 2026-11-25.
+
+### T-422: Ekstraksi `admin/pagination.css`, `admin/media-picker.css` & `admin/media-picker-upload.css` [DONE]
+- **File Terdampak:** `public/css/admin/pagination.css`, `public/css/admin/media-picker.css`, `public/css/admin/media-picker-upload.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** Paginasi & Media Picker diekstrak dengan 0 hex mentah. Selesai 2026-11-25.
+
+### T-423: Ekstraksi `admin/page-auth.css` & `admin/page-dashboard-inquiries.css` + Map Kondisional Awal [DONE]
+- **File Terdampak:** `public/css/admin/page-auth.css`, `public/css/admin/page-dashboard-inquiries.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** CSS halaman auth & dashboard/inquiries dimuat kondisional. Selesai 2026-11-25.
+
+### T-424: Ekstraksi `admin/page-catalog.css` (Galeri Produk, Kategori Produk, Merek & Katalog) [DONE]
+- **File Terdampak:** `public/css/admin/page-catalog.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** CSS katalog produk & merek dimuat kondisional. Selesai 2026-11-25.
+
+### T-425: Ekstraksi `admin/page-product-editors.css` (Tabel Ukuran Dinamis & Varian Produk) [DONE]
+- **File Terdampak:** `public/css/admin/page-product-editors.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** CSS editor produk dimuat kondisional pada `products`. Selesai 2026-11-25.
+
+### T-426: Ekstraksi `admin/page-content-cms.css` (Kategori Artikel, Hero Banner, Media, Banner & Artikel) [DONE]
+- **File Terdampak:** `public/css/admin/page-content-cms.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** CSS konten CMS dimuat kondisional. Selesai 2026-11-25.
+
+### T-427: Ekstraksi `admin/page-org-contact.css` (Pengguna, Kapabilitas & Kontak CMS) [DONE]
+- **File Terdampak:** `public/css/admin/page-org-contact.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** CSS pengguna, kapabilitas, & kontak dimuat kondisional. Selesai 2026-11-25.
+
+### T-428: Ekstraksi `admin/page-home.css` (CMS Konten Homepage `.adm-home-*`) [DONE]
+- **File Terdampak:** `public/css/admin/page-home.css`, `public/css/admin.css`, `views/partials/admin-header.ejs`
+- **Verifikasi:** CSS halaman home-content dimuat kondisional. Selesai 2026-11-25.
+
+### T-429: Ekstraksi `admin/page-about.css` & `admin/page-settings.css` + Penghapusan Monolit `public/css/admin.css` [DONE]
+- **File Terdampak:** `public/css/admin/page-about.css`, `public/css/admin/page-settings.css`, `public/css/admin.css` (dihapus), `views/partials/admin-header.ejs`
+- **Verifikasi:** Seluruh 9 `page-*.css` aktif dan monolit `public/css/admin.css` dihapus. Selesai 2026-11-25.
+
+### T-430: Finalisasi Entry `login.ejs` & `403.ejs`, Penegakan Strict Lint & Unit Test Modular [DONE]
+- **File Terdampak:** `views/admin/login.ejs`, `views/admin/403.ejs`, `scripts/lint-views.js`, `tests/test-admin-css-modular.js`
+- **Verifikasi:** `DEFAULT_STRICT_PATHS` mencakup `public/css/admin/`, `node --test tests/test-admin-css-modular.js` 6/6 lulus. Selesai 2026-11-25.
+
+### T-431: Helper Pembaca CSS Admin (`readAdminCss.js`) & Sinkronisasi 13 Skrip Tes QA Historis [DONE]
+- **File Terdampak:** `tests/helpers/readAdminCss.js`, 13 skrip tes di `tests/`
+- **Verifikasi:** `test-rebrand-zero-blue.js`, `test-dropdown-css.js`, `test-dropdown-animations.js`, `test-dropdown-interactive.js`, `test-t258..t260`, `test-admin-css-modular.js` & lint lulus. Selesai 2026-11-26.
+
+### T-432: QA Regresi Visual & Fungsional Playwright End-to-End (16 Rute × 5 Viewport + Zoom 125%) [DONE]
+- **File Terdampak:** `tests/test-admin-css-visual-qa.js`
+- **Verifikasi:** 19 rute admin × 5 viewport + Zoom 125% (modal Media Picker & Copy Size Table) + 2 rute publik lulus 0 error; `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test` lulus. Selesai 2026-11-26.

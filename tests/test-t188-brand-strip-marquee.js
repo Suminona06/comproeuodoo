@@ -7,9 +7,9 @@ import settingModel from '../models/settingModel.js';
 import { clearSettingsCache } from '../middleware/settingsMiddleware.js';
 import { pool } from '../config/database.js';
 import { buildHomeViewModel } from '../services/homeService.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const templatePath = path.resolve('views/public/index.ejs');
-const cssPath = path.resolve('public/css/components.css');
 const dictionaries = {
   id: JSON.parse(fs.readFileSync(path.resolve('locales/id.json'), 'utf8')),
   en: JSON.parse(fs.readFileSync(path.resolve('locales/en.json'), 'utf8'))
@@ -65,8 +65,8 @@ function fetchUrl(url) {
 async function runT188Tests() {
   console.log('=== STARTING T-188 BRAND STRIP MARQUEE TESTS ===');
 
-  console.log('1. Verifying CSS Isolated Tokens & Classes in public/css/components.css:');
-  const cssContent = fs.readFileSync(cssPath, 'utf8');
+  console.log('1. Verifying CSS Isolated Tokens & Classes in public/css/components/*.css:');
+  const cssContent = readAllPublicComponentsCss();
   assert.ok(cssContent.includes('.brand-strip-sec'), 'CSS must define .brand-strip-sec');
   assert.ok(cssContent.includes('.brand-strip-title'), 'CSS must define .brand-strip-title');
   assert.ok(cssContent.includes('.brand-strip-wrapper'), 'CSS must define .brand-strip-wrapper');

@@ -10,10 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/admin/tokens.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/buttons.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/forms-inputs.css?v=20261126-1">
@@ -38,21 +34,21 @@
           <img src="<%= settings.site_logo_header %>" 
                alt="<%= typeof settings !== 'undefined' && settings.company_name ? settings.company_name : 'PT Euodoo' %>" 
                class="brand-logo-header adm-login-logo">
-          <span class="brand-text-fallback adm-login-fallback">
-            <span class="brand-name">PT EUODOO</span>
-            <span class="brand-badge">MANUFACTURING</span>
+          <span class="adm-login-fallback">
+            <span class="adm-login-brand-name">PT EUODOO</span>
+            <span class="adm-login-brand-badge">MANUFACTURING</span>
           </span>
         <% } else { %>
-          <span class="brand-name">PT EUODOO</span>
-          <span class="brand-badge">MANUFACTURING</span>
+          <span class="adm-login-brand-name">PT EUODOO</span>
+          <span class="adm-login-brand-badge">MANUFACTURING</span>
         <% } %>
         <h1 class="adm-login-title">PT EUODOO</h1>
       </div>
       <p class="adm-login-subtitle">Content Management System (CMS)</p>
     </div>
 
-    <div class="card adm-login-card">
-      <div class="card-body">
+    <div class="adm-login-card">
+      <div class="adm-login-card-body">
         <h2 class="adm-login-card-title">Masuk ke Portal Admin</h2>
 
         <% if (typeof error !== 'undefined' && error) { %>
@@ -80,12 +76,12 @@
           </button>
         </form>
       </div>
-      <div class="card-footer text-center adm-login-card-footer">
+      <div class="adm-login-text-center adm-login-card-footer">
         Akses khusus staf internal berwenang PT Euodoo
       </div>
     </div>
 
-    <div class="text-center adm-login-back-wrapper">
+    <div class="adm-login-text-center adm-login-back-wrapper">
       <a href="/" class="adm-login-back-link">&larr; Kembali ke Website Publik</a>
     </div>
   </div>

@@ -1,6 +1,7 @@
 import assert from 'node:assert';
 import http from 'node:http';
 import fs from 'node:fs';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 function request(path, headers = {}) {
   return new Promise((resolve, reject) => {
@@ -29,8 +30,8 @@ function request(path, headers = {}) {
 async function run() {
   console.log('--- TEST SUITE: T-193 PLP CARD & TOKEN SYSTEM ---');
 
-  // 1. Check CSS components.css
-  const css = fs.readFileSync('public/css/components.css', 'utf8');
+  // 1. Check modular public components CSS
+  const css = readAllPublicComponentsCss();
   assert(css.includes('.plp-layout'), 'Must define .plp-layout');
   assert(css.includes('.plp-sidebar'), 'Must define .plp-sidebar');
   assert(css.includes('.plp-main'), 'Must define .plp-main');
@@ -46,7 +47,7 @@ async function run() {
   assert(css.includes('text-transform: uppercase'), 'Card title and button must have uppercase');
   assert(css.includes('height: 26px'), 'Card button height must be 26px compact');
   assert(css.includes('font-size: 9px'), 'Card title font size must be 9px');
-  console.log('  [PASS] components.css contains complete .plp-* design tokens and rules');
+  console.log('  [PASS] public/css/components/*.css contains complete .plp-* design tokens and rules');
 
   // 2. Check Homepage isolation: homepage must NOT be broken or changed to .plp
   const indexEjs = fs.readFileSync('views/public/index.ejs', 'utf8');
@@ -54,7 +55,7 @@ async function run() {
   assert(indexEjs.includes('categories'), 'Homepage must include categories partial');
   assert(homeCatsEjs.includes('class="prod-header'), 'Homepage categories partial must keep .prod-header');
   assert(homeCatsEjs.includes('class="prod-title'), 'Homepage categories partial must keep .prod-title');
-  assert(css.includes('.prod-header'), 'components.css must preserve .prod-header for homepage');
+  assert(css.includes('.prod-header'), 'public/css/components/*.css must preserve .prod-header for homepage');
   console.log('  [PASS] Homepage isolation preserved: .prod-* remains intact');
 
   // 3. HTTP SSR check on /products

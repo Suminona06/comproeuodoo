@@ -1,0 +1,231 @@
+/* About Page — Vision & Mission (.sec-vm, .vm-*, .abt-vm-*) */
+
+.sec-vm {
+  padding: 96px 0;
+  background: var(--bg-subtle);
+  position: relative;
+}
+
+.sec-vm::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: var(--trans-soft-green-to-subtle);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sec-vm::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: var(--trans-subtle-to-soft-green);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  .sec-vm::before,
+  .sec-vm::after {
+    height: 48px;
+  }
+}
+
+.vm-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 52px;
+}
+
+.vm-kicker {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.vm-header h2 {
+  font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-text-main);
+  margin-bottom: 12px;
+}
+
+.vm-header p {
+  font-size: 16px;
+  color: var(--color-text-variant);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.vm-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.vm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.vm-row.no-image {
+  grid-template-columns: 1fr;
+}
+
+.vm-card {
+  padding: 40px 36px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: border-color var(--ease), box-shadow var(--ease), transform var(--ease);
+}
+
+.vm-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-2);
+  transform: translateY(-3px);
+}
+
+.vm-card-kicker {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 14px;
+}
+
+.vm-card-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  font-weight: 700;
+  color: var(--surface-dark-deep);
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  margin: 0 0 12px 0;
+}
+
+.vm-card-desc {
+  font-size: 15px;
+  color: var(--color-text-variant);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.vm-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vm-list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 15px;
+  color: var(--color-text-variant);
+  line-height: 1.65;
+}
+
+.abt-vm-point-text {
+  font-size: 15px;
+  color: var(--color-text-main);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.vm-list-badge {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.vm-media {
+  position: relative;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-1);
+  min-height: 300px;
+  background: var(--color-surface-container);
+}
+
+.vm-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--ease-slow);
+}
+
+.vm-row:hover .vm-media img {
+  transform: scale(1.02);
+}
+
+@media (max-width: 900px) {
+  .vm-row {
+    gap: 24px;
+  }
+  .vm-card {
+    padding: 32px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .vm-rows {
+    gap: 28px;
+  }
+  .vm-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .vm-media {
+    order: -1;
+    min-height: 220px;
+    max-height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sec-vm {
+    padding: 64px 0;
+  }
+  .vm-card {
+    padding: 24px 20px;
+  }
+  .vm-card-title {
+    font-size: 1.25rem;
+  }
+}

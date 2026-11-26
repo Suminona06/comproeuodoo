@@ -1,6 +1,7 @@
 import fs from 'fs';
 import assert from 'assert';
 import { chromium } from 'playwright';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 console.log('Testing T-266: Public Pages Dropdown Migration (PLP Sort & Contact RFQ Form)...');
 
@@ -27,7 +28,7 @@ console.log('  1. Static audit of public templates & scripts: PASSED');
   const page = await context.newPage();
 
   const tokensCss = fs.readFileSync('public/css/tokens.css', 'utf8');
-  const componentsCss = fs.readFileSync('public/css/components.css', 'utf8');
+  const componentsCss = readAllPublicComponentsCss();
   const dropdownJs = fs.readFileSync('public/js/admin-dropdown.js', 'utf8');
 
   // Load public products page mockup

@@ -2,214 +2,319 @@
 
 ## Ringkasan Status Task
 
-- **Task Aktif Terbuka:** 18 Task (`T-415` s/d `T-432` — Audit Dead CSS & Refaktor Modular `public/css/admin.css`)
-- **Total Task Selesai:** 414 Task (T-01 s/d T-414)
+- **Task Aktif Terbuka:** 21 Task (`T-433` s/d `T-453` — Modularisasi CSS Komponen Publik & Optimasi Performa)
+- **Total Task Selesai:** 432 Task (T-01 s/d T-432)
 - **Arsip Task Lengkap:** Seluruh riwayat dan detail task historis disimpan di [archive/tasks-index-full.md](archive/tasks-index-full.md).
-- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-433**.
-- **Referensi Proposal & Spek:** [changes/2026-11-25_admin-css-modular-refactor.md](changes/2026-11-25_admin-css-modular-refactor.md) | [tech/admin-ui-css.md](tech/admin-ui-css.md) | [tech/conventions.md](tech/conventions.md) | [tech/conventions-lint.md](tech/conventions-lint.md).
+- **Aturan Penomoran Task Baru:** Setiap penambahan task implementasi baru WAJIB melanjutkan penomoran mulai dari **T-454**.
+- **Referensi Proposal & Spek:** [changes/2026-11-26_modular-public-components-css.md](../changes/2026-11-26_modular-public-components-css.md), [tech/public-ui-css.md](tech/public-ui-css.md), [tech/conventions.md](tech/conventions.md), [tech/conventions-lint.md](tech/conventions-lint.md).
 
 ---
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [x] T-415 `[Tier: Argon Medium]` — Pembersihan 18 Dead CSS Class, Konsolidasi 7 Duplikat & Komentar Usang di `public/css/admin.css`
-- **File Terdampak (1 file):** `public/css/admin.css`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Verifikasi baseline selector via skrip Node/`ctx_execute` sebelum edit (813 class, 1.128 blok rule).
-  2. Hapus **13 class Pasti Mati**: `.alert-warning` (`L609–L613`), blok tombol legacy `.btn`/`.btn-primary`/`.btn-secondary`/`.btn-danger`/`.btn-sm` (`L659–L714`), `.swal2-custom-confirm-btn` & `.swal2-custom-cancel-btn` (`L2386–L2404`), `.char-counter.text-danger` & `.char-counter.counter-danger` (`L2735–L2738`), `.prod-variant-row-item` (`L2909–L2915`), `.table-responsive:has(.eu-dd.is-open)` (`L3645`), dan `.adm-inq-pagination` (`L5469–L5475`).
-  3. Hapus **5 class Kategori (c)** (Keputusan 6b): `.adm-btn-ghost` (`L792, L800–L801, L806, L853, L861–L862` — pertahankan `.adm-btn-neutral`), `.adm-btn-lg` (`L927`), `.adm-btn-spinner` (`L956, L995` — pertahankan `.adm-btn.is-loading` & `@keyframes` aktif), `.eu-dd-trigger.is-focused` (`L3692` — pertahankan `:focus`/`:focus-visible`), dan `.eu-dd-error-msg` (`L4104`).
-  4. Konsolidasikan 7 duplikat konteks sama tanpa mengubah cascade: `.admin-alerts-container` (`L578` + `L2411`, pastikan `display: none !important` tetap menang), `.form-input/.form-select/.form-textarea/.form-control` (`L1543–L1568`), `.app-content` di `@media (max-width: 480px)` (`L3513` + `L3549`), dan `.adm-var-btn-move` (`L7730` + `L7739`).
-  5. Hapus 14 komentar historis/nomor task/AI (`T-94..T-378`, `Batch 1..13`, `Keputusan Q1/Q2/Q7`, `DESIGN.md Pacific Corporate`) dengan mempertahankan hanya penanda bagian semantik ringkas.
-- **Referensi Pola:** `public/css/components.css` (penamaan seksi bersih tanpa komentar nomor task).
-- **Batasan Negatif:** Dilarang menghapus class dinamis/vendor (`.swal2-*`, `.tox*`, `.eu-dd-*`, `.adm-picker-queue-*`, `.stg-footer-*`, `.badge-status-*`, `.is-*`, `.has-*`) maupun mengubah satu pun properti visual aktif; dilarang menyentuh CSS publik.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `npm run lint && npm run lint:views && npm run lint:i18n` + verifikasi skrip Node bahwa 0 duplikat konteks sama tersisa, seluruh 18 class mati hilang, dan 795 class aktif tetap utuh.
+> **Aturan Eksekusi Multi-Sesi:** Kerjakan **hanya 1 `T-xxx`** per conversation baru sesuai Tag Tier-nya. Dilarang men-dump utuh `public/css/components.css` ke konteks — gunakan `ctx_execute` atau pembacaan rentang baris terarah. Setelah verifikasi lulus 100%, tandai `[DONE]` lalu **BERHENTI**.
 
-### [x] T-416 `[Tier: Argon Medium]` — Ekstraksi Layer 1: `admin/tokens.css`, `admin/base-shell.css` & Pemuatan Modular Awal di `admin-header.ejs`
-- **File Terdampak (4 file):** `public/css/admin/tokens.css` (baru), `public/css/admin/base-shell.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Ekstrak blok `:root` dari `admin.css` (eks `L1–L81`) ke `public/css/admin/tokens.css` dan tambahkan ~14 token semantik baru sesuai `tech/admin-ui-css.md` Bagian 2 (permukaan netral `--bg-surface-alt`, `--bg-upload-tint`, `--border-strong`, `--text-heading/body-strong/slate-dark`; skala danger `--color-error`, `--danger-solid`, `--danger-hover-*`, `--danger-text-deep`; skala emerald `--emerald-*`; `--adm-btn-primary-hover-border`, `--role-superadmin-*`, `--warning-text-strong`) tanpa mengubah nilai 54 token existing.
-  2. Ekstrak blok reset & shell (`admin.css` eks `L82–L658`, `L2127–L2138`, `L2411–L2414`, `L5698–L5710`, `L5890–L5905`, ~595 baris) ke `public/css/admin/base-shell.css` mencakup `.app-layout`, `.app-sidebar`, collapsed state, `.app-topbar`, `.admin-alerts-container` (`display: none !important`), `.app-content`, `.adm-shell-*`, dan `.adm-d-*`.
-  3. Migrasikan seluruh 11 warna hex mentah di `base-shell.css` ke variabel token dari `admin/tokens.css` (0 hex mentah).
-  4. Hapus blok sumber dari `public/css/admin.css` dan muat `<link href="/css/admin/tokens.css">` serta `<link href="/css/admin/base-shell.css">` tepat sebelum `/css/admin.css` di `views/partials/admin-header.ejs`.
-- **Referensi Pola:** `public/css/tokens.css` (struktur pengelompokan token `:root`).
-- **Batasan Negatif:** Dilarang mengubah `public/css/tokens.css` publik maupun nilai 8 token kontrak `test-rebrand-zero-blue.js`; dilarang menambah inline style/script di `admin-header.ejs`.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/base-shell.css && npm run lint && npm run lint:views && npm run lint:i18n`.
+### [DONE] `T-433` — Buat Suite Baseline Visual & Metrik Performa Playwright Publik `[Tier: Argon Medium]`
+- **File Terdampak (1):** `tests/test-public-css-visual-qa.js` (baru).
+- **Langkah Bernomor:**
+  1. Buat `tests/test-public-css-visual-qa.js` mendukung argumen CLI `--baseline` dan `--verify` (output laporan JSON & screenshot sementara ke `/tmp/euodoo-public-css-qa/` agar tidak mengotori repo).
+  2. Definisikan daftar 11 rute target: `/`, `/about`, `/products`, `/products/<slug-aktif-pertama>`, `/capabilities`, `/news`, `/news/<slug-aktif-pertama>`, `/contact`, `/halaman-tidak-ada-404`, `/admin/login`, `/403`.
+  3. Iterasi pada 5 viewport (`320x700`, `375x812`, `768x1024`, `1024x768`, `1440x900`) untuk bahasa `id` dan `en` (`?lang=en` pada rute publik).
+  4. Rekam per rute: (a) 0 console error, (b) 0 status >= 400 pada resource `.css`, (c) 0 horizontal overflow (`scrollWidth <= innerWidth`), (d) total byte & jumlah request stylesheet CSS yang diunduh, (e) estimasi unused CSS ratio via CDP `CSS.startRuleUsageTracking`, (f) nilai CLS via `PerformanceObserver`, dan (g) snapshot visual elemen kunci.
+  5. Jalankan `node tests/test-public-css-visual-qa.js --baseline` melawan server lokal aktif untuk mengunci metrik awal (`components.css` = 234,88 KB global).
+- **Kontrak Data Eksplisit:** `/tmp/euodoo-public-css-qa/baseline.json` berisi `{ routes: { [route]: { cssRequests, cssBytes, unusedRatio, cls, overflow, consoleErrors, css404 } } }`.
+- **Referensi Pola:** `tests/test-admin-css-visual-qa.js`.
+- **Batasan Negatif:** Dilarang memodifikasi `public/css/*`, `views/*`, atau menyimpan artefak screenshot ke direktori repo git.
+- **Skill:** `browser-testing-with-devtools`.
+- **Verifikasi Deterministik:** `npm run lint && node tests/test-public-css-visual-qa.js --baseline`.
 
-### [x] T-417 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/buttons.css` & `admin/modals-overlays.css` + Migrasi 66 Hex
-- **File Terdampak (4 file):** `public/css/admin/buttons.css` (baru), `public/css/admin/modals-overlays.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan blok `.adm-btn-*` (`admin.css` eks `L715–L999`, ~265 baris pasca T-415) ke `public/css/admin/buttons.css` (termasuk `@media (hover: hover)`, `@media (max-width: 768px)` `min-height: 44px`, dan `@media (prefers-reduced-motion: reduce)`) serta migrasikan seluruh 50 hex mentah ke token `admin/tokens.css`.
-  2. Pindahkan blok modal, tombol tutup C4, toast, SweetAlert2, dan `.modal-copy-*` (`admin.css` eks `L1895–L2056`, `L2353–L2410`, `L3096–L3139`, ~245 baris) ke `public/css/admin/modals-overlays.css` serta migrasikan seluruh 16 hex mentah ke token.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan `<link>` di `views/partials/admin-header.ejs` pada urutan cascade #3 (`buttons.css`) dan #6 (`modals-overlays.css`).
-- **Referensi Pola:** `public/css/admin/base-shell.css`.
-- **Batasan Negatif:** Dilarang mengubah perilaku `.adm-btn-*`, animasi hover/reduced-motion, atau z-index `.swal2-container`; dilarang menyentuh `.btn-*` publik.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/buttons.css && node scripts/lint-views.js public/css/admin/modals-overlays.css && npm run lint:views`.
+---
 
-### [x] T-418 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/tables-badges.css` + Migrasi 57 Hex
-- **File Terdampak (3 file):** `public/css/admin/tables-badges.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan blok metrik dashboard, table card, data table, badge status, status selector, role badges, tombol aksi CRUD C2, dan footer tabel C5 (`admin.css` eks `L1000–L1496`, `L2139–L2169`, ~525 baris) ke `public/css/admin/tables-badges.css`.
-  2. Migrasikan seluruh 57 warna hex mentah ke token `admin/tokens.css` (`--emerald-*`, `--role-superadmin-*`, `--st-*-*`, `--bg-surface-alt`, `--border-strong`, `--danger-hover-*`).
-  3. Hapus blok sumber dari `admin.css` dan daftarkan `<link>` di `views/partials/admin-header.ejs` pada urutan cascade #4 (tepat setelah `buttons.css`).
-- **Referensi Pola:** `public/css/admin/buttons.css`.
-- **Batasan Negatif:** Dilarang mengubah spesifisitas `.badge-status-*`, `.status-select`, `.btn-action-*`, atau kontras WCAG AA badge.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/tables-badges.css && npm run lint:views`.
+### [DONE] `T-434` — Konsolidasi Token Publik (`--pd-*` & Token Turunan Semantik/Netral) di `public/css/tokens.css` `[Tier: Argon Medium]`
+- **File Terdampak (2):** `public/css/tokens.css`, `Design/DESIGN.md`.
+- **Langkah Bernomor:**
+  1. Baca blok `:root` baris `8158–8177` pada `public/css/components.css` (rentang terbatas 20 baris) dan pindahkan seluruh 17 token `--pd-*` ke bagian baru `/* Product Detail Surface & Ink Tokens */` di `public/css/tokens.css`.
+  2. Tambahkan 8 token turunan baru di `public/css/tokens.css` dengan nilai warna **100% identik** dengan nilai existing di `components.css` (tanpa rona biru): `--color-text-muted-light`, `--plp-divider`, `--plp-btn-border`, `--color-warning-text`, `--color-success-text-deep`, `--color-success-border`, `--color-error-text-deep`, `--color-error-border`.
+  3. Dokumentasikan daftar token turunan baru tersebut secara ringkas di `Design/DESIGN.md`.
+- **Kontrak Data Eksplisit:** 25 token wajib tersedia di `:root` `public/css/tokens.css`: `--pd-bg`, `--pd-bg-soft`, `--pd-surface`, `--pd-surface-2`, `--pd-ink`, `--pd-ink-2`, `--pd-ink-3`, `--pd-line`, `--pd-line-soft`, `--pd-green`, `--pd-green-hover`, `--pd-green-bright`, `--pd-green-deep`, `--pd-sage`, `--pd-sage-2`, `--pd-radius-lg`, `--pd-shadow`, `--color-text-muted-light`, `--plp-divider`, `--plp-btn-border`, `--color-warning-text`, `--color-success-text-deep`, `--color-success-border`, `--color-error-text-deep`, `--color-error-border`.
+- **Referensi Pola:** `public/css/tokens.css` (seksi `/* Turunan Semantik Resmi */`), `public/css/admin/tokens.css`.
+- **Batasan Negatif:** Dilarang mengubah nilai token existing di `public/css/tokens.css`, dilarang menambah warna biru (hue 190°–255° saturasi tinggi), dilarang mengubah `public/css/components.css` pada task ini.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `npm run lint:views && node -e "const fs=require('fs'),c=fs.readFileSync('public/css/tokens.css','utf8');for(const t of ['--pd-bg','--pd-ink','--plp-btn-border','--color-warning-text','--color-success-border','--color-error-border'])if(!c.includes(t))throw new Error('Missing '+t);console.log('OK')"`.
 
-### [x] T-419 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/forms-inputs.css` + Migrasi 53 Hex
-- **File Terdampak (3 file):** `public/css/admin/forms-inputs.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan blok `.form-card`, `.form-group`, `.form-input/select/textarea/control`, `.adm-slug-text`, `.custom-file-*`, row actions, `.btn-add-row`, `.char-counter`, `.form-actions-sticky`, `.admin-card-*`, `.admin-field-*`, `.table-col-action`, `.btn-submit/clear-*`, dan form validation `.is-invalid`/`.adm-field-error`/`.tox-tinymce` (`admin.css` eks `L1497–L1894`, `L2726–L2740`, `L2869–L2903`, `L2916–L2933`, `L3364–L3412`, ~505 baris) ke `public/css/admin/forms-inputs.css`.
-  2. Migrasikan seluruh 53 warna hex mentah ke token `admin/tokens.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan `<link>` di `views/partials/admin-header.ejs` pada urutan cascade #5 (setelah `tables-badges.css`, sebelum `modals-overlays.css`).
-- **Referensi Pola:** `public/css/admin/tables-badges.css`.
-- **Batasan Negatif:** Dilarang mengubah `min-height: 38px` pada `.form-input`/`.form-select`/`.form-control` maupun perilaku `.form-card`/`.form-group`/`.form-row-2`.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/forms-inputs.css && npm run lint:views`.
+---
 
-### [x] T-420 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/dropdown.css` + Migrasi 44 Hex
-- **File Terdampak (3 file):** `public/css/admin/dropdown.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan seluruh blok komponen `.eu-dd-*` (`admin.css` eks `L3632–L4126`, ~485 baris pasca T-415) ke `public/css/admin/dropdown.css` (3 varian, `--sm`, floating label, caret, panel, `.eu-dd-panel--top`, search box, listbox items, skeleton shimmer, disabled/empty/invalid states, reduced-motion).
-  2. Migrasikan seluruh 44 warna hex mentah ke token `admin/tokens.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan `<link>` di `views/partials/admin-header.ejs` pada urutan cascade #8.
-- **Referensi Pola:** `public/css/admin/forms-inputs.css` & `tech/admin-ui-dropdown.md`.
-- **Batasan Negatif:** Dilarang menyentuh `.eu-dd-*` publik di `public/css/components.css`; dilarang mengubah `--eu-dd-height: 38px` desktop atau `min-height: 44px` mobile `<=768px`.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/dropdown.css && npm run lint:views`.
+### [DONE] `T-435` — Pembersihan 70 Class Mati, 36 Duplikat Konteks Sama & Komentar Historis di `public/css/components.css` `[Tier: Argon Medium]`
+- **File Terdampak (1):** `public/css/components.css`.
+- **Langkah Bernomor:**
+  1. Verifikasi programmatic via `ctx_execute` bahwa seluruh 70 class mati (daftar di `tech/public-ui-css.md` §5) tidak dipakai di `views/**/*.ejs` maupun `public/js/**/*.js` (wajib pertahankan `.hero-slide-image`, `.hero-slide-video`, `.nwl-headline-sec`).
+  2. Hapus blok legacy Home v1 (baris `638–1031`: `.showcase-card*`, `.section-journey`, `.metric-stat-*`, `.news-asymmetric-grid`, `.news-card-tall/horizontal`, `.footer-corp-*`, `.social-icon*`, serta deklarasi awal `.btn-pill-*` & `.hero-explore-*` yang ditimpa di bawahnya) dan seluruh aturan milik 70 class mati lainnya.
+  3. Gabungkan/deduplikasi seluruh 36 duplikat `(context, selector)` dengan mempertahankan deklarasi pemenang cascade akhir.
+  4. Hapus blok `:root` inline milik `--pd-*` (sudah dipindah di `T-434`) dan bersihkan 3 komentar historis nomor task sesuai `antislop-code`.
+- **Kontrak Data Eksplisit:** Setelah task ini, `public/css/components.css` memiliki **0** dari 70 class mati, **0** duplikat `(context, selector)`, dan **0** blok `:root`.
+- **Referensi Pola:** `tests/test-admin-css-modular.js` (`collectSelectorEntries` & `hasDeadClassToken`).
+- **Batasan Negatif:** Dilarang memodifikasi properti visual class aktif; dilarang menghapus `.hero-slide-image`, `.hero-slide-video`, `.nwl-headline-sec`, `.hcat-grid--1..4`, `.abt-cnt-card--q1..4`, `.abt-gal-tile--pos-1..6`, `.bento-tile--pos-1..6`, `.swal2-*`, atau `.eu-dd--*`.
+- **Skill:** `antislop-code`.
+- **Verifikasi Deterministik:** Skrip `ctx_execute` cek 0 duplikat `(context, selector)` & 0 dari 70 class mati pada `public/css/components.css` && `npm run lint:views`.
 
-### [x] T-421 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/tabs-toggles.css` & `admin/responsive-viewport.css` + Migrasi 32 Hex
-- **File Terdampak (4 file):** `public/css/admin/tabs-toggles.css` (baru), `public/css/admin/responsive-viewport.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan C7 liquid glass tabs, `.adm-toggle-*`, dan WhatsApp repeater `.wa-*` (`admin.css` eks `L2170–L2262`, `L3140–L3363`, ~315 baris) ke `public/css/admin/tabs-toggles.css` dan migrasikan seluruh 32 hex mentah ke token.
-  2. Pindahkan mobile shell responsive dan adaptasi viewport/zoom (`admin.css` eks `L2263–L2352`, `L3413–L3631`, ~300 baris, 0 hex) ke `public/css/admin/responsive-viewport.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan `<link>` di `views/partials/admin-header.ejs`: `tabs-toggles.css` pada urutan #7 (sebelum `dropdown.css`), dan `responsive-viewport.css` pada urutan #10 (setelah slot `pagination.css` dan **sebelum** Media Picker/Pages).
-- **Referensi Pola:** `public/css/admin/modals-overlays.css`.
-- **Batasan Negatif:** Dilarang mengubah breakpoint (`768px`, `520px`, `480px`, `360px`) maupun urutan cascade `responsive-viewport.css` terhadap Media Picker.
-- **Skill Relevan:** `antislop-code`, `antislop-layoutmobile`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/tabs-toggles.css && node scripts/lint-views.js public/css/admin/responsive-viewport.css && npm run lint:views`.
+---
 
-### [x] T-422 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/pagination.css` & `admin/page-auth.css` + Migrasi 1 Hex
-- **File Terdampak (4 file):** `public/css/admin/pagination.css` (baru), `public/css/admin/page-auth.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan komponen paginasi Varian 1 `.pgn-*` (`admin.css` eks `L6951–L7330`, ~380 baris) ke `public/css/admin/pagination.css` dan migrasikan 1 hex mentah (`L7218`) ke `var(--bg-surface-alt)`.
-  2. Pindahkan gaya auth & error `.loginForm`, `.err403-*`, `.adm-login-*`, `.chpwd-*` (`admin.css` eks `L2702–L2709`, `L4549–L4741`, ~200 baris, 0 hex) ke `public/css/admin/page-auth.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan di `views/partials/admin-header.ejs`: `pagination.css` pada urutan #9 (sebelum `responsive-viewport.css`) serta inisialisasi peta kondisional `PAGE_STYLES` (`activeNav === 'password'` &rarr; `page-auth.css`, plus dukungan `extraAdminStyles`).
-- **Referensi Pola:** `public/css/admin/dropdown.css`.
-- **Batasan Negatif:** Dilarang mengubah `.pgn-bar--public` di `components.css` maupun struktur 2-baris mobile `>= 44px`; nesting EJS di `admin-header.ejs` maksimal 2 level.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/pagination.css && node scripts/lint-views.js public/css/admin/page-auth.css && npm run lint:views`.
+### [DONE] `T-436` — Ekstraksi Layer Core Always-On (`primitives.css`, `whatsapp-float.css`, `cta-reveal.css`) `[Tier: Argon Medium]`
+- **File Terdampak (3):** `public/css/components/primitives.css`, `public/css/components/whatsapp-float.css`, `public/css/components/cta-reveal.css` (semua baru).
+- **Langkah Bernomor:**
+  1. Ekstrak blok primitives aktif (`.btn*`, `.card*`, `.form-*`, `.badge*`, `.table`, `.alert*`) ke `public/css/components/primitives.css` (<= ~300 baris).
+  2. Ekstrak blok floating WhatsApp (`.wa-float-*`, `.wa-icon`, `.wa-tooltip`) ke `public/css/components/whatsapp-float.css` (<= ~150 baris).
+  3. Ekstrak blok CTA global & reveal (`.sec-cta`, `.cta-*`, `.reveal` + `@media` milik `.sec-cta`/`.cta-*`) ke `public/css/components/cta-reveal.css` (<= ~220 baris).
+  4. Ganti seluruh raw hex (termasuk fallback `var(--token, ...)`) dengan token resmi dari `public/css/tokens.css`.
+- **Kontrak Data Eksplisit:** 3 berkas baru di `public/css/components/`, masing-masing <= 600 baris, 0 raw hex, 0 duplikat selector.
+- **Referensi Pola:** `public/css/admin/buttons.css`, `public/css/admin/forms-inputs.css`, `tech/public-ui-css.md` §3.
+- **Batasan Negatif:** Belum mengubah `views/partials/head.ejs` dan belum menghapus `public/css/components.css`; dilarang mengubah nilai warna atau dimensi visual.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/primitives.css public/css/components/whatsapp-float.css public/css/components/cta-reveal.css`.
 
-### [x] T-423 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/media-picker.css` + Migrasi 31 Hex
-- **File Terdampak (3 file):** `public/css/admin/media-picker.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan `.media-grid`, `.media-picker-*`, `#btnMediaPickerPrev/Next`, `.media-picker-checkbox` (`admin.css` eks `L2057–L2126`, `L2415–L2701`, `L2710–L2725`, ~370 baris) ke `public/css/admin/media-picker.css`.
-  2. Migrasikan seluruh 31 warna hex mentah ke token `admin/tokens.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan `<link>` di `views/partials/admin-header.ejs` pada urutan cascade #11 (setelah `responsive-viewport.css`).
-- **Referensi Pola:** `public/css/admin/modals-overlays.css`.
-- **Batasan Negatif:** Dilarang mengubah `min-height: 240px` pada modal body media picker (kontrak `test-task-202-admin-form.js`) maupun `#btnMediaPickerPrev/Next`.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/media-picker.css && npm run lint:views`.
+---
 
-### [x] T-424 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/media-picker-upload.css` (Multi-Upload Queue & Mobile Polish)
-- **File Terdampak (3 file):** `public/css/admin/media-picker-upload.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan `.adm-picker-*` (search, dropzone, progress, upload queue, usage warning), `#uploadModal`, serta `@media (pointer: coarse), (max-width: 768px)` dan `@media (max-width: 480px)` khusus Media Picker (`admin.css` eks `L5711–L5889`, `L7331–L7456`, `L7478–L7556`, `L7571–L7642`, ~450 baris, 0 hex) ke `public/css/admin/media-picker-upload.css`.
-  2. Pastikan aturan `@media` di `L7529–L7642` berada di bagian bawah berkas agar tetap menimpa `responsive-viewport.css` dan `media-picker.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan `<link>` di `views/partials/admin-header.ejs` pada urutan cascade #12 (tepat setelah `media-picker.css`).
-- **Referensi Pola:** `public/css/admin/media-picker.css`.
-- **Batasan Negatif:** Dilarang menghapus `.adm-picker-queue-*` atau `.adm-picker-usage-*` (dipakai dinamis JS); dilarang menaruh berkas ini sebelum `responsive-viewport.css`.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/media-picker-upload.css && npm run lint:views`.
+### [DONE] `T-437` — Ekstraksi Komponen Bersama Kondisional Bagian 1 (`page-hero.css`, `dropdown.css`, `pagination.css`) `[Tier: Argon Medium]`
+- **File Terdampak (3):** `public/css/components/page-hero.css`, `public/css/components/dropdown.css`, `public/css/components/pagination.css` (semua baru).
+- **Langkah Bernomor:**
+  1. Ekstrak blok `.page-hero*` & subpage breadcrumbs + scrim responsif ke `public/css/components/page-hero.css` (<= ~230 baris).
+  2. Ekstrak blok `.eu-dd-*` & `@keyframes euDdShimmer` ke `public/css/components/dropdown.css` (<= ~500 baris).
+  3. Ekstrak blok `.pgn-*` ke `public/css/components/pagination.css` (<= ~180 baris).
+  4. Petakan seluruh raw hex & fallback hex ke token `public/css/tokens.css`.
+- **Kontrak Data Eksplisit:** 3 berkas di `public/css/components/`, masing-masing <= 600 baris, 0 raw hex, 0 komentar task historis.
+- **Referensi Pola:** `public/css/admin/dropdown.css`, `public/css/admin/pagination.css`.
+- **Batasan Negatif:** Dilarang mengubah perilaku `.eu-dd-*` atau menyentuh `public/css/admin/dropdown.css` & `public/css/admin/pagination.css`.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/page-hero.css public/css/components/dropdown.css public/css/components/pagination.css`.
 
-### [x] T-425 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-dashboard-inquiries.css` & `admin/page-org-contact.css`
-- **File Terdampak (4 file):** `public/css/admin/page-dashboard-inquiries.css` (baru), `public/css/admin/page-org-contact.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan `.adm-leads-*`, `.adm-inq-*`, dan `.adm-dash-*` (`admin.css` eks `L5315–L5697`, ~375 baris, 0 hex) ke `public/css/admin/page-dashboard-inquiries.css`.
-  2. Pindahkan `.adm-usr-*`, `.adm-cap-*`, dan `.adm-ctc-*` (`admin.css` eks `L4850–L4909`, `L5030–L5182`, ~213 baris, 0 hex) ke `public/css/admin/page-org-contact.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan di peta `PAGE_STYLES` pada `views/partials/admin-header.ejs` (`dashboard`/`inquiries`/`leads` &rarr; `page-dashboard-inquiries.css`; `users`/`capabilities`/`contact-cms` &rarr; `page-org-contact.css`).
-- **Referensi Pola:** `public/css/admin/page-auth.css`.
-- **Batasan Negatif:** Dilarang mengubah class bersama tabel/paginasi maupun sticky action Contact CMS.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-dashboard-inquiries.css && node scripts/lint-views.js public/css/admin/page-org-contact.css && npm run lint:views`.
+---
 
-### [x] T-426 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-catalog.css` + Migrasi 23 Hex
-- **File Terdampak (3 file):** `public/css/admin/page-catalog.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan `.prod-gallery-*`, `.adm-pcat-*`, `.adm-brd-*`, `.adm-prod-*`, serta responsive `.prod-gallery-*` (`admin.css` eks `L2741–L2868`, `L2904–L2908`, `L4742–L4799`, `L4910–L5029`, `L6237–L6304`, `L7557–L7570`, `L7643–L7647`, ~395 baris) ke `public/css/admin/page-catalog.css`.
-  2. Migrasikan seluruh 23 warna hex mentah (blok `.prod-gallery-*`) ke token `admin/tokens.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan di `PAGE_STYLES` pada `views/partials/admin-header.ejs` (`products`/`product-categories`/`brands` &rarr; `page-catalog.css`).
-- **Referensi Pola:** `public/css/admin/page-dashboard-inquiries.css`.
-- **Batasan Negatif:** Dilarang menghapus `.prod-gallery-wrap`, `.prod-gallery-thumb`, `.prod-gallery-btn-move` (kontrak `test-task-202-admin-form.js` & `test-product-detail-redesign-qa.js`).
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-catalog.css && npm run lint:views`.
+### [DONE] `T-438` — Ekstraksi Komponen Bersama Kondisional Bagian 2 (`product-cards.css`, `news-cards.css`) `[Tier: Argon Medium]`
+- **File Terdampak (2):** `public/css/components/product-cards.css`, `public/css/components/news-cards.css` (keduanya baru).
+- **Langkah Bernomor:**
+  1. Ekstrak seluruh aturan kartu & grid produk lintas halaman (`/products` & `/products/<slug>`): `.plp-grid`, `.plp-card*`, `.plp-card-entering`, `.plp-more-wrap`, `.plp-pagination*`, `.plp-empty*` + `@media` kartu ke `public/css/components/product-cards.css` (<= ~480 baris).
+  2. Ekstrak seluruh aturan kartu & grid berita lintas halaman (`/news` & `/news/<slug>`): `.news-card-v2*`, `.nwl-grid`, `.nwl-card*`, `.nwl-img-placeholder`, `.nwd-related-grid` + `@media` kartu ke `public/css/components/news-cards.css` (<= ~360 baris).
+  3. Petakan seluruh raw hex & fallback hex ke token `public/css/tokens.css` (termasuk `--plp-btn-border`).
+- **Kontrak Data Eksplisit:** Seluruh selector `.plp-grid`/`.plp-card*` dan `.nwl-grid`/`.nwl-card*`/`.news-card-v2*` terpusat pada 2 berkas ini tanpa duplikasi di berkas halaman.
+- **Referensi Pola:** `tech/public-ui-css.md` §3, `views/partials/news-card.ejs`, `views/public/partials/product-card-fragment.ejs`.
+- **Batasan Negatif:** Dilarang mengubah rasio gambar kartu 1:1 mobile atau tap target 44px pada `.plp-card-btn`.
+- **Skill:** `antislop-ui`, `antislop-layoutmobile`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/product-cards.css public/css/components/news-cards.css`.
 
-### [x] T-427 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-product-editors.css` & `admin/page-home.css`
-- **File Terdampak (4 file):** `public/css/admin/page-product-editors.css` (baru), `public/css/admin/page-home.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan `.prod-size-*`, `.btn-col-*`, `.btn-row-*`, dan `.adm-var-*` (`admin.css` eks `L2934–L3095`, `L7648–L7845`, ~355 baris, 0 hex) ke `public/css/admin/page-product-editors.css`.
-  2. Pindahkan `.adm-home-*` (`admin.css` eks `L6305–L6534`, ~230 baris, 0 hex) ke `public/css/admin/page-home.css`.
-  3. Hapus blok sumber dari `admin.css` dan daftarkan di `PAGE_STYLES` pada `views/partials/admin-header.ejs` (`products` &rarr; tambah `page-product-editors.css` setelah `page-catalog.css`; `home-content` &rarr; `page-home.css`).
-- **Referensi Pola:** `public/css/admin/page-catalog.css`.
-- **Batasan Negatif:** Dilarang mengubah perilaku tombol `.adm-var-btn-move` atau responsif tabel ukuran produk.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-product-editors.css && node scripts/lint-views.js public/css/admin/page-home.css && npm run lint:views`.
+---
 
-### [x] T-428 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-content-cms.css`
-- **File Terdampak (3 file):** `public/css/admin/page-content-cms.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan `.adm-postcat-*`, `.adm-hbn-*`, `.adm-media-*`, `.adm-banner-*`, dan `.adm-post-*` (`admin.css` eks `L4800–L4849`, `L5183–L5314`, `L5906–L6236`, `L7457–L7477`, ~530 baris, 0 hex) ke `public/css/admin/page-content-cms.css`.
-  2. Hapus blok sumber dari `admin.css` dan daftarkan di `PAGE_STYLES` pada `views/partials/admin-header.ejs` (`posts`/`post-categories`/`media`/`banners`/`hero-banners` &rarr; `page-content-cms.css`).
-- **Referensi Pola:** `public/css/admin/page-catalog.css`.
-- **Batasan Negatif:** Dilarang mengubah gaya grid `.adm-media-*` atau pratinjau mockup `.adm-hbn-*`.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-content-cms.css && npm run lint:views`.
+### [DONE] `T-439` — Ekstraksi Modul Homepage Bagian 1 (`home-hero.css`, `home-intro-categories.css`, `home-why-choose-us.css`) `[Tier: Argon Medium]`
+- **File Terdampak (3):** `public/css/components/home-hero.css`, `public/css/components/home-intro-categories.css`, `public/css/components/home-why-choose-us.css` (semua baru).
+- **Langkah Bernomor:**
+  1. Ekstrak blok Hero Slider (`.hero*` termasuk `.hero-slide-image`/`.hero-slide-video`, `.hero-cta-*`, `.hero-explore-*`) + `@media` hero ke `public/css/components/home-hero.css` (<= ~560 baris).
+  2. Ekstrak blok Intro & Kategori Utama (`.sec-intro`, `.intro-*`, `.home-intro-*`, `.sec-products`, `.prod-*`, `.hcat-*`, `.hcat-grid--1..4`) + `@media` ke `public/css/components/home-intro-categories.css` (<= ~410 baris).
+  3. Ekstrak blok Why Choose Us (`.sec-why-us`, `.wcu-*`, `.sec-pillars`) + `@media` & `prefers-reduced-motion` ke `public/css/components/home-why-choose-us.css` (<= ~460 baris).
+  4. Ganti seluruh raw hex & fallback hex dengan token `public/css/tokens.css`.
+- **Kontrak Data Eksplisit:** Urutan `@media` (`1024px` -> `860px` -> `768px` -> `480px`) di tiap berkas identik dengan urutan cascade asal.
+- **Referensi Pola:** `public/css/admin/page-home.css`, `views/partials/home/hero-slide.ejs`.
+- **Batasan Negatif:** Homepage DIBEKUKAN secara visual; dilarang mengubah overlay scrim hero, animasi, tinggi hero, warna token, atau `views/public/index.ejs`.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/home-hero.css public/css/components/home-intro-categories.css public/css/components/home-why-choose-us.css`.
 
-### [x] T-429 `[Tier: Argon Medium]` — Ekstraksi `admin/page-about.css` & `admin/page-settings.css` + Penghapusan Monolit `public/css/admin.css`
-- **File Terdampak (4 file):** `public/css/admin/page-about.css` (baru), `public/css/admin/page-settings.css` (baru), `public/css/admin.css` (dihapus), `views/partials/admin-header.ejs`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Pindahkan `.adm-abt-*` (`admin.css` eks `L6535–L6950`, ~416 baris, 0 hex) ke `public/css/admin/page-about.css`.
-  2. Pindahkan `.stg-*` (`admin.css` eks `L4127–L4548`, ~422 baris, 0 hex) ke `public/css/admin/page-settings.css`.
-  3. Verifikasi `public/css/admin.css` telah kosong 100% (0 rule tersisa), lalu **hapus `public/css/admin.css`** serta hapus tag `<link href="/css/admin.css...">` dari `views/partials/admin-header.ejs`.
-  4. Finalisasi peta `PAGE_STYLES` di `views/partials/admin-header.ejs` mencakup seluruh 9 berkas `page-*.css` (`about` &rarr; `page-about.css`, `settings` &rarr; `page-settings.css`) sesuai `tech/admin-ui-css.md` Bagian 4.
-- **Referensi Pola:** `public/css/admin/page-home.css`.
-- **Batasan Negatif:** Dilarang menghapus `.stg-footer-item*`, `.is-near-limit`, `.is-at-limit`, `.is-full`; nesting EJS maksimal 2 level.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-about.css && node scripts/lint-views.js public/css/admin/page-settings.css && npm run lint:views`.
+---
 
-### [x] T-430 `[Tier: Argon Medium]` — Finalisasi Entry `login.ejs` & `403.ejs`, Penegakan Strict Lint (`scripts/lint-views.js`) & Unit Test Modular
-- **File Terdampak (4 file):** `views/admin/login.ejs`, `views/admin/403.ejs`, `scripts/lint-views.js`, `tests/test-admin-css-modular.js` (baru).
-- **Langkah & Kontrak Eksplisit:**
-  1. Perbarui `<link>` di `views/admin/login.ejs` (ganti `/css/admin.css` ke subset minimal: `/css/admin/tokens.css`, `/css/admin/buttons.css`, `/css/admin/forms-inputs.css`, `/css/admin/page-auth.css`) dan `views/admin/403.ejs` (`/css/admin/tokens.css`, `/css/admin/buttons.css`, `/css/admin/page-auth.css`).
-  2. Perbarui `scripts/lint-views.js`: kecualikan secara eksplisit hanya `public/css/tokens.css` dan `public/css/admin/tokens.css`, lalu tambahkan `'public/css/admin/'` ke `DEFAULT_STRICT_PATHS` (blocking error untuk `no-raw-hex-css`).
-  3. Buat `tests/test-admin-css-modular.js` (`node:test`) yang memverifikasi: (a) seluruh 21 file `public/css/admin/*.css` <= 620 baris, (b) 0 hex mentah di luar `admin/tokens.css`, (c) 0 duplikat selector konteks sama, (d) 8 token wajib zero-blue hadir di `admin/tokens.css`, (e) 0 dari 18 class mati hadir kembali, dan (f) seluruh `<link href="/css/admin/...">` di `admin-header.ejs`, `login.ejs`, dan `403.ejs` menunjuk berkas fisik valid.
-- **Referensi Pola:** `scripts/lint-views.js` (`DEFAULT_STRICT_PATHS`) & `tests/test-seed-snapshot.js` (`node:test`).
-- **Batasan Negatif:** Dilarang memodifikasi CSS/view publik atau menurunkan aturan strict lint existing.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `npm run lint && npm run lint:views && npm run lint:i18n && node --test tests/test-admin-css-modular.js && npm run test:seed`.
+### [DONE] `T-440` — Ekstraksi Modul Homepage Bagian 2 (`home-cert-brands.css`, `home-news-carousel.css`) `[Tier: Argon Medium]`
+- **File Terdampak (2):** `public/css/components/home-cert-brands.css`, `public/css/components/home-news-carousel.css` (keduanya baru).
+- **Langkah Bernomor:**
+  1. Ekstrak blok Sertifikasi & Brand Marquee (`.sec-evidence`, `.ev-*`, `.cert-*`, `.home-cert-logo`, `.brand-strip-*`, brand zoom modal, `@keyframes` marquee) + `@media` ke `public/css/components/home-cert-brands.css` (<= ~550 baris).
+  2. Ekstrak blok Home News Carousel (`.sec-news`, `.hnc-*`) + `@media` ke `public/css/components/home-news-carousel.css` (<= ~370 baris).
+  3. Ganti seluruh raw hex & fallback hex dengan token `public/css/tokens.css`.
+- **Kontrak Data Eksplisit:** 2 berkas <= 600 baris, 0 raw hex, seluruh `@keyframes` marquee & carousel utuh.
+- **Referensi Pola:** `views/partials/home/brands-marquee.ejs`, `views/partials/home/news.ejs`.
+- **Batasan Negatif:** Dilarang mengubah kecepatan animasi marquee, ukuran logo sertifikasi, atau struktur kartu carousel berita Homepage.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/home-cert-brands.css public/css/components/home-news-carousel.css`.
 
-### [x] T-431 `[Tier: Hydrogen Medium]` — Helper Pembaca CSS Admin (`readAdminCss.js`) & Sinkronisasi 13 Skrip Tes QA Historis
-- **File Terdampak:** `tests/helpers/readAdminCss.js` (baru) + pembaruan path pada 12 skrip tes `fs.readFileSync('public/css/admin.css')` & 1 skrip mock Playwright (`tests/test-t257-buttons-playwright.js`) di `tests/`.
-- **Langkah & Kontrak Eksplisit:**
-  1. Buat `tests/helpers/readAdminCss.js` mengekspor `readAllAdminCss()` (gabungan berurutan 21 berkas `public/css/admin/*.css`) dan `readAdminTokensCss()`.
-  2. Arahkan pembacaan `admin.css` pada `test-rebrand-zero-blue.js`, `test-dropdown-css.js`, `test-dropdown-animations.js`, `test-dropdown-interactive.js`, `test-admin-dropdown-migration.js`, `test-product-admin-cta-qa.js`, `test-product-detail-redesign-qa.js`, `test-task-202-admin-form.js`, `test-t258..t260`, dan `test-rebrand-visual-functional.js` (cek HTML login terhadap `admin/page-auth.css`) ke helper bersama.
-  3. Selaraskan 2 assertion tes lama terhadap Keputusan 6b & 1a: hapus `'.eu-dd-error-msg'` di `tests/test-dropdown-css.js:49` (ganti cek `.eu-dd.is-invalid`), dan perbarui `<link>` mock di `tests/test-t257-buttons-playwright.js:69` ke `/css/admin/tokens.css` + `/css/admin/buttons.css` serta ganti uji `.adm-btn-spinner` (`L112, L279`) ke `.adm-btn.is-loading`.
-  4. Jalankan skrip tes non-browser untuk memastikan 100% lulus.
-- **Referensi Pola:** `tests/test-rebrand-zero-blue.js`.
-- **Batasan Negatif:** Dilarang melonggarkan assertion kontrak warna hijau, kontras WCAG, atau selector aktif pada skrip tes.
-- **Skill Relevan:** `antislop-code`.
-- **Verifikasi Deterministik:** `node tests/test-rebrand-zero-blue.js && node tests/test-dropdown-css.js && node tests/test-product-admin-cta-qa.js && node tests/test-task-202-admin-form.js && npm run lint`.
+---
 
-### [x] T-432 `[Tier: Argon Medium]` — QA Regresi Visual & Fungsional Playwright End-to-End (16 Rute × 5 Viewport + Zoom 125%)
-- **File Terdampak (1–2 file):** `tests/test-admin-css-visual-qa.js` (baru) + bukti screenshot sementara di direktori scratch (tidak di-commit).
-- **Langkah & Kontrak Eksplisit:**
-  1. Jalankan server lokal dan uji via Playwright headless pada seluruh 16 rute Admin CMS: `/admin/login`, `/admin/403` (simulasi role editor), `/admin/dashboard`, `/admin/inquiries`, `/admin/products` (+ create/edit), `/admin/product-categories`, `/admin/brands`, `/admin/posts` (+ create/edit TinyMCE), `/admin/media` (+ modal Media Picker & tab Upload), `/admin/banners`, `/admin/hero-banners`, `/admin/about`, `/admin/home-content`, `/admin/contact`, `/admin/settings`, `/admin/users`, `/admin/change-password`.
-  2. Verifikasi pada **5 viewport** (`320px`, `375px`, `768px`, `1024px`, `1440px`) + **zoom 125% / tinggi pendek (`720px`)** saat modal Media Picker & modal Copy Size Table terbuka.
-  3. Pastikan: (a) 0 console error & 0 uncaught pageerror, (b) 0 HTTP 404/500 pada `/css/admin/*.css`, (c) 0 horizontal overflow (`scrollWidth <= innerWidth + 1`), (d) tinggi `.eu-dd-trigger` == `38px` desktop & `>= 44px` mobile `<=768px`, (e) target sentuh `.adm-btn` `>= 44px` di mobile, (f) modal panjang tetap scrollable dengan footer terlihat, dan (g) halaman publik `/` & `/products` tidak terdampak.
-- **Referensi Pola:** `tests/test-t259-form-validation-playwright.js` & `tests/test-t260-sweetalert-csp-playwright.js`.
-- **Batasan Negatif:** Dilarang memodifikasi data DB produksi/snapshot, meninggalkan akun tes di DB, atau mengubah CSS publik.
-- **Skill Relevan:** `browser-testing-with-devtools`, `antislop-layoutmobile`.
-- **Verifikasi Deterministik:** `node tests/test-admin-css-visual-qa.js && npm run lint && npm run lint:views && npm run lint:i18n && npm test`.
+### [DONE] `T-441` — Ekstraksi Modul Katalog & Detail Produk (`products-catalog.css`, `product-detail-core.css`, `product-detail-specs.css`) `[Tier: Argon Medium]`
+- **File Terdampak (3):** `public/css/components/products-catalog.css`, `public/css/components/product-detail-core.css`, `public/css/components/product-detail-specs.css` (semua baru).
+- **Langkah Bernomor:**
+  1. Ekstrak aturan non-kartu PLP (`.plp-section/container/layout`, sidebar, toolbar, search, sort, drawer mobile & backdrop, `@media` layout/toolbar) ke `public/css/components/products-catalog.css` (<= ~580 baris).
+  2. Ekstrak blok atas Product Detail (`.pd-wrap/card/crumb*/title`, galeri & thumbnail, info & varian produk) ke `public/css/components/product-detail-core.css` (<= ~460 baris).
+  3. Ekstrak blok bawah Product Detail (`.pd-cta-row`, `.pd-btn*`, tab spesifikasi, tabel ukuran, related section, `.pd-gallery-track`, `@media` PDP) ke `public/css/components/product-detail-specs.css` (<= ~450 baris).
+  4. Ganti seluruh raw hex & fallback hex (termasuk `var(--pd-*, ...)` & `--plp-divider`) dengan token murni dari `public/css/tokens.css`.
+- **Kontrak Data Eksplisit:** Tidak ada blok `.cf-var-*` di berkas PDP (dipindah ke `contact-variants.css` di `T-444`), dan tidak ada duplikat `.plp-grid`/`.plp-card*` (sudah di `product-cards.css`).
+- **Referensi Pola:** `public/css/admin/page-catalog.css`, `public/css/admin/page-product-editors.css`.
+- **Batasan Negatif:** Dilarang menyentuh `public/css/lightbox.css` atau mengubah layout tabel ukuran/varian PDP.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/products-catalog.css public/css/components/product-detail-core.css public/css/components/product-detail-specs.css`.
+
+---
+
+### [DONE] `T-442` — Ekstraksi Modul About Bagian 1 (`about-story.css`, `about-timeline.css`, `about-vision-mission.css`) `[Tier: Argon Medium]`
+- **File Terdampak (3):** `public/css/components/about-story.css`, `public/css/components/about-timeline.css`, `public/css/components/about-vision-mission.css` (semua baru).
+- **Langkah Bernomor:**
+  1. Ekstrak blok Story & Counter 2x2 (`.abt-cnt-*`, `.abt-cnt-card--q1..4`) ke `public/css/components/about-story.css` (<= ~240 baris).
+  2. Ekstrak blok Vertical History Timeline (`.abt-htl-*`) ke `public/css/components/about-timeline.css` (<= ~560 baris).
+  3. Ekstrak blok Vision & Mission (`.sec-vm`, `.vm-*`, `.abt-vm-*`) ke `public/css/components/about-vision-mission.css` (<= ~240 baris).
+  4. Ganti seluruh raw hex & fallback hex dengan token `public/css/tokens.css` (jaga permukaan `--bg-soft-green` & `--color-text-muted-on-soft`).
+- **Kontrak Data Eksplisit:** 3 berkas <= 600 baris, 0 raw hex, 0 duplikat selector.
+- **Referensi Pola:** `public/css/admin/page-about.css`, `views/partials/about/story-counter.ejs`.
+- **Batasan Negatif:** Dilarang mengubah `tabular-nums`, animasi counter, atau permukaan `--bg-soft-green` di `/about`.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/about-story.css public/css/components/about-timeline.css public/css/components/about-vision-mission.css`.
+
+---
+
+### [DONE] `T-443` — Ekstraksi Modul About Bagian 2 (`about-ticket.css`, `about-gallery.css`) `[Tier: Argon Medium]`
+- **File Terdampak (2):** `public/css/components/about-ticket.css`, `public/css/components/about-gallery.css` (keduanya baru).
+- **Langkah Bernomor:**
+  1. Ekstrak blok Expanding T-I-C-K-E-T Accordion (`.abt-tkt-*`) ke `public/css/components/about-ticket.css` (<= ~585 baris).
+  2. Ekstrak blok Bento Mosaic Gallery (`.sec-gallery`, `.gal-*`, `.abt-gal-*`, `.bento-*` termasuk `.bento-grid` + `@media` galeri) ke `public/css/components/about-gallery.css` (<= ~595 baris).
+  3. Ganti seluruh raw hex & fallback hex dengan token `public/css/tokens.css`.
+- **Kontrak Data Eksplisit:** Kedua berkas <= 600 baris, 0 raw hex, 0 duplikat selector.
+- **Referensi Pola:** `views/partials/about/ticket-accordion.ejs`, `views/partials/about/gallery-bento.ejs`.
+- **Batasan Negatif:** Dilarang mengubah aturan konflik Anime.js pada `.sec-gallery` atau perilaku expand/collapse `.abt-tkt-panel.is-active`.
+- **Skill:** `antislop-ui`, `antislop-layoutmobile`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/about-ticket.css public/css/components/about-gallery.css`.
+
+---
+
+### [DONE] `T-444` — Ekstraksi Modul Berita & Kontak (`news-listing.css`, `news-detail.css`, `contact-page.css`, `contact-variants.css`) `[Tier: Argon Medium]`
+- **File Terdampak (4):** `public/css/components/news-listing.css`, `public/css/components/news-detail.css`, `public/css/components/contact-page.css`, `public/css/components/contact-variants.css` (semua baru).
+- **Langkah Bernomor:**
+  1. Ekstrak blok News Listing non-kartu (`.filter-bar`, `.nwl-hero-*`, `.nwl-headline-*`, `.nwl-slide*`, `.nwl-indicator*`, `.nwl-tab-*`, `.nwl-cat-*`, `.nwl-sec-directory*`) ke `public/css/components/news-listing.css` (<= ~560 baris).
+  2. Ekstrak blok News Detail (`.nwd-*`) dan copy-link toast (`.nwd-swal-*`, `.swal2-popup.nwd-swal-popup*`) ke `public/css/components/news-detail.css` (<= ~450 baris).
+  3. Ekstrak blok Contact Split & Form/Locations (`.contact-split*`, `.cf-*` kecuali `.cf-var-*`) ke `public/css/components/contact-page.css` (<= ~460 baris).
+  4. Ekstrak blok pemilih varian RFQ (`.cf-var-*`) ke `public/css/components/contact-variants.css` (<= ~140 baris).
+  5. Petakan seluruh raw hex & fallback hex ke token `public/css/tokens.css`.
+- **Kontrak Data Eksplisit:** Seluruh 25 berkas di `public/css/components/*.css` lengkap, masing-masing <= 600 baris, 0 raw hex, 0 duplikat selector lintas 25 berkas.
+- **Referensi Pola:** `views/public/news.ejs`, `views/public/news-detail.ejs`, `views/partials/contact/rfq-variants-picker.ejs`.
+- **Batasan Negatif:** Dilarang menduplikasi `.nwl-grid`/`.nwl-card*` (sudah di `news-cards.css`) atau menyentuh `public/js/contact.js` & `public/js/news-detail.js`.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/components/news-listing.css public/css/components/news-detail.css public/css/components/contact-page.css public/css/components/contact-variants.css` && cek total berkas di `public/css/components/` = 25 berkas.
+
+---
+
+### [DONE] `T-445` — Pemuatan Kondisional `PUBLIC_PAGE_STYLES` di `views/partials/head.ejs` & Aktivasi Batch 1 (`index`, `about`, `capabilities`) `[Tier: Argon Medium]`
+- **File Terdampak (4):** `views/partials/head.ejs`, `views/public/index.ejs`, `views/public/about.ejs`, `views/public/capabilities.ejs`.
+- **Langkah Bernomor:**
+  1. Pada `views/partials/head.ejs`, ganti `<link rel="stylesheet" href="/css/components.css?v=...">` dengan 3 link Core Always-On (`primitives.css`, `whatsapp-float.css`, `cta-reveal.css`) berversi `?v=20261126-1`.
+  2. Tambahkan peta `PUBLIC_PAGE_STYLES` (meniru `PAGE_STYLES` di `views/partials/admin-header.ejs`, nesting <= 2 level) untuk kunci `'home'`, `'about'`, `'products'`, `'product-detail'`, `'capabilities'`, `'news'`, `'news-detail'`, `'contact'`, `'404'`, lengkap dengan fallback resolusi dari `path` jika `pageStyle` tidak diteruskan + dukungan array opsional `extraPublicStyles`.
+  3. Perbarui pemanggilan header di `views/public/index.ejs` (`{ pageStyle: 'home' }`), `views/public/about.ejs` (`{ pageStyle: 'about' }`), dan `views/public/capabilities.ejs` (`{ pageStyle: 'capabilities' }`).
+- **Kontrak Data Eksplisit:** Sesuai pemetaan resmi pada `tech/public-ui-css.md` §4 (`home`, `about`, `products`, `product-detail`, `news`, `news-detail`, `contact`, `capabilities`, `404`).
+- **Referensi Pola:** `views/partials/admin-header.ejs` (baris `38–65`).
+- **Batasan Negatif:** Dilarang mengubah teks, i18n, meta SEO, urutan `tokens.css`/`base.css`/`layout.css`/`sweetalert2.min.css`/`photoswipe.css`/`lightbox.css`, atau menambah `<script>`/`style="..."` inline.
+- **Skill:** `frontend-ui-engineering`.
+- **Verifikasi Deterministik:** `npm run lint:views && npm run lint:i18n`.
+
+---
+
+### [DONE] `T-446` — Aktivasi Eksplisit `pageStyle` di View Publik Batch 2 (`products.ejs`, `product-detail.ejs`, `news.ejs`) `[Tier: Hydrogen Medium]`
+- **File Terdampak (3):** `views/public/products.ejs`, `views/public/product-detail.ejs`, `views/public/news.ejs`.
+- **Langkah Bernomor:**
+  1. Perbarui `include('../partials/header')` pada `views/public/products.ejs` menjadi `include('../partials/header', { pageStyle: 'products' })`.
+  2. Perbarui pada `views/public/product-detail.ejs` menjadi `include('../partials/header', { pageStyle: 'product-detail' })`.
+  3. Perbarui pada `views/public/news.ejs` menjadi `include('../partials/header', { pageStyle: 'news' })`.
+- **Kontrak Data Eksplisit:** Kunci `pageStyle` sesuai peta `PUBLIC_PAGE_STYLES` di `views/partials/head.ejs`.
+- **Referensi Pola:** `views/public/index.ejs` (hasil `T-445`).
+- **Batasan Negatif:** Dilarang mengubah markup HTML, partial include lain, atau logika EJS di ketiga berkas.
+- **Skill:** `frontend-ui-engineering`.
+- **Verifikasi Deterministik:** `npm run lint:views && npm run lint:i18n`.
+
+---
+
+### [DONE] `T-447` — Aktivasi Eksplisit `pageStyle` di View Publik Batch 3 (`news-detail.ejs`, `contact.ejs`, `404.ejs`) `[Tier: Hydrogen Medium]`
+- **File Terdampak (3):** `views/public/news-detail.ejs`, `views/public/contact.ejs`, `views/public/404.ejs`.
+- **Langkah Bernomor:**
+  1. Perbarui `include('../partials/header')` pada `views/public/news-detail.ejs` menjadi `include('../partials/header', { pageStyle: 'news-detail' })`.
+  2. Perbarui pada `views/public/contact.ejs` menjadi `include('../partials/header', { pageStyle: 'contact' })`.
+  3. Perbarui pada `views/public/404.ejs` menjadi `include('../partials/header', { pageStyle: '404' })`.
+- **Kontrak Data Eksplisit:** Kunci `pageStyle` sesuai peta `PUBLIC_PAGE_STYLES` di `views/partials/head.ejs`.
+- **Referensi Pola:** `views/public/index.ejs` (hasil `T-445`).
+- **Batasan Negatif:** Dilarang mengubah markup HTML, `useSweetAlert`, atau teks/i18n di ketiga berkas.
+- **Skill:** `frontend-ui-engineering`.
+- **Verifikasi Deterministik:** `npm run lint:views && npm run lint:i18n`.
+
+---
+
+### [DONE] `T-448` — Isolasi Penuh `views/admin/login.ejs` & `views/admin/403.ejs` ke `public/css/admin/page-auth.css` `[Tier: Argon Medium]`
+- **File Terdampak (3):** `public/css/admin/page-auth.css`, `views/admin/login.ejs`, `views/admin/403.ejs`.
+- **Langkah Bernomor:**
+  1. Tambahkan aturan ter-scope di `public/css/admin/page-auth.css` (memakai token `public/css/admin/tokens.css`, 0 raw hex) untuk menggantikan ketergantungan CSS publik:
+     - `login.ejs`: `.adm-login-card`, `.adm-login-card-body`, `.adm-login-card-footer`, `.adm-login-body .form-label-required::after`, `.adm-login-text-center`, `.adm-login-brand-name`, `.adm-login-brand-badge`, `.adm-login-fallback`, + reset dasar standalone auth.
+     - `403.ejs`: `.err403-header-inner`, `.err403-header-group`, `.err403-badge`, + reset dasar standalone 403.
+  2. Perbarui class elemen terkait di `views/admin/login.ejs` & `views/admin/403.ejs`, lalu hapus 4 `<link>` CSS publik (`/css/tokens.css`, `/css/base.css`, `/css/layout.css`, `/css/components.css`) dari kedua berkas.
+  3. Verifikasi `public/css/admin/page-auth.css` tetap <= ~300 baris dan lulus `tests/test-admin-css-modular.js`.
+- **Kontrak Data Eksplisit:** `login.ejs` hanya memuat `admin/{tokens,buttons,forms-inputs,page-auth}.css`; `403.ejs` hanya memuat `admin/{tokens,buttons,page-auth}.css`.
+- **Referensi Pola:** `tech/admin-ui-css.md` §4, `public/css/admin/page-auth.css`.
+- **Batasan Negatif:** Dilarang mengubah struktur form CSRF/validasi di `login.ejs`, dilarang menambah raw hex, dilarang mengubah file admin CSS lain selain `page-auth.css`.
+- **Skill:** `antislop-ui`.
+- **Verifikasi Deterministik:** `npm run lint:views && node --test tests/test-admin-css-modular.js`.
+
+---
+
+### [DONE] `T-449` — Buat `tests/helpers/readPublicCss.js`, Suite `tests/test-public-css-modular.js`, & Strict Lint `scripts/lint-views.js` `[Tier: Argon Medium]`
+- **File Terdampak (3):** `tests/helpers/readPublicCss.js` (baru), `tests/test-public-css-modular.js` (baru), `scripts/lint-views.js`.
+- **Langkah Bernomor:**
+  1. Buat `tests/helpers/readPublicCss.js` mengekspor `PUBLIC_COMPONENT_CSS_FILES` (urutan cascade 25 berkas), `readPublicTokensCss()`, `readPublicComponentCss(file)`, dan `readAllPublicComponentsCss()`.
+  2. Daftarkan `'public/css/components/'` ke `DEFAULT_STRICT_PATHS` di `scripts/lint-views.js`.
+  3. Buat `tests/test-public-css-modular.js` memverifikasi: (a) tepat 25 berkas & <= 620 baris/berkas, (b) 0 raw hex di luar `public/css/tokens.css`, (c) 0 duplikat `(context, selector)` lintas 25 berkas, (d) token fondasi palet hijau zero-blue utuh di `public/css/tokens.css`, (e) 0 dari 70 class mati eksis, (f) seluruh referensi CSS di `views/partials/head.ejs` menunjuk berkas valid dan 0 referensi `/css/components.css` di `head.ejs`, `login.ejs`, maupun `403.ejs`. *(Assertion `fs.existsSync('public/css/components.css') === false` diaktifkan pada `T-453`).*
+- **Kontrak Data Eksplisit:** Ekspor ESM `PUBLIC_COMPONENT_CSS_FILES`, `readPublicTokensCss`, `readPublicComponentCss`, `readAllPublicComponentsCss`.
+- **Referensi Pola:** `tests/helpers/readAdminCss.js`, `tests/test-admin-css-modular.js`.
+- **Batasan Negatif:** Dilarang menghapus `public/css/components.css` pada task ini (menunggu migrasi 34 tes di `T-450`–`T-452`).
+- **Skill:** `test-driven-development`.
+- **Verifikasi Deterministik:** `npm run lint && npm run lint:views && node --test tests/test-public-css-modular.js`.
+
+---
+
+### [DONE] `T-450` — Migrasi Helper Tes Batch 1 (11 Berkas: Home, Brand, Header, Dropdown, Rebrand) `[Tier: Hydrogen Medium]`
+- **File Terdampak (11 berkas tes — swap impor identik 2 baris per berkas):** `tests/test-brand-marquee-scaling.js`, `tests/test-dropdown-css.js`, `tests/test-homepage-hero-cta-merek-qa.js`, `tests/test-homepage-major-update-qa.js`, `tests/test-kelompok-c-polish.js`, `tests/test-mobile-header.js`, `tests/test-public-dropdown-migration.js`, `tests/test-rebrand-visual-functional.js`, `tests/test-t187-hero-cta-public.js`, `tests/test-t188-brand-strip-marquee.js`, `tests/test-t189-dead-code-cleanup.js`.
+- **Langkah Bernomor:**
+  1. Ganti pembacaan `fs.readFileSync('...public/css/components.css', 'utf8')` di ke-11 berkas dengan `readAllPublicComponentsCss()` dari `./helpers/readPublicCss.js`.
+  2. Perbarui teks log/deskripsi yang menyebut monolit agar merujuk CSS modular publik tanpa mengubah assertion.
+  3. Verifikasi 0 kemunculan `components.css` pada ke-11 berkas.
+- **Kontrak Data Eksplisit:** `import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';` (atau setara CJS bila berkas CJS).
+- **Referensi Pola:** `tests/helpers/readAdminCss.js`, `tests/helpers/readPublicCss.js`.
+- **Batasan Negatif:** Dilarang menghapus, melemahkan, atau men-skip assertion; dilarang menyentuh berkas di luar daftar 11 file target.
+- **Skill:** `test-driven-development`.
+- **Verifikasi Deterministik:** `npm run lint` && cek grep 0 kemunculan `components.css` pada ke-11 berkas.
+
+---
+
+### [DONE] `T-451` — Migrasi Helper Tes Batch 2 (12 Berkas: Produk & About) `[Tier: Hydrogen Medium]`
+- **File Terdampak (12 berkas tes — swap impor identik 2 baris per berkas):** `tests/test-product-detail-redesign-qa.js`, `tests/test-product-detail-size-table-qa.js`, `tests/test-product-dynamic-size-table-qa.js`, `tests/test-product-listing-redesign-qa.js`, `tests/test-t122-bento.js`, `tests/test-t123-animation.js`, `tests/test-t124-mobile.js`, `tests/test-t126-count-up.js`, `tests/test-t127-timeline-hover.js`, `tests/test-t128-mobile-regression.js`, `tests/test-t297-ticket-accordion-styles-qa.js`, `tests/test-t298-ticket-accordion-interaction-qa.js`.
+- **Langkah Bernomor:**
+  1. Ganti seluruh pembacaan langsung `public/css/components.css` di ke-12 berkas dengan `readAllPublicComponentsCss()` dari `./helpers/readPublicCss.js`.
+  2. Pertahankan seluruh assertion eksisting 100% utuh.
+  3. Verifikasi 0 kemunculan `components.css` pada ke-12 berkas.
+- **Kontrak Data Eksplisit:** Sama dengan `T-450`.
+- **Referensi Pola:** `tests/helpers/readPublicCss.js`.
+- **Batasan Negatif:** Dilarang mengubah/melemahkan assertion atau menyentuh kode aplikasi.
+- **Skill:** `test-driven-development`.
+- **Verifikasi Deterministik:** `npm run lint` && cek grep 0 kemunculan `components.css` pada ke-12 berkas.
+
+---
+
+### [DONE] `T-452` — Migrasi Helper Tes Batch 3 (11 Berkas: News, Pagination, Buttons, Public UI & Regression) `[Tier: Hydrogen Medium]`
+- **File Terdampak (11 berkas tes — swap impor identik 2 baris per berkas):** `tests/test-t132-delivery-gate.js`, `tests/test-t139-full-regression.js`, `tests/test-t193-card-component.js`, `tests/test-t196-load-more.js`, `tests/test-t197-responsive-mobile.js`, `tests/test-t241-public-ui.js`, `tests/test-t243-hero-filter.js`, `tests/test-t257-buttons-playwright.js`, `tests/test-t312-unified-pagination.js`, `tests/test-t320-t321-news-regression.js`, `tests/test-task-201-frontend.js`.
+- **Langkah Bernomor:**
+  1. Ganti seluruh pembacaan langsung `public/css/components.css` di ke-11 berkas dengan `readAllPublicComponentsCss()` dari `./helpers/readPublicCss.js`.
+  2. Pertahankan seluruh assertion eksisting (pada `test-t257-buttons-playwright.js`, arahkan pengecekan keutuhan tombol publik ke `readAllPublicComponentsCss()`).
+  3. Verifikasi 0 berkas di seluruh `tests/` (selain assertion negatif di `test-public-css-modular.js`) yang masih merujuk `public/css/components.css`.
+- **Kontrak Data Eksplisit:** Sama dengan `T-450`.
+- **Referensi Pola:** `tests/helpers/readPublicCss.js`.
+- **Batasan Negatif:** Dilarang menghapus/melemahkan assertion atau menyentuh kode aplikasi.
+- **Skill:** `test-driven-development`.
+- **Verifikasi Deterministik:** `npm run lint` && cek grep seluruh `tests/` hanya `test-public-css-modular.js` yang menyebut `components.css`.
+
+---
+
+### [DONE] `T-453` — Hapus Permanen `public/css/components.css` & Verifikasi Regresi Visual + Performa Playwright `[Tier: Argon Medium]`
+- **File Terdampak (2):** `public/css/components.css` (dihapus permanen sesuai Keputusan 5a), `tests/test-public-css-modular.js` (aktifkan assertion `fs.existsSync('public/css/components.css') === false`).
+- **Langkah Bernomor:**
+  1. Pastikan 0 referensi `components.css` tersisa di `views/`, `public/js/`, `controllers/`, dan `tests/` (kecuali assertion negatif di `test-public-css-modular.js`).
+  2. Hapus permanen `public/css/components.css` dan aktifkan assertion `monolith components.css must stay deleted` di `tests/test-public-css-modular.js`.
+  3. Jalankan gerbang kualitas lengkap: `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `node --test tests/test-public-css-modular.js`, `node --test tests/test-admin-css-modular.js`, dan `npm test`.
+  4. Jalankan `node tests/test-public-css-visual-qa.js --verify` untuk membandingkan 11 rute (`320/375/768/1024/1440`, ID & EN) terhadap baseline `T-433`: buktikan 0 console error, 0 404 CSS, 0 horizontal overflow, 0 regresi visual, 0 CLS/FOUC spike, serta penurunan transfer KB CSS (-72% s/d -94%) & rasio unused CSS lebih rendah.
+- **Kontrak Data Eksplisit:** Seluruh 25 berkas di `public/css/components/*.css` lulus lint strict & modular integrity test; laporan perbandingan baseline vs verify hijau.
+- **Referensi Pola:** `tests/test-admin-css-modular.js` (baris 118), `tests/test-admin-css-visual-qa.js`.
+- **Batasan Negatif:** Dilarang menjalankan tahap Close atau mengubah `.agents/tech/`/`CHANGELOG.md` pada task ini (tahap Close dijalankan pada sesi terpisah sesuai `WORKFLOW.md`).
+- **Skill:** `browser-testing-with-devtools`, `code-review-and-quality`.
+- **Verifikasi Deterministik:** `npm run lint && npm run lint:views && npm run lint:i18n && node --test tests/test-public-css-modular.js && node --test tests/test-admin-css-modular.js && node tests/test-public-css-visual-qa.js --verify`.

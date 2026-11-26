@@ -9,6 +9,7 @@ import productModel from '../models/productModel.js';
 import adminProductController, { parseDynamicSizeTable, getProductsWithSizeTable } from '../controllers/admin/productController.js';
 import publicProductController from '../controllers/public/productController.js';
 import { escapeCsvValue, sendCsvResponse } from '../utils/csvExporter.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 async function runDynamicSizeTableE2eQa() {
   console.log('=== STARTING T-219: END-TO-END QA & AUDIT TEST SUITE ===\n');
@@ -384,8 +385,8 @@ async function runDynamicSizeTableE2eQa() {
     assert.ok(xssHtml.includes('&lt;b&gt;test&lt;/b&gt;'), 'HTML entities escaped in SSR cell');
     console.log('  ✓ 6b. PDP SSR escapes XSS payloads properly via EJS <%= %>');
 
-    // Verify scoped CSS rules in components.css
-    const componentsCss = fs.readFileSync(path.join(process.cwd(), 'public/css/components.css'), 'utf-8');
+    // Verify scoped CSS rules in public/css/components/*.css
+    const componentsCss = readAllPublicComponentsCss();
     for (let c = 1; c <= 8; c++) {
       assert.ok(componentsCss.includes(`table.pd-size[data-cols="${c}"]`), `CSS must have scoped rule for data-cols="${c}"`);
     }

@@ -2,6 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,8 +10,8 @@ const __dirname = path.dirname(__filename);
 async function runTest() {
   console.log('=== TEST T-127: TRANSIKSI HOVER TIMELINE SEJARAH ===\n');
 
-  console.log('[1] Verifying components.css timeline hover & interaction rules...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
+  console.log('[1] Verifying public/css/components/*.css timeline hover & interaction rules...');
+  const css = readAllPublicComponentsCss();
 
   // 1. Base transitions
   assert.ok(css.includes('.tl-item {') && css.includes('transition: transform 250ms ease;'), '.tl-item must have transition for transform');

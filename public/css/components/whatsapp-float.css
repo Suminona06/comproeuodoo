@@ -1,0 +1,126 @@
+/* Floating WhatsApp Button */
+.wa-float-container {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: calc(24px + env(safe-area-inset-right, 0px));
+  z-index: var(--z-modal);
+  pointer-events: none;
+}
+
+.wa-float-btn {
+  pointer-events: auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 18px rgba(0, 117, 90, 0.32), 0 2px 6px rgba(7, 31, 23, 0.08);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--transition-fast),
+              background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.wa-float-btn:hover {
+  background-color: var(--color-primary-dark);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 10px 24px rgba(0, 117, 90, 0.42), 0 4px 10px rgba(7, 31, 23, 0.12);
+  color: var(--color-on-primary);
+}
+
+.wa-float-btn:active {
+  background-color: var(--color-primary-dark);
+  transform: translateY(0) scale(0.96);
+  box-shadow: 0 2px 8px rgba(0, 117, 90, 0.25);
+}
+
+.wa-float-btn:focus-visible {
+  outline: 2px solid var(--color-primary-bright);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(0, 117, 90, 0.25);
+}
+
+.wa-float-btn .wa-icon {
+  width: 28px;
+  height: 28px;
+  fill: var(--color-on-primary);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.wa-float-btn:hover .wa-icon {
+  transform: scale(1.06);
+}
+
+.wa-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background: var(--surface-dark-deep);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-level-2);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity var(--transition-fast),
+              transform var(--transition-fast),
+              visibility var(--transition-fast);
+}
+
+.wa-tooltip::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent var(--surface-dark-deep);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wa-float-btn:hover .wa-tooltip,
+  .wa-float-btn:focus-visible .wa-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .wa-float-container {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    right: calc(16px + env(safe-area-inset-right, 0px));
+  }
+
+  .wa-float-btn {
+    width: 48px;
+    height: 48px;
+  }
+
+  .wa-float-btn .wa-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .wa-tooltip {
+    display: none !important;
+  }
+}
