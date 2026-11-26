@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-20 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-26 | Kode: eslint.config.js, scripts/lint-views.js, scripts/lint-i18n.js, views/
 
 # Tech Spec: Konvensi Kode & Standar Kualitas (Code Conventions & Standards)
 
@@ -64,10 +64,10 @@ Dokumen ini mendefinisikan standar mutu teknis terukur dan terverifikasi mesin u
 ### B. Isolasi Styling, Modularitas CSS Admin & Konvensi Class (Keputusan 3)
 - Class baru wajib berprefix unik yang di-scope ke modul (mis. `.stg-*` untuk Settings).
 - Dilarang modifikasi class bersama (`.form-card`, `.form-group`, `.form-row-2`, `.adm-btn-*`, `.eu-dd-*`).
-- Lembar gaya Admin CMS wajib modular di bawah `public/css/admin/*.css` (target <= ~600 baris/berkas, zero raw hex di luar `public/css/admin/tokens.css`, urutan cascade resmi didefinisikan di [tech/admin-ui-css.md](admin-ui-css.md)) dengan nilai spasi/ukuran tetap piksel tanpa menambah token spasi baru di `public/css/tokens.css` publik `[PENDING T-415..T-430]`.
+- Lembar gaya Admin CMS wajib modular di bawah `public/css/admin/*.css` (target <= ~600 baris/berkas, zero raw hex di luar `public/css/admin/tokens.css`, urutan cascade resmi didefinisikan di [tech/admin-ui-css.md](admin-ui-css.md)) dengan nilai spasi/ukuran tetap piksel tanpa menambah token spasi baru di `public/css/tokens.css` publik.
 
 ### C. Refaktor Massal View Admin & Pembersihan Skrip/CSS
-- **Cakupan Bersamaan (Keputusan Opsi B):** Pada setiap modul admin yang direfaktor, selain template `.ejs`, berkas CSS modular (`public/css/admin/*.css`) dan skrip (`public/js/admin-*.js`) yang disentuh wajib sekaligus dibersihkan dari dead CSS, komentar tak perlu (`antislop-code`), dan warna hex mentah (wajib dipetakan ke token di `public/css/admin/tokens.css`) `[PENDING T-415..T-430]`.
+- **Cakupan Bersamaan (Keputusan Opsi B):** Pada setiap modul admin yang direfaktor, selain template `.ejs`, berkas CSS modular (`public/css/admin/*.css`) dan skrip (`public/js/admin-*.js`) yang disentuh wajib sekaligus dibersihkan dari dead CSS, komentar tak perlu (`antislop-code`), dan warna hex mentah (wajib dipetakan ke token di `public/css/admin/tokens.css`).
 - **Status Tampilan Dinamis:** Seluruh logika toggle tampilan berbasis database menggunakan class status semantik statis (`.adm-d-none` / `.adm-d-block`, `.is-empty` / `.has-preview`) tanpa atribut `style="..."`.
 - **Prefix Unik per Modul:** Auth: `.err403-*`, `.adm-login-*`, `.chpwd-*` | Kategori: `.adm-pcat-*`, `.adm-postcat-*` | Pengguna: `.adm-usr-*` | Merek: `.adm-brd-*` | Kapabilitas & Kontak: `.adm-cap-*`, `.adm-ctc-*` | Hero & Leads: `.adm-hbn-*`, `.adm-leads-*` | Inquiries & Dashboard: `.adm-inq-*`, `.adm-dash-*` | Shell & Partials: `.adm-shell-*`, `.adm-picker-*` | Paginasi Bersama: `.pgn-*` | Media & Banner: `.adm-media-*`, `.adm-banner-*` | Artikel & Produk: `.adm-post-*`, `.adm-prod-*` | Home & About Admin: `.adm-home-*`, `.adm-abt-*` | Public Home: `.home-intro-*`, `.home-cert-logo`, `.hcat-grid--1..4`, `.hero-heading` (dilarang mengubah perilaku class bersama `.sec-products`, `.btn-secondary`, `.btn-pill-solid-white`, `.btn-primary`).
 - **Strategi Eksekusi:** Satu batch per siklus dengan 5 gerbang verifikasi (lint views zero error/warning, npm run lint hijau, unit tests pass, bukti visual Playwright sebelum vs sesudah, CRUD tanpa error konsol).
