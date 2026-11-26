@@ -132,7 +132,7 @@
 
 ---
 
-### [ ] `T-441` — Ekstraksi Modul Katalog & Detail Produk (`products-catalog.css`, `product-detail-core.css`, `product-detail-specs.css`) `[Tier: Argon Medium]`
+### [DONE] `T-441` — Ekstraksi Modul Katalog & Detail Produk (`products-catalog.css`, `product-detail-core.css`, `product-detail-specs.css`) `[Tier: Argon Medium]`
 - **File Terdampak (3):** `public/css/components/products-catalog.css`, `public/css/components/product-detail-core.css`, `public/css/components/product-detail-specs.css` (semua baru).
 - **Langkah Bernomor:**
   1. Ekstrak aturan non-kartu PLP (`.plp-section/container/layout`, sidebar, toolbar, search, sort, drawer mobile & backdrop, `@media` layout/toolbar) ke `public/css/components/products-catalog.css` (<= ~580 baris).
@@ -147,7 +147,7 @@
 
 ---
 
-### [ ] `T-442` — Ekstraksi Modul About Bagian 1 (`about-story.css`, `about-timeline.css`, `about-vision-mission.css`) `[Tier: Argon Medium]`
+### [DONE] `T-442` — Ekstraksi Modul About Bagian 1 (`about-story.css`, `about-timeline.css`, `about-vision-mission.css`) `[Tier: Argon Medium]`
 - **File Terdampak (3):** `public/css/components/about-story.css`, `public/css/components/about-timeline.css`, `public/css/components/about-vision-mission.css` (semua baru).
 - **Langkah Bernomor:**
   1. Ekstrak blok Story & Counter 2x2 (`.abt-cnt-*`, `.abt-cnt-card--q1..4`) ke `public/css/components/about-story.css` (<= ~240 baris).
@@ -162,7 +162,7 @@
 
 ---
 
-### [ ] `T-443` — Ekstraksi Modul About Bagian 2 (`about-ticket.css`, `about-gallery.css`) `[Tier: Argon Medium]`
+### [DONE] `T-443` — Ekstraksi Modul About Bagian 2 (`about-ticket.css`, `about-gallery.css`) `[Tier: Argon Medium]`
 - **File Terdampak (2):** `public/css/components/about-ticket.css`, `public/css/components/about-gallery.css` (keduanya baru).
 - **Langkah Bernomor:**
   1. Ekstrak blok Expanding T-I-C-K-E-T Accordion (`.abt-tkt-*`) ke `public/css/components/about-ticket.css` (<= ~585 baris).
@@ -176,7 +176,7 @@
 
 ---
 
-### [ ] `T-444` — Ekstraksi Modul Berita & Kontak (`news-listing.css`, `news-detail.css`, `contact-page.css`, `contact-variants.css`) `[Tier: Argon Medium]`
+### [DONE] `T-444` — Ekstraksi Modul Berita & Kontak (`news-listing.css`, `news-detail.css`, `contact-page.css`, `contact-variants.css`) `[Tier: Argon Medium]`
 - **File Terdampak (4):** `public/css/components/news-listing.css`, `public/css/components/news-detail.css`, `public/css/components/contact-page.css`, `public/css/components/contact-variants.css` (semua baru).
 - **Langkah Bernomor:**
   1. Ekstrak blok News Listing non-kartu (`.filter-bar`, `.nwl-hero-*`, `.nwl-headline-*`, `.nwl-slide*`, `.nwl-indicator*`, `.nwl-tab-*`, `.nwl-cat-*`, `.nwl-sec-directory*`) ke `public/css/components/news-listing.css` (<= ~560 baris).

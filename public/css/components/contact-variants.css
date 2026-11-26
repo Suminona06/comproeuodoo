@@ -1,0 +1,134 @@
+/* Contact Page — RFQ Variants Picker (.cf-var-*) */
+
+.cf-var-section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-lg);
+  background: var(--color-surface-container-low);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cf-var-hidden {
+  display: none !important;
+}
+
+.cf-var-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.cf-var-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 12px;
+  border-radius: var(--r-pill);
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  color: var(--color-primary-dark);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cf-var-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--color-primary-dark);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .cf-var-chip-remove:hover {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+}
+
+.cf-var-chip-remove:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.cf-var-empty {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.cf-var-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+
+.cf-var-group {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.cf-var-legend {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-variant);
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+.cf-var-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cf-var-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-main);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .cf-var-pill:hover {
+    border-color: var(--color-primary-bright);
+    background: var(--primary-subtle);
+    color: var(--color-primary-dark);
+  }
+}
+
+.cf-var-pill[aria-pressed="true"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.cf-var-pill:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
