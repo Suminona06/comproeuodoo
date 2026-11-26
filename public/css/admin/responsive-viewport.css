@@ -182,6 +182,25 @@
   }
 }
 
+/* Mobile tabs (<= 768px) */
+@media (max-width: 768px) {
+  .filter-tabs-wrap,
+  .about-tabs-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .filter-tabs-wrap .tab-btn,
+  .about-tab-btn {
+    min-height: 44px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+}
+
 /* Narrow mobile viewports (320px - 480px) */
 @media (max-width: 480px) {
   .app-layout,
@@ -266,14 +285,13 @@
     gap: 8px;
   }
   .filter-tabs-wrap {
-    gap: 4px;
-    overflow-x: auto;
+    gap: 2px;
     width: 100%;
-    padding-bottom: 4px;
+    padding: 3px 6px;
   }
   .filter-tabs-wrap .tab-btn {
-    padding: 5px 8px;
-    font-size: 11px;
+    padding: 8px 12px;
+    font-size: 12.5px;
     white-space: nowrap;
   }
 }

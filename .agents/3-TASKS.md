@@ -12,7 +12,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [OPEN] `T-457` `[Tier: Argon Medium]`: Revamp CSS Tabs Dashboard Admin (Growing Underline Tema Hijau Euodoo)
+### [DONE] `T-457` `[Tier: Argon Medium]`: Revamp CSS Tabs Dashboard Admin (Growing Underline Tema Hijau Euodoo)
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-41`), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md), [tech/admin-ui-css.md](tech/admin-ui-css.md)
 - **File Terdampak (4 file):**
   1. `public/css/admin/tabs-toggles.css`
