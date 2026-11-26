@@ -1,6 +1,7 @@
 import fs from 'fs';
 import assert from 'assert';
 import { chromium } from 'playwright';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 console.log('Testing T-264 via Playwright Headless Chromium: Micro-animations, States, Skeleton Shimmer & Reduced Motion...');
 
@@ -10,7 +11,7 @@ console.log('Testing T-264 via Playwright Headless Chromium: Micro-animations, S
   const page = await context.newPage();
 
   const tokensCss = fs.readFileSync('public/css/tokens.css', 'utf8');
-  const adminCss = fs.readFileSync('public/css/admin.css', 'utf8');
+  const adminCss = readAllAdminCss();
   const dropdownJs = fs.readFileSync('public/js/admin-dropdown.js', 'utf8');
 
   await page.setContent(`

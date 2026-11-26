@@ -4,6 +4,7 @@ import assert from 'assert';
 import { fileURLToPath } from 'url';
 import productModel from '../models/productModel.js';
 import productController from '../controllers/admin/productController.js';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,8 +21,8 @@ async function runTests() {
   assert(mediaPickerJs.includes('Pilih ${selectedMediaList.length} Foto') || mediaPickerJs.includes('Pilih'), 'media-picker.js must have multiple select button text');
   console.log('✓ Universal Media Picker client script multi-select verified');
 
-  // 2. Verify admin.css has necessary styles
-  const adminCss = fs.readFileSync(path.join(__dirname, '../public/css/admin.css'), 'utf-8');
+  // 2. Verify modular admin CSS has necessary styles
+  const adminCss = readAllAdminCss();
   assert(adminCss.includes('.media-picker-checkbox'), 'admin.css must include .media-picker-checkbox');
   assert(adminCss.includes('.prod-gallery-wrap'), 'admin.css must include .prod-gallery-wrap');
   assert(adminCss.includes('.prod-gallery-thumb'), 'admin.css must include .prod-gallery-thumb');

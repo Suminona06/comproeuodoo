@@ -1,6 +1,7 @@
 import fs from 'fs';
 import assert from 'assert';
 import { chromium } from 'playwright';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 console.log('Testing T-265: Admin CMS Dropdown Migration & Integration Suite...');
 
@@ -52,7 +53,7 @@ console.log('  1. Static audit of 29 admin dropdown points: PASSED (all declared
   const page = await context.newPage();
 
   const tokensCss = fs.readFileSync('public/css/tokens.css', 'utf8');
-  const adminCss = fs.readFileSync('public/css/admin.css', 'utf8');
+  const adminCss = readAllAdminCss();
   const dropdownJs = fs.readFileSync('public/js/admin-dropdown.js', 'utf8');
 
   // Load a rich admin page containing:

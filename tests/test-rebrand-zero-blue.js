@@ -3,6 +3,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAdminTokensCss } from './helpers/readAdminCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,11 +35,9 @@ for (const t of requiredTokens) {
   console.log(`  ✓ ${t.key}: ${t.expected}`);
 }
 
-// 2. Admin Token Validation in public/css/admin.css
-console.log('\n[STEP 2] Validating Admin CMS Tokens in public/css/admin.css...');
-const adminCssPath = path.join(ROOT_DIR, 'public', 'css', 'admin.css');
-assert(fs.existsSync(adminCssPath), 'admin.css must exist');
-const adminCssContent = fs.readFileSync(adminCssPath, 'utf8');
+// 2. Admin Token Validation in public/css/admin/tokens.css
+console.log('\n[STEP 2] Validating Admin CMS Tokens in public/css/admin/tokens.css...');
+const adminCssContent = readAdminTokensCss();
 
 const requiredAdminTokens = [
   { key: '--primary', expected: '#00755a' },
