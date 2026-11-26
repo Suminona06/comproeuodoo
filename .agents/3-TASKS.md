@@ -89,7 +89,7 @@
 
 ---
 
-### [ ] `T-438` — Ekstraksi Komponen Bersama Kondisional Bagian 2 (`product-cards.css`, `news-cards.css`) `[Tier: Argon Medium]`
+### [DONE] `T-438` — Ekstraksi Komponen Bersama Kondisional Bagian 2 (`product-cards.css`, `news-cards.css`) `[Tier: Argon Medium]`
 - **File Terdampak (2):** `public/css/components/product-cards.css`, `public/css/components/news-cards.css` (keduanya baru).
 - **Langkah Bernomor:**
   1. Ekstrak seluruh aturan kartu & grid produk lintas halaman (`/products` & `/products/<slug>`): `.plp-grid`, `.plp-card*`, `.plp-card-entering`, `.plp-more-wrap`, `.plp-pagination*`, `.plp-empty*` + `@media` kartu ke `public/css/components/product-cards.css` (<= ~480 baris).
