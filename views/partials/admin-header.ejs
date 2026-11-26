@@ -31,7 +31,19 @@
   <link rel="stylesheet" href="/css/admin/modals-overlays.css?v=20261125-1">
   <link rel="stylesheet" href="/css/admin/tabs-toggles.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/dropdown.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/pagination.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/responsive-viewport.css?v=20261126-1">
+  <%
+    const PAGE_STYLES = {
+      password: ['page-auth.css'],
+    };
+    const navKey = typeof activeNav !== 'undefined' ? activeNav : '';
+    const extraStyles = (typeof extraAdminStyles !== 'undefined' && Array.isArray(extraAdminStyles)) ? extraAdminStyles : [];
+    const activePageStyles = [...new Set([...(PAGE_STYLES[navKey] || []), ...extraStyles])];
+  %>
+  <% activePageStyles.forEach((cssFile) => { %>
+    <link rel="stylesheet" href="/css/admin/<%= cssFile %>?v=20261126-1">
+  <% }); %>
   <link rel="stylesheet" href="/css/admin.css?v=20261123-1">
   <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
 

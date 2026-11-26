@@ -92,7 +92,7 @@
 - **Skill Relevan:** `antislop-code`, `antislop-layoutmobile`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/tabs-toggles.css && node scripts/lint-views.js public/css/admin/responsive-viewport.css && npm run lint:views`.
 
-### [ ] T-422 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/pagination.css` & `admin/page-auth.css` + Migrasi 1 Hex
+### [x] T-422 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/pagination.css` & `admin/page-auth.css` + Migrasi 1 Hex
 - **File Terdampak (4 file):** `public/css/admin/pagination.css` (baru), `public/css/admin/page-auth.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan komponen paginasi Varian 1 `.pgn-*` (`admin.css` eks `L6951–L7330`, ~380 baris) ke `public/css/admin/pagination.css` dan migrasikan 1 hex mentah (`L7218`) ke `var(--bg-surface-alt)`.
