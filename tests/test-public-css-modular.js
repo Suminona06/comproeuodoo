@@ -161,7 +161,7 @@ describe('Public CSS Modular Architecture (T-449)', () => {
     assert.equal(PUBLIC_COMPONENT_CSS_FILES.length, 25);
     const actualFiles = fs.readdirSync(PUBLIC_COMPONENTS_DIR).filter((f) => f.endsWith('.css')).sort();
     assert.deepEqual(actualFiles, [...PUBLIC_COMPONENT_CSS_FILES].sort());
-    // Assertion penghapusan monolit components.css diaktifkan pada T-453.
+    assert.equal(fs.existsSync(path.resolve('public/css/components.css')), false, 'monolith components.css must stay deleted');
 
     for (const file of PUBLIC_COMPONENT_CSS_FILES) {
       const lineCount = readPublicComponentCss(file).split('\n').length;

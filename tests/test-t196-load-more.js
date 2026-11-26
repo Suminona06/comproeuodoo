@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 function get(pathUrl, headers = {}) {
   return new Promise((resolve, reject) => {
@@ -81,23 +82,21 @@ async function runTests() {
 
   // Test 4: CSS contains .plp-more-wrap, .plp-more-btn, loading state, and focus visible
   {
-    const cssPath = path.resolve('public/css/components.css');
-    const css = fs.readFileSync(cssPath, 'utf8');
-    assert(css.includes('.plp-more-wrap'), 'components.css should define .plp-more-wrap');
-    assert(css.includes('.plp-more-wrap.is-hidden'), 'components.css should define .plp-more-wrap.is-hidden');
-    assert(css.includes('.plp-more-btn'), 'components.css should define .plp-more-btn');
-    assert(css.includes('.plp-more-btn:focus-visible'), 'components.css should define .plp-more-btn:focus-visible');
-    assert(css.includes('.plp-more-btn.is-loading'), 'components.css should define .plp-more-btn.is-loading state');
-    console.log('  [PASS] components.css contains complete load more styles, focus rings, and loading state');
+    const css = readAllPublicComponentsCss();
+    assert(css.includes('.plp-more-wrap'), 'public/css/components/*.css should define .plp-more-wrap');
+    assert(css.includes('.plp-more-wrap.is-hidden'), 'public/css/components/*.css should define .plp-more-wrap.is-hidden');
+    assert(css.includes('.plp-more-btn'), 'public/css/components/*.css should define .plp-more-btn');
+    assert(css.includes('.plp-more-btn:focus-visible'), 'public/css/components/*.css should define .plp-more-btn:focus-visible');
+    assert(css.includes('.plp-more-btn.is-loading'), 'public/css/components/*.css should define .plp-more-btn.is-loading state');
+    console.log('  [PASS] public/css/components/*.css contains complete load more styles, focus rings, and loading state');
     passed++;
   }
 
   // Test 5: CSS implements smooth entrance animation with prefers-reduced-motion
   {
-    const cssPath = path.resolve('public/css/components.css');
-    const css = fs.readFileSync(cssPath, 'utf8');
-    assert(css.includes('@keyframes plpCardFadeIn'), 'components.css should include @keyframes plpCardFadeIn');
-    assert(css.includes('.plp-card-entering'), 'components.css should include .plp-card-entering class');
+    const css = readAllPublicComponentsCss();
+    assert(css.includes('@keyframes plpCardFadeIn'), 'public/css/components/*.css should include @keyframes plpCardFadeIn');
+    assert(css.includes('.plp-card-entering'), 'public/css/components/*.css should include .plp-card-entering class');
     assert(css.includes('translateY(12px)'), 'Animation should use translateY(12px) entrance transform');
     assert(css.includes('prefers-reduced-motion: reduce'), 'Animation must respect prefers-reduced-motion');
     console.log('  [PASS] Smooth entrance animation is implemented and respects prefers-reduced-motion');

@@ -2,15 +2,15 @@ import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const rootDir = process.cwd();
-const componentsCssPath = path.join(rootDir, 'public/css/components.css');
-const cssContent = fs.readFileSync(componentsCssPath, 'utf8');
+const cssContent = readAllPublicComponentsCss();
 
 console.log('--- TEST SUITE T-243: Sub-Page Hero Filter & Overlay Calibration ---');
 
 // 1. CSS Rules Verification
-assert.ok(cssContent.includes('.page-hero-scrim'), '.page-hero-scrim selector must exist in components.css');
+assert.ok(cssContent.includes('.page-hero-scrim'), '.page-hero-scrim selector must exist in public/css/components/*.css');
 assert.ok(cssContent.includes('var(--hero-scrim-mid, 0.65)'), '.page-hero-scrim must use var(--hero-scrim-mid, 0.65)');
 assert.ok(cssContent.includes('var(--hero-scrim-edge, 0.35)'), '.page-hero-scrim must use var(--hero-scrim-edge, 0.35)');
 assert.ok(cssContent.includes('linear-gradient(105deg,'), '.page-hero-scrim must adopt 105deg directional ramp');

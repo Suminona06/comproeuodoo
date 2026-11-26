@@ -7,6 +7,7 @@ import express from 'express';
 import { chromium } from 'playwright';
 import { pool } from '../config/database.js';
 import { i18nMiddleware } from '../middleware/i18nMiddleware.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 function createMockPaginationServer() {
   const app = express();
@@ -108,14 +109,14 @@ describe('Task T-312: Unifikasi Komponen Paginasi Bersama (.pgn-*), Tampilan Mob
     await pool.end();
   });
 
-  it('1. Pembersihan class lama: .pagination-bar & .pagination-item tidak ada di public/css/components.css', () => {
-    const cssContent = fs.readFileSync(path.resolve('public/css/components.css'), 'utf-8');
-    assert.doesNotMatch(cssContent, /\.pagination-bar\s*\{/i, 'Class .pagination-bar wajib dihapus dari components.css');
-    assert.doesNotMatch(cssContent, /\.pagination-item\s*\{/i, 'Class .pagination-item wajib dihapus dari components.css');
+  it('1. Pembersihan class lama: .pagination-bar & .pagination-item tidak ada di public/css/components/*.css', () => {
+    const cssContent = readAllPublicComponentsCss();
+    assert.doesNotMatch(cssContent, /\.pagination-bar\s*\{/i, 'Class .pagination-bar wajib dihapus dari public/css/components/*.css');
+    assert.doesNotMatch(cssContent, /\.pagination-item\s*\{/i, 'Class .pagination-item wajib dihapus dari public/css/components/*.css');
 
-    // Pastikan styling .pgn-bar--public terdefinisi di components.css
-    assert.match(cssContent, /\.pgn-bar/i, 'Styling .pgn-bar wajib terdefinisi di components.css');
-    assert.match(cssContent, /\.pgn-bar--public/i, 'Styling .pgn-bar--public wajib terdefinisi di components.css');
+    // Pastikan styling .pgn-bar--public terdefinisi di public/css/components/*.css
+    assert.match(cssContent, /\.pgn-bar/i, 'Styling .pgn-bar wajib terdefinisi di public/css/components/*.css');
+    assert.match(cssContent, /\.pgn-bar--public/i, 'Styling .pgn-bar--public wajib terdefinisi di public/css/components/*.css');
   });
 
   it('2. views/partials/pagination.ejs mendukung variant: "public", menyembunyikan .pgn-left, dan tanpa card putih (menyatu latar)', async () => {

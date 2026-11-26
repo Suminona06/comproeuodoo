@@ -6,6 +6,7 @@ import http from 'node:http';
 import { chromium } from 'playwright';
 import app from '../app.js';
 import { pool } from '../config/database.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const VIEWPORTS = [
   { width: 320, height: 667 },
@@ -118,7 +119,7 @@ describe('Regression T-320 & T-321: News Listing & Detail Accessibility, Hygiene
   it('1. Static template hygiene, CSS contrast token & breadcrumb ellipsis rule (T-320 & T-321)', () => {
     const newsTpl = fs.readFileSync(path.resolve('views/public/news.ejs'), 'utf8');
     const detailTpl = fs.readFileSync(path.resolve('views/public/news-detail.ejs'), 'utf8');
-    const componentsCss = fs.readFileSync(path.resolve('public/css/components.css'), 'utf8');
+    const componentsCss = readAllPublicComponentsCss();
 
     assert.equal(/<script(?![^>]*src=)[^>]*>/i.test(newsTpl), false, 'news.ejs must not contain inline <script> blocks');
     assert.ok(newsTpl.includes('<script src="/js/news-filter.js" defer></script>'), 'news.ejs must load /js/news-filter.js');

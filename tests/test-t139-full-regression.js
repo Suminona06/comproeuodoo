@@ -4,6 +4,7 @@ import fs from 'fs';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 import aboutGalleryModel from '../models/aboutGalleryModel.js';
 import aboutStatsModel from '../models/aboutStatsModel.js';
 import aboutTimelineModel from '../models/aboutTimelineModel.js';
@@ -46,7 +47,7 @@ async function runTest() {
   // 1. UJI REGRESI HOMEPAGE (P0 CHECK)
   // =========================================================================
   console.log('[1] Verifying Homepage CSS Isolation and Layout (P0 Check)...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
+  const css = readAllPublicComponentsCss();
   const indexEjs = fs.readFileSync(path.join(__dirname, '../views/public/index.ejs'), 'utf8');
 
   // Verify homepage template does not contain about gallery classes
@@ -57,8 +58,8 @@ async function runTest() {
   assert.ok(indexEjs.includes('class="sec-products"'), 'Homepage must contain section.sec-products');
   assert.ok(indexEjs.includes('class="bento-col-6 reveal"'), 'Homepage products must use .bento-col-6');
 
-  // Verify components.css isolates .sec-gallery
-  assert.ok(css.includes('.sec-products {'), 'components.css must define .sec-products');
+  // Verify modular public components CSS isolates .sec-gallery
+  assert.ok(css.includes('.sec-products {'), 'public/css/components/*.css must define .sec-products');
   assert.ok(css.includes('grid-template-columns: repeat(2, 1fr)'), 'Homepage .bento-grid must be 2 columns');
   assert.ok(css.includes('.sec-gallery .abt-gal-grid'), 'About gallery must be isolated to .sec-gallery .abt-gal-grid');
   assert.ok(css.includes('.sec-gallery .abt-gal-viewport'), 'About gallery viewport must be isolated');

@@ -292,7 +292,7 @@
 
 ---
 
-### [ ] `T-452` — Migrasi Helper Tes Batch 3 (11 Berkas: News, Pagination, Buttons, Public UI & Regression) `[Tier: Hydrogen Medium]`
+### [DONE] `T-452` — Migrasi Helper Tes Batch 3 (11 Berkas: News, Pagination, Buttons, Public UI & Regression) `[Tier: Hydrogen Medium]`
 - **File Terdampak (11 berkas tes — swap impor identik 2 baris per berkas):** `tests/test-t132-delivery-gate.js`, `tests/test-t139-full-regression.js`, `tests/test-t193-card-component.js`, `tests/test-t196-load-more.js`, `tests/test-t197-responsive-mobile.js`, `tests/test-t241-public-ui.js`, `tests/test-t243-hero-filter.js`, `tests/test-t257-buttons-playwright.js`, `tests/test-t312-unified-pagination.js`, `tests/test-t320-t321-news-regression.js`, `tests/test-task-201-frontend.js`.
 - **Langkah Bernomor:**
   1. Ganti seluruh pembacaan langsung `public/css/components.css` di ke-11 berkas dengan `readAllPublicComponentsCss()` dari `./helpers/readPublicCss.js`.
@@ -306,7 +306,7 @@
 
 ---
 
-### [ ] `T-453` — Hapus Permanen `public/css/components.css` & Verifikasi Regresi Visual + Performa Playwright `[Tier: Argon Medium]`
+### [DONE] `T-453` — Hapus Permanen `public/css/components.css` & Verifikasi Regresi Visual + Performa Playwright `[Tier: Argon Medium]`
 - **File Terdampak (2):** `public/css/components.css` (dihapus permanen sesuai Keputusan 5a), `tests/test-public-css-modular.js` (aktifkan assertion `fs.existsSync('public/css/components.css') === false`).
 - **Langkah Bernomor:**
   1. Pastikan 0 referensi `components.css` tersisa di `views/`, `public/js/`, `controllers/`, dan `tests/` (kecuali assertion negatif di `test-public-css-modular.js`).

@@ -3,6 +3,7 @@ import path from 'path';
 import assert from 'assert';
 import http from 'http';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,8 +11,8 @@ const __dirname = path.dirname(__filename);
 async function runTests() {
   console.log('--- RUNNING TEST SUITE FOR TASK T-201 ---');
 
-  // 1. Verify CSS rules in public/css/components.css
-  const cssContent = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf-8');
+  // 1. Verify CSS rules in public/css/components/*.css
+  const cssContent = readAllPublicComponentsCss();
   assert(cssContent.includes('.pd-card'), 'CSS must include .pd-card');
   assert(cssContent.includes('.pd-crumb'), 'CSS must include .pd-crumb');
   assert(cssContent.includes('.pd-title'), 'CSS must include .pd-title');
@@ -33,7 +34,7 @@ async function runTests() {
   assert(cssContent.includes('.pd-size'), 'CSS must include .pd-size');
   assert(!cssContent.includes('.pd-sticky-cta'), 'CSS must NOT include .pd-sticky-cta (distilled)');
   assert(cssContent.includes('attr(data-l)'), 'CSS must include attr(data-l) for mobile table card mode');
-  console.log('✓ All CSS classes and required responsive rules found in components.css');
+  console.log('✓ All CSS classes and required responsive rules found in public/css/components/*.css');
 
   // 2. Verify public/js/product-detail.js
   const jsContent = fs.readFileSync(path.join(__dirname, '../public/js/product-detail.js'), 'utf-8');
