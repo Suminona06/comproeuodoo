@@ -7,6 +7,7 @@
 import { chromium } from 'playwright';
 import assert from 'assert';
 import fs from 'fs';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 async function runTestSuite() {
   console.log('=== TEST SUITE T-259: Playwright Admin Form Validation Engine ===\n');
@@ -26,7 +27,7 @@ async function runTestSuite() {
 
   const tokensCss = fs.readFileSync('/home/itpc/Euodoo/public/css/tokens.css', 'utf-8');
   const baseCss = fs.readFileSync('/home/itpc/Euodoo/public/css/base.css', 'utf-8');
-  const adminCss = fs.readFileSync('/home/itpc/Euodoo/public/css/admin.css', 'utf-8');
+  const adminCss = readAllAdminCss();
   const validationJs = fs.readFileSync('/home/itpc/Euodoo/public/js/admin-form-validation.js', 'utf-8');
 
   // Build a test environment simulating an admin form with tabs, media pickers, and fields

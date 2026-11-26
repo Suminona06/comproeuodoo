@@ -59,14 +59,14 @@ async function runTestSuite() {
   });
 
   try {
-    // Muat halaman mock yang meng-include css/tokens.css dan css/admin.css dari server
+    // Muat halaman mock yang meng-include css/admin/tokens.css dan css/admin/buttons.css dari server
     await page.setContent(`
       <!DOCTYPE html>
       <html lang="id">
       <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="${BASE_URL}/css/tokens.css">
-        <link rel="stylesheet" href="${BASE_URL}/css/admin.css">
+        <link rel="stylesheet" href="${BASE_URL}/css/admin/tokens.css">
+        <link rel="stylesheet" href="${BASE_URL}/css/admin/buttons.css">
       </head>
       <body style="padding: 24px; background: #f8fafc;">
         <div id="btn-container" style="display: flex; flex-direction: column; gap: 16px;">
@@ -109,7 +109,6 @@ async function runTestSuite() {
           <button id="btn-sm" class="adm-btn adm-btn-secondary adm-btn-sm">Aksi Sm</button>
           <button id="btn-disabled" class="adm-btn adm-btn-primary" disabled>Terkunci</button>
           <button id="btn-loading" class="adm-btn adm-btn-primary is-loading">
-            <span class="adm-btn-spinner"></span>
             Menyimpan...
           </button>
         </div>
@@ -117,12 +116,12 @@ async function runTestSuite() {
       </html>
     `, { waitUntil: 'networkidle' });
 
-    // Pastikan stylesheet admin.css dan tokens.css sudah diaplikasikan browser
+    // Pastikan stylesheet admin/tokens.css dan admin/buttons.css sudah diaplikasikan browser
     await page.waitForFunction(() => {
       const btn = document.getElementById('btn-primary');
       if (!btn) return false;
       const comp = window.getComputedStyle(btn);
-      // CSS tokens.css dan admin.css harus mengubah background bukan default user-agent
+      // CSS admin/tokens.css dan admin/buttons.css harus mengubah background bukan default user-agent
       return comp.backgroundColor !== 'rgb(239, 239, 239)';
     });
 
@@ -276,14 +275,16 @@ async function runTestSuite() {
         disabledPointer: window.getComputedStyle(dis).pointerEvents,
         disabledOpacity: parseFloat(window.getComputedStyle(dis).opacity),
         loadingPointer: window.getComputedStyle(load).pointerEvents,
-        hasSpinner: Boolean(load.querySelector('.adm-btn-spinner'))
+        loadingOpacity: parseFloat(window.getComputedStyle(load).opacity),
+        hasLoadingClass: load.classList.contains('adm-btn') && load.classList.contains('is-loading')
       };
     });
 
     assert.strictEqual(states.disabledPointer, 'none', 'Disabled button pointer-events harus none');
     assert.ok(states.disabledOpacity <= 0.65, 'Disabled button opacity harus <= 0.65');
     assert.strictEqual(states.loadingPointer, 'none', 'Loading button pointer-events harus none');
-    assert.strictEqual(states.hasSpinner, true, 'Loading button harus memuat spinner');
+    assert.ok(states.loadingOpacity < 1, 'Loading button opacity harus < 1');
+    assert.strictEqual(states.hasLoadingClass, true, 'Loading button harus memakai .adm-btn.is-loading');
     console.log('  ✓ State disabled dan is-loading terverifikasi mencegah klik ganda.');
 
     // ─────────────────────────────────────────────────────────────

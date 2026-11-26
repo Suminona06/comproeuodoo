@@ -191,7 +191,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `npm run lint && npm run lint:views && npm run lint:i18n && node --test tests/test-admin-css-modular.js && npm run test:seed`.
 
-### [ ] T-431 `[Tier: Hydrogen Medium]` — Helper Pembaca CSS Admin (`readAdminCss.js`) & Sinkronisasi 13 Skrip Tes QA Historis
+### [x] T-431 `[Tier: Hydrogen Medium]` — Helper Pembaca CSS Admin (`readAdminCss.js`) & Sinkronisasi 13 Skrip Tes QA Historis
 - **File Terdampak:** `tests/helpers/readAdminCss.js` (baru) + pembaruan path pada 12 skrip tes `fs.readFileSync('public/css/admin.css')` & 1 skrip mock Playwright (`tests/test-t257-buttons-playwright.js`) di `tests/`.
 - **Langkah & Kontrak Eksplisit:**
   1. Buat `tests/helpers/readAdminCss.js` mengekspor `readAllAdminCss()` (gabungan berurutan 21 berkas `public/css/admin/*.css`) dan `readAdminTokensCss()`.

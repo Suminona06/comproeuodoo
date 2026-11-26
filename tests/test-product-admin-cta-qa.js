@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import ejs from 'ejs';
 import productModel from '../models/productModel.js';
 import { query } from '../config/database.js';
+import { readAllAdminCss } from './helpers/readAdminCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,11 +58,10 @@ async function runQaSuite() {
     console.log('  -> Admin form views markup verified: clean numbering and CTA inputs present: PASSED');
 
     // ----------------------------------------------------
-    // [3/6] ADMIN CSS HYGIENE AUDIT (public/css/admin.css)
+    // [3/6] ADMIN CSS HYGIENE AUDIT (public/css/admin/*.css)
     // ----------------------------------------------------
-    console.log('\n[3/6] Auditing admin.css rules...');
-    const adminCssPath = path.join(rootDir, 'public', 'css', 'admin.css');
-    const adminCss = fs.readFileSync(adminCssPath, 'utf8');
+    console.log('\n[3/6] Auditing modular admin CSS rules...');
+    const adminCss = readAllAdminCss();
 
     assert(!adminCss.includes('.spec-item-row'), 'admin.css must NOT contain .spec-item-row');
     assert(!adminCss.includes('.spec-col-key'), 'admin.css must NOT contain .spec-col-key');
