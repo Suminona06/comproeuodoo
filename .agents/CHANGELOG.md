@@ -64,3 +64,5 @@
 - 2026-11-24 | Revamp Carousel Latest News Beranda (.hnc-*, maks 6 slide, asimetris 16:9 + compact, autoplay 3s), kartu flat editorial (.nwl-card) 16:9 untuk /news & /news/:slug, penyeragaman panah SVG hijau, dan QA E2E Playwright 6 viewport ID/EN | T-408..T-414
 
 - 2026-11-26 | Audit dead CSS (18 class mati, 7 duplikat) & refaktor modular CSS Admin CMS menjadi 21 berkas berurutan (`public/css/admin/*.css`), 0 raw hex di luar `admin/tokens.css`, penghapusan monolit `admin.css`, penegakan strict lint, helper `readAdminCss.js` + sinkronisasi 13 skrip QA, dan QA visual Playwright 19 rute x 5 viewport + zoom 125% | T-415..T-432
+
+- 2026-11-26 | Audit dead CSS (70 class mati, 36 duplikat) & refaktor modular CSS Publik menjadi 25 berkas berurutan (`public/css/components/*.css`), konsolidasi token PDP, pemuatan kondisional per rute di `head.ejs`, isolasi total `login`/`403` admin, penghapusan monolit `components.css`, penegakan strict lint, helper `readPublicCss.js` + sinkronisasi 34 tes, dan QA visual/performa Playwright 11 rute (-54.3% s/d -93.6% byte CSS) | T-433..T-453
