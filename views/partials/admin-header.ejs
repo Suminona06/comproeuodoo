@@ -34,9 +34,16 @@
   <link rel="stylesheet" href="/css/admin/pagination.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/responsive-viewport.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/media-picker.css?v=20261126-1">
+  <link rel="stylesheet" href="/css/admin/media-picker-upload.css?v=20261126-1">
   <%
     const PAGE_STYLES = {
       password: ['page-auth.css'],
+      dashboard: ['page-dashboard-inquiries.css'],
+      inquiries: ['page-dashboard-inquiries.css'],
+      leads: ['page-dashboard-inquiries.css'],
+      users: ['page-org-contact.css'],
+      capabilities: ['page-org-contact.css'],
+      'contact-cms': ['page-org-contact.css'],
     };
     const navKey = typeof activeNav !== 'undefined' ? activeNav : '';
     const extraStyles = (typeof extraAdminStyles !== 'undefined' && Array.isArray(extraAdminStyles)) ? extraAdminStyles : [];

@@ -114,7 +114,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/media-picker.css && npm run lint:views`.
 
-### [ ] T-424 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/media-picker-upload.css` (Multi-Upload Queue & Mobile Polish)
+### [x] T-424 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/media-picker-upload.css` (Multi-Upload Queue & Mobile Polish)
 - **File Terdampak (3 file):** `public/css/admin/media-picker-upload.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan `.adm-picker-*` (search, dropzone, progress, upload queue, usage warning), `#uploadModal`, serta `@media (pointer: coarse), (max-width: 768px)` dan `@media (max-width: 480px)` khusus Media Picker (`admin.css` eks `L5711–L5889`, `L7331–L7456`, `L7478–L7556`, `L7571–L7642`, ~450 baris, 0 hex) ke `public/css/admin/media-picker-upload.css`.
@@ -125,7 +125,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/media-picker-upload.css && npm run lint:views`.
 
-### [ ] T-425 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-dashboard-inquiries.css` & `admin/page-org-contact.css`
+### [x] T-425 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-dashboard-inquiries.css` & `admin/page-org-contact.css`
 - **File Terdampak (4 file):** `public/css/admin/page-dashboard-inquiries.css` (baru), `public/css/admin/page-org-contact.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan `.adm-leads-*`, `.adm-inq-*`, dan `.adm-dash-*` (`admin.css` eks `L5315–L5697`, ~375 baris, 0 hex) ke `public/css/admin/page-dashboard-inquiries.css`.
