@@ -59,7 +59,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/tables-badges.css && npm run lint:views`.
 
-### [ ] T-419 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/forms-inputs.css` + Migrasi 53 Hex
+### [x] T-419 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/forms-inputs.css` + Migrasi 53 Hex
 - **File Terdampak (3 file):** `public/css/admin/forms-inputs.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan blok `.form-card`, `.form-group`, `.form-input/select/textarea/control`, `.adm-slug-text`, `.custom-file-*`, row actions, `.btn-add-row`, `.char-counter`, `.form-actions-sticky`, `.admin-card-*`, `.admin-field-*`, `.table-col-action`, `.btn-submit/clear-*`, dan form validation `.is-invalid`/`.adm-field-error`/`.tox-tinymce` (`admin.css` eks `L1497–L1894`, `L2726–L2740`, `L2869–L2903`, `L2916–L2933`, `L3364–L3412`, ~505 baris) ke `public/css/admin/forms-inputs.css`.
