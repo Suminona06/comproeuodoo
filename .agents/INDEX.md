@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task aktif; 456 task selesai T-01..T-456).
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (11 Task aktif: T-457..T-467; 456 task selesai T-01..T-456).
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -36,6 +36,7 @@
 | **Admin UI, Buttons, Pagination & Validation** | ACTIVE | 2026-11-26 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui.md](tech/admin-ui.md) | `public/css/admin/buttons.css`, `public/css/admin/pagination.css`, `public/js/pagination.js`, `public/js/admin-form-validation.js` |
 | **Admin UI — Modular CSS Architecture** | ACTIVE | 2026-11-26 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui-css.md](tech/admin-ui-css.md) | `public/css/admin/*.css`, `views/partials/admin-header.ejs`, `views/admin/login.ejs`, `views/admin/403.ejs` |
 | **Admin UI Dropdown Component** | ACTIVE | 2026-11-26 | [prd/admin-ui.md](prd/admin-ui.md) | [tech/admin-ui-dropdown.md](tech/admin-ui-dropdown.md) | `public/css/admin/dropdown.css`, `public/js/admin-dropdown.js` |
+| **Admin UI: Tabs & Bulk Actions** | ACTIVE | 2026-11-26 | [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) | [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md) | `public/css/admin/tabs-toggles.css`, `public/css/admin/tables-badges.css`, `public/js/admin-bulk-delete.js`, `utils/bulkIdsHelper.js` |
 | **Media Library** | ACTIVE | 2026-11-21 | [prd/media-library.md](prd/media-library.md) | [tech/media-library.md](tech/media-library.md) | `views/admin/media/`, `controllers/admin/mediaController.js`, `services/mediaService.js` |
 | **Media Library — Universal Picker** | ACTIVE | 2026-11-21 | [prd/media-library.md](prd/media-library.md) | [tech/media-picker.md](tech/media-picker.md) | `views/partials/media-picker-modal.ejs`, `public/js/media-picker.js`, `public/js/admin-media.js` |
 | **SEO & Security** | ACTIVE | 2026-11-17 | [prd/seo-security.md](prd/seo-security.md) | [tech/seo-security.md](tech/seo-security.md) | `middleware/seoMiddleware.js` |
