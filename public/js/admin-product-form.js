@@ -68,6 +68,36 @@
     galleryInput.value = JSON.stringify(payload);
   }
 
+  function createSvgEl(tag) {
+    return typeof document.createElementNS === 'function'
+      ? document.createElementNS('http://www.w3.org/2000/svg', tag)
+      : document.createElement(tag);
+  }
+
+  function createDeleteIconSvg() {
+    const svg = createSvgEl('svg');
+    svg.setAttribute('class', 'prod-gallery-icon-del');
+    svg.setAttribute('width', '12');
+    svg.setAttribute('height', '12');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2.5');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    const coords = [[18, 6, 6, 18], [6, 6, 18, 18]];
+    coords.forEach(([x1, y1, x2, y2]) => {
+      const line = createSvgEl('line');
+      line.setAttribute('x1', String(x1));
+      line.setAttribute('y1', String(y1));
+      line.setAttribute('x2', String(x2));
+      line.setAttribute('y2', String(y2));
+      svg.appendChild(line);
+    });
+    return svg;
+  }
+
   function createGalleryBtn(className, label, text, disabled) {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -92,8 +122,10 @@
     img.loading = 'lazy';
 
     const delLabel = en ? 'Remove photo' : 'Hapus foto';
+    const delBtn = createGalleryBtn('prod-gallery-btn-del', delLabel, '', false);
+    delBtn.appendChild(createDeleteIconSvg());
     thumbBox.appendChild(img);
-    thumbBox.appendChild(createGalleryBtn('prod-gallery-btn-del', delLabel, '×', false));
+    thumbBox.appendChild(delBtn);
     return thumbBox;
   }
 

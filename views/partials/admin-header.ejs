@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="/css/admin/buttons.css?v=20261125-1">
   <link rel="stylesheet" href="/css/admin/tables-badges.css?v=20261125-1">
   <link rel="stylesheet" href="/css/admin/forms-inputs.css?v=20261125-1">
-  <link rel="stylesheet" href="/css/admin/modals-overlays.css?v=20261125-1">
+  <link rel="stylesheet" href="/css/admin/modals-overlays.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/tabs-toggles.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/dropdown.css?v=20261125-1">
   <link rel="stylesheet" href="/css/admin/pagination.css?v=20261126-1">
@@ -61,7 +61,7 @@
     const activePageStyles = [...new Set([...(PAGE_STYLES[navKey] || []), ...extraStyles])];
   %>
   <% activePageStyles.forEach((cssFile) => { %>
-    <link rel="stylesheet" href="/css/admin/<%= cssFile %>?v=20261126-1">
+    <link rel="stylesheet" href="/css/admin/<%= cssFile %>?v=20261126-2">
   <% }); %>
   <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
 

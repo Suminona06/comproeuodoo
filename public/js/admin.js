@@ -510,7 +510,7 @@ window.showAdminConfirm = function(messageOrOptions, title = 'Konfirmasi', extra
   let confirmTitle = title;
   let isDanger = true;
   let confirmText = '';
-  let cancelText = `<svg class="adm-btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> <span>${isEn ? 'Cancel' : 'Batal'}</span>`;
+  let cancelText = `<svg class="adm-btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg><span>${isEn ? 'Cancel' : 'Batal'}</span>`;
   let icon = 'warning';
 
   if (typeof messageOrOptions === 'object' && messageOrOptions !== null) {
@@ -530,8 +530,8 @@ window.showAdminConfirm = function(messageOrOptions, title = 'Konfirmasi', extra
 
   if (!confirmText) {
     confirmText = isDanger
-      ? `<svg class="adm-btn-icon adm-btn-icon-trash" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> <span>${isEn ? 'Delete' : 'Hapus'}</span>`
-      : `<svg class="adm-btn-icon adm-btn-icon-save" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>${isEn ? 'Confirm' : 'Lanjutkan'}</span>`;
+      ? `<svg class="adm-btn-icon adm-btn-icon-trash" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg><span>${isEn ? 'Delete' : 'Hapus'}</span>`
+      : `<svg class="adm-btn-icon adm-btn-icon-save" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span>${isEn ? 'Confirm' : 'Lanjutkan'}</span>`;
   }
 
   if (typeof Swal !== 'undefined') {

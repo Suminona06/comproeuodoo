@@ -194,6 +194,27 @@
   font-size: 13px !important;
   min-height: 38px !important;
 }
+.swal2-actions .adm-btn:not([style*="display: none"]) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  line-height: 1.2 !important;
+}
+.swal2-actions .adm-btn .adm-btn-icon {
+  display: block;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+.swal2-actions .adm-btn span {
+  line-height: 1;
+}
+@media (max-width: 768px) {
+  .swal2-actions .adm-btn {
+    min-height: 44px !important;
+  }
+}
 .swal2-toast-custom {
   font-family: var(--font) !important;
   border-radius: var(--r-md) !important;

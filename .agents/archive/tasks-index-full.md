@@ -1878,3 +1878,35 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-432: QA Regresi Visual & Fungsional Playwright End-to-End (16 Rute × 5 Viewport + Zoom 125%) [DONE]
 - **File Terdampak:** `tests/test-admin-css-visual-qa.js`
 - **Verifikasi:** 19 rute admin × 5 viewport + Zoom 125% (modal Media Picker & Copy Size Table) + 2 rute publik lulus 0 error; `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `npm test` lulus. Selesai 2026-11-26.
+
+### T-433: Buat Suite Baseline Visual & Metrik Performa Playwright Publik [DONE]
+- **File Terdampak:** `tests/test-public-css-visual-qa.js`
+- **Verifikasi:** Baseline 11 rute × 5 viewport (ID/EN) terekam di `/tmp/euodoo-public-css-qa/baseline.json`. Selesai 2026-11-26.
+
+### T-434: Konsolidasi Token Publik (`--pd-*` & Token Turunan Semantik/Netral) di `public/css/tokens.css` [DONE]
+- **File Terdampak:** `public/css/tokens.css`, `Design/DESIGN.md`
+- **Verifikasi:** 17 token `--pd-*` dan 8 token turunan zero-blue aktif di `:root`. Selesai 2026-11-26.
+
+### T-435: Pembersihan 70 Class Mati, 36 Duplikat Konteks Sama & Komentar Historis di `public/css/components.css` [DONE]
+- **File Terdampak:** `public/css/components.css`
+- **Verifikasi:** 70 class mati & 36 duplikat dibersihkan, lint hijau. Selesai 2026-11-26.
+
+### T-436..T-444: Ekstraksi 25 Berkas CSS Modular Publik (`public/css/components/*.css`) [DONE]
+- **File Terdampak:** `public/css/components/{primitives,whatsapp-float,cta-reveal,page-hero,dropdown,pagination,product-cards,news-cards,home-hero,home-intro-categories,home-why-choose-us,home-cert-brands,home-news-carousel,products-catalog,product-detail-core,product-detail-specs,about-story,about-timeline,about-vision-mission,about-ticket,about-gallery,news-listing,news-detail,contact-page,contact-variants}.css`
+- **Verifikasi:** Seluruh 25 modul <= 620 baris, 0 raw hex, 0 duplikat selector. Selesai 2026-11-26.
+
+### T-445..T-447: Pemuatan Kondisional `PUBLIC_PAGE_STYLES` di `head.ejs` & Aktivasi `pageStyle` di View Publik [DONE]
+- **File Terdampak:** `views/partials/head.ejs`, `views/public/{index,about,capabilities,products,product-detail,news,news-detail,contact,404}.ejs`
+- **Verifikasi:** Pemuatan CSS kondisional aktif di semua rute publik tanpa duplikasi/overflow. Selesai 2026-11-26.
+
+### T-448: Isolasi Penuh `views/admin/login.ejs` & `views/admin/403.ejs` ke `public/css/admin/page-auth.css` [DONE]
+- **File Terdampak:** `public/css/admin/page-auth.css`, `views/admin/login.ejs`, `views/admin/403.ejs`
+- **Verifikasi:** Seluruh referensi CSS publik dihapus dari halaman auth admin. Selesai 2026-11-26.
+
+### T-449..T-452: Helper `readPublicCss.js`, Suite `test-public-css-modular.js`, Strict Lint & Migrasi 34 Berkas Tes [DONE]
+- **File Terdampak:** `tests/helpers/readPublicCss.js`, `tests/test-public-css-modular.js`, `scripts/lint-views.js`, 34 berkas tes di `tests/`
+- **Verifikasi:** `DEFAULT_STRICT_PATHS` mencakup `public/css/components/`, 0 referensi monolit tersisa di tes. Selesai 2026-11-26.
+
+### T-453: Hapus Permanen `public/css/components.css` & Verifikasi Regresi Visual + Performa Playwright [DONE]
+- **File Terdampak:** `public/css/components.css` (dihapus), `tests/test-public-css-modular.js`
+- **Verifikasi:** `npm run lint`, `npm run lint:views`, `npm run lint:i18n`, `test-public-css-modular.js`, `test-admin-css-modular.js`, `npm test`, dan `test-public-css-visual-qa.js --verify` (11 rute, -54.3% s/d -93.6% byte CSS, 0 overflow, 0 console error) lulus. Selesai 2026-11-26.
