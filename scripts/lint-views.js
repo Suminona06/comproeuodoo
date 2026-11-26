@@ -18,7 +18,8 @@ const DEFAULT_STRICT_PATHS = [
   'views/partials/about/',
   'views/public/contact.ejs',
   'views/partials/contact/',
-  'public/css/admin/'
+  'public/css/admin/',
+  'public/css/components/'
 ];
 
 function getFiles(dir, ext) {
