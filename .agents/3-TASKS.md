@@ -74,7 +74,7 @@
 
 ---
 
-### [ ] `T-437` — Ekstraksi Komponen Bersama Kondisional Bagian 1 (`page-hero.css`, `dropdown.css`, `pagination.css`) `[Tier: Argon Medium]`
+### [DONE] `T-437` — Ekstraksi Komponen Bersama Kondisional Bagian 1 (`page-hero.css`, `dropdown.css`, `pagination.css`) `[Tier: Argon Medium]`
 - **File Terdampak (3):** `public/css/components/page-hero.css`, `public/css/components/dropdown.css`, `public/css/components/pagination.css` (semua baru).
 - **Langkah Bernomor:**
   1. Ekstrak blok `.page-hero*` & subpage breadcrumbs + scrim responsif ke `public/css/components/page-hero.css` (<= ~230 baris).
