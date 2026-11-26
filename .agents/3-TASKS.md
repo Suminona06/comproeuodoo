@@ -220,7 +220,7 @@
 
 ---
 
-### [ ] `T-447` — Aktivasi Eksplisit `pageStyle` di View Publik Batch 3 (`news-detail.ejs`, `contact.ejs`, `404.ejs`) `[Tier: Hydrogen Medium]`
+### [DONE] `T-447` — Aktivasi Eksplisit `pageStyle` di View Publik Batch 3 (`news-detail.ejs`, `contact.ejs`, `404.ejs`) `[Tier: Hydrogen Medium]`
 - **File Terdampak (3):** `views/public/news-detail.ejs`, `views/public/contact.ejs`, `views/public/404.ejs`.
 - **Langkah Bernomor:**
   1. Perbarui `include('../partials/header')` pada `views/public/news-detail.ejs` menjadi `include('../partials/header', { pageStyle: 'news-detail' })`.
@@ -234,7 +234,7 @@
 
 ---
 
-### [ ] `T-448` — Isolasi Penuh `views/admin/login.ejs` & `views/admin/403.ejs` ke `public/css/admin/page-auth.css` `[Tier: Argon Medium]`
+### [DONE] `T-448` — Isolasi Penuh `views/admin/login.ejs` & `views/admin/403.ejs` ke `public/css/admin/page-auth.css` `[Tier: Argon Medium]`
 - **File Terdampak (3):** `public/css/admin/page-auth.css`, `views/admin/login.ejs`, `views/admin/403.ejs`.
 - **Langkah Bernomor:**
   1. Tambahkan aturan ter-scope di `public/css/admin/page-auth.css` (memakai token `public/css/admin/tokens.css`, 0 raw hex) untuk menggantikan ketergantungan CSS publik:

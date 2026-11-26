@@ -10,10 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/admin/tokens.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/buttons.css?v=20261126-1">
   <link rel="stylesheet" href="/css/admin/page-auth.css?v=20261126-1">
@@ -31,12 +27,12 @@
 </head>
 <body class="err403-body">
   <header class="err403-header">
-    <div class="container flex items-center justify-between">
-      <div class="flex items-center gap-md">
+    <div class="err403-header-inner">
+      <div class="err403-header-group">
         <span class="err403-brand-title">PT EUODOO CMS</span>
-        <span class="badge badge-info err403-badge">Admin Panel</span>
+        <span class="err403-badge">Admin Panel</span>
       </div>
-      <div class="flex items-center gap-md">
+      <div class="err403-header-group">
         <span class="err403-user-meta"><%= user ? (user.name || user.email) : 'User' %> (<%= user ? user.role : 'Guest' %>)</span>
         <a href="/admin/logout" class="err403-logout-link">Keluar</a>
       </div>
