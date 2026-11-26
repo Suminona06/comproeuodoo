@@ -76,7 +76,7 @@
     - `node tests/test-admin-css-modular.js`
     - `npm test` (dan `node tests/test-t260-sweetalert-csp-playwright.js` bila server lokal aktif)
 
-- [ ] **T-456** `[Tier: Argon Medium]` **Perbaikan Tombol Hapus Foto Galeri Produk (`.prod-gallery-btn-del`) & Token CSS Admin**
+- [x] **T-456** `[DONE]` `[Tier: Argon Medium]` **Perbaikan Tombol Hapus Foto Galeri Produk (`.prod-gallery-btn-del`) & Token CSS Admin**
   - **Jenis:** Bug Fix (tanpa ubah spek)
   - **File Terdampak (4 file):**
     - `views/admin/products/partials/gallery.ejs`
