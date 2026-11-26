@@ -158,7 +158,7 @@
 - **Skill Relevan:** `antislop-code`.
 - **Verifikasi Deterministik:** `node scripts/lint-views.js public/css/admin/page-product-editors.css && node scripts/lint-views.js public/css/admin/page-home.css && npm run lint:views`.
 
-### [ ] T-428 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-content-cms.css`
+### [x] T-428 `[Tier: Hydrogen Medium]` — Ekstraksi `admin/page-content-cms.css`
 - **File Terdampak (3 file):** `public/css/admin/page-content-cms.css` (baru), `public/css/admin.css`, `views/partials/admin-header.ejs`.
 - **Langkah & Kontrak Eksplisit:**
   1. Pindahkan `.adm-postcat-*`, `.adm-hbn-*`, `.adm-media-*`, `.adm-banner-*`, dan `.adm-post-*` (`admin.css` eks `L4800–L4849`, `L5183–L5314`, `L5906–L6236`, `L7457–L7477`, ~530 baris, 0 hex) ke `public/css/admin/page-content-cms.css`.
