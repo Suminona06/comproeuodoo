@@ -118,7 +118,7 @@
 
 ---
 
-### [ ] `T-440` — Ekstraksi Modul Homepage Bagian 2 (`home-cert-brands.css`, `home-news-carousel.css`) `[Tier: Argon Medium]`
+### [DONE] `T-440` — Ekstraksi Modul Homepage Bagian 2 (`home-cert-brands.css`, `home-news-carousel.css`) `[Tier: Argon Medium]`
 - **File Terdampak (2):** `public/css/components/home-cert-brands.css`, `public/css/components/home-news-carousel.css` (keduanya baru).
 - **Langkah Bernomor:**
   1. Ekstrak blok Sertifikasi & Brand Marquee (`.sec-evidence`, `.ev-*`, `.cert-*`, `.home-cert-logo`, `.brand-strip-*`, brand zoom modal, `@keyframes` marquee) + `@media` ke `public/css/components/home-cert-brands.css` (<= ~550 baris).
