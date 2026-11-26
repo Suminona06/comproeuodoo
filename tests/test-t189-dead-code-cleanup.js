@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
 import http from 'http';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 console.log('=== STARTING T-189 DEAD CODE CLEANUP & MODAL RETENTION TESTS ===');
 
-// 1. Verify dead CSS classes are completely pruned from public/css/components.css
-console.log('1. Verifying Dead CSS Classes Pruned from public/css/components.css:');
-const cssPath = path.resolve('public/css/components.css');
-const cssContent = fs.readFileSync(cssPath, 'utf8');
+// 1. Verify dead CSS classes are completely pruned from public/css/components/*.css
+console.log('1. Verifying Dead CSS Classes Pruned from public/css/components/*.css:');
+const cssContent = readAllPublicComponentsCss();
 
 const deadSelectors = [
   'brand-card',
@@ -26,7 +26,7 @@ const deadSelectors = [
 deadSelectors.forEach(sel => {
   const regex = new RegExp(`\\.${sel}\\b`, 'g');
   const matches = cssContent.match(regex);
-  assert.strictEqual(matches, null, `Selector .${sel} should have 0 occurrences in components.css, but found ${matches ? matches.length : 0}`);
+  assert.strictEqual(matches, null, `Selector .${sel} should have 0 occurrences in public component CSS, but found ${matches ? matches.length : 0}`);
   console.log(`  1a. Verified dead selector .${sel} is completely removed: PASSED`);
 });
 
@@ -45,7 +45,7 @@ const retainedCssSelectors = [
 retainedCssSelectors.forEach(sel => {
   const regex = new RegExp(`\\.${sel}\\b`, 'g');
   const matches = cssContent.match(regex);
-  assert(matches && matches.length > 0, `Selector .${sel} should exist in components.css for modal zoom preview`);
+  assert(matches && matches.length > 0, `Selector .${sel} should exist in public component CSS for modal zoom preview`);
   console.log(`  2a. Verified retained modal selector .${sel} exists: PASSED`);
 });
 

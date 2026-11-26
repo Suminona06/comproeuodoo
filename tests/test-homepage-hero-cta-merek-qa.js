@@ -2,6 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import http from 'http';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 console.log('=== STARTING T-191 HOMEPAGE HERO CTA & MEREK QA REGRESSION SUITE ===');
 
@@ -33,8 +34,7 @@ function makeRequest({ method = 'GET', path = '/', headers = {} }) {
 }
 
 async function runComprehensiveQa() {
-  const cssPath = path.resolve('public/css/components.css');
-  const cssContent = fs.readFileSync(cssPath, 'utf8');
+  const cssContent = readAllPublicComponentsCss();
 
   // =========================================================================
   // 1. Verifikasi Multi-Breakpoint CSS (Mobile 320px - Desktop 1440px)

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import assert from 'assert';
 import { chromium } from 'playwright';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 console.log('Testing T-267 via Playwright Headless Chromium: 2x Desktop Scaling, ~1.5x Mobile, Gap & Marquee Duration...');
 
@@ -8,7 +9,7 @@ console.log('Testing T-267 via Playwright Headless Chromium: 2x Desktop Scaling,
   const browser = await chromium.launch({ headless: true });
   
   const tokensCss = fs.readFileSync('public/css/tokens.css', 'utf8');
-  const componentsCss = fs.readFileSync('public/css/components.css', 'utf8');
+  const componentsCss = readAllPublicComponentsCss();
   const homeJs = fs.readFileSync('public/js/home.js', 'utf8');
 
   const testHtml = `

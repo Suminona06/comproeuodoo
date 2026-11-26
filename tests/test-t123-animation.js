@@ -3,6 +3,7 @@ import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,8 +12,8 @@ async function runTest() {
   console.log('=== TEST T-123: BENTO MOSAIC ANIMATIONS & POLISH ===\n');
 
   // 1. Verify CSS keyframes, stagger classes, hover, and reduced motion
-  console.log('[1] Verifying components.css animation and interaction rules...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
+  console.log('[1] Verifying public/css/components/*.css animation and interaction rules...');
+  const css = readAllPublicComponentsCss();
 
   assert.ok(css.includes('@keyframes bentoTileOut'), 'Must have @keyframes bentoTileOut');
   assert.ok(css.includes('@keyframes bentoTileIn'), 'Must have @keyframes bentoTileIn');

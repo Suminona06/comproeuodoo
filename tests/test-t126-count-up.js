@@ -2,6 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,11 +11,11 @@ async function runTest() {
   console.log('=== TEST T-126: ANIMASI COUNT-UP STATISTIK SEJARAH ===\n');
 
   // 1. Verify CSS tabular-nums
-  console.log('[1] Verifying components.css tabular-nums...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
+  console.log('[1] Verifying public/css/components/*.css tabular-nums...');
+  const css = readAllPublicComponentsCss();
   assert.ok(css.includes('.story-stat-num'), 'Must define .story-stat-num');
   assert.ok(css.includes('font-variant-numeric: tabular-nums'), 'Must set font-variant-numeric: tabular-nums on .story-stat-num');
-  console.log('  -> components.css verified: tabular-nums present to prevent layout shift.\n');
+  console.log('  -> public/css/components/*.css verified: tabular-nums present to prevent layout shift.\n');
 
   // 2. Verify main.js count-up logic
   console.log('[2] Verifying main.js count-up implementation...');

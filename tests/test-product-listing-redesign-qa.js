@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 function request(pathUrl, options = {}) {
   return new Promise((resolve, reject) => {
@@ -128,8 +129,7 @@ async function runQAAudit() {
   // 3. KEYBOARD NAVIGATION & FOCUS RING AUDIT
   {
     console.log('\n[3/4] AUDITING KEYBOARD NAVIGATION & FOCUS RINGS...');
-    const cssPath = path.resolve('public/css/components.css');
-    const css = fs.readFileSync(cssPath, 'utf8');
+    const css = readAllPublicComponentsCss();
 
     assert(css.includes('.plp-sidebar-link:focus-visible') || css.includes('.plp-sidebar-link:focus'), 'Sidebar links must have visible focus indicator');
     assert(css.includes('.plp-search-input:focus'), 'Search input must have visible focus indicator');

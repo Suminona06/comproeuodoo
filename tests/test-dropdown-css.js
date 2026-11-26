@@ -1,12 +1,13 @@
 import fs from 'fs';
 import assert from 'assert';
 import { readAllAdminCss } from './helpers/readAdminCss.js';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 console.log('Testing T-262: Unified Dropdown CSS (.eu-dd-*) and Token Foundation...');
 
 const tokensCss = fs.readFileSync('public/css/tokens.css', 'utf8');
 const adminCss = readAllAdminCss();
-const componentsCss = fs.readFileSync('public/css/components.css', 'utf8');
+const componentsCss = readAllPublicComponentsCss();
 
 // 1. Check Tokens
 assert(tokensCss.includes('--eu-dd-height: 52px;'), 'tokens.css must define --eu-dd-height');
@@ -51,9 +52,9 @@ const requiredSelectors = [
 
 requiredSelectors.forEach(sel => {
   assert(adminCss.includes(sel), `admin.css must include selector ${sel}`);
-  assert(componentsCss.includes(sel), `components.css must include selector ${sel}`);
+  assert(componentsCss.includes(sel), `public component CSS must include selector ${sel}`);
 });
-console.log(`  3. All ${requiredSelectors.length} core selectors present in admin.css and components.css: PASSED`);
+console.log(`  3. All ${requiredSelectors.length} core selectors present in admin.css and public component CSS: PASSED`);
 
 // 4. Verify No Raw Hex in Dropdown Rules (Must use semantic CSS variables)
 const extractDropdownBlock = (css) => {

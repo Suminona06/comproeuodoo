@@ -1,6 +1,7 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -66,7 +67,7 @@ async function runTests() {
 
   // 3. CSS rule verification for Hero offset & bottom slider controls
   await test('T-80 & T-81: CSS rules resolve hero offset and bottom slider controls placement', async () => {
-    const compCss = fs.readFileSync(path.resolve('./public/css/components.css'), 'utf-8');
+    const compCss = readAllPublicComponentsCss();
 
     // Hero offset
     assert.ok(compCss.includes('padding-top: calc(34px + 64px + 20px)'), 'Hero slide must have safe padding-top offset (118px)');

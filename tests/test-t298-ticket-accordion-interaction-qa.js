@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ejs from 'ejs';
 import { chromium } from 'playwright';
+import { readPublicComponentCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,13 +14,9 @@ const rootDir = path.resolve(__dirname, '..');
 function buildTestPageHtml() {
   const partialPath = path.join(rootDir, 'views/partials/about/ticket-accordion.ejs');
   const tokensContent = fs.readFileSync(path.join(rootDir, 'public/css/tokens.css'), 'utf8');
-  const cssContent = fs.readFileSync(path.join(rootDir, 'public/css/components.css'), 'utf8');
+  const abtTktCssBlock = readPublicComponentCss('about-ticket.css');
   const animeJsContent = fs.readFileSync(path.join(rootDir, 'public/vendor/animejs/anime.min.js'), 'utf8');
   const accordionJsContent = fs.readFileSync(path.join(rootDir, 'public/js/ticket-accordion.js'), 'utf8');
-
-  const startIdx = cssContent.indexOf('.abt-tkt-section');
-  const endIdx = cssContent.indexOf('/* ═══ GALLERY SLIDER', startIdx);
-  const abtTktCssBlock = cssContent.slice(startIdx, endIdx);
 
   const template = fs.readFileSync(partialPath, 'utf8');
   const dummyAbout = {

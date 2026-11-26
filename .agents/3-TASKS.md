@@ -264,7 +264,7 @@
 
 ---
 
-### [ ] `T-450` — Migrasi Helper Tes Batch 1 (11 Berkas: Home, Brand, Header, Dropdown, Rebrand) `[Tier: Hydrogen Medium]`
+### [DONE] `T-450` — Migrasi Helper Tes Batch 1 (11 Berkas: Home, Brand, Header, Dropdown, Rebrand) `[Tier: Hydrogen Medium]`
 - **File Terdampak (11 berkas tes — swap impor identik 2 baris per berkas):** `tests/test-brand-marquee-scaling.js`, `tests/test-dropdown-css.js`, `tests/test-homepage-hero-cta-merek-qa.js`, `tests/test-homepage-major-update-qa.js`, `tests/test-kelompok-c-polish.js`, `tests/test-mobile-header.js`, `tests/test-public-dropdown-migration.js`, `tests/test-rebrand-visual-functional.js`, `tests/test-t187-hero-cta-public.js`, `tests/test-t188-brand-strip-marquee.js`, `tests/test-t189-dead-code-cleanup.js`.
 - **Langkah Bernomor:**
   1. Ganti pembacaan `fs.readFileSync('...public/css/components.css', 'utf8')` di ke-11 berkas dengan `readAllPublicComponentsCss()` dari `./helpers/readPublicCss.js`.
@@ -278,7 +278,7 @@
 
 ---
 
-### [ ] `T-451` — Migrasi Helper Tes Batch 2 (12 Berkas: Produk & About) `[Tier: Hydrogen Medium]`
+### [DONE] `T-451` — Migrasi Helper Tes Batch 2 (12 Berkas: Produk & About) `[Tier: Hydrogen Medium]`
 - **File Terdampak (12 berkas tes — swap impor identik 2 baris per berkas):** `tests/test-product-detail-redesign-qa.js`, `tests/test-product-detail-size-table-qa.js`, `tests/test-product-dynamic-size-table-qa.js`, `tests/test-product-listing-redesign-qa.js`, `tests/test-t122-bento.js`, `tests/test-t123-animation.js`, `tests/test-t124-mobile.js`, `tests/test-t126-count-up.js`, `tests/test-t127-timeline-hover.js`, `tests/test-t128-mobile-regression.js`, `tests/test-t297-ticket-accordion-styles-qa.js`, `tests/test-t298-ticket-accordion-interaction-qa.js`.
 - **Langkah Bernomor:**
   1. Ganti seluruh pembacaan langsung `public/css/components.css` di ke-12 berkas dengan `readAllPublicComponentsCss()` dari `./helpers/readPublicCss.js`.

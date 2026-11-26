@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ejs from 'ejs';
 import { chromium } from 'playwright';
+import { readPublicComponentCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,17 +51,12 @@ function assertViewportMetrics(vp, metrics) {
 }
 
 test('T-297: Desktop & Mobile Accordion Token Styling, Contrast & Responsive QA', async (t) => {
-  const cssPath = path.join(rootDir, 'public/css/components.css');
   const tokensPath = path.join(rootDir, 'public/css/tokens.css');
-  const cssContent = fs.readFileSync(cssPath, 'utf8');
   const tokensContent = fs.readFileSync(tokensPath, 'utf8');
-
-  const startIdx = cssContent.indexOf('.abt-tkt-section');
-  const endIdx = cssContent.indexOf('/* ═══ GALLERY SLIDER', startIdx);
-  const abtTktCssBlock = cssContent.slice(startIdx, endIdx);
+  const abtTktCssBlock = readPublicComponentCss('about-ticket.css');
 
   await t.test('100% token compliance and zero raw hex in .abt-tkt-* CSS block', () => {
-    assert.ok(startIdx !== -1 && endIdx !== -1, '.abt-tkt-* block must exist in components.css');
+    assert.ok(abtTktCssBlock.includes('.abt-tkt-section'), '.abt-tkt-* block must exist in about-ticket.css');
     assert.ok(tokensContent.includes('--shadow-glow-primary:'), 'tokens.css must define --shadow-glow-primary');
 
     const hexMatches = abtTktCssBlock.match(/#(?:[0-9a-fA-F]{3,4}){1,2}\b/g);

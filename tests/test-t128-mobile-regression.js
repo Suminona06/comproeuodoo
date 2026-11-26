@@ -2,6 +2,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readAllPublicComponentsCss } from './helpers/readPublicCss.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,7 +54,7 @@ async function runTest() {
 
   // 5. Verify CSS Responsive & Anti-overflow constraints
   console.log('[5] Verifying CSS responsive rules for 320px safety...');
-  const css = fs.readFileSync(path.join(__dirname, '../public/css/components.css'), 'utf8');
+  const css = readAllPublicComponentsCss();
   assert.ok(css.includes('@media (max-width: 768px)'), 'Must have 768px breakpoint');
   assert.ok(css.includes('@media (max-width: 480px)'), 'Must have 480px breakpoint');
   assert.ok(css.includes('repeat(2, minmax(0, 1fr))'), '2-column grid must use minmax(0, 1fr) to prevent overflow');
