@@ -74,7 +74,60 @@
 <% if (typeof useSweetAlert !== 'undefined' && useSweetAlert) { %>
 <link rel="stylesheet" href="/vendor/sweetalert2/sweetalert2.min.css">
 <% } %>
-<link rel="stylesheet" href="/css/components.css?v=20261123-1">
+<%
+  const PUBLIC_PAGE_STYLES = {
+    home: [
+      'home-hero.css',
+      'home-intro-categories.css',
+      'home-why-choose-us.css',
+      'home-cert-brands.css',
+      'home-news-carousel.css',
+    ],
+    about: [
+      'page-hero.css',
+      'about-story.css',
+      'about-timeline.css',
+      'about-vision-mission.css',
+      'about-ticket.css',
+      'about-gallery.css',
+    ],
+    products: ['page-hero.css', 'dropdown.css', 'product-cards.css', 'products-catalog.css'],
+    'product-detail': ['product-cards.css', 'product-detail-core.css', 'product-detail-specs.css'],
+    capabilities: [],
+    news: ['page-hero.css', 'pagination.css', 'news-cards.css', 'news-listing.css'],
+    'news-detail': ['news-cards.css', 'news-detail.css'],
+    contact: ['page-hero.css', 'dropdown.css', 'contact-page.css', 'contact-variants.css'],
+    '404': [],
+  };
+
+  function resolvePublicPageKey(explicitStyle, routePath) {
+    if (explicitStyle && Object.prototype.hasOwnProperty.call(PUBLIC_PAGE_STYLES, explicitStyle)) {
+      return explicitStyle;
+    }
+    const cleanPath = String(routePath || '/').split('?')[0];
+    if (cleanPath === '/' || cleanPath === '') return 'home';
+    if (cleanPath === '/about') return 'about';
+    if (cleanPath === '/products') return 'products';
+    if (cleanPath.startsWith('/products/')) return 'product-detail';
+    if (cleanPath === '/capabilities') return 'capabilities';
+    if (cleanPath === '/news') return 'news';
+    if (cleanPath.startsWith('/news/')) return 'news-detail';
+    if (cleanPath === '/contact') return 'contact';
+    return '404';
+  }
+
+  const rawPageStyle = typeof pageStyle !== 'undefined' ? pageStyle : '';
+  const rawRoutePath = typeof path !== 'undefined' ? path : '/';
+  const resolvedPageKey = resolvePublicPageKey(rawPageStyle, rawRoutePath);
+  const extraStyles = (typeof extraPublicStyles !== 'undefined' && Array.isArray(extraPublicStyles)) ? extraPublicStyles : [];
+  const activePublicStyles = [...new Set([...(PUBLIC_PAGE_STYLES[resolvedPageKey] || []), ...extraStyles])];
+%>
+<link rel="stylesheet" href="/css/components/primitives.css?v=20261126-1">
+<link rel="stylesheet" href="/css/components/whatsapp-float.css?v=20261126-1">
+<link rel="stylesheet" href="/css/components/cta-reveal.css?v=20261126-1">
+<% activePublicStyles.forEach((cssFile) => { %>
+<link rel="stylesheet" href="/css/components/<%= cssFile %>?v=20261126-1">
+<% }); %>
 <link rel="stylesheet" href="/vendor/photoswipe/photoswipe.css">
 <link rel="stylesheet" href="/css/lightbox.css">
 

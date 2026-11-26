@@ -192,7 +192,7 @@
 
 ---
 
-### [ ] `T-445` — Pemuatan Kondisional `PUBLIC_PAGE_STYLES` di `views/partials/head.ejs` & Aktivasi Batch 1 (`index`, `about`, `capabilities`) `[Tier: Argon Medium]`
+### [DONE] `T-445` — Pemuatan Kondisional `PUBLIC_PAGE_STYLES` di `views/partials/head.ejs` & Aktivasi Batch 1 (`index`, `about`, `capabilities`) `[Tier: Argon Medium]`
 - **File Terdampak (4):** `views/partials/head.ejs`, `views/public/index.ejs`, `views/public/about.ejs`, `views/public/capabilities.ejs`.
 - **Langkah Bernomor:**
   1. Pada `views/partials/head.ejs`, ganti `<link rel="stylesheet" href="/css/components.css?v=...">` dengan 3 link Core Always-On (`primitives.css`, `whatsapp-float.css`, `cta-reveal.css`) berversi `?v=20261126-1`.
