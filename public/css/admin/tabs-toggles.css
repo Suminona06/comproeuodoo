@@ -1,15 +1,31 @@
-/* Liquid glass tabs, toggle switch & WhatsApp repeater */
+/* Growing underline tabs, toggle switch & WhatsApp repeater */
+
+.filter-tabs-wrap {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filter-tabs-wrap::-webkit-scrollbar {
+  display: none;
+}
 
 .about-tabs-nav {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px;
-  background: rgba(241, 245, 249, 0.8);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-surface);
   border: 1px solid var(--border-main);
   border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
   overflow-x: auto;
   scrollbar-width: none;
@@ -19,33 +35,115 @@
   display: none;
 }
 
-.about-tab-btn {
-  border: 1px solid transparent;
+.tab-btn {
+  position: relative;
+  border: none;
   background: transparent;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: inherit;
-  color: var(--text-muted);
-  padding: 8px 16px;
-  border-radius: var(--r-lg);
+  line-height: 1.4;
+  color: var(--text-slate-dark);
+  padding: 7px 14px;
+  border-radius: var(--r-md);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--ease), background-color var(--ease);
+}
+
+.about-tab-btn {
+  position: relative;
+  border: none;
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 1.4;
+  color: var(--text-slate-dark);
+  padding: 9px 16px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
   white-space: nowrap;
-  transition: all var(--ease);
+  transition: color var(--ease), background-color var(--ease);
 }
 
-.about-tab-btn:hover {
+.tab-btn::after,
+.about-tab-btn::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  height: 2.5px;
+  background-color: var(--primary);
+  border-radius: var(--r-pill);
+  transform: scaleX(0);
+  transform-origin: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--ease), opacity var(--ease);
+}
+
+@media (hover: hover) {
+  .tab-btn:not(.active):not([aria-selected="true"]):hover,
+  .about-tab-btn:not(.active):not([aria-selected="true"]):hover {
+    color: var(--text-main);
+  }
+
+  .tab-btn:not(.active):not([aria-selected="true"]):hover::after,
+  .about-tab-btn:not(.active):not([aria-selected="true"]):hover::after {
+    transform: scaleX(0.6);
+    opacity: 0.35;
+  }
+}
+
+.tab-btn:active,
+.about-tab-btn:active {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.6);
+  background-color: var(--bg-subtle);
 }
 
-.about-tab-btn.active {
-  background: var(--bg-surface);
-  color: var(--primary);
-  border-color: var(--border-main);
-  box-shadow: var(--shadow-sm);
+.tab-btn:focus-visible,
+.about-tab-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+.tab-btn.active,
+.tab-btn[aria-selected="true"],
+.about-tab-btn.active,
+.about-tab-btn[aria-selected="true"] {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.tab-btn.active::after,
+.tab-btn[aria-selected="true"]::after,
+.about-tab-btn.active::after,
+.about-tab-btn[aria-selected="true"]::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-btn,
+  .tab-btn::after,
+  .about-tab-btn,
+  .about-tab-btn::after,
+  .about-tab-pane {
+    transition: none;
+    animation: none;
+  }
 }
 
 .about-tab-pane {

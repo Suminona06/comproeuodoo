@@ -365,5 +365,21 @@
     "copy_success": "Tautan artikel berhasil disalin!",
     "copy_error": "Gagal menyalin tautan artikel. Silakan salin manual dari bilah alamat.",
     "related_title": "Baca Berita Lainnya"
+  },
+  "admin_bulk": {
+    "col_select": "Pilih",
+    "select_all": "Pilih semua baris yang tampil",
+    "select_row": "Pilih {name}",
+    "delete_selected": "Hapus Terpilih ({count})",
+    "confirm_title": "Hapus Data Terpilih?",
+    "confirm_products": "Anda akan menghapus {count} produk beserta variannya secara permanen. Tindakan ini tidak dapat dibatalkan.",
+    "confirm_product_categories": "Anda akan menghapus {count} kategori produk terpilih. Tindakan ini tidak dapat dibatalkan.",
+    "confirm_posts": "Anda akan menghapus {count} artikel terpilih secara permanen. Tindakan ini tidak dapat dibatalkan.",
+    "confirm_post_categories": "Anda akan menghapus {count} kategori berita terpilih. Tindakan ini tidak dapat dibatalkan.",
+    "confirm_related_products": "{count} produk terkait akan tetap ada dengan status tanpa kategori.",
+    "confirm_related_posts": "{count} artikel terkait akan tetap ada dengan status tanpa kategori.",
+    "success_deleted": "{count} data berhasil dihapus.",
+    "error_empty": "Pilih minimal 1 data terlebih dahulu.",
+    "error_failed": "Gagal menghapus data terpilih."
   }
 }

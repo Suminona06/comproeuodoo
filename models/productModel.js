@@ -564,6 +564,19 @@ export const productModel = {
   },
 
   /**
+   * Find multiple products by IDs for bulk operations
+   */
+  async findByIds(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return [];
+    const placeholders = ids.map(() => '?').join(', ');
+    const rows = await query(
+      `SELECT id, main_image, name_id FROM products WHERE id IN (${placeholders})`,
+      ids
+    );
+    return rows.map((r) => ({ ...r, image_url: r.main_image || null }));
+  },
+
+  /**
    * Delete product
    */
   async delete(id) {
@@ -574,6 +587,27 @@ export const productModel = {
       const [result] = await connection.execute('DELETE FROM products WHERE id = ?', [id]);
       await connection.commit();
       return result.affectedRows > 0;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
+  },
+
+  /**
+   * Bulk delete products and their variants in a single transaction
+   */
+  async deleteMany(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const placeholders = ids.map(() => '?').join(', ');
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      await connection.execute(`DELETE FROM product_variants WHERE product_id IN (${placeholders})`, ids);
+      const [result] = await connection.execute(`DELETE FROM products WHERE id IN (${placeholders})`, ids);
+      await connection.commit();
+      return result.affectedRows || 0;
     } catch (err) {
       await connection.rollback();
       throw err;

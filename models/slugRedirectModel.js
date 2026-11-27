@@ -68,6 +68,21 @@ export const slugRedirectModel = {
       logger.error('slugRedirectModel.deleteByEntity error:', err);
       return false;
     }
+  },
+
+  async deleteByEntityIds(entityType, entityIds) {
+    if (!Array.isArray(entityIds) || entityIds.length === 0) return true;
+    const placeholders = entityIds.map(() => '?').join(', ');
+    try {
+      await pool.query(
+        `DELETE FROM slug_redirects WHERE entity_type = ? AND entity_id IN (${placeholders})`,
+        [entityType, ...entityIds]
+      );
+      return true;
+    } catch (err) {
+      logger.error('slugRedirectModel.deleteByEntityIds error:', { message: err.message });
+      return false;
+    }
   }
 };
 

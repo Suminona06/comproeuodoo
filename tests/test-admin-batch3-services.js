@@ -31,6 +31,9 @@ import userModel from '../models/userModel.js';
 import settingModel from '../models/settingModel.js';
 import pageHeroBannerModel from '../models/pageHeroBannerModel.js';
 import capabilityModel from '../models/capabilityModel.js';
+import postCategoryModel from '../models/postCategoryModel.js';
+import postCategoryController from '../controllers/admin/postCategoryController.js';
+import { bulkDeletePostCategories } from '../services/postCategoryService.js';
 
 function createMockRes() {
   return {
@@ -38,9 +41,11 @@ function createMockRes() {
     locals: { csrfToken: 'test-csrf' },
     rendered: null,
     redirectedTo: null,
+    jsonPayload: null,
     status(code) { this.statusCode = code; return this; },
     render(view, data) { this.rendered = { view, data }; return this; },
-    redirect(url) { this.redirectedTo = url; return this; }
+    redirect(url) { this.redirectedTo = url; return this; },
+    json(payload) { this.jsonPayload = payload; return this; }
   };
 }
 
@@ -382,6 +387,83 @@ describe('Batch 3 Admin Services Unit Tests (T-363..T-368)', () => {
       }
       assert.equal(res.redirectedTo.includes('ER_ROW_IS_REFERENCED'), false);
       assert.equal(decodeURIComponent(res.redirectedTo).includes('Gagal menghapus data kapabilitas.'), true);
+    });
+  });
+
+  describe('5. postCategoryService.bulkDeletePostCategories & postCategoryController.bulkDestroy (T-461)', () => {
+    it('5a. validates bulk ids, handles not_found, computes affectedItemsCount & skippedIds, and invalidates sitemap', async () => {
+      const invalidRes = await bulkDeletePostCategories({ ids: [] });
+      assert.equal(invalidRes.status, 'validation_error');
+
+      const nonIntRes = await bulkDeletePostCategories({ ids: ['abc', -1] });
+      assert.equal(nonIntRes.status, 'validation_error');
+
+      const notFoundRes = await bulkDeletePostCategories(
+        { ids: [10, 20] },
+        {
+          postCategoryModel: { async findByIdsWithPostCount() { return []; } },
+          invalidateSitemapCache: () => {}
+        }
+      );
+      assert.equal(notFoundRes.status, 'not_found');
+
+      let deletedTargets = null;
+      let sitemapCleared = false;
+      const okRes = await bulkDeletePostCategories(
+        { ids: [1, 2, 99, 2] },
+        {
+          postCategoryModel: {
+            async findByIdsWithPostCount() {
+              return [
+                { id: 1, name_id: 'Berita', post_count: 3 },
+                { id: 2, name_id: 'Blog', post_count: 2 }
+              ];
+            },
+            async deleteMany(ids) {
+              deletedTargets = ids;
+              return ids.length;
+            }
+          },
+          invalidateSitemapCache: () => { sitemapCleared = true; }
+        }
+      );
+
+      assert.equal(okRes.status, 'ok');
+      assert.deepEqual(deletedTargets, [1, 2]);
+      assert.equal(okRes.deletedCount, 2);
+      assert.equal(okRes.requestedCount, 3);
+      assert.deepEqual(okRes.skippedIds, [99]);
+      assert.equal(okRes.affectedItemsCount, 5);
+      assert.equal(sitemapCleared, true);
+    });
+
+    it('5b. postCategoryController.bulkDestroy maps 400, 404, 200, and hides DB error on 500', async () => {
+      const res400 = createMockRes();
+      await postCategoryController.bulkDestroy({ body: { ids: [] } }, res400);
+      assert.equal(res400.statusCode, 400);
+      assert.equal(res400.jsonPayload.success, false);
+
+      const origFind = postCategoryModel.findByIdsWithPostCount;
+      const origDeleteMany = postCategoryModel.deleteMany;
+      try {
+        postCategoryModel.findByIdsWithPostCount = async () => [];
+        const res404 = createMockRes();
+        await postCategoryController.bulkDestroy({ body: { ids: [55] } }, res404);
+        assert.equal(res404.statusCode, 404);
+        assert.equal(res404.jsonPayload.success, false);
+
+        postCategoryModel.findByIdsWithPostCount = async () => {
+          throw new Error('ER_LOCK_DEADLOCK secret');
+        };
+        const res500 = createMockRes();
+        await postCategoryController.bulkDestroy({ body: { ids: [1] } }, res500);
+        assert.equal(res500.statusCode, 500);
+        assert.equal(res500.jsonPayload.success, false);
+        assert.equal(res500.jsonPayload.message.includes('ER_LOCK_DEADLOCK'), false);
+      } finally {
+        postCategoryModel.findByIdsWithPostCount = origFind;
+        postCategoryModel.deleteMany = origDeleteMany;
+      }
     });
   });
 });

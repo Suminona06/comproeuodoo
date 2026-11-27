@@ -70,6 +70,7 @@ router.delete('/api/media/:id', requireAuth, roleMiddleware(['superadmin', 'admi
 router.get('/product-categories', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.index);
 router.get('/product-categories/create', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.createView);
 router.post('/product-categories', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.store);
+router.post('/product-categories/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.bulkDestroy);
 router.get('/product-categories/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.editView);
 router.post('/product-categories/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.update);
 router.post('/product-categories/:id/toggle', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.toggleStatus);
@@ -79,6 +80,7 @@ router.get('/products', requireAuth, roleMiddleware(['superadmin', 'admin']), pr
 router.get('/products/export', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.exportCsv);
 router.get('/products/create', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.createView);
 router.post('/products', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), productController.store);
+router.post('/products/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.bulkDestroy);
 router.get('/products/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.editView);
 router.get('/products/:id/size-table-columns', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.getSizeTableColumns);
 router.post('/products/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), productController.update);
@@ -88,6 +90,7 @@ router.post('/products/:id/delete', requireAuth, roleMiddleware(['superadmin', '
 router.get('/post-categories', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.index);
 router.get('/post-categories/create', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.createView);
 router.post('/post-categories', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.store);
+router.post('/post-categories/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.bulkDestroy);
 router.get('/post-categories/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.editView);
 router.post('/post-categories/:id', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.update);
 router.post('/post-categories/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.destroy);
@@ -96,6 +99,7 @@ router.get('/posts', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor
 router.get('/posts/create', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.createView);
 router.post('/posts/upload-image', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('file'), postController.uploadEditorImage);
 router.post('/posts', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('cover_file'), postController.store);
+router.post('/posts/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.bulkDestroy);
 router.get('/posts/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.editView);
 router.post('/posts/:id', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('cover_file'), postController.update);
 router.post('/posts/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.destroy);

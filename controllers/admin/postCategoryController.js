@@ -3,7 +3,8 @@ import {
   createPostCategory,
   getPostCategoryById,
   updatePostCategory,
-  deletePostCategory
+  deletePostCategory,
+  bulkDeletePostCategories
 } from '../../services/postCategoryService.js';
 import logger from '../../utils/logger.js';
 
@@ -111,6 +112,29 @@ export const postCategoryController = {
     } catch (err) {
       logger.error('Post category destroy error:', err);
       return postCategoryRedirect(res, 'error', 'Gagal menghapus kategori.');
+    }
+  },
+
+  async bulkDestroy(req, res) {
+    try {
+      const result = await bulkDeletePostCategories(req.body);
+      if (result.status === 'validation_error') {
+        return res.status(400).json({ success: false, message: result.message });
+      }
+      if (result.status === 'not_found') {
+        return res.status(404).json({ success: false, message: result.message });
+      }
+      return res.json({
+        success: true,
+        deletedCount: result.deletedCount,
+        requestedCount: result.requestedCount,
+        skippedIds: result.skippedIds,
+        affectedItemsCount: result.affectedItemsCount,
+        message: result.message
+      });
+    } catch (err) {
+      logger.error('Post category bulkDestroy error:', { message: err.message });
+      return res.status(500).json({ success: false, message: 'Gagal menghapus kategori berita terpilih.' });
     }
   }
 };

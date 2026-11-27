@@ -1,5 +1,7 @@
 import productCategoryModel from '../models/productCategoryModel.js';
 import { slugify } from '../utils/slugHelper.js';
+import { invalidateSitemapCache } from '../utils/sitemapGenerator.js';
+import { parseBulkIds } from '../utils/bulkIdsHelper.js';
 
 const ACTIVE_FLAG_VALUES = new Set(['1', 'on', 1, true]);
 const parseActiveFlag = (val) => (ACTIVE_FLAG_VALUES.has(val) ? 1 : 0);
@@ -12,7 +14,13 @@ function parseSortOrder(val, fallback = 0) {
   return Number.isNaN(parsed) ? fallback : parsed;
 }
 
-const useModel = (deps) => deps?.productCategoryModel || productCategoryModel;
+const DEFAULT_DEPS = {
+  productCategoryModel,
+  invalidateSitemapCache
+};
+
+const useDeps = (deps) => (deps ? { ...DEFAULT_DEPS, ...deps } : DEFAULT_DEPS);
+const useModel = (deps) => useDeps(deps).productCategoryModel;
 
 export async function listProductCategories(deps = {}) {
   const model = useModel(deps);
@@ -90,11 +98,44 @@ export async function deleteProductCategory(id, deps = {}) {
   return { status: 'ok', message: 'Kategori berhasil dihapus.' };
 }
 
+export async function bulkDeleteProductCategories(rawBody, deps = {}) {
+  const d = useDeps(deps);
+  const parsed = parseBulkIds(rawBody);
+  if (parsed.status !== 'ok') {
+    return { status: 'validation_error', error: parsed.error, message: parsed.error };
+  }
+
+  const ids = parsed.ids;
+  const existing = await d.productCategoryModel.findByIdsWithProductCount(ids);
+  if (!Array.isArray(existing) || existing.length === 0) {
+    const msg = 'Kategori produk yang dipilih tidak ditemukan.';
+    return { status: 'not_found', error: msg, message: msg };
+  }
+
+  const foundSet = new Set(existing.map((item) => item.id));
+  const targetIds = existing.map((item) => item.id);
+  const skippedIds = ids.filter((id) => !foundSet.has(id));
+  const affectedItemsCount = existing.reduce((sum, item) => sum + (Number(item.product_count) || 0), 0);
+  const deletedCount = await d.productCategoryModel.deleteMany(targetIds);
+
+  d.invalidateSitemapCache();
+
+  return {
+    status: 'ok',
+    deletedCount,
+    requestedCount: ids.length,
+    skippedIds,
+    affectedItemsCount,
+    message: `${deletedCount} kategori produk berhasil dihapus.`
+  };
+}
+
 export default {
   listProductCategories,
   createProductCategory,
   getProductCategoryById,
   updateProductCategory,
   toggleProductCategoryStatus,
-  deleteProductCategory
+  deleteProductCategory,
+  bulkDeleteProductCategories
 };

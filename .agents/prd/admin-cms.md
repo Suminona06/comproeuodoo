@@ -64,8 +64,9 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 
 - Seluruh halaman login (`/admin/login`), dashboard, modul CMS, halaman 401/403/429/404/500, penolakan CSRF `/admin/*`, JSON API admin, dan ekspor CSV wajib tidak dapat diindeks oleh mesin pencari melalui header HTTP `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet`, meta tag `<meta name="robots" content="noindex, nofollow">`, serta aturan `Disallow: /admin` & `Disallow: /admin/*` pada `/robots.txt` (rincian lengkap pada [prd/seo-security.md](seo-security.md)).
 
-### Formulir Produk & Paginasi Dinamis Admin
+### Formulir Produk, Paginasi Dinamis & Bulk Delete Admin
 - Persyaratan `FR-26` (Formulir Produk Terpadu), `FR-27` (Validasi Server-Side), `FR-28` (Tombol CTA Produk), `FR-31` (Paginasi RFQ), dan `FR-32` (Paginasi Produk Admin) dirinci pada sub-modul [prd/admin-products-rfq.md](admin-products-rfq.md).
+- Persyaratan `FR-41` (Revamp Tabs Admin Growing Underline) dan `FR-42` (Bulk Delete Produk, Kategori Produk, Berita `/admin/posts`, & Kategori Berita `/admin/post-categories`) dirinci pada [prd/admin-ui-tabs-bulk.md](admin-ui-tabs-bulk.md) `[PENDING T-457..T-467]`.
 
 ---
 

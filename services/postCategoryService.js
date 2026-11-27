@@ -1,10 +1,17 @@
 import postCategoryModel from '../models/postCategoryModel.js';
 import { slugify } from '../utils/slugHelper.js';
+import { invalidateSitemapCache } from '../utils/sitemapGenerator.js';
+import { parseBulkIds } from '../utils/bulkIdsHelper.js';
 
 export const POST_CATEGORY_TYPES = ['berita', 'blog'];
 
 const trimOrNull = (val) => (val ? String(val).trim() : null);
-const useModel = (deps) => deps?.postCategoryModel || postCategoryModel;
+const DEFAULT_DEPS = {
+  postCategoryModel,
+  invalidateSitemapCache
+};
+const useDeps = (deps) => (deps ? { ...DEFAULT_DEPS, ...deps } : DEFAULT_DEPS);
+const useModel = (deps) => useDeps(deps).postCategoryModel;
 
 function parseSortOrder(val, fallback = 0) {
   if (val == null) return fallback;
@@ -91,6 +98,38 @@ export async function deletePostCategory(id, deps = {}) {
   return { status: 'ok', message: 'Kategori berita berhasil dihapus.' };
 }
 
+export async function bulkDeletePostCategories(rawBody, deps = {}) {
+  const d = useDeps(deps);
+  const parsed = parseBulkIds(rawBody);
+  if (parsed.status !== 'ok') {
+    return { status: 'validation_error', error: parsed.error, message: parsed.error };
+  }
+
+  const ids = parsed.ids;
+  const existing = await d.postCategoryModel.findByIdsWithPostCount(ids);
+  if (!Array.isArray(existing) || existing.length === 0) {
+    const msg = 'Kategori berita yang dipilih tidak ditemukan.';
+    return { status: 'not_found', error: msg, message: msg };
+  }
+
+  const foundSet = new Set(existing.map((item) => item.id));
+  const targetIds = existing.map((item) => item.id);
+  const skippedIds = ids.filter((id) => !foundSet.has(id));
+  const affectedItemsCount = existing.reduce((sum, item) => sum + (Number(item.post_count) || 0), 0);
+  const deletedCount = await d.postCategoryModel.deleteMany(targetIds);
+
+  d.invalidateSitemapCache();
+
+  return {
+    status: 'ok',
+    deletedCount,
+    requestedCount: ids.length,
+    skippedIds,
+    affectedItemsCount,
+    message: `${deletedCount} kategori berita berhasil dihapus.`
+  };
+}
+
 export default {
   POST_CATEGORY_TYPES,
   normalizePostCategoryFilterType,
@@ -99,5 +138,6 @@ export default {
   createPostCategory,
   getPostCategoryById,
   updatePostCategory,
-  deletePostCategory
+  deletePostCategory,
+  bulkDeletePostCategories
 };

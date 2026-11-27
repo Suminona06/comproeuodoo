@@ -17,7 +17,7 @@
   </div>
 </div>
 
-<div class="table-card">
+<div class="table-card" data-bulk-table="products" data-bulk-endpoint="/admin/products/bulk-delete" data-bulk-mode="fetch">
   <div class="table-toolbar">
     <div class="adm-prod-toolbar-left">
       <h2 class="toolbar-title adm-prod-toolbar-title">Daftar Produk</h2>
@@ -41,18 +41,38 @@
       </div>
     </div>
 
-    <form action="/admin/products" method="GET" class="search-input-wrap adm-prod-search-form" id="prodSearchForm">
-      <input type="hidden" name="category" value="<%= selectedCategory || '' %>">
-      <input type="hidden" name="status" value="<%= selectedStatus || '' %>">
-      <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="prodSearchInput" name="q" placeholder="Cari nama produk..." value="<%= searchQuery || '' %>" aria-label="Cari produk">
-    </form>
+    <div class="adm-bulk-toolbar-group">
+      <button
+        type="button"
+        class="adm-btn adm-btn-danger adm-btn-sm adm-bulk-delete-btn adm-bulk-hidden"
+        data-bulk-delete-btn
+        data-bulk-label-template="<%= t('admin_bulk.delete_selected') %>"
+        data-bulk-confirm-title="<%= t('admin_bulk.confirm_title') %>"
+        data-bulk-confirm-text="<%= t('admin_bulk.confirm_products') %>"
+        data-bulk-success-text="<%= t('admin_bulk.success_deleted') %>"
+        data-bulk-error-empty="<%= t('admin_bulk.error_empty') %>"
+        data-bulk-error-failed="<%= t('admin_bulk.error_failed') %>"
+      >
+        <svg class="adm-btn-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        <span data-bulk-btn-label><%= t('admin_bulk.delete_selected', { count: 0 }) %></span>
+      </button>
+
+      <form action="/admin/products" method="GET" class="search-input-wrap adm-prod-search-form" id="prodSearchForm">
+        <input type="hidden" name="category" value="<%= selectedCategory || '' %>">
+        <input type="hidden" name="status" value="<%= selectedStatus || '' %>">
+        <svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="prodSearchInput" name="q" placeholder="Cari nama produk..." value="<%= searchQuery || '' %>" aria-label="Cari produk">
+      </form>
+    </div>
   </div>
 
   <div class="table-scroll-wrapper">
     <table class="data-table">
       <thead>
         <tr>
+          <th class="adm-bulk-col">
+            <input type="checkbox" class="adm-bulk-check" data-bulk-select-all aria-label="<%= t('admin_bulk.select_all') %>" title="<%= t('admin_bulk.select_all') %>">
+          </th>
           <th class="adm-prod-th-thumb">Foto</th>
           <th>Nama Produk</th>
           <th>Kategori</th>
