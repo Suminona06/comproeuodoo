@@ -11,7 +11,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [ ] T-472: Pembersihan Legacy CSS Header, Eliminasi Garis Batas Header-Hero, & Peningkatan Tipografi Header `[Tier: Argon Medium]`
+### [x] T-472: Pembersihan Legacy CSS Header, Eliminasi Garis Batas Header-Hero, & Peningkatan Tipografi Header `[Tier: Argon Medium]`
 - **Proposal & Spek:** `changes/2026-11-27_header-typography-seam-and-mobile-motion.md`, `prd/public-header-motion.md` (§1-§2), `tech/public-header-motion.md` (§1-§2).
 - **File Terdampak (2 file):**
   - `public/css/tokens.css`
