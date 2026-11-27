@@ -4,12 +4,39 @@ import {
   getProductCategoryById,
   updateProductCategory,
   toggleProductCategoryStatus,
-  deleteProductCategory
+  deleteProductCategory,
+  bulkDeleteProductCategories
 } from '../../services/productCategoryService.js';
 import logger from '../../utils/logger.js';
 
 const categoryRedirect = (res, type, message) =>
   res.redirect(`/admin/product-categories?${type}=${encodeURIComponent(message)}`);
+
+const wantsJson = (req) => Boolean(
+  req.xhr || req.is('application/json') || req.headers.accept?.includes('application/json')
+);
+
+function respondBulkDestroyResult(res, isJson, result) {
+  if (result.status === 'validation_error') {
+    return isJson
+      ? res.status(400).json({ success: false, message: result.message })
+      : categoryRedirect(res, 'error', result.message);
+  }
+  if (result.status === 'not_found') {
+    return isJson
+      ? res.status(404).json({ success: false, message: result.message })
+      : categoryRedirect(res, 'error', result.message);
+  }
+  if (!isJson) return categoryRedirect(res, 'success', result.message);
+  return res.json({
+    success: true,
+    deletedCount: result.deletedCount,
+    requestedCount: result.requestedCount,
+    skippedIds: result.skippedIds,
+    affectedItemsCount: result.affectedItemsCount,
+    message: result.message
+  });
+}
 
 function renderCreateView(req, res, statusCode, { pageTitle, error = null, formData } = {}) {
   return res.status(statusCode).render('admin/product-categories/create', {
@@ -122,6 +149,19 @@ export const productCategoryController = {
     } catch (err) {
       logger.error('Product category destroy error:', err);
       return categoryRedirect(res, 'error', 'Gagal menghapus kategori.');
+    }
+  },
+
+  async bulkDestroy(req, res) {
+    const isJson = wantsJson(req);
+    try {
+      const result = await bulkDeleteProductCategories(req.body);
+      return respondBulkDestroyResult(res, isJson, result);
+    } catch (err) {
+      logger.error('Product category bulkDestroy error:', { message: err.message });
+      return isJson
+        ? res.status(500).json({ success: false, message: 'Gagal menghapus kategori produk terpilih.' })
+        : categoryRedirect(res, 'error', 'Gagal menghapus kategori produk terpilih.');
     }
   }
 };

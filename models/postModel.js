@@ -244,9 +244,30 @@ export const postModel = {
     return result.affectedRows > 0;
   },
 
+  async findByIds(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return [];
+    const placeholders = ids.map(() => '?').join(', ');
+    const rows = await query(
+      `SELECT id, cover_image, title_id FROM posts WHERE id IN (${placeholders})`,
+      ids
+    );
+    return rows.map((row) => ({
+      ...row,
+      display_image: row.cover_image || null,
+      image_url: row.cover_image || null
+    }));
+  },
+
   async delete(id) {
     const result = await execute('DELETE FROM posts WHERE id = ?', [id]);
     return result.affectedRows > 0;
+  },
+
+  async deleteMany(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const placeholders = ids.map(() => '?').join(', ');
+    const result = await execute(`DELETE FROM posts WHERE id IN (${placeholders})`, ids);
+    return result.affectedRows || 0;
   },
 
   async incrementViews(id) {

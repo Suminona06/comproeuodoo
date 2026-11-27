@@ -1,4 +1,4 @@
-import { query, execute } from '../config/database.js';
+import { query, execute, pool } from '../config/database.js';
 
 export const productCategoryModel = {
   async findAll(options = {}) {
@@ -208,10 +208,45 @@ export const productCategoryModel = {
     return { ...category, is_active: newStatus };
   },
 
+  async findByIdsWithProductCount(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return [];
+    const placeholders = ids.map(() => '?').join(', ');
+    const rows = await query(
+      `SELECT c.id, c.name_id, COUNT(p.id) AS product_count
+       FROM product_categories c
+       LEFT JOIN products p ON c.id = p.category_id
+       WHERE c.id IN (${placeholders})
+       GROUP BY c.id`,
+      ids
+    );
+    return rows.map((row) => ({
+      ...row,
+      product_count: Number(row.product_count) || 0
+    }));
+  },
+
   async delete(id) {
     await execute('UPDATE products SET category_id = NULL WHERE category_id = ?', [id]);
     const result = await execute('DELETE FROM product_categories WHERE id = ?', [id]);
     return result.affectedRows > 0;
+  },
+
+  async deleteMany(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const placeholders = ids.map(() => '?').join(', ');
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      await connection.execute(`UPDATE products SET category_id = NULL WHERE category_id IN (${placeholders})`, ids);
+      const [result] = await connection.execute(`DELETE FROM product_categories WHERE id IN (${placeholders})`, ids);
+      await connection.commit();
+      return result.affectedRows || 0;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
   }
 };
 

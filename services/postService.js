@@ -5,6 +5,7 @@ import { processAndSaveWebP } from '../middleware/uploadMiddleware.js';
 import storage from '../config/storage.js';
 import { invalidateSitemapCache } from '../utils/sitemapGenerator.js';
 import { sanitizeArticleHtml } from '../utils/sanitizer.js';
+import { parseBulkIds } from '../utils/bulkIdsHelper.js';
 
 export const ALLOWED_EDITOR_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
@@ -232,6 +233,41 @@ export async function deleteAdminPost(id, deps = {}) {
   return { status: 'ok', message: 'Artikel berhasil dihapus.' };
 }
 
+export async function bulkDeleteAdminPosts(rawBody, deps = {}) {
+  const d = useDeps(deps);
+  const parsed = parseBulkIds(rawBody);
+  if (parsed.status !== 'ok') {
+    return { status: 'validation_error', error: parsed.error, message: parsed.error };
+  }
+
+  const ids = parsed.ids;
+  const existing = await d.postModel.findByIds(ids);
+  if (!Array.isArray(existing) || existing.length === 0) {
+    const msg = 'Artikel yang dipilih tidak ditemukan.';
+    return { status: 'not_found', error: msg, message: msg };
+  }
+
+  const foundSet = new Set(existing.map((item) => item.id));
+  const targetIds = existing.map((item) => item.id);
+  const skippedIds = ids.filter((id) => !foundSet.has(id));
+  const [deletedCount] = await Promise.all([
+    d.postModel.deleteMany(targetIds),
+    d.slugRedirectModel.deleteByEntityIds('post', targetIds)
+  ]);
+
+  const uniqueImages = [...new Set(existing.map((item) => item.display_image || item.image_url).filter(Boolean))];
+  await Promise.all(uniqueImages.map((imgUrl) => d.storage.delete(imgUrl)));
+  d.invalidateSitemapCache();
+
+  return {
+    status: 'ok',
+    deletedCount,
+    requestedCount: ids.length,
+    skippedIds,
+    message: `${deletedCount} artikel berhasil dihapus.`
+  };
+}
+
 export async function uploadPostEditorImage(file, deps = {}) {
   if (!file || !file.buffer) {
     return { status: 'validation_error', error: 'Tidak ada berkas gambar yang diunggah.' };
@@ -262,5 +298,6 @@ export default {
   createAdminPost,
   updateAdminPost,
   deleteAdminPost,
+  bulkDeleteAdminPosts,
   uploadPostEditorImage
 };

@@ -60,7 +60,7 @@
 
 ---
 
-### [OPEN] `T-459` `[Tier: Hydrogen Medium]`: Backend Bulk Delete Kategori Produk & Registrasi Rute Katalog
+### [DONE] `T-459` `[Tier: Hydrogen Medium]`: Backend Bulk Delete Kategori Produk & Registrasi Rute Katalog
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-42`), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md), [tech/admin-cms.md](tech/admin-cms.md)
 - **File Terdampak (4 file):**
   1. `models/productCategoryModel.js`
@@ -83,7 +83,7 @@
 
 ---
 
-### [OPEN] `T-460` `[Tier: Argon Medium]`: Backend Bulk Delete Berita / Artikel (Model, Redirect Cleanup, Service & Controller)
+### [DONE] `T-460` `[Tier: Argon Medium]`: Backend Bulk Delete Berita / Artikel (Model, Redirect Cleanup, Service & Controller)
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-42`), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md), [tech/news.md](tech/news.md)
 - **File Terdampak (4 file):**
   1. `models/postModel.js`

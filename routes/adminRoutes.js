@@ -70,6 +70,7 @@ router.delete('/api/media/:id', requireAuth, roleMiddleware(['superadmin', 'admi
 router.get('/product-categories', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.index);
 router.get('/product-categories/create', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.createView);
 router.post('/product-categories', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.store);
+router.post('/product-categories/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.bulkDestroy);
 router.get('/product-categories/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.editView);
 router.post('/product-categories/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.update);
 router.post('/product-categories/:id/toggle', requireAuth, roleMiddleware(['superadmin', 'admin']), productCategoryController.toggleStatus);
@@ -79,6 +80,7 @@ router.get('/products', requireAuth, roleMiddleware(['superadmin', 'admin']), pr
 router.get('/products/export', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.exportCsv);
 router.get('/products/create', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.createView);
 router.post('/products', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), productController.store);
+router.post('/products/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.bulkDestroy);
 router.get('/products/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.editView);
 router.get('/products/:id/size-table-columns', requireAuth, roleMiddleware(['superadmin', 'admin']), productController.getSizeTableColumns);
 router.post('/products/:id', requireAuth, roleMiddleware(['superadmin', 'admin']), uploadMedia.single('image_file'), productController.update);
