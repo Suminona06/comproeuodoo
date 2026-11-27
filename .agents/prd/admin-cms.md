@@ -66,7 +66,7 @@ Modul Admin CMS mengelola panel kendali konten, manajemen pengguna, kontrol akse
 
 ### Formulir Produk, Paginasi Dinamis & Bulk Delete Admin
 - Persyaratan `FR-26` (Formulir Produk Terpadu), `FR-27` (Validasi Server-Side), `FR-28` (Tombol CTA Produk), `FR-31` (Paginasi RFQ), dan `FR-32` (Paginasi Produk Admin) dirinci pada sub-modul [prd/admin-products-rfq.md](admin-products-rfq.md).
-- Persyaratan `FR-41` (Revamp Tabs Admin Growing Underline) dan `FR-42` (Bulk Delete Produk, Kategori Produk, Berita `/admin/posts`, & Kategori Berita `/admin/post-categories`) dirinci pada [prd/admin-ui-tabs-bulk.md](admin-ui-tabs-bulk.md) `[PENDING T-457..T-467]`.
+- Persyaratan `FR-41` (Revamp Tabs Admin Growing Underline) dan `FR-42` (Bulk Delete Produk, Kategori Produk, Berita `/admin/posts`, & Kategori Berita `/admin/post-categories`) dirinci pada [prd/admin-ui-tabs-bulk.md](admin-ui-tabs-bulk.md).
 
 ---
 

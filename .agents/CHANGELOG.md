@@ -68,3 +68,5 @@
 - 2026-11-26 | Audit dead CSS (70 class mati, 36 duplikat) & refaktor modular CSS Publik menjadi 25 berkas berurutan (`public/css/components/*.css`), konsolidasi token PDP, pemuatan kondisional per rute di `head.ejs`, isolasi total `login`/`403` admin, penghapusan monolit `components.css`, penegakan strict lint, helper `readPublicCss.js` + sinkronisasi 34 tes, dan QA visual/performa Playwright 11 rute (-54.3% s/d -93.6% byte CSS) | T-433..T-453
 
 - 2026-11-26 | Batch Bug Fix Admin: migrasi ENUM status 'ditolak' pada inquiries (025), perbaikan simetri tombol & ikon modal SweetAlert2 (showAdminConfirm), serta perbaikan badge hapus galeri produk (.prod-gallery-btn-del) & token CSS admin | T-454..T-456
+
+- 2026-11-27 | Revamp Tabs Dashboard Admin (Growing Underline hijau Euodoo pada 3 jenis tab), Bulk Delete 4 modul (`products`, `product-categories`, `posts`, `post-categories`) + migrasi nullable `products.category_id` (`026`), penyelarasan toolbar search/bulk, unit/HTTP tests, dan QA E2E Playwright | T-457..T-467
