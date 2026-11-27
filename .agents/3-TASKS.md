@@ -239,7 +239,7 @@
 
 ---
 
-### [OPEN] `T-467` `[Tier: Argon Medium]`: QA E2E & Visual Playwright (Tabs Growing Underline + Bulk Delete 4 Modul + Regresi 16 Rute Admin)
+### [DONE] `T-467` `[Tier: Argon Medium]`: QA E2E & Visual Playwright (Tabs Growing Underline + Bulk Delete 4 Modul + Regresi 16 Rute Admin)
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md)
 - **File Terdampak (1 file):**
   1. `tests/test-admin-tabs-bulk-delete-qa.js` *(baru)*
