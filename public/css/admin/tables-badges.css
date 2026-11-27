@@ -537,11 +537,18 @@
 .adm-bulk-toolbar-group {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   flex: 0 1 auto;
   min-width: 0;
   max-width: 100%;
+}
+
+.adm-bulk-toolbar-group .search-input-wrap {
+  flex: 0 1 210px;
+  width: 210px;
+  min-width: 160px;
+  max-width: 210px;
 }
 
 .adm-bulk-delete-btn {
