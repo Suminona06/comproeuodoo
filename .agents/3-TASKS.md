@@ -75,7 +75,7 @@
 
 ---
 
-### [TODO] T-470 `[Tier: Hydrogen Medium]` - Perbaikan Bug Border Fokus Kartu Berita Pasca-Klik & Navigasi Back
+### [DONE] T-470 `[Tier: Hydrogen Medium]` - Perbaikan Bug Border Fokus Kartu Berita Pasca-Klik & Navigasi Back
 - **Proposal & Spek:** `changes/2026-11-27_hero-readability-scroll-cue-and-news-card-focus.md`, `.agents/tech/news-card.md`.
 - **File Terdampak (3 file):**
   1. `public/css/components/news-cards.css`

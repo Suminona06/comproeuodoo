@@ -128,14 +128,25 @@
   border-color: transparent;
 }
 
-.nwl-card:focus-within {
+.nwl-card:has(:focus-visible) {
   outline: var(--focus-ring-outline);
   outline-offset: 4px;
   border-radius: var(--r-xl);
 }
 
-.nwl-card-title-link:focus {
+.nwl-card-title-link:focus:not(:focus-visible) {
   outline: none;
+}
+
+.nwl-card:has(:focus-visible) .nwl-card-title-link:focus-visible {
+  outline: none;
+}
+
+@supports not selector(:has(*)) {
+  .nwl-card-title-link:focus-visible {
+    outline: var(--focus-ring-outline);
+    outline-offset: 2px;
+  }
 }
 
 .nwl-card-title-link::after {

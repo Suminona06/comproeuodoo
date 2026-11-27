@@ -108,5 +108,13 @@
     });
   }
 
+  function clearRestoredCardFocus() {
+    const active = document.activeElement;
+    if (active && active.closest && active.closest('.nwl-card') && typeof active.blur === 'function') {
+      active.blur();
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', initCopyLinkButton);
+  window.addEventListener('pageshow', clearRestoredCardFocus);
 })();
