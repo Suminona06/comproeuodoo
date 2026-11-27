@@ -90,6 +90,7 @@ router.post('/products/:id/delete', requireAuth, roleMiddleware(['superadmin', '
 router.get('/post-categories', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.index);
 router.get('/post-categories/create', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.createView);
 router.post('/post-categories', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.store);
+router.post('/post-categories/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.bulkDestroy);
 router.get('/post-categories/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.editView);
 router.post('/post-categories/:id', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.update);
 router.post('/post-categories/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postCategoryController.destroy);
@@ -98,6 +99,7 @@ router.get('/posts', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor
 router.get('/posts/create', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.createView);
 router.post('/posts/upload-image', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('file'), postController.uploadEditorImage);
 router.post('/posts', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('cover_file'), postController.store);
+router.post('/posts/bulk-delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.bulkDestroy);
 router.get('/posts/:id/edit', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.editView);
 router.post('/posts/:id', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), uploadMedia.single('cover_file'), postController.update);
 router.post('/posts/:id/delete', requireAuth, roleMiddleware(['superadmin', 'admin', 'editor']), postController.destroy);

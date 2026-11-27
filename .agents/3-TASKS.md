@@ -106,7 +106,7 @@
 
 ---
 
-### [OPEN] `T-461` `[Tier: Hydrogen Medium]`: Backend Bulk Delete Kategori Berita & Registrasi Rute Berita
+### [DONE] `T-461` `[Tier: Hydrogen Medium]`: Backend Bulk Delete Kategori Berita & Registrasi Rute Berita
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-42`), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md), [tech/news.md](tech/news.md)
 - **File Terdampak (4 file):**
   1. `models/postCategoryModel.js`

@@ -1,4 +1,4 @@
-import { query, execute } from '../config/database.js';
+import { query, execute, pool } from '../config/database.js';
 
 export const postCategoryModel = {
   async findAll({ type = null } = {}) {
@@ -62,10 +62,45 @@ export const postCategoryModel = {
     return result.affectedRows > 0;
   },
 
+  async findByIdsWithPostCount(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return [];
+    const placeholders = ids.map(() => '?').join(', ');
+    const rows = await query(
+      `SELECT c.id, c.name_id, COUNT(p.id) AS post_count
+       FROM post_categories c
+       LEFT JOIN posts p ON c.id = p.category_id
+       WHERE c.id IN (${placeholders})
+       GROUP BY c.id`,
+      ids
+    );
+    return rows.map((row) => ({
+      ...row,
+      post_count: Number(row.post_count) || 0
+    }));
+  },
+
   async delete(id) {
     await execute('UPDATE posts SET category_id = NULL WHERE category_id = ?', [id]);
     const result = await execute('DELETE FROM post_categories WHERE id = ?', [id]);
     return result.affectedRows > 0;
+  },
+
+  async deleteMany(ids) {
+    if (!Array.isArray(ids) || ids.length === 0) return 0;
+    const placeholders = ids.map(() => '?').join(', ');
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      await connection.execute(`UPDATE posts SET category_id = NULL WHERE category_id IN (${placeholders})`, ids);
+      const [result] = await connection.execute(`DELETE FROM post_categories WHERE id IN (${placeholders})`, ids);
+      await connection.commit();
+      return result.affectedRows || 0;
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
   }
 };
 
