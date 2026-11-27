@@ -1,4 +1,4 @@
-Status: ACTIVE | Terakhir diverifikasi: 2026-11-24 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js, controllers/admin/bannerController.js, controllers/admin/brandController.js, services/bannerService.js, services/brandService.js
+Status: ACTIVE | Terakhir diverifikasi: 2026-11-27 | Kode: views/public/index.ejs, controllers/public/homeController.js, services/homeService.js, controllers/admin/bannerController.js, controllers/admin/brandController.js, services/bannerService.js, services/brandService.js
 
 # PRD: Modul Beranda Publik (Public Home)
 
@@ -27,9 +27,9 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 - Seluruh teks statis antarmuka, judul meta (`PT Euodoo Plastic`), `aria-label`, `title`, empty-state berita, dan label modal preview merek wajib bersumber dari kamus simetris `locales/id.json` & `locales/en.json` via helper `t('home.*')`.
 
 ### FR-10: Hero Banner Slider Dual CTA
-- Carousel banner penuh 1:1 viewport desktop (`height: 100svh; min-height: 100vh;`, tanpa celah putih bawah) & adaptif mobile (`min-height: 100svh; height: auto;` pada `<= 768px`) dengan auto-slide, dot/arrow, keyboard arrow, touch swipe, dual CTA (`.hero-cta-btn--primary`/`.hero-cta-btn--secondary`), serta media WebP, video MP4/WebM, dan YouTube `[PENDING T-468..T-469]`.
-- Keterbacaan teks dilindungi oleh *ambient pill blur* hijau gelap lembut (`border-radius: pill`, `blur(90px)`, tanpa bentuk kotak maupun efek setengah gelap setengah terang di latar foto/video) yang ditempatkan **hanya di area belakang headline & subheadline** (`.hero-inner::before`) serta indikator `EXPLORE MORE`, disertai scrim tipis tepi atas `~104px` untuk navbar transparan dan tanpa `filter: brightness(...)`, subheadline `max-width: 540px`, memenuhi WCAG AA `[PENDING T-468..T-469]`.
-- Indikator scroll dekoratif `JELAJAHI` / `EXPLORE MORE` (`aria-hidden="true"`) di kanan bawah desktop (di atas tombol WA, tersembunyi `<= 768px`) tampil putih solid tebal (`bold`) dengan animasi garis vertikal putih `2px` kontinu (statis saat `prefers-reduced-motion: reduce`) tanpa bertabrakan dengan tombol WA maupun kontrol slider `[PENDING T-468..T-469]`.
+- Carousel banner penuh 1:1 viewport desktop (`height: 100svh; min-height: 100vh;`, tanpa celah putih bawah) & adaptif mobile (`min-height: 100svh; height: auto;` pada `<= 768px`) dengan auto-slide, dot/arrow, keyboard arrow, touch swipe, dual CTA (`.hero-cta-btn--primary`/`.hero-cta-btn--secondary`), serta media WebP, video MP4/WebM, dan YouTube.
+- Keterbacaan teks dilindungi oleh *ambient pill blur* hijau gelap lembut (`border-radius: pill`, `blur(90px)`, tanpa bentuk kotak maupun efek setengah gelap setengah terang di latar foto/video) yang ditempatkan **hanya di area belakang headline & subheadline** (`.hero-inner::before`) serta indikator `EXPLORE MORE`, disertai scrim tipis tepi atas `~104px` untuk navbar transparan dan tanpa `filter: brightness(...)`, subheadline `max-width: 540px`, memenuhi WCAG AA.
+- Indikator scroll dekoratif `JELAJAHI` / `EXPLORE MORE` (`aria-hidden="true"`) di kanan bawah desktop (di atas tombol WA, tersembunyi `<= 768px`) tampil putih solid tebal (`bold`) dengan animasi garis vertikal putih `2px` kontinu (statis saat `prefers-reduced-motion: reduce`) tanpa bertabrakan dengan tombol WA maupun kontrol slider.
 - Mobile (`< 768px`): CTA stack 100% width; `.hero-slider-controls` terpusat bawah (`left: 50%; transform: translateX(-50%)`) bebas tabrakan pada laptop 14 inci (1920x1080 scaling 125%/150%) & desktop.
 
 ### FR-11: Pengelolaan Banner Hero (CMS)
@@ -58,4 +58,4 @@ Modul Beranda adalah etalase digital B2B utama PT Euodoo yang menampilkan identi
 | **Transisi Gradasi Halus Latar Seksi Why Choose Us** | Menghilangkan garis batas tegas (hard edge) pada peralihan latar abu-muda dan hijau botani menggunakan token semantik. | 2026-10-28 |
 | **Penskalaan Logo Marquee Mobile** | Memastikan logo merek dagang terdaftar terbaca jelas pada layar ponsel kecil tanpa overflow. | 2026-10-28 |
 | **Centering Kontrol Slider Hero Banner** | Menempatkan kontrol slider di tengah bawah layar agar bebas tabrakan dengan tombol CTA pada resolusi laptop 14 inci dan desktop. | 2026-10-28 |
-| **Hero 1:1 Viewport, Directional Gradient Overlay, & Scroll Cue Dekoratif** `[PENDING T-468..T-469]` | Menyamakan tinggi hero penuh viewport dengan sisi kanan media jernih, melindungi teks/navbar WCAG AA via token hijau gelap, serta menjaga jarak aman indikator JELAJAHI di atas tombol WA. | 2026-11-27 |
+| **Hero 1:1 Viewport, Ambient Pill Blur Overlay, & Scroll Cue Dekoratif** | Menyamakan tinggi hero penuh viewport dengan media jernih merata, melindungi teks/navbar WCAG AA via ambient pill blur hijau gelap, serta menjaga jarak aman indikator JELAJAHI di atas tombol WA. | 2026-11-27 |
