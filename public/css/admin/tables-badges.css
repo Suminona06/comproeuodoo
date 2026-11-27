@@ -88,9 +88,10 @@
 
 .search-input-wrap {
   position: relative;
-  flex: 1 1 190px;
+  flex: 0 1 240px;
+  width: 240px;
   min-width: 160px;
-  max-width: 100%;
+  max-width: 240px;
 }
 
 .search-input-wrap input {
