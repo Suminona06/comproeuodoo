@@ -173,6 +173,7 @@
       refreshAfterDelete(container);
     } catch (err) {
       notifyToast('error', (err && err.message) || failedMsg);
+    } finally {
       setButtonLoading(btn, false);
     }
   }

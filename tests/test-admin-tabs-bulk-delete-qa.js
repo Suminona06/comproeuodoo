@@ -250,7 +250,7 @@ async function verifyToolbarNoOverflowOrCollision(page, routeName) {
   await page.setViewportSize({ width: 1280, height: 800 });
 }
 
-async function confirmSweetAlertAndWaitToast(page, expectedHtmlSubstr = null) {
+async function confirmSweetAlertAndWait(page, { expectedHtmlSubstr = null, waitToast = true } = {}) {
   const popup = page.locator('.swal2-custom-popup');
   await popup.waitFor({ state: 'visible', timeout: 5000 });
   if (expectedHtmlSubstr !== null) {
@@ -260,8 +260,18 @@ async function confirmSweetAlertAndWaitToast(page, expectedHtmlSubstr = null) {
       `Expected SweetAlert2 text to include "${expectedHtmlSubstr}", got "${htmlText}"`
     );
   }
+  const bulkResPromise = page.waitForResponse(
+    (res) => res.url().includes('/bulk-delete') && res.request().method() === 'POST'
+  );
+  const navPromise = waitToast ? Promise.resolve() : page.waitForNavigation({ waitUntil: 'networkidle' });
   await popup.locator('.swal2-confirm').click();
-  await page.locator('.swal2-toast-custom').waitFor({ state: 'visible', timeout: 5000 });
+  const bulkRes = await bulkResPromise;
+  assert.equal(bulkRes.status(), 200, `Expected bulk-delete 200 OK, got ${bulkRes.status()}`);
+  if (waitToast) {
+    await page.locator('.swal2-toast-custom').waitFor({ state: 'visible', timeout: 5000 });
+  } else {
+    await navPromise;
+  }
 }
 
 async function runQa() {
@@ -363,14 +373,14 @@ async function runQa() {
     // Delete the single item on page 2 -> must auto step-back to page 1
     await rowChecks.first().check();
     await bulkBtn.click();
-    await confirmSweetAlertAndWaitToast(page);
+    await confirmSweetAlertAndWait(page);
     await page.waitForFunction(() => document.querySelectorAll('#productTableBody [data-bulk-id]').length === 10);
 
     // Delete 2 items on page 1 -> 8 remaining
     await rowChecks.nth(0).check();
     await rowChecks.nth(1).check();
     await bulkBtn.click();
-    await confirmSweetAlertAndWaitToast(page);
+    await confirmSweetAlertAndWait(page);
     await page.waitForFunction(() => document.querySelectorAll('#productTableBody [data-bulk-id]').length === 8);
 
     // 3. Bulk Delete Module 2: /admin/product-categories (related products warning)
@@ -382,8 +392,7 @@ async function runQa() {
     await pCatChecks.nth(0).check();
     await pCatChecks.nth(1).check();
     await page.locator('[data-bulk-delete-btn]').click();
-    await confirmSweetAlertAndWaitToast(page, '8');
-    await page.waitForLoadState('networkidle');
+    await confirmSweetAlertAndWait(page, { expectedHtmlSubstr: '8', waitToast: false });
     assert.equal(await page.locator(`tr:has-text("${QA_PREFIX}PCAT-")`).count(), 0, 'QA product categories must be deleted');
 
     // 4. Bulk Delete Module 4 before Posts: /admin/post-categories (related posts warning = 3)
@@ -395,8 +404,7 @@ async function runQa() {
     await postCatChecks.nth(0).check();
     await postCatChecks.nth(1).check();
     await page.locator('[data-bulk-delete-btn]').click();
-    await confirmSweetAlertAndWaitToast(page, '3');
-    await page.waitForLoadState('networkidle');
+    await confirmSweetAlertAndWait(page, { expectedHtmlSubstr: '3', waitToast: false });
     assert.equal(await page.locator(`tr:has-text("${QA_PREFIX}POSTCAT-")`).count(), 0, 'QA post categories must be deleted');
 
     // 5. Bulk Delete Module 3: /admin/posts (#liveSearchInput sync)
@@ -423,8 +431,7 @@ async function runQa() {
     await page.locator('[data-bulk-select-all]').click();
     assert.ok((await page.locator('[data-bulk-delete-btn]').innerText()).includes('3'), 'Select-all must select 3 QA posts');
     await page.locator('[data-bulk-delete-btn]').click();
-    await confirmSweetAlertAndWaitToast(page);
-    await page.waitForLoadState('networkidle');
+    await confirmSweetAlertAndWait(page, { waitToast: false });
     assert.equal(await page.locator(`tr:has-text("${QA_PREFIX}POST-")`).count(), 0, 'QA posts must be deleted');
 
     assert.deepEqual(failedCss, [], `Failed CSS requests: ${failedCss.join(', ')}`);

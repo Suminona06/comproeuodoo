@@ -3,7 +3,7 @@ Status: ACTIVE | Terakhir diverifikasi: 2026-11-26 | Kode: public/css/tokens.css
 # Tech Spec: Standar Komponen UI, Tombol, Paginasi & Validasi Form Admin (Admin UI)
 
 ## 1. Ruang Lingkup & Isolasi Class
-Sub-modul ini mendefinisikan arsitektur teknis komponen tombol terpadu (`.adm-btn-*`), tampilan slug ringkas (`.adm-slug-text`), modul validasi formulir sisi klien (`public/js/admin-form-validation.js`), standarisasi dialog SweetAlert2, serta komponen paginasi bersama Varian 1 (`.pgn-*`) di panel Admin CMS tanpa mengubah class tombol publik (`.btn-*`) maupun paginasi berita (`.pagination-bar`). Spesifikasi dropdown kustom (`.eu-dd-*`) didelegasikan ke [tech/admin-ui-dropdown.md](admin-ui-dropdown.md), peta arsitektur CSS modular admin (`public/css/admin/*.css`) didelegasikan ke [tech/admin-ui-css.md](admin-ui-css.md), dan spesifikasi Tabs Growing Underline serta Bulk Delete (`.adm-bulk-*`) didelegasikan ke [tech/admin-ui-tabs-bulk.md](admin-ui-tabs-bulk.md) `[PENDING T-457..T-467]`.
+Sub-modul ini mendefinisikan arsitektur teknis komponen tombol terpadu (`.adm-btn-*`), tampilan slug ringkas (`.adm-slug-text`), modul validasi formulir sisi klien (`public/js/admin-form-validation.js`), standarisasi dialog SweetAlert2, serta komponen paginasi bersama Varian 1 (`.pgn-*`) di panel Admin CMS tanpa mengubah class tombol publik (`.btn-*`) maupun paginasi berita (`.pagination-bar`). Spesifikasi dropdown kustom (`.eu-dd-*`) didelegasikan ke [tech/admin-ui-dropdown.md](admin-ui-dropdown.md), peta arsitektur CSS modular admin (`public/css/admin/*.css`) didelegasikan ke [tech/admin-ui-css.md](admin-ui-css.md), dan spesifikasi Tabs Growing Underline serta Bulk Delete (`.adm-bulk-*`) didelegasikan ke [tech/admin-ui-tabs-bulk.md](admin-ui-tabs-bulk.md).
 
 ---
 

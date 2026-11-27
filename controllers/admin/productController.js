@@ -77,6 +77,7 @@ async function renderIndexJsonResponse(req, res, sharedViewState, filters) {
     ...res.locals,
     ...sharedViewState,
     pagination: {
+      id: 'productPaginationBar',
       page: sharedViewState.currentPage,
       perPage: filters.perPage,
       totalRows: sharedViewState.totalCount,

@@ -315,7 +315,8 @@
     flex-wrap: wrap;
     justify-content: flex-start;
   }
-  .adm-bulk-toolbar-group .search-input-wrap {
+  .adm-bulk-toolbar-group .search-input-wrap,
+  .table-toolbar .search-input-wrap {
     flex: 1 1 100%;
     width: 100%;
     min-width: 0;

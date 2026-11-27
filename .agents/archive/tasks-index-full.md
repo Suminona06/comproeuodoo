@@ -1922,3 +1922,19 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-456: Perbaikan Tombol Hapus Foto Galeri Produk (`.prod-gallery-btn-del`) & Token CSS Admin [DONE]
 - **File Terdampak:** `views/admin/products/partials/gallery.ejs`, `public/js/admin-product-form.js`, `public/css/admin/page-catalog.css`, `views/partials/admin-header.ejs`
 - **Verifikasi:** Ikon `&times;` diganti SVG `12x12px` konsisten di SSR & JS (`createDeleteIconSvg()`), token CSS diselaraskan dengan `admin/tokens.css`, badge overlap `22x22px` (`top: -7px; right: -7px;`) dengan hit-area mobile `>= 44px`; `test-admin-css-modular.js`, `test-t375-t377-gallery-multiupload.js`, `npm test`, & lint hijau. Selesai 2026-11-26.
+
+### T-457: Revamp CSS Tabs Dashboard Admin (Growing Underline Tema Hijau Euodoo) [DONE]
+- **File Terdampak:** `public/css/admin/tabs-toggles.css`, `public/css/admin/tables-badges.css`, `public/css/admin/responsive-viewport.css`, `public/css/admin/media-picker.css`
+- **Verifikasi:** Seluruh 3 jenis tab admin diseragamkan ke growing underline `var(--primary)`, `prefers-reduced-motion: reduce`, dan target sentuh mobile `>= 44px`. Selesai 2026-11-27.
+
+### T-458..T-461: Backend Bulk Delete 4 Modul Admin (`products`, `product-categories`, `posts`, `post-categories`) [DONE]
+- **File Terdampak:** `utils/bulkIdsHelper.js`, `models/{productModel,productCategoryModel,postModel,postCategoryModel,slugRedirectModel}.js`, `services/{productCrudService,productCategoryService,postService,postCategoryService}.js`, `controllers/admin/{productController,productCategoryController,postController,postCategoryController}.js`, `routes/adminRoutes.js`, `database/migrations/026_make_products_category_nullable.sql`
+- **Verifikasi:** Validasi whitelist 1..100 ID, RBAC, CSRF, cleanup storage & `slug_redirects`, `category_id = NULL`, dan invalidasi sitemap lulus. Selesai 2026-11-27.
+
+### T-462..T-465: Frontend Shared Bulk Select (`admin-bulk-delete.js`), i18n ID/EN, Integrasi 4 Tabel & CSS Toolbar Anti-Overflow [DONE]
+- **File Terdampak:** `locales/{id,en}.json`, `public/js/{admin-bulk-delete,admin-products,admin}.js`, `views/partials/admin-footer.ejs`, `views/admin/{products/index,products/partials/table-rows,product-categories/index,posts/index,post-categories/index,dashboard}.ejs`, `public/css/admin/{tables-badges,page-catalog,page-dashboard-inquiries,responsive-viewport}.css`
+- **Verifikasi:** Checkbox 3 state, tombol kontekstual sejajar di kiri search, reset seleksi saat filter/paginasi Fetch, `0` overflow & `0` collision di `320px-1440px`. Selesai 2026-11-27.
+
+### T-466..T-467: Unit/HTTP Integration Tests & QA E2E Playwright Bulk Delete + Tabs + Regresi 19 Rute Admin [DONE]
+- **File Terdampak:** `tests/test-admin-bulk-delete-services.js`, `tests/test-admin-bulk-delete-http.js`, `tests/test-admin-tabs-bulk-delete-qa.js`
+- **Verifikasi:** 6/6 `test-admin-css-modular.js`, 17/17 unit/HTTP `T-466`, `test-admin-tabs-bulk-delete-qa.js`, `test-admin-css-visual-qa.js` (19 rute admin x 5 viewport + zoom 125% + 2 rute publik), `lint`, `lint:views`, & `lint:i18n` lulus. Selesai 2026-11-27.

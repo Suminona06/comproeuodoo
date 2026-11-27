@@ -15,10 +15,10 @@ Modul Berita mengelola publikasi korporat melalui editor TinyMCE, kategorisasi, 
 | `GET` | `/news/:slug` | `postController.detail` (`publicPostService`) | `seoMiddleware`, `i18nMiddleware` | Detail artikel G2 / cek 301 (lihat `tech/news-detail.md`) |
 | `GET` | `/admin/posts` | `admin/postController.index` (`postService`) | `requireAuth`, `roleMiddleware(['superadmin','admin','editor'])` | Daftar artikel admin |
 | `POST` | `/admin/posts` | `admin/postController.store` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Simpan artikel baru |
-| `POST` | `/admin/posts/bulk-delete` | `admin/postController.bulkDestroy` (`postService`) | `requireAuth`, `roleMiddleware` | Hapus massal artikel + `slug_redirects` & storage `[PENDING T-460, T-461]` |
+| `POST` | `/admin/posts/bulk-delete` | `admin/postController.bulkDestroy` (`postService`) | `requireAuth`, `roleMiddleware` | Hapus massal artikel + `slug_redirects` & storage |
 | `POST` | `/admin/posts/:id` | `admin/postController.update` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Update artikel & catat slug 301 |
 | `POST` | `/admin/posts/upload-image` | `admin/postController.uploadEditorImage` (`postService`) | `requireAuth`, `roleMiddleware`, `uploadMedia` | Upload gambar TinyMCE |
-| `GET/POST`| `/admin/post-categories*` | `postCategoryController.*` (`postCategoryService`) | `requireAuth`, `roleMiddleware` | Kelola kategori berita & `/bulk-delete` `[PENDING T-461]` |
+| `GET/POST`| `/admin/post-categories*` | `postCategoryController.*` (`postCategoryService`) | `requireAuth`, `roleMiddleware` | Kelola kategori berita & `/bulk-delete` |
 
 ---
 
