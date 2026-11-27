@@ -129,7 +129,7 @@
 
 ---
 
-### [OPEN] `T-462` `[Tier: Argon Medium]`: Kamus i18n Simetris & Modul Shared JS Bulk Select (`admin-bulk-delete.js`)
+### [DONE] `T-462` `[Tier: Argon Medium]`: Kamus i18n Simetris & Modul Shared JS Bulk Select (`admin-bulk-delete.js`)
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-41`), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md)
 - **File Terdampak (4 file):**
   1. `locales/id.json`

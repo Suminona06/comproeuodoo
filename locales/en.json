@@ -365,5 +365,21 @@
     "copy_success": "Article link copied to clipboard!",
     "copy_error": "Failed to copy article link. Please copy it manually from the address bar.",
     "related_title": "Read Other News"
+  },
+  "admin_bulk": {
+    "col_select": "Select",
+    "select_all": "Select all visible rows",
+    "select_row": "Select {name}",
+    "delete_selected": "Delete Selected ({count})",
+    "confirm_title": "Delete Selected Items?",
+    "confirm_products": "You are about to permanently delete {count} selected products and their variants. This action cannot be undone.",
+    "confirm_product_categories": "You are about to delete {count} selected product categories. This action cannot be undone.",
+    "confirm_posts": "You are about to permanently delete {count} selected articles. This action cannot be undone.",
+    "confirm_post_categories": "You are about to delete {count} selected news categories. This action cannot be undone.",
+    "confirm_related_products": "{count} related products will remain as uncategorized.",
+    "confirm_related_posts": "{count} related articles will remain as uncategorized.",
+    "success_deleted": "{count} items deleted successfully.",
+    "error_empty": "Please select at least 1 item first.",
+    "error_failed": "Failed to delete selected items."
   }
 }
