@@ -37,7 +37,7 @@
 
 ---
 
-### [OPEN] `T-458` `[Tier: Argon Medium]`: Backend Bulk Delete Katalog Produk (Helper Whitelist, Model, Service & Controller)
+### [DONE] `T-458` `[Tier: Argon Medium]`: Backend Bulk Delete Katalog Produk (Helper Whitelist, Model, Service & Controller)
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-42`), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md), [tech/admin-products-rfq.md](tech/admin-products-rfq.md)
 - **File Terdampak (4 file):**
   1. `utils/bulkIdsHelper.js` *(baru)*

@@ -3,6 +3,7 @@ import productCategoryModel from '../models/productCategoryModel.js';
 import { processAndSaveWebP } from '../middleware/uploadMiddleware.js';
 import storage from '../config/storage.js';
 import { invalidateSitemapCache } from '../utils/sitemapGenerator.js';
+import { parseBulkIds } from '../utils/bulkIdsHelper.js';
 import {
   parseDynamicSizeTable,
   getProductsWithSizeTable,
@@ -203,6 +204,37 @@ export async function deleteAdminProduct(id, deps = {}) {
   return { status: 'ok', message: 'Produk berhasil dihapus.' };
 }
 
+export async function bulkDeleteAdminProducts(rawBody, deps = {}) {
+  const d = useDeps(deps);
+  const parsed = parseBulkIds(rawBody);
+  if (parsed.status !== 'ok') {
+    return { status: 'validation_error', error: parsed.error, message: parsed.error };
+  }
+
+  const ids = parsed.ids;
+  const existing = await d.productModel.findByIds(ids);
+  if (!Array.isArray(existing) || existing.length === 0) {
+    return { status: 'not_found', error: 'Produk yang dipilih tidak ditemukan.', message: 'Produk yang dipilih tidak ditemukan.' };
+  }
+
+  const foundSet = new Set(existing.map((item) => item.id));
+  const targetIds = existing.map((item) => item.id);
+  const skippedIds = ids.filter((id) => !foundSet.has(id));
+  const deletedCount = await d.productModel.deleteMany(targetIds);
+
+  const uniqueImages = [...new Set(existing.map((item) => item.image_url || item.main_image).filter(Boolean))];
+  await Promise.all(uniqueImages.map((imgUrl) => d.storage.delete(imgUrl)));
+  d.invalidateSitemapCache();
+
+  return {
+    status: 'ok',
+    deletedCount,
+    requestedCount: ids.length,
+    skippedIds,
+    message: `${deletedCount} produk berhasil dihapus.`
+  };
+}
+
 export default {
   buildEmptyProductListData,
   getAdminProductList,
@@ -212,5 +244,6 @@ export default {
   createAdminProduct,
   getProductEditFormData,
   updateAdminProduct,
-  deleteAdminProduct
+  deleteAdminProduct,
+  bulkDeleteAdminProducts
 };
