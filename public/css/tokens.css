@@ -82,6 +82,7 @@
   --hero-grad: linear-gradient(105deg, rgba(0, 87, 63, 0.45) 0%, rgba(0, 87, 63, 0.22) 50%, rgba(0, 87, 63, 0.08) 100%);
   --hero-overlay-desktop: linear-gradient(90deg, rgba(7, 31, 23, 0.88) 0%, rgba(7, 31, 23, 0.76) 28%, rgba(7, 31, 23, 0.62) 44%, rgba(0, 87, 63, 0.24) 58%, rgba(0, 87, 63, 0) 72%, transparent 100%);
   --hero-overlay-top-scrim: linear-gradient(180deg, rgba(11, 40, 30, 0.72) 0%, rgba(11, 40, 30, 0.56) 58%, rgba(11, 40, 30, 0) 100%);
+  --hero-ambient-green: #124536;
   --hero-text-scrim: radial-gradient(ellipse 72% 68% at 38% 44%, rgba(11, 40, 30, 0.52) 0%, rgba(11, 40, 30, 0.28) 52%, rgba(11, 40, 30, 0) 80%);
   --hero-overlay-mobile: radial-gradient(ellipse 98% 82% at 50% 38%, rgba(11, 40, 30, 0.54) 0%, rgba(11, 40, 30, 0.28) 58%, rgba(11, 40, 30, 0) 85%);
   --hero-body-text-shadow: 0 2px 10px rgba(7, 31, 23, 0.65), 0 1px 3px rgba(0, 0, 0, 0.50);
