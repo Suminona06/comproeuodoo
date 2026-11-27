@@ -178,7 +178,7 @@
 
 ---
 
-### [OPEN] `T-464` `[Tier: Argon Medium]`: Integrasi Markup Bulk Delete & Sinkronisasi Live Search Berita & Kategori Berita
+### [DONE] `T-464` `[Tier: Argon Medium]`: Integrasi Markup Bulk Delete & Sinkronisasi Live Search Berita & Kategori Berita
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-42`), [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md)
 - **File Terdampak (3 file):**
   1. `views/admin/posts/index.ejs`
@@ -199,7 +199,7 @@
 
 ---
 
-### [OPEN] `T-465` `[Tier: Argon Medium]`: Styling CSS Bulk Checkbox, Baris Terpilih & Toolbar Anti-Overflow Responsif
+### [DONE] `T-465` `[Tier: Argon Medium]`: Styling CSS Bulk Checkbox, Baris Terpilih & Toolbar Anti-Overflow Responsif
 - **Modul Spek:** [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md), [tech/admin-ui-css.md](tech/admin-ui-css.md)
 - **File Terdampak (3 file):**
   1. `public/css/admin/tables-badges.css`

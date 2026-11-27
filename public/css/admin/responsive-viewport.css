@@ -182,7 +182,7 @@
   }
 }
 
-/* Mobile tabs (<= 768px) */
+/* Mobile tabs, bulk touch targets & table scroll (<= 768px) */
 @media (max-width: 768px) {
   .filter-tabs-wrap,
   .about-tabs-nav {
@@ -198,6 +198,31 @@
     min-height: 44px;
     flex-shrink: 0;
     scroll-snap-align: start;
+  }
+
+  .table-scroll-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (pointer: coarse), (max-width: 768px) {
+  .adm-bulk-col {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+
+  .adm-bulk-check {
+    position: relative;
+  }
+
+  .adm-bulk-check::after {
+    content: '';
+    position: absolute;
+    inset: -14px;
   }
 }
 
@@ -251,7 +276,8 @@
   .table-scroll-wrapper {
     min-width: 0 !important;
     max-width: 100% !important;
-    overflow-x: visible !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
   }
   .content-header {
     margin-bottom: 1rem !important;
@@ -283,6 +309,20 @@
   .table-toolbar {
     padding: 0.75rem;
     gap: 8px;
+  }
+  .adm-bulk-toolbar-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .adm-bulk-toolbar-group .search-input-wrap {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .adm-bulk-delete-btn {
+    min-height: 44px;
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
   }
   .filter-tabs-wrap {
     gap: 2px;

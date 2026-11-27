@@ -64,7 +64,11 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 10px;
+}
+
+.table-toolbar > * {
+  min-width: 0;
 }
 
 .toolbar-title {
@@ -78,11 +82,15 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .search-input-wrap {
   position: relative;
-  min-width: 190px;
+  flex: 1 1 190px;
+  min-width: 160px;
+  max-width: 100%;
 }
 
 .search-input-wrap input {
@@ -491,4 +499,59 @@
 .table-footer a:hover {
   color: var(--primary-hover);
   text-decoration: underline;
+}
+
+/* Bulk Selection & Contextual Toolbar Actions */
+.adm-bulk-col {
+  width: 40px;
+  min-width: 40px;
+  text-align: center;
+  padding-left: 12px;
+  padding-right: 6px;
+}
+
+.adm-bulk-check {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  vertical-align: middle;
+  accent-color: var(--primary);
+  border: 1.5px solid var(--text-muted);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+
+.adm-bulk-check:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+.data-table tbody tr.is-bulk-selected,
+.admin-table tbody tr.is-bulk-selected,
+.data-table tbody tr.is-bulk-selected:hover,
+.admin-table tbody tr.is-bulk-selected:hover {
+  background-color: var(--primary-subtle);
+}
+
+.adm-bulk-toolbar-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.adm-bulk-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.adm-bulk-hidden {
+  display: none;
 }

@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       row.style.display = (matchFilter && matchSearch) ? '' : 'none';
     });
+    document.dispatchEvent(new CustomEvent('admin:table-filtered'));
   }
 
   if (tabButtons.length > 0) {

@@ -17,12 +17,30 @@
   </div>
 </div>
 
-<div class="table-card">
+<div class="table-card" data-bulk-table="post-categories" data-bulk-endpoint="/admin/post-categories/bulk-delete" data-bulk-mode="reload">
   <div class="table-toolbar">
     <div class="filter-tabs-wrap">
       <a href="/admin/post-categories" class="tab-btn <%= !currentType ? 'active' : '' %>">Semua</a>
       <a href="/admin/post-categories?type=berita" class="tab-btn <%= currentType === 'berita' ? 'active' : '' %>">Berita Perusahaan</a>
       <a href="/admin/post-categories?type=blog" class="tab-btn <%= currentType === 'blog' ? 'active' : '' %>">Blog Industri</a>
+    </div>
+
+    <div class="adm-bulk-toolbar-group">
+      <button
+        type="button"
+        class="adm-btn adm-btn-danger adm-btn-sm adm-bulk-delete-btn adm-bulk-hidden"
+        data-bulk-delete-btn
+        data-bulk-label-template="<%= t('admin_bulk.delete_selected') %>"
+        data-bulk-confirm-title="<%= t('admin_bulk.confirm_title') %>"
+        data-bulk-confirm-text="<%= t('admin_bulk.confirm_post_categories') %>"
+        data-bulk-related-text="<%= t('admin_bulk.confirm_related_posts') %>"
+        data-bulk-success-text="<%= t('admin_bulk.success_deleted') %>"
+        data-bulk-error-empty="<%= t('admin_bulk.error_empty') %>"
+        data-bulk-error-failed="<%= t('admin_bulk.error_failed') %>"
+      >
+        <svg class="adm-btn-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        <span data-bulk-btn-label><%= t('admin_bulk.delete_selected', { count: 0 }) %></span>
+      </button>
     </div>
   </div>
 
@@ -30,6 +48,9 @@
     <table class="data-table">
       <thead>
         <tr>
+          <th class="adm-bulk-col">
+            <input type="checkbox" class="adm-bulk-check" data-bulk-select-all aria-label="<%= t('admin_bulk.select_all') %>" title="<%= t('admin_bulk.select_all') %>">
+          </th>
           <th>Nama Kategori (ID)</th>
           <th>Nama Kategori (EN)</th>
           <th>Tipe Konten</th>
@@ -43,6 +64,15 @@
         <% if (categories && categories.length > 0) { %>
           <% categories.forEach(function(cat) { %>
             <tr>
+              <td class="adm-bulk-col">
+                <input
+                  type="checkbox"
+                  class="adm-bulk-check"
+                  data-bulk-id="<%= cat.id %>"
+                  data-bulk-related-count="<%= cat.post_count || 0 %>"
+                  aria-label="<%= t('admin_bulk.select_row', { name: cat.name_id }) %>"
+                >
+              </td>
               <td>
                 <div class="td-client-title"><%= cat.name_id %></div>
               </td>
@@ -82,7 +112,7 @@
           <% }); %>
         <% } else { %>
           <tr>
-            <td colspan="7" class="adm-postcat-empty-cell">
+            <td colspan="8" class="adm-postcat-empty-cell">
               Belum ada kategori berita.
             </td>
           </tr>
