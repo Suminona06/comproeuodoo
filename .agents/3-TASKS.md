@@ -46,7 +46,7 @@
 
 ---
 
-### [ ] T-473: Sinkronisasi Penuh Animasi Open/Close Drawer Mobile (Unified Corner Wipe 60fps Bebas Artefak) `[Tier: Argon Medium]`
+### [x] T-473: Sinkronisasi Penuh Animasi Open/Close Drawer Mobile (Unified Corner Wipe 60fps Bebas Artefak) `[Tier: Argon Medium]`
 - **Proposal & Spek:** `changes/2026-11-27_header-typography-seam-and-mobile-motion.md`, `prd/public-header-motion.md` (§3), `tech/public-header-motion.md` (§2-§3).
 - **File Terdampak (2 file):**
   - `public/css/layout.css`
