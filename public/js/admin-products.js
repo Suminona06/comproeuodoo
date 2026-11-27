@@ -44,6 +44,7 @@ function loadProducts(url, opts = {}) {
         tbody.innerHTML = data.rowsHtml;
         tbody.style.opacity = '1';
       }
+      document.dispatchEvent(new CustomEvent('admin:products-loaded'));
 
       const pgnWrap = document.getElementById('productPaginationWrap');
       if (pgnWrap && data.paginationHtml) {
@@ -220,5 +221,10 @@ function initProductsEvents() {
     syncFilterAndSearchUI();
   });
 }
+
+window.reloadAdminProductsAfterBulkDelete = function reloadAdminProductsAfterBulkDelete() {
+  const activeUrl = `${window.location.pathname}${window.location.search}`;
+  loadProducts(activeUrl, { isPopState: false });
+};
 
 document.addEventListener('DOMContentLoaded', initProductsEvents);

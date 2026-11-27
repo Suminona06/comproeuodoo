@@ -155,7 +155,7 @@
 
 ---
 
-### [OPEN] `T-463` `[Tier: Argon Medium]`: Integrasi Markup Bulk Delete & Sinkronisasi Paginasi Katalog Produk & Kategori Produk
+### [DONE] `T-463` `[Tier: Argon Medium]`: Integrasi Markup Bulk Delete & Sinkronisasi Paginasi Katalog Produk & Kategori Produk
 - **Modul Spek:** [prd/admin-ui-tabs-bulk.md](prd/admin-ui-tabs-bulk.md) (`FR-42`), [tech/admin-products-rfq.md](tech/admin-products-rfq.md)
 - **File Terdampak (4 file):**
   1. `views/admin/products/index.ejs`
