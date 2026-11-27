@@ -100,7 +100,7 @@
 
 ---
 
-### [TODO] T-471 `[Tier: Argon Medium]` - QA Playwright Multi-Viewport, Kontras WCAG AA, Reduced-Motion & Simulasi Back Kartu Berita
+### [DONE] T-471 `[Tier: Argon Medium]` - QA Playwright Multi-Viewport, Kontras WCAG AA, Reduced-Motion & Simulasi Back Kartu Berita
 - **Proposal & Spek:** `changes/2026-11-27_hero-readability-scroll-cue-and-news-card-focus.md`.
 - **File Terdampak (1 file):**
   1. `tests/test-hero-and-news-focus-qa.js`
