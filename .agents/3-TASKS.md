@@ -220,7 +220,7 @@
 
 ---
 
-### [OPEN] `T-466` `[Tier: Argon Medium]`: Unit & HTTP Integration Test Bulk Delete (4 Service, Helper, RBAC & CSRF)
+### [DONE] `T-466` `[Tier: Argon Medium]`: Unit & HTTP Integration Test Bulk Delete (4 Service, Helper, RBAC & CSRF)
 - **Modul Spek:** [tech/admin-ui-tabs-bulk.md](tech/admin-ui-tabs-bulk.md)
 - **File Terdampak (2 file):**
   1. `tests/test-admin-bulk-delete-services.js` *(baru)*

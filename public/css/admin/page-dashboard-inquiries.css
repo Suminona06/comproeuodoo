@@ -372,3 +372,29 @@
 .adm-dash-mb-0 {
   margin-bottom: 0;
 }
+
+.adm-dash-toolbar-tools {
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-dash-search {
+  flex: 0 1 210px;
+  width: 210px;
+  min-width: 160px;
+  max-width: 210px;
+}
+
+@media (max-width: 768px) {
+  .adm-dash-toolbar-tools {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .adm-dash-search {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+}
