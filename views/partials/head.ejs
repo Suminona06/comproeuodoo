@@ -68,7 +68,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="/css/tokens.css?v=20261106-2">
+<link rel="stylesheet" href="/css/tokens.css?v=20261127-1">
 <link rel="stylesheet" href="/css/base.css?v=20261106-2">
 <link rel="stylesheet" href="/css/layout.css?v=20261121-5">
 <% if (typeof useSweetAlert !== 'undefined' && useSweetAlert) { %>
@@ -122,11 +122,11 @@
   const extraStyles = (typeof extraPublicStyles !== 'undefined' && Array.isArray(extraPublicStyles)) ? extraPublicStyles : [];
   const activePublicStyles = [...new Set([...(PUBLIC_PAGE_STYLES[resolvedPageKey] || []), ...extraStyles])];
 %>
-<link rel="stylesheet" href="/css/components/primitives.css?v=20261126-1">
-<link rel="stylesheet" href="/css/components/whatsapp-float.css?v=20261126-1">
-<link rel="stylesheet" href="/css/components/cta-reveal.css?v=20261126-1">
+<link rel="stylesheet" href="/css/components/primitives.css?v=20261127-1">
+<link rel="stylesheet" href="/css/components/whatsapp-float.css?v=20261127-1">
+<link rel="stylesheet" href="/css/components/cta-reveal.css?v=20261127-1">
 <% activePublicStyles.forEach((cssFile) => { %>
-<link rel="stylesheet" href="/css/components/<%= cssFile %>?v=20261126-1">
+<link rel="stylesheet" href="/css/components/<%= cssFile %>?v=20261127-1">
 <% }); %>
 <link rel="stylesheet" href="/vendor/photoswipe/photoswipe.css">
 <link rel="stylesheet" href="/css/lightbox.css">

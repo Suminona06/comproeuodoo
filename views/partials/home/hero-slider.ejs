@@ -4,6 +4,7 @@
       <%- include('./hero-slide', { slide, index }) %>
     <% }); %>
   </div>
+  <div class="hero-grad" aria-hidden="true"></div>
 
   <% if (hero.hasControls) { %>
     <button type="button" class="hero-slider-nav hero-slider-prev" id="heroPrevBtn" aria-label="<%= t('home.hero_prev_aria') %>">

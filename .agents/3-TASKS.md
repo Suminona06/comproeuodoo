@@ -11,7 +11,7 @@
 
 ## Task Aktif / Terbuka (Open Tasks)
 
-### [TODO] T-468 `[Tier: Hydrogen Medium]` - Token Hero Baru, Pemindahan Markup Overlay ke Induk Hero & Cache-Busting
+### [DONE] T-468 `[Tier: Hydrogen Medium]` - Token Hero Baru, Pemindahan Markup Overlay ke Induk Hero & Cache-Busting
 - **Proposal & Spek:** `changes/2026-11-27_hero-readability-scroll-cue-and-news-card-focus.md`, `.agents/prd/public-home.md` (`FR-10`), `.agents/tech/public-home-sections.md`, `.agents/tech/public-ui-css.md`.
 - **File Terdampak (4 file):**
   1. `public/css/tokens.css`
@@ -45,7 +45,7 @@
 
 ---
 
-### [TODO] T-469 `[Tier: Argon Medium]` - CSS Hero 1:1 Viewport, Stacking Context, Directional Gradient & Animasi Scroll Cue
+### [DONE] T-469 `[Tier: Argon Medium]` - CSS Hero 1:1 Viewport, Stacking Context, Directional Gradient & Animasi Scroll Cue
 - **Proposal & Spek:** `changes/2026-11-27_hero-readability-scroll-cue-and-news-card-focus.md`, `.agents/prd/public-home.md` (`FR-10`), `.agents/tech/public-home-sections.md`.
 - **File Terdampak (1 file):**
   1. `public/css/components/home-hero.css`

@@ -80,6 +80,13 @@
   --surface-dark-footer: #00573f;
   --topbar-bg: rgba(0, 87, 63, 0.35);
   --hero-grad: linear-gradient(105deg, rgba(0, 87, 63, 0.45) 0%, rgba(0, 87, 63, 0.22) 50%, rgba(0, 87, 63, 0.08) 100%);
+  --hero-overlay-desktop: linear-gradient(90deg, rgba(7, 31, 23, 0.88) 0%, rgba(7, 31, 23, 0.76) 28%, rgba(7, 31, 23, 0.62) 44%, rgba(0, 87, 63, 0.24) 58%, rgba(0, 87, 63, 0) 72%, transparent 100%);
+  --hero-overlay-top-scrim: linear-gradient(180deg, rgba(7, 31, 23, 0.62) 0%, rgba(7, 31, 23, 0.28) 58%, rgba(7, 31, 23, 0) 100%);
+  --hero-overlay-mobile: linear-gradient(180deg, rgba(7, 31, 23, 0.88) 0%, rgba(7, 31, 23, 0.76) 44%, rgba(0, 87, 63, 0.30) 68%, rgba(0, 87, 63, 0) 88%);
+  --hero-body-text-shadow: 0 2px 10px rgba(7, 31, 23, 0.72), 0 1px 3px rgba(0, 0, 0, 0.65);
+  --hero-heading-text-shadow: 0 2px 16px rgba(7, 31, 23, 0.65), 0 1px 4px rgba(0, 0, 0, 0.55);
+  --hero-explore-track: rgba(255, 255, 255, 0.28);
+  --hero-explore-runner: rgba(255, 255, 255, 0.95);
   --color-secondary-navy: #071f17;
   --color-navy-deep: #071f17;
   --color-navy-surface: #0b281e;
