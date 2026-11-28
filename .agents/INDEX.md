@@ -5,7 +5,7 @@
 ## 1. Dokumen Utama & Alur Kerja
 - [WORKFLOW.md](WORKFLOW.md): Panduan alur pengajuan perubahan & penulisan task (<=40 baris).
 - [CHANGELOG.md](CHANGELOG.md): Riwayat stempel waktu perubahan selesai per tanggal.
-- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (3 Task aktif: T-472..T-474; 471 task selesai T-01..T-471).
+- [3-TASKS.md](3-TASKS.md): Daftar task aktif terbuka (0 Task aktif; 474 task selesai T-01..T-474).
 - [1-PRD.md](1-PRD.md): Entry point visi, persona, NFR, dan batasan produk.
 - [2-TECH-SPEC.md](2-TECH-SPEC.md): Entry point arsitektur stack, standar database, dan token desain.
 
@@ -16,7 +16,7 @@
 | **Public Home** | ACTIVE | 2026-11-27 | [prd/public-home.md](prd/public-home.md) | [tech/public-home.md](tech/public-home.md) | `views/public/index.ejs`, `controllers/public/homeController.js`, `services/homeService.js`, `controllers/admin/homeContentController.js`, `services/homeContentService.js` |
 | **Public Home Sections** | ACTIVE | 2026-11-27 | [prd/public-home-sections.md](prd/public-home-sections.md) | [tech/public-home-sections.md](tech/public-home-sections.md) | `views/partials/home/*.ejs`, `public/js/home.js`, `public/images/wcu-botanical.svg` |
 | **Public Home News Carousel** | ACTIVE | 2026-11-24 | [prd/public-home-sections.md](prd/public-home-sections.md) | [tech/public-home-news-carousel.md](tech/public-home-news-carousel.md) | `views/partials/home/news.ejs`, `services/homeService.js`, `public/js/home-news-carousel.js` |
-| **Public Header & Motion** | ACTIVE | 2026-11-21 | [prd/public-header-motion.md](prd/public-header-motion.md) | [tech/public-header-motion.md](tech/public-header-motion.md) | `views/partials/navbar.ejs`, `public/js/main.js`, `public/css/layout.css`, `public/css/tokens.css` |
+| **Public Header & Motion** | ACTIVE | 2026-11-28 | [prd/public-header-motion.md](prd/public-header-motion.md) | [tech/public-header-motion.md](tech/public-header-motion.md) | `views/partials/navbar.ejs`, `public/js/main.js`, `public/css/layout.css`, `public/css/tokens.css` |
 | **Public About** | ACTIVE | 2026-11-20 | [prd/public-about.md](prd/public-about.md) | [tech/public-about.md](tech/public-about.md) | `views/public/about.ejs`, `views/partials/about/vision-mission.ejs`, `views/partials/about/gallery-bento.ejs`, `controllers/public/pageController.js`, `services/publicPageService.js`, `controllers/admin/aboutController.js`, `services/aboutService.js`, `services/aboutCrudService.js` |
 | **Public About Story & Timeline** | ACTIVE | 2026-11-23 | [prd/public-about-timeline.md](prd/public-about-timeline.md) | [tech/public-about-timeline.md](tech/public-about-timeline.md) | `views/partials/about/story-counter.ejs`, `views/partials/about/history-timeline.ejs`, `public/js/about-story.js` |
 | **Public About Ticket Accordion** | ACTIVE | 2026-11-16 | [prd/public-about.md](prd/public-about.md) | [tech/public-about-ticket.md](tech/public-about-ticket.md) | `views/partials/about/ticket-accordion.ejs`, `public/js/ticket-accordion.js` |

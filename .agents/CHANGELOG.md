@@ -72,3 +72,5 @@
 - 2026-11-27 | Revamp Tabs Dashboard Admin (Growing Underline hijau Euodoo pada 3 jenis tab), Bulk Delete 4 modul (`products`, `product-categories`, `posts`, `post-categories`) + migrasi nullable `products.category_id` (`026`), penyelarasan toolbar search/bulk, unit/HTTP tests, dan QA E2E Playwright | T-457..T-467
 
 - 2026-11-27 | Penyempurnaan Hero 1:1 viewport dengan ambient pill blur hijau gelap WCAG AA, animasi scroll cue JELAJAHI aman di atas WA, perbaikan bug stale focus outline kartu berita (`.nwl-card`) pasca-klik & navigasi Back, serta QA Playwright 7 viewport ID/EN | T-468..T-471
+
+- 2026-11-28 | Pembersihan legacy CSS header, eliminasi garis batas header-hero, peningkatan tipografi `.nav-link`, animasi drawer mobile GSAP GPU swipe-down interaktif dengan gestur swipe-up mengikuti jari, serta QA E2E Playwright 7 viewport ID/EN & audit CDP 4x CPU throttling | T-472..T-474

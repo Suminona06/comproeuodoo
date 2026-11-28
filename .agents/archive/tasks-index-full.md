@@ -1954,3 +1954,15 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-471: QA Playwright Multi-Viewport, Kontras WCAG AA, Reduced-Motion & Simulasi Back Kartu Berita [DONE]
 - **File Terdampak:** `tests/test-hero-and-news-focus-qa.js`
 - **Verifikasi:** Verifikasi E2E Playwright 7 viewport (`320px`–`1440px`) x ID/EN pada `/`, `/news`, `/news/:slug`: hero 1:1 viewport, kontras WCAG AA, `prefers-reduced-motion`, posisi aman `.hero-explore-indicator` di atas tombol WA, 0 stale outline saat `goBack()`, fokus `Tab` terlihat, 0 console/page error, & 0 horizontal overflow lulus. Selesai 2026-11-27.
+
+### T-472: Pembersihan Legacy CSS Header, Eliminasi Garis Batas Header-Hero, & Peningkatan Tipografi Header [DONE]
+- **File Terdampak:** `public/css/tokens.css`, `public/css/layout.css`
+- **Verifikasi:** Penyeragaman `--header-actual-height: 96px`, penambahan token `--header-nav-text-shadow`, `--header-backdrop-scrim`, `--hdr-motion-*`, penghapusan blok legacy duplikat/mati header & mobile-drawer, isolasi border/shadow state putih pada `.site-header::before`, dan peningkatan tipografi `.nav-link` (`600` / `.active` `700`, `white-space: nowrap`, `text-shadow` kondisional desktop transparan); `lint`, `lint:views`, & `lint:i18n` lulus. Selesai 2026-11-28.
+
+### T-473: Sinkronisasi Penuh Animasi Open/Close Drawer Mobile (GSAP GPU Swipe-Down Sheet & Touch Gesture) [DONE]
+- **File Terdampak:** `public/css/layout.css`, `public/js/main.js`, `views/partials/head.ejs`, `views/partials/footer.ejs`, `eslint.config.js`, `package.json`, `public/vendor/gsap/gsap.min.js`
+- **Verifikasi:** Migrasi animasi drawer mobile ke GSAP GPU-composited swipe-down sheet (`yPercent: -102% <-> 0%`, stagger horizontal item menu, CTA pop, gestur interaktif swipe-up mengikuti jari, 0 `clip-path`, 0 repaint `background`/`color`, `clearProps: 'all'`, dan cache-buster `?v=20261128-2`); `lint`, `lint:views`, & `lint:i18n` lulus. Selesai 2026-11-28.
+
+### T-474: QA E2E Playwright Multi-Viewport, Audit Performa CDP 4x CPU Throttling, & Regresi Visual Header [DONE]
+- **File Terdampak:** `tests/test-header-typography-seam-motion-qa.js`
+- **Verifikasi:** Verifikasi E2E Playwright 7 viewport (`320px`–`1440px`) x ID/EN pada 5 rute transparan & 2 rute solid (`/products/<slug>`, `/news/<slug>`), anti-seam, sinkronisasi close, CDP 4x CPU throttling (`CLS = 0`, `0` long task `> 50ms`, `0` inline style tersisa), rapid tap 5x, Escape focus return, backdrop click, resize auto-close, & `prefers-reduced-motion: reduce` lulus 100%. Selesai 2026-11-28.
