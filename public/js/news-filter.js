@@ -411,11 +411,20 @@
     });
   }
 
+  function clearRestoredCardFocus() {
+    var active = document.activeElement;
+    if (active && active.closest && active.closest('.nwl-card') && typeof active.blur === 'function') {
+      active.blur();
+    }
+  }
+
   window.addEventListener('popstate', function() {
     syncStateFromUrl();
     var currentUrl = buildUrl(currentType, currentCategory, currentSearch, currentPage);
     fetchNews(currentUrl, false);
   });
+
+  window.addEventListener('pageshow', clearRestoredCardFocus);
 
   function initHeadlineSlider() {
     var slider = document.getElementById('nwlHeadlineSlider');

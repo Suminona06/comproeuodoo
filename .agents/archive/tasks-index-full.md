@@ -1938,3 +1938,19 @@ Proposal: [2026-11-20_product-gallery-multi-upload.md](2026-11-20_product-galler
 ### T-466..T-467: Unit/HTTP Integration Tests & QA E2E Playwright Bulk Delete + Tabs + Regresi 19 Rute Admin [DONE]
 - **File Terdampak:** `tests/test-admin-bulk-delete-services.js`, `tests/test-admin-bulk-delete-http.js`, `tests/test-admin-tabs-bulk-delete-qa.js`
 - **Verifikasi:** 6/6 `test-admin-css-modular.js`, 17/17 unit/HTTP `T-466`, `test-admin-tabs-bulk-delete-qa.js`, `test-admin-css-visual-qa.js` (19 rute admin x 5 viewport + zoom 125% + 2 rute publik), `lint`, `lint:views`, & `lint:i18n` lulus. Selesai 2026-11-27.
+
+### T-468: Token Hero Baru, Pemindahan Markup Overlay ke Induk Hero & Cache-Busting [DONE]
+- **File Terdampak:** `public/css/tokens.css`, `views/partials/home/hero-slider.ejs`, `views/partials/home/hero-slide.ejs`, `views/partials/head.ejs`
+- **Verifikasi:** Penambahan token hero hijau gelap bebas rona biru (`--hero-overlay-desktop`, `--hero-overlay-top-scrim`, `--hero-ambient-green`, `--hero-text-scrim`, `--hero-overlay-mobile`, `--hero-body-text-shadow`, `--hero-heading-text-shadow`, `--hero-explore-track`, `--hero-explore-runner`), pemindahan `.hero-grad` tunggal ke anak langsung `.hero.hero-slider`, dan pembaruan cache-busting `?v=20261127-2`; `lint`, `lint:views`, `lint:i18n`, `test-public-css-modular.js`, & `test-modul13-seo-audit.js` lulus. Selesai 2026-11-27.
+
+### T-469: CSS Hero 1:1 Viewport, Stacking Context, Ambient Pill Blur Overlay & Animasi Scroll Cue [DONE]
+- **File Terdampak:** `public/css/components/home-hero.css`
+- **Verifikasi:** Hero penuh 1:1 viewport desktop (`100svh`, `min-height: 100vh`) & adaptif mobile (`height: auto`), stacking context terkunci (`.hero-bg 1 < .hero-grad 2 < .hero-content 3 < .hero-explore-indicator 6 < controls 10`), proteksi keterbacaan lokal `.hero-inner::before` & `.hero-explore-indicator::before` dengan *ambient pill blur* hijau lembut tanpa `filter: brightness(...)`, subheadline `max-width: 540px`, dan animasi scroll cue GPU-composited (`prefers-reduced-motion` fallback) dengan `565` baris (`<= 600`), 0 raw hex. Selesai 2026-11-27.
+
+### T-470: Perbaikan Bug Border Fokus Kartu Berita Pasca-Klik & Navigasi Back [DONE]
+- **File Terdampak:** `public/css/components/news-cards.css`, `public/js/news-filter.js`, `public/js/news-detail.js`
+- **Verifikasi:** Penggantian `.nwl-card:focus-within` menjadi `.nwl-card:has(:focus-visible)` dengan fallback `@supports not selector(:has(*))` serta guard event `pageshow` (`blur()` jika fokus di dalam `.nwl-card`) mencegah border hijau tertinggal pasca-bfcache navigasi Back di `/news` dan `/news/:slug`; `test-public-css-modular.js`, `test-modul12-public.js`, & lint lulus. Selesai 2026-11-27.
+
+### T-471: QA Playwright Multi-Viewport, Kontras WCAG AA, Reduced-Motion & Simulasi Back Kartu Berita [DONE]
+- **File Terdampak:** `tests/test-hero-and-news-focus-qa.js`
+- **Verifikasi:** Verifikasi E2E Playwright 7 viewport (`320px`–`1440px`) x ID/EN pada `/`, `/news`, `/news/:slug`: hero 1:1 viewport, kontras WCAG AA, `prefers-reduced-motion`, posisi aman `.hero-explore-indicator` di atas tombol WA, 0 stale outline saat `goBack()`, fokus `Tab` terlihat, 0 console/page error, & 0 horizontal overflow lulus. Selesai 2026-11-27.

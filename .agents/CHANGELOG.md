@@ -70,3 +70,5 @@
 - 2026-11-26 | Batch Bug Fix Admin: migrasi ENUM status 'ditolak' pada inquiries (025), perbaikan simetri tombol & ikon modal SweetAlert2 (showAdminConfirm), serta perbaikan badge hapus galeri produk (.prod-gallery-btn-del) & token CSS admin | T-454..T-456
 
 - 2026-11-27 | Revamp Tabs Dashboard Admin (Growing Underline hijau Euodoo pada 3 jenis tab), Bulk Delete 4 modul (`products`, `product-categories`, `posts`, `post-categories`) + migrasi nullable `products.category_id` (`026`), penyelarasan toolbar search/bulk, unit/HTTP tests, dan QA E2E Playwright | T-457..T-467
+
+- 2026-11-27 | Penyempurnaan Hero 1:1 viewport dengan ambient pill blur hijau gelap WCAG AA, animasi scroll cue JELAJAHI aman di atas WA, perbaikan bug stale focus outline kartu berita (`.nwl-card`) pasca-klik & navigasi Back, serta QA Playwright 7 viewport ID/EN | T-468..T-471

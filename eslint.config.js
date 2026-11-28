@@ -51,6 +51,7 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.es2024,
+        gsap: 'readonly',
         anime: 'readonly',
         Swal: 'readonly',
         tinymce: 'readonly',

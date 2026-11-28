@@ -27,90 +27,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.getElementById('mobileToggle');
   const menu = document.getElementById('navMenu');
   const menuBackdrop = document.getElementById('menuBackdrop');
-  let isMenuAnimating = false;
-  let activeMenuTimeline = null;
+  const MENU_MOTION_CLASSES = ['hdr-wipe-opening', 'hdr-wipe-closing', 'hdr-wipe-animating'];
+  let isMenuOpen = false;
+  let activeMenuTl = null;
 
-  function getAnimeLib() {
-    return typeof anime !== 'undefined' ? anime : (typeof window !== 'undefined' ? window.anime : null);
+  function getGsapLib() {
+    return typeof gsap !== 'undefined' ? gsap : (typeof window !== 'undefined' ? window.gsap : null);
   }
 
   function prefersReducedMotion() {
     return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
 
+  function getMenuMotionTargets() {
+    return [headerWrap, menu, menuBackdrop].filter(Boolean);
+  }
+
+  function getMenuItems() {
+    return menu ? Array.from(menu.querySelectorAll(':scope > li')) : [];
+  }
+
+  function clearMenuPhaseClasses() {
+    getMenuMotionTargets().forEach((el) => {
+      el.classList.remove(...MENU_MOTION_CLASSES);
+    });
+  }
+
+  function addMenuPhaseClasses(phaseClass) {
+    getMenuMotionTargets().forEach((el) => {
+      el.classList.add(phaseClass, 'hdr-wipe-animating');
+    });
+  }
+
   function clearMenuInlineStyles() {
-    if (menu) {
-      menu.removeAttribute('style');
-      menu.classList.remove('hdr-wipe-animating');
-      menu.querySelectorAll('li').forEach((li) => {
-        li.removeAttribute('style');
-      });
+    const gsapLib = getGsapLib();
+    const targets = [menu, menuBackdrop, ...getMenuItems()].filter(Boolean);
+    if (gsapLib && targets.length > 0) {
+      gsapLib.set(targets, { clearProps: 'all' });
+      return;
     }
-    if (menuBackdrop) {
-      menuBackdrop.removeAttribute('style');
-      menuBackdrop.classList.remove('hdr-wipe-animating');
-    }
+    targets.forEach((el) => el.removeAttribute('style'));
   }
 
-  function cancelMenuAnimations(animeLib) {
-    if (activeMenuTimeline) {
-      activeMenuTimeline.pause();
-      activeMenuTimeline = null;
+  function cancelActiveMenuAnimation() {
+    if (activeMenuTl) {
+      activeMenuTl.kill();
+      activeMenuTl = null;
     }
-    if (!animeLib) return;
-    const targets = [menu, menuBackdrop].filter(Boolean);
-    if (menu) targets.push(...menu.querySelectorAll('li'));
-    if (targets.length > 0) animeLib.remove(targets);
-  }
-
-  function setMenuToggleLocked(locked) {
-    isMenuAnimating = locked;
-    if (toggle) toggle.setAttribute('aria-busy', locked ? 'true' : 'false');
-  }
-
-  function prepareOpenMenuStyles(navItems) {
-    menu.classList.add('hdr-wipe-animating');
-    menu.style.clipPath = 'circle(0% at 100% 0%)';
-    menu.style.opacity = '0';
-    if (menuBackdrop) {
-      menuBackdrop.classList.add('hdr-wipe-animating');
-      menuBackdrop.style.opacity = '0';
-    }
-    navItems.forEach((li) => {
-      li.style.opacity = '0';
-      li.style.transform = 'translateY(-4px)';
-    });
-  }
-
-  function buildOpenMenuTimeline(animeLib, navItems) {
-    const tl = animeLib.timeline({
-      complete: () => {
-        activeMenuTimeline = null;
-        clearMenuInlineStyles();
-        setMenuToggleLocked(false);
-      }
-    });
-    if (menuBackdrop) {
-      tl.add({ targets: menuBackdrop, opacity: [0, 1], duration: 360, easing: 'easeOutQuad' }, 0);
-    }
-    tl.add({
-      targets: menu,
-      clipPath: ['circle(0% at 100% 0%)', 'circle(145% at 100% 0%)'],
-      opacity: [0, 1],
-      duration: 560,
-      easing: 'easeOutCubic'
-    }, 0);
-    if (navItems.length > 0) {
-      tl.add({
-        targets: navItems,
-        opacity: [0, 1],
-        translateY: [-4, 0],
-        duration: 280,
-        delay: animeLib.stagger(32),
-        easing: 'easeOutCubic'
-      }, 120);
-    }
-    return tl;
   }
 
   function lockBodyScroll() {
@@ -121,91 +84,126 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('menu-scroll-locked');
   }
 
-  function openMobileMenu() {
-    if (!menu || !toggle || isMenuAnimating || menu.classList.contains('open')) return;
-    const animeLib = getAnimeLib();
-    const useMotion = Boolean(animeLib && !prefersReducedMotion());
-    const navItems = Array.from(menu.querySelectorAll('li'));
-
-    cancelMenuAnimations(animeLib);
-    if (useMotion) {
-      setMenuToggleLocked(true);
-      prepareOpenMenuStyles(navItems);
+  function buildOpenMenuTl(gsapLib, navItems) {
+    const linkItems = navItems.filter((el) => !el.classList.contains('nav-menu-cta'));
+    const ctaItem = navItems.find((el) => el.classList.contains('nav-menu-cta'));
+    const tl = gsapLib.timeline({
+      onComplete: () => {
+        activeMenuTl = null;
+        clearMenuInlineStyles();
+        clearMenuPhaseClasses();
+      }
+    });
+    if (menuBackdrop) {
+      tl.fromTo(menuBackdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' }, 0);
     }
+    tl.fromTo(
+      menu,
+      { autoAlpha: 1, yPercent: -102, y: 0 },
+      { yPercent: 0, y: 0, duration: 0.42, ease: 'expo.out', force3D: true },
+      0
+    );
+    if (linkItems.length > 0) {
+      tl.fromTo(
+        linkItems,
+        { autoAlpha: 0, x: 26 },
+        { autoAlpha: 1, x: 0, duration: 0.32, stagger: 0.042, ease: 'power3.out', force3D: true },
+        0.07
+      );
+    }
+    if (ctaItem) {
+      tl.fromTo(
+        ctaItem,
+        { autoAlpha: 0, y: 12, scale: 0.96 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: 'back.out(1.5)', force3D: true },
+        0.18
+      );
+    }
+    return tl;
+  }
+
+  function buildCloseMenuTl(gsapLib, navItems, finalizeClose) {
+    const tl = gsapLib.timeline({ onComplete: finalizeClose });
+    if (navItems.length > 0) {
+      tl.to(
+        navItems,
+        { autoAlpha: 0, x: 16, duration: 0.14, stagger: { each: 0.015, from: 'end' }, ease: 'power2.in', force3D: true },
+        0
+      );
+    }
+    tl.to(
+      menu,
+      { yPercent: -102, duration: 0.27, ease: 'power3.in', force3D: true },
+      0
+    );
+    if (menuBackdrop) {
+      tl.to(menuBackdrop, { autoAlpha: 0, duration: 0.26, ease: 'power2.in' }, 0);
+    }
+    return tl;
+  }
+
+  function openMobileMenu() {
+    if (!menu || !toggle || isMenuOpen) return;
+    isMenuOpen = true;
+    const gsapLib = getGsapLib();
+    const useGsap = Boolean(gsapLib && !prefersReducedMotion() && window.innerWidth <= 1024);
+
+    cancelActiveMenuAnimation();
+    clearMenuPhaseClasses();
 
     menu.classList.add('open');
     toggle.classList.add('active');
     toggle.setAttribute('aria-expanded', 'true');
     if (headerWrap) headerWrap.classList.add('menu-open');
     if (menuBackdrop) menuBackdrop.classList.add('open');
-    lockBodyScroll();
 
-    if (!useMotion) {
+    if (!useGsap) {
       clearMenuInlineStyles();
-      setMenuToggleLocked(false);
+      lockBodyScroll();
       return;
     }
-    activeMenuTimeline = buildOpenMenuTimeline(animeLib, navItems);
+
+    addMenuPhaseClasses('hdr-wipe-opening');
+    activeMenuTl = buildOpenMenuTl(gsapLib, getMenuItems());
+    lockBodyScroll();
   }
 
   function closeMobileMenu(onComplete) {
-    if (!menu || !toggle || !menu.classList.contains('open')) return;
-    const animeLib = getAnimeLib();
-    const useMotion = Boolean(animeLib && !prefersReducedMotion());
+    if (!menu || !toggle || !isMenuOpen) return;
+    isMenuOpen = false;
+    const gsapLib = getGsapLib();
+    const useGsap = Boolean(gsapLib && !prefersReducedMotion() && window.innerWidth <= 1024);
 
-    cancelMenuAnimations(animeLib);
+    cancelActiveMenuAnimation();
+    clearMenuPhaseClasses();
+
     toggle.classList.remove('active');
     toggle.setAttribute('aria-expanded', 'false');
+    if (headerWrap) headerWrap.classList.remove('menu-open');
 
-    function finalizeClose() {
-      activeMenuTimeline = null;
+    const finalizeClose = () => {
+      activeMenuTl = null;
       menu.classList.remove('open');
-      if (headerWrap) headerWrap.classList.remove('menu-open');
       if (menuBackdrop) menuBackdrop.classList.remove('open');
       clearMenuInlineStyles();
+      clearMenuPhaseClasses();
       unlockBodyScroll();
-      setMenuToggleLocked(false);
       if (typeof onComplete === 'function') onComplete();
-    }
+    };
 
-    if (!useMotion) {
+    if (!useGsap) {
       finalizeClose();
       return;
     }
 
-    setMenuToggleLocked(true);
-    menu.classList.add('hdr-wipe-animating');
-    if (menuBackdrop) menuBackdrop.classList.add('hdr-wipe-animating');
-
-    const navItems = Array.from(menu.querySelectorAll('li'));
-    const tl = animeLib.timeline({ complete: finalizeClose });
-    if (navItems.length > 0) {
-      tl.add({
-        targets: navItems,
-        opacity: [1, 0],
-        translateY: [0, -4],
-        duration: 200,
-        easing: 'easeOutQuad'
-      }, 0);
-    }
-    tl.add({
-      targets: menu,
-      clipPath: ['circle(145% at 100% 0%)', 'circle(0% at 100% 0%)'],
-      opacity: [1, 0],
-      duration: 480,
-      easing: 'easeOutCubic'
-    }, 0);
-    if (menuBackdrop) {
-      tl.add({ targets: menuBackdrop, opacity: [1, 0], duration: 380, easing: 'easeOutQuad' }, 60);
-    }
-    activeMenuTimeline = tl;
+    addMenuPhaseClasses('hdr-wipe-closing');
+    activeMenuTl = buildCloseMenuTl(gsapLib, getMenuItems(), finalizeClose);
   }
 
   if (toggle && menu) {
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isOpen = menu.classList.contains('open');
-      if (isOpen) {
+      if (isMenuOpen) {
         closeMobileMenu();
       } else {
         openMobileMenu();
@@ -214,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close when clicking outside
     document.addEventListener('click', (e) => {
-      if (menu.classList.contains('open') && headerWrap && !headerWrap.contains(e.target)) {
+      if (isMenuOpen && headerWrap && !headerWrap.contains(e.target)) {
         closeMobileMenu();
       }
     });
@@ -222,6 +220,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuBackdrop) {
       menuBackdrop.addEventListener('click', () => closeMobileMenu());
     }
+
+    // Interactive touch swipe-up to dismiss drawer with GSAP finger tracking
+    let swipeStartY = 0;
+    let swipeStartTime = 0;
+    let swipeDeltaY = 0;
+    let isSwipingDrawer = false;
+
+    function onDrawerTouchStart(e) {
+      if (!isMenuOpen || window.innerWidth > 1024 || e.touches.length !== 1) return;
+      if (e.currentTarget === menu && menu.scrollTop > 0) return;
+      swipeStartY = e.touches[0].clientY;
+      swipeStartTime = performance.now();
+      swipeDeltaY = 0;
+      isSwipingDrawer = true;
+    }
+
+    function onDrawerTouchMove(e) {
+      if (!isSwipingDrawer || !isMenuOpen || e.touches.length !== 1) return;
+      const dy = e.touches[0].clientY - swipeStartY;
+      if (dy >= 0) {
+        swipeDeltaY = 0;
+        return;
+      }
+      swipeDeltaY = dy;
+      const gsapLib = getGsapLib();
+      if (!gsapLib) return;
+      cancelActiveMenuAnimation();
+      gsapLib.set(menu, { y: dy, force3D: true });
+      if (menuBackdrop) {
+        gsapLib.set(menuBackdrop, { opacity: Math.max(0.15, 1 + dy / 260) });
+      }
+    }
+
+    function onDrawerTouchEnd() {
+      if (!isSwipingDrawer) return;
+      isSwipingDrawer = false;
+      if (swipeDeltaY >= 0) return;
+      const elapsed = Math.max(1, performance.now() - swipeStartTime);
+      const velocity = swipeDeltaY / elapsed;
+      if (swipeDeltaY < -55 || (velocity < -0.45 && swipeDeltaY < -20)) {
+        closeMobileMenu();
+        return;
+      }
+      const gsapLib = getGsapLib();
+      if (!gsapLib) return;
+      gsapLib.to(menu, {
+        y: 0,
+        duration: 0.34,
+        ease: 'back.out(1.4)',
+        force3D: true,
+        onComplete: clearMenuInlineStyles
+      });
+      if (menuBackdrop) {
+        gsapLib.to(menuBackdrop, { opacity: 1, duration: 0.25, ease: 'power2.out' });
+      }
+    }
+
+    [menu, menuBackdrop].filter(Boolean).forEach((el) => {
+      el.addEventListener('touchstart', onDrawerTouchStart, { passive: true });
+      el.addEventListener('touchmove', onDrawerTouchMove, { passive: true });
+      el.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
+      el.addEventListener('touchcancel', onDrawerTouchEnd, { passive: true });
+    });
   }
 
   // Close when clicking any nav item link inside drawer
@@ -233,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Keyboard accessibility: Escape key closes menu
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu && menu.classList.contains('open')) {
+    if (e.key === 'Escape' && isMenuOpen) {
       closeMobileMenu(() => {
         if (toggle) toggle.focus();
       });
@@ -242,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Automatically close drawer when resized to desktop (>1024px)
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 1024 && menu && menu.classList.contains('open')) {
+    if (window.innerWidth > 1024 && isMenuOpen) {
       closeMobileMenu();
     }
   }, { passive: true });
