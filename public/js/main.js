@@ -85,6 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function buildOpenMenuTl(gsapLib, navItems) {
+    const linkItems = navItems.filter((el) => !el.classList.contains('nav-menu-cta'));
+    const ctaItem = navItems.find((el) => el.classList.contains('nav-menu-cta'));
     const tl = gsapLib.timeline({
       onComplete: () => {
         activeMenuTl = null;
@@ -93,20 +95,28 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     if (menuBackdrop) {
-      tl.fromTo(menuBackdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.26, ease: 'power2.out' }, 0);
+      tl.fromTo(menuBackdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' }, 0);
     }
     tl.fromTo(
       menu,
-      { autoAlpha: 0, y: -28, scale: 0.94, transformOrigin: '100% 0%' },
-      { autoAlpha: 1, y: 0, scale: 1, duration: 0.32, ease: 'power3.out', force3D: true },
+      { autoAlpha: 1, yPercent: -102, y: 0 },
+      { yPercent: 0, y: 0, duration: 0.42, ease: 'expo.out', force3D: true },
       0
     );
-    if (navItems.length > 0) {
+    if (linkItems.length > 0) {
       tl.fromTo(
-        navItems,
-        { autoAlpha: 0, y: -12 },
-        { autoAlpha: 1, y: 0, duration: 0.24, stagger: 0.032, ease: 'power2.out', force3D: true },
-        0.05
+        linkItems,
+        { autoAlpha: 0, x: 26 },
+        { autoAlpha: 1, x: 0, duration: 0.32, stagger: 0.042, ease: 'power3.out', force3D: true },
+        0.07
+      );
+    }
+    if (ctaItem) {
+      tl.fromTo(
+        ctaItem,
+        { autoAlpha: 0, y: 12, scale: 0.96 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: 'back.out(1.5)', force3D: true },
+        0.18
       );
     }
     return tl;
@@ -117,13 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navItems.length > 0) {
       tl.to(
         navItems,
-        { autoAlpha: 0, y: -10, duration: 0.14, stagger: { each: 0.015, from: 'end' }, ease: 'power2.in', force3D: true },
+        { autoAlpha: 0, x: 16, duration: 0.14, stagger: { each: 0.015, from: 'end' }, ease: 'power2.in', force3D: true },
         0
       );
     }
     tl.to(
       menu,
-      { autoAlpha: 0, y: -24, scale: 0.94, transformOrigin: '100% 0%', duration: 0.26, ease: 'power2.in', force3D: true },
+      { yPercent: -102, duration: 0.27, ease: 'power3.in', force3D: true },
       0
     );
     if (menuBackdrop) {
@@ -210,6 +220,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuBackdrop) {
       menuBackdrop.addEventListener('click', () => closeMobileMenu());
     }
+
+    // Interactive touch swipe-up to dismiss drawer with GSAP finger tracking
+    let swipeStartY = 0;
+    let swipeStartTime = 0;
+    let swipeDeltaY = 0;
+    let isSwipingDrawer = false;
+
+    function onDrawerTouchStart(e) {
+      if (!isMenuOpen || window.innerWidth > 1024 || e.touches.length !== 1) return;
+      if (e.currentTarget === menu && menu.scrollTop > 0) return;
+      swipeStartY = e.touches[0].clientY;
+      swipeStartTime = performance.now();
+      swipeDeltaY = 0;
+      isSwipingDrawer = true;
+    }
+
+    function onDrawerTouchMove(e) {
+      if (!isSwipingDrawer || !isMenuOpen || e.touches.length !== 1) return;
+      const dy = e.touches[0].clientY - swipeStartY;
+      if (dy >= 0) {
+        swipeDeltaY = 0;
+        return;
+      }
+      swipeDeltaY = dy;
+      const gsapLib = getGsapLib();
+      if (!gsapLib) return;
+      cancelActiveMenuAnimation();
+      gsapLib.set(menu, { y: dy, force3D: true });
+      if (menuBackdrop) {
+        gsapLib.set(menuBackdrop, { opacity: Math.max(0.15, 1 + dy / 260) });
+      }
+    }
+
+    function onDrawerTouchEnd() {
+      if (!isSwipingDrawer) return;
+      isSwipingDrawer = false;
+      if (swipeDeltaY >= 0) return;
+      const elapsed = Math.max(1, performance.now() - swipeStartTime);
+      const velocity = swipeDeltaY / elapsed;
+      if (swipeDeltaY < -55 || (velocity < -0.45 && swipeDeltaY < -20)) {
+        closeMobileMenu();
+        return;
+      }
+      const gsapLib = getGsapLib();
+      if (!gsapLib) return;
+      gsapLib.to(menu, {
+        y: 0,
+        duration: 0.34,
+        ease: 'back.out(1.4)',
+        force3D: true,
+        onComplete: clearMenuInlineStyles
+      });
+      if (menuBackdrop) {
+        gsapLib.to(menuBackdrop, { opacity: 1, duration: 0.25, ease: 'power2.out' });
+      }
+    }
+
+    [menu, menuBackdrop].filter(Boolean).forEach((el) => {
+      el.addEventListener('touchstart', onDrawerTouchStart, { passive: true });
+      el.addEventListener('touchmove', onDrawerTouchMove, { passive: true });
+      el.addEventListener('touchend', onDrawerTouchEnd, { passive: true });
+      el.addEventListener('touchcancel', onDrawerTouchEnd, { passive: true });
+    });
   }
 
   // Close when clicking any nav item link inside drawer

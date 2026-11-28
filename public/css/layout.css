@@ -284,6 +284,8 @@
 }
 
 .top-bar-wrap {
+  position: relative;
+  z-index: 2;
   overflow: hidden;
   height: var(--topbar-h, 32px);
 }
@@ -363,6 +365,7 @@
 /* ═══ NAVBAR (Transparent to Semi-Transparent Frosted Glass) ═══ */
 .site-header {
   position: relative;
+  z-index: 1;
   isolation: isolate;
   background: transparent;
   border: none;
@@ -373,7 +376,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   box-shadow: var(--shadow-level-1);
@@ -407,6 +410,8 @@
 }
 
 .brand {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -444,6 +449,8 @@
 }
 
 .nav-menu {
+  position: relative;
+  z-index: 2;
   display: flex;
   list-style: none;
   gap: 4px;
@@ -499,6 +506,8 @@
 }
 
 .nav-actions {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1026,14 +1035,14 @@ body.menu-scroll-locked {
     transition: opacity var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
     will-change: opacity;
   }
-  /* Mobile GPU-composited corner-origin drawer */
+  /* Mobile GPU-composited swipe-down drawer */
   .nav-menu {
     display: flex !important;
     visibility: hidden;
     pointer-events: none;
     opacity: 0;
-    transform-origin: 100% 0%;
-    transform: translate3d(0, -10px, 0) scale3d(0.95, 0.92, 1);
+    transform-origin: 50% 0%;
+    transform: translate3d(0, -100%, 0);
     contain: layout style paint;
     position: absolute;
     top: 100%;
@@ -1041,24 +1050,31 @@ body.menu-scroll-locked {
     right: 0;
     width: 100% !important;
     background: var(--color-surface);
-    border-radius: 0 0 16px 16px;
-    padding: 16px !important;
+    border-radius: 0 0 20px 20px;
+    padding: 16px 16px 20px !important;
     border-bottom: 1px solid var(--color-border);
     box-shadow: var(--shadow-level-3);
     max-height: calc(100dvh - var(--header-actual-height, 96px));
     overflow-y: auto;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 4px;
     box-sizing: border-box;
-    z-index: var(--z-header, 1000);
+    z-index: 0;
   }
   .nav-menu.open {
     visibility: visible;
     pointer-events: auto;
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    transform: translate3d(0, 0, 0);
+  }
+  .mobile-toggle:active {
+    transform: scale(0.92);
+  }
+  .nav-menu .nav-link:active {
+    transform: scale(0.98);
   }
   .hdr-wipe-panel.hdr-wipe-opening {
     visibility: visible;
