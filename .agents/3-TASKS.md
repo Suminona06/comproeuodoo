@@ -83,7 +83,7 @@
 
 ---
 
-### [ ] T-474: QA E2E Playwright Multi-Viewport, Audit Performa CDP 4x CPU Throttling, & Regresi Visual Header `[Tier: Argon Medium]`
+### [x] T-474: QA E2E Playwright Multi-Viewport, Audit Performa CDP 4x CPU Throttling, & Regresi Visual Header `[Tier: Argon Medium]`
 - **Proposal & Spek:** `changes/2026-11-27_header-typography-seam-and-mobile-motion.md`, `prd/public-header-motion.md` (§1-§3), `tech/public-header-motion.md` (§4).
 - **File Terdampak (2 file):**
   - `tests/test-header-typography-seam-motion-qa.js` *(baru)*

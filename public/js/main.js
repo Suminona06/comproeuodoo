@@ -27,11 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.getElementById('mobileToggle');
   const menu = document.getElementById('navMenu');
   const menuBackdrop = document.getElementById('menuBackdrop');
-  const MENU_OPEN_FALLBACK_MS = 380;
-  const MENU_CLOSE_FALLBACK_MS = 320;
   const MENU_MOTION_CLASSES = ['hdr-wipe-opening', 'hdr-wipe-closing', 'hdr-wipe-animating'];
-  let activeTransitionTimer = null;
-  let activeTransitionHandler = null;
+  let isMenuOpen = false;
+  let activeMenuTl = null;
+
+  function getGsapLib() {
+    return typeof gsap !== 'undefined' ? gsap : (typeof window !== 'undefined' ? window.gsap : null);
+  }
 
   function prefersReducedMotion() {
     return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -39,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getMenuMotionTargets() {
     return [headerWrap, menu, menuBackdrop].filter(Boolean);
+  }
+
+  function getMenuItems() {
+    return menu ? Array.from(menu.querySelectorAll(':scope > li')) : [];
   }
 
   function clearMenuPhaseClasses() {
@@ -53,40 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function setMenuOpenState(isOpen) {
-    menu.classList.toggle('open', isOpen);
-    toggle.classList.toggle('active', isOpen);
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    if (headerWrap) headerWrap.classList.toggle('menu-open', isOpen);
-    if (menuBackdrop) menuBackdrop.classList.toggle('open', isOpen);
+  function clearMenuInlineStyles() {
+    const gsapLib = getGsapLib();
+    const targets = [menu, menuBackdrop, ...getMenuItems()].filter(Boolean);
+    if (gsapLib && targets.length > 0) {
+      gsapLib.set(targets, { clearProps: 'all' });
+      return;
+    }
+    targets.forEach((el) => el.removeAttribute('style'));
   }
 
-  function cancelActiveMenuTransition() {
-    if (activeTransitionTimer) {
-      window.clearTimeout(activeTransitionTimer);
-      activeTransitionTimer = null;
+  function cancelActiveMenuAnimation() {
+    if (activeMenuTl) {
+      activeMenuTl.kill();
+      activeMenuTl = null;
     }
-    if (activeTransitionHandler && menu) {
-      menu.removeEventListener('transitionend', activeTransitionHandler);
-      activeTransitionHandler = null;
-    }
-  }
-
-  function bindMenuTransitionEnd(fallbackMs, onDone) {
-    let settled = false;
-    const finish = () => {
-      if (settled) return;
-      settled = true;
-      cancelActiveMenuTransition();
-      onDone();
-    };
-    activeTransitionHandler = (e) => {
-      if (e.target === menu && e.propertyName === 'clip-path') {
-        finish();
-      }
-    };
-    menu.addEventListener('transitionend', activeTransitionHandler);
-    activeTransitionTimer = window.setTimeout(finish, fallbackMs);
   }
 
   function lockBodyScroll() {
@@ -97,50 +84,116 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('menu-scroll-locked');
   }
 
-  function openMobileMenu() {
-    if (!menu || !toggle || menu.classList.contains('open')) return;
-    const instant = prefersReducedMotion() || window.innerWidth > 1024;
-
-    cancelActiveMenuTransition();
-    clearMenuPhaseClasses();
-    if (!instant) addMenuPhaseClasses('hdr-wipe-opening');
-
-    setMenuOpenState(true);
-    lockBodyScroll();
-
-    if (!instant) {
-      bindMenuTransitionEnd(MENU_OPEN_FALLBACK_MS, clearMenuPhaseClasses);
+  function buildOpenMenuTl(gsapLib, navItems) {
+    const tl = gsapLib.timeline({
+      onComplete: () => {
+        activeMenuTl = null;
+        clearMenuInlineStyles();
+        clearMenuPhaseClasses();
+      }
+    });
+    if (menuBackdrop) {
+      tl.fromTo(menuBackdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.26, ease: 'power2.out' }, 0);
     }
+    tl.fromTo(
+      menu,
+      { autoAlpha: 0, y: -28, scale: 0.94, transformOrigin: '100% 0%' },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.32, ease: 'power3.out', force3D: true },
+      0
+    );
+    if (navItems.length > 0) {
+      tl.fromTo(
+        navItems,
+        { autoAlpha: 0, y: -12 },
+        { autoAlpha: 1, y: 0, duration: 0.24, stagger: 0.032, ease: 'power2.out', force3D: true },
+        0.05
+      );
+    }
+    return tl;
+  }
+
+  function buildCloseMenuTl(gsapLib, navItems, finalizeClose) {
+    const tl = gsapLib.timeline({ onComplete: finalizeClose });
+    if (navItems.length > 0) {
+      tl.to(
+        navItems,
+        { autoAlpha: 0, y: -10, duration: 0.14, stagger: { each: 0.015, from: 'end' }, ease: 'power2.in', force3D: true },
+        0
+      );
+    }
+    tl.to(
+      menu,
+      { autoAlpha: 0, y: -24, scale: 0.94, transformOrigin: '100% 0%', duration: 0.26, ease: 'power2.in', force3D: true },
+      0
+    );
+    if (menuBackdrop) {
+      tl.to(menuBackdrop, { autoAlpha: 0, duration: 0.26, ease: 'power2.in' }, 0);
+    }
+    return tl;
+  }
+
+  function openMobileMenu() {
+    if (!menu || !toggle || isMenuOpen) return;
+    isMenuOpen = true;
+    const gsapLib = getGsapLib();
+    const useGsap = Boolean(gsapLib && !prefersReducedMotion() && window.innerWidth <= 1024);
+
+    cancelActiveMenuAnimation();
+    clearMenuPhaseClasses();
+
+    menu.classList.add('open');
+    toggle.classList.add('active');
+    toggle.setAttribute('aria-expanded', 'true');
+    if (headerWrap) headerWrap.classList.add('menu-open');
+    if (menuBackdrop) menuBackdrop.classList.add('open');
+
+    if (!useGsap) {
+      clearMenuInlineStyles();
+      lockBodyScroll();
+      return;
+    }
+
+    addMenuPhaseClasses('hdr-wipe-opening');
+    activeMenuTl = buildOpenMenuTl(gsapLib, getMenuItems());
+    lockBodyScroll();
   }
 
   function closeMobileMenu(onComplete) {
-    if (!menu || !toggle || !menu.classList.contains('open')) return;
-    const instant = prefersReducedMotion() || window.innerWidth > 1024;
+    if (!menu || !toggle || !isMenuOpen) return;
+    isMenuOpen = false;
+    const gsapLib = getGsapLib();
+    const useGsap = Boolean(gsapLib && !prefersReducedMotion() && window.innerWidth <= 1024);
 
-    cancelActiveMenuTransition();
+    cancelActiveMenuAnimation();
     clearMenuPhaseClasses();
-    setMenuOpenState(false);
+
+    toggle.classList.remove('active');
+    toggle.setAttribute('aria-expanded', 'false');
+    if (headerWrap) headerWrap.classList.remove('menu-open');
 
     const finalizeClose = () => {
+      activeMenuTl = null;
+      menu.classList.remove('open');
+      if (menuBackdrop) menuBackdrop.classList.remove('open');
+      clearMenuInlineStyles();
       clearMenuPhaseClasses();
       unlockBodyScroll();
       if (typeof onComplete === 'function') onComplete();
     };
 
-    if (instant) {
+    if (!useGsap) {
       finalizeClose();
       return;
     }
 
     addMenuPhaseClasses('hdr-wipe-closing');
-    bindMenuTransitionEnd(MENU_CLOSE_FALLBACK_MS, finalizeClose);
+    activeMenuTl = buildCloseMenuTl(gsapLib, getMenuItems(), finalizeClose);
   }
 
   if (toggle && menu) {
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isOpen = menu.classList.contains('open');
-      if (isOpen) {
+      if (isMenuOpen) {
         closeMobileMenu();
       } else {
         openMobileMenu();
@@ -149,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close when clicking outside
     document.addEventListener('click', (e) => {
-      if (menu.classList.contains('open') && headerWrap && !headerWrap.contains(e.target)) {
+      if (isMenuOpen && headerWrap && !headerWrap.contains(e.target)) {
         closeMobileMenu();
       }
     });
@@ -168,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Keyboard accessibility: Escape key closes menu
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu && menu.classList.contains('open')) {
+    if (e.key === 'Escape' && isMenuOpen) {
       closeMobileMenu(() => {
         if (toggle) toggle.focus();
       });
@@ -177,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Automatically close drawer when resized to desktop (>1024px)
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 1024 && menu && menu.classList.contains('open')) {
+    if (window.innerWidth > 1024 && isMenuOpen) {
       closeMobileMenu();
     }
   }, { passive: true });

@@ -519,16 +519,17 @@
   border-radius: var(--r-md, 8px);
   cursor: pointer;
   padding: 10px;
-  transition: background var(--ease, 200ms ease);
 }
 
-.mobile-toggle:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
+@media (hover: hover) {
+  .mobile-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
 
-.header-wrap.is-scrolled .mobile-toggle:hover,
-.header-wrap--solid .mobile-toggle:hover {
-  background: var(--surface-container, #f1f5f9);
+  .header-wrap.is-scrolled .mobile-toggle:hover,
+  .header-wrap--solid .mobile-toggle:hover {
+    background: var(--surface-container, #f1f5f9);
+  }
 }
 
 .mobile-toggle span {
@@ -538,8 +539,7 @@
   background: #ffffff;
   border-radius: 2px;
   transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 200ms ease,
-              background var(--ease, 200ms ease);
+              opacity 200ms ease;
   transform-origin: center;
 }
 
@@ -589,32 +589,19 @@
 
 .header-wrap.hdr-wipe-opening .mobile-toggle span {
   transition: transform var(--hdr-motion-open-dur) var(--hdr-motion-open-ease),
-              opacity var(--hdr-motion-open-dur) var(--hdr-motion-open-ease),
-              background var(--hdr-motion-open-dur) var(--hdr-motion-open-ease);
+              opacity var(--hdr-motion-open-dur) var(--hdr-motion-open-ease);
 }
 
 .header-wrap.hdr-wipe-closing .mobile-toggle span {
   transition: transform var(--hdr-motion-close-dur) var(--hdr-motion-close-ease),
-              opacity var(--hdr-motion-close-dur) var(--hdr-motion-close-ease),
-              background var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
+              opacity var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
 }
 
-.header-wrap.hdr-wipe-opening .brand-name {
-  transition: color var(--hdr-motion-open-dur) var(--hdr-motion-open-ease);
-}
-
-.header-wrap.hdr-wipe-closing .brand-name {
-  transition: color var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
-}
-
-.header-wrap.hdr-wipe-opening .brand-badge {
-  transition: background var(--hdr-motion-open-dur) var(--hdr-motion-open-ease),
-              color var(--hdr-motion-open-dur) var(--hdr-motion-open-ease);
-}
-
+.header-wrap.hdr-wipe-opening .brand-name,
+.header-wrap.hdr-wipe-closing .brand-name,
+.header-wrap.hdr-wipe-opening .brand-badge,
 .header-wrap.hdr-wipe-closing .brand-badge {
-  transition: background var(--hdr-motion-close-dur) var(--hdr-motion-close-ease),
-              color var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
+  transition: none;
 }
 
 .nav-menu-cta {
@@ -632,6 +619,7 @@
   opacity: 0;
   z-index: calc(var(--z-header, 1000) - 1);
   pointer-events: none;
+  contain: strict;
 }
 
 .header-wrap.is-scrolled ~ .menu-backdrop {
@@ -645,14 +633,13 @@
 }
 
 .hdr-wipe-backdrop.hdr-wipe-opening {
-  transition: opacity var(--hdr-motion-open-dur) var(--hdr-motion-open-ease);
+  visibility: visible;
   will-change: opacity;
 }
 
 .hdr-wipe-backdrop.hdr-wipe-closing {
   visibility: visible;
   pointer-events: none;
-  transition: opacity var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
   will-change: opacity;
 }
 
@@ -1021,35 +1008,33 @@ body.menu-scroll-locked {
   }
   .header-wrap:not(.is-scrolled):not(.header-wrap--solid) .site-header::before {
     opacity: 0;
-    clip-path: circle(0% at 100% 100%);
     transition: opacity var(--ease, 250ms cubic-bezier(0.4, 0, 0.2, 1));
   }
   .header-wrap.is-scrolled .site-header::before,
   .header-wrap--solid .site-header::before {
     opacity: 1;
-    clip-path: none;
   }
   .header-wrap.menu-open:not(.is-scrolled):not(.header-wrap--solid) .site-header::before {
     opacity: 1;
-    clip-path: circle(150% at 100% 100%);
   }
   .header-wrap.hdr-wipe-opening.menu-open:not(.is-scrolled):not(.header-wrap--solid) .site-header::before {
-    transition: clip-path var(--hdr-motion-open-dur) var(--hdr-motion-open-ease);
-    will-change: clip-path;
+    transition: opacity var(--hdr-motion-open-dur) var(--hdr-motion-open-ease);
+    will-change: opacity;
   }
   .header-wrap.hdr-wipe-closing:not(.is-scrolled):not(.header-wrap--solid) .site-header::before {
-    opacity: 1;
-    clip-path: circle(0% at 100% 100%);
-    transition: clip-path var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
-    will-change: clip-path;
+    opacity: 0;
+    transition: opacity var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
+    will-change: opacity;
   }
-  /* Mobile corner-wipe drawer */
+  /* Mobile GPU-composited corner-origin drawer */
   .nav-menu {
     display: flex !important;
     visibility: hidden;
     pointer-events: none;
     opacity: 0;
-    clip-path: circle(0% at 100% 0%);
+    transform-origin: 100% 0%;
+    transform: translate3d(0, -10px, 0) scale3d(0.95, 0.92, 1);
+    contain: layout style paint;
     position: absolute;
     top: 100%;
     left: 0;
@@ -1073,21 +1058,18 @@ body.menu-scroll-locked {
     visibility: visible;
     pointer-events: auto;
     opacity: 1;
-    clip-path: circle(150% at 100% 0%);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   }
   .hdr-wipe-panel.hdr-wipe-opening {
+    visibility: visible;
     overflow-y: hidden;
-    will-change: clip-path, opacity;
-    transition: clip-path var(--hdr-motion-open-dur) var(--hdr-motion-open-ease),
-                opacity 120ms linear;
+    will-change: transform, opacity;
   }
   .hdr-wipe-panel.hdr-wipe-closing {
     visibility: visible;
     pointer-events: none;
     overflow-y: hidden;
-    will-change: clip-path, opacity;
-    transition: clip-path var(--hdr-motion-close-dur) var(--hdr-motion-close-ease),
-                opacity var(--hdr-motion-close-dur) var(--hdr-motion-close-ease);
+    will-change: transform, opacity;
   }
   .nav-menu li {
     width: 100% !important;
